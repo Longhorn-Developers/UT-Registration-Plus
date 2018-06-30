@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+ 
+  "name": "UT Course Extension",
+  "version": "0.1.0",
+  "description": "Chrome Extension to show more information on the UT Course catalog",
+ 
+  "content_scripts": [{
+    "css": ["styles.css"],
+    "js": ["content.js"],
+    "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
+  }]
+ 
+}
