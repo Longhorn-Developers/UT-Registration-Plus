@@ -9,6 +9,9 @@
     "css": ["styles.css"],
     "js": ["content.js"],
     "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
-  }]
- 
+  }],
+  "background": {
+		"scripts": ["content.js"],
+		"persistent": false
+	}
 }
