@@ -5,11 +5,19 @@
   "version": "0.1.0",
   "description": "Chrome Extension to show more information on the UT Course catalog",
   "permissions": [
+   "https://utdirect.utexas.edu/apps/registrar/course_schedule/*",
 		"*://*.ratemyprofessors.com/*"
 	],
   "content_scripts": [{
     "css": ["styles.css"],
-    "js": ["jquery-3.3.1.min.js","content.js"],
+    "js": ["sql.js","jquery-3.3.1.min.js","content.js"],
     "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
-  }]
+  }],
+  "web_accessible_resources": [
+    "grades.db"],
+   "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+
+    }
 }
