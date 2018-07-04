@@ -7,7 +7,7 @@ $(document).ready( function() {
 		if($(this).find('td').hasClass("course_header")){
 			coursename = $(this).find('td').text() + "";
 		} else if($(this).has('th').length == 0){
-			let department = coursename.substring(0,coursename.search(/\d/)-1).replace(/\s/g, '');;
+			let department = coursename.substring(0,coursename.search(/\d/)-1);
 			console.log(department);
 			let course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
 			//console.log(course_nbr);
@@ -20,7 +20,7 @@ $(document).ready( function() {
 	    	} else {
 	    		let lastname = profname.split(',')[0];
 	    		//console.log(profurl);
-	    		dataBase(department,lastname,course_nbr);
+	    		//dataBase(department,lastname,course_nbr);
 	    		//getProfessorFullName(profurl);
 	    		rating = "Hello";
 	    	}
