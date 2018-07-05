@@ -3,7 +3,7 @@ var profname;
 var department;
 var course_nbr;
 $(document).ready( function() {
-	loaddataBase();	
+	loadDataBase();	
 	//make heading
 	$("table thead th:nth-child(5)").after('<th scope=col>Rating</th>');
 	$("table thead th:nth-child(10)").after('<th scope=col>Dist</th>');
@@ -60,10 +60,29 @@ function getDistribution(){
     	query += " where dept like '%"+department+"%'";
     	query += " and prof like '%"+profname+"%'";
     	query += " and course_nbr like '%"+course_nbr+"%'";
-	alert(grades.exec(query)[0].values);
+	var res = grades.exec(query)[0];
+	console.log(res);
+	var output = "";
+	if(typeof res == 'undefined'){
+		output="No Data on that Professor teaching that course :(";
+	} else {
+		output += "A: "+ res.values[0][6] + " ";
+		output += "A-: " + res.values[0][7] + "\n";
+		output += "B+: " + res.values[0][8] + " ";
+		output += "B: " + res.values[0][9] + " ";
+		output += "B-: " + res.values[0][10] + "\n";
+		output += "C+: " + res.values[0][11] + " ";
+		output+="C+: " + res.values[0][12] + " ";
+		output+="C-: " + res.values[0][13] + "\n";
+		output+="D+: " + res.values[0][14] + "\n";
+		output+="D: " + res.values[0][15] + " ";
+		output+="D-: " + res.values[0][16] + "\n";
+		output+="F: " + res.values[0][17] + "\n";
+	}
+	alert(output);
 }
 
-function loaddataBase(){
+function loadDataBase(){
 	sql = window.SQL;
 	loadBinaryFile('grades.db', function(data){
 		var sqldb = new SQL.Database(data);
