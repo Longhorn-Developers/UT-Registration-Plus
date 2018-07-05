@@ -1,47 +1,76 @@
+var grades;
+var profname;
+var department;
+var course_nbr;
 $(document).ready( function() {
-	//dataBase("C S","Scott","314");
+	loaddataBase();	
 	//make heading
 	$("table thead th:nth-child(5)").after('<th scope=col>Rating</th>');
-	var coursename;
+	$("table thead th:nth-child(10)").after('<th scope=col>Dist</th>');
+	//console.log(grades);
+	
 	$('table').find('tr').each(function(){
 		if($(this).find('td').hasClass("course_header")){
-			coursename = $(this).find('td').text() + "";
+
 		} else if($(this).has('th').length == 0){
-			let department = coursename.substring(0,coursename.search(/\d/)-1);
-			console.log(department);
-			let course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
-			//console.log(course_nbr);
 			var rating;
 			var profname = $(this).find('td').eq(4).text() + "";
-			var profurl = $(this).find('td a').prop('href');
+			// var profurl = $(this).find('td a').prop('href');
 			if(profname == ""){
 	    		//console.log("No Professor");
 	    		rating = "No Prof :(";
 	    	} else {
 	    		let lastname = profname.split(',')[0];
-	    		//console.log(profurl);
-	    		//dataBase(department,lastname,course_nbr);
-	    		//getProfessorFullName(profurl);
 	    		rating = "Hello";
 	    	}
 	    	$(this).find('td').eq(4).after('<td data-th="Rating"><a href="http://example.com">'+rating+'</a></td>');
-    	}
+	    	$(this).append('<td data-th="Dist"><input type="image" class="distButton" style="vertical-align: bottom;" width="30" height="30" src='+chrome.extension.getURL('disticon.png')+' /></td>');
+	    }
+	});	
+	$(this).find(".distButton").click(function(){
+		//var coursename = $(this).closest(':has(.course_header)').find('.course_header');
+		//CLEAN UP, "gack"- Michael Scott 
+		var row = $(this).closest('tr');
+		getCourseInfo(row);
+		//console.log(profname + " "+department+" "+course_nbr);
+		//console.log(coursename);
+		getDistribution();
 	});
+
 });
 
-function dataBase(department, profname, course_nbr){
+function getCourseInfo(row){
+	var coursename;
+	$('table').find('tr').each(function(){
+		if($(this).find('td').hasClass("course_header")){
+			coursename = $(this).find('td').text() + "";
+		}
+		if($(this).is(row)){
+		    profname = $(this).find('td').eq(4).text().split(',')[0];
+			return false;
+		}
+	});
+	department = coursename.substring(0,coursename.search(/\d/)-2);
+//	console.log(department);
+	course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
+}
+
+function getDistribution(){
+	var query = "select * from agg";
+    	query += " where dept like '%"+department+"%'";
+    	query += " and prof like '%"+profname+"%'";
+    	query += " and course_nbr like '%"+course_nbr+"%'";
+	alert(grades.exec(query)[0].values);
+}
+
+function loaddataBase(){
 	sql = window.SQL;
 	loadBinaryFile('grades.db', function(data){
 		var sqldb = new SQL.Database(data);
     	// Database is ready
-    	var query = "select * from agg";
-    	query += " where dept like '%"+department+"%'";
-    	query += " and prof like '%"+profname+"%'";
-    	query += " and course_nbr like '%"+course_nbr+"%'";
-    	console.log(query);
-    	var res = sqldb.exec(query);
-    	console.log(res[0]);
-	});
+    	grades = sqldb;
+    	//console.log(grades.exec(query)[0]);
+    });
 }
 function loadBinaryFile(path,success) {
 	var xhr = new XMLHttpRequest();
