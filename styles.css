@@ -30,21 +30,36 @@
 }
 
 .title {
-    font-size: large;
+    font-size: x-large;
     font-weight: bold ;
-    margin:0px 0px 0px 0px;
+    padding: 5px;
+    margin:0px 0px 5spx 0px;
 
 }
 .subtitle {
+    padding: 5px;
+    font-size: small;
+    font-weight: normal;
+
+}
+.subtitle.profname{
+    padding: 5px;
     font-size: small;
     font-weight: normal;
 
 }
 
+.profname {
+    margin-left: 5px;
+    padding-bottom: 5px;
+    font-size: medium;
+    font-weight: bold;
+}
+
 #chart {
 	min-width: 310px;
 	max-width: 800px;
-	height: 400px;
+	height: 300px;
 	margin: 0 auto
 }
 

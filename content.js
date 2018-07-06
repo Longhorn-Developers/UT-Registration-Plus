@@ -9,7 +9,8 @@ $(document).ready( function() {
 	//make heading
 	$("table thead th:nth-child(5)").after('<th scope=col>Rating</th>');
 	$("table thead th:nth-child(10)").after('<th scope=col>Dist</th>');
-	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=subtitle>First part of a two-part sequence in programming. Fundamental concepts of structured programming; procedures and data structures with a focus on problem solving strategies and implementation; introduction to concepts of informal specification, informal reasoning about program behavior, debugging, and ad hoc testing.Only one of the following courses may be counted: Computer Science 303E,305J, 312, 312H. Credit for Computer Science 312 may not be earned aftera student has received credit for Computer Science 314 or 314H.Prerequisite: Credit with a grade of at least C- or registration for Mathematics 408C, 408K, or 408N.</h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
+	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2></div></div><div class=card><div class=cardcontainer><h2 class=subtitle>First part of a two-part sequence in programming. Fundamental concepts of structured programming; procedures and data structures with a focus on problem solving strategies and implementation; introduction to concepts of informal specification, informal reasoning about program behavior, debugging, and ad hoc testing.Only one of the following courses may be counted: Computer Science 303E,305J, 312, 312H. Credit for Computer Science 312 may not be earned aftera student has received credit for Computer Science 314 or 314H.Prerequisite: Credit with a grade of at least C- or registration for Mathematics 408C, 408K, or 408N.</h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
+
 	$("#container").prepend(modhtml);
 	//console.log(grades);
 	
@@ -92,6 +93,8 @@ function openDialog(dep,cls,sem,professor,data){
 	var span = document.getElementsByClassName("close")[0];
 	modal.style.display = "block";
 	$(".title").text(coursename);
+	$(".profname").text("with "+profname.substring(0,1)+profname.substring(1).toLowerCase());
+
 	console.log(coursename);
 	span.onclick = function() {
 		modal.style.display = "none";
@@ -99,7 +102,7 @@ function openDialog(dep,cls,sem,professor,data){
 
  Highcharts.chart('chart', {
 			    chart: {
-			        type: 'bar',
+			        type: 'column',
 			        spacingLeft: 10
 			    },
 			    title: {
