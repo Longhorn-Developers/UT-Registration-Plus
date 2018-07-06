@@ -6,11 +6,10 @@ var department;
 var course_nbr;
 $(document).ready( function() {
 	loadDataBase();
-
 	//make heading
 	$("table thead th:nth-child(5)").after('<th scope=col>Rating</th>');
-	$("table thead th:nth-child(9)").after('<th scope=col>Dist</th>');
-	var modhtml = '<div id="myModal" class="modal"><div class="modal-content"><span class="close">&times;</span><h2 class="title">Computer Fluency (C S 302)</h2><h2 class="subtitle">with B. Porter</h2><div id="chart"></div></div></div>'
+	$("table thead th:nth-child(10)").after('<th scope=col>Dist</th>');
+	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=subtitle>First part of a two-part sequence in programming. Fundamental concepts of structured programming; procedures and data structures with a focus on problem solving strategies and implementation; introduction to concepts of informal specification, informal reasoning about program behavior, debugging, and ad hoc testing.Only one of the following courses may be counted: Computer Science 303E,305J, 312, 312H. Credit for Computer Science 312 may not be earned aftera student has received credit for Computer Science 314 or 314H.Prerequisite: Credit with a grade of at least C- or registration for Mathematics 408C, 408K, or 408N.</h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
 	$("#container").prepend(modhtml);
 	//console.log(grades);
 	
@@ -50,20 +49,20 @@ function getCourseInfo(row){
 			coursename = $(this).find('td').text() + "";
 		}
 		if($(this).is(row)){
-		    profname = $(this).find('td').eq(4).text().split(',')[0];
+			profname = $(this).find('td').eq(4).text().split(',')[0];
 			return false;
 		}
 	});
 	department = coursename.substring(0,coursename.search(/\d/)-2);
 //	console.log(department);
-	course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
+course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
 }
 
 function getDistribution(){
 	var query = "select * from agg";
-    	query += " where dept like '%"+department+"%'";
-    	query += " and prof like '%"+profname+"%'";
-    	query += " and course_nbr like '%"+course_nbr+"%'";
+	query += " where dept like '%"+department+"%'";
+	query += " and prof like '%"+profname+"%'";
+	query += " and course_nbr like '%"+course_nbr+"%'";
 	var res = grades.exec(query)[0];
 	console.log(res);
 	var output = "";
@@ -82,90 +81,105 @@ function getDistribution(){
 		// output+="D: " + res.values[0][15] + " ";
 		// output+="D-: " + res.values[0][16] + "\n";
 		// output+="F: " + res.values[0][17] + "\n";
-		openDialog();
+		openDialog(department,coursename,"aggregate",profname,res.values[0]);
 	}
 	//alert(output);
 }
 
-function openDialog(){
+function openDialog(dep,cls,sem,professor,data){
+	getDescription();
 	var modal = document.getElementById('myModal');
 	var span = document.getElementsByClassName("close")[0];
-    modal.style.display = "block";
-    $(".title").text(coursename);
-    console.log(coursename);
+	modal.style.display = "block";
+	$(".title").text(coursename);
+	console.log(coursename);
 	span.onclick = function() {
-    	modal.style.display = "none";
+		modal.style.display = "none";
 	}
 
-	Highcharts.chart('chart', {
+ Highcharts.chart('chart', {
+			    chart: {
+			        type: 'bar',
+			        spacingLeft: 10
+			    },
+			    title: {
+			        text: null
+			    },
+			    subtitle: {
+			        text: null
+			    },
+			    legend: {
+			        enabled: false
+			    },
+			    xAxis: {
+			            title: {
+			            text: 'Grades' 
+			        },
+			        categories: [
+			            'A',
+			            'A-',
+			            'B+',
+			            'B',
+			            'B-', 
+			            'C+', 
+			            'C', 
+			            'C-',
+			            'D+', 
+			            'D',
+			            'D-',
+			            'F'
+			        ],
+			        crosshair: true
+			    },
+			    yAxis: {
+			        min: 0,
+			        title: {
+			            text: 'Students'
+			        }
+			    },
+			    credits: {
+    				enabled: false
+  				},
+			    tooltip: {
+			        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+			        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+			            '<td style="padding:0"><b>{point.y:.1f} Students</b></td></tr>',
+			        footerFormat: '</table>',
+			        shared: true,
+			        useHTML: true
+			    },
+			    plotOptions: {
+			        bar: {
+			            pointPadding: 0.2,
+			            borderWidth: 0
+			        }
+			    },
+			    series: [{
+			        name: 'Grades',
+			        data: [{y: data[6], color: '#4CAF50'}, {y: data[7], color: '#8BC34A'}, {y: data[8], color: '#FFEB3B'}, {y: data[9], color: '#FFC107'}, {y: data[10], color: '#FF9800'}, {y: data[11], color: '#FF5722'}, {y: data[12], color: '#ff704d'}, {y: data[13], color: '#F44336'}, {y: data[14], color: '#ff704d'}, {y: data[15], color: '#ff704d'}, {y: data[16], color: '#ff704d'}, {y: data[17], color: '#ff704d'}]
 
-    title: {
-        text: 'Solar Employment Growth by Sector, 2010-2016'
-    },
+			    }]
+			});
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+		}
 
-    subtitle: {
-        text: 'Source: thesolarfoundation.com'
-    },
-
-    yAxis: {
-        title: {
-            text: 'Number of Employees'
-        }
-    },
-    legend: {
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'middle'
-    },
-
-    plotOptions: {
-        series: {
-            label: {
-                connectorAllowed: false
-            },
-            pointStart: 2010
-        }
-    },
-
-    series: [{
-        name: 'Installation',
-        data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
-    }, {
-        name: 'Manufacturing',
-        data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
-    }, {
-        name: 'Sales & Distribution',
-        data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
-    }, {
-        name: 'Project Development',
-        data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
-    }, {
-        name: 'Other',
-        data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
-    }],
-
-    responsive: {
-        rules: [{
-            condition: {
-                maxWidth: 500
-            },
-            chartOptions: {
-                legend: {
-                    layout: 'horizontal',
-                    align: 'center',
-                    verticalAlign: 'bottom'
-                }
-            }
-        }]
-    }
-
-});
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+	}	
 }
+
+function getDescription(){
+	chrome.runtime.sendMessage({
+    method: "GET",
+    action: "xhttp",
+    url: "https://utdirect.utexas.edu/apps/registrar/course_schedule/20189/51315/",
+    data: ""
+}, function(response) {
+    if(response){
+    	console.log(response);
+    }
+});
 
 }
 

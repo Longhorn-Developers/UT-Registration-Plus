@@ -6,13 +6,12 @@
     padding-top: 100px; /* Location of the box */
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
+    width: 100%; 
     height: 100%; /* Full height */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-/* Modal Content */
 .modal-content {
     background-color: #fefefe;
     margin: auto;
@@ -25,19 +24,20 @@
 .close {
     color: #aaaaaa;
     float: right;
+    padding: 5px;
     font-size: 28px;
     font-weight: bold;
 }
 
 .title {
-font-size: !important large;
-    font-weight: bold !important;
-    margin:0px 0px 0px 0px !important;
+    font-size: large;
+    font-weight: bold ;
+    margin:0px 0px 0px 0px;
 
 }
 .subtitle {
-font-size: small !important;
-    font-weight: normal !important;
+    font-size: small;
+    font-weight: normal;
 
 }
 
@@ -47,6 +47,24 @@ font-size: small !important;
 	height: 400px;
 	margin: 0 auto
 }
+
+.card {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+/* Add some padding inside the card container */
+.cardcontainer {
+    padding: 2px 16px;
+}
+
 
 .close:hover,
 .close:focus {
