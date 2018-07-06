@@ -10,7 +10,7 @@
 	],
   "content_scripts": [{
     "css": ["styles.css"],
-    "js": ["sql-memory-growth.js","jquery-3.3.1.min.js","content.js"],
+    "js": ["sql-memory-growth.js","highcharts.js","jquery-3.3.1.min.js","content.js"],
     "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
   }],
   "web_accessible_resources": [

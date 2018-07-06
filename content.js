@@ -1,12 +1,17 @@
 var grades;
+
+var coursename;
 var profname;
 var department;
 var course_nbr;
 $(document).ready( function() {
-	loadDataBase();	
+	loadDataBase();
+
 	//make heading
 	$("table thead th:nth-child(5)").after('<th scope=col>Rating</th>');
-	$("table thead th:nth-child(10)").after('<th scope=col>Dist</th>');
+	$("table thead th:nth-child(9)").after('<th scope=col>Dist</th>');
+	var modhtml = '<div id="myModal" class="modal"><div class="modal-content"><span class="close">&times;</span><h2 class="title">Computer Fluency (C S 302)</h2><h2 class="subtitle">with B. Porter</h2><div id="chart"></div></div></div>'
+	$("#container").prepend(modhtml);
 	//console.log(grades);
 	
 	$('table').find('tr').each(function(){
@@ -40,7 +45,6 @@ $(document).ready( function() {
 });
 
 function getCourseInfo(row){
-	var coursename;
 	$('table').find('tr').each(function(){
 		if($(this).find('td').hasClass("course_header")){
 			coursename = $(this).find('td').text() + "";
@@ -66,20 +70,103 @@ function getDistribution(){
 	if(typeof res == 'undefined'){
 		output="No Data on that Professor teaching that course :(";
 	} else {
-		output += "A: "+ res.values[0][6] + " ";
-		output += "A-: " + res.values[0][7] + "\n";
-		output += "B+: " + res.values[0][8] + " ";
-		output += "B: " + res.values[0][9] + " ";
-		output += "B-: " + res.values[0][10] + "\n";
-		output += "C+: " + res.values[0][11] + " ";
-		output+="C+: " + res.values[0][12] + " ";
-		output+="C-: " + res.values[0][13] + "\n";
-		output+="D+: " + res.values[0][14] + "\n";
-		output+="D: " + res.values[0][15] + " ";
-		output+="D-: " + res.values[0][16] + "\n";
-		output+="F: " + res.values[0][17] + "\n";
+		// output += "A: "+ res.values[0][6] + " ";
+		// output += "A-: " + res.values[0][7] + "\n";
+		// output += "B+: " + res.values[0][8] + " ";
+		// output += "B: " + res.values[0][9] + " ";
+		// output += "B-: " + res.values[0][10] + "\n";
+		// output += "C+: " + res.values[0][11] + " ";
+		// output+="C+: " + res.values[0][12] + " ";
+		// output+="C-: " + res.values[0][13] + "\n";
+		// output+="D+: " + res.values[0][14] + "\n";
+		// output+="D: " + res.values[0][15] + " ";
+		// output+="D-: " + res.values[0][16] + "\n";
+		// output+="F: " + res.values[0][17] + "\n";
+		openDialog();
 	}
-	alert(output);
+	//alert(output);
+}
+
+function openDialog(){
+	var modal = document.getElementById('myModal');
+	var span = document.getElementsByClassName("close")[0];
+    modal.style.display = "block";
+    $(".title").text(coursename);
+    console.log(coursename);
+	span.onclick = function() {
+    	modal.style.display = "none";
+	}
+
+	Highcharts.chart('chart', {
+
+    title: {
+        text: 'Solar Employment Growth by Sector, 2010-2016'
+    },
+
+    subtitle: {
+        text: 'Source: thesolarfoundation.com'
+    },
+
+    yAxis: {
+        title: {
+            text: 'Number of Employees'
+        }
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            },
+            pointStart: 2010
+        }
+    },
+
+    series: [{
+        name: 'Installation',
+        data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+    }, {
+        name: 'Manufacturing',
+        data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
+    }, {
+        name: 'Sales & Distribution',
+        data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
+    }, {
+        name: 'Project Development',
+        data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
+    }, {
+        name: 'Other',
+        data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
+    }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+
+});
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
 }
 
 function loadDataBase(){
