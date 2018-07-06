@@ -67,102 +67,90 @@ function getDistribution(){
 	var res = grades.exec(query)[0];
 	console.log(res);
 	var output = "";
-	if(typeof res == 'undefined'){
-		output="No Data on that Professor teaching that course :(";
-	} else {
-		// output += "A: "+ res.values[0][6] + " ";
-		// output += "A-: " + res.values[0][7] + "\n";
-		// output += "B+: " + res.values[0][8] + " ";
-		// output += "B: " + res.values[0][9] + " ";
-		// output += "B-: " + res.values[0][10] + "\n";
-		// output += "C+: " + res.values[0][11] + " ";
-		// output+="C+: " + res.values[0][12] + " ";
-		// output+="C-: " + res.values[0][13] + "\n";
-		// output+="D+: " + res.values[0][14] + "\n";
-		// output+="D: " + res.values[0][15] + " ";
-		// output+="D-: " + res.values[0][16] + "\n";
-		// output+="F: " + res.values[0][17] + "\n";
-		openDialog(department,coursename,"aggregate",profname,res.values[0]);
-	}
-	//alert(output);
+	openDialog(department,coursename,"aggregate",profname,res);
 }
 
 function openDialog(dep,cls,sem,professor,data){
+	data = data.values[0];
 	getDescription();
 	var modal = document.getElementById('myModal');
 	var span = document.getElementsByClassName("close")[0];
 	modal.style.display = "block";
 	$(".title").text(coursename);
 	$(".profname").text("with "+profname.substring(0,1)+profname.substring(1).toLowerCase());
-
 	console.log(coursename);
 	span.onclick = function() {
 		modal.style.display = "none";
 	}
+	if(typeof data == 'undefined'){
 
- Highcharts.chart('chart', {
-			    chart: {
-			        type: 'column',
-			        spacingLeft: 10
-			    },
-			    title: {
-			        text: null
-			    },
-			    subtitle: {
-			        text: null
-			    },
-			    legend: {
-			        enabled: false
-			    },
-			    xAxis: {
-			            title: {
-			            text: 'Grades' 
-			        },
-			        categories: [
-			            'A',
-			            'A-',
-			            'B+',
-			            'B',
-			            'B-', 
-			            'C+', 
-			            'C', 
-			            'C-',
-			            'D+', 
-			            'D',
-			            'D-',
-			            'F'
-			        ],
-			        crosshair: true
-			    },
-			    yAxis: {
-			        min: 0,
-			        title: {
-			            text: 'Students'
-			        }
-			    },
-			    credits: {
-    				enabled: false
-  				},
-			    tooltip: {
-			        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-			        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-			            '<td style="padding:0"><b>{point.y:.1f} Students</b></td></tr>',
-			        footerFormat: '</table>',
-			        shared: true,
-			        useHTML: true
-			    },
-			    plotOptions: {
-			        bar: {
-			            pointPadding: 0.2,
-			            borderWidth: 0
-			        }
-			    },
-			    series: [{
-			        name: 'Grades',
-			        data: [{y: data[6], color: '#4CAF50'}, {y: data[7], color: '#8BC34A'}, {y: data[8], color: '#FFEB3B'}, {y: data[9], color: '#FFC107'}, {y: data[10], color: '#FF9800'}, {y: data[11], color: '#FF5722'}, {y: data[12], color: '#ff704d'}, {y: data[13], color: '#F44336'}, {y: data[14], color: '#ff704d'}, {y: data[15], color: '#ff704d'}, {y: data[16], color: '#ff704d'}, {y: data[17], color: '#ff704d'}]
+	}
+	chart = Highcharts.chart('chart', {
+		chart: {
+			type: 'column',
+			spacingLeft: 10
+		},
+		title: {
+			text: null
+		},
+		subtitle: {
+			text: null
+		},
+		legend: {
+			enabled: false
+		},
+		xAxis: {
+			title: {
+				text: 'Grades' 
+			},
+			categories: [
+			'A',
+			'A-',
+			'B+',
+			'B',
+			'B-', 
+			'C+', 
+			'C', 
+			'C-',
+			'D+', 
+			'D',
+			'D-',
+			'F'
+			],
+			crosshair: true
+		},
+		yAxis: {
+			min: 0,
+			title: {
+				text: 'Students'
+			}
+		},
+		credits: {
+			enabled: false
+		},
+		lang: {
+			noData: "The professor hasn't taught this class :("
+		},
+		tooltip: {
+			headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+			pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+			'<td style="padding:0"><b>{point.y:.1f} Students</b></td></tr>',
+			footerFormat: '</table>',
+			shared: true,
+			useHTML: true
+		},
+		plotOptions: {
+			bar: {
+				pointPadding: 0.2,
+				borderWidth: 0
+			}
+		},
+		series: [{
+			name: 'Grades',
+			data: [{y: data[6], color: '#4CAF50'}, {y: data[7], color: '#8BC34A'}, {y: data[8], color: '#CDDC39'}, {y: data[9], color: '#FFEB3B'}, {y: data[10], color: '#FFC107'}, {y: data[11], color: '#FFA000'}, {y: data[12], color: '#F57C00'}, {y: data[13], color: '#FF5722'}, {y: data[14], color: '#FF5252'}, {y: data[15], color: '#E64A19'}, {y: data[16], color: '#F44336'}, {y: data[17], color: '#D32F2F'}]
 
-			    }]
-			});
+		}]
+	});
 	// When the user clicks anywhere outside of the modal, close it
 	window.onclick = function(event) {
 		if (event.target == modal) {
