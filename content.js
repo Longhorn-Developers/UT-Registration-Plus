@@ -2,6 +2,7 @@ var grades;
 
 var coursename;
 var profname;
+var profinit;
 var profurl;
 var department;
 var course_nbr;
@@ -9,10 +10,8 @@ var description;
 $(document).ready( function() {
 	loadDataBase();
 	//make heading
-	$("table thead th:nth-child(5)").after('<th scope=col>Rating</th>');
-	$("table thead th:nth-child(10)").after('<th scope=col>Dist</th>');
-	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2></div></div><div class=card><div class=cardcontainer><h2 class=description></h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
-
+	$("table thead th:nth-child(8)").after('<th scope=col>Dist</th>');
+	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut> RMP </button><button class=matbut> eCIS </button><button class=matbut> Save Course </button></div></div></div><div class=card><div class=cardcontainer><h2 class=description></h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
 	$("#container").prepend(modhtml);
 	//console.log(grades);
 	
@@ -29,7 +28,6 @@ $(document).ready( function() {
 	    		let lastname = profname.split(',')[0];
 	    		rating = "Hello";
 	    	}
-	    	$(this).find('td').eq(4).after('<td data-th="Rating"><a href="http://example.com">'+rating+'</a></td>');
 	    	$(this).append('<td data-th="Dist"><input type="image" class="distButton" style="vertical-align: bottom;" width="30" height="30" src='+chrome.extension.getURL('disticon.png')+' /></td>');
 	    }
 	});	
@@ -52,7 +50,8 @@ function getCourseInfo(row){
 		}
 		if($(this).is(row)){
 			profurl = $(this).find('td a').prop('href');
-			profname = $(this).find('td').eq(4).text().split(',')[0];
+			profname = $(this).find('td').eq(4).text().split(', ')[0];
+			profinit = $(this).find('td').eq(4).text().split(',')[1];
 			return false;
 		}
 	});
@@ -74,7 +73,14 @@ function getDistribution(){
 }
 
 function openDialog(dep,cls,sem,professor,res){
-	var data = res.values[0];
+	var data;
+	if(typeof res == 'undefined'){
+		data = new Array();
+	}
+	else{
+		//TODO: Have placeholder chart for when database doesn't have 
+		data = res.values[0];
+	}
 	var modal = document.getElementById('myModal');
 	var span = document.getElementsByClassName("close")[0];
 	modal.style.display = "block";
@@ -86,7 +92,7 @@ function openDialog(dep,cls,sem,professor,res){
 		console.log(res.values);
 	}
 	else{
-		name = profname.substring(0,1)+profname.substring(1).toLowerCase();
+		name = profinit+". "+profname.substring(0,1)+profname.substring(1).toLowerCase();
 	}
 
 	$(".profname").text("with "+ name);
@@ -94,9 +100,7 @@ function openDialog(dep,cls,sem,professor,res){
 	span.onclick = function() {
 		modal.style.display = "none";
 	}
-	if(typeof data == 'undefined'){
 
-	}
 	chart = Highcharts.chart('chart', {
 		chart: {
 			type: 'column',
