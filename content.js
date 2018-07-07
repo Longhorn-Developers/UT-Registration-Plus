@@ -1,5 +1,6 @@
 var grades;
 
+var rmpLink;
 var coursename;
 var profname;
 var profinit;
@@ -11,7 +12,7 @@ $(document).ready( function() {
 	loadDataBase();
 	//make heading
 	$("table thead th:nth-child(8)").after('<th scope=col>Dist</th>');
-	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut> RMP </button><button class=matbut> eCIS </button><button class=matbut> Save Course </button></div></div></div><div class=card><div class=cardcontainer><h2 class=description></h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
+	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf"> RMP </button><button class=matbut id="eCIS"> eCIS </button><button class=matbut id="saveCourse"> Save Course </button></div></div></div><div class=card><div class=cardcontainer><h2 class=description></h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
 	$("#container").prepend(modhtml);
 	//console.log(grades);
 	
@@ -100,7 +101,12 @@ function openDialog(dep,cls,sem,professor,res){
 	span.onclick = function() {
 		modal.style.display = "none";
 	}
+	$("#saveCourse").click(function(){
 
+	});
+	$("#rateMyProf").click(function(){
+		window.open(rmpLink);
+	});
 	chart = Highcharts.chart('chart', {
 		chart: {
 			type: 'column',
@@ -206,6 +212,11 @@ function getDescription(){
 			$(".description").animate({'opacity': 0}, 400, function(){
         		$(this).html(description).animate({'opacity': 1}, 300);    
    			});
+   			var first = object.find('td').eq(4).text();
+   			first = first.substring(first.indexOf(", "),first.indexOf(" ",first.indexOf(", ")+2));
+   			first = first.substring(2);
+   			rmpLink = "http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query="+first+" "+profname+";&facetSearch=true";
+
 		}
 	});
 
