@@ -57,7 +57,9 @@ function getCourseInfo(row){
 			profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0];
 			profinit = $(this).find('td[data-th="Instructor"]').text().split(',')[1];
 			//COME BACK AND FINISH
-			console.log($(this).find('td[data-th="Days"] >span').text());
+			$(this).find('td[data-th="Days"] >span').each(function(){
+				console.log($(this).text());
+			});
 			return false;
 		}
 	});
@@ -72,6 +74,7 @@ function getDistribution(){
 	query += " where dept like '%"+department+"%'";
 	query += " and prof like '%"+profname+"%'";
 	query += " and course_nbr like '%"+course_nbr+"%'";
+	console.log(query);
 	var res = grades.exec(query)[0];
 	console.log(res);
 	var output = "";
