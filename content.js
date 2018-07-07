@@ -73,8 +73,8 @@ function getDistribution(){
 	openDialog(department,coursename,"aggregate",profname,res);
 }
 
-function openDialog(dep,cls,sem,professor,data){
-	data = data.values[0];
+function openDialog(dep,cls,sem,professor,res){
+	var data = res.values[0];
 	var modal = document.getElementById('myModal');
 	var span = document.getElementsByClassName("close")[0];
 	modal.style.display = "block";
@@ -83,6 +83,7 @@ function openDialog(dep,cls,sem,professor,data){
 	var name;
 	if(profname == ""){
 		name = "Undecided Professor ";
+		console.log(res.values);
 	}
 	else{
 		name = profname.substring(0,1)+profname.substring(1).toLowerCase();
@@ -154,7 +155,12 @@ function openDialog(dep,cls,sem,professor,data){
 			bar: {
 				pointPadding: 0.2,
 				borderWidth: 0
-			}
+			},
+			series: {
+            	animation: {
+                	duration: 700
+            	}
+        	}
 		},
 		series: [{
 			name: 'Grades',
