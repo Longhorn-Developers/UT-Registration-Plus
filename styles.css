@@ -36,13 +36,7 @@
     margin:0px 0px 5spx 0px;
 
 }
-.subtitle {
-    padding: 5px;
-    font-size: small;
-    font-weight: normal;
-
-}
-.subtitle.profname{
+.description {
     padding: 5px;
     font-size: small;
     font-weight: normal;
@@ -57,9 +51,9 @@
 }
 
 #chart {
-	min-width: 310px;
+	min-width: auto;
 	max-width: 800px;
-	height: 300px;
+	height: 250px;
 	margin: 0 auto
 }
 
@@ -78,6 +72,7 @@
 /* Add some padding inside the card container */
 .cardcontainer {
     padding: 2px 16px;
+    transition:width 300ms ease-in-out, height 300ms ease-in-out;
 }
 
 
