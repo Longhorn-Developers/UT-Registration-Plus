@@ -11,7 +11,7 @@ var description;
 $(document).ready( function() {
 	loadDataBase();
 	//make heading
-	$("table thead th:nth-child(8)").after('<th scope=col>Dist</th>');
+	$("table thead th:nth-child(9)").after('<th scope=col>Dist</th>');
 	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf"> RMP </button><button class=matbut id="eCIS"> eCIS </button><button class=matbut id="saveCourse"> Save Course </button></div></div></div><div class=card><div class=cardcontainer><h2 class=description></h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
 	$("#container").prepend(modhtml);
 	//console.log(grades);
@@ -21,7 +21,8 @@ $(document).ready( function() {
 
 		} else if($(this).has('th').length == 0){
 			var rating;
-			var profname = $(this).find('td').eq(4).text() + "";
+			var profname = $(this).find('td[data-th="Instructor"]').text() + "";
+			console.log(profname);
 			if(profname == ""){
 	    		//console.log("No Professor");
 	    		rating = "No Prof :(";
@@ -32,14 +33,16 @@ $(document).ready( function() {
 	    	$(this).append('<td data-th="Dist"><input type="image" class="distButton" style="vertical-align: bottom;" width="30" height="30" src='+chrome.extension.getURL('disticon.png')+' /></td>');
 	    }
 	});	
-	$(this).find(".distButton").click(function(){
-		//var coursename = $(this).closest(':has(.course_header)').find('.course_header');
-		//CLEAN UP, "gack"- Michael Scott 
+	$(".distButton").click(function(){
 		var row = $(this).closest('tr');
 		getCourseInfo(row);
-		//console.log(profname + " "+department+" "+course_nbr);
-		//console.log(coursename);
 		getDistribution();
+	});
+	$("#saveCourse").click(function(){
+
+	});
+	$("#rateMyProf").click(function(){
+		window.open(rmpLink);
 	});
 
 });
@@ -50,9 +53,11 @@ function getCourseInfo(row){
 			coursename = $(this).find('td').text() + "";
 		}
 		if($(this).is(row)){
-			profurl = $(this).find('td a').prop('href');
-			profname = $(this).find('td').eq(4).text().split(', ')[0];
-			profinit = $(this).find('td').eq(4).text().split(',')[1];
+			profurl = $(this).find('td[data-th="Unique"] a').prop('href');
+			profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0];
+			profinit = $(this).find('td[data-th="Instructor"]').text().split(',')[1];
+			//COME BACK AND FINISH
+			console.log($(this).find('td[data-th="Days"] >span').text());
 			return false;
 		}
 	});
@@ -101,12 +106,6 @@ function openDialog(dep,cls,sem,professor,res){
 	span.onclick = function() {
 		modal.style.display = "none";
 	}
-	$("#saveCourse").click(function(){
-
-	});
-	$("#rateMyProf").click(function(){
-		window.open(rmpLink);
-	});
 	chart = Highcharts.chart('chart', {
 		chart: {
 			type: 'column',
@@ -212,7 +211,7 @@ function getDescription(){
 			$(".description").animate({'opacity': 0}, 400, function(){
         		$(this).html(description).animate({'opacity': 1}, 300);    
    			});
-   			var first = object.find('td').eq(4).text();
+   			var first = object.find('td[data-th="Instructor"]').text();
    			first = first.substring(first.indexOf(", "),first.indexOf(" ",first.indexOf(", ")+2));
    			first = first.substring(2);
    			rmpLink = "http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query="+first+" "+profname+";&facetSearch=true";

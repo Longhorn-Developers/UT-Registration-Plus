@@ -1,14 +1,16 @@
 {
   "manifest_version": 2,
- 
+
   "name": "UT Course Extension",
   "version": "0.1.0",
   "description": "Chrome Extension to show more information on the UT Course catalog",
   "permissions": [
+  "declarativeContent",
+   "storage",
    "*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*",
-		"*://*.ratemyprofessors.com/*",
-    "*://*.catalog.utexas.edu/ribbit/"
-	],
+   "*://*.ratemyprofessors.com/*",
+   "*://*.catalog.utexas.edu/ribbit/"
+ ],
   "content_scripts": [{
     "css": ["styles.css"],
     "js": ["sql-memory-growth.js","highcharts.js","jquery-3.3.1.min.js","content.js"],
@@ -16,9 +18,23 @@
   }],
   "web_accessible_resources": [
     "grades.db","disticon.png"],
-   "background": {
+  "background": {
     "scripts": ["background.js"],
     "persistent": true
-
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
     }
 }
