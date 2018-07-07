@@ -11,7 +11,7 @@ $(document).ready( function() {
 	//make heading
 	$("table thead th:nth-child(5)").after('<th scope=col>Rating</th>');
 	$("table thead th:nth-child(10)").after('<th scope=col>Dist</th>');
-	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2></div></div><div class=card><div class=cardcontainer><h2 class=description style = "min-height: 100px;"></h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
+	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2></div></div><div class=card><div class=cardcontainer><h2 class=description></h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
 
 	$("#container").prepend(modhtml);
 	//console.log(grades);

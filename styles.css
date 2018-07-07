@@ -32,13 +32,13 @@
 .title {
     font-size: x-large;
     font-weight: bold ;
-    padding: 5px;
-    margin:0px 0px 5spx 0px;
+    padding-top: 5px;
+    margin:0px 0px 5px 0px;
 
 }
 .description {
     padding: 5px;
-    font-size: small;
+    font-size: 14px;
     font-weight: normal;
 
 }
