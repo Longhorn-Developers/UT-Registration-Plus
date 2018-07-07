@@ -15,7 +15,7 @@
 .modal-content {
     background-color: #fefefe;
     margin: auto;
-    max-height: 60%;
+    max-height: 85%;
     overflow-y: auto;
     padding: 20px;
     border: 1px solid #888;
@@ -98,7 +98,7 @@
   color: white;
   margin: 10px 10px 10px 0px;
   padding: 10px 10px;
-  border-radius: 2px;
+  border-radius: 10px;
   font-size: medium;
   font-style: bold;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, .4);
