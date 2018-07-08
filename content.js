@@ -9,17 +9,16 @@ var department;
 var course_nbr;
 var description;
 const days = new Map([["M" ,"Monday"], 
-	["T", "Tuesday"], ["W", "Wednesday"],["TH" ,"Thursday"], 
-	["F", "Friday"]]);
+["T", "Tuesday"], ["W", "Wednesday"],["TH" ,"Thursday"], 
+["F", "Friday"]]);
 
 $(document).ready( function() {
 	loadDataBase();
 	//make heading
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
-	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf" style="background: #CDDC39;"> RMP </button><button class=matbut id="eCIS"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer><h2 class=description></h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
+	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf" style="background: #CDDC39;"> RMP </button><button class=matbut id="eCIS"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer><ul class=description style="list-style-type:disc"></ul></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
 	$("#container").prepend(modhtml);
 	//console.log(grades);
-	
 	$('table').find('tr').each(function(){
 		if($(this).find('td').hasClass("course_header")){
 
@@ -46,100 +45,103 @@ $(document).ready( function() {
 
 	});
 	$("#eCIS").click(function(){
-		window.open('https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?semester=&department='+department+'&course_number='+course_nbr+'&course_title=&unique=&instructor_first=&instructor_last='+profname+'&course_type=In+Residence&search=Search');
+		setTimeout(function(){	
+				window.open('https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?semester=&department='+department+'&course_number='+course_nbr+'&course_title=&unique=&instructor_first=&instructor_last='+profname+'&course_type=In+Residence&search=Search');
+		}, 200);
 	});
 	$("#rateMyProf").click(function(){
-		window.open(rmpLink);
+		setTimeout(function(){
+			window.open(rmpLink);
+		}, 200);
 	});
-
 });
 
 function getCourseInfo(row){
-	$(".dateTimePlace").remove();
-	$('table').find('tr').each(function(){
-		if($(this).find('td').hasClass("course_header")){
-			coursename = $(this).find('td').text() + "";
-		}
-		if($(this).is(row)){
-			profurl = $(this).find('td[data-th="Unique"] a').prop('href');
-			profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0];
-			profinit = $(this).find('td[data-th="Instructor"]').text().split(', ')[1];
-			if(profname.indexOf(" ") == 0){
-				profname = profname.substring(1);
-			}
-			var numlines = $(this).find('td[data-th="Days"]>span').length;
-			for(var i=0; i<numlines;i++){
-				var date = $(this).find('td[data-th="Days"]>span:eq('+i+')').text();
-				var time = $(this).find('td[data-th="Hour"]>span:eq('+i+')').text();
-				var place = $(this).find('td[data-th="Room"]>span:eq('+i+')').text();
-				$(".topbuttons").before('<h2 class="dateTimePlace">'+makeLine(date,time,place)+'</th>');
-			//	makeLine(date,time,place);
-			}
-			return false;
-		}
-	});
-	if(typeof coursename == 'undefined'){
-		coursename = $("#details h2").text();
-		console.log(profname+" "+profinit);
-		profinit = profinit.substring(0,1);
-		profurl = document.URL;
+$(".dateTimePlace").remove();
+$('table').find('tr').each(function(){
+	if($(this).find('td').hasClass("course_header")){
+		coursename = $(this).find('td').text() + "";
 	}
-	//console.log(coursename);
-	getDescription();
-	department = coursename.substring(0,coursename.search(/\d/)-2);
-	//console.log(department);
-	course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
+	if($(this).is(row)){
+		profurl = $(this).find('td[data-th="Unique"] a').prop('href');
+		profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0];
+		profinit = $(this).find('td[data-th="Instructor"]').text().split(', ')[1];
+		if(profname.indexOf(" ") == 0){
+			profname = profname.substring(1);
+		}
+		var numlines = $(this).find('td[data-th="Days"]>span').length;
+		for(var i=0; i<numlines;i++){
+			var date = $(this).find('td[data-th="Days"]>span:eq('+i+')').text();
+			var time = $(this).find('td[data-th="Hour"]>span:eq('+i+')').text();
+			var place = $(this).find('td[data-th="Room"]>span:eq('+i+')').text();
+			$(".topbuttons").before('<h2 class="dateTimePlace">'+makeLine(date,time,place)+'</th>');
+		//	makeLine(date,time,place);
+		}
+		return false;
+	}
+});
+if(typeof coursename == 'undefined'){
+	coursename = $("#details h2").text();
+	console.log(profname+" "+profinit);
+	profinit = profinit.substring(0,1);
+	profurl = document.URL;
+}
+//console.log(coursename);
+getDescription();
+department = coursename.substring(0,coursename.search(/\d/)-2);
+//console.log(department);
+course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
 }
 
 //MWF
 //TTH
 //MTHF
 function makeLine(date, time, place){
-	var arr = new Array();
-	var output = "";
-	for(var i = 0; i<date.length;i++){
-		var letter = date.charAt(i);
-		var day = "";
-		if(letter == "T" && i <date.length-1 && date.charAt(i+1) == "H"){
-			arr.push(days.get("TH"));
-		}
-		else {
-			if(letter != "H"){
-				arr.push(days.get(letter));
-			}
-		}
+var arr = new Array();
+var output = "";
+for(var i = 0; i<date.length;i++){
+	var letter = date.charAt(i);
+	var day = "";
+	if(letter == "T" && i <date.length-1 && date.charAt(i+1) == "H"){
+		arr.push(days.get("TH"));
 	}
-	if(arr.length > 2){
-		for(var i = 0; i<arr.length;i++){
-			if(i < arr.length-1){
-				output+=arr[i]+", "
-			}
-			if(i == arr.length-2){
-				output+= "and ";
-			}
-			if(i == arr.length-1){
-				output+=arr[i];
-			}
+	else {
+		if(letter != "H"){
+			arr.push(days.get(letter));
 		}
 	}
-	else if(arr.length == 2){
-		output = arr[0]+" and "+arr[1];
+}
+if(arr.length > 2){
+	for(var i = 0; i<arr.length;i++){
+		if(i < arr.length-1){
+			output+=arr[i]+", "
+		}
+		if(i == arr.length-2){
+			output+= "and ";
+		}
+		if(i == arr.length-1){
+			output+=arr[i];
+		}
 	}
-	else{
-		output+=arr[0];
-	}
-	var building = place.substring(0,place.search(/\d/)-1);
-	return output + " at "+time.replace(/\./g,'').replace(/\-/g,' to ')+" in "+"<a style='font-size:medium' href='"+"https://maps.utexas.edu/buildings/UTM/"+building+"''>"+place.substring(0,place.search(/\d/)-1)+"</>";
+}
+else if(arr.length == 2){
+	output = arr[0]+" and "+arr[1];
+}
+else{
+	output+=arr[0];
+}
+var building = place.substring(0,place.search(/\d/)-1);
+return output + " at "+time.replace(/\./g,'').replace(/\-/g,' to ')+" in "+"<a style='font-size:medium' href='"+"https://maps.utexas.edu/buildings/UTM/"+building+"''>"+place.substring(0,place.search(/\d/)-1)+"</>";
 }
 
 function order(){
 
 }
 function getDistribution(){
-	var query = "select * from agg";
-	query += " where dept like '%"+department+"%'";
-	query += " and prof like '%"+profname+"%'";
-	query += " and course_nbr like '%"+course_nbr+"%'";
+var query = "select * from agg";
+query += " where dept like '%"+department+"%'";
+query += " and prof like '%"+profname+"%'";
+query += " and course_nbr like '%"+course_nbr+"%'";
 //	console.log(query);
 var res = grades.exec(query)[0];
 //	console.log(res);
@@ -148,195 +150,198 @@ openDialog(department,coursename,"aggregate",profname,res);
 }
 
 function openDialog(dep,cls,sem,professor,res){
-	var data;
-	if(typeof res == 'undefined'){
-		data = [];
-	}
-	else{
-		//TODO: Have placeholder chart for when database doesn't have 
-		data = res.values[0];
-	}
-	var modal = document.getElementById('myModal');
-	var span = document.getElementsByClassName("close")[0];
-	modal.style.display = "block";
+var data;
+if(typeof res == 'undefined'){
+	data = [];
+}
+else{
+	//TODO: Have placeholder chart for when database doesn't have 
+	data = res.values[0];
+}
+var modal = document.getElementById('myModal');
+var span = document.getElementsByClassName("close")[0];
+modal.style.display = "block";
 
-	$(".title").text(prettifyTitle());
-	var name;
-	if(profname == ""){
-		name = "Undecided Professor ";
-		//console.log(res.values);
-	}
-	else{
-		name = profinit+". "+profname.substring(0,1)+profname.substring(1).toLowerCase();
-	}
+$(".title").text(prettifyTitle());
+var name;
+if(profname == ""){
+	name = "Undecided Professor ";
+	//console.log(res.values);
+}
+else{
+	name = profinit+". "+profname.substring(0,1)+profname.substring(1).toLowerCase();
+}
 
-	$(".profname").text("with "+ name);
-	//console.log(coursename);
-	span.onclick = function() {
-		modal.style.display = "none";
-	}
-	chart = Highcharts.chart('chart', {
-		chart: {
-			type: 'column',
-			spacingLeft: 10
-		},
+$(".profname").text("with "+ name);
+//console.log(coursename);
+span.onclick = function() {
+	modal.style.display = "none";
+}
+chart = Highcharts.chart('chart', {
+	chart: {
+		type: 'column',
+		spacingLeft: 10
+	},
+	title: {
+		text: null
+	},
+	subtitle: {
+		text: null
+	},
+	legend: {
+		enabled: false
+	},
+	xAxis: {
 		title: {
-			text: null
+			text: 'Grades' 
 		},
-		subtitle: {
-			text: null
-		},
-		legend: {
-			enabled: false
-		},
-		xAxis: {
-			title: {
-				text: 'Grades' 
-			},
-			categories: [
-			'A',
-			'A-',
-			'B+',
-			'B',
-			'B-', 
-			'C+', 
-			'C', 
-			'C-',
-			'D+', 
-			'D',
-			'D-',
-			'F'
-			],
-			crosshair: true
-		},
-		yAxis: {
-			min: 0,
-			title: {
-				text: 'Students'
-			}
-		},
-		credits: {
-			enabled: false
-		},
-		lang: {
-			noData: "The professor hasn't taught this class :("
-		},
-		tooltip: {
-			headerFormat: '<span style="font-size:small; font-weight:bold">{point.key}</span><table>',
-			pointFormat: '<tr><td style="color:{series.color};padding:0"></td>' +
-			'<td style="padding:0;font-size:small; font-weight:bold;"><b>{point.y:.1f} Students</b></td></tr>',
-			footerFormat: '</table>',
-			shared: true,
-			useHTML: true
-		},
-		plotOptions: {
-			bar: {
-				pointPadding: 0.2,
-				borderWidth: 0
-			},
-			series: {
-				animation: {
-					duration: 700
-				}
-			}
-		},
-		series: [{
-			name: 'Grades',
-			data: [{y: data[6], color: '#4CAF50'}, {y: data[7], color: '#8BC34A'}, {y: data[8], color: '#CDDC39'}, {y: data[9], color: '#FFEB3B'}, {y: data[10], color: '#FFC107'}, {y: data[11], color: '#FFA000'}, {y: data[12], color: '#F57C00'}, {y: data[13], color: '#FF5722'}, {y: data[14], color: '#FF5252'}, {y: data[15], color: '#E64A19'}, {y: data[16], color: '#F44336'}, {y: data[17], color: '#D32F2F'}]
-
-		}]
-	}, function(chart) { // on complete
-		if(data.length == 0){
-			chart.renderer.text('Could not find distribution for this Professor in this Course', 100, 120)
-			.css({
-				fontSize: '20px',
-				align:'center',
-				width: '300px',
-				left:'160px'
-			})
-			.add();
-			$.each(chart.series, function(i, ser) {
-				ser.hide();
-			});
+		categories: [
+		'A',
+		'A-',
+		'B+',
+		'B',
+		'B-', 
+		'C+', 
+		'C', 
+		'C-',
+		'D+', 
+		'D',
+		'D-',
+		'F'
+		],
+		crosshair: true
+	},
+	yAxis: {
+		min: 0,
+		title: {
+			text: 'Students'
 		}
+	},
+	credits: {
+		enabled: false
+	},
+	lang: {
+		noData: "The professor hasn't taught this class :("
+	},
+	tooltip: {
+		headerFormat: '<span style="font-size:small; font-weight:bold">{point.key}</span><table>',
+		pointFormat: '<tr><td style="color:{series.color};padding:0"></td>' +
+		'<td style="padding:0;font-size:small; font-weight:bold;"><b>{point.y:.1f} Students</b></td></tr>',
+		footerFormat: '</table>',
+		shared: true,
+		useHTML: true
+	},
+	plotOptions: {
+		bar: {
+			pointPadding: 0.2,
+			borderWidth: 0
+		},
+		series: {
+			animation: {
+				duration: 700
+			}
+		}
+	},
+	series: [{
+		name: 'Grades',
+		data: [{y: data[6], color: '#4CAF50'}, {y: data[7], color: '#8BC34A'}, {y: data[8], color: '#CDDC39'}, {y: data[9], color: '#FFEB3B'}, {y: data[10], color: '#FFC107'}, {y: data[11], color: '#FFA000'}, {y: data[12], color: '#F57C00'}, {y: data[13], color: '#FF5722'}, {y: data[14], color: '#FF5252'}, {y: data[15], color: '#E64A19'}, {y: data[16], color: '#F44336'}, {y: data[17], color: '#D32F2F'}]
+
+	}]
+}, function(chart) { // on complete
+	if(data.length == 0){
+		chart.renderer.text('Could not find distribution for this Professor in this Course', 100, 120)
+		.css({
+			fontSize: '20px',
+			align:'center',
+			width: '300px',
+			left:'160px'
+		})
+		.add();
+		$.each(chart.series, function(i, ser) {
+			ser.hide();
+		});
+	}
 
 });	// When the user clicks anywhere outside of the modal, close it
-	window.onclick = function(event) {
-		if (event.target == modal) {
-			modal.style.display = "none";
-		}
+window.onclick = function(event) {
+	if (event.target == modal) {
+		modal.style.display = "none";
+	}
 
-	}	
+}	
 }
 
 function prettifyTitle(){
-	val = department.length+course_nbr.length+3;
-	output = coursename.substring(val).replace(/\b\w*/g, function(txt){
-		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-	});
-	return output + " ("+department+" "+course_nbr+")";	
+val = department.length+course_nbr.length+3;
+output = coursename.substring(val).replace(/\b\w*/g, function(txt){
+	return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+});
+return output + " ("+department+" "+course_nbr+")";	
 }
 
 function getDescription(){
-	chrome.runtime.sendMessage({
-		method: "GET",
-		action: "xhttp",
-		url: profurl,
-		data: ""
-	}, function(response) {
-		if(response){
-			var output="";
-			var object = $('<div/>').html(response).contents();
-			object.find('#details > p').each(function(){
-				var sentence = $(this).text();
-				if(sentence.indexOf("Prerequisite") == 0){
-					sentence = "<span style='font-weight: bold;'>"+sentence+"</span>";
-				}
-				else if(sentence.indexOf("May be") >=0 ){
-					console.log(sentence.indexOf("May be"));
-					sentence = "<span style='font-style: italic;'>"+sentence+"</span>";
-				}
-				else if(sentence.indexOf("Restricted to") == 0){
-					//console.log(sentence);
-					sentence = "<span style='color:red;'>"+sentence+"</span>";
-				}
-				output+=sentence+"<br></>";
-				
-			});
-			description = output;
-			$(".description").animate({'opacity': 0}, 400, function(){
-				$(this).html(description).animate({'opacity': 1}, 300);    
-			});
-			var first = object.find('td[data-th="Instructor"]').text();
-			first = first.substring(first.indexOf(", "),first.indexOf(" ",first.indexOf(", ")+2));
-			first = first.substring(2);
-			rmpLink = "http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query="+first+" "+profname+";&facetSearch=true";
+chrome.runtime.sendMessage({
+	method: "GET",
+	action: "xhttp",
+	url: profurl,
+	data: ""
+}, function(response) {
+	if(response){
+		var output="";
+		var object = $('<div/>').html(response).contents();
+		object.find('#details > p').each(function(){
+			var sentence = $(this).text();
+			if(sentence.indexOf("Prerequisite") == 0){
+				sentence = "<li style='font-weight: bold; padding-left: 5px;'>"+sentence+"</li>";
+			}
+			else if(sentence.indexOf("May be") >=0 ){
+				console.log(sentence.indexOf("May be"));
+				sentence = "<li style='font-style: italic; padding-left: 5px;'>"+sentence+"</li>";
+			}
+			else if(sentence.indexOf("Restricted to") == 0){
+				//console.log(sentence);
+				sentence = "<li style='color:red; padding-left: 5px;'>"+sentence+"</li>";
+			}
+			else{
+				sentence= "<li  style='padding: 5px;'>"+sentence+"</li>";
+			}
+			output+=sentence;
+			
+		});
+		description = output;
+		$(".description").animate({'opacity': 0}, 400, function(){
+			$(this).html(description).animate({'opacity': 1}, 300);    
+		});
+		var first = object.find('td[data-th="Instructor"]').text();
+		first = first.substring(first.indexOf(", "),first.indexOf(" ",first.indexOf(", ")+2));
+		first = first.substring(2);
+		rmpLink = "http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query="+first+" "+profname+";&facetSearch=true";
 
-		}
-	});
+	}
+});
 
 }
 
 function loadDataBase(){
-	sql = window.SQL;
-	loadBinaryFile('grades.db', function(data){
-		var sqldb = new SQL.Database(data);
-    	// Database is ready
-    	grades = sqldb;
-    	//console.log(grades.exec(query)[0]);
-    });
+sql = window.SQL;
+loadBinaryFile('grades.db', function(data){
+	var sqldb = new SQL.Database(data);
+	// Database is ready
+	grades = sqldb;
+	//console.log(grades.exec(query)[0]);
+});
 }
 function loadBinaryFile(path,success) {
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", chrome.extension.getURL(path), true); 
-	xhr.responseType = "arraybuffer";
-	xhr.onload = function() {
-		var data = new Uint8Array(xhr.response);
-		var arr = new Array();
-		for(var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
-			success(arr.join(""));
-	};
-	xhr.send();
+var xhr = new XMLHttpRequest();
+xhr.open("GET", chrome.extension.getURL(path), true); 
+xhr.responseType = "arraybuffer";
+xhr.onload = function() {
+	var data = new Uint8Array(xhr.response);
+	var arr = new Array();
+	for(var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+		success(arr.join(""));
+};
+xhr.send();
 };
 
 // function getProfessorLink(profname) {
