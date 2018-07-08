@@ -15,8 +15,8 @@ const days = new Map([["M" ,"Monday"],
 $(document).ready( function() {
 	loadDataBase();
 	//make heading
-	$("table thead th:last-child").after('<th scope=col>Dist</th>');
-	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf" style="background: #CDDC39;"> RMP </button><button class=matbut id="eCIS"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course </button></div></div></div><div class=card><div class=cardcontainer><h2 class=description></h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
+	$("table thead th:last-child").after('<th scope=col>Plus</th>');
+	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf" style="background: #CDDC39;"> RMP </button><button class=matbut id="eCIS"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer><h2 class=description></h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
 	$("#container").prepend(modhtml);
 	//console.log(grades);
 	
@@ -34,7 +34,7 @@ $(document).ready( function() {
 	    		let lastname = profname.split(',')[0];
 	    		rating = "Hello";
 	    	}
-	    	$(this).append('<td data-th="Dist"><input type="image" class="distButton" style="vertical-align: bottom;" width="30" height="30" src='+chrome.extension.getURL('disticon.png')+' /></td>');
+	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" style="vertical-align: bottom;" width="30" height="30" src='+chrome.extension.getURL('disticon.png')+' /></td>');
 	    }
 	});	
 	$(".distButton").click(function(){
@@ -164,7 +164,7 @@ function openDialog(dep,cls,sem,professor,res){
 	var name;
 	if(profname == ""){
 		name = "Undecided Professor ";
-		console.log(res.values);
+		//console.log(res.values);
 	}
 	else{
 		name = profinit+". "+profname.substring(0,1)+profname.substring(1).toLowerCase();
@@ -247,7 +247,7 @@ function openDialog(dep,cls,sem,professor,res){
 		}]
 	}, function(chart) { // on complete
 		if(data.length == 0){
-			chart.renderer.text('Could not find data for this Professor teaching this Course', 100, 120)
+			chart.renderer.text('Could not find distribution for this Professor in this Course', 100, 120)
 			.css({
 				fontSize: '20px',
 				align:'center',
