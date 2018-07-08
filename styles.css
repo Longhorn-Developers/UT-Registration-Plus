@@ -54,6 +54,12 @@
     font-weight: bold;
 }
 
+.dateTimePlace {
+    margin-left: 5px;
+    font-size: smaller;
+    font-weight: bold;
+}
+
 #chart {
 	min-width: auto;
 	max-width: 800px;

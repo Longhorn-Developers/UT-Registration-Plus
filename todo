@@ -1,7 +1,4 @@
 TODO:
-- show time's
-- location w/ map
-- no Data (prof hasn't taught that class before)
 - undefined prof, show all possible profs from past?
 		DIFFERENT IF NO PROF
 - Saving courses
@@ -11,7 +8,6 @@ TODO:
 - waitlist/closed/open colors
 - underline Courses maybe? click to go to using the planner link thing
 - Rate my prof link scraping?
-
 CLEAN UP:
 Everything lmao 
 
@@ -26,9 +22,14 @@ IN-PROGRESS:
 FIXED/DONE since 7/7/18:
 - Scrolling Modal :|
 - Description
+- no Data (prof hasn't taught that class before)
 - past syllabi
 - Bolding description (ie Prerequisite, etc)
 - RATE MY PROFESSOR LINK LOL
 - Works on both pages, and is more resilient if the layout changes 
+- show time's
+- MANAYATHU SASI BROKEN BECAUSE OF REMOVING SPACES
+- location w/ map
 
-https://maps.utexas.edu/buildings/UTM/WAG/
+
+<h2 class="profname" style="font-size: smaller;padding-left: 5px;margin: 0px 0px;">Monday and Wednesday, 3:00 PM - 4:00 PM, at GDC</h2>
