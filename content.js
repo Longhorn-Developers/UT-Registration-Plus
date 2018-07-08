@@ -57,8 +57,11 @@ function getCourseInfo(row){
 		}
 		if($(this).is(row)){
 			profurl = $(this).find('td[data-th="Unique"] a').prop('href');
-			profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0].replace(/\s/g, '');
-			profinit = $(this).find('td[data-th="Instructor"]').text().split(',')[1].replace(/\s/g, '');
+			profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0];
+			profinit = $(this).find('td[data-th="Instructor"]').text().split(', ')[1];
+			if(profname.indexOf(" ") == 0){
+				profname = profname.substring(1);
+			}
 			//COME BACK AND FINISH
 			$(this).find('td[data-th="Days"] >span').each(function(){
 				console.log($(this).text());
@@ -94,7 +97,7 @@ function getDistribution(){
 function openDialog(dep,cls,sem,professor,res){
 	var data;
 	if(typeof res == 'undefined'){
-		data = new Array();
+		data = [];
 	}
 	else{
 		//TODO: Have placeholder chart for when database doesn't have 
