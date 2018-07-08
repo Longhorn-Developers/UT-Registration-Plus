@@ -11,8 +11,8 @@ var description;
 $(document).ready( function() {
 	loadDataBase();
 	//make heading
-	$("table thead th:nth-child(9)").after('<th scope=col>Dist</th>');
-	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf"> RMP </button><button class=matbut id="eCIS"> eCIS </button><button class=matbut id="saveCourse"> Save Course </button></div></div></div><div class=card><div class=cardcontainer><h2 class=description></h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
+	$("table thead th:last-child").after('<th scope=col>Dist</th>');
+	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf" style="background: #CDDC39;"> RMP </button><button class=matbut id="eCIS"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course </button></div></div></div><div class=card><div class=cardcontainer><h2 class=description></h2></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
 	$("#container").prepend(modhtml);
 	//console.log(grades);
 	
@@ -41,6 +41,9 @@ $(document).ready( function() {
 	$("#saveCourse").click(function(){
 
 	});
+	$("#eCIS").click(function(){
+		window.open('https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?semester=&department='+department+'&course_number='+course_nbr+'&course_title=&unique=&instructor_first=&instructor_last='+profname+'&course_type=In+Residence&search=Search');
+	});
 	$("#rateMyProf").click(function(){
 		window.open(rmpLink);
 	});
@@ -54,8 +57,8 @@ function getCourseInfo(row){
 		}
 		if($(this).is(row)){
 			profurl = $(this).find('td[data-th="Unique"] a').prop('href');
-			profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0];
-			profinit = $(this).find('td[data-th="Instructor"]').text().split(',')[1];
+			profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0].replace(/\s/g, '');
+			profinit = $(this).find('td[data-th="Instructor"]').text().split(',')[1].replace(/\s/g, '');
 			//COME BACK AND FINISH
 			$(this).find('td[data-th="Days"] >span').each(function(){
 				console.log($(this).text());
@@ -63,6 +66,13 @@ function getCourseInfo(row){
 			return false;
 		}
 	});
+	if(typeof coursename == 'undefined'){
+		coursename = $("#details h2").text();
+		console.log(profname+" "+profinit);
+		profinit = profinit.substring(0,1);
+		profurl = document.URL;
+	}
+	console.log(coursename);
 	getDescription();
 	department = coursename.substring(0,coursename.search(/\d/)-2);
 	//console.log(department);
@@ -156,9 +166,9 @@ function openDialog(dep,cls,sem,professor,res){
 			noData: "The professor hasn't taught this class :("
 		},
 		tooltip: {
-			headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-			pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-			'<td style="padding:0"><b>{point.y:.1f} Students</b></td></tr>',
+			headerFormat: '<span style="font-size:small; font-weight:bold">{point.key}</span><table>',
+			pointFormat: '<tr><td style="color:{series.color};padding:0"></td>' +
+			'<td style="padding:0;font-size:small; font-weight:bold;"><b>{point.y:.1f} Students</b></td></tr>',
 			footerFormat: '</table>',
 			shared: true,
 			useHTML: true
@@ -208,7 +218,20 @@ function getDescription(){
 			var output="";
 			var object = $('<div/>').html(response).contents();
 			object.find('#details > p').each(function(){
-				output+=$(this).text()+"<br></>";
+				var sentence = $(this).text();
+				if(sentence.indexOf("Prerequisite") == 0){
+					sentence = "<span style='font-weight: bold;'>"+sentence+"</span>";
+				}
+				else if(sentence.indexOf("May be") >=0 ){
+					console.log(sentence.indexOf("May be"));
+					sentence = "<span style='font-style: italic;'>"+sentence+"</span>";
+				}
+				else if(sentence.indexOf("Restricted to") == 0){
+					console.log(sentence);
+					sentence = "<span style='color:red;'>"+sentence+"</span>";
+				}
+				output+=sentence+"<br></>";
+				
 			});
 			description = output;
 			$(".description").animate({'opacity': 0}, 400, function(){

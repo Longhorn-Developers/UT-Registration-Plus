@@ -3,15 +3,15 @@ TODO:
 - location w/ map
 - no Data (prof hasn't taught that class before)
 - undefined prof, show all possible profs from past?
+		DIFFERENT IF NO PROF
 - Saving courses
-- Bolding description (ie Prerequisite, etc)
 - popup.html
-- past syllabi
-- only work on registration page, not other
 - eCIS? link or scrape
 - Schedule Conflicts
 - waitlist/closed/open colors
+- underline Courses maybe? click to go to using the planner link thing
 - Rate my prof link scraping?
+
 CLEAN UP:
 Everything lmao 
 
@@ -22,7 +22,13 @@ IN-PROGRESS:
 - icon
 
 
+
 FIXED/DONE since 7/7/18:
 - Scrolling Modal :|
 - Description
+- past syllabi
+- Bolding description (ie Prerequisite, etc)
 - RATE MY PROFESSOR LINK LOL
+- Works on both pages, and is more resilient if the layout changes 
+
+https://maps.utexas.edu/buildings/UTM/WAG/
