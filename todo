@@ -4,14 +4,11 @@ TODO:
 - Saving courses
 - popup.html
 - Online classes/no location
-- eCIS? link or scrape
 - Schedule Conflicts
 - waitlist/closed/open colors
-- maybe modal animations? 
 - fix close button 
 - Degree plan?
 - underline Courses maybe? click to go to using the planner link thing
-- Rate my prof link scraping?
 - when almost everything is blank: M 379H as example
 CLEAN UP:
 Everything lmao 
@@ -35,6 +32,6 @@ FIXED/DONE since 7/7/18:
 - show time's
 - MANAYATHU SASI BROKEN BECAUSE OF REMOVING SPACES
 - location w/ map
+- eCIS? link or scrape (nah just scrape)
+- maybe modal animations? 
 
-
-<h2 class="profname" style="font-size: smaller;padding-left: 5px;margin: 0px 0px;">Monday and Wednesday, 3:00 PM - 4:00 PM, at GDC</h2>

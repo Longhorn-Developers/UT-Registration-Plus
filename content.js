@@ -1,6 +1,6 @@
 var grades;
-
 var rmpLink;
+var eCISLink;
 var coursename;
 var profname;
 var profinit;
@@ -11,12 +11,13 @@ var description;
 const days = new Map([["M" ,"Monday"], 
 ["T", "Tuesday"], ["W", "Wednesday"],["TH" ,"Thursday"], 
 ["F", "Friday"]]);
+const fadetime = 150;
 
 $(document).ready( function() {
 	loadDataBase();
 	//make heading
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
-	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf" style="background: #CDDC39;"> RMP </button><button class=matbut id="eCIS"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer><ul class=description style="list-style-type:disc"></ul></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
+	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer><ul class=description style="list-style-type:disc"></ul></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
 	$("#container").prepend(modhtml);
 	//console.log(grades);
 	$('table').find('tr').each(function(){
@@ -33,7 +34,7 @@ $(document).ready( function() {
 	    		let lastname = profname.split(',')[0];
 	    		rating = "Hello";
 	    	}
-	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" style="vertical-align: bottom;" width="30" height="30" src='+chrome.extension.getURL('disticon.png')+' /></td>');
+	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" style="vertical-align: bottom;" width="25" height="25" src='+chrome.extension.getURL('disticon.png')+' /></td>');
 	    }
 	});	
 	$(".distButton").click(function(){
@@ -44,7 +45,7 @@ $(document).ready( function() {
 	$("#saveCourse").click(function(){
 
 	});
-	$("#eCIS").click(function(){
+	$("#Syllabi").click(function(){
 		setTimeout(function(){	
 				window.open('https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?semester=&department='+department+'&course_number='+course_nbr+'&course_title=&unique=&instructor_first=&instructor_last='+profname+'&course_type=In+Residence&search=Search');
 		}, 200);
@@ -54,6 +55,18 @@ $(document).ready( function() {
 			window.open(rmpLink);
 		}, 200);
 	});
+	$("#eCIS").click(function(){
+		setTimeout(function(){
+			window.open(eCISLink);
+		}, 200);
+	});
+	$(document).keydown(function(e) { 
+    if (e.keyCode == 27) { 
+        $(".modal").fadeOut(fadetime);
+        //or
+       // window.close();
+    } 
+});
 });
 
 function getCourseInfo(row){
@@ -150,12 +163,12 @@ openDialog(department,coursename,"aggregate",profname,res);
 }
 
 function openDialog(dep,cls,sem,professor,res){
+$(".modal").fadeIn(fadetime);
 var data;
 if(typeof res == 'undefined'){
 	data = [];
 }
 else{
-	//TODO: Have placeholder chart for when database doesn't have 
 	data = res.values[0];
 }
 var modal = document.getElementById('myModal');
@@ -166,7 +179,9 @@ $(".title").text(prettifyTitle());
 var name;
 if(profname == ""){
 	name = "Undecided Professor ";
-	//console.log(res.values);
+	if(typeof res == 'undefined'){
+
+	}
 }
 else{
 	name = profinit+". "+profname.substring(0,1)+profname.substring(1).toLowerCase();
@@ -175,7 +190,7 @@ else{
 $(".profname").text("with "+ name);
 //console.log(coursename);
 span.onclick = function() {
-	modal.style.display = "none";
+	$(".modal").fadeOut(200);
 }
 chart = Highcharts.chart('chart', {
 	chart: {
@@ -225,8 +240,7 @@ chart = Highcharts.chart('chart', {
 	},
 	tooltip: {
 		headerFormat: '<span style="font-size:small; font-weight:bold">{point.key}</span><table>',
-		pointFormat: '<tr><td style="color:{series.color};padding:0"></td>' +
-		'<td style="padding:0;font-size:small; font-weight:bold;"><b>{point.y:.1f} Students</b></td></tr>',
+		pointFormat: '<td style="color:{black};padding:0;font-size:small; font-weight:bold;"><b>{point.y:.0f} Students</b></td>',
 		footerFormat: '</table>',
 		shared: true,
 		useHTML: true
@@ -265,9 +279,8 @@ chart = Highcharts.chart('chart', {
 });	// When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
 	if (event.target == modal) {
-		modal.style.display = "none";
+		$(".modal").fadeOut(fadetime);
 	}
-
 }	
 }
 
@@ -292,31 +305,36 @@ chrome.runtime.sendMessage({
 		object.find('#details > p').each(function(){
 			var sentence = $(this).text();
 			if(sentence.indexOf("Prerequisite") == 0){
-				sentence = "<li style='font-weight: bold; padding-left: 5px;'>"+sentence+"</li>";
+				sentence = "<li style='font-weight: bold; padding: 0px 5px 5px 5px;'>"+sentence+"</li>";
 			}
 			else if(sentence.indexOf("May be") >=0 ){
 				console.log(sentence.indexOf("May be"));
-				sentence = "<li style='font-style: italic; padding-left: 5px;'>"+sentence+"</li>";
+				sentence = "<li style='font-style: italic; padding: 0px 5px 5px 5px;'>"+sentence+"</li>";
 			}
 			else if(sentence.indexOf("Restricted to") == 0){
 				//console.log(sentence);
-				sentence = "<li style='color:red; padding-left: 5px;'>"+sentence+"</li>";
+				sentence = "<li style='color:red; padding: 0px 5px 5px 5px;'>"+sentence+"</li>";
 			}
 			else{
-				sentence= "<li  style='padding: 5px;'>"+sentence+"</li>";
+				sentence= "<li  style='padding: 0px 5px 5px 5px;'>"+sentence+"</li>";
 			}
 			output+=sentence;
 			
 		});
 		description = output;
-		$(".description").animate({'opacity': 0}, 400, function(){
-			$(this).html(description).animate({'opacity': 1}, 300);    
+		$(".description").animate({'opacity': 0}, 200, function(){
+			$(this).html(description).animate({'opacity': 1}, 200);    
 		});
 		var first = object.find('td[data-th="Instructor"]').text();
 		first = first.substring(first.indexOf(", "),first.indexOf(" ",first.indexOf(", ")+2));
 		first = first.substring(2);
 		rmpLink = "http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query="+first+" "+profname+";&facetSearch=true";
-
+		if(profname == ""){
+			eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?s_in_action_sw=S&s_in_search_type_sw=C&s_in_max_nbr_return=10&s_in_search_course_dept="+department+"&s_in_search_course_num="+course_nbr;
+		}
+		else{
+		eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?&s_in_action_sw=S&s_in_search_type_sw=N&s_in_search_name="+profname.substring(0,1)+profname.substring(1).toLowerCase()+"%2C%20"+first.substring(0,1)+first.substring(1).toLowerCase();
+	}
 	}
 });
 
