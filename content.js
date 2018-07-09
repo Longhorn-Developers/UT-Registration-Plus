@@ -12,6 +12,7 @@ const days = new Map([["M" ,"Monday"],
 ["T", "Tuesday"], ["W", "Wednesday"],["TH" ,"Thursday"], 
 ["F", "Friday"]]);
 const fadetime = 150;
+const butdelay = 100;
 
 $(document).ready( function() {
 	loadDataBase();
@@ -48,17 +49,17 @@ $(document).ready( function() {
 	$("#Syllabi").click(function(){
 		setTimeout(function(){	
 				window.open('https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?semester=&department='+department+'&course_number='+course_nbr+'&course_title=&unique=&instructor_first=&instructor_last='+profname+'&course_type=In+Residence&search=Search');
-		}, 200);
+		}, butdelay);
 	});
 	$("#rateMyProf").click(function(){
 		setTimeout(function(){
 			window.open(rmpLink);
-		}, 200);
+		}, butdelay);
 	});
 	$("#eCIS").click(function(){
 		setTimeout(function(){
 			window.open(eCISLink);
-		}, 200);
+		}, butdelay);
 	});
 	$(document).keydown(function(e) { 
     if (e.keyCode == 27) { 
@@ -144,7 +145,7 @@ else{
 	output+=arr[0];
 }
 var building = place.substring(0,place.search(/\d/)-1);
-return output + " at "+time.replace(/\./g,'').replace(/\-/g,' to ')+" in "+"<a style='font-size:medium' href='"+"https://maps.utexas.edu/buildings/UTM/"+building+"''>"+place.substring(0,place.search(/\d/)-1)+"</>";
+return output + " at "+time.replace(/\./g,'').replace(/\-/g,' to ')+" in "+"<a style='font-size:medium' target='_blank' href='"+"https://maps.utexas.edu/buildings/UTM/"+building+"''>"+place.substring(0,place.search(/\d/)-1)+"</>";
 }
 
 function order(){
