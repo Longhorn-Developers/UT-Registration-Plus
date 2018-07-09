@@ -46,6 +46,9 @@ $(document).ready( function() {
 		getDistribution();
 	});
 	$("#saveCourse").click(function(){
+chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
+ console.log(response.farewell);
+});
 
 	});
 	$("#Syllabi").click(function(){
@@ -152,10 +155,6 @@ else{
 var building = place.substring(0,place.search(/\d/)-1);
 return output + " at "+time.replace(/\./g,'').replace(/\-/g,' to ')+" in "+"<a style='font-size:medium' target='_blank' href='"+"https://maps.utexas.edu/buildings/UTM/"+building+"''>"+place.substring(0,place.search(/\d/)-1)+"</>";
 }
-
-function order(){
-
-}
 function getDistribution(){
 var query = "select * from agg";
 query += " where dept like '%"+department+"%'";
@@ -192,7 +191,7 @@ var color = "black";
 	else if(status.includes("closed") || status.includes("cancelled")){
 		color = "#F44336";
 	}
-$(".title").append("<span style='color:"+color+";font-size:large;'>"+" #"+uniquenum+"</>");
+$(".title").append("<span style='color:"+color+";font-size:medium;'>"+" #"+uniquenum+"</>");
 var name;
 if(profname == ""){
 	name = "Undecided Professor ";
@@ -201,10 +200,10 @@ if(profname == ""){
 	}
 }
 else{
-	name = profname.substring(0,1)+profname.substring(1).toLowerCase();
+	name = profinit+". "+profname.substring(0,1)+profname.substring(1).toLowerCase();
 }
 
-$(".profname").html("<h2 class=profname>with "+"<span id=lastname style='font-size: larger;font-weight:medium;'>"+name+"<span/></h2");
+$(".profname").text("with "+ name);
 //console.log(coursename);
 span.onclick = function() {
 	$(".modal").fadeOut(200);
@@ -276,6 +275,7 @@ chart = Highcharts.chart('chart', {
 	series: [{
 		name: 'Grades',
 		data: [{y: data[6], color: '#4CAF50'}, {y: data[7], color: '#8BC34A'}, {y: data[8], color: '#CDDC39'}, {y: data[9], color: '#FFEB3B'}, {y: data[10], color: '#FFC107'}, {y: data[11], color: '#FFA000'}, {y: data[12], color: '#F57C00'}, {y: data[13], color: '#FF5722'}, {y: data[14], color: '#FF5252'}, {y: data[15], color: '#E64A19'}, {y: data[16], color: '#F44336'}, {y: data[17], color: '#D32F2F'}]
+
 	}]
 }, function(chart) { // on complete
 	if(data.length == 0){
@@ -338,7 +338,6 @@ chrome.runtime.sendMessage({
 			output+=sentence;
 			
 		});
-
 		description = output;
 		$(".description").animate({'opacity': 0}, 200, function(){
 			$(this).html(description).animate({'opacity': 1}, 200);    
@@ -346,17 +345,13 @@ chrome.runtime.sendMessage({
 		var first = object.find('td[data-th="Instructor"]').text();
 		first = first.substring(first.indexOf(", "),first.indexOf(" ",first.indexOf(", ")+2));
 		first = first.substring(2);
-		var prop = [first.substring(0,1)+first.substring(1).toLowerCase(),profname.substring(0,1)+profname.substring(1).toLowerCase()];
 		rmpLink = "http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query="+first+" "+profname+";&facetSearch=true";
 		if(profname == ""){
 			eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?s_in_action_sw=S&s_in_search_type_sw=C&s_in_max_nbr_return=10&s_in_search_course_dept="+department+"&s_in_search_course_num="+course_nbr;
 		}
 		else{
-		eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?&s_in_action_sw=S&s_in_search_type_sw=N&s_in_search_name="+prop[1]+"%2C%20"+prop[0];
-		}
-	$("#lastname").animate({'opacity': 0}, 200, function(){
-			$(this).html(prop[0]+" "+prop[1]).animate({'opacity': 1}, 200);    
-		});
+		eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?&s_in_action_sw=S&s_in_search_type_sw=N&s_in_search_name="+profname.substring(0,1)+profname.substring(1).toLowerCase()+"%2C%20"+first.substring(0,1)+first.substring(1).toLowerCase();
+	}
 	}
 });
 
