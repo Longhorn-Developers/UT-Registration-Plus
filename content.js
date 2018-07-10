@@ -11,6 +11,8 @@ var course_nbr;
 var times = [];
 var dates = [];
 var locations = [];
+var datetimearr = [];
+
 var description;
 var status;
 const days = new Map([["M" ,"Monday"], 
@@ -101,6 +103,11 @@ function getCourseInfo(row){
 				profname = profname.substring(1);
 			}
 			var numlines = $(this).find('td[data-th="Days"]>span').length;
+			dates = [];
+			times = [];
+			locations = [];
+			datetimearr = [];
+			var arr = [];
 			for(var i=0; i<numlines;i++){
 				var date = $(this).find('td[data-th="Days"]>span:eq('+i+')').text();
 				var time = $(this).find('td[data-th="Hour"]>span:eq('+i+')').text();
@@ -111,6 +118,7 @@ function getCourseInfo(row){
 				$(".topbuttons").before('<h2 class="dateTimePlace">'+makeLine(date,time,place)+'</th>');
 			//	makeLine(date,time,place);
 			}
+			console.log(datetimearr);
 			return false;
 		}
 	});
@@ -127,21 +135,21 @@ function getCourseInfo(row){
 	course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
 }
 
-//MWF
-//TTH
-//MTHF
+//THIS CODE IS EXTREMELY MESSY, CLEAN UP GACK
 function makeLine(date, time, place){
-	var arr = new Array();
+	var arr = [];
 	var output = "";
 	for(var i = 0; i<date.length;i++){
 		var letter = date.charAt(i);
 		var day = "";
 		if(letter == "T" && i <date.length-1 && date.charAt(i+1) == "H"){
 			arr.push(days.get("TH"));
+			datetimearr.push(["TH", convertTime(time)]);
 		}
 		else {
 			if(letter != "H"){
 				arr.push(days.get(letter));
+				datetimearr.push([letter, convertTime(time)]);
 			}
 		}
 	}
@@ -166,6 +174,14 @@ function makeLine(date, time, place){
 	}
 	var building = place.substring(0,place.search(/\d/)-1);
 	return output + " at "+time.replace(/\./g,'').replace(/\-/g,' to ')+" in "+"<a style='font-size:medium' target='_blank' href='"+"https://maps.utexas.edu/buildings/UTM/"+building+"''>"+place.substring(0,place.search(/\d/)-1)+"</>";
+}
+
+function convertTime(time){
+	var converted = time.replace(/\./g,'').split("-");
+	for(var i = 0; i<2;i++){
+		converted[i] = moment(converted[i], ["h:mm A"]).format("HH:mm");
+	}
+	return converted;
 }
 function getDistribution(){
 	var query = "select * from agg";
