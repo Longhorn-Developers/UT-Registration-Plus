@@ -1,14 +1,14 @@
 TODO:
 - undefined prof, show all possible profs from past?
 		DIFFERENT IF NO PROF
-- popup.html
 - Online classes/no location
 - Schedule Conflicts
-- fix close button 
 - save image of modal?
 - Degree plan?
 - underline Courses maybe? click to go to using the planner link thing
 - when almost everything is blank: M 379H as example
+- schedule generator
+- FIX POP UP CARD NOT FILLING FULL LENGTH
 CLEAN UP:
 Everything lmao 
 
@@ -35,3 +35,4 @@ FIXED/DONE since 7/7/18:
 - maybe modal animations? 
 - Saving courses
 - waitlist/closed/open colors
+- popup.html

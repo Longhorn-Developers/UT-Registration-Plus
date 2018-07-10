@@ -7,11 +7,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
 			remove(request,sender,response);
 		}
 	}
-	if(request.command == "checkConflicts"){
+	else if(request.command == "checkConflicts"){
 		//Check conflicts 
 	}
 	else if(request.command == "alreadyContains"){
 		alreadyContains(request.unique,response);
+	}
+	else if(request.command == "getCourses"){
+		getCourses(response);
 	}
 	else{
 		const xhr = new XMLHttpRequest();
@@ -33,6 +36,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
       console.log('initial course list');
     });
 });
+
+
+function getCourses(sendResponse){
+	chrome.storage.sync.get('savedCourses', function(data) {
+		sendResponse({done:data.savedCourses});
+	});
+}
 
 function add(request, sender, sendResponse) {
 	var courses;

@@ -1,16 +1,37 @@
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <style>
-        button {
-          height: 30px;
-          width: 30px;
-          outline: none;
-        }
-      </style>
-    </head>
-    <body>
-      <button id="changeColor"></button>
-      <script src="popup.js"></script>
-    </body>
-  </html>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.3);
+    transition: 0.3s;
+    margin:5px;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.3);
+}
+
+.container {
+    padding: 2px 16px;
+}
+h2 {
+  padding-left: 5px;
+}
+li {
+      width: 350px;
+
+}
+body{
+  min-width: 350px;
+}
+</style>
+</head>
+<body>
+<script src="jquery-3.3.1.min.js"></script>
+<script src="popup.js"></script>
+<h2>Saved Courses</h2>
+    <ul id= "courseList" style="list-style-type: none;padding: 5px;"></ul>
+</body>
+</html> 
