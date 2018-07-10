@@ -1,12 +1,11 @@
 TODO:
 - undefined prof, show all possible profs from past?
 		DIFFERENT IF NO PROF
-- Saving courses
 - popup.html
 - Online classes/no location
 - Schedule Conflicts
-- waitlist/closed/open colors
 - fix close button 
+- save image of modal?
 - Degree plan?
 - underline Courses maybe? click to go to using the planner link thing
 - when almost everything is blank: M 379H as example
@@ -34,4 +33,5 @@ FIXED/DONE since 7/7/18:
 - location w/ map
 - eCIS? link or scrape (nah just scrape)
 - maybe modal animations? 
-
+- Saving courses
+- waitlist/closed/open colors

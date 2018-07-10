@@ -7,8 +7,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
 			remove(request,sender,response);
 		}
 	}
+	if(request.command == "checkConflicts"){
+		//Check conflicts 
+	}
 	else if(request.command == "alreadyContains"){
-		alreadyContains(request.course,response);
+		alreadyContains(request.unique,response);
 	}
 	else{
 		const xhr = new XMLHttpRequest();
@@ -58,13 +61,13 @@ function remove(request, sender, sendResponse) {
 	});
 }
 
-function alreadyContains(course,sendResponse){
+function alreadyContains(unique,sendResponse){
 	chrome.storage.sync.get('savedCourses', function(data) {
 		courses = data.savedCourses;
 		var contains = false;
 		var i = 0;
 		while(i < courses.length && !contains){
-			if(courses[i].unique == course.unique){
+			if(courses[i].unique == unique){
 				contains = true;
 			}
 			i++;

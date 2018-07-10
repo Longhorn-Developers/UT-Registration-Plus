@@ -21,26 +21,20 @@ const butdelay = 100;
 
 $(document).ready( function() {
 	loadDataBase();
-	//make heading
+	//make heading and modal
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
 	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer><ul class=description style="list-style-type:disc"></ul></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
 	$("#container").prepend(modhtml);
-	//console.log(grades);
-	$('table').find('tr').each(function(){
-		if($(this).find('td').hasClass("course_header")){
 
-		} else if($(this).has('th').length == 0){
-			var rating;
-			var profname = $(this).find('td[data-th="Instructor"]').text() + "";
-			//console.log(profname);
-			if(profname == ""){
-	    		//console.log("No Professor");
-	    		rating = "No Prof :(";
-	    	} else {
-	    		let lastname = profname.split(',')[0];
-	    		rating = "Hello";
-	    	}
+	$('table').find('tr').each(function(){
+	    if(!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0){
+	    	//if a course row, then add the extension button and do something if that course has been "saved"
 	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" style="vertical-align: bottom; display:block;" width="25" height="25" src='+chrome.extension.getURL('disticon.png')+' /></td>');
+	    	chrome.runtime.sendMessage({command: "alreadyContains",unique: $(this).find('td[data-th="Unique"]').text()}, function(response) {
+				if(response.alreadyContains){
+					//DO SOMETHING IF ALREADY CONTAINS
+				} 
+			});
 	    }
 	});
 
@@ -56,7 +50,6 @@ $(document).ready( function() {
 			$("#saveCourse").text(response.label);
 			alert(response.done);
 		});
-		$("#saveCourse").text("Remove Course");
 	});
 
 	$("#Syllabi").click(function(){
@@ -189,8 +182,7 @@ function getDistribution(){
 
 function openDialog(dep,cls,sem,professor,res){
 	$(".modal").fadeIn(fadetime);
-	var c = new Course(coursename,uniquenum, profname, times, dates, locations, status, profurl);
-	chrome.runtime.sendMessage({command: "alreadyContains",course: c}, function(response) {
+	chrome.runtime.sendMessage({command: "alreadyContains",unique: uniquenum}, function(response) {
 		console.log("Already Contains: "+response.alreadyContains);
 		if(response.alreadyContains){
 			$("#saveCourse").text("Remove Course -");
