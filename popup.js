@@ -1,4 +1,17 @@
 chrome.storage.sync.get('savedCourses', function(data) {
+	chrome.runtime.sendMessage({command: "checkConflicts"}, function(response) {
+			if(response.isConflict){
+					var between = response.between;
+					var text = "";
+					for(var i = 0; i<between.length;i++){
+						text+="Conflict between: "+between[i][0].coursename + " and "+between[i][1].coursename+"\n";
+						if(i != between.length-1){
+							text+= "<br></br>";
+						}
+					}
+					$("#headertext").append("<p style='font-size:small;color:red;'>"+text+"</>");
+				} 
+			});
 		var courses = data.savedCourses;
 		console.log(courses);
 		for(var i = 0; i<courses.length;i++){

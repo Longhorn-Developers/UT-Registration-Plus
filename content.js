@@ -8,9 +8,6 @@ var uniquenum;
 var profurl;
 var department;
 var course_nbr;
-var times = [];
-var dates = [];
-var locations = [];
 var datetimearr = [];
 
 var description;
@@ -46,7 +43,7 @@ $(document).ready( function() {
 	});
 
 	$("#saveCourse").click(function(){
-		var c = new Course(coursename,uniquenum, profname, times, dates, locations, status, profurl);
+		var c = new Course(coursename,uniquenum, profname, datetimearr, status, profurl);
 		chrome.runtime.sendMessage({command: "courseStorage",course: c, action:$("#saveCourse").text().substring(0,$("#saveCourse").text().indexOf(" ")).toLowerCase()}, function(response) {
 			$("#saveCourse").text(response.label);
 			alert(response.done);
@@ -75,13 +72,11 @@ $(document).ready( function() {
 	});
 });
 
-function Course(coursename, unique, profname, times, dates, locations, status, link){
+function Course(coursename, unique, profname,datetimearr, status, link){
 	this.coursename = coursename;
 	this.unique = unique;
 	this.profname = profname;
-	this.times = times;
-	this.dates = dates;
-	this.locations = locations;
+	this.datetimearr = datetimearr;
 	this.status = status;
 	this.link = link;
 }
@@ -103,18 +98,11 @@ function getCourseInfo(row){
 				profname = profname.substring(1);
 			}
 			var numlines = $(this).find('td[data-th="Days"]>span').length;
-			dates = [];
-			times = [];
-			locations = [];
 			datetimearr = [];
-			var arr = [];
 			for(var i=0; i<numlines;i++){
 				var date = $(this).find('td[data-th="Days"]>span:eq('+i+')').text();
 				var time = $(this).find('td[data-th="Hour"]>span:eq('+i+')').text();
 				var place = $(this).find('td[data-th="Room"]>span:eq('+i+')').text();
-				dates.push(date);
-				times.push(time);
-				locations.push(place);
 				$(".topbuttons").before('<h2 class="dateTimePlace">'+makeLine(date,time,place)+'</th>');
 			//	makeLine(date,time,place);
 			}
@@ -144,12 +132,12 @@ function makeLine(date, time, place){
 		var day = "";
 		if(letter == "T" && i <date.length-1 && date.charAt(i+1) == "H"){
 			arr.push(days.get("TH"));
-			datetimearr.push(["TH", convertTime(time)]);
+			datetimearr.push(["TH", convertTime(time),place]);
 		}
 		else {
 			if(letter != "H"){
 				arr.push(days.get(letter));
-				datetimearr.push([letter, convertTime(time)]);
+				datetimearr.push([letter, convertTime(time),place]);
 			}
 		}
 	}
