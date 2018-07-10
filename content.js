@@ -8,6 +8,9 @@ var uniquenum;
 var profurl;
 var department;
 var course_nbr;
+var times = [];
+var dates = [];
+var locations = [];
 var description;
 var status;
 const days = new Map([["M" ,"Monday"], 
@@ -39,18 +42,23 @@ $(document).ready( function() {
 	    	}
 	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" style="vertical-align: bottom; display:block;" width="25" height="25" src='+chrome.extension.getURL('disticon.png')+' /></td>');
 	    }
-	});	
+	});
+
 	$(".distButton").click(function(){
 		var row = $(this).closest('tr');
 		getCourseInfo(row);
 		getDistribution();
 	});
-	$("#saveCourse").click(function(){
-chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
- console.log(response.farewell);
-});
 
+	$("#saveCourse").click(function(){
+		var c = new Course(coursename,uniquenum, profname, times, dates, locations, status, profurl);
+		chrome.runtime.sendMessage({command: "courseStorage",course: c, action:$("#saveCourse").text().substring(0,$("#saveCourse").text().indexOf(" ")).toLowerCase()}, function(response) {
+			$("#saveCourse").text(response.label);
+			alert(response.done);
+		});
+		$("#saveCourse").text("Remove Course");
 	});
+
 	$("#Syllabi").click(function(){
 		setTimeout(function(){	
 				window.open('https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?semester=&department='+department+'&course_number='+course_nbr+'&course_title=&unique=&instructor_first=&instructor_last='+profname+'&course_type=In+Residence&search=Search');
@@ -67,121 +75,143 @@ chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
 		}, butdelay);
 	});
 	$(document).keydown(function(e) { 
-    if (e.keyCode == 27) { 
-        $(".modal").fadeOut(fadetime);
-        //or
-       // window.close();
-    } 
-});
+    	if (e.keyCode == 27) { 
+        	$(".modal").fadeOut(fadetime);
+    	} 
+	});
 });
 
-function getCourseInfo(row){
-$(".dateTimePlace").remove();
-$('table').find('tr').each(function(){
-	if($(this).find('td').hasClass("course_header")){
-		coursename = $(this).find('td').text() + "";
-	}
-	if($(this).is(row)){
-		profurl = $(this).find('td[data-th="Unique"] a').prop('href');
-	    uniquenum = $(this).find('td[data-th="Unique"]').text();
-	   	status = $(this).find('td[data-th="Status"]').text();
-	    console.log(status);
-		profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0];
-		profinit = $(this).find('td[data-th="Instructor"]').text().split(', ')[1];
-		if(profname.indexOf(" ") == 0){
-			profname = profname.substring(1);
-		}
-		var numlines = $(this).find('td[data-th="Days"]>span').length;
-		for(var i=0; i<numlines;i++){
-			var date = $(this).find('td[data-th="Days"]>span:eq('+i+')').text();
-			var time = $(this).find('td[data-th="Hour"]>span:eq('+i+')').text();
-			var place = $(this).find('td[data-th="Room"]>span:eq('+i+')').text();
-			$(".topbuttons").before('<h2 class="dateTimePlace">'+makeLine(date,time,place)+'</th>');
-		//	makeLine(date,time,place);
-		}
-		return false;
-	}
-});
-if(typeof coursename == 'undefined'){
-	coursename = $("#details h2").text();
-	console.log(profname+" "+profinit);
-	profinit = profinit.substring(0,1);
-	profurl = document.URL;
+function Course(coursename, unique, profname, times, dates, locations, status, link){
+	this.coursename = coursename;
+	this.unique = unique;
+	this.profname = profname;
+	this.times = times;
+	this.dates = dates;
+	this.locations = locations;
+	this.status = status;
+	this.link = link;
 }
-//console.log(coursename);
-getDescription();
-department = coursename.substring(0,coursename.search(/\d/)-2);
-//console.log(department);
-course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
+
+function getCourseInfo(row){
+	$(".dateTimePlace").remove();
+	$('table').find('tr').each(function(){
+		if($(this).find('td').hasClass("course_header")){
+			coursename = $(this).find('td').text() + "";
+		}
+		if($(this).is(row)){
+			profurl = $(this).find('td[data-th="Unique"] a').prop('href');
+		    uniquenum = $(this).find('td[data-th="Unique"]').text();
+		   	status = $(this).find('td[data-th="Status"]').text();
+		    console.log(status);
+			profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0];
+			profinit = $(this).find('td[data-th="Instructor"]').text().split(', ')[1];
+			if(profname.indexOf(" ") == 0){
+				profname = profname.substring(1);
+			}
+			var numlines = $(this).find('td[data-th="Days"]>span').length;
+			for(var i=0; i<numlines;i++){
+				var date = $(this).find('td[data-th="Days"]>span:eq('+i+')').text();
+				var time = $(this).find('td[data-th="Hour"]>span:eq('+i+')').text();
+				var place = $(this).find('td[data-th="Room"]>span:eq('+i+')').text();
+				dates.push(date);
+				times.push(time);
+				locations.push(place);
+				$(".topbuttons").before('<h2 class="dateTimePlace">'+makeLine(date,time,place)+'</th>');
+			//	makeLine(date,time,place);
+			}
+			return false;
+		}
+	});
+	if(typeof coursename == 'undefined'){
+		coursename = $("#details h2").text();
+		console.log(profname+" "+profinit);
+		profinit = profinit.substring(0,1);
+		profurl = document.URL;
+	}
+	//console.log(coursename);
+	getDescription();
+	department = coursename.substring(0,coursename.search(/\d/)-2);
+	//console.log(department);
+	course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
 }
 
 //MWF
 //TTH
 //MTHF
 function makeLine(date, time, place){
-var arr = new Array();
-var output = "";
-for(var i = 0; i<date.length;i++){
-	var letter = date.charAt(i);
-	var day = "";
-	if(letter == "T" && i <date.length-1 && date.charAt(i+1) == "H"){
-		arr.push(days.get("TH"));
-	}
-	else {
-		if(letter != "H"){
-			arr.push(days.get(letter));
+	var arr = new Array();
+	var output = "";
+	for(var i = 0; i<date.length;i++){
+		var letter = date.charAt(i);
+		var day = "";
+		if(letter == "T" && i <date.length-1 && date.charAt(i+1) == "H"){
+			arr.push(days.get("TH"));
+		}
+		else {
+			if(letter != "H"){
+				arr.push(days.get(letter));
+			}
 		}
 	}
-}
-if(arr.length > 2){
-	for(var i = 0; i<arr.length;i++){
-		if(i < arr.length-1){
-			output+=arr[i]+", "
-		}
-		if(i == arr.length-2){
-			output+= "and ";
-		}
-		if(i == arr.length-1){
-			output+=arr[i];
+	if(arr.length > 2){
+		for(var i = 0; i<arr.length;i++){
+			if(i < arr.length-1){
+				output+=arr[i]+", "
+			}
+			if(i == arr.length-2){
+				output+= "and ";
+			}
+			if(i == arr.length-1){
+				output+=arr[i];
+			}
 		}
 	}
-}
-else if(arr.length == 2){
-	output = arr[0]+" and "+arr[1];
-}
-else{
-	output+=arr[0];
-}
-var building = place.substring(0,place.search(/\d/)-1);
-return output + " at "+time.replace(/\./g,'').replace(/\-/g,' to ')+" in "+"<a style='font-size:medium' target='_blank' href='"+"https://maps.utexas.edu/buildings/UTM/"+building+"''>"+place.substring(0,place.search(/\d/)-1)+"</>";
+	else if(arr.length == 2){
+		output = arr[0]+" and "+arr[1];
+	}
+	else{
+		output+=arr[0];
+	}
+	var building = place.substring(0,place.search(/\d/)-1);
+	return output + " at "+time.replace(/\./g,'').replace(/\-/g,' to ')+" in "+"<a style='font-size:medium' target='_blank' href='"+"https://maps.utexas.edu/buildings/UTM/"+building+"''>"+place.substring(0,place.search(/\d/)-1)+"</>";
 }
 function getDistribution(){
-var query = "select * from agg";
-query += " where dept like '%"+department+"%'";
-query += " and prof like '%"+profname+"%'";
-query += " and course_nbr like '%"+course_nbr+"%'";
+	var query = "select * from agg";
+	query += " where dept like '%"+department+"%'";
+	query += " and prof like '%"+profname+"%'";
+	query += " and course_nbr like '%"+course_nbr+"%'";
 //	console.log(query);
-var res = grades.exec(query)[0];
+	var res = grades.exec(query)[0];
 //	console.log(res);
-var output = "";
-openDialog(department,coursename,"aggregate",profname,res);
+	var output = "";
+	openDialog(department,coursename,"aggregate",profname,res);
 }
 
 function openDialog(dep,cls,sem,professor,res){
-$(".modal").fadeIn(fadetime);
-var data;
-if(typeof res == 'undefined'){
-	data = [];
-}
-else{
-	data = res.values[0];
-}
-var modal = document.getElementById('myModal');
-var span = document.getElementsByClassName("close")[0];
-modal.style.display = "block";
+	$(".modal").fadeIn(fadetime);
+	var c = new Course(coursename,uniquenum, profname, times, dates, locations, status, profurl);
+	chrome.runtime.sendMessage({command: "alreadyContains",course: c}, function(response) {
+		console.log("Already Contains: "+response.alreadyContains);
+		if(response.alreadyContains){
+			$("#saveCourse").text("Remove Course -");
+		} 
+		else{
+			$("#saveCourse").text("Add Course +");
+		}
+	});
+	var data;
+	if(typeof res == 'undefined'){
+		data = [];
+	}
+	else{
+		data = res.values[0];
+	}
+	var modal = document.getElementById('myModal');
+	var span = document.getElementsByClassName("close")[0];
+	modal.style.display = "block";
 
-$(".title").text(prettifyTitle());
-var color = "black";
+	$(".title").text(prettifyTitle());
+	var color = "black";
 	if(status.includes("open")){
 		color = "#4CAF50";
 	}
@@ -191,19 +221,19 @@ var color = "black";
 	else if(status.includes("closed") || status.includes("cancelled")){
 		color = "#F44336";
 	}
-$(".title").append("<span style='color:"+color+";font-size:medium;'>"+" #"+uniquenum+"</>");
-var name;
-if(profname == ""){
-	name = "Undecided Professor ";
-	if(typeof res == 'undefined'){
+	$(".title").append("<span style='color:"+color+";font-size:medium;'>"+" #"+uniquenum+"</>");
+	var name;
+	if(profname == ""){
+		name = "Undecided Professor ";
+		if(typeof res == 'undefined'){
 
+		}
 	}
-}
-else{
-	name = profinit+". "+profname.substring(0,1)+profname.substring(1).toLowerCase();
-}
+	else{
+		name = profinit+". "+profname.substring(0,1)+profname.substring(1).toLowerCase();
+	}
 
-$(".profname").text("with "+ name);
+	$(".profname").text("with "+ name);
 //console.log(coursename);
 span.onclick = function() {
 	$(".modal").fadeOut(200);
