@@ -81,7 +81,7 @@ function add(request, sender, sendResponse) {
 		courses.push(request.course)
 		console.log(courses);
 		chrome.storage.sync.set({savedCourses: courses});
-		sendResponse({done:"Added: "+request.course.unique+request.course.coursename,label:"Remove Course -"});
+		sendResponse({done:"Added: ("+request.course.unique+") "+request.course.coursename,label:"Remove Course -"});
 	});
 }
 function remove(request, sender, sendResponse) {
@@ -94,7 +94,7 @@ function remove(request, sender, sendResponse) {
 		courses.splice(index,1);
 		console.log(courses);
 		chrome.storage.sync.set({savedCourses: courses});
-		sendResponse({done:"removed: "+request.course.unique+request.course.coursename,label:"Add Course +"});
+		sendResponse({done:"Removed: ("+request.course.unique+") "+request.course.coursename,label:"Add Course +"});
 	});
 }
 

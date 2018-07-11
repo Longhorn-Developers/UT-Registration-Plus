@@ -1,10 +1,14 @@
+var courses;
 chrome.storage.sync.get('savedCourses', function(data) {
 	chrome.runtime.sendMessage({command: "checkConflicts"}, function(response) {
+		var isConflicted = [];
 			if(response.isConflict){
 					var between = response.between;
 					var text = "";
 					for(var i = 0; i<between.length;i++){
-						text+="Conflict between: "+between[i][0].coursename + " and "+between[i][1].coursename+"\n";
+						text+="Conflict between: "+ getSimpleName(between[i][0].coursename,between[i][0].unique) + " and "+getSimpleName(between[i][1].coursename,between[i][1].unique);
+						isConflicted.push(between[i][0].unique);
+						isConflicted.push(between[i][1].unique);
 						if(i != between.length-1){
 							text+= "<br>";
 						}
@@ -12,7 +16,10 @@ chrome.storage.sync.get('savedCourses', function(data) {
 					$("#courseList").prepend("<p style='font-size:small; font-weight:bold; color:red; margin:5px;'>"+text+"</>");
 				} 
 			});
-		var courses = data.savedCourses;
+		courses = data.savedCourses;
+		if(courses.length != 0){
+			$("#empty").hide();
+		}
 		console.log(courses);
 		for(var i = 0; i<courses.length;i++){
 			var color;
@@ -29,21 +36,72 @@ chrome.storage.sync.get('savedCourses', function(data) {
 			var department = courses[i].coursename.substring(0,courses[i].coursename.search(/\d/)-2);
 			var course_nbr = courses[i].coursename.substring(courses[i].coursename.search(/\d/),courses[i].coursename.indexOf(" ",courses[i].coursename.search(/\d/)));
 			var profname = courses[i].profname.substring(0,1)+courses[i].profname.substring(1).toLowerCase();
-			var listhtml = "<li style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'><div class='card'><div class='container' style='background:"+color+"''><h4 style='color:white; margin:5px; font-size:large;'><b>"+department + " "+course_nbr+"<span style='font-size:medium'>"+" with </span><span style='font-size:medium'>"+profname+"</span></b></h4></div></div></li>";
+			var listhtml = "<li id='"+i+"'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'><div class='card'><div class='container' style='background:"+color+"''><h4 style='color:white; margin:5px; font-size:large;'><b>"+department + " "+course_nbr+"<span style='font-size:medium'>"+" with </span><span style='font-size:medium'>"+profname+" ("+courses[i].unique+")"+"</span></b></h4></div></div><p style='display: none;font-weight:bold;padding:10px;font-size:small;color:white;background-color:#FF5252;'>"+makeLine(i)+"</p></li>";
 			$("#courseList").append(listhtml);
 		}
 });
+
+function getSimpleName(coursename, unique){
+	var department = coursename.substring(0,coursename.search(/\d/)-2);
+	var course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
+	return department+" "+course_nbr+" ("+unique+")";
+}
 
 $(document).ready(function() {
     $("#clear").click(function(){
     	clear();
 	});
+	$("#courseList li").click(function(){
+		//makeLine($(this).attr("id"));
+		if($(this).find("p").not(':visible')){
+			$(this).find("p").fadeIn(500);
+		}
+		else{
+			$(this).find("p").hide();
+		}
+	//	window.open(courses[$(this).attr("id")].link);
+	});
 });
+
+function makeLine(index){
+	var datetimearr = courses[index].datetimearr;
+	//converted times back
+	var dtmap = new Map([]);
+	for(var i = 0; i<datetimearr.length;i++){
+		datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm"]).format("h:mm A");
+		datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm"]).format("h:mm A");
+	}
+	//console.log(datetimearr[0][0]);
+	for(var i = 0; i<datetimearr.length;i++){
+		//console.log(datetimearr[i][0]);
+		if(dtmap.has(String(datetimearr[i][1]))){
+			console.log(datetimearr[i][0]);
+			dtmap.set(String(datetimearr[i][1]),dtmap.get(String(datetimearr[i][1]))+datetimearr[i][0]);
+		}
+		else{
+			console.log(datetimearr[i][0]);
+			dtmap.set(String(datetimearr[i][1]),datetimearr[i][0]);
+		}
+	}
+	var output="";
+	var timearr = Array.from(dtmap.keys());
+	var dayarr =  Array.from(dtmap.values());
+	console.log(timearr);
+	console.log(dayarr);
+	for(var i = 0; i<dayarr.length;i++){
+		output += "<span style='font-size:medium'>"+dayarr[i]+"</span>: <span style='float:right'>"+timearr[i].split(",")[0]+" to "+timearr[i].split(",")[1]+"</span><br>";
+	}
+	return output;
+}
+
 
 function clear(){
 	chrome.storage.sync.set({savedCourses: []});
 	console.log("cleared");
-	$("#courseList").fadeOut(300);	
+	$("#courseList").fadeOut(300,function(){
+			$("#empty").show();
+
+	});	
 }
 function update(){
 

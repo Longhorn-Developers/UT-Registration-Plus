@@ -9,7 +9,7 @@ var profurl;
 var department;
 var course_nbr;
 var datetimearr = [];
-
+var chart;
 var description;
 var status;
 const days = new Map([["M" ,"Monday"], 
@@ -24,6 +24,7 @@ $(document).ready( function() {
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
 	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer style=""><ul class=description style="list-style-type:disc"></ul></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
 	$("#container").prepend(modhtml);
+	$("#myModal").prepend("<div id='snackbar'>defaultmessage..</div>");
 	$('table').find('tr').each(function(){
 	    if(!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0){
 	    	//if a course row, then add the extension button and do something if that course has been "saved"
@@ -47,7 +48,9 @@ $(document).ready( function() {
 		var c = new Course(coursename,uniquenum, profname, datetimearr, status, profurl);
 		chrome.runtime.sendMessage({command: "courseStorage",course: c, action:$("#saveCourse").text().substring(0,$("#saveCourse").text().indexOf(" ")).toLowerCase()}, function(response) {
 			$("#saveCourse").text(response.label);
-			alert(response.done);
+			$("#snackbar").text(response.done);
+			$("#snackbar").attr("class","show");
+			 setTimeout(function(){$("#snackbar").attr("class","");}, 1000);
 		});
 	});
 
@@ -69,7 +72,8 @@ $(document).ready( function() {
 	$(document).keydown(function(e) { 
     	if (e.keyCode == 27) { 
         	$(".modal").fadeOut(fadetime);
-    	} 
+    	}
+    	$("#snackbar").attr("class",""); 
 	});
 });
 
@@ -233,6 +237,8 @@ function openDialog(dep,cls,sem,professor,res){
 //console.log(coursename);
 span.onclick = function() {
 	$(".modal").fadeOut(200);
+	$("#snackbar").attr("class",""); 
+
 }
 chart = Highcharts.chart('chart', {
 	chart: {
@@ -322,6 +328,8 @@ chart = Highcharts.chart('chart', {
 window.onclick = function(event) {
 	if (event.target == modal) {
 		$(".modal").fadeOut(fadetime);
+		$("#snackbar").attr("class",""); 
+
 	}
 }	
 }

@@ -9,6 +9,9 @@ TODO as of 7/10/18:
 - underline Courses maybe? click to go to using the planner link thing
 - schedule generator
 - show schedule conflicts on the course page
+-highlight in red on save course screen
+- sync saved
+-use maps for schedule conflict
 -added/removing/action toasts
 
 CLEAN UP:
@@ -41,3 +44,4 @@ FIXED/DONE as of 7/10/18:
 - popup.html
 - Schedule Conflicts
 - when almost everything is blank: M 379H as example
+
