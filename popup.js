@@ -36,7 +36,7 @@ chrome.storage.sync.get('savedCourses', function(data) {
 			var department = courses[i].coursename.substring(0,courses[i].coursename.search(/\d/)-2);
 			var course_nbr = courses[i].coursename.substring(courses[i].coursename.search(/\d/),courses[i].coursename.indexOf(" ",courses[i].coursename.search(/\d/)));
 			var profname = courses[i].profname.substring(0,1)+courses[i].profname.substring(1).toLowerCase();
-			var listhtml = "<li id='"+i+"'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'><div class='card'><div class='container' style='background:"+color+"''><h4 style='color:white; margin:5px; font-size:large;'><b>"+department + " "+course_nbr+"<span style='font-size:medium'>"+" with </span><span style='font-size:medium'>"+profname+" ("+courses[i].unique+")"+"</span></b></h4></div></div><p style='display: none;font-weight:bold;padding:10px;font-size:small;color:white;background-color:#FF5252;'>"+makeLine(i)+"</p></li>";
+			var listhtml = "<li id='"+i+"'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'><div class='card'><div class='container' style='background:"+color+"''><h4 style='color:white; margin:5px; font-size:large;'><b>"+department + " "+course_nbr+"<span style='font-size:medium'>"+" with </span><span style='font-size:medium'>"+profname+" ("+courses[i].unique+")"+"</span></b></h4></div></div><p style='display: none;font-weight:bold;padding:10px;font-size:small;background-color:#FFCDD2;'>"+makeLine(i)+"</p></li>";
 			$("#courseList").append(listhtml);
 		}
 });
@@ -53,11 +53,12 @@ $(document).ready(function() {
 	});
 	$("#courseList li").click(function(){
 		//makeLine($(this).attr("id"));
-		if($(this).find("p").not(':visible')){
-			$(this).find("p").fadeIn(500);
+		if($(this).find("p").is(":hidden")){
+			$(this).find("p").fadeIn(200);
+			//alert("hello");
 		}
 		else{
-			$(this).find("p").hide();
+			$(this).find("p").fadeOut(200);
 		}
 	//	window.open(courses[$(this).attr("id")].link);
 	});

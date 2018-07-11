@@ -50,7 +50,7 @@ $(document).ready( function() {
 			$("#saveCourse").text(response.label);
 			$("#snackbar").text(response.done);
 			$("#snackbar").attr("class","show");
-			 setTimeout(function(){$("#snackbar").attr("class","");}, 1000);
+			 setTimeout(function(){$("#snackbar").attr("class","");}, 3000);
 		});
 	});
 
