@@ -31,11 +31,12 @@ $(document).ready( function() {
 	    	chrome.runtime.sendMessage({command: "alreadyContains",unique: $(this).find('td[data-th="Unique"]').text()}, function(response) {
 				if(response.alreadyContains){
 					//DO SOMETHING IF ALREADY CONTAINS
+					console.log("ALREADY CONTAINS IN THIS ROW");
 				} 
 			});
 	    }
 	});
-
+	
 	$(".distButton").click(function(){
 		var row = $(this).closest('tr');
 		getCourseInfo(row);

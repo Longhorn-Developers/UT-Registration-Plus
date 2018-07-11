@@ -1,18 +1,21 @@
-TODO:
-- undefined prof, show all possible profs from past?
-		DIFFERENT IF NO PROF
+TODO as of 7/10/18:
+- undefined prof, show all possible profs from past? (DIFFERENT IF NO PROF)
 - Online classes/no location
-- Schedule Conflicts
 - save image of modal?
+- no place
 - Degree plan?
+- default message save courses 
+- eureka integration 
 - underline Courses maybe? click to go to using the planner link thing
-- when almost everything is blank: M 379H as example
 - schedule generator
-- FIX POP UP CARD NOT FILLING FULL LENGTH
+- show schedule conflicts on the course page
+-added/removing/action toasts
+
 CLEAN UP:
 Everything lmao 
 
 KNOWN BUGS:
+- FIX POP UP CARD NOT FILLING FULL LENGTH
 
 
 IN-PROGRESS:
@@ -20,7 +23,7 @@ IN-PROGRESS:
 
 
 
-FIXED/DONE since 7/7/18:
+FIXED/DONE as of 7/10/18:
 - Scrolling Modal :|
 - Description
 - no Data (prof hasn't taught that class before)
@@ -36,3 +39,5 @@ FIXED/DONE since 7/7/18:
 - Saving courses
 - waitlist/closed/open colors
 - popup.html
+- Schedule Conflicts
+- when almost everything is blank: M 379H as example
