@@ -8,18 +8,23 @@ TODO as of 7/10/18:
 - eureka integration 
 - underline Courses maybe? click to go to using the planner link thing
 - schedule generator
-- show schedule conflicts on the course page
--highlight in red on save course screen
+- show schedule conflicts on the course page, and on the registration courselist
+- highlight in red on save course screen
 - sync saved
--use maps for schedule conflict
--added/removing/action toasts
+- "more at a glance" info on course list screen
+- use maps for schedule conflict
+- refresh the page get description
+- update page with schedule conflict information
 
 CLEAN UP:
 Everything lmao 
 
 KNOWN BUGS:
 - FIX POP UP CARD NOT FILLING FULL LENGTH
-
+- FIX toast bug
+- FIX save course when no times blank
+- FIX Open popup flickering
+- FIX DIST ICON NOT SCALING IN TD PROBLEM
 
 IN-PROGRESS:
 - icon
@@ -44,4 +49,4 @@ FIXED/DONE as of 7/10/18:
 - popup.html
 - Schedule Conflicts
 - when almost everything is blank: M 379H as example
-
+- added/removing/action toasts

@@ -28,13 +28,17 @@ $(document).ready( function() {
 	$('table').find('tr').each(function(){
 	    if(!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0){
 	    	//if a course row, then add the extension button and do something if that course has been "saved"
+	    	var thisForm = this;
 	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" style="vertical-align: bottom; display:block;" width="25" height="25" src='+chrome.extension.getURL('disticon.png')+' /></td>');
-	    	chrome.runtime.sendMessage({command: "alreadyContains",unique: $(this).find('td[data-th="Unique"]').text()}, function(response) {
-				if(response.alreadyContains){
-					//DO SOMETHING IF ALREADY CONTAINS
-					console.log("ALREADY CONTAINS IN THIS ROW");
-				} 
-			});
+	  //   	chrome.runtime.sendMessage({command: "alreadyContains",unique: $(this).find('td[data-th="Unique"]').text()}, function(response) {
+			// 	if(response.alreadyContains){
+			// 		//DO SOMETHING IF ALREADY CONTAINS
+	  //   			$(thisForm).find('td').each(function(){
+	  //   			//	$(this).css('font-weight','bold');
+	  //   				$(this).css('color','#4CAF50');
+	  //   			});
+			// 	} 
+			// });
 	    }
 	});
 	

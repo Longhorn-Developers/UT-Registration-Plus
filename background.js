@@ -87,12 +87,13 @@ function add(request, sender, sendResponse) {
 function remove(request, sender, sendResponse) {
 	chrome.storage.sync.get('savedCourses', function(data) {
 		var courses = data.savedCourses;
+		console.log(courses);
 		var index = 0;
+		console.log(courses.length);
 		while(index<courses.length && courses[index].unique != request.course.unique){
 			index++;
 		}
 		courses.splice(index,1);
-		console.log(courses);
 		chrome.storage.sync.set({savedCourses: courses});
 		sendResponse({done:"Removed: ("+request.course.unique+") "+request.course.coursename,label:"Add Course +"});
 	});
