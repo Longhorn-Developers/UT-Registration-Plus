@@ -22,14 +22,14 @@ $(document).ready( function() {
 	loadDataBase();
 	//make heading and modal
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
-	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer style=""><ul class=description style="list-style-type:disc"></ul></div></div><div class=card ><div id="chartcontainer" class=cardcontainer><div id="profdropdown" style="position:relative; display:flex;visibility:hidden;flex-flow:row-reverse;height:30px;"><ul style="z-index:1000; margin:5px; position:absolute;" class = "dropdown-menu"></ul></div><div id=chart></div></div></div></div>'
+	var modhtml ='<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title id="title">Computer Fluency (C S 302)</h2><h2 class=profname id="profname">with Bruce Porter</h2><div id="topbuttons" class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer style=""><ul class=description id="description" style="list-style-type:disc"></ul></div></div><div class=card ><div id="chartcontainer" class=cardcontainer><div id=chart></div></div></div></div>';
 	$("#container").prepend(modhtml);
 	$("#myModal").prepend("<div id='snackbar'>defaultmessage..</div>");
 	$('table').find('tr').each(function(){
 	    if(!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0){
 	    	//if a course row, then add the extension button and do something if that course has been "saved"
 	    	var thisForm = this;
-	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" style="vertical-align: bottom; display:block;" width="25" height="25" src='+chrome.extension.getURL('disticon.png')+' /></td>');
+	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="25" height="25" src='+chrome.extension.getURL('disticon.png')+' /></td>');
 	    	chrome.runtime.sendMessage({command: "isSingleConflict",dtarr: getDtarr(this)}, function(response) {
 				if(response.isConflict){
 					//DO SOMETHING IF ALREADY CONTAINS
@@ -37,22 +37,14 @@ $(document).ready( function() {
 	    			//	$(this).css('font-weight','bold');
 	    				$(this).css('color','#F44336');
 	    				$(this).css('text-decoration','line-through');
-	    				$(this).css('font-weight','bold');
 	    			});
 				}
-				else{
-	    			$(thisForm).find('td').each(function(){
-	    			//	$(this).css('font-weight','bold');
-	    				$(this).css('color','black');
-	    				$(this).css('text-decoration','none');
-	    				$(this).css('font-weight','normal');
-	    			});					
-				} 
 			});
 	    }
 	});
 	
 	$(".distButton").click(function(){
+		console.log("hello");
 		var row = $(this).closest('tr');
 		getCourseInfo(row);
 		getDistribution();
@@ -64,8 +56,8 @@ $(document).ready( function() {
 			$("#saveCourse").text(response.label);
 			$("#snackbar").text(response.done);
 			$("#snackbar").attr("class","show");
-			 setTimeout(function(){$("#snackbar").attr("class","");}, 3000);
-			 update();
+			setTimeout(function(){$("#snackbar").attr("class","");}, 3000);
+			setTimeout(update(), 1000);
 		});
 	});
 
@@ -86,7 +78,7 @@ $(document).ready( function() {
 	});
 	$(document).keydown(function(e) { 
     	if (e.keyCode == 27) { 
-        	$(".modal").fadeOut(fadetime);
+        	$("#myModal").fadeOut(fadetime);
     	}
     	$("#snackbar").attr("class",""); 
 	});
@@ -104,14 +96,12 @@ function update(){
 		    			//	$(this).css('font-weight','bold');
 		    			$(this).css('color','#F44336');
 		    			$(this).css('text-decoration','line-through');
-		    			$(this).css('font-weight','bold');
 	    			});
 				} else {
 					$(thisForm).find('td').each(function(){
 		    			//	$(this).css('font-weight','bold');
 		    			$(this).css('color','black');
 		    			$(this).css('text-decoration','none');
-		    			$(this).css('font-weight','normal');
 	    			});
 				}
 			});
@@ -176,7 +166,7 @@ function getCourseInfo(row){
 				var date = $(this).find('td[data-th="Days"]>span:eq('+i+')').text();
 				var time = $(this).find('td[data-th="Hour"]>span:eq('+i+')').text();
 				var place = $(this).find('td[data-th="Room"]>span:eq('+i+')').text();
-				$(".topbuttons").before('<h2 class="dateTimePlace">'+makeLine(date,time,place)+'</th>');
+				$("#topbuttons").before('<h2 class="dateTimePlace">'+makeLine(date,time,place)+'</th>');
 			//	makeLine(date,time,place);
 			}
 			console.log(datetimearr);
@@ -261,7 +251,7 @@ function getDistribution(){
 }
 
 function openDialog(dep,cls,sem,professor,res){
-	$(".modal").fadeIn(fadetime);
+	$("#myModal").fadeIn(fadetime);
 	chrome.runtime.sendMessage({command: "alreadyContains",unique: uniquenum}, function(response) {
 		console.log("Already Contains: "+response.alreadyContains);
 		if(response.alreadyContains){
@@ -292,7 +282,7 @@ function openDialog(dep,cls,sem,professor,res){
 	var span = document.getElementsByClassName("close")[0];
 	modal.style.display = "block";
 
-	$(".title").text(prettifyTitle());
+	$("#title").text(prettifyTitle());
 	var color = "black";
 	if(status.includes("open")){
 		color = "#4CAF50";
@@ -303,7 +293,7 @@ function openDialog(dep,cls,sem,professor,res){
 	else if(status.includes("closed") || status.includes("cancelled")){
 		color = "#F44336";
 	}
-	$(".title").append("<span style='color:"+color+";font-size:medium;'>"+" #"+uniquenum+"</>");
+	$("#title").append("<span style='color:"+color+";font-size:medium;'>"+" #"+uniquenum+"</>");
 	var name;
 	if(profname == ""){
 		name = "Undecided Professor ";
@@ -315,10 +305,10 @@ function openDialog(dep,cls,sem,professor,res){
 		name = profinit+". "+profname.substring(0,1)+profname.substring(1).toLowerCase();
 	}
 
-	$(".profname").text("with "+ name);
+	$("#profname").text("with "+ name);
 //console.log(coursename);
 span.onclick = function() {
-	$(".modal").fadeOut(200);
+	$("#myModal").fadeOut(200);
 	$("#snackbar").attr("class",""); 
 
 }
@@ -410,7 +400,7 @@ chart = Highcharts.chart('chart', {
 });	// When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
 	if (event.target == modal) {
-		$(".modal").fadeOut(fadetime);
+		$("#myModal").fadeOut(fadetime);
 		$("#snackbar").attr("class",""); 
 
 	}
@@ -456,7 +446,7 @@ chrome.runtime.sendMessage({
 			
 		});
 		description = output;
-		$(".description").animate({'opacity': 0}, 200, function(){
+		$("#description").animate({'opacity': 0}, 200, function(){
 			$(this).html(description).animate({'opacity': 1}, 200);    
 		});
 		var first = object.find('td[data-th="Instructor"]').text();
