@@ -22,7 +22,7 @@ $(document).ready( function() {
 	loadDataBase();
 	//make heading and modal
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
-	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer style=""><ul class=description style="list-style-type:disc"></ul></div></div><div class=card><div class=cardcontainer><div id=chart></div></div></div></div>'
+	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title>Computer Fluency (C S 302)</h2><h2 class=profname>with Bruce Porter</h2><div class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer style=""><ul class=description style="list-style-type:disc"></ul></div></div><div class=card ><div id="chartcontainer" class=cardcontainer><div id="profdropdown" style="position:relative; display:flex;visibility:hidden;flex-flow:row-reverse;height:30px;"><ul style="z-index:1000; margin:5px; position:absolute;" class = "dropdown-menu"></ul></div><div id=chart></div></div></div></div>'
 	$("#container").prepend(modhtml);
 	$("#myModal").prepend("<div id='snackbar'>defaultmessage..</div>");
 	$('table').find('tr').each(function(){
@@ -30,15 +30,25 @@ $(document).ready( function() {
 	    	//if a course row, then add the extension button and do something if that course has been "saved"
 	    	var thisForm = this;
 	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" style="vertical-align: bottom; display:block;" width="25" height="25" src='+chrome.extension.getURL('disticon.png')+' /></td>');
-	  //   	chrome.runtime.sendMessage({command: "alreadyContains",unique: $(this).find('td[data-th="Unique"]').text()}, function(response) {
-			// 	if(response.alreadyContains){
-			// 		//DO SOMETHING IF ALREADY CONTAINS
-	  //   			$(thisForm).find('td').each(function(){
-	  //   			//	$(this).css('font-weight','bold');
-	  //   				$(this).css('color','#4CAF50');
-	  //   			});
-			// 	} 
-			// });
+	    	chrome.runtime.sendMessage({command: "isSingleConflict",dtarr: getDtarr(this)}, function(response) {
+				if(response.isConflict){
+					//DO SOMETHING IF ALREADY CONTAINS
+	    			$(thisForm).find('td').each(function(){
+	    			//	$(this).css('font-weight','bold');
+	    				$(this).css('color','#F44336');
+	    				$(this).css('text-decoration','line-through');
+	    				$(this).css('font-weight','bold');
+	    			});
+				}
+				else{
+	    			$(thisForm).find('td').each(function(){
+	    			//	$(this).css('font-weight','bold');
+	    				$(this).css('color','black');
+	    				$(this).css('text-decoration','none');
+	    				$(this).css('font-weight','normal');
+	    			});					
+				} 
+			});
 	    }
 	});
 	
@@ -55,6 +65,7 @@ $(document).ready( function() {
 			$("#snackbar").text(response.done);
 			$("#snackbar").attr("class","show");
 			 setTimeout(function(){$("#snackbar").attr("class","");}, 3000);
+			 update();
 		});
 	});
 
@@ -80,6 +91,59 @@ $(document).ready( function() {
     	$("#snackbar").attr("class",""); 
 	});
 });
+
+function update(){
+	$('table').find('tr').each(function(){
+		if(!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0){
+	    	//if a course row, then add the extension button and do something if that course has been "saved"
+	    	var thisForm = this;
+	    	chrome.runtime.sendMessage({command: "isSingleConflict",dtarr: getDtarr(this)}, function(response) {
+	    		if(response.isConflict){
+					//DO SOMETHING IF ALREADY CONTAINS
+					$(thisForm).find('td').each(function(){
+		    			//	$(this).css('font-weight','bold');
+		    			$(this).css('color','#F44336');
+		    			$(this).css('text-decoration','line-through');
+		    			$(this).css('font-weight','bold');
+	    			});
+				} else {
+					$(thisForm).find('td').each(function(){
+		    			//	$(this).css('font-weight','bold');
+		    			$(this).css('color','black');
+		    			$(this).css('text-decoration','none');
+		    			$(this).css('font-weight','normal');
+	    			});
+				}
+			});
+	    }
+	});
+}
+
+function getDtarr(row){
+	var numlines = $(row).find('td[data-th="Days"]>span').length;
+	console.log("Numlines: "+numlines);
+	var dtarr = [];
+	for(var i=0; i<numlines;i++){
+		var date = $(row).find('td[data-th="Days"]>span:eq('+i+')').text();
+		var time = $(row).find('td[data-th="Hour"]>span:eq('+i+')').text();
+		var place = $(row).find('td[data-th="Room"]>span:eq('+i+')').text();
+		console.log("DateLength: " +date.length);
+		for(var j = 0; j<date.length;j++){
+			var letter = date.charAt(j);
+			var day = "";
+			if(letter == "T" && j <date.length-1 && date.charAt(j+1) == "H"){
+				dtarr.push(["TH", convertTime(time),place]);
+			}
+			else {
+				if(letter != "H"){
+					dtarr.push([letter, convertTime(time),place]);
+				}
+			}
+		}
+	}
+	console.log(dtarr);
+	return dtarr;
+}
 
 function Course(coursename, unique, profname,datetimearr, status, link){
 	this.coursename = coursename;
@@ -170,7 +234,10 @@ function makeLine(date, time, place){
 		output+=arr[0];
 	}
 	var building = place.substring(0,place.search(/\d/)-1);
-	return output + " at "+time.replace(/\./g,'').replace(/\-/g,' to ')+" in "+"<a style='font-size:medium' target='_blank' href='"+"https://maps.utexas.edu/buildings/UTM/"+building+"''>"+place.substring(0,place.search(/\d/)-1)+"</>";
+	if(building == ""){
+		building = "Undecided Location";
+	}
+	return output + " at "+time.replace(/\./g,'').replace(/\-/g,' to ')+" in "+"<a style='font-size:medium' target='_blank' href='"+"https://maps.utexas.edu/buildings/UTM/"+building+"''>"+building+"</>";
 }
 
 function convertTime(time){
@@ -185,6 +252,7 @@ function getDistribution(){
 	query += " where dept like '%"+department+"%'";
 	query += " and prof like '%"+profname+"%'";
 	query += " and course_nbr like '%"+course_nbr+"%'";
+	query += "order by a1+a2+a3+b1+b2+b3+c1+c2+c3+d1+d2+d3+f desc";
 //	console.log(query);
 	var res = grades.exec(query)[0];
 //	console.log(res);
@@ -209,6 +277,16 @@ function openDialog(dep,cls,sem,professor,res){
 	}
 	else{
 		data = res.values[0];
+	}
+	console.log(res);
+	var title = null
+	if(profname == "" && typeof res != 'undefined'){
+		// for(var i = 0; i<5;i++){
+		// 	$("#profdropdown-menu").append('<li class = "active menu-item"><a href = "#" class = "menu-item-link">'+res.values[i][1]+'</a></li>');
+		// }
+		// $("#profdropdown").css("visibility","visible");
+		title = res.values[0][1];
+
 	}
 	var modal = document.getElementById('myModal');
 	var span = document.getElementsByClassName("close")[0];
@@ -247,13 +325,14 @@ span.onclick = function() {
 chart = Highcharts.chart('chart', {
 	chart: {
 		type: 'column',
+		backgroundColor: ' #fefefe',
 		spacingLeft: 10
 	},
 	title: {
 		text: null
 	},
 	subtitle: {
-		text: null
+		text: title
 	},
 	legend: {
 		enabled: false
@@ -390,6 +469,8 @@ chrome.runtime.sendMessage({
 		else{
 		eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?&s_in_action_sw=S&s_in_search_type_sw=N&s_in_search_name="+profname.substring(0,1)+profname.substring(1).toLowerCase()+"%2C%20"+first.substring(0,1)+first.substring(1).toLowerCase();
 	}
+	} else {
+		description = "Please Refresh the Page"
 	}
 });
 

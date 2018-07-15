@@ -6,14 +6,14 @@ chrome.storage.sync.get('savedCourses', function(data) {
 					var between = response.between;
 					var text = "";
 					for(var i = 0; i<between.length;i++){
-						text+="Conflict between: "+ getSimpleName(between[i][0].coursename,between[i][0].unique) + " and "+getSimpleName(between[i][1].coursename,between[i][1].unique);
+						text+="CONFLICT: "+ getSimpleName(between[i][0].coursename,between[i][0].unique) + " and "+getSimpleName(between[i][1].coursename,between[i][1].unique);
 						isConflicted.push(between[i][0].unique);
 						isConflicted.push(between[i][1].unique);
 						if(i != between.length-1){
 							text+= "<br>";
 						}
 					}
-					$("#courseList").prepend("<p style='font-size:small; font-weight:bold; color:red; margin:5px;'>"+text+"</>");
+					$("#courseList").prepend("<p style='font-size:small; font-weight:bold; color:red; margin:5px 5px 5px 10px'>"+text+"</>");
 				} 
 			});
 		courses = data.savedCourses;
@@ -82,7 +82,9 @@ $(document).ready(function() {
 				console.log($(thisForm).closest("ul").children(":visible").length);
 				$(thisForm).closest("ul").find("> p").remove();
 				if($(thisForm).closest("ul").children(':visible').length===1){
-					$("#empty").fadeIn(200);
+					$("#courseList").fadeOut(300,function(){
+						$("#empty").fadeIn(200);
+					});	
 				}
 				updateConflicts();
 			});

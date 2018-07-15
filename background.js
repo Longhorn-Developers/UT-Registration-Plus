@@ -7,6 +7,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
 			remove(request,sender,response);
 		}
 	}
+	else if(request.command == "isSingleConflict"){
+		isSingleConflict(request.dtarr,response);
+	}
 	else if(request.command == "checkConflicts"){
 		checkConflicts(response);
 	}
@@ -40,7 +43,7 @@ function checkConflicts(sendResponse) {
 		var courses = data.savedCourses;
 		for(var i = 0; i<courses.length;i++){
 			for(var j=i+1; j<courses.length; j++){
-				if(isConflict(courses[i],courses[j])){
+				if(isConflict(courses[i].datetimearr,courses[j].datetimearr)){
 					console.log("conflict");
 					conflicts.push([courses[i],courses[j]]);
 				}
@@ -55,10 +58,20 @@ function checkConflicts(sendResponse) {
 	});
 }
 
+function isSingleConflict(currdatearr, sendResponse){
+	chrome.storage.sync.get('savedCourses', function(data) {
+		var courses = data.savedCourses;
+		for(var i = 0; i<courses.length;i++){
+			if(isConflict(currdatearr,courses[i].datetimearr)){
+				sendResponse({isConflict:true});
+				return false;
+			}
+		}
+		sendResponse({isConflict:false});
+	});
+}
 
-function isConflict(courseA, courseB){
-	var adtarr = courseA.datetimearr;
-	var bdtarr = courseB.datetimearr;
+function isConflict(adtarr, bdtarr){
 	for(var i = 0; i<adtarr.length;i++){
 		var currday = adtarr[i][0];
 		var currtimes = adtarr[i][1];
