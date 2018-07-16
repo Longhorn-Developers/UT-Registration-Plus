@@ -67,9 +67,6 @@ function updateConflicts(){
 }
 
 $(document).ready(function() {
-    $("#clear").click(function(){
-    	clear();
-	});
 	$("#courseList li").click(function(){
 		//GACKY FIX
 		$(this).find("#listMoreInfo").click(function(){
@@ -87,6 +84,11 @@ $(document).ready(function() {
 					});	
 				}
 				updateConflicts();
+				chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+					for(var i = 0; i<tabs.length;i++){
+						chrome.tabs.sendMessage(tabs[i].id, {command: "update"});
+					}
+				});
 			});
 		});
 		if($(this).find("#moreInfo").is(":hidden")){
@@ -96,6 +98,15 @@ $(document).ready(function() {
 		else{
 			$(this).find("#moreInfo").fadeOut(200);
 		}
+	});
+	$("#clear").click(function(){
+    	clear();
+	});
+	$("#schedule").click(function(){
+		chrome.tabs.create({ 'url': 'https://utexas.collegescheduler.com/entry'});
+	});
+	$("#open").click(function(){
+		chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
 	});
 });
 
@@ -133,6 +144,11 @@ function makeLine(index){
 
 function clear(){
 	chrome.storage.sync.set({savedCourses: []});
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+		for(var i = 0; i<tabs.length;i++){
+			chrome.tabs.sendMessage(tabs[i].id, {command: "update"});
+		}
+	});
 	console.log("cleared");
 	$("#courseList").fadeOut(300,function(){
 			$("#empty").fadeIn(200);

@@ -1,29 +1,12 @@
 TODO as of 7/10/18:
-- undefined prof, show all possible profs from past? (DIFFERENT IF NO PROF)
-- Online classes/no location
-- save image of modal?
-- no place
-- Degree plan?
-- default message save courses 
 - eureka integration 
-- underline Courses maybe? click to go to using the planner link thing
-- schedule generator
-- show schedule conflicts on the course page, and on the registration courselist
-- highlight in red on save course screen
-- sync saved
-- "more at a glance" info on course list screen
 - use maps for schedule conflict
-- refresh the page get description
 - update page with schedule conflict information
 
 CLEAN UP:
 Everything lmao 
 
 KNOWN BUGS:
-- FIX POP UP CARD NOT FILLING FULL LENGTH
-- FIX toast bug
-- FIX save course when no times blank
-- FIX Open popup flickering
 - FIX DIST ICON NOT SCALING IN TD PROBLEM
 
 IN-PROGRESS:
@@ -47,6 +30,20 @@ FIXED/DONE as of 7/10/18:
 - Saving courses
 - waitlist/closed/open colors
 - popup.html
+- no place
 - Schedule Conflicts
+- Online classes/no location
+- default message save courses 
 - when almost everything is blank: M 379H as example
 - added/removing/action toasts
+- sync saved
+- undefined prof, show all possible profs from past? (DIFFERENT IF NO PROF)
+- refresh the page get description
+- "more at a glance" info on course list screen
+- show schedule conflicts on the course page, and on the registration courselist
+- FIX POP UP CARD NOT FILLING FULL LENGTH
+- FIX toast bug
+- FIX save course when no times blank
+- FIX Open popup flickering
+
+chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });

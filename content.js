@@ -12,6 +12,7 @@ var datetimearr = [];
 var chart;
 var description;
 var status;
+
 const days = new Map([["M" ,"Monday"], 
 ["T", "Tuesday"], ["W", "Wednesday"],["TH" ,"Thursday"], 
 ["F", "Friday"]]);
@@ -29,7 +30,7 @@ $(document).ready( function() {
 	    if(!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0){
 	    	//if a course row, then add the extension button and do something if that course has been "saved"
 	    	var thisForm = this;
-	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="25" height="25" src='+chrome.extension.getURL('disticon.png')+' /></td>');
+	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='+chrome.extension.getURL('disticon.png')+' /></td>');
 	    	chrome.runtime.sendMessage({command: "isSingleConflict",dtarr: getDtarr(this)}, function(response) {
 				if(response.isConflict){
 					//DO SOMETHING IF ALREADY CONTAINS
@@ -82,6 +83,12 @@ $(document).ready( function() {
     	}
     	$("#snackbar").attr("class",""); 
 	});
+	chrome.runtime.onMessage.addListener(
+		function(request, sender, sendResponse) {
+			if (request.command == "update"){
+				update();
+			}
+		});
 });
 
 function update(){
@@ -111,7 +118,6 @@ function update(){
 
 function getDtarr(row){
 	var numlines = $(row).find('td[data-th="Days"]>span').length;
-	console.log("Numlines: "+numlines);
 	var dtarr = [];
 	for(var i=0; i<numlines;i++){
 		var date = $(row).find('td[data-th="Days"]>span:eq('+i+')').text();
@@ -131,7 +137,6 @@ function getDtarr(row){
 			}
 		}
 	}
-	console.log(dtarr);
 	return dtarr;
 }
 
@@ -154,7 +159,6 @@ function getCourseInfo(row){
 			profurl = $(this).find('td[data-th="Unique"] a').prop('href');
 		    uniquenum = $(this).find('td[data-th="Unique"]').text();
 		   	status = $(this).find('td[data-th="Status"]').text();
-		    console.log(status);
 			profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0];
 			profinit = $(this).find('td[data-th="Instructor"]').text().split(', ')[1];
 			if(profname.indexOf(" ") == 0){
@@ -169,20 +173,16 @@ function getCourseInfo(row){
 				$("#topbuttons").before('<h2 class="dateTimePlace">'+makeLine(date,time,place)+'</th>');
 			//	makeLine(date,time,place);
 			}
-			console.log(datetimearr);
 			return false;
 		}
 	});
 	if(typeof coursename == 'undefined'){
 		coursename = $("#details h2").text();
-		console.log(profname+" "+profinit);
 		profinit = profinit.substring(0,1);
 		profurl = document.URL;
 	}
-	//console.log(coursename);
 	getDescription();
 	department = coursename.substring(0,coursename.search(/\d/)-2);
-	//console.log(department);
 	course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
 }
 
@@ -240,12 +240,10 @@ function convertTime(time){
 function getDistribution(){
 	var query = "select * from agg";
 	query += " where dept like '%"+department+"%'";
-	query += " and prof like '%"+profname+"%'";
+	query += " and prof like '%"+profname.replace(/'/g, "")+"%'";
 	query += " and course_nbr like '%"+course_nbr+"%'";
 	query += "order by a1+a2+a3+b1+b2+b3+c1+c2+c3+d1+d2+d3+f desc";
-//	console.log(query);
 	var res = grades.exec(query)[0];
-//	console.log(res);
 	var output = "";
 	openDialog(department,coursename,"aggregate",profname,res);
 }
@@ -271,12 +269,7 @@ function openDialog(dep,cls,sem,professor,res){
 	console.log(res);
 	var title = null
 	if(profname == "" && typeof res != 'undefined'){
-		// for(var i = 0; i<5;i++){
-		// 	$("#profdropdown-menu").append('<li class = "active menu-item"><a href = "#" class = "menu-item-link">'+res.values[i][1]+'</a></li>');
-		// }
-		// $("#profdropdown").css("visibility","visible");
 		title = res.values[0][1];
-
 	}
 	var modal = document.getElementById('myModal');
 	var span = document.getElementsByClassName("close")[0];
@@ -294,94 +287,90 @@ function openDialog(dep,cls,sem,professor,res){
 		color = "#F44336";
 	}
 	$("#title").append("<span style='color:"+color+";font-size:medium;'>"+" #"+uniquenum+"</>");
+
 	var name;
 	if(profname == ""){
 		name = "Undecided Professor ";
-		if(typeof res == 'undefined'){
-
-		}
 	}
 	else{
 		name = profinit+". "+profname.substring(0,1)+profname.substring(1).toLowerCase();
 	}
-
 	$("#profname").text("with "+ name);
-//console.log(coursename);
-span.onclick = function() {
-	$("#myModal").fadeOut(200);
-	$("#snackbar").attr("class",""); 
 
-}
-chart = Highcharts.chart('chart', {
-	chart: {
-		type: 'column',
-		backgroundColor: ' #fefefe',
-		spacingLeft: 10
-	},
-	title: {
-		text: null
-	},
-	subtitle: {
-		text: title
-	},
-	legend: {
-		enabled: false
-	},
-	xAxis: {
-		title: {
-			text: 'Grades' 
+	span.onclick = function() {
+		$("#myModal").fadeOut(200);
+		$("#snackbar").attr("class","");
+	}
+	chart = Highcharts.chart('chart', {
+		chart: {
+			type: 'column',
+			backgroundColor: ' #fefefe',
+			spacingLeft: 10
 		},
-		categories: [
-		'A',
-		'A-',
-		'B+',
-		'B',
-		'B-', 
-		'C+', 
-		'C', 
-		'C-',
-		'D+', 
-		'D',
-		'D-',
-		'F'
-		],
-		crosshair: true
-	},
-	yAxis: {
-		min: 0,
 		title: {
-			text: 'Students'
-		}
-	},
-	credits: {
-		enabled: false
-	},
-	lang: {
-		noData: "The professor hasn't taught this class :("
-	},
-	tooltip: {
-		headerFormat: '<span style="font-size:small; font-weight:bold">{point.key}</span><table>',
-		pointFormat: '<td style="color:{black};padding:0;font-size:small; font-weight:bold;"><b>{point.y:.0f} Students</b></td>',
-		footerFormat: '</table>',
-		shared: true,
-		useHTML: true
-	},
-	plotOptions: {
-		bar: {
-			pointPadding: 0.2,
-			borderWidth: 0
+			text: null
 		},
-		series: {
-			animation: {
-				duration: 700
+		subtitle: {
+			text: title
+		},
+		legend: {
+			enabled: false
+		},
+		xAxis: {
+			title: {
+				text: 'Grades' 
+			},
+			categories: [
+			'A',
+			'A-',
+			'B+',
+			'B',
+			'B-', 
+			'C+', 
+			'C', 
+			'C-',
+			'D+', 
+			'D',
+			'D-',
+			'F'
+			],
+			crosshair: true
+		},
+		yAxis: {
+			min: 0,
+			title: {
+				text: 'Students'
 			}
-		}
-	},
-	series: [{
-		name: 'Grades',
-		data: [{y: data[6], color: '#4CAF50'}, {y: data[7], color: '#8BC34A'}, {y: data[8], color: '#CDDC39'}, {y: data[9], color: '#FFEB3B'}, {y: data[10], color: '#FFC107'}, {y: data[11], color: '#FFA000'}, {y: data[12], color: '#F57C00'}, {y: data[13], color: '#FF5722'}, {y: data[14], color: '#FF5252'}, {y: data[15], color: '#E64A19'}, {y: data[16], color: '#F44336'}, {y: data[17], color: '#D32F2F'}]
+		},
+		credits: {
+			enabled: false
+		},
+		lang: {
+			noData: "The professor hasn't taught this class :("
+		},
+		tooltip: {
+			headerFormat: '<span style="font-size:small; font-weight:bold">{point.key}</span><table>',
+			pointFormat: '<td style="color:{black};padding:0;font-size:small; font-weight:bold;"><b>{point.y:.0f} Students</b></td>',
+			footerFormat: '</table>',
+			shared: true,
+			useHTML: true
+		},
+		plotOptions: {
+			bar: {
+				pointPadding: 0.2,
+				borderWidth: 0
+			},
+			series: {
+				animation: {
+					duration: 700
+				}
+			}
+		},
+		series: [{
+			name: 'Grades',
+			data: [{y: data[6], color: '#4CAF50'}, {y: data[7], color: '#8BC34A'}, {y: data[8], color: '#CDDC39'}, {y: data[9], color: '#FFEB3B'}, {y: data[10], color: '#FFC107'}, {y: data[11], color: '#FFA000'}, {y: data[12], color: '#F57C00'}, {y: data[13], color: '#FF5722'}, {y: data[14], color: '#FF5252'}, {y: data[15], color: '#E64A19'}, {y: data[16], color: '#F44336'}, {y: data[17], color: '#D32F2F'}]
 
-	}]
+		}]
 }, function(chart) { // on complete
 	if(data.length == 0){
 		chart.renderer.text('Could not find distribution for this Instructor teaching this Course', 100, 120)
@@ -398,13 +387,13 @@ chart = Highcharts.chart('chart', {
 	}
 
 });	// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-	if (event.target == modal) {
-		$("#myModal").fadeOut(fadetime);
-		$("#snackbar").attr("class",""); 
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			$("#myModal").fadeOut(fadetime);
+			$("#snackbar").attr("class",""); 
 
-	}
-}	
+		}
+	}	
 }
 
 function prettifyTitle(){
