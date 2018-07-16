@@ -85,9 +85,7 @@ $(document).ready(function() {
 				}
 				updateConflicts();
 				chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-					for(var i = 0; i<tabs.length;i++){
-						chrome.tabs.sendMessage(tabs[i].id, {command: "update"});
-					}
+						chrome.tabs.sendMessage(tabs[0].id, {command: "update"});
 				});
 			});
 		});
@@ -145,9 +143,7 @@ function makeLine(index){
 function clear(){
 	chrome.storage.sync.set({savedCourses: []});
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-		for(var i = 0; i<tabs.length;i++){
-			chrome.tabs.sendMessage(tabs[i].id, {command: "update"});
-		}
+			chrome.tabs.sendMessage(tabs[0].id, {command: "update"});
 	});
 	console.log("cleared");
 	$("#courseList").fadeOut(300,function(){

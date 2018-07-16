@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
 		}
 	}
 	else if(request.command == "isSingleConflict"){
-		isSingleConflict(request.dtarr,response);
+		isSingleConflict(request.dtarr,request.unique,response);
 	}
 	else if(request.command == "checkConflicts"){
 		checkConflicts(response);
@@ -58,16 +58,25 @@ function checkConflicts(sendResponse) {
 	});
 }
 
-function isSingleConflict(currdatearr, sendResponse){
+function isSingleConflict(currdatearr, unique, sendResponse){
 	chrome.storage.sync.get('savedCourses', function(data) {
 		var courses = data.savedCourses;
+		var conflict = false;
 		for(var i = 0; i<courses.length;i++){
 			if(isConflict(currdatearr,courses[i].datetimearr)){
-				sendResponse({isConflict:true});
-				return false;
+				conflict = true;
+				break;
 			}
 		}
-		sendResponse({isConflict:false});
+		var contains = false;
+		var i = 0;
+		while(i < courses.length && !contains){
+			if(courses[i].unique == unique){
+				contains = true;
+			}
+			i++;
+		}
+		sendResponse({isConflict:conflict,alreadyContains:contains});
 	});
 }
 

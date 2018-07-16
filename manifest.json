@@ -8,18 +8,17 @@
   "declarativeContent",
    "storage",
    "*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*",
-   "*://*.ratemyprofessors.com/*",
    "*://*.catalog.utexas.edu/ribbit/"
  ],
   "content_scripts": [{
-    "css": ["styles.css"],
-    "js": ["moment.min.js","sql-memory-growth.js","highcharts.js","jquery-3.3.1.min.js","content.js"],
+    "css": ["css/styles.css"],
+    "js": ["js/moment.min.js","js/sql-memory-growth.js","js/highcharts.js","js/jquery-3.3.1.min.js","js/content.js"],
     "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
   }],
   "web_accessible_resources": [
-    "grades.db","disticon.png"],
+    "grades.db","images/disticon.png"],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": ["js/background.js"],
     "persistent": true
   },
   "browser_action": {

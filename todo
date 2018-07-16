@@ -1,8 +1,7 @@
 TODO as of 7/10/18:
 - eureka integration 
 - use maps for schedule conflict
-- update page with schedule conflict information
-
+- descriiption when not loading properly, whne need to refresh page
 CLEAN UP:
 Everything lmao 
 
@@ -45,5 +44,4 @@ FIXED/DONE as of 7/10/18:
 - FIX toast bug
 - FIX save course when no times blank
 - FIX Open popup flickering
-
-chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
+- update page with schedule conflict information
