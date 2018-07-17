@@ -21,4 +21,4 @@ This extension tries to streamline most of the unnecessary steps and headaches o
 </p>
 
 ## Try it yourself:
-[https://chrome.google.com/webstore/detail/hboadpjkoaieogjimneceaahlppnipaa/publish-accepted?authuser=0&hl=en-US]
+[on the chrome web store](https://chrome.google.com/webstore/detail/hboadpjkoaieogjimneceaahlppnipaa/publish-accepted?authuser=0&hl=en-US)
