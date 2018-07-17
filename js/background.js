@@ -1,3 +1,4 @@
+/* Handle messages and their commands from content and popup scripts*/
 chrome.runtime.onMessage.addListener(function(request, sender, response) {
 	if(request.command == "courseStorage") {
 		if(request.action == "add"){
@@ -30,13 +31,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
 	return true;
 });
 
- chrome.runtime.onInstalled.addListener(function() {
+/* Initially set the course data in storage */
+chrome.runtime.onInstalled.addListener(function() {
  	var arr = new Array();
     chrome.storage.sync.set({savedCourses: arr}, function() {
       console.log('initial course list');
     });
 });
 
+/* Find all the conflicts in the courses and send them out/ if there is even a conflict*/
 function checkConflicts(sendResponse) {
 	chrome.storage.sync.get('savedCourses', function(data) {
 		var conflicts = [];
@@ -58,6 +61,7 @@ function checkConflicts(sendResponse) {
 	});
 }
 
+/* Find if the course at unique and with currdatearr is contained in the saved courses and if it conflicts with any other courses*/
 function isSingleConflict(currdatearr, unique, sendResponse){
 	chrome.storage.sync.get('savedCourses', function(data) {
 		var courses = data.savedCourses;
@@ -80,6 +84,7 @@ function isSingleConflict(currdatearr, unique, sendResponse){
 	});
 }
 
+/* Check if conflict between two date-time-arrs*/
 function isConflict(adtarr, bdtarr){
 	for(var i = 0; i<adtarr.length;i++){
 		var currday = adtarr[i][0];
@@ -97,6 +102,7 @@ function isConflict(adtarr, bdtarr){
 	return false;
 }
 
+/* Add the requested course to the storage*/
 function add(request, sender, sendResponse) {
 	chrome.storage.sync.get('savedCourses', function(data) {
 		var courses = data.savedCourses;
@@ -106,6 +112,8 @@ function add(request, sender, sendResponse) {
 		sendResponse({done:"Added: ("+request.course.unique+") "+request.course.coursename,label:"Remove Course -"});
 	});
 }
+
+/* Find and Remove the requested course from the storage*/
 function remove(request, sender, sendResponse) {
 	chrome.storage.sync.get('savedCourses', function(data) {
 		var courses = data.savedCourses;
@@ -121,6 +129,7 @@ function remove(request, sender, sendResponse) {
 	});
 }
 
+/* Find if the unique is already contained within the storage*/
 function alreadyContains(unique,sendResponse){
 	chrome.storage.sync.get('savedCourses', function(data) {
 		var courses = data.savedCourses;

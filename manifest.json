@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
 
-  "name": "UT Course Extension",
+  "name": "UT Registration Plus",
   "version": "0.1.0",
-  "description": "Chrome Extension to show more information on the UT Course catalog",
+  "description": "Improves the course registration process at the University of Texas at Austin!",
   "permissions": [ "tabs",
   "declarativeContent",
    "storage",

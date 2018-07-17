@@ -26,18 +26,16 @@ $(document).ready( function() {
 	var modhtml ='<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title id="title">Computer Fluency (C S 302)</h2><h2 class=profname id="profname">with Bruce Porter</h2><div id="topbuttons" class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer style=""><ul class=description id="description" style="list-style-type:disc"></ul></div></div><div class=card ><div id="chartcontainer" class=cardcontainer><div id=chart></div></div></div></div>';
 	$("#container").prepend(modhtml);
 	$("#myModal").prepend("<div id='snackbar'>defaultmessage..</div>");
+	//go through all the rows in the list
 	$('table').find('tr').each(function(){
 		if(!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0){
 	    	//if a course row, then add the extension button and do something if that course has been "saved"
 	    	var thisForm = this;
 	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='+chrome.extension.getURL('images/disticon.png')+' /></td>');
 	    	var uniquenum = $(this).find('td[data-th="Unique"]').text();
-	    	console.log(uniquenum);
 	    	chrome.runtime.sendMessage({command: "isSingleConflict",dtarr: getDtarr(this),unique:uniquenum}, function(response) {
 	    		if(response.isConflict){
-					//DO SOMETHING IF ALREADY CONTAINS
 					$(thisForm).find('td').each(function(){
-		    			//	$(this).css('font-weight','bold');
 		    			$(this).css('color','#F44336');
 		    			$(this).css('text-decoration','line-through');
 		    			$(this).css('font-weight','normal');	    			
@@ -45,7 +43,6 @@ $(document).ready( function() {
 				} 
 				else {
 					$(thisForm).find('td').each(function(){
-		    			//	$(this).css('font-weight','bold');
 		    			$(this).css('color','black');
 		    			$(this).css('text-decoration','none');
 		    			$(this).css('font-weight','normal');	    			
@@ -53,7 +50,6 @@ $(document).ready( function() {
 				}
 				if(response.alreadyContains){
 					$(thisForm).find('td').each(function(){
-		    			//	$(this).css('font-weight','bold');
 		    			$(this).css('color','#4CAF50');
 		    			$(this).css('text-decoration','none');
 		    			$(this).css('font-weight','bold');
@@ -62,7 +58,7 @@ $(document).ready( function() {
 			});
 	    }
 	});
-	
+	/*Handle the button clicks*/
 	$(".distButton").click(function(){
 		var row = $(this).closest('tr');
 		getCourseInfo(row);
@@ -95,12 +91,14 @@ $(document).ready( function() {
 			window.open(eCISLink);
 		}, butdelay);
 	});
+	/*Close Modal when hit escape*/
 	$(document).keydown(function(e) { 
 		if (e.keyCode == 27) { 
 			$("#myModal").fadeOut(fadetime);
 		}
 		$("#snackbar").attr("class",""); 
 	});
+	/*Listen for update mssage coming from popup*/
 	chrome.runtime.onMessage.addListener(
 		function(request, sender, sendResponse) {
 			if (request.command == "update"){
@@ -109,17 +107,15 @@ $(document).ready( function() {
 		});
 });
 
+/* Update the course list to show if the row contains a course that conflicts with the saved course is one of the saved courses */
 function update(){
 	$('table').find('tr').each(function(){
 		if(!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0){
-	    	//if a course row, then add the extension button and do something if that course has been "saved"
 	    	var thisForm = this;
 	    	var uniquenum = $(this).find('td[data-th="Unique"]').text();
 	    	chrome.runtime.sendMessage({command: "isSingleConflict",dtarr: getDtarr(this),unique:uniquenum}, function(response) {
 	    		if(response.isConflict){
-					//DO SOMETHING IF ALREADY CONTAINS
 					$(thisForm).find('td').each(function(){
-		    			//	$(this).css('font-weight','bold');
 		    			$(this).css('color','#F44336');
 		    			$(this).css('text-decoration','line-through');
 		    			$(this).css('font-weight','normal');	    			
@@ -127,7 +123,6 @@ function update(){
 				} 
 				else {
 					$(thisForm).find('td').each(function(){
-		    			//	$(this).css('font-weight','bold');
 		    			$(this).css('color','black');
 		    			$(this).css('text-decoration','none');
 		    			$(this).css('font-weight','normal');	    			
@@ -135,18 +130,17 @@ function update(){
 				}
 				if(response.alreadyContains){
 					$(thisForm).find('td').each(function(){
-		    			//	$(this).css('font-weight','bold');
 		    			$(this).css('color','#4CAF50');
 		    			$(this).css('text-decoration','none');
 		    			$(this).css('font-weight','bold');
 		    		});
 				}
 			});
-
 	    }
 	});
 }
 
+/* For a row, get the date-time-array for checking conflicts*/
 function getDtarr(row){
 	var numlines = $(row).find('td[data-th="Days"]>span').length;
 	var dtarr = [];
@@ -170,6 +164,7 @@ function getDtarr(row){
 	return dtarr;
 }
 
+/*Course object for passing to background*/
 function Course(coursename, unique, profname,datetimearr, status, link){
 	this.coursename = coursename;
 	this.unique = unique;
@@ -179,6 +174,7 @@ function Course(coursename, unique, profname,datetimearr, status, link){
 	this.link = link;
 }
 
+/*For a row, get all the course information and add the date-time-lines*/
 function getCourseInfo(row){
 	$(".dateTimePlace").remove();
 	$('table').find('tr').each(function(){
@@ -201,11 +197,11 @@ function getCourseInfo(row){
 				var time = $(this).find('td[data-th="Hour"]>span:eq('+i+')').text();
 				var place = $(this).find('td[data-th="Room"]>span:eq('+i+')').text();
 				$("#topbuttons").before('<h2 class="dateTimePlace">'+makeLine(date,time,place)+'</th>');
-			//	makeLine(date,time,place);
 		}
 		return false;
 	}
 });
+	/*Handle if on the individual course page*/
 	if(typeof coursename == 'undefined'){
 		coursename = $("#details h2").text();
 		profinit = profinit.substring(0,1);
@@ -216,7 +212,7 @@ function getCourseInfo(row){
 	course_nbr = coursename.substring(coursename.search(/\d/),coursename.indexOf(" ",coursename.search(/\d/)));
 }
 
-//THIS CODE IS EXTREMELY MESSY, CLEAN UP GACK
+/* Make the day-time-arr and make the text for the date-time-line*/
 function makeLine(date, time, place){
 	var arr = [];
 	var output = "";
@@ -260,6 +256,7 @@ function makeLine(date, time, place){
 	return output + " at "+time.replace(/\./g,'').replace(/\-/g,' to ')+" in "+"<a style='font-size:medium' target='_blank' href='"+"https://maps.utexas.edu/buildings/UTM/"+building+"''>"+building+"</>";
 }
 
+/*Convert time to 24hour format*/
 function convertTime(time){
 	var converted = time.replace(/\./g,'').split("-");
 	for(var i = 0; i<2;i++){
@@ -267,6 +264,8 @@ function convertTime(time){
 	}
 	return converted;
 }
+
+/*Query the grades database*/
 function getDistribution(){
 	var query = "select * from agg";
 	query += " where dept like '%"+department+"%'";
@@ -278,8 +277,10 @@ function getDistribution(){
 	openDialog(department,coursename,"aggregate",profname,res);
 }
 
+/*Open the modal and show all the data*/
 function openDialog(dep,cls,sem,professor,res){
 	$("#myModal").fadeIn(fadetime);
+	//initial text on the "save course button"
 	chrome.runtime.sendMessage({command: "alreadyContains",unique: uniquenum}, function(response) {
 		if(response.alreadyContains){
 			$("#saveCourse").text("Remove Course -");
@@ -288,6 +289,7 @@ function openDialog(dep,cls,sem,professor,res){
 			$("#saveCourse").text("Add Course +");
 		}
 	});
+	//set if no grade distribution
 	var data;
 	if(typeof res == 'undefined'){
 		data = [];
@@ -295,6 +297,7 @@ function openDialog(dep,cls,sem,professor,res){
 	else{
 		data = res.values[0];
 	}
+	//if undefined professor, then pick the distribution for the prof with the largest number of overall student entries
 	var title = null
 	if(profname == "" && typeof res != 'undefined'){
 		title = res.values[0][1];
@@ -324,11 +327,12 @@ function openDialog(dep,cls,sem,professor,res){
 		name = profinit+". "+profname.substring(0,1)+profname.substring(1).toLowerCase();
 	}
 	$("#profname").text("with "+ name);
-
+	//close button
 	span.onclick = function() {
 		$("#myModal").fadeOut(200);
 		$("#snackbar").attr("class","");
 	}
+	//set up the chart 
 	chart = Highcharts.chart('chart', {
 		chart: {
 			type: 'column',
@@ -397,10 +401,10 @@ function openDialog(dep,cls,sem,professor,res){
 		series: [{
 			name: 'Grades',
 			data: [{y: data[6], color: '#4CAF50'}, {y: data[7], color: '#8BC34A'}, {y: data[8], color: '#CDDC39'}, {y: data[9], color: '#FFEB3B'}, {y: data[10], color: '#FFC107'}, {y: data[11], color: '#FFA000'}, {y: data[12], color: '#F57C00'}, {y: data[13], color: '#FF5722'}, {y: data[14], color: '#FF5252'}, {y: data[15], color: '#E64A19'}, {y: data[16], color: '#F44336'}, {y: data[17], color: '#D32F2F'}]
-
 		}]
-}, function(chart) { // on complete
+	}, function(chart) { // on complete
 	if(data.length == 0){
+		//if no data, then show the message and hide the series
 		chart.renderer.text('Could not find distribution for this Instructor teaching this Course', 100, 120)
 		.css({
 			fontSize: '20px',
@@ -414,25 +418,25 @@ function openDialog(dep,cls,sem,professor,res){
 		});
 	}
 
-});	// When the user clicks anywhere outside of the modal, close it
+});	// When clicks anywhere outside of the modal, close it
 	window.onclick = function(event) {
 		if (event.target == modal) {
 			$("#myModal").fadeOut(fadetime);
 			$("#snackbar").attr("class",""); 
-
 		}
 	}	
 }
 
+/*Format the title*/
 function prettifyTitle(){
 	val = department.length+course_nbr.length+3;
 	output = coursename.substring(val).replace(/\b\w*/g, function(txt){
 		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
 	});
-	
 	return output + " ("+department+" "+course_nbr+")";	
 }
 
+/*Get the course description from the profurl and highlight the important elements, as well as set the eCIS, and rmp links.*/
 function getDescription(){
 	chrome.runtime.sendMessage({
 		method: "GET",
@@ -452,7 +456,6 @@ function getDescription(){
 					sentence = "<li style='font-style: italic; padding: 0px 5px 5px 5px;'>"+sentence+"</li>";
 				}
 				else if(sentence.indexOf("Restricted to") == 0){
-				//console.log(sentence);
 				sentence = "<li style='color:red; padding: 0px 5px 5px 5px;'>"+sentence+"</li>";
 			}
 			else{
@@ -482,15 +485,15 @@ function getDescription(){
 
 }
 
+/* Load the database*/
 function loadDataBase(){
 	sql = window.SQL;
 	loadBinaryFile('grades.db', function(data){
 		var sqldb = new SQL.Database(data);
-	// Database is ready
-	grades = sqldb;
-	//console.log(grades.exec(query)[0]);
+		grades = sqldb;
 	});
 }
+/* load the database from file */
 function loadBinaryFile(path,success) {
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", chrome.extension.getURL(path), true); 
