@@ -16,7 +16,9 @@ This extension tries to streamline most of the unnecessary steps and headaches o
 
 - Highlights and crosses-out what courses on the UT Course Catalog would conflict with your currently saved courses, making selecting courses that fit with your schedule so much easier. 
 
-
 <p align="center"> 
 <img src="https://lh3.googleusercontent.com/yWyhi3FBP_0QCtd2Ds_zZNdddE3IghNqEtqjHRM1A5iQ9rbVq5D0xfPRrffIPKDMbGtzTiqxKg=w640-h400-e365">
 </p>
+
+## Try it yourself:
+[https://chrome.google.com/webstore/detail/hboadpjkoaieogjimneceaahlppnipaa/publish-accepted?authuser=0&hl=en-US]
