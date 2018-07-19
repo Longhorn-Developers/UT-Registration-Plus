@@ -37,6 +37,9 @@ chrome.runtime.onInstalled.addListener(function() {
     chrome.storage.sync.set({savedCourses: arr}, function() {
       console.log('initial course list');
     });
+     chrome.storage.sync.set({courseConflictHighlight: true}, function() {
+      console.log('initial highlighting: true');
+    });
 });
 
 /* Find all the conflicts in the courses and send them out/ if there is even a conflict*/
@@ -119,7 +122,6 @@ function remove(request, sender, sendResponse) {
 		var courses = data.savedCourses;
 		console.log(courses);
 		var index = 0;
-		console.log(courses.length);
 		while(index<courses.length && courses[index].unique != request.course.unique){
 			index++;
 		}

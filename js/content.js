@@ -29,35 +29,12 @@ $(document).ready( function() {
 	//go through all the rows in the list
 	$('table').find('tr').each(function(){
 		if(!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0){
-	    	//if a course row, then add the extension button and do something if that course has been "saved"
-	    	var thisForm = this;
+	    	//if a course row, then add the extension button
 	    	$(this).append('<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='+chrome.extension.getURL('images/disticon.png')+' /></td>');
-	    	var uniquenum = $(this).find('td[data-th="Unique"]').text();
-	    	chrome.runtime.sendMessage({command: "isSingleConflict",dtarr: getDtarr(this),unique:uniquenum}, function(response) {
-	    		if(response.isConflict){
-					$(thisForm).find('td').each(function(){
-		    			$(this).css('color','#F44336');
-		    			$(this).css('text-decoration','line-through');
-		    			$(this).css('font-weight','normal');	    			
-		    		});
-				} 
-				else {
-					$(thisForm).find('td').each(function(){
-		    			$(this).css('color','black');
-		    			$(this).css('text-decoration','none');
-		    			$(this).css('font-weight','normal');	    			
-		    		});
-				}
-				if(response.alreadyContains){
-					$(thisForm).find('td').each(function(){
-		    			$(this).css('color','#4CAF50');
-		    			$(this).css('text-decoration','none');
-		    			$(this).css('font-weight','bold');
-		    		});
-				}
-			});
 	    }
 	});
+	//update the conflicts
+	update();
 	/*Handle the button clicks*/
 	$(".distButton").click(function(){
 		var row = $(this).closest('tr');
@@ -101,7 +78,7 @@ $(document).ready( function() {
 	/*Listen for update mssage coming from popup*/
 	chrome.runtime.onMessage.addListener(
 		function(request, sender, sendResponse) {
-			if (request.command == "update"){
+			if (request.command == "updateCourseList"){
 				update();
 			}
 		});
@@ -109,34 +86,37 @@ $(document).ready( function() {
 
 /* Update the course list to show if the row contains a course that conflicts with the saved course is one of the saved courses */
 function update(){
-	$('table').find('tr').each(function(){
-		if(!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0){
-	    	var thisForm = this;
-	    	var uniquenum = $(this).find('td[data-th="Unique"]').text();
-	    	chrome.runtime.sendMessage({command: "isSingleConflict",dtarr: getDtarr(this),unique:uniquenum}, function(response) {
-	    		if(response.isConflict){
-					$(thisForm).find('td').each(function(){
-		    			$(this).css('color','#F44336');
-		    			$(this).css('text-decoration','line-through');
-		    			$(this).css('font-weight','normal');	    			
-		    		});
-				} 
-				else {
-					$(thisForm).find('td').each(function(){
-		    			$(this).css('color','black');
-		    			$(this).css('text-decoration','none');
-		    			$(this).css('font-weight','normal');	    			
-		    		});
-				}
-				if(response.alreadyContains){
-					$(thisForm).find('td').each(function(){
-		    			$(this).css('color','#4CAF50');
-		    			$(this).css('text-decoration','none');
-		    			$(this).css('font-weight','bold');
-		    		});
+	chrome.storage.sync.get('courseConflictHighlight', function(data) {
+		console.log(data.courseConflictHighlight);
+			$('table').find('tr').each(function(){
+				if(!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0){
+					var thisForm = this;
+					var uniquenum = $(this).find('td[data-th="Unique"]').text();
+					chrome.runtime.sendMessage({command: "isSingleConflict",dtarr: getDtarr(this),unique:uniquenum}, function(response) {
+						if(response.isConflict && data.courseConflictHighlight){
+							$(thisForm).find('td').each(function(){
+								$(this).css('color','#F44336');
+								$(this).css('text-decoration','line-through');
+								$(this).css('font-weight','normal');	    			
+							});
+						} 
+						else {
+							$(thisForm).find('td').each(function(){
+								$(this).css('color','black');
+								$(this).css('text-decoration','none');
+								$(this).css('font-weight','normal');	    			
+							});
+						}
+						if(response.alreadyContains){
+							$(thisForm).find('td').each(function(){
+								$(this).css('color','#4CAF50');
+								$(this).css('text-decoration','none');
+								$(this).css('font-weight','bold');
+							});
+						}
+					});
 				}
 			});
-	    }
 	});
 }
 
@@ -204,7 +184,7 @@ function getCourseInfo(row){
 	/*Handle if on the individual course page*/
 	if(typeof coursename == 'undefined'){
 		coursename = $("#details h2").text();
-		profinit = profinit.substring(0,1);
+		profinit = $("table").find("td[data-th='Instructor']").text().split(", ")[1].substring(0,1);
 		profurl = document.URL;
 	}
 	getDescription();
@@ -291,16 +271,11 @@ function openDialog(dep,cls,sem,professor,res){
 	});
 	//set if no grade distribution
 	var data;
-	if(typeof res == 'undefined'){
+	if(typeof res == 'undefined' || profname == ""){
 		data = [];
 	}
 	else{
 		data = res.values[0];
-	}
-	//if undefined professor, then pick the distribution for the prof with the largest number of overall student entries
-	var title = null
-	if(profname == "" && typeof res != 'undefined'){
-		title = res.values[0][1];
 	}
 	var modal = document.getElementById('myModal');
 	var span = document.getElementsByClassName("close")[0];
@@ -319,12 +294,15 @@ function openDialog(dep,cls,sem,professor,res){
 	}
 	$("#title").append("<span style='color:"+color+";font-size:medium;'>"+" #"+uniquenum+"</>");
 
+	if(typeof profinit != "undefined" && profinit.length > 1){
+		profinit = profinit.substring(0,1);
+	}
 	var name;
 	if(profname == ""){
 		name = "Undecided Professor ";
 	}
 	else{
-		name = profinit+". "+profname.substring(0,1)+profname.substring(1).toLowerCase();
+		name = prettifyName();
 	}
 	$("#profname").text("with "+ name);
 	//close button
@@ -343,7 +321,7 @@ function openDialog(dep,cls,sem,professor,res){
 			text: null
 		},
 		subtitle: {
-			text: title
+			text: null
 		},
 		legend: {
 			enabled: false
@@ -405,7 +383,7 @@ function openDialog(dep,cls,sem,professor,res){
 	}, function(chart) { // on complete
 	if(data.length == 0){
 		//if no data, then show the message and hide the series
-		chart.renderer.text('Could not find distribution for this Instructor teaching this Course', 100, 120)
+		chart.renderer.text('Could not find distribution for this Instructor teaching this Course.', 100, 120)
 		.css({
 			fontSize: '20px',
 			align:'center',
@@ -434,6 +412,12 @@ function prettifyTitle(){
 		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
 	});
 	return output + " ("+department+" "+course_nbr+")";	
+}
+/* Format the Professor Name */
+function prettifyName() {
+    return profinit + ". "+profname.replace(/\w\S*/g, function(txt){
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
 }
 
 /*Get the course description from the profurl and highlight the important elements, as well as set the eCIS, and rmp links.*/

@@ -78,8 +78,8 @@ $(document).ready(function() {
 		});
 		/* clear the conflict messages, then remove the course and updateConflicts. update the tabs*/
 		$(this).find("#listRemove").click(function(){
-			$(thisForm).closest("ul").find("> p").remove();
 			var thisForm = this;
+			$(thisForm).closest("ul").find("> p").remove();
 			chrome.runtime.sendMessage({command: "courseStorage",course: courses[$(thisForm).closest("li").attr("id")], action:"remove"}, function(response) {
 				$(thisForm).closest("li").fadeOut(200);
 				if($(thisForm).closest("ul").children(':visible').length===1){
@@ -88,8 +88,10 @@ $(document).ready(function() {
 					});	
 				}
 				updateConflicts();
-				chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-					chrome.tabs.sendMessage(tabs[0].id, {command: "update"});
+				chrome.tabs.query({}, function(tabs) {
+					for(var i = 0; i<tabs.length; i++){
+						chrome.tabs.sendMessage(tabs[i].id, {command: "updateCourseList"});
+					}
 				});
 			});
 		});
@@ -108,7 +110,7 @@ $(document).ready(function() {
 		chrome.tabs.create({ 'url': 'https://registrar.utexas.edu/schedules'});
 	});
 	$("#open").click(function(){
-		chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
+		chrome.tabs.create({ 'url': "options.html"});
 	});
 });
 
@@ -142,8 +144,10 @@ function makeLine(index){
 /*Clear the list and the storage of courses*/
 function clear(){
 	chrome.storage.sync.set({savedCourses: []});
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, {command: "update"});
+	chrome.tabs.query({}, function(tabs) {
+		for(var i = 0; i<tabs.length; i++){
+			chrome.tabs.sendMessage(tabs[i].id, {command: "updateCourseList"});
+		}
 	});
 	console.log("cleared");
 	$("#courseList").fadeOut(300,function(){
