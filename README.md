@@ -1,4 +1,6 @@
 # UT Registration Plus
+## Try it for yourself:
+[on the chrome web store](https://chrome.google.com/webstore/detail/hboadpjkoaieogjimneceaahlppnipaa/publish-accepted?authuser=0&hl=en-US)
 
 We've all been there. 20 tabs of Rate My Professor, Catalyst, and the UT Course Catalog open and you still don't know what classes to take. 
 This extension tries to streamline most of the unnecessary steps and headaches of registering for classes at UT Austin. 
@@ -20,5 +22,3 @@ This extension tries to streamline most of the unnecessary steps and headaches o
 <img src="https://lh3.googleusercontent.com/yWyhi3FBP_0QCtd2Ds_zZNdddE3IghNqEtqjHRM1A5iQ9rbVq5D0xfPRrffIPKDMbGtzTiqxKg=w640-h400-e365">
 </p>
 
-## Try it yourself:
-[on the chrome web store](https://chrome.google.com/webstore/detail/hboadpjkoaieogjimneceaahlppnipaa/publish-accepted?authuser=0&hl=en-US)
