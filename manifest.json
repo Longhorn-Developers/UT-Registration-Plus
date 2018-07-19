@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "UT Registration Plus",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "options_page": "options.html",
   "description": "Improves the course registration process at the University of Texas at Austin!",
   "permissions": [ "tabs",
