@@ -23,7 +23,7 @@ $(document).ready( function() {
 	loadDataBase();
 	//make heading and modal
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
-	var modhtml ='<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title id="title">Computer Fluency (C S 302)</h2><h2 class=profname id="profname">with Bruce Porter</h2><div id="topbuttons" class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer style=""><ul class=description id="description" style="list-style-type:disc"></ul></div></div><div class=card ><div id="chartcontainer" class=cardcontainer><div id=chart></div></div></div></div>';
+	var modhtml ='<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title id="title">Computer Fluency (C S 302)</h2><h2 class=profname id="profname">with Bruce Porter</h2><div id="topbuttons" class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer style=""><ul class=description id="description" style="list-style-type:disc"></ul></div></div><div class=card ><div id="chartcontainer" class=cardcontainer><div id=chart></div></div></div>';
 	$("#container").prepend(modhtml);
 	$("#myModal").prepend("<div id='snackbar'>defaultmessage..</div>");
 	//go through all the rows in the list
@@ -87,7 +87,6 @@ $(document).ready( function() {
 /* Update the course list to show if the row contains a course that conflicts with the saved course is one of the saved courses */
 function update(){
 	chrome.storage.sync.get('courseConflictHighlight', function(data) {
-		console.log(data.courseConflictHighlight);
 			$('table').find('tr').each(function(){
 				if(!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0){
 					var thisForm = this;
@@ -97,7 +96,7 @@ function update(){
 							$(thisForm).find('td').each(function(){
 								$(this).css('color','#F44336');
 								$(this).css('text-decoration','line-through');
-								$(this).css('font-weight','normal');	    			
+								$(this).css('font-weight','normal');
 							});
 						} 
 						else {
