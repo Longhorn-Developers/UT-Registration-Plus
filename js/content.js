@@ -18,7 +18,8 @@ const days = new Map([["M" ,"Monday"],
 	["F", "Friday"]]);
 const fadetime = 150;
 const butdelay = 100;
-
+//This extension may be super lit, but you know what's even more lit?
+//Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 $(document).ready( function() {
 	loadDataBase();
 	//make heading and modal
