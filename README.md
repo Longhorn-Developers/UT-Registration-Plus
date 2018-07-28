@@ -7,7 +7,7 @@ This extension tries to streamline most of the unnecessary steps and headaches o
 <img src="https://lh3.googleusercontent.com/k_aAutiaOshBRWWFBk-RMrdUlz0ZvauCuh63CpcNywv32r51pr-9YONIofF-FbKl1Rwm4ONV=w640-h400-e365">
 </p>
 
-- For each class on the UT Course Catalog we provide a "breakdown" popup, with quick and easy links to the RateMyProfessor and eCIS pages of the professor, as well as syllabi from when the professor taught the class in the past. 
+- For each class on the UT Course Catalog it provides a "breakdown" popup, with quick and easy links to the RateMyProfessor and eCIS pages of the professor, as well as syllabi from when the professor taught the class in the past. 
 
 - Gets the course description and highlight the important information like prerequisites, restrictions, etc. 
 
