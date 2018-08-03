@@ -463,7 +463,12 @@ function getDescription(){
 				eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?&s_in_action_sw=S&s_in_search_type_sw=N&s_in_search_name="+profname.substring(0,1)+profname.substring(1).toLowerCase()+"%2C%20"+first.substring(0,1)+first.substring(1).toLowerCase();
 			}
 		} else {
-			description = "Please Refresh the Page"
+			description = "<p style='color:red;font-style:bold'>You have been logged out. Please refresh the page and log back in using your UT EID and password.</p>"
+			$("#description").animate({'opacity': 0}, 200, function(){
+				$(this).html(description).animate({'opacity': 1}, 200);    
+			});
+			rmpLink = "http://www.ratemyprofessors.com/campusRatings.jsp?sid=1255";
+			eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?";
 		}
 	});
 
