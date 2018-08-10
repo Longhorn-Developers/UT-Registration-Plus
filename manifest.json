@@ -16,7 +16,6 @@
     "js": ["js/moment.min.js","js/sql-memory-growth.js","js/highcharts.js","js/jquery-3.3.1.min.js","js/content.js"],
     "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
   }],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [
     "grades.db","images/disticon.png"],
   "background": {
