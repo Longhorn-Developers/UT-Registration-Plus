@@ -112,6 +112,9 @@ $(document).ready(function() {
 	$("#open").click(function(){
 		chrome.tabs.create({ 'url': "options.html"});
 	});
+	$("#calendar").click(function() {
+		chrome.tabs.create({ 'url': "calendar.html"});
+	});
 });
 
 /* convert from the dtarr and maek the time lines*/
