@@ -36,62 +36,85 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
         });
 
 */
+
 /* Remove that awful yellow color and border from today in Schedule */
+
 .fc-state-highlight {
     opacity: 0;
     border: none;
-  }
-  
-  /* Styling for each event from Schedule */
-  .fc-time-grid-event.fc-v-event.fc-event {
+}
+
+/* Styling for each event from Schedule */
+
+.fc-time-grid-event.fc-v-event.fc-event {
     border-radius: 4px;
     border: none;
     padding: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+    transition: 0.3s;
     opacity: 1;
-  }
-  
-  /* Bolds the name of the event and inherits the font size */
-  .fc-event {
-    font-size: inherit !important;
+}
+
+.fc-time-grid-event.fc-v-event.fc-event:hover {
+    box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Bolds the name of the event and inherits the font size */
+
+.fc-event {
+    font-size: small !important;
     font-weight: bold !important;
-  }
-  
-  /* Remove the header border from Schedule */
-  .fc td, .fc th {
-    border-style: none !important;
+}
+
+/* Remove the header border from Schedule */
+
+.fc td,
+.fc th {
+    border-style: ridge !important;
     border-width: 1px !important;
-    padding: 0 !important;
+    padding: 2px !important;
     vertical-align: top !important;
-  }
-  
-  /* Inherits background for each event from Schedule. */
-  .fc-event .fc-bg {
+}
+
+.fc-widget-header {
+    background-color: #cc5500;
+    color: white;
+}
+
+/* Inherits background for each event from Schedule. */
+
+.fc-event .fc-bg {
     z-index: 1 !important;
     background: inherit !important;
     opacity: 0.25 !important;
-  }
-  
-  /* Normal font weight for the time in each event */
-  .fc-time-grid-event .fc-time {
+}
+
+/* Normal font weight for the time in each event */
+
+.fc-time-grid-event .fc-time {
     font-weight: normal !important;
-  }
-  
-  /* Apply same opacity to all day events */
-  .fc-ltr .fc-h-event.fc-not-end, .fc-rtl .fc-h-event.fc-not-start {
+}
+
+/* Apply same opacity to all day events */
+
+.fc-ltr .fc-h-event.fc-not-end,
+.fc-rtl .fc-h-event.fc-not-start {
     opacity: 0.65 !important;
     margin-left: 12px !important;
     padding: 5px !important;
-  }
-  
-  /* Apply same opacity to all day events */
-  .fc-day-grid-event.fc-h-event.fc-event.fc-not-start.fc-end {
+}
+
+/* Apply same opacity to all day events */
+
+.fc-day-grid-event.fc-h-event.fc-event.fc-not-start.fc-end {
     opacity: 0.65 !important;
     margin-left: 12px !important;
     padding: 5px !important;
-  }
-  
-  /* Material design button */
-  .fc-button {
+}
+
+/* Material design button */
+
+.fc-button {
     display: inline-block;
     position: relative;
     cursor: pointer;
@@ -127,22 +150,25 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
     overflow: hidden;
     -webkit-transition: box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     transition: box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  }
-  
-  .fc-button:hover {
+}
+
+.fc-button:hover {
     background-color: rgba(158, 158, 158, 0.2);
-  }
-  
-  .fc-button:focus, .fc-button:hover {
+}
+
+.fc-button:focus,
+.fc-button:hover {
     text-decoration: none;
-  }
-  
-  /* The active button box is ugly so the active button will have the same appearance of the hover */
-  .fc-state-active {
+}
+
+/* The active button box is ugly so the active button will have the same appearance of the hover */
+
+.fc-state-active {
     background-color: rgba(158, 158, 158, 0.2);
-  }
-  
-  /* Not raised button */
-  .fc-state-default {
+}
+
+/* Not raised button */
+
+.fc-state-default {
     box-shadow: None;
-  }
+}
