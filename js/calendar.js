@@ -1,6 +1,6 @@
 $(function () {
     const materialColors = ['#4CAF50', '#CDDC39',
-        '#FFC107', '#2196F3', '#F57C00', '#9C27B0', '#FF5722', , '#673AB7',
+        '#FFC107', '#2196F3', '#F57C00', '#9C27B0', '#FF5722', '#673AB7',
         '#FF5252', '#E91E63', '#009688', '#00BCD4',
         '#4E342E', '#424242', '#9E9E9E'
     ];
@@ -16,23 +16,12 @@ $(function () {
     var colorCounter = 0;
     // Each schedule needs to store 'TITLE - START TIME - END TIME - COLOR'
     var classSchedules = [];
-
+    var savedCourses = [];
     chrome.storage.sync.get("savedCourses", function (data) {
-        var savedCourses = data.savedCourses;
         // Iterate through each saved course and add to 'event'
-        for (let i = 0; i < savedCourses.length; i++) {
-            var classInfo = savedCourses[i];
-            var department = classInfo.coursename.substring(0, classInfo.coursename.search(/\d/) - 2);
-            var course_nbr = classInfo.coursename.substring(classInfo.coursename.search(/\d/), classInfo.coursename.indexOf(" ", classInfo.coursename.search(/\d/)));
-            var uncapProf = classInfo.profname;
-            uncapProf = uncapProf.charAt(0) + uncapProf.substring(1).toLowerCase();
+        savedCourses = data.savedCourses;
+        setAllEvents(savedCourses);
 
-            for (let j = 0; j < classInfo.datetimearr.length; j++) {
-                let session = classInfo.datetimearr[j]; // One single session for a class
-                setEventForSection(session, colorCounter, department, course_nbr, uncapProf);
-            }
-            colorCounter++;
-        }
         $("#calendar").fullCalendar({
             editable: false, // Don't allow editing of events
             handleWindowResize: true,
@@ -69,6 +58,26 @@ $(function () {
         });
     });
 
+    // Iterate through each saved course and add to 'event'
+    function setAllEvents(savedCourses) {
+        colorCounter = 0;
+        classSchedules = [];
+        for (let i = 0; i < savedCourses.length; i++) {
+            var classInfo = savedCourses[i];
+            var department = classInfo.coursename.substring(0, classInfo.coursename.search(/\d/) - 2);
+            var course_nbr = classInfo.coursename.substring(classInfo.coursename.search(/\d/), classInfo.coursename.indexOf(" ", classInfo.coursename.search(/\d/)));
+            var uncapProf = classInfo.profname;
+            uncapProf = uncapProf.charAt(0) + uncapProf.substring(1).toLowerCase();
+
+            for (let j = 0; j < classInfo.datetimearr.length; j++) {
+                let session = classInfo.datetimearr[j]; // One single session for a class
+                setEventForSection(session, colorCounter, department, course_nbr, uncapProf);
+            }
+            colorCounter++;
+        }
+    }
+
+    //create the event object for every section
     function setEventForSection(session, colorCounter, department, course_nbr, uncapProf) {
         var fullday = days.get(session[0]);
         classSchedules.push({
@@ -95,8 +104,14 @@ $(function () {
     }
     chrome.runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
-            if (request.command == "updateCourseList") {
-                //update the calendar here
+            if (request.command == "updateCourseList" || request.command == "courseAdded") {
+                chrome.storage.sync.get("savedCourses", function (data) {
+                    savedCourses = data.savedCourses
+                    setAllEvents(data.savedCourses);
+                    console.log(classSchedules);
+                    $('#calendar').fullCalendar('removeEventSources');
+                    $("#calendar").fullCalendar('addEventSource', classSchedules, true);
+                });
             }
         });
 });

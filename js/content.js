@@ -60,8 +60,13 @@ $(function () {
 			setTimeout(function () {
 				$("#snackbar").attr("class", "");
 			}, 3000);
-			setTimeout(update(), 1000);
+			chrome.runtime.sendMessage({
+				command: "updateCourseList"
+			}, function () {
+				update();
+			});
 		});
+
 	});
 
 	$("#Syllabi").click(function () {
@@ -90,6 +95,7 @@ $(function () {
 	chrome.runtime.onMessage.addListener(
 		function (request, sender, sendResponse) {
 			if (request.command == "updateCourseList") {
+				console.log("hello");
 				update();
 			}
 		});
