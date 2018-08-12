@@ -72,12 +72,12 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
 .fc th {
     border-style: ridge !important;
     border-width: 1px !important;
-    padding: 2px 4px 2px 4px !important;
+    padding: 2px 3px 2px 3px !important;
     vertical-align: top !important;
 }
 
 .fc td {
-    padding: 4px !important;
+    padding: 3px !important;
 }
 
 .fc-widget-header {
