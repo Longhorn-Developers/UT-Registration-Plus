@@ -11,12 +11,16 @@ $(function () {
         ["TH", "Thursday"],
         ["F", "Friday"]
     ]);
-
+    const fadetime = 150;
+    const butdelay = 75;
+    $("#calendar").prepend('<div id="myModal" class="modal"><div class="modal-content"><span class="close">&times;</span><div class="card"><div class="cardcontainer"><h2 id="unique">Some text in the Modal..</h2> <button id="info" class="matbut" style="font-size:medium; margin-left: 15px; margin-top: auto; margin-bottom: auto;background: #FF9800;">More Info</button></div></div></div></div>');
     // Counter to iterate through material colors to avoid duplicates
     var colorCounter = 0;
     // Each schedule needs to store 'TITLE - START TIME - END TIME - COLOR'
     var classSchedules = [];
     var savedCourses = [];
+    var currLink = "";
+    var currunique = "";
     chrome.storage.sync.get("savedCourses", function (data) {
         // Iterate through each saved course and add to 'event'
         savedCourses = data.savedCourses;
@@ -48,15 +52,42 @@ $(function () {
                 $(element).css("margin-bottom", "5px");
 
             },
-            eventClick: function (calEvent, jsEvent, view) {
-                console.log(calEvent);
-                // $(this).css('background-color', 'green');
-                alert('Event: ' + savedCourses[0].coursename);
-                // change the border color just for fun
+            eventClick: function (data, event, view) {
+                $("#myModal").fadeIn(fadetime);
+                currunique = data.unique;
+                currLink = data.courseLink;
+                $("#unique").text(`Unique : ${data.unique}`);
+                // When the user clicks on <span> (x), close the modal
+
+
 
             }
         });
     });
+
+
+    $(".close").click(() => {
+        $("#myModal").fadeOut(fadetime);
+    });
+    $("#info").click(() => {
+        setTimeout(() => {
+            window.open(currLink);
+        }, butdelay);
+    });
+    /*Close Modal when hit escape*/
+    $(document).keydown((e) => {
+        if (e.keyCode == 27) {
+            $("#myModal").fadeOut(fadetime);
+        }
+        $("#snackbar").attr("class", "");
+    });
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = (event) => {
+        var modal = document.getElementById("myModal");
+        if (event.target == modal) {
+            $("#myModal").fadeOut(fadetime);
+        }
+    }
 
     // Iterate through each saved course and add to 'event'
     function setAllEvents(savedCourses) {
@@ -68,17 +99,18 @@ $(function () {
             var course_nbr = classInfo.coursename.substring(classInfo.coursename.search(/\d/), classInfo.coursename.indexOf(" ", classInfo.coursename.search(/\d/)));
             var uncapProf = classInfo.profname;
             uncapProf = uncapProf.charAt(0) + uncapProf.substring(1).toLowerCase();
-
+            var uniquenum = classInfo.unique;
+            var link = classInfo.link;
             for (let j = 0; j < classInfo.datetimearr.length; j++) {
                 let session = classInfo.datetimearr[j]; // One single session for a class
-                setEventForSection(session, colorCounter, department, course_nbr, uncapProf);
+                setEventForSection(session, colorCounter, department, course_nbr, uncapProf, uniquenum, link);
             }
             colorCounter++;
         }
     }
 
     //create the event object for every section
-    function setEventForSection(session, colorCounter, department, course_nbr, uncapProf) {
+    function setEventForSection(session, colorCounter, department, course_nbr, uncapProf, uniquenum, link) {
         var fullday = days.get(session[0]);
         classSchedules.push({
             title: `${department}-${course_nbr} with ${uncapProf}`,
@@ -99,6 +131,8 @@ $(function () {
                 session[1][1] +
                 ":00",
             color: materialColors[colorCounter],
+            unique: uniquenum,
+            courseLink: link,
             allday: false
         });
     }
