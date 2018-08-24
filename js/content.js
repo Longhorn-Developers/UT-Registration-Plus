@@ -12,6 +12,8 @@ var datetimearr = [];
 var chart;
 var description;
 var status;
+var semesterCode;
+var isIndividual = false;
 
 const days = new Map([
 	["M", "Monday"],
@@ -174,6 +176,7 @@ function Course(coursename, unique, profname, datetimearr, status, link) {
 
 /*For a row, get all the course information and add the date-time-lines*/
 function getCourseInfo(row) {
+	semesterCode = new URL(window.location.href).pathname.split('/')[4];
 	$(".dateTimePlace").remove();
 	$('table').find('tr').each(function () {
 		if ($(this).find('td').hasClass("course_header")) {
@@ -199,11 +202,13 @@ function getCourseInfo(row) {
 			return false;
 		}
 	});
-	/*Handle if on the individual course page*/
-	if (typeof coursename == 'undefined') {
+	/*Handle if on the individual course page, ie if the textbook button exists*/
+	console.log($("#textbook_button").length);
+	if ($("#textbook_button").length) {
 		coursename = $("#details h2").text();
 		profinit = $("table").find("td[data-th='Instructor']").text().split(", ")[1].substring(0, 1);
 		profurl = document.URL;
+		console.log(profurl);
 	}
 	getDescription();
 	department = coursename.substring(0, coursename.search(/\d/) - 2);
@@ -471,6 +476,8 @@ function prettifyName() {
 
 /*Get the course description from the profurl and highlight the important elements, as well as set the eCIS, and rmp links.*/
 function getDescription() {
+	console.log(window.location.href);
+	console.log(profurl);
 	chrome.runtime.sendMessage({
 		method: "GET",
 		action: "xhttp",
@@ -524,9 +531,7 @@ function getDescription() {
 			eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?";
 		}
 	});
-
 }
-
 /* Load the database*/
 function loadDataBase() {
 	sql = window.SQL;
