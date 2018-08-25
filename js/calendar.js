@@ -66,6 +66,7 @@ $(function () {
     function makeLine(datetimearr) {
         $(".time").remove();
         //converted times back
+        console.log(datetimearr);
         var dtmap = new Map([]);
         for (var i = 0; i < datetimearr.length; i++) {
             datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm"]).format("h:mm A");
@@ -81,14 +82,17 @@ $(function () {
         var output = "";
         var timearr = Array.from(dtmap.keys());
         var dayarr = Array.from(dtmap.values());
-        console.log(timearr);
-        console.log(dayarr);
-        var building = "";
         for (var i = 0; i < dayarr.length; i++) {
-            output += `<p class='time'><span>${dayarr[i]}</span>: ${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}<span style='float:right';>GDC</span></p>`;
+            var place = findLoc(dayarr[i], timearr[i], datetimearr);
+            var building = place.substring(0, place.search(/\d/) - 1);
+            if (building == "") {
+                building = "Undecided Location";
+            }
+            output += `<p class='time'><span>${dayarr[i]}</span>: ${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}<span style='float:right';><a href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span></p>`;
         }
         return output;
     }
+
 
     // When the user clicks on <span> (x), close the modal
     $(".close").click(() => {
@@ -114,6 +118,29 @@ $(function () {
         }
     }
 
+    function findLoc(day, timearr, datetimearr) {
+        for (let i = 0; i < datetimearr.length; i++) {
+            var dtl = datetimearr[i];
+            console.log(dtl[1]);
+            console.log(timearr);
+            if (day.includes(dtl[0])) {
+                if (JSON.stringify(timearr) == JSON.stringify(fixDtl1(dtl[1]))) {
+                    return dtl[2];
+                }
+            }
+        }
+    }
+
+    function fixDtl1(dtl1) {
+        let output = "";
+        for (let i = 0; i < dtl1.length; i++) {
+            output += dtl1[i];
+            if (i != dtl1.length - 1) {
+                output += ",";
+            }
+        }
+        return output;
+    }
 
     // Iterate through each saved course and add to 'event'
     function setAllEvents(savedCourses) {
