@@ -244,7 +244,7 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
 #classname {
     font-weight: bold;
     margin-bottom: -10px;
-    font-size: 15px;
+    font-size: medium;
 }
 
 .modal-content {
@@ -258,7 +258,8 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
 }
 
 #prof {
-    font-size: 15px;
+    font-size: medium;
+    margin-bottom: -5px;
 }
 
 #info {
@@ -269,6 +270,7 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 5px;
+    font-size: medium;
 }
 
 /* The Close Button */

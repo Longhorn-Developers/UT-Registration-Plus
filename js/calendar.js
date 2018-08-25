@@ -53,7 +53,7 @@ $(function () {
             },
             eventClick: function (data, event, view) {
                 $("#myModal").fadeIn(fadetime);
-                currLink = savedCourses[data.index].courseLink;
+                currLink = savedCourses[data.index].link;
                 var currunique = savedCourses[data.index].unique;
                 $("#classname").html(`${savedCourses[data.index].coursename} <span style='font-size:small'>(${savedCourses[data.index].unique})</span>`);
                 $("#timelines").append(makeLine(savedCourses[data.index].datetimearr));
@@ -85,7 +85,7 @@ $(function () {
         console.log(dayarr);
         var building = "";
         for (var i = 0; i < dayarr.length; i++) {
-            output += "<p class='time'><span style='font-size:medium'>" + dayarr[i] + "</span>: " + timearr[i].split(",")[0] + " to " + timearr[i].split(",")[1] + "<span style='float:right'; font-size: medium;>" + "</span></p>";
+            output += `<p class='time'><span>${dayarr[i]}</span>: ${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}<span style='float:right';>GDC</span></p>`;
         }
         return output;
     }
