@@ -241,6 +241,12 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
     background-color: rgba(0, 0, 0, 0.4);
 }
 
+#classname {
+    font-weight: bold;
+    margin-bottom: -10px;
+    font-size: 15px;
+}
+
 .modal-content {
     background-color: #fefefe;
     margin: auto;
@@ -248,7 +254,21 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
     overflow-y: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 20%;
+    width: 30%;
+}
+
+#prof {
+    font-size: 15px;
+}
+
+#info {
+    margin: 10px;
+}
+
+.time {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 5px;
 }
 
 /* The Close Button */
@@ -280,6 +300,6 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
 
 .cardcontainer {
     padding: 2px 16px;
-    display: flex;
+    display: block;
     transition: width 300ms ease-in-out, height 300ms ease-in-out;
 }

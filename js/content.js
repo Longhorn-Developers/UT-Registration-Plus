@@ -203,7 +203,6 @@ function getCourseInfo(row) {
 		}
 	});
 	/*Handle if on the individual course page, ie if the textbook button exists*/
-	console.log($("#textbook_button").length);
 	if ($("#textbook_button").length) {
 		coursename = $("#details h2").text();
 		profinit = $("table").find("td[data-th='Instructor']").text().split(", ")[1].substring(0, 1);

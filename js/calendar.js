@@ -13,14 +13,13 @@ $(function () {
     ]);
     const fadetime = 150;
     const butdelay = 75;
-    $("#calendar").prepend('<div id="myModal" class="modal"><div class="modal-content"><span class="close">&times;</span><div class="card"><div class="cardcontainer"><h2 id="unique">Some text in the Modal..</h2> <button id="info" class="matbut" style="font-size:medium; margin-left: 15px; margin-top: auto; margin-bottom: auto;background: #FF9800;">More Info</button></div></div></div></div>');
+    $("#calendar").prepend('<div id="myModal" class="modal"><div class="modal-content"><span class="close">&times;</span><div class="card"><div class="cardcontainer"><div><div style="display:flex;"><h2 id="classname">Classname</h2></div><p id="prof">Prof</p></div><div id="timelines"></div><button id="info" class="matbut" style="font-size:medium; margin-right: auto; margin-left:auto; background: #FF9800;">More Info</button></div></div></div></div>');
     // Counter to iterate through material colors to avoid duplicates
     var colorCounter = 0;
     // Each schedule needs to store 'TITLE - START TIME - END TIME - COLOR'
     var classSchedules = [];
     var savedCourses = [];
     var currLink = "";
-    var currunique = "";
     chrome.storage.sync.get("savedCourses", function (data) {
         // Iterate through each saved course and add to 'event'
         savedCourses = data.savedCourses;
@@ -54,18 +53,44 @@ $(function () {
             },
             eventClick: function (data, event, view) {
                 $("#myModal").fadeIn(fadetime);
-                currunique = data.unique;
-                currLink = data.courseLink;
-                $("#unique").text(`Unique : ${data.unique}`);
-                // When the user clicks on <span> (x), close the modal
-
-
-
+                currLink = savedCourses[data.index].courseLink;
+                var currunique = savedCourses[data.index].unique;
+                $("#classname").html(`${savedCourses[data.index].coursename} <span style='font-size:small'>(${savedCourses[data.index].unique})</span>`);
+                $("#timelines").append(makeLine(savedCourses[data.index].datetimearr));
+                $("#prof").html(`with <span style='font-weight:bold;'>${savedCourses[data.index].profname}</span>`);
             }
         });
     });
 
+    /* convert from the dtarr and maek the time lines*/
+    function makeLine(datetimearr) {
+        $(".time").remove();
+        //converted times back
+        var dtmap = new Map([]);
+        for (var i = 0; i < datetimearr.length; i++) {
+            datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm"]).format("h:mm A");
+            datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm"]).format("h:mm A");
+        }
+        for (var i = 0; i < datetimearr.length; i++) {
+            if (dtmap.has(String(datetimearr[i][1]))) {
+                dtmap.set(String(datetimearr[i][1]), dtmap.get(String(datetimearr[i][1])) + datetimearr[i][0]);
+            } else {
+                dtmap.set(String(datetimearr[i][1]), datetimearr[i][0]);
+            }
+        }
+        var output = "";
+        var timearr = Array.from(dtmap.keys());
+        var dayarr = Array.from(dtmap.values());
+        console.log(timearr);
+        console.log(dayarr);
+        var building = "";
+        for (var i = 0; i < dayarr.length; i++) {
+            output += "<p class='time'><span style='font-size:medium'>" + dayarr[i] + "</span>: " + timearr[i].split(",")[0] + " to " + timearr[i].split(",")[1] + "<span style='float:right'; font-size: medium;>" + "</span></p>";
+        }
+        return output;
+    }
 
+    // When the user clicks on <span> (x), close the modal
     $(".close").click(() => {
         $("#myModal").fadeOut(fadetime);
     });
@@ -89,29 +114,28 @@ $(function () {
         }
     }
 
+
     // Iterate through each saved course and add to 'event'
     function setAllEvents(savedCourses) {
         colorCounter = 0;
         classSchedules = [];
         for (let i = 0; i < savedCourses.length; i++) {
-            var classInfo = savedCourses[i];
-            var department = classInfo.coursename.substring(0, classInfo.coursename.search(/\d/) - 2);
-            var course_nbr = classInfo.coursename.substring(classInfo.coursename.search(/\d/), classInfo.coursename.indexOf(" ", classInfo.coursename.search(/\d/)));
-            var uncapProf = classInfo.profname;
-            uncapProf = uncapProf.charAt(0) + uncapProf.substring(1).toLowerCase();
-            var uniquenum = classInfo.unique;
-            var link = classInfo.link;
-            for (let j = 0; j < classInfo.datetimearr.length; j++) {
-                let session = classInfo.datetimearr[j]; // One single session for a class
-                setEventForSection(session, colorCounter, department, course_nbr, uncapProf, uniquenum, link);
+            for (let j = 0; j < savedCourses[i].datetimearr.length; j++) {
+                let session = savedCourses[i].datetimearr[j]; // One single session for a class
+                setEventForSection(session, colorCounter, i);
             }
             colorCounter++;
         }
     }
 
     //create the event object for every section
-    function setEventForSection(session, colorCounter, department, course_nbr, uncapProf, uniquenum, link) {
+    function setEventForSection(session, colorCounter, i) {
         var fullday = days.get(session[0]);
+        var classInfo = savedCourses[i];
+        var department = classInfo.coursename.substring(0, classInfo.coursename.search(/\d/) - 2);
+        var course_nbr = classInfo.coursename.substring(classInfo.coursename.search(/\d/), classInfo.coursename.indexOf(" ", classInfo.coursename.search(/\d/)));
+        var uncapProf = classInfo.profname;
+        uncapProf = uncapProf.charAt(0) + uncapProf.substring(1).toLowerCase();
         classSchedules.push({
             title: `${department}-${course_nbr} with ${uncapProf}`,
             start: moment().format("YYYY-MM-") +
@@ -131,8 +155,7 @@ $(function () {
                 session[1][1] +
                 ":00",
             color: materialColors[colorCounter],
-            unique: uniquenum,
-            courseLink: link,
+            index: i,
             allday: false
         });
     }
