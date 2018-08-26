@@ -13,13 +13,14 @@ $(function () {
     ]);
     const fadetime = 150;
     const butdelay = 75;
-    $("#calendar").prepend('<div id="myModal" class="modal"><div class="modal-content"><span class="close">&times;</span><div class="card"><div class="cardcontainer"><div><div style="display:flex;"><h2 id="classname">Classname</h2></div><p id="prof">Prof</p></div><div id="timelines"></div><button id="info" class="matbut" style="font-size:medium; margin-right: auto; margin-left:auto; background: #FF9800;">More Info</button></div></div></div></div>');
+    $("#calendar").prepend('<div id="myModal" class="modal"><div class="modal-content"><span class="close">&times;</span><div class="card"><div class="cardcontainer"><div><div style="display:flex;"><h2 id="classname">Classname</h2></div><p id="prof">Prof</p></div><div id="timelines"></div><button id="info" class="matbut" style="font-size:medium; margin-right: auto; margin-left:auto; background: #FF9800;">More Info</button><button id="remove" class="matbut" style="font-size:medium;margin:10px;background: #FF0000;">Remove</button></div></div></div></div>');
     // Counter to iterate through material colors to avoid duplicates
     var colorCounter = 0;
     // Each schedule needs to store 'TITLE - START TIME - END TIME - COLOR'
     var classSchedules = [];
     var savedCourses = [];
     var currLink = "";
+    var currindex = 0;
     chrome.storage.sync.get("savedCourses", function (data) {
         // Iterate through each saved course and add to 'event'
         savedCourses = data.savedCourses;
@@ -53,11 +54,12 @@ $(function () {
             },
             eventClick: function (data, event, view) {
                 $("#myModal").fadeIn(fadetime);
-                currLink = savedCourses[data.index].link;
-                var currunique = savedCourses[data.index].unique;
-                $("#classname").html(`${savedCourses[data.index].coursename} <span style='font-size:small'>(${savedCourses[data.index].unique})</span>`);
-                $("#timelines").append(makeLine(savedCourses[data.index].datetimearr));
-                $("#prof").html(`with <span style='font-weight:bold;'>${savedCourses[data.index].profname}</span>`);
+                currindex = data.index;
+                currLink = savedCourses[currindex].link;
+                var currunique = savedCourses[currindex].unique;
+                $("#classname").html(`${savedCourses[currindex].coursename} <span style='font-size:small'>(${savedCourses[currindex].unique})</span>`);
+                $("#timelines").append(makeLine(savedCourses[currindex].datetimearr));
+                $("#prof").html(`with <span style='font-weight:bold;'>${savedCourses[currindex].profname}</span>`);
             }
         });
     });
@@ -101,6 +103,25 @@ $(function () {
     $("#info").click(() => {
         setTimeout(() => {
             window.open(currLink);
+        }, butdelay);
+    });
+    $("#remove").click(() => {
+        setTimeout(() => {
+            chrome.runtime.sendMessage({
+                command: "courseStorage",
+                course: savedCourses[currindex],
+                action: "remove"
+            }, function (response) {
+                $("#myModal").fadeOut(fadetime);
+                updateCalendar();
+                chrome.tabs.query({}, function (tabs) {
+                    for (var i = 0; i < tabs.length; i++) {
+                        chrome.tabs.sendMessage(tabs[i].id, {
+                            command: "updateCourseList"
+                        });
+                    }
+                });
+            });
         }, butdelay);
     });
     /*Close Modal when hit escape*/
@@ -189,13 +210,17 @@ $(function () {
     chrome.runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
             if (request.command == "updateCourseList" || request.command == "courseAdded") {
-                chrome.storage.sync.get("savedCourses", function (data) {
-                    savedCourses = data.savedCourses
-                    setAllEvents(data.savedCourses);
-                    console.log(classSchedules);
-                    $('#calendar').fullCalendar('removeEventSources');
-                    $("#calendar").fullCalendar('addEventSource', classSchedules, true);
-                });
+                updateCalendar();
             }
         });
+
+    function updateCalendar() {
+        chrome.storage.sync.get("savedCourses", function (data) {
+            savedCourses = data.savedCourses
+            setAllEvents(data.savedCourses);
+            console.log(classSchedules);
+            $('#calendar').fullCalendar('removeEventSources');
+            $("#calendar").fullCalendar('addEventSource', classSchedules, true);
+        });
+    }
 });

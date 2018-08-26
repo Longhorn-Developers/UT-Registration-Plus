@@ -244,7 +244,7 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
 #classname {
     font-weight: bold;
     margin-bottom: -10px;
-    font-size: medium;
+    font-size: large;
 }
 
 .modal-content {
@@ -254,7 +254,7 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
     overflow-y: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 30%;
+    width: 35%;
 }
 
 #prof {
@@ -264,6 +264,12 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
 
 #info {
     margin: 10px;
+}
+
+body a:link,
+body a:visited {
+    font-weight: bold;
+    color: #3c87a3;
 }
 
 .time {

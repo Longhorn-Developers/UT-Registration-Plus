@@ -50,25 +50,7 @@ $(function () {
 	});
 
 	$("#saveCourse").click(function () {
-		var c = new Course(coursename, uniquenum, profname, datetimearr, status, profurl);
-		chrome.runtime.sendMessage({
-			command: "courseStorage",
-			course: c,
-			action: $("#saveCourse").text().substring(0, $("#saveCourse").text().indexOf(" ")).toLowerCase()
-		}, function (response) {
-			$("#saveCourse").text(response.label);
-			$("#snackbar").text(response.done);
-			$("#snackbar").attr("class", "show");
-			setTimeout(function () {
-				$("#snackbar").attr("class", "");
-			}, 3000);
-			chrome.runtime.sendMessage({
-				command: "updateCourseList"
-			}, function () {
-				update();
-			});
-		});
-
+		saveCourse();
 	});
 
 	$("#Syllabi").click(function () {
@@ -86,12 +68,15 @@ $(function () {
 			window.open(eCISLink);
 		}, butdelay);
 	});
-	/*Close Modal when hit escape*/
 	$(document).keydown(function (e) {
+		/*Close Modal when hit escape*/
 		if (e.keyCode == 27) {
 			$("#myModal").fadeOut(fadetime);
+			$("#snackbar").attr("class", "");
+		} else if (e.keyCode == 13) {
+			/*save course when hit enter*/
+			saveCourse();
 		}
-		$("#snackbar").attr("class", "");
 	});
 	/*Listen for update mssage coming from popup*/
 	chrome.runtime.onMessage.addListener(
@@ -102,6 +87,27 @@ $(function () {
 			}
 		});
 });
+
+function saveCourse() {
+	var c = new Course(coursename, uniquenum, profname, datetimearr, status, profurl);
+	chrome.runtime.sendMessage({
+		command: "courseStorage",
+		course: c,
+		action: $("#saveCourse").text().substring(0, $("#saveCourse").text().indexOf(" ")).toLowerCase()
+	}, function (response) {
+		$("#saveCourse").text(response.label);
+		$("#snackbar").text(response.done);
+		$("#snackbar").attr("class", "show");
+		setTimeout(function () {
+			$("#snackbar").attr("class", "");
+		}, 3000);
+		chrome.runtime.sendMessage({
+			command: "updateCourseList"
+		}, function () {
+			update();
+		});
+	});
+}
 
 /* Update the course list to show if the row contains a course that conflicts with the saved course is one of the saved courses */
 function update() {
