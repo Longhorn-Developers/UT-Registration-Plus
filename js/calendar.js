@@ -94,7 +94,7 @@ $(function () {
             if (building == "") {
                 building = "Undecided Location";
             }
-            output += `<p class='time'><span>${dayarr[i]}</span>: ${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}<span style='float:right';><a href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span></p>`;
+            output += `<p class='time'><span>${dayarr[i]}</span>: ${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}<span style='float:right';><a target='_blank' href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span></p>`;
         }
         return output;
     }

@@ -161,6 +161,9 @@
     left: 50%;
     bottom: 30px;
 }
+.descriptionli{
+    padding: 0px 5px 5px 5px;
+}
 
 #snackbar.show {
     visibility: visible;

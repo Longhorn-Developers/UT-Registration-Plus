@@ -37,7 +37,7 @@ $(function () {
 	$('table').find('tr').each(function () {
 		if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
 			//if a course row, then add the extension button
-			$(this).append('<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src=' + chrome.extension.getURL('images/disticon.png') + ' /></td>');
+			$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
 		}
 	});
 	//update the conflicts
@@ -55,7 +55,7 @@ $(function () {
 
 	$("#Syllabi").click(function () {
 		setTimeout(function () {
-			window.open('https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?semester=&department=' + department + '&course_number=' + course_nbr + '&course_title=&unique=&instructor_first=&instructor_last=' + profname + '&course_type=In+Residence&search=Search');
+			window.open(`https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?semester=&department=${department}&course_number=${course_nbr}&course_title=&unique=&instructor_first=&instructor_last=${profname}&course_type=In+Residence&search=Search`);
 		}, butdelay);
 	});
 	$("#rateMyProf").click(function () {
@@ -203,7 +203,7 @@ function getCourseInfo(row) {
 				var date = $(this).find('td[data-th="Days"]>span:eq(' + i + ')').text();
 				var time = $(this).find('td[data-th="Hour"]>span:eq(' + i + ')').text();
 				var place = $(this).find('td[data-th="Room"]>span:eq(' + i + ')').text();
-				$("#topbuttons").before('<h2 class="dateTimePlace">' + makeLine(date, time, place) + '</th>');
+				$("#topbuttons").before(`<h2 class="dateTimePlace">${makeLine(date, time, place)}</th>`);
 			}
 			return false;
 		}
@@ -258,7 +258,7 @@ function makeLine(date, time, place) {
 	if (building == "") {
 		building = "Undecided Location";
 	}
-	return output + " at " + time.replace(/\./g, '').replace(/\-/g, ' to ') + " in " + "<a style='font-size:medium' target='_blank' href='" + "https://maps.utexas.edu/buildings/UTM/" + building + "''>" + building + "</>";
+	return `${output} at ${time.replace(/\./g, '').replace(/\-/g, ' to ')} in <a style='font-size:medium' target='_blank' href='https://maps.utexas.edu/buildings/UTM/${building}'>${building}</>`;
 }
 
 /*Convert time to 24hour format*/
@@ -495,13 +495,13 @@ function getDescription() {
 			object.find('#details > p').each(function () {
 				var sentence = $(this).text();
 				if (sentence.indexOf("Prerequisite") == 0) {
-					sentence = "<li style='font-weight: bold; padding: 0px 5px 5px 5px;'>" + sentence + "</li>";
+					sentence = "<li style='font-weight: bold;' class='descriptionli'>" + sentence + "</li>";
 				} else if (sentence.indexOf("May be") >= 0) {
-					sentence = "<li style='font-style: italic; padding: 0px 5px 5px 5px;'>" + sentence + "</li>";
+					sentence = "<li style='font-style: italic;' class='descriptionli'>" + sentence + "</li>";
 				} else if (sentence.indexOf("Restricted to") == 0) {
-					sentence = "<li style='color:red; padding: 0px 5px 5px 5px;'>" + sentence + "</li>";
+					sentence = "<li style='color:red;' class='descriptionli'>" + sentence + "</li>";
 				} else {
-					sentence = "<li  style='padding: 0px 5px 5px 5px;'>" + sentence + "</li>";
+					sentence = "<li class='descriptionli'>" + sentence + "</li>";
 				}
 				output += sentence;
 
@@ -517,11 +517,11 @@ function getDescription() {
 			var first = object.find('td[data-th="Instructor"]').text();
 			first = first.substring(first.indexOf(", "), first.indexOf(" ", first.indexOf(", ") + 2));
 			first = first.substring(2);
-			rmpLink = "http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query=" + first + " " + profname + ";&facetSearch=true";
+			rmpLink = `http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query=${first} ${profname};&facetSearch=true`;
 			if (profname == "") {
-				eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?s_in_action_sw=S&s_in_search_type_sw=C&s_in_max_nbr_return=10&s_in_search_course_dept=" + department + "&s_in_search_course_num=" + course_nbr;
+				eCISLink = `http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?s_in_action_sw=S&s_in_search_type_sw=C&s_in_max_nbr_return=10&s_in_search_course_dept=${department}&s_in_search_course_num=${course_nbr}`;
 			} else {
-				eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?&s_in_action_sw=S&s_in_search_type_sw=N&s_in_search_name=" + profname.substring(0, 1) + profname.substring(1).toLowerCase() + "%2C%20" + first.substring(0, 1) + first.substring(1).toLowerCase();
+				eCISLink = `http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?&s_in_action_sw=S&s_in_search_type_sw=N&s_in_search_name=${profname.substring(0, 1) + profname.substring(1).toLowerCase()}%2C%20${first.substring(0, 1) + first.substring(1).toLowerCase()}`;
 			}
 		} else {
 			description = "<p style='color:red;font-style:bold'>You have been logged out. Please refresh the page and log back in using your UT EID and password.</p>"
