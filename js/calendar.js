@@ -142,7 +142,7 @@ $(function () {
             $("#myModal").fadeOut(fadetime);
         }
     }
-
+    //find the location of a class given its days and timearrs.
     function findLoc(day, timearr, datetimearr) {
         for (let i = 0; i < datetimearr.length; i++) {
             var dtl = datetimearr[i];
