@@ -13,7 +13,7 @@ $(function () {
     ]);
     const fadetime = 150;
     const butdelay = 75;
-    $("#calendar").prepend('<div id="myModal" class="modal"><div class="modal-content"><span class="close">&times;</span><div class="card"><div class="cardcontainer"><div><div style="display:flex;"><h2 id="classname">Classname</h2></div><p id="prof">Prof</p></div><div id="timelines"></div><button id="info" class="matbut" style="font-size:medium; margin-right: auto; margin-left:auto; background: #FF9800;">More Info</button><button id="remove" class="matbut" style="font-size:medium;margin:10px;background: #FF0000;">Remove</button></div></div></div></div>');
+    $("#calendar").prepend('<div id="myModal" class="modal"><div class="modal-content"><span class="close">&times;</span><div class="card"><div id="colorStrip" style="height:10px;"></div><div class="cardcontainer"><div><div style="display:flex;"><h2 id="classname">Classname</h2></div><p id="prof">Prof</p></div><div id="timelines"></div><button id="info" class="matbut" style="font-size:medium; margin-right: auto; margin-left:auto; background: #FF9800;">More Info</button><button id="remove" class="matbut" style="font-size:medium;margin:10px;background: #FF0000;">Remove</button></div></div></div></div>');
     // Counter to iterate through material colors to avoid duplicates
     var colorCounter = 0;
     // Each schedule needs to store 'TITLE - START TIME - END TIME - COLOR'
@@ -54,12 +54,16 @@ $(function () {
             },
             eventClick: function (data, event, view) {
                 $("#myModal").fadeIn(fadetime);
+                $("#colorStrip").css('background-color', data.color);
                 currindex = data.index;
                 currLink = savedCourses[currindex].link;
                 var currunique = savedCourses[currindex].unique;
                 $("#classname").html(`${savedCourses[currindex].coursename} <span style='font-size:small'>(${savedCourses[currindex].unique})</span>`);
                 $("#timelines").append(makeLine(savedCourses[currindex].datetimearr));
-                $("#prof").html(`with <span style='font-weight:bold;'>${savedCourses[currindex].profname}</span>`);
+
+                var uncapProf = savedCourses[currindex].profname
+                uncapProf = uncapProf.charAt(0) + uncapProf.substring(1).toLowerCase();
+                $("#prof").html(`with <span style='font-weight:bold;'>${uncapProf}</span>`);
             }
         });
     });
