@@ -1,11 +1,11 @@
 .card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
     transition: 0.3s;
     margin: 5px;
 }
 
 .card:hover {
-    box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .container {
@@ -23,6 +23,15 @@ li {
 body {
     min-width: 370px;
     min-height: 400px;
+}
+
+.settingsbut {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    float: right;
+    margin-right: 5px;
+    border: 0px
 }
 
 .matbut {
@@ -84,10 +93,12 @@ body {
         transform: scale(0, 0);
         opacity: 1;
     }
+
     20% {
         transform: scale(25, 25);
         opacity: 1;
     }
+
     100% {
         opacity: 0;
         transform: scale(40, 40);

@@ -61,8 +61,10 @@ $(function () {
                 $("#classname").html(`${savedCourses[currindex].coursename} <span style='font-size:small'>(${savedCourses[currindex].unique})</span>`);
                 $("#timelines").append(makeLine(savedCourses[currindex].datetimearr));
 
-                var uncapProf = savedCourses[currindex].profname
-                uncapProf = uncapProf.charAt(0) + uncapProf.substring(1).toLowerCase();
+                var uncapProf = prettifyName(savedCourses[currindex].profname);
+                if (uncapProf == "") {
+                    uncapProf = "Undecided";
+                }
                 $("#prof").html(`with <span style='font-weight:bold;'>${uncapProf}</span>`);
             }
         });
@@ -186,8 +188,10 @@ $(function () {
         var classInfo = savedCourses[i];
         var department = classInfo.coursename.substring(0, classInfo.coursename.search(/\d/) - 2);
         var course_nbr = classInfo.coursename.substring(classInfo.coursename.search(/\d/), classInfo.coursename.indexOf(" ", classInfo.coursename.search(/\d/)));
-        var uncapProf = classInfo.profname;
-        uncapProf = uncapProf.charAt(0) + uncapProf.substring(1).toLowerCase();
+        var uncapProf = prettifyName(classInfo.profname);
+        if (uncapProf == "") {
+            uncapProf = "Undecided";
+        }
         classSchedules.push({
             title: `${department}-${course_nbr} with ${uncapProf}`,
             start: moment().format("YYYY-MM-") +
@@ -225,6 +229,12 @@ $(function () {
             console.log(classSchedules);
             $('#calendar').fullCalendar('removeEventSources');
             $("#calendar").fullCalendar('addEventSource', classSchedules, true);
+        });
+    }
+    /* Format the Professor Name */
+    function prettifyName(profname) {
+        return profname.replace(/\w\S*/g, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         });
     }
 });

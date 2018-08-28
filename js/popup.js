@@ -37,7 +37,10 @@ chrome.storage.sync.get('savedCourses', function (data) {
 		}
 		var department = courses[i].coursename.substring(0, courses[i].coursename.search(/\d/) - 2);
 		var course_nbr = courses[i].coursename.substring(courses[i].coursename.search(/\d/), courses[i].coursename.indexOf(" ", courses[i].coursename.search(/\d/)));
-		var profname = courses[i].profname.substring(0, 1) + courses[i].profname.substring(1).toLowerCase();
+		var profname = prettifyName(courses[i].profname);
+		if (profname == "") {
+			profname = "Undecided Professor";
+		}
 		var listhtml = "<li id='" + i + "'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'><div class='card'><div class='container' style='background:" + color + "''><h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;'><b>" + department + " " + course_nbr + "<span style='font-size:medium'>" + " with </span><span style='font-size:medium'>" + profname + " (" + courses[i].unique + ")" + "</span></b></h4><p style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;'>&#9660;</p></div></div><div id='moreInfo' style='display: none;'><p style='font-weight:bold;padding:10px;margin:0px;font-size:small;background-color:#FFCDD2;'>" + makeLine(i) + "</p><div id='infoButtons' style='border-radius:0px;'><button class='matbut' id='listRemove'style='float:right;background:#F44336; margin:5px;'>Remove</button><button class='matbut' id='listMoreInfo' style='float:right;background:#2196F3; margin:5px;'>More Info</button></div></div></li>";
 		$("#courseList").append(listhtml);
 	}
@@ -48,6 +51,13 @@ function getSimpleName(coursename, unique) {
 	var department = coursename.substring(0, coursename.search(/\d/) - 2);
 	var course_nbr = coursename.substring(coursename.search(/\d/), coursename.indexOf(" ", coursename.search(/\d/)));
 	return department + " " + course_nbr + " (" + unique + ")";
+}
+
+/* Format the Professor Name */
+function prettifyName(profname) {
+	return profname.replace(/\w\S*/g, function (txt) {
+		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+	});
 }
 
 /* Update the conflict messages */
@@ -67,7 +77,7 @@ function updateConflicts() {
 					text += "<br>";
 				}
 			}
-			$("#courseList").prepend("<p style='font-size:small; font-weight:bold; color:red; margin:5px;'>" + text + "</>");
+			$("#courseList").prepend("<p style='font-size:small;font-weight:bold; color:red; margin:5px;'>" + text + "</>");
 		}
 	});
 }

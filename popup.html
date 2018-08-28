@@ -4,9 +4,10 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/popup.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body>
+<body style="position:relative;">
   <div class="card" id="header">
     <div id="buttons" style="padding: 5px 10px 5px 10px;display: flex;justify-content: space-between;">
       <button id="clear" class="matbut" style="font-size:medium; background:#4CAF50;margin: 10px;">Clear All</button>
@@ -16,14 +17,23 @@
 
 
   </div>
-  <ul id="courseList" style="list-style-type: none;padding: 5px;"></ul>
-  <h2 id="empty" style="font-weight: normal;font-size: large;margin: 60px 30px 40px 30px ;">Doesn't Look Like Anything To Me.
-    <br>
-    <span style="font-size: small;display:table;margin:0 auto;font-weight: bold">(No Courses Saved)</span>
-    <h2>
-      <script src="js/jquery-3.3.1.min.js"></script>
-      <script src="js/moment.min.js"></script>
-      <script src="js/popup.js"></script>
+  <div>
+    <ul id="courseList" style="list-style-type: none;padding: 5px;"></ul>
+    <h2 id="empty" style="font-weight: normal;font-size: large;margin: 60px 30px 40px 30px ;">Doesn't Look Like
+      Anything
+      To Me.
+      <br>
+      <span style="font-size: small;display:table;margin:0 auto;font-weight: bold">(No Courses Saved)</span>
+    </h2>
+    <div id="spacer" style=" margin-bottom: 0px; display:inline-block"></div>
+    <button title='Options' class="settingsbut" id='open'><i class="material-icons">
+        settings
+      </i></button>
+  </div>
+
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/moment.min.js"></script>
+  <script src="js/popup.js"></script>
 </body>
 
 </html>
