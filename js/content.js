@@ -217,12 +217,7 @@ function getCourseInfo(row) {
 	/*Handle if on the individual course page, ie if the textbook button exists*/
 	if ($("#textbook_button").length) {
 		coursename = $("#details h2").text();
-		var gotname = $("table").find("td[data-th='Instructor']").text();
-		if (gotname != "") {
-			profinit = $("table").find("td[data-th='Instructor']").text().split(", ")[1].substring(0, 1);
-		} else {
-			profinit = "";
-		}
+		profinit = $("table").find("td[data-th='Instructor']").text().split(", ")[1].substring(0, 1);
 		profurl = document.URL;
 		console.log(profurl);
 	}
