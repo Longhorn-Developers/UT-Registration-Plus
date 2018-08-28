@@ -28,18 +28,20 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
 });
 
 /* Initially set the course data in storage */
-chrome.runtime.onInstalled.addListener(function () {
-	var arr = new Array();
-	chrome.storage.sync.set({
-		savedCourses: arr
-	}, function () {
-		console.log('initial course list');
-	});
-	chrome.storage.sync.set({
-		courseConflictHighlight: true
-	}, function () {
-		console.log('initial highlighting: true');
-	});
+chrome.runtime.onInstalled.addListener(function (details) {
+	if (details.reason == "install" || details.reason == "update") {
+		var arr = new Array();
+		chrome.storage.sync.set({
+			savedCourses: arr
+		}, function () {
+			console.log('initial course list');
+		});
+		chrome.storage.sync.set({
+			courseConflictHighlight: true
+		}, function () {
+			console.log('initial highlighting: true');
+		});
+	}
 });
 
 /* Find all the conflicts in the courses and send them out/ if there is even a conflict*/
