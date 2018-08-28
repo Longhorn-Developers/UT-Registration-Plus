@@ -252,7 +252,7 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
     margin: auto;
     max-height: 85%;
     overflow-y: auto;
-    padding: 20px;
+    padding: 15px;
     border: 1px solid #888;
     width: 35%;
 }
@@ -298,7 +298,7 @@ body a:visited {
 
 .card {
     transition: 0.3s;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
 }
 
