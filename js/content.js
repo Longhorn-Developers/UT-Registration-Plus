@@ -7,6 +7,7 @@ var profname;
 var profinit;
 var uniquenum;
 var profurl;
+var registerlink;
 var department;
 var course_nbr;
 var datetimearr = [];
@@ -95,7 +96,7 @@ $(function () {
 });
 
 function saveCourse() {
-	var c = new Course(coursename, uniquenum, profname, datetimearr, status, profurl);
+	var c = new Course(coursename, uniquenum, profname, datetimearr, status, profurl, registerlink);
 	chrome.runtime.sendMessage({
 		command: "courseStorage",
 		course: c,
@@ -177,13 +178,14 @@ function getDtarr(row) {
 }
 
 /*Course object for passing to background*/
-function Course(coursename, unique, profname, datetimearr, status, link) {
+function Course(coursename, unique, profname, datetimearr, status, link, registerlink) {
 	this.coursename = coursename;
 	this.unique = unique;
 	this.profname = profname;
 	this.datetimearr = datetimearr;
 	this.status = status;
 	this.link = link;
+	this.registerlink = registerlink;
 }
 
 /*For a row, get all the course information and add the date-time-lines*/
@@ -196,6 +198,8 @@ function getCourseInfo(row) {
 		}
 		if ($(this).is(row)) {
 			profurl = $(this).find('td[data-th="Unique"] a').prop('href');
+			registerlink = $(this).find('td[data-th="Add"] a').prop('href');
+			console.log(registerlink);
 			uniquenum = $(this).find('td[data-th="Unique"]').text();
 			status = $(this).find('td[data-th="Status"]').text();
 			profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0];

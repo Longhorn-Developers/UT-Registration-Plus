@@ -41,7 +41,7 @@ chrome.storage.sync.get('savedCourses', function (data) {
 		if (profname == "") {
 			profname = "Undecided Professor";
 		}
-		var listhtml = "<li id='" + i + "'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'><div class='card'><div class='container' style='background:" + color + "''><h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;'><b>" + department + " " + course_nbr + "<span style='font-size:medium'>" + " with </span><span style='font-size:medium'>" + profname + " (" + courses[i].unique + ")" + "</span></b></h4><p style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;'>&#9660;</p></div></div><div id='moreInfo' style='display: none;'><p style='font-weight:bold;padding:10px;margin:0px 5px 0px 15px;font-size:small;background-color:#FFCDD2;'>" + makeLine(i) + "</p><div id='infoButtons' style='border-radius:0px;'><button class='matbut' id='listRemove'style='float:right;background:#F44336; margin:5px;'>Remove</button><button class='matbut' id='listMoreInfo' style='float:right;background:#2196F3; margin:5px;'>More Info</button></div></div></li>";
+		var listhtml = "<li id='" + i + "'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'><div class='card'><div class='container' style='background:" + color + "''><h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;'><b>" + department + " " + course_nbr + "<span style='font-size:medium'>" + " with </span><span style='font-size:medium'>" + profname + " (" + courses[i].unique + ")" + "</span></b></h4><p style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;'>&#9660;</p></div></div><div id='moreInfo' style='display: none;'><p style='font-weight:bold;padding:10px;margin:0px 5px 0px 15px;font-size:small;background-color:#FFCDD2;'>" + makeLine(i) + "</p><div id='infoButtons' style='border-radius:0px;'><button class='matbut' id='listRemove'style='float:right;background:#F44336; margin:5px;'>Remove</button><button class='matbut' id='register' style='float:right;background:#4CAF50; margin:5px;'>Register</button><button class='matbut' id='listMoreInfo' style='float:right;background:#2196F3; margin:5px;'>More Info</button></div></div></li>";
 		$("#courseList").append(listhtml);
 	}
 });
@@ -87,6 +87,12 @@ $(document).ready(function () {
 	$("#courseList li").click(function () {
 		$(this).find("#listMoreInfo").click(function () {
 			window.open(courses[$(this).closest("li").attr("id")].link);
+		});
+		$(this).find("#register").click(function () {
+			let registerlink = courses[$(this).closest("li").attr("id")].registerlink;
+			chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
+      			chrome.tabs.update(tab.id, {url: registerlink});
+			});
 		});
 		/* clear the conflict messages, then remove the course and updateConflicts. update the tabs*/
 		$(this).find("#listRemove").click(function () {
