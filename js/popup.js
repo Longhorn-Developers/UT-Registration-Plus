@@ -88,12 +88,18 @@ $(document).ready(function () {
 		$(this).find("#listMoreInfo").click(function () {
 			window.open(courses[$(this).closest("li").attr("id")].link);
 		});
-		$(this).find("#register").click(function () {
-			let registerlink = courses[$(this).closest("li").attr("id")].registerlink;
-			chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
-      			chrome.tabs.update(tab.id, {url: registerlink});
+		let status = courses[$(this).closest("li").attr("id")].status;
+		if(status.includes("closed") || status.includes("cancelled")){
+			$(this).find("#register").text("Class Closed").css("background-color","#FF5722");
+		} else{
+			$(this).find("#register").text("Register").css("background-color","#4CAF50").click(function () {
+				let registerlink = courses[$(this).closest("li").attr("id")].registerlink;
+				chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
+				chrome.tabs.update(tab.id, {url: registerlink});
 			});
 		});
+		}
+
 		/* clear the conflict messages, then remove the course and updateConflicts. update the tabs*/
 		$(this).find("#listRemove").click(function () {
 			var thisForm = this;

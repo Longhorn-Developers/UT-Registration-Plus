@@ -130,22 +130,16 @@ function update() {
 				}, function (response) {
 					if (response.isConflict && data.courseConflictHighlight) {
 						$(thisForm).find('td').each(function () {
-							$(this).css('color', '#F44336');
-							$(this).css('text-decoration', 'line-through');
-							$(this).css('font-weight', 'normal');
+							$(this).css('color', '#F44336').css('text-decoration', 'line-through').css('font-weight', 'normal');
 						});
 					} else {
 						$(thisForm).find('td').each(function () {
-							$(this).css('color', 'black');
-							$(this).css('text-decoration', 'none');
-							$(this).css('font-weight', 'normal');
+							$(this).css('color', 'black').css('text-decoration', 'none').css('font-weight', 'normal');
 						});
 					}
 					if (response.alreadyContains) {
 						$(thisForm).find('td').each(function () {
-							$(this).css('color', '#4CAF50');
-							$(this).css('text-decoration', 'none');
-							$(this).css('font-weight', 'bold');
+							$(this).css('color', '#4CAF50').css('text-decoration', 'none').css('font-weight', 'bold');
 						});
 					}
 				});
