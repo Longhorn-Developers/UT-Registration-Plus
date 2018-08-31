@@ -8,7 +8,6 @@ FEATURES:
 - import calendar 
 
 BUGS TO FIX:
-- online classes no times in popup link 
 
 
 DONE/FIXED:
@@ -16,3 +15,4 @@ DONE/FIXED:
 - RMP not working on individual course pages
 - Textbook button (amber)
 - Calendar popup
+- online classes no times in popup link 

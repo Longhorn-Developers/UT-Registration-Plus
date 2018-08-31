@@ -95,9 +95,9 @@ $(document).ready(function () {
 			$(this).find("#register").text("Register").css("background-color","#4CAF50").click(function () {
 				let registerlink = courses[$(this).closest("li").attr("id")].registerlink;
 				chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
-				chrome.tabs.update(tab.id, {url: registerlink});
+					chrome.tabs.update(tab.id, {url: registerlink});
+				});
 			});
-		});
 		}
 
 		/* clear the conflict messages, then remove the course and updateConflicts. update the tabs*/
@@ -171,8 +171,45 @@ function makeLine(index) {
 	var output = "";
 	var timearr = Array.from(dtmap.keys());
 	var dayarr = Array.from(dtmap.values());
-	for (var i = 0; i < dayarr.length; i++) {
-		output += "<span style='font-size:medium'>" + dayarr[i] + "</span>: <span style='float:right'>" + timearr[i].split(",")[0] + " to " + timearr[i].split(",")[1] + "</span><br>";
+
+	if(timearr.length == 0){
+		output="<span style='font-size:medium;'>This class has no meeting times.</span>"
+	} 
+	else {
+		for (var i = 0; i < dayarr.length; i++) {
+			var place = findLoc(dayarr[i], timearr[i], datetimearr);
+			var building = place.substring(0, place.search(/\d/) - 1);
+			if (building == "") {
+				building = "Undecided Location";
+			}
+			output += `<span style='font-size:large;display:inline-block;width: 20%;'>${dayarr[i]}:</span><span style='margin-left:10px;display:inline-block;width: 45%;'>${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}</span><span style='float:right;display:inline-block;text-align:right;width: 30%;margin-top:3px;'><a target='_blank' style='color:#3c87a3;text-decoration:none;'href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span><br>`;
+		}
+	}
+	return output;
+}
+
+
+//find the location of a class given its days and timearrs.
+function findLoc(day, timearr, datetimearr) {
+	for (let i = 0; i < datetimearr.length; i++) {
+		var dtl = datetimearr[i];
+		console.log(dtl[1]);
+		console.log(timearr);
+		if (day.includes(dtl[0])) {
+			if (JSON.stringify(timearr) == JSON.stringify(fixDtl1(dtl[1]))) {
+				return dtl[2];
+			}
+		}
+	}
+}
+
+function fixDtl1(dtl1) {
+	let output = "";
+	for (let i = 0; i < dtl1.length; i++) {
+		output += dtl1[i];
+		if (i != dtl1.length - 1) {
+			output += ",";
+		}
 	}
 	return output;
 }
