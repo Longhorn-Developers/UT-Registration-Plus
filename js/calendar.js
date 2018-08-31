@@ -1,8 +1,8 @@
 $(function () {
     const materialColors = ['#4CAF50', '#CDDC39',
-    '#FFC107', '#2196F3', '#F57C00', '#9C27B0', '#FF5722', '#673AB7',
-    '#FF5252', '#E91E63', '#009688', '#00BCD4',
-    '#4E342E', '#424242', '#9E9E9E'
+        '#FFC107', '#2196F3', '#F57C00', '#9C27B0', '#FF5722', '#673AB7',
+        '#FF5252', '#E91E63', '#009688', '#00BCD4',
+        '#4E342E', '#424242', '#9E9E9E'
     ];
     const days = new Map([
         ["M", "Monday"],
@@ -10,7 +10,7 @@ $(function () {
         ["W", "Wednesday"],
         ["TH", "Thursday"],
         ["F", "Friday"]
-        ]);
+    ]);
     const fadetime = 150;
     const butdelay = 75;
     $("#calendar").prepend('<div id="myModal" class="modal"><div class="modal-content"><span class="close">&times;</span><div class="card"><div id="colorStrip" style="height:10px;"></div><div class="cardcontainer"><div><div style="display:flex;"><h2 id="classname">Classname</h2></div><p id="prof">Prof</p></div><div id="timelines"></div><button id="info" class="matbut" style="font-size:medium; margin-right: auto; margin-left:auto; background: #2196F3;">More Info</button><button id="register" class="matbut" style="font-size:medium; margin-right: auto; margin-left:10px; background: #4CAF50;">Register</button><button id="remove" class="matbut" style="font-size:medium;margin:10px;background: #FF0000;">Remove</button></div></div></div></div>');
@@ -45,73 +45,77 @@ $(function () {
             events: classSchedules,
             slotLabelFormat: [
                 'h:mm A' // lower level of text
-                ],
-                eventRender: function (event, element, view) {
-                    $(element).css("padding", "5px");
-                    $(element).css("margin-bottom", "5px");
+            ],
+            eventRender: function (event, element, view) {
+                $(element).css("padding", "5px");
+                $(element).css("margin-bottom", "5px");
 
-                },
-                eventClick: function (data, event, view) {
-                    $("#myModal").fadeIn(fadetime);
-                    $("#colorStrip").css('background-color', data.color);
-                    currindex = data.index;
-                    var currLink = savedCourses[currindex].link;
-                    var currunique = savedCourses[currindex].unique;
-                    $("#classname").html(`${savedCourses[currindex].coursename} <span style='font-size:small'>(${savedCourses[currindex].unique})</span>`);
-                    $("#timelines").append(makeLine(savedCourses[currindex].datetimearr));
+            },
+            eventClick: function (data, event, view) {
+                $("#myModal").fadeIn(fadetime);
+                $("#colorStrip").css('background-color', data.color);
+                currindex = data.index;
+                $("#classname").html(`${savedCourses[currindex].coursename} <span style='font-size:small'>(${savedCourses[currindex].unique})</span>`);
+                $("#timelines").append(makeLine(savedCourses[currindex].datetimearr));
 
-                    var uncapProf = prettifyName(savedCourses[currindex].profname);
-                    if (uncapProf == "") {
-                        uncapProf = "Undecided";
-                    }
-                    $("#prof").html(`with <span style='font-weight:bold;'>${uncapProf}</span>`);
-
-                    let status = savedCourses[currindex].status;
-                    if(status.includes("closed") || status.includes("cancelled")){
-                        $("#register").text("Class Closed").css("background-color","#FF5722");
-                    } else{
-                        $("#register").text("Register").css("background-color","#4CAF50").click(function () {
-                            let registerlink = savedCourses[currindex].registerlink;
-                            setTimeout(() => {
-                                window.open(registerlink);
-                            }, butdelay);
-                        });
-                        // When the user clicks on <span> (x), close the modal
-                        $(".close").click(() => {
-                            $("#myModal").fadeOut(fadetime);
-                        });
-                        $("#info").click(() => {
-                            setTimeout(() => {
-                                window.open(currLink);
-                            }, butdelay);
-                        });
-                        $("#remove").click(() => {
-                            setTimeout(() => {
-                                chrome.runtime.sendMessage({
-                                    command: "courseStorage",
-                                    course: savedCourses[currindex],
-                                    action: "remove"
-                                }, function (response) {
-                                    $("#myModal").fadeOut(fadetime);
-                                    updateCalendar();
-                                    chrome.tabs.query({}, function (tabs) {
-                                        for (var i = 0; i < tabs.length; i++) {
-                                            chrome.tabs.sendMessage(tabs[i].id, {
-                                                command: "updateCourseList"
-                                            });
-                                        }
-                                    });
-                                });
-                            }, butdelay);
-                        });
-                    }
+                var uncapProf = prettifyName(savedCourses[currindex].profname);
+                if (uncapProf == "") {
+                    uncapProf = "Undecided";
                 }
-            });
-});
+                $("#prof").html(`with <span style='font-weight:bold;'>${uncapProf}</span>`);
 
-/* convert from the dtarr and maek the time lines*/
-function makeLine(datetimearr) {
-    $(".time").remove();
+                let status = savedCourses[currindex].status;
+                if (status.includes("closed") || status.includes("cancelled")) {
+                    $("#register").text("Class Closed").css("background-color", "#FF5722");
+                } else {
+                    $("#register").text("Register").css("background-color", "#4CAF50");
+                }
+            }
+        });
+    });
+
+    // When the user clicks on <span> (x), close the modal
+    $(".close").click(() => {
+        $("#myModal").fadeOut(fadetime);
+    });
+    $("#info").click(() => {
+        var currLink = savedCourses[currindex].link;
+        setTimeout(() => {
+            window.open(currLink);
+        }, butdelay);
+    });
+    $("#remove").click(() => {
+        setTimeout(() => {
+            chrome.runtime.sendMessage({
+                command: "courseStorage",
+                course: savedCourses[currindex],
+                action: "remove"
+            }, function (response) {
+                $("#myModal").fadeOut(fadetime);
+                updateCalendar();
+                chrome.tabs.query({}, function (tabs) {
+                    for (var i = 0; i < tabs.length; i++) {
+                        chrome.tabs.sendMessage(tabs[i].id, {
+                            command: "updateCourseList"
+                        });
+                    }
+                });
+            });
+        }, butdelay);
+    });
+    $("#register").click(function () {
+        let registerlink = savedCourses[currindex].registerlink;
+        let status = savedCourses[currindex].status;
+        if (!(status.includes("closed") || status.includes("cancelled"))) {
+            setTimeout(() => {
+                window.open(registerlink);
+            }, butdelay);
+        }
+    });
+
+    /* convert from the dtarr and maek the time lines*/
+    function makeLine(datetimearr) {
+        $(".time").remove();
         //converted times back
         console.log(datetimearr);
         var dtmap = new Map([]);
@@ -205,21 +209,21 @@ function makeLine(datetimearr) {
         classSchedules.push({
             title: `${department}-${course_nbr} with ${uncapProf}`,
             start: moment().format("YYYY-MM-") +
-            moment()
-            .day(fullday)
-            ._d.toString()
-            .split(" ")[2] +
-            "T" +
-            session[1][0] +
-            ":00",
+                moment()
+                .day(fullday)
+                ._d.toString()
+                .split(" ")[2] +
+                "T" +
+                session[1][0] +
+                ":00",
             end: moment().format("YYYY-MM-") +
-            moment()
-            .day(fullday)
-            ._d.toString()
-            .split(" ")[2] +
-            "T" +
-            session[1][1] +
-            ":00",
+                moment()
+                .day(fullday)
+                ._d.toString()
+                .split(" ")[2] +
+                "T" +
+                session[1][1] +
+                ":00",
             color: materialColors[colorCounter],
             index: i,
             allday: false
