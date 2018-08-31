@@ -23,13 +23,19 @@ const days = new Map([
 	["W", "Wednesday"],
 	["TH", "Thursday"],
 	["F", "Friday"]
-]);
+	]);
 const fadetime = 150;
 const butdelay = 75;
 //This extension may be super lit, but you know what's even more lit?
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 $(function () {
 	loadDataBase();
+	
+	chrome.runtime.sendMessage({
+		command: "updateStatus",
+	}, function (response) {
+		console.log(response);
+	});
 	//make heading and modal
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
 	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title id="title">Computer Fluency (C S 302)</h2><h2 class=profname id="profname">with Bruce Porter</h2><div id="topbuttons" class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="textbook" style="background: #FFC107;"> Textbook </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer style=""><ul class=description id="description" style="list-style-type:disc"></ul></div></div><div class=card ><div id="chartcontainer" class=cardcontainer><div id=chart></div></div></div>';
@@ -364,18 +370,18 @@ function openDialog(dep, cls, sem, professor, res) {
 				text: 'Grades'
 			},
 			categories: [
-				'A',
-				'A-',
-				'B+',
-				'B',
-				'B-',
-				'C+',
-				'C',
-				'C-',
-				'D+',
-				'D',
-				'D-',
-				'F'
+			'A',
+			'A-',
+			'B+',
+			'B',
+			'B-',
+			'C+',
+			'C',
+			'C-',
+			'D+',
+			'D',
+			'D-',
+			'F'
 			],
 			crosshair: true
 		},
@@ -453,13 +459,13 @@ function openDialog(dep, cls, sem, professor, res) {
 		if (data.length == 0) {
 			//if no data, then show the message and hide the series
 			chart.renderer.text('Could not find distribution for this Instructor teaching this Course.', 100, 120)
-				.css({
-					fontSize: '20px',
-					align: 'center',
-					width: '300px',
-					left: '160px'
-				})
-				.add();
+			.css({
+				fontSize: '20px',
+				align: 'center',
+				width: '300px',
+				left: '160px'
+			})
+			.add();
 			$.each(chart.series, function (i, ser) {
 				ser.hide();
 			});
@@ -564,7 +570,7 @@ function loadBinaryFile(path, success) {
 		var data = new Uint8Array(xhr.response);
 		var arr = new Array();
 		for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
-		success(arr.join(""));
+			success(arr.join(""));
 	};
 	xhr.send();
 };

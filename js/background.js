@@ -11,7 +11,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
 		isSingleConflict(request.dtarr, request.unique, response);
 	} else if (request.command == "checkConflicts") {
 		checkConflicts(response);
-	} else if (request.command == "alreadyContains") {
+	} 
+	else if(request.command == "updateStatus"){
+		updateStatus();
+	}
+	else if (request.command == "alreadyContains") {
 		alreadyContains(request.unique, response);
 	} else {
 		const xhr = new XMLHttpRequest();
@@ -167,4 +171,22 @@ function alreadyContains(unique, sendResponse) {
 			alreadyContains: contains
 		});
 	});
+}
+
+function updateStatus(){
+	chrome.storage.sync.get('savedCourses', function (data) {
+		console.log(data.savedCourses);
+		for(let i = 0; i<data.savedCourses.length; i++){
+			let c = data.savedCourses[i];
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", c.link, false);
+			xhr.send();
+			var result = xhr.responseText;
+			var dummy = document.createElement( 'html' );
+			dummy.innerHTML = result;
+			element = dummy.querySelector('[data-th="Status"]').textContent;
+			console.log(element);
+//			console.log(result);
+}
+});
 }

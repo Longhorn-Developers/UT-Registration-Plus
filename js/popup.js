@@ -158,8 +158,8 @@ function makeLine(index) {
 	//converted times back
 	var dtmap = new Map([]);
 	for (var i = 0; i < datetimearr.length; i++) {
-		datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm"]).format("h:mm A");
-		datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm"]).format("h:mm A");
+		datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm"]).format("h:mm a");
+		datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm"]).format("h:mm a");
 	}
 	for (var i = 0; i < datetimearr.length; i++) {
 		if (dtmap.has(String(datetimearr[i][1]))) {
@@ -182,7 +182,7 @@ function makeLine(index) {
 			if (building == "") {
 				building = "Undecided Location";
 			}
-			output += `<span style='font-size:large;display:inline-block;width: 20%;'>${dayarr[i]}:</span><span style='margin-left:10px;display:inline-block;width: 45%;'>${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}</span><span style='float:right;display:inline-block;text-align:right;width: 30%;margin-top:3px;'><a target='_blank' style='color:#3c87a3;text-decoration:none;'href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span><br>`;
+			output += `<span style='font-size:large;display:inline-block;width: 20%;'>${dayarr[i]}:</span><span style='margin-left:10px;display:inline-block;width: 45%;'>${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}</span><span style='float:right;display:inline-block;text-align:right;width: 30%;margin-top:5px;'><a target='_blank' style='color:#3c87a3;text-decoration:none;'href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span><br>`;
 		}
 	}
 	return output;
