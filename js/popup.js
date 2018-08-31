@@ -70,14 +70,14 @@ function updateConflicts() {
 			var between = response.between;
 			var text = "";
 			for (var i = 0; i < between.length; i++) {
-				text += "Conflict between: " + getSimpleName(between[i][0].coursename, between[i][0].unique) + " and " + getSimpleName(between[i][1].coursename, between[i][1].unique);
+				text += "CONFLICT: " + getSimpleName(between[i][0].coursename, between[i][0].unique) + " and " + getSimpleName(between[i][1].coursename, between[i][1].unique);
 				isConflicted.push(between[i][0].unique);
 				isConflicted.push(between[i][1].unique);
 				if (i != between.length - 1) {
 					text += "<br>";
 				}
 			}
-			$("#courseList").prepend("<p style='font-size:small;font-weight:bold; color:red; margin:5px;'>" + text + "</>");
+			$("#courseList").prepend("<p style='font-size:small; font-weight:bold; color:red; margin:5px 5px 5px 10px'>" + text + "</>");
 		}
 	});
 }
@@ -89,21 +89,28 @@ $(document).ready(function () {
 			window.open(courses[$(this).closest("li").attr("id")].link);
 		});
 		let status = courses[$(this).closest("li").attr("id")].status;
-		if(status.includes("closed") || status.includes("cancelled")){
+
+		if (status.includes("closed") || status.includes("cancelled")) {
 			$(this).find("#register").text("Class Closed").css("background-color","#FF5722");
-		} else{
-			$(this).find("#register").text("Register").css("background-color","#4CAF50").click(function () {
+		}
+		else {
+			if(status.includes("waitlisted")){
+				$(this).find("#register").text("Join Waitlist").css("background-color", "#FF9800");
+			}
+			else {
+				$(this).find("#register").text("Register").css("background-color", "#4CAF50");
+			}
+			$(this).find("#register").click(function (){
 				let registerlink = courses[$(this).closest("li").attr("id")].registerlink;
 				chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
 					chrome.tabs.update(tab.id, {url: registerlink});
 				});
-			});
-		}
-
+			})
+		} 
 		/* clear the conflict messages, then remove the course and updateConflicts. update the tabs*/
 		$(this).find("#listRemove").click(function () {
 			var thisForm = this;
-			$(thisForm).closest("ul").find("> p").remove();
+			$(thisForm).closest("ul").find(">p").remove();
 			chrome.runtime.sendMessage({
 				command: "courseStorage",
 				course: courses[$(thisForm).closest("li").attr("id")],
