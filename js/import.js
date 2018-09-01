@@ -106,7 +106,10 @@ function saveCourse(course){
 		course: course,
 		action: "add"
 	}, function (response) {
-		$("#import").text("Courses Saved!");
+		$("#import").text("Courses Saved!").css("background-color","#4CAF50");
+		setTimeout(function () {
+			$("#import").html("<span style='font-size:small'>Import into </span><b>UT Reg Plus<b></h2>").css("background-color","#FF9800");
+		}, 1000);
 		chrome.runtime.sendMessage({
 			command: "updateCourseList"
 		});
