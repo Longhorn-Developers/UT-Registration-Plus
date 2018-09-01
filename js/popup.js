@@ -41,7 +41,7 @@ chrome.storage.sync.get('savedCourses', function (data) {
 		if (profname == "") {
 			profname = "Undecided Professor";
 		}
-		var listhtml = "<li id='" + i + "'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'><div class='card'><div class='container' style='background:" + color + "''><h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;'><b>" + department + " " + course_nbr + "<span style='font-size:medium'>" + " with </span><span style='font-size:medium'>" + profname + " (" + courses[i].unique + ")" + "</span></b></h4><p style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;'>&#9660;</p></div></div><div id='moreInfo' style='display: none;'><p style='font-weight:bold;padding:10px;margin:0px 5px 0px 15px;font-size:small;background-color:#FFCDD2;'>" + makeLine(i) + "</p><div id='infoButtons' style='border-radius:0px;'><button class='matbut' id='listRemove'style='float:right;background:#F44336; margin:5px;'>Remove</button><button class='matbut' id='register' style='float:right;background:#4CAF50; margin:5px;'>Register</button><button class='matbut' id='listMoreInfo' style='float:right;background:#2196F3; margin:5px;'>More Info</button></div></div></li>";
+		var listhtml = "<li id='" + i + "'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'><div class='card'><div class='container' style='background:" + color + "''><h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;'><b>" + department + " " + course_nbr + "<span style='font-size:medium'>" + " with </span><span style='font-size:medium'>" + profname + " (" + courses[i].unique + ")" + "</span></b></h4><p id='arrow' style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;'>&#9658;</p></div></div><div id='moreInfo' style='display: none;'><p style='font-weight:bold;padding:10px;margin:0px 5px 0px 15px;font-size:small;background-color:#FFCDD2;'>" + makeLine(i) + "</p><div id='infoButtons' style='border-radius:0px;'><button class='matbut' id='listRemove'style='float:right;background:#F44336; margin:5px;'>Remove</button><button class='matbut' id='register' style='float:right;background:#4CAF50; margin:5px;'>Register</button><button class='matbut' id='listMoreInfo' style='float:right;background:#2196F3; margin:5px;'>More Info</button></div></div></li>";
 		$("#courseList").append(listhtml);
 	}
 });
@@ -135,8 +135,12 @@ $(document).ready(function () {
 		/* Show the times popout and more info options*/
 		if ($(this).find("#moreInfo").is(":hidden")) {
 			$(this).find("#moreInfo").fadeIn(200);
+			$(this).find('#arrow').css('transform','rotate(90deg)');
+
 		} else {
 			$(this).find("#moreInfo").fadeOut(200);
+			$(this).find('#arrow').css('transform','');
+
 		}
 	});
 	$("#clear").click(function () {
@@ -189,7 +193,7 @@ function makeLine(index) {
 			if (building == "") {
 				building = "Undecided Location";
 			}
-			output += `<span style='font-size:large;display:inline-block;width: 20%;'>${dayarr[i]}:</span><span style='margin-left:10px;display:inline-block;width: 45%;'>${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}</span><span style='float:right;display:inline-block;text-align:right;width: 30%;margin-top:5px;'><a target='_blank' style='color:#3c87a3;text-decoration:none;'href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span><br>`;
+			output += `<span style='display:inline-block;width: 20%;'>${dayarr[i]}:</span><span style='margin-left:10px;display:inline-block;width: 50%;text-align:center;'>${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}</span><span style='float:right;display:inline-block;text-align:right;width: 25%;'><a target='_blank' style='color:#3c87a3;text-decoration:none;'href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span><br>`;
 		}
 	}
 	return output;

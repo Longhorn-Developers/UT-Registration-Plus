@@ -2,10 +2,9 @@ TODO as of 8/28/18
 
 FEATURES: 
 
-- something to fill the space to the rght of the main popup window
-- Location in popup extra info
-- import into UT registration plus
 - import calendar 
+- import into UT registration plus
+
 
 BUGS TO FIX:
 
@@ -16,3 +15,4 @@ DONE/FIXED:
 - Textbook button (amber)
 - Calendar popup
 - online classes no times in popup link 
+- Location in popup extra info

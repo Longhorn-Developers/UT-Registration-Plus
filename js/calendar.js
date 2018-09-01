@@ -34,7 +34,7 @@ $(function () {
             defaultView: "agendaWeek", // Only show week view
             header: false, // Hide buttons/titles
             minTime: "08:00:00", // Start time
-            maxTime: "21:00:00", // End time
+            maxTime: "21:00:01", // End time
             columnHeaderFormat: "ddd", // Only show day of the week names
             displayEventTime: true, // Display event time
             allDaySlot: false,
@@ -72,7 +72,7 @@ $(function () {
                     $("#register").text("Join Waitlist").css("background-color", "#FF9800");
                 }
                 else {
-                    $("#register").text("register").css("background-color", "#4CAF50");
+                    $("#register").text("Register").css("background-color", "#4CAF50");
                 }
             }
         });
