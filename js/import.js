@@ -4,12 +4,16 @@ $(function () {
 	var sem = $('[name="s_ccyys"]').val();
 	$("[href='#top']").before("<button class='matbut' id='import' style='margin:10px 0px 20px 0px;'><span style='font-size:small'>Import into </span><b>UT Reg Plus<b></h2></button><br>");
 	$("#import").prepend("<div id='snackbar'>defaultmessage..</div>");
-	$("#import").click(function(){
-		$(".tbg").last().find(".tbon>td:first-child").each(function(){
+	$("#import").click(function () {
+		$(".tbg").last().find(".tbon>td:first-child").each(function () {
 			let unique = $(this).text().replace(/\s/g, '');
 			link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
 			getInfo();
 		});
+		$("#import").text("Courses Saved!").css("background-color", "#4CAF50");
+		setTimeout(function () {
+			$("#import").html("<span style='font-size:small'>Import into </span><b>UT Reg Plus<b></h2>").css("background-color", "#FF9800");
+		}, 1000);
 	});
 
 });
@@ -26,30 +30,26 @@ function Course(coursename, unique, profname, datetimearr, status, link, registe
 }
 
 
-function getInfo(classurl){
-	chrome.runtime.sendMessage({
-		method: "GET",
-		action: "xhttp",
-		url: link,
-		data: ""
-	}, function (response) {
-		if (response) {
-			var output = "";
-			var object = $('<div/>').html(response).contents();
-			var c = getCourseObject(object);
+function getInfo(classurl) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", link, false);
+	xhr.send();
+	var response = xhr.responseText;
+	if (response) {
+		var output = "";
+		var object = $('<div/>').html(response).contents();
+		var c = getCourseObject(object);
+		console.log(c);
+		chrome.runtime.sendMessage({
+			command: "courseStorage",
+			course: c,
+			action: "add"
+		}, function () {
 			chrome.runtime.sendMessage({
-				command: "alreadyContains",
-				unique: c.unique
-			}, function (response) {
-				if (!response.alreadyContains) {
-					saveCourse(c);
-				}
+				command: "updateTabs"
 			});
-		//	var first = object.find('td[data-th="Instructor"]').text();
-	} else {
-
+		});
 	}
-});
 }
 
 
@@ -65,7 +65,7 @@ function getCourseObject(object) {
 	let status = object.find('td[data-th="Status"]').text();
 	let indlink = link;
 	let registerlink = object.find('td[data-th="Add"] a').prop('href');
-	return new Course(coursename,uniquenum,profname,datetimearr,status,indlink,registerlink);
+	return new Course(coursename, uniquenum, profname, datetimearr, status, indlink, registerlink);
 }
 
 /* For a row, get the date-time-array for checking conflicts*/
@@ -99,20 +99,3 @@ function convertTime(time) {
 	}
 	return converted;
 }
-
-function saveCourse(course){
-	chrome.runtime.sendMessage({
-		command: "courseStorage",	
-		course: course,
-		action: "add"
-	}, function (response) {
-		$("#import").text("Courses Saved!").css("background-color","#4CAF50");
-		setTimeout(function () {
-			$("#import").html("<span style='font-size:small'>Import into </span><b>UT Reg Plus<b></h2>").css("background-color","#FF9800");
-		}, 1000);
-		chrome.runtime.sendMessage({
-			command: "updateCourseList"
-		});
-	});
-}
-

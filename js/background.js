@@ -11,12 +11,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
 		isSingleConflict(request.dtarr, request.unique, response);
 	} else if (request.command == "checkConflicts") {
 		checkConflicts(response);
-	} 
-	else if(request.command == "updateStatus"){
+	} else if (request.command == "updateStatus") {
 		updateStatus();
-	}
-	else if (request.command == "alreadyContains") {
+	} else if (request.command == "alreadyContains") {
 		alreadyContains(request.unique, response);
+	} else if (request.command == "updateTabs") {
+		updateTabs();
 	} else {
 		const xhr = new XMLHttpRequest();
 		const method = request.method ? request.method.toUpperCase() : "GET";
@@ -123,11 +123,13 @@ function isConflict(adtarr, bdtarr) {
 function add(request, sender, sendResponse) {
 	chrome.storage.sync.get('savedCourses', function (data) {
 		var courses = data.savedCourses;
-		courses.push(request.course)
-		console.log(courses);
-		chrome.storage.sync.set({
-			savedCourses: courses
-		});
+		if (!contains(courses, request.course.unique)) {
+			courses.push(request.course)
+			console.log(courses);
+			chrome.storage.sync.set({
+				savedCourses: courses
+			});
+		}
 		sendResponse({
 			done: "Added: (" + request.course.unique + ") " + request.course.coursename,
 			label: "Remove Course -"
@@ -159,34 +161,47 @@ function remove(request, sender, sendResponse) {
 function alreadyContains(unique, sendResponse) {
 	chrome.storage.sync.get('savedCourses', function (data) {
 		var courses = data.savedCourses;
-		var contains = false;
-		var i = 0;
-		while (i < courses.length && !contains) {
-			if (courses[i].unique == unique) {
-				contains = true;
-			}
-			i++;
-		}
 		sendResponse({
-			alreadyContains: contains
+			alreadyContains: contains(courses, unique)
 		});
 	});
 }
 
-function updateStatus(){
+function contains(courses, unique) {
+	var i = 0;
+	while (i < courses.length) {
+		if (courses[i].unique == unique) {
+			return true;
+		}
+		i++;
+	}
+	return false;
+}
+
+function updateTabs() {
+	chrome.tabs.query({}, function (tabs) {
+		for (var i = 0; i < tabs.length; i++) {
+			chrome.tabs.sendMessage(tabs[i].id, {
+				command: "updateCourseList"
+			});
+		}
+	});
+}
+
+function updateStatus() {
 	chrome.storage.sync.get('savedCourses', function (data) {
 		console.log(data.savedCourses);
-		for(let i = 0; i<data.savedCourses.length; i++){
+		for (let i = 0; i < data.savedCourses.length; i++) {
 			let c = data.savedCourses[i];
 			var xhr = new XMLHttpRequest();
 			xhr.open("GET", c.link, false);
 			xhr.send();
 			var result = xhr.responseText;
-			var dummy = document.createElement( 'html' );
+			var dummy = document.createElement('html');
 			dummy.innerHTML = result;
 			var newstatus = dummy.querySelector('[data-th="Status"]').textContent;
 			c.status = element;
-//			console.log(result);
+			//			console.log(result);
 		}
 	});
 }
