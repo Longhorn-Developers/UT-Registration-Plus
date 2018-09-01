@@ -33,7 +33,7 @@ chrome.storage.sync.get('savedCourses', function (data) {
 		} else if (status.includes("waitlisted")) {
 			color = "#FF9800"
 		} else if (status.includes("closed") || status.includes("cancelled")) {
-			color = "#F44336";
+			color = "#FF5722";
 		}
 		var department = courses[i].coursename.substring(0, courses[i].coursename.search(/\d/) - 2);
 		var course_nbr = courses[i].coursename.substring(courses[i].coursename.search(/\d/), courses[i].coursename.indexOf(" ", courses[i].coursename.search(/\d/)));

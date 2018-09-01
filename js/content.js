@@ -324,7 +324,7 @@ function openDialog(dep, cls, sem, professor, res) {
 	} else if (status.includes("waitlisted")) {
 		color = "#FF9800"
 	} else if (status.includes("closed") || status.includes("cancelled")) {
-		color = "#F44336";
+		color = "#FF5722";
 	}
 	$("#title").append("<span style='color:" + color + ";font-size:medium;'>" + " #" + uniquenum + "</>");
 

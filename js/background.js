@@ -184,9 +184,9 @@ function updateStatus(){
 			var result = xhr.responseText;
 			var dummy = document.createElement( 'html' );
 			dummy.innerHTML = result;
-			element = dummy.querySelector('[data-th="Status"]').textContent;
-			console.log(element);
+			var newstatus = dummy.querySelector('[data-th="Status"]').textContent;
+			c.status = element;
 //			console.log(result);
-}
-});
+		}
+	});
 }
