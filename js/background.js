@@ -17,12 +17,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
 		alreadyContains(request.unique, response);
 	} else if (request.command == "updateTabs") {
 		updateTabs();
+	} else if(request.command == "updateCourseList"){
+		//updated;
 	} else {
 		const xhr = new XMLHttpRequest();
 		const method = request.method ? request.method.toUpperCase() : "GET";
 		xhr.open(method, request.url, true);
 		xhr.onload = () => response(xhr.responseText);
 		xhr.onerror = () => response(xhr.statusText);
+		console.log(request);
+		console.log(sender);
 		if (method == "POST") {
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 		}
@@ -188,20 +192,30 @@ function updateTabs() {
 	});
 }
 
+setInterval(updateStatus, 60*1000);
+
 function updateStatus() {
 	chrome.storage.sync.get('savedCourses', function (data) {
-		console.log(data.savedCourses);
-		for (let i = 0; i < data.savedCourses.length; i++) {
-			let c = data.savedCourses[i];
+		var courses = data.savedCourses;
+		for (let i = 0; i < courses.length; i++) {
+			let c = courses[i];
 			var xhr = new XMLHttpRequest();
 			xhr.open("GET", c.link, false);
 			xhr.send();
-			var result = xhr.responseText;
-			var dummy = document.createElement('html');
+			let result = xhr.responseText;
+			let dummy = document.createElement('html');
 			dummy.innerHTML = result;
-			var newstatus = dummy.querySelector('[data-th="Status"]').textContent;
-			c.status = element;
-			//			console.log(result);
+			let newstatus = dummy.querySelector('[data-th="Status"]').textContent;
+			let registerlink = dummy.querySelector('td[data-th="Add"] a');
+			if(registerlink){
+				registerlink = registerlink.getAttribute('href');
+			}
+			c.registerlink = registerlink;
+			c.status = newstatus;
 		}
+		chrome.storage.sync.set({
+				savedCourses: courses
+		});
+		console.log(courses);
 	});
 }
