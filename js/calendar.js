@@ -67,11 +67,9 @@ $(function () {
                 let status = savedCourses[currindex].status;
                 if (status.includes("closed") || status.includes("cancelled")) {
                     $("#register").text("Class Closed").css("background-color", "#FF5722");
-                } 
-                else if(status.includes("waitlisted")){
+                } else if (status.includes("waitlisted")) {
                     $("#register").text("Join Waitlist").css("background-color", "#FF9800");
-                }
-                else {
+                } else {
                     $("#register").text("Register").css("background-color", "#4CAF50");
                 }
             }
@@ -212,7 +210,7 @@ $(function () {
         }
         classSchedules.push({
             title: `${department}-${course_nbr} with ${uncapProf}`,
-            start: moment().format("YYYY-MM-") +
+            start: moment().startOf('week').format("YYYY-MM-") +
                 moment()
                 .day(fullday)
                 ._d.toString()
@@ -220,7 +218,7 @@ $(function () {
                 "T" +
                 session[1][0] +
                 ":00",
-            end: moment().format("YYYY-MM-") +
+            end: moment().startOf('week').format("YYYY-MM-") +
                 moment()
                 .day(fullday)
                 ._d.toString()
