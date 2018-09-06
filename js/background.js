@@ -18,15 +18,19 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
 	} else if (request.command == "updateTabs") {
 		updateTabs();
 	} else if(request.command == "updateCourseList"){
-		//updated;
+		chrome.tabs.query({}, function (tabs) {
+			for (var i = 0; i < tabs.length; i++) {
+				chrome.tabs.sendMessage(tabs[i].id, {
+					command: "updateCourseList"
+				});
+			}
+		});
 	} else {
 		const xhr = new XMLHttpRequest();
 		const method = request.method ? request.method.toUpperCase() : "GET";
 		xhr.open(method, request.url, true);
 		xhr.onload = () => response(xhr.responseText);
 		xhr.onerror = () => response(xhr.statusText);
-		console.log(request);
-		console.log(sender);
 		if (method == "POST") {
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 		}
@@ -192,7 +196,7 @@ function updateTabs() {
 	});
 }
 
-setInterval(updateStatus, 60*1000);
+setInterval(updateStatus, 2*60*1000);
 
 function updateStatus() {
 	chrome.storage.sync.get('savedCourses', function (data) {
@@ -214,8 +218,8 @@ function updateStatus() {
 			c.status = newstatus;
 		}
 		chrome.storage.sync.set({
-				savedCourses: courses
+			savedCourses: courses
 		});
-		console.log(courses);
+		console.log("updated status' and registerlinks");
 	});
 }

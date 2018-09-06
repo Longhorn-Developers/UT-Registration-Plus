@@ -90,8 +90,8 @@ $(document).ready(function () {
 		});
 		let status = courses[$(this).closest("li").attr("id")].status;
 
-		if (status.includes("closed") || status.includes("cancelled")) {
-			$(this).find("#register").text("Class Closed").css("background-color","#FF5722");
+		if (status.includes("closed") || status.includes("cancelled")|| !status) {
+			$(this).find("#register").text("Cannot Register").css("background-color","#FF5722");
 		}
 		else {
 			if(status.includes("waitlisted")){

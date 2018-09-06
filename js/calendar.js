@@ -65,8 +65,8 @@ $(function () {
                 $("#prof").html(`with <span style='font-weight:bold;'>${uncapProf}</span>`);
 
                 let status = savedCourses[currindex].status;
-                if (status.includes("closed") || status.includes("cancelled")) {
-                    $("#register").text("Class Closed").css("background-color", "#FF5722");
+                if (status.includes("closed") || status.includes("cancelled") || !status) {
+                    $("#register").text("Cannot Register").css("background-color", "#FF5722");
                 } else if (status.includes("waitlisted")) {
                     $("#register").text("Join Waitlist").css("background-color", "#FF9800");
                 } else {
