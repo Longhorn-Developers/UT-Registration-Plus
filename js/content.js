@@ -23,7 +23,7 @@ const days = new Map([
 	["W", "Wednesday"],
 	["TH", "Thursday"],
 	["F", "Friday"]
-	]);
+]);
 const fadetime = 150;
 const butdelay = 75;
 //This extension may be super lit, but you know what's even more lit?
@@ -364,18 +364,18 @@ function openDialog(dep, cls, sem, professor, res) {
 				text: 'Grades'
 			},
 			categories: [
-			'A',
-			'A-',
-			'B+',
-			'B',
-			'B-',
-			'C+',
-			'C',
-			'C-',
-			'D+',
-			'D',
-			'D-',
-			'F'
+				'A',
+				'A-',
+				'B+',
+				'B',
+				'B-',
+				'C+',
+				'C',
+				'C-',
+				'D+',
+				'D',
+				'D-',
+				'F'
 			],
 			crosshair: true
 		},
@@ -453,13 +453,13 @@ function openDialog(dep, cls, sem, professor, res) {
 		if (data.length == 0) {
 			//if no data, then show the message and hide the series
 			chart.renderer.text('Could not find distribution for this Instructor teaching this Course.', 100, 120)
-			.css({
-				fontSize: '20px',
-				align: 'center',
-				width: '300px',
-				left: '160px'
-			})
-			.add();
+				.css({
+					fontSize: '20px',
+					align: 'center',
+					width: '300px',
+					left: '160px'
+				})
+				.add();
 			$.each(chart.series, function (i, ser) {
 				ser.hide();
 			});
@@ -564,7 +564,7 @@ function loadBinaryFile(path, success) {
 		var data = new Uint8Array(xhr.response);
 		var arr = new Array();
 		for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
-			success(arr.join(""));
+		success(arr.join(""));
 	};
 	xhr.send();
 };
