@@ -165,8 +165,8 @@ $(function () {
         var dtmap = new Map([]);
         for (var i = 0; i < datetimearr.length; i++) {
             console.log(datetimearr[i][1][0]);
-            datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm A"]).format("h:mm a");
-            datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm A"]).format("h:mm a");
+            datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm A"]).format("h:mm A");
+            datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm A"]).format("h:mm A");
         }
         for (var i = 0; i < datetimearr.length; i++) {
             if (dtmap.has(String(datetimearr[i][1]))) {
