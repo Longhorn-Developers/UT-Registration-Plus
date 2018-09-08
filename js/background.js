@@ -196,7 +196,7 @@ function updateTabs() {
 	});
 }
 
-setInterval(updateStatus, 2*60*1000);
+setInterval(updateStatus, 2000);
 
 function updateStatus() {
 	chrome.storage.sync.get('savedCourses', function (data) {
