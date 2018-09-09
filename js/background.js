@@ -196,30 +196,35 @@ function updateTabs() {
 	});
 }
 
-setInterval(updateStatus, 2000);
+const UPDATE_INTERVAL = 1000 * 60 * 15 // 15 mins
+setInterval(updateStatus, UPDATE_INTERVAL);
 
 function updateStatus() {
 	chrome.storage.sync.get('savedCourses', function (data) {
 		var courses = data.savedCourses;
 		for (let i = 0; i < courses.length; i++) {
-			let c = courses[i];
-			var xhr = new XMLHttpRequest();
-			xhr.open("GET", c.link, false);
-			xhr.send();
-			let result = xhr.responseText;
-			let dummy = document.createElement('html');
-			dummy.innerHTML = result;
-			let newstatus = dummy.querySelector('[data-th="Status"]').textContent;
-			let registerlink = dummy.querySelector('td[data-th="Add"] a');
-			if(registerlink){
-				registerlink = registerlink.getAttribute('href');
+			try {
+				let c = courses[i];
+				var xhr = new XMLHttpRequest();
+				xhr.open("GET", c.link, false);
+				xhr.send();
+				let result = xhr.responseText;
+				let dummy = document.createElement('html');
+				dummy.innerHTML = result;
+				let newstatus = dummy.querySelector('[data-th="Status"]').textContent;
+				let registerlink = dummy.querySelector('td[data-th="Add"] a');
+				if(registerlink){
+					registerlink = registerlink.getAttribute('href');
+				}
+				c.registerlink = registerlink;
+				c.status = newstatus;
+			} catch (e) {
+				console.log('Not logged into UT Coursebook. Could not update class statuses.');
 			}
-			c.registerlink = registerlink;
-			c.status = newstatus;
 		}
 		chrome.storage.sync.set({
 			savedCourses: courses
 		});
-		console.log("updated status' and registerlinks");
+		// console.log("updated status' and registerlinks");
 	});
 }
