@@ -66,7 +66,7 @@ $(function () {
 
                 let status = savedCourses[currindex].status;
                 if (status.includes("closed") || status.includes("cancelled") || !status) {
-                    $("#register").text("Cannot Register").css("background-color", "#FF5722");
+                    $("#register").text("Can't Register").css("background-color", "#FF5722");
                 } else if (status.includes("waitlisted")) {
                     $("#register").text("Join Waitlist").css("background-color", "#FF9800");
                 } else {
