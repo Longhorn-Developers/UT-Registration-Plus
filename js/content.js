@@ -80,7 +80,7 @@ $(function () {
 		if (e.keyCode == 27) {
 			$("#myModal").fadeOut(fadetime);
 			$("#snackbar").attr("class", "");
-		} else if (e.keyCode == 13) {
+		} else if (e.keyCode == 13 && $('#myModal').is(':visible')) {
 			/*save course when hit enter*/
 			saveCourse();
 		}
