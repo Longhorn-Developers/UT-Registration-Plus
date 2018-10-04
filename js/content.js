@@ -89,7 +89,7 @@ $(function () {
 	chrome.runtime.onMessage.addListener(
 		function (request, sender, sendResponse) {
 			if (request.command == "updateCourseList") {
-				console.log("hello");
+				//		console.log("hello");
 				update();
 			}
 		});
@@ -193,7 +193,7 @@ function getCourseInfo(row) {
 		if ($(this).is(row)) {
 			profurl = $(this).find('td[data-th="Unique"] a').prop('href');
 			registerlink = $(this).find('td[data-th="Add"] a').prop('href');
-			console.log(registerlink);
+			//	console.log(registerlink);
 			uniquenum = $(this).find('td[data-th="Unique"]').text();
 			status = $(this).find('td[data-th="Status"]').text();
 			profname = $(this).find('td[data-th="Instructor"]').text().split(', ')[0];
@@ -222,7 +222,7 @@ function getCourseInfo(row) {
 			profinit = "";
 		}
 		profurl = document.URL;
-		console.log(profurl);
+		//	console.log(profurl);
 	}
 	getDescription();
 	department = coursename.substring(0, coursename.search(/\d/) - 2);
@@ -491,8 +491,8 @@ function prettifyName() {
 
 /*Get the course description from the profurl and highlight the important elements, as well as set the eCIS, and rmp links.*/
 function getDescription() {
-	console.log(window.location.href);
-	console.log(profurl);
+	// console.log(window.location.href);
+	// console.log(profurl);
 	chrome.runtime.sendMessage({
 		method: "GET",
 		action: "xhttp",

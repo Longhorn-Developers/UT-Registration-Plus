@@ -164,7 +164,7 @@ $(function () {
     function makeMap(datetimearr) {
         var dtmap = new Map([]);
         for (var i = 0; i < datetimearr.length; i++) {
-            console.log(datetimearr[i][1][0]);
+            //console.log(datetimearr[i][1][0]);
             datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm A"]).format("h:mm A");
             datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm A"]).format("h:mm A");
         }
@@ -232,8 +232,8 @@ $(function () {
 
     //create the event object for every section
     function setEventForSection(session, colorCounter, i) {
-        console.log(moment().startOf('month').format("YYYY-MM-D"));
-        console.log(moment().day(fullday));
+        // console.log(moment().startOf('month').format("YYYY-MM-D"));
+        // console.log(moment().day(fullday));
         var fullday = days.get(session[0]);
         var classInfo = savedCourses[i];
         var department = classInfo.coursename.substring(0, classInfo.coursename.search(/\d/) - 2);
@@ -277,7 +277,7 @@ $(function () {
         chrome.storage.sync.get("savedCourses", function (data) {
             savedCourses = data.savedCourses
             setAllEvents(data.savedCourses);
-            console.log(classSchedules);
+            // console.log(classSchedules);
             $('#calendar').fullCalendar('removeEventSources');
             $("#calendar").fullCalendar('addEventSource', classSchedules, true);
         });

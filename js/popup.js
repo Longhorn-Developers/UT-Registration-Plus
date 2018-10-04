@@ -89,24 +89,26 @@ $(document).ready(function () {
 			window.open(courses[$(this).closest("li").attr("id")].link);
 		});
 		let status = courses[$(this).closest("li").attr("id")].status;
-
-		if (status.includes("closed") || status.includes("cancelled")|| !status) {
-			$(this).find("#register").text("Can't Register").css("background-color","#FF5722");
-		}
-		else {
-			if(status.includes("waitlisted")){
+		let registerlink = courses[$(this).closest("li").attr("id")].registerlink;
+		if (status.includes("closed") || status.includes("cancelled") || !status || !registerlink) {
+			$(this).find("#register").text("Can't Register").css("background-color", "#FF5722");
+		} else {
+			if (status.includes("waitlisted")) {
 				$(this).find("#register").text("Join Waitlist").css("background-color", "#FF9800");
-			}
-			else {
+			} else {
 				$(this).find("#register").text("Register").css("background-color", "#4CAF50");
 			}
-			$(this).find("#register").click(function (){
-				let registerlink = courses[$(this).closest("li").attr("id")].registerlink;
-				chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
-					chrome.tabs.update(tab.id, {url: registerlink});
+			$(this).find("#register").click(function () {
+				chrome.tabs.query({
+					currentWindow: true,
+					active: true
+				}, function (tab) {
+					chrome.tabs.update(tab.id, {
+						url: registerlink
+					});
 				});
 			})
-		} 
+		}
 		/* clear the conflict messages, then remove the course and updateConflicts. update the tabs*/
 		$(this).find("#listRemove").click(function () {
 			var thisForm = this;
@@ -135,11 +137,11 @@ $(document).ready(function () {
 		/* Show the times popout and more info options*/
 		if ($(this).find("#moreInfo").is(":hidden")) {
 			$(this).find("#moreInfo").fadeIn(200);
-			$(this).find('#arrow').css('transform','rotate(90deg)');
+			$(this).find('#arrow').css('transform', 'rotate(90deg)');
 
 		} else {
 			$(this).find("#moreInfo").fadeOut(200);
-			$(this).find('#arrow').css('transform','');
+			$(this).find('#arrow').css('transform', '');
 
 		}
 	});
@@ -183,10 +185,9 @@ function makeLine(index) {
 	var timearr = Array.from(dtmap.keys());
 	var dayarr = Array.from(dtmap.values());
 
-	if(timearr.length == 0){
-		output="<span style='font-size:medium;'>This class has no meeting times.</span>"
-	} 
-	else {
+	if (timearr.length == 0) {
+		output = "<span style='font-size:medium;'>This class has no meeting times.</span>"
+	} else {
 		for (var i = 0; i < dayarr.length; i++) {
 			var place = findLoc(dayarr[i], timearr[i], datetimearr);
 			var building = place.substring(0, place.search(/\d/) - 1);
@@ -204,8 +205,8 @@ function makeLine(index) {
 function findLoc(day, timearr, datetimearr) {
 	for (let i = 0; i < datetimearr.length; i++) {
 		var dtl = datetimearr[i];
-		console.log(dtl[1]);
-		console.log(timearr);
+		// console.log(dtl[1]);
+		// console.log(timearr);
 		if (day.includes(dtl[0])) {
 			if (JSON.stringify(timearr) == JSON.stringify(fixDtl1(dtl[1]))) {
 				return dtl[2];
