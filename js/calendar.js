@@ -242,6 +242,7 @@ $(function () {
         if (uncapProf == "") {
             uncapProf = "Undecided";
         }
+        //start from start of the month
         classSchedules.push({
             title: `${department}-${course_nbr} with ${uncapProf}`,
             start: moment().startOf('month').format("YYYY-MM-") +
