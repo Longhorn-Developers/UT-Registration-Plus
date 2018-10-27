@@ -65,7 +65,9 @@ $(function () {
                 $("#prof").html(`with <span style='font-weight:bold;'>${uncapProf}</span>`);
 
                 let status = savedCourses[currindex].status;
-                if (status.includes("closed") || status.includes("cancelled") || !status) {
+
+                let registerlink = savedCourses[currindex].registerlink;
+                if (status.includes("closed") || status.includes("cancelled") || !status || !registerlink) {
                     $("#register").text("Can't Register").css("background-color", "#FF5722");
                 } else if (status.includes("waitlisted")) {
                     $("#register").text("Join Waitlist").css("background-color", "#FF9800");
@@ -135,7 +137,7 @@ $(function () {
     $("#register").click(function () {
         let registerlink = savedCourses[currindex].registerlink;
         let status = savedCourses[currindex].status;
-        if (!(status.includes("closed") || status.includes("cancelled"))) {
+        if (!(status.includes("closed") || status.includes("cancelled") || !status || !registerlink)) {
             setTimeout(() => {
                 window.open(registerlink);
             }, butdelay);
