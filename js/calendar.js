@@ -244,10 +244,13 @@ $(function () {
         if (uncapProf == "") {
             uncapProf = "Undecided";
         }
-        //start from start of the month
+
+        var year = moment().day(fullday)._d.toString().split(" ")[3];
+        var monthNum = moment(moment().day(fullday)._d.toString().split(" ")[1], "MMM").format('MM');
+        var beg = `${year}-${monthNum}-`;
         classSchedules.push({
             title: `${department}-${course_nbr} with ${uncapProf}`,
-            start: moment().startOf('month').format("YYYY-MM-") +
+            start: beg +
                 moment()
                 .day(fullday)
                 ._d.toString()
@@ -255,7 +258,7 @@ $(function () {
                 "T" +
                 session[1][0] +
                 ":00",
-            end: moment().startOf('month').format("YYYY-MM-") +
+            end: beg +
                 moment()
                 .day(fullday)
                 ._d.toString()
