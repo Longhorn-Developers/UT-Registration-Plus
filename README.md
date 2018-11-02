@@ -1,4 +1,4 @@
-# UT Registration Plus
+# Sriram's Sexy Scheduling Script
 [Try it for yourself on the Chrome Web Store](https://chrome.google.com/webstore/detail/hboadpjkoaieogjimneceaahlppnipaa/publish-accepted?authuser=0&hl=en-US)
 
 We've all been there. 20 tabs of Rate My Professor, Catalyst, and the UT Course Catalog open and you still don't know what classes to take. 
