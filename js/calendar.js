@@ -82,24 +82,23 @@ $(function () {
                     var dayarr = Array.from(dtmap.values());
                     console.log(timearr);
                     console.log(dayarr);
-                    for (int i = 0; i < )
-                        for (var i = 0; i < dayarr.length; i++) {
-                            var place = findLoc(dayarr[i], timearr[i], course.datetimearr);
-                            var building = place.substring(0, place.search(/\d/) - 1);
-                            if (building == "") {
-                                building = "Undecided Location";
+                    for (var i = 0; i < dayarr.length; i++) {
+                        var place = findLoc(dayarr[i], timearr[i], course.datetimearr);
+                        var building = place.substring(0, place.search(/\d/) - 1);
+                        if (building == "") {
+                            building = "Undecided Location";
 
-                            }
-                            //cal.addEvent(subject, description, location, begin, end, rrule)
-                            let rrurle = {
-                                freq: "WEEKLY",
-                                interval: 1,
-                                byday: [""]
-
-                            }
-                            //  cal.addEvent(course.coursename, `with${course.profname}`, building, '', '', '');
-                            //      output += `<p class='time'><span>${dayarr[i]}</span>: ${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}<span style='float:right';><a target='_blank' href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span></p>`;
                         }
+                        //cal.addEvent(subject, description, location, begin, end, rrule)
+                        let rrurle = {
+                            freq: "WEEKLY",
+                            interval: 1,
+                            byday: [""]
+
+                        }
+                        //  cal.addEvent(course.coursename, `with${course.profname}`, building, '', '', '');
+                        //      output += `<p class='time'><span>${dayarr[i]}</span>: ${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}<span style='float:right';><a target='_blank' href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span></p>`;
+                    }
 
                 }
                 cal.download();
