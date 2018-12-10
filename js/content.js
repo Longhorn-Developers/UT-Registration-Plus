@@ -343,7 +343,7 @@ function openDialog(dep, cls, sem, professor, res) {
 		$("#myModal").fadeOut(200);
 		$("#snackbar").attr("class", "");
 	}
-	//set up the chart 
+	//set up the chart
 	chart = Highcharts.chart('chart', {
 		chart: {
 			type: 'column',

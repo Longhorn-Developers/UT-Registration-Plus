@@ -12,7 +12,7 @@ $("#toggleConflictHighlighting").click(function(){
 	if(action == "Turn Off"){
 		chrome.storage.sync.set({courseConflictHighlight: false}, function() {
 			on();
-		});		
+		});
 	} else{
 		chrome.storage.sync.set({courseConflictHighlight: true}, function() {
 			off();
