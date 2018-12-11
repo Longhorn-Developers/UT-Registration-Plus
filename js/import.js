@@ -1,15 +1,34 @@
 var link;
+var waitlist;
+var sem;
 $(function () {
 	//template https://utdirect.utexas.edu/apps/registrar/course_schedule/20189/51475/
-	var sem = $('[name="s_ccyys"]').val();
-	$("[href='#top']").before("<button class='matbut' id='import' style='margin:10px 0px 20px 0px;'><span style='font-size:small'>Import into </span><b>UT Reg Plus<b></h2></button><br>");
+	console.log(window.location.href);
+	var importbutton = "<button class='matbut' id='import' style='margin:20px 0px 20px 0px;'><span style='font-size:small'>Import into </span><b>UT Reg Plus<b></h2></button><br>";
+	waitlist = !(window.location.href.includes('https://utdirect.utexas.edu/registration/classlist.WBX'));
+	if(waitlist){
+		sem = $('[name="s_ccyys"]').val();
+		$("[href='#top']").before(importbutton);
+	} else {
+		sem = $("option[selected='selected']").val();
+		$("table").after(importbutton);
+	}
+	console.log(sem);
 	$("#import").prepend("<div id='snackbar'>defaultmessage..</div>");
 	$("#import").click(function () {
-		$(".tbg").last().find(".tbon>td:first-child").each(function () {
-			let unique = $(this).text().replace(/\s/g, '');
-			link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
-			getInfo();
-		});
+		if(waitlist){
+			$(".tbg").last().find(".tbon>td:first-child").each(function () {
+				let unique = $(this).text().replace(/\s/g, '');
+				link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
+				getInfo();
+			});
+		} else {
+			$("tr>td:first-child").each(function(){
+				let unique = $(this).text().replace(/\s/g, '');
+				link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
+				getInfo();
+			});
+		}
 		$("#import").text("Courses Saved!").css("background-color", "#4CAF50");
 		setTimeout(function () {
 			$("#import").html("<span style='font-size:small'>Import into </span><b>UT Reg Plus<b></h2>").css("background-color", "#FF9800");
