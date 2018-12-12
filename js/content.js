@@ -31,17 +31,19 @@ const butdelay = 75;
 $(function () {
 	loadDataBase();
 	//make heading and modal
-	$("table thead th:last-child").after('<th scope=col>Plus</th>');
-	var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title id="title">Computer Fluency (C S 302)</h2><h2 class=profname id="profname">with Bruce Porter</h2><div id="topbuttons" class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="textbook" style="background: #FFC107;"> Textbook </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer style=""><ul class=description id="description" style="list-style-type:disc"></ul></div></div><div class=card ><div id="chartcontainer" class=cardcontainer><div id=chart></div></div></div>';
-	$("#container").prepend(modhtml);
-	$("#myModal").prepend("<div id='snackbar'>defaultmessage..</div>");
-	//go through all the rows in the list
-	$('table').find('tr').each(function () {
-		if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
-			//if a course row, then add the extension button
-			$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
-		}
-	});
+	if(!$("#kw_results_table").length){
+		$("table thead th:last-child").after('<th scope=col>Plus</th>');
+		var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title id="title">Computer Fluency (C S 302)</h2><h2 class=profname id="profname">with Bruce Porter</h2><div id="topbuttons" class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="textbook" style="background: #FFC107;"> Textbook </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer style=""><ul class=description id="description" style="list-style-type:disc"></ul></div></div><div class=card ><div id="chartcontainer" class=cardcontainer><div id=chart></div></div></div>';
+		$("#container").prepend(modhtml);
+		$("#myModal").prepend("<div id='snackbar'>defaultmessage..</div>");
+		//go through all the rows in the list
+		$('table').find('tr').each(function () {
+			if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
+				//if a course row, then add the extension button
+				$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
+			}
+		});
+	}
 	//update the conflicts
 	update();
 	/*Handle the button clicks*/

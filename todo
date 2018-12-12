@@ -1,16 +1,12 @@
 TODO as of 12/9/18
 
 FEATURES: 
-
-- Export calendar format 
-- import into and export from UT registration plus
 - load all courses on first pages
 - work on UT Planner
 - work on multiple schedules
-- import courses from class schedule screen
+- Easter egg, no course messages
 
 BUGS TO FIX:
-- Showing the icon on the flags pages
 - Fix the update/install bug
 
 DONE/FIXED:
@@ -20,3 +16,7 @@ DONE/FIXED:
 - Calendar popup
 - online classes no times in popup link 
 - Location in popup extra info
+- Export calendar format 
+- import courses from class schedule screen
+- import into and export from UT registration plus
+- Showing the icon on the flags pages
