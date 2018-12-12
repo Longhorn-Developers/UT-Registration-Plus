@@ -29,6 +29,8 @@ const butdelay = 75;
 //This extension may be super lit, but you know what's even more lit?
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 $(function () {
+	loadNextPages($("html").html());
+  $('[title*="next listing"]').remove();
 	loadDataBase();
 	//make heading and modal
 	if(!$("#kw_results_table").length){
@@ -47,7 +49,7 @@ $(function () {
 	//update the conflicts
 	update();
 	/*Handle the button clicks*/
-	$(".distButton").click(function () {
+	$("tbody").on('click','.distButton',function () {
 		var row = $(this).closest('tr');
 		getCourseInfo(row);
 		getDistribution();
@@ -96,6 +98,28 @@ $(function () {
 			}
 		});
 });
+
+function loadNextPages(inHTML){
+	var html = $('<div/>').html(inHTML).contents();
+	let next = html.find("#next_nav_link");
+	if(next.length){
+		let link = next.prop('href');
+		console.log(link);
+		chrome.runtime.sendMessage({method: "GET", action: "xhttp", url:link, data:""}, function(response){
+			if(response){
+				var nextpage = $('<div/>').html(response).contents();
+				var current = $('tbody');
+				nextpage.find('tbody>tr').each(function(){
+					if(!($(this).find('td').hasClass("course_header") && $(this).has('th').length == 0 )){
+						$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
+					}
+					current.append($(this));
+				});
+				loadNextPages(response);
+			}
+		})
+	}
+}
 
 function saveCourse() {
 	var c = new Course(coursename, uniquenum, profname, datetimearr, status, profurl, registerlink);
