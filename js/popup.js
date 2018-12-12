@@ -6,6 +6,9 @@ setCourseList();
 	// var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer></div></div></div></div>';
 	// $("#html").prepend(modhtml);
 
+var emptyText = ["Doesn't Look Like Anything To Me.", "You Can't Fail Classes You're Not In."];
+
+$("#main").text(emptyText[Math.floor(Math.random()*emptyText.length)]);
 function setCourseList(){
 	$("#courseList").empty()
 	chrome.storage.sync.get('savedCourses', function (data) {

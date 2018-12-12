@@ -1,9 +1,10 @@
 TODO as of 12/11/18
 
 FEATURES: 
-- load all courses on first pages
 - work on UT Planner
 - work on multiple schedules
+- search by unique number
+- all semester's grade distribution
 - Easter egg, no course messages
 
 BUGS TO FIX:
@@ -15,6 +16,7 @@ DONE/FIXED:
 - Textbook button (amber)
 - Calendar popup
 - online classes no times in popup link 
+- load all courses on first pages
 - Location in popup extra info
 - Export calendar format 
 - import courses from class schedule screen
