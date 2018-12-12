@@ -41,18 +41,25 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
 
 /* Initially set the course data in storage */
 chrome.runtime.onInstalled.addListener(function (details) {
-	if (details.reason == "install" || details.reason == "update") {
-		var arr = new Array();
-		chrome.storage.sync.set({
-			savedCourses: arr
-		}, function () {
-			console.log('initial course list');
+	if (details.reason == "install") {
+		chrome.storage.sync.get('savedCourses', function(data){
+			if(!data.savedCourses){
+				console.log(data.savedCourses);
+				var arr = new Array();
+				chrome.storage.sync.set({
+					savedCourses: arr
+				}, function () {
+					console.log('initial course list');
+				});
+				chrome.storage.sync.set({
+					courseConflictHighlight: true
+				}, function () {
+					console.log('initial highlighting: true');
+				});
+			}
 		});
-		chrome.storage.sync.set({
-			courseConflictHighlight: true
-		}, function () {
-			console.log('initial highlighting: true');
-		});
+	} else if(details.reason == "update"){
+		console.log("updated");
 	}
 });
 

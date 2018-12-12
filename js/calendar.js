@@ -74,34 +74,7 @@ $(function () {
                 } else {
                     $("#register").text("Register").css("background-color", "#4CAF50");
                 }
-                var cal = ics();
-                for (i in savedCourses) {
-                    let course = savedCourses[i];
-                    var dtmap = makeMap(course.datetimearr);
-                    var timearr = Array.from(dtmap.keys());
-                    var dayarr = Array.from(dtmap.values());
-                    console.log(timearr);
-                    console.log(dayarr);
-                    for (var i = 0; i < dayarr.length; i++) {
-                        var place = findLoc(dayarr[i], timearr[i], course.datetimearr);
-                        var building = place.substring(0, place.search(/\d/) - 1);
-                        if (building == "") {
-                            building = "Undecided Location";
 
-                        }
-                        //cal.addEvent(subject, description, location, begin, end, rrule)
-                        let rrurle = {
-                            freq: "WEEKLY",
-                            interval: 1,
-                            byday: [""]
-
-                        }
-                        //  cal.addEvent(course.coursename, `with${course.profname}`, building, '', '', '');
-                        //      output += `<p class='time'><span>${dayarr[i]}</span>: ${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}<span style='float:right';><a target='_blank' href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span></p>`;
-                    }
-
-                }
-                cal.download();
             }
         });
     });
@@ -143,6 +116,47 @@ $(function () {
                 window.open(registerlink);
             }, butdelay);
         }
+    });
+
+    $("#export").click(function(){
+        var cal = ics();
+        var calendarEvents = $('#calendar').fullCalendar('clientEvents');
+        console.log(calendarEvents);
+        for(i in calendarEvents){
+            let event = calendarEvents[i];
+            var title = event.title;
+            var classname = title.substring(0, title.indexOf('with'));
+            var description = title.substring(title.indexOf('with'));
+            var time = event.start._d.toUTCString();
+            console.log(event.start._i);
+            let rrule = {
+                    freq: "WEEKLY",
+                    interval: 1,
+                    byday: [time.substring(0, time.indexOf(",")-1).toUpperCase()]
+            }
+            cal.addEvent(classname, description, event.building, event.start._i, event.end._i, rrule);
+        }
+        // for (i in savedCourses) {
+        //     let course = savedCourses[i];
+        //     var dtmap = makeMap(course.datetimearr);
+        //     var timearr = Array.from(dtmap.keys());
+        //     var dayarr = Array.from(dtmap.values());
+        //     console.log(timearr);
+        //     console.log(dayarr);
+        //     for (var i = 0; i < dayarr.length; i++) {
+        //         var place = findLoc(dayarr[i], timearr[i], course.datetimearr);
+        //         var building = place.substring(0, place.search(/\d/) - 1);
+        //         if (building == "") {
+        //             building = "Undecided Location";
+
+        //         }
+        //         //cal.addEvent(subject, description, location, begin, end, rrule)
+        //        cal.addEvent(course.coursename, `with${course.profname}`, building, '', '', '');
+        //         //      output += `<p class='time'><span>${dayarr[i]}</span>: ${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}<span style='float:right';><a target='_blank' href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span></p>`;
+        //     }
+
+        // }
+  cal.download();
     });
 
     /* convert from the dtarr and maek the time lines*/
@@ -239,13 +253,13 @@ $(function () {
         // console.log(moment().day(fullday));
         var fullday = days.get(session[0]);
         var classInfo = savedCourses[i];
+        console.log(session);
         var department = classInfo.coursename.substring(0, classInfo.coursename.search(/\d/) - 2);
         var course_nbr = classInfo.coursename.substring(classInfo.coursename.search(/\d/), classInfo.coursename.indexOf(" ", classInfo.coursename.search(/\d/)));
         var uncapProf = prettifyName(classInfo.profname);
         if (uncapProf == "") {
             uncapProf = "Undecided";
         }
-
         var year = moment().day(fullday)._d.toString().split(" ")[3];
         var monthNum = moment(moment().day(fullday)._d.toString().split(" ")[1], "MMM").format('MM');
         var beg = `${year}-${monthNum}-`;
@@ -268,6 +282,7 @@ $(function () {
                 session[1][1] +
                 ":00",
             color: materialColors[colorCounter],
+            building: session[2],
             index: i,
             allday: false
         });
