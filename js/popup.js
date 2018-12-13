@@ -352,7 +352,7 @@ function getSemesters(){
 			var object = $('<div/>').html(response).contents();
 			object.find('.callout2>ul>li>a').each(function () {
 				if($(this).text() != "Course Schedule Archive"){
-					var semname = $(this).text();
+					var semname = $(this).text().split(" ")[0].substring(0,2)+" " +$(this).text().split(" ")[1];
 					chrome.runtime.sendMessage({
 					method: "GET",
 					action: "xhttp",
