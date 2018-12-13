@@ -6,9 +6,7 @@ setCourseList();
 	// var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer></div></div></div></div>';
 	// $("#html").prepend(modhtml);
 
-var emptyText = ["Doesn't Look Like Anything To Me.", "You Can't Fail Classes You're Not In."];
 
-$("#main").text(emptyText[Math.floor(Math.random()*emptyText.length)]);
 function setCourseList(){
 	$("#courseList").empty()
 	chrome.storage.sync.get('savedCourses', function (data) {
@@ -17,9 +15,8 @@ function setCourseList(){
 		if (courses.length != 0) {
 			$("#empty").hide();
 			$("#courseList").show();
-
 		} else{
-			$("#empty").show();
+			showEmpty();
 		}
 		// build and append the course list element
 		for (var i = 0; i < courses.length; i++) {
@@ -42,6 +39,19 @@ function setCourseList(){
 			$("#courseList").append(listhtml);
 		}
 	});
+}
+
+
+
+function showEmpty(){
+	var emptyText = ["Doesn't Look Like Anything To Me.", "You Can't Fail Classes You're Not In.", "Pro-Tip: Don't Take O-Chem.",
+	"No Work Happens On PCL 5th Floor.", "Sophomore But Freshman By Credit.",  "Pain is temporary, GPA is forever.", 
+	"You've Yee'd Your Last Haw.","lol everything is already waitlisted.", "At Least You're Not At A&M.", 
+	`It's ${moment().format("h:mm")} and OU Still Sucks.`, 'TeXAs iS BaCK GuYZ', "'Academically Challenged'", 
+	'Does McCombs teach Parseltongue?']
+	$("#courseList").hide();
+	$("#empty").fadeIn(200);
+	$("#main").html(emptyText[Math.floor(Math.random()*emptyText.length)]);
 }
 
 /* prettify the name for the conflict messages*/
@@ -118,9 +128,7 @@ $(document).ready(function () {
 			}, function (response) {
 				$(thisForm).closest("li").fadeOut(200);
 				if ($(thisForm).closest("ul").children(':visible').length === 1) {
-					$("#courseList").fadeOut(300, function () {
-						$("#empty").fadeIn(200);
-					});
+					showEmpty();
 				}
 				updateConflicts();
 				chrome.tabs.query({}, function (tabs) {
@@ -154,29 +162,28 @@ $(document).ready(function () {
 
 	$("#impexp").click(function(){
 		if($("#impexp>i").text() == 'close'){
-			$(".settings").find('#import').remove();
-			$(".settings").find('#export').remove();
+			$('#import').hide();
+			$('#export').hide();
 			$("#impexp>i").text('import_export');
 		} else{
 			$("#impexp>i").text('close');
-			$(".settings").prepend(`
-		    </button><button title='Import' style="background-color:white;" class="settingsbut" id='import'>
-		      <i style='color:#FF9800' class="material-icons">
-		        arrow_upward
-		      </i>
-		    </button>
-		    <button title='Export' style="background-color:white;" class="settingsbut" id='export'>
-		      <i style='color:#FF9800' class="material-icons">
-		        arrow_downward
-		      </i>
-		    </button>
-		    `);
+			$('#import').show();
+			$('#export').show();
 		}
-	})
-	$(".settings").on('click', '#import', function () {
+	});
+	$("#search").click(function(){
+		if($("#search>i").text() == 'close'){
+			$("#search>i").text('search');
+			$("#class_id").hide();
+		} else{
+			$("#search>i").text('close');
+			$("#class_id").show();
+		}
+	});
+	$('#import').click(function () {
 		$("#importOrig").click();
 	});
-	$(".settings").on('click', '#export',function () {
+	$('#export').click(function () {
 		chrome.storage.sync.get('savedCourses', function (data) {
 			var exportArray = JSON.stringify(data.savedCourses, null, 4);
 			var exportlink = document.createElement('a');
@@ -186,6 +193,18 @@ $(document).ready(function () {
 			exportlink.click();			
 		});
 	});
+	$("#class_id").on("keyup", function(e){
+		if(e.keyCode == 13){
+			var unique = $(this).val();
+			if(!isNaN(unique)){
+				if(unique.length == 5){
+					getInfo("20192", unique);
+					return;
+				}
+			}
+			alert("Invalid Input");
+		}
+	})
 	$("#open").click(function () {
 		chrome.tabs.create({
 			'url': "options.html"
@@ -197,6 +216,7 @@ $(document).ready(function () {
 		});
 	});
 });
+
 
 $("#importOrig").change(function(e){
 	var files = e.target.files;
@@ -216,7 +236,7 @@ $("#importOrig").change(function(e){
 						});
 					}
 				});
-				setCourseList(impCourses);
+				setCourseList();
 			}
 		} catch(err){
 
@@ -314,7 +334,90 @@ function clear() {
 	});
 	$("#courseList").empty()
 	console.log("cleared");
-	$("#courseList").fadeOut(300, function () {
-		$("#empty").fadeIn(200);
-	});
+	showEmpty();
+}
+
+
+/*Course object for passing to background*/
+function Course(coursename, unique, profname, datetimearr, status, link, registerlink) {
+	this.coursename = coursename;
+	this.unique = unique;
+	this.profname = profname;
+	this.datetimearr = datetimearr;
+	this.status = status;
+	this.link = link;
+	this.registerlink = registerlink;
+}
+
+
+function getInfo(sem, unique) {
+	var link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", link, false);
+	xhr.send();
+	var response = xhr.responseText;
+	if (response) {
+		var output = "";
+		var object = $('<div/>').html(response).contents();
+		var c = getCourseObject(object, link);
+		console.log(c);
+		chrome.runtime.sendMessage({
+			command: "courseStorage",
+			course: c,
+			action: "add"
+		}, function () {
+			chrome.runtime.sendMessage({
+				command: "updateCourseList"
+			});
+			setCourseList();
+		});
+	}
+}
+
+
+/*For a row, get all the course information and add the date-time-lines*/
+function getCourseObject(object, link) {
+	let coursename = object.find("#details h2").text();
+	let uniquenum = object.find('td[data-th="Unique"]').text();
+	let profname = object.find("td[data-th='Instructor']").text().split(', ')[0];
+	if (profname.indexOf(" ") == 0) {
+		profname = profname.substring(1);
+	}
+	let datetimearr = getDtarr(object);
+	let status = object.find('td[data-th="Status"]').text();
+	let indlink = link;
+	let registerlink = object.find('td[data-th="Add"] a').prop('href');
+	return new Course(coursename, uniquenum, profname, datetimearr, status, indlink, registerlink);
+}
+
+/* For a row, get the date-time-array for checking conflicts*/
+function getDtarr(object) {
+	var numlines = object.find('td[data-th="Days"]>span').length;
+	var dtarr = [];
+	for (var i = 0; i < numlines; i++) {
+		var date = object.find('td[data-th="Days"]>span:eq(' + i + ')').text();
+		var time = object.find('td[data-th="Hour"]>span:eq(' + i + ')').text();
+		var place = object.find('td[data-th="Room"]>span:eq(' + i + ')').text();
+		for (var j = 0; j < date.length; j++) {
+			var letter = date.charAt(j);
+			var day = "";
+			if (letter == "T" && j < date.length - 1 && date.charAt(j + 1) == "H") {
+				dtarr.push(["TH", convertTime(time), place]);
+			} else {
+				if (letter != "H") {
+					dtarr.push([letter, convertTime(time), place]);
+				}
+			}
+		}
+	}
+	return dtarr;
+}
+
+/*Convert time to 24hour format*/
+function convertTime(time) {
+	var converted = time.replace(/\./g, '').split("-");
+	for (var i = 0; i < 2; i++) {
+		converted[i] = moment(converted[i], ["h:mm A"]).format("HH:mm");
+	}
+	return converted;
 }

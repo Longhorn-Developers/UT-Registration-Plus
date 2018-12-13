@@ -65,7 +65,7 @@ function getInfo(classurl) {
 			action: "add"
 		}, function () {
 			chrome.runtime.sendMessage({
-				command: "updateTabs"
+				command: "updateCourseList"
 			});
 		});
 	}

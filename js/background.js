@@ -1,40 +1,41 @@
 /* Handle messages and their commands from content and popup scripts*/
 chrome.runtime.onMessage.addListener(function (request, sender, response) {
-	if (request.command == "courseStorage") {
-		if (request.action == "add") {
-			add(request, sender, response);
-		}
-		if (request.action == "remove") {
-			remove(request, sender, response);
-		}
-	} else if (request.command == "isSingleConflict") {
-		isSingleConflict(request.dtarr, request.unique, response);
-	} else if (request.command == "checkConflicts") {
-		checkConflicts(response);
-	} else if (request.command == "updateStatus") {
-		updateStatus();
-	} else if (request.command == "alreadyContains") {
-		alreadyContains(request.unique, response);
-	} else if (request.command == "updateTabs") {
-		updateTabs();
-	} else if(request.command == "updateCourseList"){
-		chrome.tabs.query({}, function (tabs) {
-			for (var i = 0; i < tabs.length; i++) {
-				chrome.tabs.sendMessage(tabs[i].id, {
-					command: "updateCourseList"
-				});
+
+	switch(request.command){
+		case "courseStorage": 
+			if (request.action == "add") {
+			 add(request, sender, response);
 			}
-		});
-	} else {
-		const xhr = new XMLHttpRequest();
-		const method = request.method ? request.method.toUpperCase() : "GET";
-		xhr.open(method, request.url, true);
-		xhr.onload = () => response(xhr.responseText);
-		xhr.onerror = () => response(xhr.statusText);
-		if (method == "POST") {
-			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-		}
-		xhr.send(request.data);
+			if (request.action == "remove") {
+				remove(request, sender, response);
+			}
+			break;
+		case "isSingleConflict":
+			isSingleConflict(request.dtarr, request.unique, response);
+			break;
+		case "checkConflicts":
+			checkConflicts(response);
+			break;
+		case "updateStatus":
+			updateStatus();
+			break;
+		case "alreadyContains":
+			alreadyContains(request.unique, response);
+			break;
+		case "updateCourseList":
+			updateTabs();
+			break;
+		default:
+			const xhr = new XMLHttpRequest();
+			const method = request.method ? request.method.toUpperCase() : "GET";
+			xhr.open(method, request.url, true);
+			xhr.onload = () => response(xhr.responseText);
+			xhr.onerror = () => response(xhr.statusText);
+			if (method == "POST") {
+				xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			}
+			xhr.send(request.data);
+			break;
 	}
 	return true;
 });

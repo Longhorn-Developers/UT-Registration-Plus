@@ -1,3 +1,5 @@
+var manifestData = chrome.runtime.getManifest();
+$("#version").text(manifestData.version);
 chrome.storage.sync.get('courseConflictHighlight', function(data) {
 	if(data.courseConflictHighlight){
 		off();

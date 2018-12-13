@@ -35,6 +35,8 @@ body {
     bottom: 0;
     right: 0;
     float: right;
+    display: flex;
+    vertical-align: middle;
     margin-right: 5px;
 }
 .matbut {
@@ -148,4 +150,19 @@ body {
 
 .card:focus:not(:active)::after {
     animation: ripple 1s ease-out;
+}
+
+input[type=number]{
+    width: 80px;
+    font-weight: bold;
+}
+::placeholder{
+    
+};
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
 }
