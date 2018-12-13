@@ -30,6 +30,14 @@ body {
     border: 0px
 }
 
+.settingsbut:focus {
+    outline: 0;
+}
+
+ul{
+        margin-bottom: 20px;
+}
+
 .settings {
     position: absolute;
     bottom: 0;
@@ -37,7 +45,10 @@ body {
     float: right;
     display: flex;
     vertical-align: middle;
-    margin-right: 5px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    transition: 0.3s;
+    padding: 7px 7px 5px 7px;
+    border-radius: 7px;
 }
 .matbut {
     border: none;
@@ -154,7 +165,7 @@ body {
 
 input{
     width: 80px;
-    font-weight: bold;
+    border-radius: 5px;
 }
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
@@ -162,4 +173,33 @@ input[type=number]::-webkit-outer-spin-button {
     -moz-appearance: none;
     appearance: none;
     margin: 0; 
+}
+
+::placeholder{
+    color:#ff691a;
+}
+
+.select-style {
+    border: 1.5px solid #ff691a;
+    width: 60px;
+    margin-right: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+    display: none;
+    background: transparent no-repeat 90% 50%;
+}
+
+.select-style select {
+    padding: 5px 8px;
+    width: 130%;
+    border: none;
+    color:#ff691a;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+}
+
+.select-style select:focus {
+    outline: none;
 }
