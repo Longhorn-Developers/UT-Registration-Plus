@@ -183,6 +183,7 @@ $(document).ready(function () {
 			$("#class_id").show();
 			$("#semesters").show();
 			$("#semcon").show();
+			$('#class_id').focus();
 		}
 	});
 	$('#import').click(function () {
@@ -399,16 +400,20 @@ function getInfo(sem, unique) {
 		var object = $('<div/>').html(response).contents();
 		var c = getCourseObject(object, link);
 		console.log(c);
-		chrome.runtime.sendMessage({
-			command: "courseStorage",
-			course: c,
-			action: "add"
-		}, function () {
+		if(c.coursename){
 			chrome.runtime.sendMessage({
-				command: "updateCourseList"
+				command: "courseStorage",
+				course: c,
+				action: "add"
+			}, function () {
+				chrome.runtime.sendMessage({
+					command: "updateCourseList"
+				});
+				setCourseList();
 			});
-			setCourseList();
-		});
+		} else {
+			alert("There Was An Error.")
+		}
 	}
 }
 
