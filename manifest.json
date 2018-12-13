@@ -10,7 +10,8 @@
     "storage",
     "*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*",
     "*://*.catalog.utexas.edu/ribbit/",
-    "*://*.registrar.utexas.edu/schedules"
+    "*://*.registrar.utexas.edu/schedules/*",
+    "*://*.login.utexas.edu/login/*"
   ],
   "content_scripts": [{
       "css": ["css/styles.css"],
