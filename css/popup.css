@@ -152,13 +152,10 @@ body {
     animation: ripple 1s ease-out;
 }
 
-input[type=number]{
+input{
     width: 80px;
     font-weight: bold;
 }
-::placeholder{
-    
-};
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
     -webkit-appearance: none;

@@ -5,6 +5,7 @@ setCourseList();
 
 	// var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer></div></div></div></div>';
 	// $("#html").prepend(modhtml);
+getSemesters();
 
 
 function setCourseList(){
@@ -172,12 +173,14 @@ $(document).ready(function () {
 		}
 	});
 	$("#search").click(function(){
-		if($("#search>i").text() == 'close'){
+		if($("#search>i").text() == 'close') {
 			$("#search>i").text('search');
 			$("#class_id").hide();
+			$("#semesters").hide();
 		} else{
 			$("#search>i").text('close');
 			$("#class_id").show();
+			$("#semesters").show();
 		}
 	});
 	$('#import').click(function () {
@@ -198,7 +201,7 @@ $(document).ready(function () {
 			var unique = $(this).val();
 			if(!isNaN(unique)){
 				if(unique.length == 5){
-					getInfo("20192", unique);
+					getInfo($("#semesters").find(":selected").val(), unique);
 					return;
 				}
 			}
@@ -335,6 +338,39 @@ function clear() {
 	$("#courseList").empty()
 	console.log("cleared");
 	showEmpty();
+}
+
+function getSemesters(){
+	var schedulelist = 'https://registrar.utexas.edu/schedules';
+	chrome.runtime.sendMessage({
+		method: "GET",
+		action: "xhttp",
+		url: schedulelist,
+		data: ""
+	}, function (response) {
+		if (response) {
+			var object = $('<div/>').html(response).contents();
+			object.find('.callout2>ul>li>a').each(function () {
+				if($(this).text() != "Course Schedule Archive"){
+					var semname = $(this).text();
+					chrome.runtime.sendMessage({
+					method: "GET",
+					action: "xhttp",
+					url: $(this).attr('href'),
+					data: ""
+				}, function (response) {
+					if (response) {
+						var object = $('<div/>').html(response).contents();
+						object.find('.gobutton>a').each(function () {
+							var semnum = $(this).attr('href').substring($(this).attr('href').lastIndexOf('/')+1);
+							$("#semesters").append(`<option value="${semnum}"">${semname}</option>`);
+						});
+					}
+				});
+				}
+			});
+		}
+	});
 }
 
 

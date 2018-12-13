@@ -9,7 +9,8 @@
     "declarativeContent",
     "storage",
     "*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*",
-    "*://*.catalog.utexas.edu/ribbit/"
+    "*://*.catalog.utexas.edu/ribbit/",
+    "*://*.registrar.utexas.edu/schedules"
   ],
   "content_scripts": [{
       "css": ["css/styles.css"],
