@@ -165,11 +165,9 @@ $(document).ready(function () {
 		if($("#impexp>i").text() == 'close'){
 			$('#import').hide();
 			$('#export').hide();
-			$("#impexp>i").css('font-size', '');
 			$("#impexp>i").text('import_export');
 		} else{
 			$("#impexp>i").text('close');
-			$("#impexp>i").css('font-size', '17px');
 			$('#import').show();
 			$('#export').show();
 		}
@@ -177,7 +175,6 @@ $(document).ready(function () {
 	$("#search").click(function(){
 		if($("#search>i").text() == 'close') {
 			$("#search>i").text('search');
-			$("#search>i").css('font-size', '');
 			$("#class_id").hide();
 			$("#semcon").hide();
 			$("#semesters").hide();
@@ -185,7 +182,6 @@ $(document).ready(function () {
 			$("#search>i").text('close');
 			$("#class_id").show();
 			$("#semesters").show();
-			$("#search>i").css('font-size', '17px');
 			$("#semcon").show();
 		}
 	});
