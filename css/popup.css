@@ -170,6 +170,7 @@ ul{
 input{
     width: 80px;
     border-radius: 5px;
+    color: #ff691a;
 }
 input:focus {
     outline: 0;
