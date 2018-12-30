@@ -35,7 +35,7 @@
     font-size: x-large;
     font-weight: bold;
     padding-top: 5px;
-      line-height: 1;
+    line-height: 1;
     padding-left: 5px;
     margin: 5px 0px 5px 0px;
 }
@@ -135,10 +135,12 @@
         transform: scale(0, 0);
         opacity: 1;
     }
+
     20% {
         transform: scale(25, 25);
         opacity: 1;
     }
+
     100% {
         opacity: 0;
         transform: scale(40, 40);
@@ -162,7 +164,8 @@
     left: 50%;
     bottom: 30px;
 }
-.descriptionli{
+
+.descriptionli {
     padding: 0px 5px 5px 5px;
 }
 
@@ -172,11 +175,14 @@
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
+#semesters {}
+
 @-webkit-keyframes fadein {
     from {
         bottom: 0;
         opacity: 0;
     }
+
     to {
         bottom: 30px;
         opacity: 1;
@@ -188,6 +194,7 @@
         bottom: 0;
         opacity: 0;
     }
+
     to {
         bottom: 30px;
         opacity: 1;
@@ -199,6 +206,7 @@
         bottom: 30px;
         opacity: 1;
     }
+
     to {
         bottom: 0;
         opacity: 0;
@@ -210,6 +218,7 @@
         bottom: 30px;
         opacity: 1;
     }
+
     to {
         bottom: 0;
         opacity: 0;

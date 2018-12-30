@@ -108,6 +108,11 @@ $(function () {
 			window.open(textbookLink);
 		}, butdelay);
 	});
+	$("#semesters").on('change', function () {
+		var sem = $(this).val();
+		sem = sem == "Aggregate" ? undefined : sem;
+		getDistribution(sem);
+	});
 	$(document).keydown(function (e) {
 		/*Close Modal when hit escape*/
 		if (e.keyCode == 27) {
@@ -341,15 +346,33 @@ function convertTime(time) {
 }
 
 /*Query the grades database*/
-function getDistribution() {
-	var query = "select * from agg";
+function getDistribution(sem) {
+	var query;
+	if (!sem) {
+		query = "select * from agg";
+	} else {
+		query = "select * from grades";
+	}
 	query += " where dept like '%" + department + "%'";
 	query += " and prof like '%" + profname.replace(/'/g, "") + "%'";
 	query += " and course_nbr like '%" + course_nbr + "%'";
+	if (sem) {
+		query += "and sem like '%" + sem + "%'";
+	}
 	query += "order by a1+a2+a3+b1+b2+b3+c1+c2+c3+d1+d2+d3+f desc";
 	var res = grades.exec(query)[0];
 	var output = "";
-	openDialog(department, coursename, "aggregate", profname, res);
+	if (!sem) {
+		openDialog(department, coursename, "aggregate", profname, res);
+	} else {
+		var data;
+		if (typeof res == 'undefined' || profname == "") {
+			data = [];
+		} else {
+			data = res.values[0];
+		}
+		setChart(data);
+	}
 }
 
 /*Open the modal and show all the data*/
@@ -375,10 +398,10 @@ function openDialog(dep, cls, sem, professor, res) {
 		data = [];
 		$("#semesters").append("<option>No Data</option>")
 	} else {
-		var semesters = res.values[0][18].split(",");
+		var semesters = res.values[0][18].split(",").reverse();
 		semesters.unshift('Aggregate');
 		for (var i = 0; i < semesters.length; i++) {
-			$("#semesters").append(`<option>${semesters[i]}</option>`)
+			$("#semesters").append(`<option value="${semesters[i]}">${semesters[i]}</option>`)
 		}
 		data = res.values[0];
 	}
@@ -412,6 +435,19 @@ function openDialog(dep, cls, sem, professor, res) {
 		$("#myModal").fadeOut(200);
 		$("#snackbar").attr("class", "");
 	}
+
+	setChart(data);
+	// When clicks anywhere outside of the modal, close it
+	window.onclick = function (event) {
+		if (event.target == modal) {
+			$("#myModal").fadeOut(fadetime);
+			$("#snackbar").attr("class", "");
+		}
+	}
+}
+
+
+function setChart(data) {
 	//set up the chart
 	chart = Highcharts.chart('chart', {
 		chart: {
@@ -534,13 +570,7 @@ function openDialog(dep, cls, sem, professor, res) {
 			});
 		}
 
-	}); // When clicks anywhere outside of the modal, close it
-	window.onclick = function (event) {
-		if (event.target == modal) {
-			$("#myModal").fadeOut(fadetime);
-			$("#snackbar").attr("class", "");
-		}
-	}
+	});
 }
 
 /*Format the title*/
