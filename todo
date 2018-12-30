@@ -27,3 +27,12 @@ DONE/FIXED:
 - Showing the icon on the flags pages
 - Easter egg, no course messages
 - search by unique number
+
+
+
+for FIXING DB: 
+
+ALTER TABLE agg ADD semesters
+
+update agg
+set semesters = (select group_concat(sem) from grades where agg.prof = grades.prof and agg.course_nbr = grades.course_nbr and agg.dept = grades.dept);

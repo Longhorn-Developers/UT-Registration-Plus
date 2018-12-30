@@ -30,12 +30,41 @@ const butdelay = 75;
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 $(function () {
 	loadNextPages($("html").html());
-  $('[title*="next listing"]').remove();
+	$('[title*="next listing"]').remove();
 	loadDataBase();
 	//make heading and modal
-	if(!$("#kw_results_table").length){
+	if (!$("#kw_results_table").length) {
 		$("table thead th:last-child").after('<th scope=col>Plus</th>');
-		var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer><h2 class=title id="title">Computer Fluency (C S 302)</h2><h2 class=profname id="profname">with Bruce Porter</h2><div id="topbuttons" class=topbuttons><button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button><button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button><button class=matbut id="textbook" style="background: #FFC107;"> Textbook </button><button class=matbut id="Syllabi"> Past Syllabi </button><button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button></div></div></div><div class=card><div class=cardcontainer style=""><ul class=description id="description" style="list-style-type:disc"></ul></div></div><div class=card ><div id="chartcontainer" class=cardcontainer><div id=chart></div></div></div>';
+		var modhtml = `<div class=modal id=myModal>
+							<div class=modal-content>
+							   <span class=close>×</span>
+							   <div class=card>
+									<div class=cardcontainer>
+									   <h2 class=title id="title">Computer Fluency (C S 302)</h2>
+									   <h2 class=profname id="profname">with Bruce Porter</h2>
+									   <div id="topbuttons" class=topbuttons>
+											   <button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button>
+											   <button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button>
+											   <button class=matbut id="textbook" style="background: #FFC107;"> Textbook </button>
+											   <button class=matbut id="Syllabi"> Past Syllabi </button>
+											   <button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button>
+										</div>
+									</div>
+								</div>
+								<div class=card>
+									<div class=cardcontainer style="">
+										<ul class=description id="description" style="list-style-type:disc"></ul>
+									</div>
+								</div>
+								<div class=card >
+									<select id="semesters">
+									</select>
+									<div id="chartcontainer" class=cardcontainer>
+										<div id=chart></div>
+									</div>
+								</div>
+							</div>
+						</div>`;
 		$("#container").prepend(modhtml);
 		$("#myModal").prepend("<div id='snackbar'>defaultmessage..</div>");
 		//go through all the rows in the list
@@ -49,7 +78,7 @@ $(function () {
 	//update the conflicts
 	update();
 	/*Handle the button clicks*/
-	$("tbody").on('click','.distButton',function () {
+	$("tbody").on('click', '.distButton', function () {
 		var row = $(this).closest('tr');
 		getCourseInfo(row);
 		getDistribution();
@@ -99,18 +128,23 @@ $(function () {
 		});
 });
 
-function loadNextPages(inHTML){
+function loadNextPages(inHTML) {
 	var html = $('<div/>').html(inHTML).contents();
 	let next = html.find("#next_nav_link");
-	if(next.length){
+	if (next.length) {
 		let link = next.prop('href');
 		console.log(link);
-		chrome.runtime.sendMessage({method: "GET", action: "xhttp", url:link, data:""}, function(response){
-			if(response){
+		chrome.runtime.sendMessage({
+			method: "GET",
+			action: "xhttp",
+			url: link,
+			data: ""
+		}, function (response) {
+			if (response) {
 				var nextpage = $('<div/>').html(response).contents();
 				var current = $('tbody');
-				nextpage.find('tbody>tr').each(function(){
-					if(!($(this).find('td').hasClass("course_header") && $(this).has('th').length == 0 )){
+				nextpage.find('tbody>tr').each(function () {
+					if (!($(this).find('td').hasClass("course_header") && $(this).has('th').length == 0)) {
 						$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
 					}
 					current.append($(this));
@@ -322,6 +356,8 @@ function getDistribution() {
 function openDialog(dep, cls, sem, professor, res) {
 	$("#myModal").fadeIn(fadetime);
 	//initial text on the "save course button"
+
+
 	chrome.runtime.sendMessage({
 		command: "alreadyContains",
 		unique: uniquenum
@@ -334,9 +370,16 @@ function openDialog(dep, cls, sem, professor, res) {
 	});
 	//set if no grade distribution
 	var data;
+	$("#semesters").empty();
 	if (typeof res == 'undefined' || profname == "") {
 		data = [];
+		$("#semesters").append("<option>No Data</option>")
 	} else {
+		var semesters = res.values[0][18].split(",");
+		semesters.unshift('Aggregate');
+		for (var i = 0; i < semesters.length; i++) {
+			$("#semesters").append(`<option>${semesters[i]}</option>`)
+		}
 		data = res.values[0];
 	}
 	var modal = document.getElementById('myModal');
