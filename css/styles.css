@@ -181,6 +181,10 @@
     margin-top: 10px;
 }
 
+#semesters:focus {
+    outline: 0;
+}
+
 @-webkit-keyframes fadein {
     from {
         bottom: 0;

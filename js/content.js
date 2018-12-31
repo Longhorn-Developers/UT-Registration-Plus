@@ -57,7 +57,7 @@ $(function () {
 									</div>
 								</div>
 								<div class=card style='text-align:center'>
-									<select id="semesters" style='text-align-last:center;'>
+									<select id="semesters" style='text-align-last:center;color:#666666;fill:#666666;'>
 									</select>
 									<div id="chartcontainer" class=cardcontainer>
 										<div id=chart></div>
@@ -377,7 +377,7 @@ function getDistribution(sem) {
 
 /*Open the modal and show all the data*/
 function openDialog(dep, cls, sem, professor, res) {
-	$("#myModal").fadeIn(fadetime);
+	$("#myModal").scrollTop(0);
 	//initial text on the "save course button"
 
 
@@ -557,11 +557,10 @@ function setChart(data) {
 	}, function (chart) { // on complete
 		if (data.length == 0) {
 			//if no data, then show the message and hide the series
-			chart.renderer.text('Could not find distribution for this Instructor teaching this Course.', 100, 120)
+			chart.renderer.text('Could not find data for this Instructor teaching this Course.', 100, 120)
 				.css({
 					fontSize: '20px',
 					align: 'center',
-					width: '300px',
 					left: '160px'
 				})
 				.add();
