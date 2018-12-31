@@ -56,8 +56,8 @@ $(function () {
 										<ul class=description id="description" style="list-style-type:disc"></ul>
 									</div>
 								</div>
-								<div class=card >
-									<select id="semesters">
+								<div class=card style='text-align:center'>
+									<select id="semesters" style='text-align-last:center;'>
 									</select>
 									<div id="chartcontainer" class=cardcontainer>
 										<div id=chart></div>
