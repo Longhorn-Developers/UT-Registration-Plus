@@ -72,6 +72,11 @@ $(function () {
 			if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
 				//if a course row, then add the extension button
 				$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
+				// if ($(this).find('td[data-th="Status"]').text().includes('waitlisted')) {
+				// 	$(this).find('td').each(function () {
+				// 		$(this).css('background-color', '#E0E0E0');
+				// 	});
+				// }
 			}
 		});
 	}
@@ -151,12 +156,19 @@ function loadNextPages(inHTML) {
 				nextpage.find('tbody>tr').each(function () {
 					if (!($(this).find('td').hasClass("course_header") && $(this).has('th').length == 0)) {
 						$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
+						// if ($(this).find('td[data-th="Status"]').text().includes('waitlisted')) {
+						// 	$(this).find('td').each(function () {
+						// 		$(this).css('background-color', '#E0E0E0');
+						// 	});
+						// }
 					}
 					current.append($(this));
 				});
 				loadNextPages(response);
 			}
 		})
+	} else {
+		update();
 	}
 }
 
@@ -377,7 +389,7 @@ function getDistribution(sem) {
 
 /*Open the modal and show all the data*/
 function openDialog(dep, cls, sem, professor, res) {
-	$("#myModal").scrollTop(0);
+	$("#myModal").fadeIn(fadetime);
 	//initial text on the "save course button"
 
 
@@ -560,6 +572,7 @@ function setChart(data) {
 			chart.renderer.text('Could not find data for this Instructor teaching this Course.', 100, 120)
 				.css({
 					fontSize: '20px',
+					width: '300px',
 					align: 'center',
 					left: '160px'
 				})

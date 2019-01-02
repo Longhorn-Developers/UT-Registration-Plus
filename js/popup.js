@@ -3,20 +3,21 @@ var courses;
 
 setCourseList();
 
-	// var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer></div></div></div></div>';
-	// $("#html").prepend(modhtml);
+// var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer></div></div></div></div>';
+// $("#html").prepend(modhtml);
 getSemesters();
 
 
-function setCourseList(){
+function setCourseList() {
 	$("#courseList").empty()
 	chrome.storage.sync.get('savedCourses', function (data) {
 		updateConflicts();
 		courses = data.savedCourses
+		console.log(courses.length);
 		if (courses.length != 0) {
 			$("#empty").hide();
 			$("#courseList").show();
-		} else{
+		} else {
 			showEmpty();
 		}
 		// build and append the course list element
@@ -44,15 +45,16 @@ function setCourseList(){
 
 
 
-function showEmpty(){
+function showEmpty() {
 	var emptyText = ["Doesn't Look Like Anything To Me.", "You Can't Fail Classes You're Not In.", "Pro-Tip: Don't Take O-Chem.",
-	"No Work Happens On PCL 5th Floor.", "Sophomore But Freshman By Credit.",  "Pain is temporary, GPA is forever.", 
-	"You've Yee'd Your Last Haw.","lol everything is already waitlisted.", "At Least You're Not At A&M.", 
-	`It's ${moment().format("h:mm")} and OU Still Sucks.`, 'TeXAs iS BaCK GuYZ', "'Academically Challenged'", 
-	'Does McCombs teach Parseltongue?']
+		"No Work Happens On PCL 5th Floor.", "Sophomore But Freshman By Credit.", "Pain is temporary, GPA is forever.",
+		"You've Yee'd Your Last Haw.", "lol everything is already waitlisted.", "At Least You're Not At A&M.",
+		`It's ${moment().format("h:mm")} and OU Still Sucks.`, 'TeXAs iS BaCK GuYZ', "'Academically Challenged'",
+		'Does McCombs teach Parseltongue?'
+	]
 	$("#courseList").hide();
 	$("#empty").fadeIn(200);
-	$("#main").html(emptyText[Math.floor(Math.random()*emptyText.length)]);
+	$("#main").html(emptyText[Math.floor(Math.random() * emptyText.length)]);
 }
 
 /* prettify the name for the conflict messages*/
@@ -161,24 +163,24 @@ $(document).ready(function () {
 		});
 	});
 
-	$("#impexp").click(function(){
-		if($("#impexp>i").text() == 'close'){
+	$("#impexp").click(function () {
+		if ($("#impexp>i").text() == 'close') {
 			$('#import').hide();
 			$('#export').hide();
 			$("#impexp>i").text('import_export');
-		} else{
+		} else {
 			$("#impexp>i").text('close');
 			$('#import').show();
 			$('#export').show();
 		}
 	});
-	$("#search").click(function(){
-		if($("#search>i").text() == 'close') {
+	$("#search").click(function () {
+		if ($("#search>i").text() == 'close') {
 			$("#search>i").text('search');
 			$("#class_id").hide();
 			$("#semcon").hide();
 			$("#semesters").hide();
-		} else{
+		} else {
 			$("#search>i").text('close');
 			$("#class_id").show();
 			$("#semesters").show();
@@ -193,17 +195,19 @@ $(document).ready(function () {
 		chrome.storage.sync.get('savedCourses', function (data) {
 			var exportArray = JSON.stringify(data.savedCourses, null, 4);
 			var exportlink = document.createElement('a');
-			var url = window.URL.createObjectURL(new Blob([exportArray], {type: "octet/stream"}));
+			var url = window.URL.createObjectURL(new Blob([exportArray], {
+				type: "octet/stream"
+			}));
 			exportlink.setAttribute('href', url);
-			exportlink.setAttribute('download', 'my_courses.json' );
-			exportlink.click();			
+			exportlink.setAttribute('download', 'my_courses.json');
+			exportlink.click();
 		});
 	});
-	$("#class_id").on("keyup", function(e){
-		if(e.keyCode == 13){
+	$("#class_id").on("keyup", function (e) {
+		if (e.keyCode == 13) {
 			var unique = $(this).val();
-			if(!isNaN(unique)){
-				if(unique.length == 5){
+			if (!isNaN(unique)) {
+				if (unique.length == 5) {
 					getInfo($("#semesters").find(":selected").val(), unique);
 					return;
 				}
@@ -224,14 +228,14 @@ $(document).ready(function () {
 });
 
 
-$("#importOrig").change(function(e){
+$("#importOrig").change(function (e) {
 	var files = e.target.files;
 	var reader = new FileReader();
-  	reader.onload = function(){
-  		try{
+	reader.onload = function () {
+		try {
 			var impCourses = JSON.parse(this.result);
 			console.log(impCourses);
-			if(impCourses && impCourses.length && (impCourses.length == 0 || validateObject(impCourses))){
+			if (impCourses && impCourses.length && (impCourses.length == 0 || validateObject(impCourses))) {
 				chrome.storage.sync.set({
 					savedCourses: impCourses
 				});
@@ -244,20 +248,20 @@ $("#importOrig").change(function(e){
 				});
 				setCourseList();
 			}
-		} catch(err){
+		} catch (err) {
 
 		}
 		importOrig.value = ''; //make sure to clear input value after every import
-  	}
-  	reader.readAsText(files[0]);
-}); 
+	}
+	reader.readAsText(files[0]);
+});
 
-function validateObject(impCourses){
-	for(var i = 0; i<impCourses.length; i++){
+function validateObject(impCourses) {
+	for (var i = 0; i < impCourses.length; i++) {
 		var course = impCourses[i];
 		var isValid = course["coursename"] && course["datetimearr"] && course["link"] && course["profname"] && course["status"] && course["unique"];
 		console.log(isValid);
-		if(!isValid){
+		if (!isValid) {
 			return false;
 		}
 	}
@@ -343,7 +347,7 @@ function clear() {
 	showEmpty();
 }
 
-function getSemesters(){
+function getSemesters() {
 	var schedulelist = 'https://registrar.utexas.edu/schedules';
 	chrome.runtime.sendMessage({
 		method: "GET",
@@ -354,22 +358,22 @@ function getSemesters(){
 		if (response) {
 			var object = $('<div/>').html(response).contents();
 			object.find('.callout2>ul>li>a').each(function () {
-				if($(this).text() != "Course Schedule Archive"){
-					var semname = $(this).text().split(" ")[0].substring(0,2)+" " +$(this).text().split(" ")[1];
+				if ($(this).text() != "Course Schedule Archive") {
+					var semname = $(this).text().split(" ")[0].substring(0, 2) + " " + $(this).text().split(" ")[1];
 					chrome.runtime.sendMessage({
-					method: "GET",
-					action: "xhttp",
-					url: $(this).attr('href'),
-					data: ""
-				}, function (response) {
-					if (response) {
-						var object = $('<div/>').html(response).contents();
-						object.find('.gobutton>a').each(function () {
-							var semnum = $(this).attr('href').substring($(this).attr('href').lastIndexOf('/')+1);
-							$("#semesters").append(`<option value="${semnum}"">${semname}</option>`);
-						});
-					}
-				});
+						method: "GET",
+						action: "xhttp",
+						url: $(this).attr('href'),
+						data: ""
+					}, function (response) {
+						if (response) {
+							var object = $('<div/>').html(response).contents();
+							object.find('.gobutton>a').each(function () {
+								var semnum = $(this).attr('href').substring($(this).attr('href').lastIndexOf('/') + 1);
+								$("#semesters").append(`<option value="${semnum}"">${semname}</option>`);
+							});
+						}
+					});
 				}
 			});
 		}
@@ -400,7 +404,7 @@ function getInfo(sem, unique) {
 		var object = $('<div/>').html(response).contents();
 		var c = getCourseObject(object, link);
 		console.log(c);
-		if(c.coursename){
+		if (c.coursename) {
 			chrome.runtime.sendMessage({
 				command: "courseStorage",
 				course: c,

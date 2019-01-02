@@ -3,7 +3,6 @@ TODO as of 12/11/18
 FEATURES: 
 - work on UT Planner
 - work on multiple schedules
-- all semester's grade distribution
 - polish
 - clean upcalendar export and add more options to screen
 - maybe show how many people have a class in their cart
@@ -23,6 +22,7 @@ DONE/FIXED:
 - Location in popup extra info
 - Export calendar format 
 - import courses from class schedule screen
+- all semester's grade distribution
 - import into and export from UT registration plus
 - Showing the icon on the flags pages
 - Easter egg, no course messages
