@@ -1,10 +1,10 @@
 /* Handle messages and their commands from content and popup scripts*/
 chrome.runtime.onMessage.addListener(function (request, sender, response) {
 
-	switch(request.command){
-		case "courseStorage": 
+	switch (request.command) {
+		case "courseStorage":
 			if (request.action == "add") {
-			 add(request, sender, response);
+				add(request, sender, response);
 			}
 			if (request.action == "remove") {
 				remove(request, sender, response);
@@ -43,9 +43,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
 /* Initially set the course data in storage */
 chrome.runtime.onInstalled.addListener(function (details) {
 	if (details.reason == "install") {
-		chrome.storage.sync.get('savedCourses', function(data){
-			if(!data.savedCourses){
-				console.log(data.savedCourses);
+		chrome.storage.sync.get('savedCourses', function (data) {
+			if (!data.savedCourses) {
 				var arr = new Array();
 				chrome.storage.sync.set({
 					savedCourses: arr
@@ -57,9 +56,14 @@ chrome.runtime.onInstalled.addListener(function (details) {
 				}, function () {
 					console.log('initial highlighting: true');
 				});
+				chrome.storage.sync.set({
+					loadAll: true
+				}, function () {
+					console.log('initial loadAll: true');
+				});
 			}
 		});
-	} else if(details.reason == "update"){
+	} else if (details.reason == "update") {
 		console.log("updated");
 	}
 });
@@ -221,7 +225,7 @@ function updateStatus() {
 				dummy.innerHTML = result;
 				let newstatus = dummy.querySelector('[data-th="Status"]').textContent;
 				let registerlink = dummy.querySelector('td[data-th="Add"] a');
-				if(registerlink){
+				if (registerlink) {
 					registerlink = registerlink.getAttribute('href');
 				}
 				c.registerlink = registerlink;

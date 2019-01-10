@@ -1,38 +1,70 @@
 var manifestData = chrome.runtime.getManifest();
 $("#version").text(manifestData.version);
-chrome.storage.sync.get('courseConflictHighlight', function(data) {
-	if(data.courseConflictHighlight){
-		off();
+chrome.storage.sync.get('courseConflictHighlight', function (data) {
+	if (data.courseConflictHighlight) {
+		off('courseConflictHighlight');
+	} else {
+		on('courseConflictHighlight');
 	}
-	else {
-		on();
+});
+chrome.storage.sync.get('loadAll', function (data) {
+	if (data.loadAll) {
+		off('loadAll');
+	} else {
+		on('loadAll');
 	}
 });
 
-$("#toggleConflictHighlighting").click(function(){
-	var action = $("#toggleConflictHighlighting").text();
-	if(action == "Turn Off"){
-		chrome.storage.sync.set({courseConflictHighlight: false}, function() {
-			on();
+$("#togglecourseConflictHighlight").click(function () {
+	var action = $("#togglecourseConflictHighlight").text();
+	if (action == "Turn Off") {
+		chrome.storage.sync.set({
+			courseConflictHighlight: false
+		}, function () {
+			on('courseConflictHighlight');
 		});
-	} else{
-		chrome.storage.sync.set({courseConflictHighlight: true}, function() {
-			off();
-		});	
+	} else {
+		chrome.storage.sync.set({
+			courseConflictHighlight: true
+		}, function () {
+			off('courseConflictHighlight');
+		});
 	}
-	chrome.tabs.query({}, function(tabs) {
-		for(var i = 0; i<tabs.length; i++){
-			chrome.tabs.sendMessage(tabs[i].id, {command: "updateCourseList"});
+	chrome.tabs.query({}, function (tabs) {
+		for (var i = 0; i < tabs.length; i++) {
+			chrome.tabs.sendMessage(tabs[i].id, {
+				command: "updateCourseList"
+			});
 		}
 	});
 });
 
 
-function on(){
-	$("#toggleConflictHighlighting").text("Turn On");
-	$("#toggleConflictHighlighting").css("background","#4CAF50");
+$("#toggleloadAll").click(function () {
+	var action = $("#toggleloadAll").text();
+	if (action == "Turn Off") {
+		chrome.storage.sync.set({
+			loadAll: false
+		}, function () {
+			on('loadAll');
+		});
+	} else {
+		chrome.storage.sync.set({
+			loadAll: true
+		}, function () {
+			off('loadAll');
+		});
+	}
+});
+
+
+
+function on(setting) {
+	$("#toggle" + setting).text("Turn On");
+	$("#toggle" + setting).css("background", "#4CAF50");
 }
-function off(){
-	$("#toggleConflictHighlighting").text("Turn Off");
-	$("#toggleConflictHighlighting").css("background","#F44336");
+
+function off(setting) {
+	$("#toggle" + setting).text("Turn Off");
+	$("#toggle" + setting).css("background", "#F44336");
 }

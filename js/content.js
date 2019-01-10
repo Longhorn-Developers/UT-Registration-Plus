@@ -29,8 +29,8 @@ const butdelay = 75;
 //This extension may be super lit, but you know what's even more lit?
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 $(function () {
+
 	loadNextPages($("html").html());
-	$('[title*="next listing"]').remove();
 	loadDataBase();
 	//make heading and modal
 	if (!$("#kw_results_table").length) {
@@ -139,37 +139,42 @@ $(function () {
 });
 
 function loadNextPages(inHTML) {
-	var html = $('<div/>').html(inHTML).contents();
-	let next = html.find("#next_nav_link");
-	if (next.length) {
-		let link = next.prop('href');
-		console.log(link);
-		chrome.runtime.sendMessage({
-			method: "GET",
-			action: "xhttp",
-			url: link,
-			data: ""
-		}, function (response) {
-			if (response) {
-				var nextpage = $('<div/>').html(response).contents();
-				var current = $('tbody');
-				nextpage.find('tbody>tr').each(function () {
-					if (!($(this).find('td').hasClass("course_header") && $(this).has('th').length == 0)) {
-						$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
-						// if ($(this).find('td[data-th="Status"]').text().includes('waitlisted')) {
-						// 	$(this).find('td').each(function () {
-						// 		$(this).css('background-color', '#E0E0E0');
-						// 	});
-						// }
+	chrome.storage.sync.get('loadAll', function (data) {
+		if (data.loadAll) {
+			$('[title*="next listing"]').remove();
+			var html = $('<div/>').html(inHTML).contents();
+			let next = html.find("#next_nav_link");
+			if (next.length) {
+				let link = next.prop('href');
+				console.log(link);
+				chrome.runtime.sendMessage({
+					method: "GET",
+					action: "xhttp",
+					url: link,
+					data: ""
+				}, function (response) {
+					if (response) {
+						var nextpage = $('<div/>').html(response).contents();
+						var current = $('tbody');
+						nextpage.find('tbody>tr').each(function () {
+							if (!($(this).find('td').hasClass("course_header") && $(this).has('th').length == 0)) {
+								$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
+								// if ($(this).find('td[data-th="Status"]').text().includes('waitlisted')) {
+								// 	$(this).find('td').each(function () {
+								// 		$(this).css('background-color', '#E0E0E0');
+								// 	});
+								// }
+							}
+							current.append($(this));
+						});
+						loadNextPages(response);
 					}
-					current.append($(this));
-				});
-				loadNextPages(response);
+				})
+			} else {
+				update();
 			}
-		})
-	} else {
-		update();
-	}
+		}
+	});
 }
 
 function saveCourse() {
