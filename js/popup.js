@@ -7,7 +7,6 @@ setCourseList();
 // $("#html").prepend(modhtml);
 getSemesters();
 
-
 function setCourseList() {
 	$("#courseList").empty()
 	chrome.storage.sync.get('savedCourses', function (data) {
@@ -37,7 +36,24 @@ function setCourseList() {
 			if (profname == "") {
 				profname = "Undecided Professor";
 			}
-			var listhtml = "<li id='" + i + "'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'><div class='card'><div class='container' style='background:" + color + "''><h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;'><b>" + department + " " + course_nbr + "<span style='font-size:medium'>" + " with </span><span style='font-size:medium'>" + profname + " (" + courses[i].unique + ")" + "</span></b></h4><p id='arrow' style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;'>&#9658;</p></div></div><div id='moreInfo' style='display: none;'><p style='font-weight:bold;padding:10px;margin:0px 5px 0px 15px;font-size:small;background-color:#FFCDD2;'>" + makeLine(i) + "</p><div id='infoButtons' style='border-radius:0px;'><button class='matbut' id='listRemove'style='float:right;background:#F44336; margin:5px;'>Remove</button><button class='matbut' id='register' style='float:right;background:#4CAF50; margin:5px;'>Register</button><button class='matbut' id='listMoreInfo' style='float:right;background:#2196F3; margin:5px;'>More Info</button></div></div></li>";
+			var listhtml = `<li id='${i}'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'>
+								<div class='card'>
+									<div class='container' style='background:${color}'>
+										<h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;'>
+											<b>${department} ${course_nbr} <span style='font-size:medium'> with </span><span style='font-size:medium'>${profname} (${courses[i].unique})</span></b>
+										</h4>
+										<p id='arrow' style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;'>&#9658;</p>
+									</div>
+								</div>
+								<div id='moreInfo' style='display: none;'>
+									<p style='font-weight:bold;padding:10px;margin:0px 5px 0px 15px;font-size:small;background-color:#FFCDD2;'>${makeLine(i)}</p>
+									<div id='infoButtons' style='border-radius:0px;'>
+										<button class='matbut' id='listRemove'style='float:right;background:#F44336; margin:5px;'>Remove</button>
+										<button class='matbut' id='register' style='float:right;background:#4CAF50; margin:5px;'>Register</button>
+										<button class='matbut' id='listMoreInfo' style='float:right;background:#2196F3; margin:5px;'>More Info</button>
+									</div>
+								</div>
+							</li>`;
 			$("#courseList").append(listhtml);
 		}
 	});
@@ -193,14 +209,17 @@ $(document).ready(function () {
 	});
 	$('#export').click(function () {
 		chrome.storage.sync.get('savedCourses', function (data) {
-			var exportArray = JSON.stringify(data.savedCourses, null, 4);
-			var exportlink = document.createElement('a');
-			var url = window.URL.createObjectURL(new Blob([exportArray], {
-				type: "octet/stream"
-			}));
-			exportlink.setAttribute('href', url);
-			exportlink.setAttribute('download', 'my_courses.json');
-			exportlink.click();
+			if (data.savedCourses.length > 0) {
+				var exportlink = document.createElement('a');
+				var url = window.URL.createObjectURL(new Blob([JSON.stringify(data.savedCourses, null, 4)], {
+					type: "octet/stream"
+				}));
+				exportlink.setAttribute('href', url);
+				exportlink.setAttribute('download', 'my_courses.json');
+				exportlink.click();
+			} else {
+				alert('You have no Saved Courses to export.');
+			}
 		});
 	});
 	$("#class_id").on("keyup", function (e) {
@@ -251,7 +270,7 @@ $("#importOrig").change(function (e) {
 		} catch (err) {
 
 		}
-		importOrig.value = ''; //make sure to clear input value after every import
+		importOrig.value = '';
 	}
 	reader.readAsText(files[0]);
 });
@@ -402,21 +421,26 @@ function getInfo(sem, unique) {
 	if (response) {
 		var output = "";
 		var object = $('<div/>').html(response).contents();
-		var c = getCourseObject(object, link);
-		console.log(c);
-		if (c.coursename) {
-			chrome.runtime.sendMessage({
-				command: "courseStorage",
-				course: c,
-				action: "add"
-			}, function () {
-				chrome.runtime.sendMessage({
-					command: "updateCourseList"
-				});
-				setCourseList();
-			});
+		console.log(object.find('.error').text());
+		if (object.find('.error').text().trim() == 'No class was found for your input.') {
+			alert(`Could not find a course with unique number: ${unique}`);
 		} else {
-			alert("There Was An Error.")
+			var c = getCourseObject(object, link);
+			console.log(c);
+			if (c.coursename) {
+				chrome.runtime.sendMessage({
+					command: "courseStorage",
+					course: c,
+					action: "add"
+				}, function () {
+					chrome.runtime.sendMessage({
+						command: "updateCourseList"
+					});
+					setCourseList();
+				});
+			} else {
+				alert("There Was An Error. Please check if you are logged into the UT Course Schedule.")
+			}
 		}
 	}
 }

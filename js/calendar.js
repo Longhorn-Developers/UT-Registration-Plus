@@ -118,18 +118,20 @@ $(function () {
         }
     });
 
-    $("#export").click(function(){
+    $("#export").click(function () {
         var cal = ics();
         var calendarEvents = $('#calendar').fullCalendar('clientEvents');
-        for(i in calendarEvents){
+        for (i in calendarEvents) {
             let event = calendarEvents[i];
             var title = event.title;
             var classname = title.substring(0, title.indexOf('with'));
             var description = title.substring(title.indexOf('with'));
             var time = event.start._d.toUTCString();
-            cal.addEvent(classname, description, event.building, event.start._i, event.end._i, {rrule: `RRULE:FREQ=WEEKLY;BYDAY=${time.substring(0, time.indexOf(",")-1).toUpperCase()};INTERVAL=1`});
+            cal.addEvent(classname, description, event.building, event.start._i, event.end._i, {
+                rrule: `RRULE:FREQ=WEEKLY;BYDAY=${time.substring(0, time.indexOf(",")-1).toUpperCase()};INTERVAL=1`
+            });
         }
-        cal.download("My_Calendar");
+        cal.download("My_Course_Calendar");
     });
 
     /* convert from the dtarr and maek the time lines*/
