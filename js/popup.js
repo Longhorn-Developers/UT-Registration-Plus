@@ -42,7 +42,7 @@ function setCourseList() {
 										<h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;'>
 											<b>${department} ${course_nbr} <span style='font-size:medium'> with </span><span style='font-size:medium'>${profname} (${courses[i].unique})</span></b>
 										</h4>
-										<p id='arrow' style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;'>&#9658;</p>
+										<p id='arrow' style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;font-family: sans-serif'>&#9658;</p>
 									</div>
 								</div>
 								<div id='moreInfo' style='display: none;'>
@@ -423,7 +423,7 @@ function getInfo(sem, unique) {
 		var object = $('<div/>').html(response).contents();
 		console.log(object.find('.error').text());
 		if (object.find('.error').text().trim() == 'No class was found for your input.') {
-			alert(`Could not find a course with unique number: ${unique}`);
+			window.confirm(`Could not find a course with unique number: ${unique}`);
 		} else {
 			var c = getCourseObject(object, link);
 			console.log(c);
@@ -439,7 +439,7 @@ function getInfo(sem, unique) {
 					setCourseList();
 				});
 			} else {
-				alert("There Was An Error. Please check if you are logged into the UT Course Schedule.")
+				window.confirm("There Was An Error. Please check if you are logged into Utexas.")
 			}
 		}
 	}
