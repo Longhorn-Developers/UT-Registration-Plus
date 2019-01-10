@@ -26,16 +26,35 @@ body {
 }
 
 .settingsbut {
-    margin-right: 0px;
-    border: 0px
+    margin-right: 2px;
+    border: 0px;
+    border-radius: 50%;
+    transition: 0.3s;
 }
 
 .settingsbut:focus {
     outline: 0;
 }
 
+.settingsbut:hover {
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.16), 0 4px 15px 0 rgba(0, 0, 0, 0.12);
+}
+
+.selected {
+    box-shadow: 0 0 0 1pt #FF9800;
+}
+
+.settingsbut:focus:after:hover {
+    outline: 0;
+    transition: 0.3s;
+}
+
 ul {
     margin-bottom: 20px;
+}
+
+i {
+    padding: 4px 0px;
 }
 
 .settings {
@@ -52,9 +71,10 @@ ul {
     border-radius: 7px;
 }
 
-.settings:hover {
+
+/* .settings:hover {
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
-}
+} */
 
 .matbut {
     border: none;
@@ -165,6 +185,7 @@ ul {
     animation: ripple 1s ease-out;
 }
 
+
 .card:focus:not(:active)::after {
     animation: ripple 1s ease-out;
 }
@@ -188,7 +209,8 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 ::placeholder {
-    color: #FF0000;
+    color: #ffbd9a;
+    ;
 }
 
 .select-style {

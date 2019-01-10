@@ -178,15 +178,16 @@ $(document).ready(function () {
 			'url': 'https://registrar.utexas.edu/schedules'
 		});
 	});
-
 	$("#impexp").click(function () {
 		if ($("#impexp>i").text() == 'close') {
 			$('#import').hide();
 			$('#export').hide();
 			$("#impexp>i").text('import_export');
+			// $(this).removeClass('selected');
 		} else {
 			$("#impexp>i").text('close');
 			$('#import').show();
+			// $(this).addClass('selected');
 			$('#export').show();
 		}
 	});
@@ -196,12 +197,14 @@ $(document).ready(function () {
 			$("#class_id").hide();
 			$("#semcon").hide();
 			$("#semesters").hide();
+			// $(this).removeClass('selected');
 		} else {
 			$("#search>i").text('close');
 			$("#class_id").show();
 			$("#semesters").show();
 			$("#semcon").show();
 			$('#class_id').focus();
+			// $(this).addClass('selected');
 		}
 	});
 	$('#import').click(function () {
@@ -381,23 +384,36 @@ function getSemesters() {
 	}, function (response) {
 		if (response) {
 			var object = $('<div/>').html(response).contents();
-			object.find('.callout2>ul>li>a').each(function () {
-				if ($(this).text() != "Course Schedule Archive") {
-					var semname = $(this).text().split(" ")[0].substring(0, 2) + " " + $(this).text().split(" ")[1];
-					chrome.runtime.sendMessage({
-						method: "GET",
-						action: "xhttp",
-						url: $(this).attr('href'),
-						data: ""
-					}, function (response) {
-						if (response) {
-							var object = $('<div/>').html(response).contents();
-							object.find('.gobutton>a').each(function () {
-								var semnum = $(this).attr('href').substring($(this).attr('href').lastIndexOf('/') + 1);
-								$("#semesters").append(`<option value="${semnum}"">${semname}</option>`);
-							});
-						}
-					});
+			object.find('.callout2>ul>li>a').each(function (index) {
+				if (index < 2) {
+					if ($(this).text() != "Course Schedule Archive") {
+						var semname = $(this).text().split(" ")[0].substring(0, 2) + " " + $(this).text().split(" ")[1];
+						$("#semesters").append(`<option>${semname}</option>`);
+						chrome.runtime.sendMessage({
+							method: "GET",
+							action: "xhttp",
+							url: $(this).attr('href'),
+							data: ""
+						}, function (response) {
+							if (response) {
+								var object = $('<div/>').html(response).contents();
+								var name = object.find(".page-title").text();
+								name = name.substring(name.lastIndexOf('|') + 1).trim();
+								name = name.split(" ")[0].substring(0, 2) + " " + name.split(" ")[1];
+								console.log(name);
+								object.find('.gobutton>a').each(function () {
+									var semnum = $(this).attr('href').substring($(this).attr('href').lastIndexOf('/') + 1);
+									$("option").each(function () {
+										console.log($(this).text());
+										if ($(this).text() == name) {
+											$(this).val(semnum);
+											console.log($(this).val());
+										}
+									})
+								});
+							}
+						});
+					}
 				}
 			});
 		}
