@@ -132,7 +132,6 @@ $(function () {
 	chrome.runtime.onMessage.addListener(
 		function (request, sender, sendResponse) {
 			if (request.command == "updateCourseList") {
-				//		console.log("hello");
 				update();
 			}
 		});
@@ -186,14 +185,14 @@ function saveCourse() {
 	}, function (response) {
 		$("#saveCourse").text(response.label);
 		$("#snackbar").text(response.done);
-		$("#snackbar").attr("class", "show");
+		setTimeout(function () {
+			$("#snackbar").attr("class", "show");
+		}, 300);
 		setTimeout(function () {
 			$("#snackbar").attr("class", "");
 		}, 3000);
 		chrome.runtime.sendMessage({
 			command: "updateCourseList"
-		}, function () {
-			update();
 		});
 	});
 }
