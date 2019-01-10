@@ -13,7 +13,25 @@ $(function () {
     ]);
     const fadetime = 150;
     const butdelay = 75;
-    $("#calendar").prepend('<div id="myModal" class="modal"><div class="modal-content"><span class="close">&times;</span><div class="card"><div id="colorStrip" style="height:10px;"></div><div class="cardcontainer"><div><div style="display:flex;"><h2 id="classname">Classname</h2></div><p id="prof">Prof</p></div><div id="timelines"></div><button id="info" class="matbut" style="font-size:medium; margin-right: auto; margin-left:auto; background: #2196F3;">More Info</button><button id="register" class="matbut" style="font-size:medium; margin-right: auto; margin-left:10px; background: #4CAF50;">Register</button><button id="remove" class="matbut" style="font-size:medium;margin:10px;background: #FF0000;">Remove</button></div></div></div></div>');
+    $("#calendar").prepend(`<div id="myModal" class="modal">
+                                <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <div class="card">
+                                    <div id="colorStrip" style="height:10px;"></div>
+                                    <div class="cardcontainer">
+                                        <div>
+                                            <div style="display:flex;">
+                                                <h2 id="classname">Classname</h2>
+                                            </div>
+                                            <p id="prof">Prof</p>
+                                        </div>
+                                        <div id="timelines"></div>
+                                        <button id="info" class="matbut" style="font-size:medium; margin-right: auto; margin-left:auto; background: #2196F3;">More Info</button>
+                                        <button id="register" class="matbut" style="font-size:medium; margin-right: auto; margin-left:10px; background: #4CAF50;">Register</button>
+                                        <button id="remove" class="matbut" style="font-size:medium;margin:10px;background: #FF0000;">Remove</button>
+                                    </div>
+                                </div>
+                            </div>`);
     // Counter to iterate through material colors to avoid duplicates
     var colorCounter = 0;
     // Each schedule needs to store 'TITLE - START TIME - END TIME - COLOR'

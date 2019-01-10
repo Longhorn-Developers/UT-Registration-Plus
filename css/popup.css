@@ -34,7 +34,7 @@ body {
     outline: 0;
 }
 
-ul{
+ul {
     margin-bottom: 20px;
 }
 
@@ -51,9 +51,11 @@ ul{
     margin-right: 10px;
     border-radius: 7px;
 }
-.settings:hover{
-     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
+
+.settings:hover {
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
 .matbut {
     border: none;
     outline: none;
@@ -167,28 +169,30 @@ ul{
     animation: ripple 1s ease-out;
 }
 
-input{
+input {
     width: 80px;
     border-radius: 5px;
-    color: #ff691a;
+    color: #FF0000;
 }
+
 input:focus {
     outline: 0;
 }
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    margin: 0; 
+    margin: 0;
 }
 
-::placeholder{
-    color:#ffbd9a;
+::placeholder {
+    color: #FF0000;
 }
 
 .select-style {
-    border: 1.5px solid #ff691a;
+    border: 1.5px solid #FF0000;
     width: 60px;
     margin-right: 5px;
     border-radius: 5px;
@@ -201,7 +205,7 @@ input[type=number]::-webkit-outer-spin-button {
     padding: 5px 8px;
     width: 130%;
     border: none;
-    color:#ff691a;
+    color: #FF0000;
     box-shadow: none;
     background: transparent;
     background-image: none;

@@ -278,7 +278,12 @@ $("#importOrig").change(function (e) {
 function validateObject(impCourses) {
 	for (var i = 0; i < impCourses.length; i++) {
 		var course = impCourses[i];
-		var isValid = course["coursename"] && course["datetimearr"] && course["link"] && course["profname"] && course["status"] && course["unique"];
+		var isValid = true;
+		var props = ["coursename", "datetimearr", "link", "profname", "status", "unique"];
+		console.log(course.coursename);
+		for (let j = 0; j < props.length; j++) {
+			isValid &= course.hasOwnProperty(props[j]);
+		}
 		console.log(isValid);
 		if (!isValid) {
 			return false;
