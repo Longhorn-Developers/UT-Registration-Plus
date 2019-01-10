@@ -85,6 +85,8 @@ $(function () {
 	/*Handle the button clicks*/
 	$("tbody").on('click', '.distButton', function () {
 		var row = $(this).closest('tr');
+		$('.modal-content').stop().animate({ scrollTop: 0 }, 0);
+		$(this).blur();
 		getCourseInfo(row);
 		getDistribution();
 	});
@@ -121,8 +123,7 @@ $(function () {
 	$(document).keydown(function (e) {
 		/*Close Modal when hit escape*/
 		if (e.keyCode == 27) {
-			$("#myModal").fadeOut(fadetime);
-			$("#snackbar").attr("class", "");
+			close();
 		} else if (e.keyCode == 13 && $('#myModal').is(':visible')) {
 			/*save course when hit enter*/
 			saveCourse();
@@ -183,11 +184,12 @@ function saveCourse() {
 		course: c,
 		action: $("#saveCourse").text().substring(0, $("#saveCourse").text().indexOf(" ")).toLowerCase()
 	}, function (response) {
+
 		$("#saveCourse").text(response.label);
 		$("#snackbar").text(response.done);
 		setTimeout(function () {
 			$("#snackbar").attr("class", "show");
-		}, 300);
+		}, 150);
 		setTimeout(function () {
 			$("#snackbar").attr("class", "");
 		}, 3000);
@@ -265,6 +267,7 @@ function Course(coursename, unique, profname, datetimearr, status, link, registe
 
 /*For a row, get all the course information and add the date-time-lines*/
 function getCourseInfo(row) {
+	console.log('WHAT');
 	semesterCode = new URL(window.location.href).pathname.split('/')[4];
 	$(".dateTimePlace").remove();
 	$('table').find('tr').each(function () {
@@ -393,7 +396,7 @@ function getDistribution(sem) {
 
 /*Open the modal and show all the data*/
 function openDialog(dep, cls, sem, professor, res) {
-	$("#myModal").fadeIn(fadetime);
+	$("#myModal").fadeIn(100);
 	//initial text on the "save course button"
 
 
@@ -448,20 +451,21 @@ function openDialog(dep, cls, sem, professor, res) {
 	$("#profname").text("with " + name);
 	//close button
 	span.onclick = function () {
-		$("#myModal").fadeOut(200);
-		$("#snackbar").attr("class", "");
+		close();
 	}
-
 	setChart(data);
 	// When clicks anywhere outside of the modal, close it
 	window.onclick = function (event) {
 		if (event.target == modal) {
-			$("#myModal").fadeOut(fadetime);
-			$("#snackbar").attr("class", "");
+			close();
 		}
 	}
 }
 
+function close() {
+	$("#myModal").fadeOut(fadetime);
+	$("#snackbar").attr("class", "");
+}
 
 function setChart(data) {
 	//set up the chart
@@ -608,6 +612,7 @@ function prettifyName() {
 function getDescription() {
 	// console.log(window.location.href);
 	// console.log(profurl);
+	console.log('hello');
 	chrome.runtime.sendMessage({
 		method: "GET",
 		action: "xhttp",
