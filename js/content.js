@@ -85,7 +85,9 @@ $(function () {
 	/*Handle the button clicks*/
 	$("tbody").on('click', '.distButton', function () {
 		var row = $(this).closest('tr');
-		$('.modal-content').stop().animate({ scrollTop: 0 }, 0);
+		$('.modal-content').stop().animate({
+			scrollTop: 0
+		}, 500);
 		$(this).blur();
 		getCourseInfo(row);
 		getDistribution();
