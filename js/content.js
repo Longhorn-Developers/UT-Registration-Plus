@@ -191,7 +191,7 @@ function saveCourse() {
 		$("#snackbar").text(response.done);
 		setTimeout(function () {
 			$("#snackbar").attr("class", "show");
-		}, 150);
+		}, 200);
 		setTimeout(function () {
 			$("#snackbar").attr("class", "");
 		}, 3000);

@@ -261,6 +261,7 @@ $("#importOrig").change(function (e) {
 				chrome.storage.sync.set({
 					savedCourses: impCourses
 				});
+				chrome.browserAction.setBadgeText({ text: "" + impCourses.length });
 				chrome.tabs.query({}, function (tabs) {
 					for (var i = 0; i < tabs.length; i++) {
 						chrome.tabs.sendMessage(tabs[i].id, {
@@ -369,6 +370,7 @@ function clear() {
 			});
 		}
 	});
+	chrome.browserAction.setBadgeText({ text: "" });
 	$("#courseList").empty()
 	console.log("cleared");
 	showEmpty();

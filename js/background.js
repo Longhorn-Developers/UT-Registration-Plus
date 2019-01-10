@@ -1,6 +1,13 @@
+chrome.storage.sync.get('savedCourses', function (data) {
+	if (data.savedCourses && data.savedCourses.length) {
+		chrome.browserAction.setBadgeBackgroundColor({
+			color: '#bf5700'
+		});
+		chrome.browserAction.setBadgeText({ text: "" + data.savedCourses.length });
+	}
+});
 /* Handle messages and their commands from content and popup scripts*/
 chrome.runtime.onMessage.addListener(function (request, sender, response) {
-
 	switch (request.command) {
 		case "courseStorage":
 			if (request.action == "add") {
@@ -150,13 +157,13 @@ function add(request, sender, sendResponse) {
 				savedCourses: courses
 			});
 		}
+		chrome.browserAction.setBadgeText({ text: "" + courses.length });
 		sendResponse({
 			done: "Added: (" + request.course.unique + ") " + request.course.coursename,
 			label: "Remove Course -"
 		});
 	});
 }
-
 /* Find and Remove the requested course from the storage*/
 function remove(request, sender, sendResponse) {
 	chrome.storage.sync.get('savedCourses', function (data) {
@@ -170,6 +177,7 @@ function remove(request, sender, sendResponse) {
 		chrome.storage.sync.set({
 			savedCourses: courses
 		});
+		chrome.browserAction.setBadgeText({ text: "" + courses.length });
 		sendResponse({
 			done: "Removed: (" + request.course.unique + ") " + request.course.coursename,
 			label: "Add Course +"
