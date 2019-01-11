@@ -1,5 +1,7 @@
 var grades;
 var rmpLink;
+var next;
+var bottom;
 var eCISLink;
 var textbookLink;
 var coursename;
@@ -16,6 +18,7 @@ var description;
 var status;
 var semesterCode;
 var isIndividual = false;
+var done = true;
 
 const days = new Map([
 	["M", "Monday"],
@@ -29,12 +32,16 @@ const butdelay = 75;
 //This extension may be super lit, but you know what's even more lit?
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 $(function () {
-
-	loadNextPages($("html").html());
+	next = $("#next_nav_link");
 	loadDataBase();
 	//make heading and modal
 	if (!$("#kw_results_table").length) {
 		$("table thead th:last-child").after('<th scope=col>Plus</th>');
+		$("table").after(`<div style="text-align:center">
+							  <div class="loader"></div>
+							  <br>
+						  	<h2 id="nextlabel"style="color: #bf5700;display:none;">Loading Courses</h2>
+						  </div>`);
 		var modhtml = `<div class=modal id=myModal>
 							<div class=modal-content>
 							   <span class=close>×</span>
@@ -93,6 +100,12 @@ $(function () {
 		getDistribution();
 	});
 
+	$(window).scroll(function () {
+		if ($(document).height() <= $(window).scrollTop() + $(window).height()) {
+			loadNextPages();
+		}
+	});
+
 	$("#saveCourse").click(function () {
 		saveCourse();
 	});
@@ -140,24 +153,25 @@ $(function () {
 		});
 });
 
-function loadNextPages(inHTML) {
+function loadNextPages() {
 	chrome.storage.sync.get('loadAll', function (data) {
 		if (data.loadAll) {
 			$('[title*="next listing"]').remove();
-			var html = $('<div/>').html(inHTML).contents();
-			let next = html.find("#next_nav_link");
-			if (next.length) {
-				let link = next.prop('href');
-				console.log(link);
-				chrome.runtime.sendMessage({
-					method: "GET",
-					action: "xhttp",
-					url: link,
-					data: ""
-				}, function (response) {
+			let link = next.prop('href');
+			if (done && next && link) {
+				$("#nextlabel").css('display', 'inline-block');
+				$('.loader').css('display', 'inline-block');
+				done = false;
+				$.get(link, function (response) {
 					if (response) {
 						var nextpage = $('<div/>').html(response).contents();
 						var current = $('tbody');
+						var last = current.find('.course_header>h2:last').text();
+						console.log(last);
+						next = nextpage.find("#next_nav_link");
+						done = true;
+						$("#nextlabel").hide();
+						$('.loader').hide();
 						nextpage.find('tbody>tr').each(function () {
 							if (!($(this).find('td').hasClass("course_header") && $(this).has('th').length == 0)) {
 								$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
@@ -167,13 +181,42 @@ function loadNextPages(inHTML) {
 								// 	});
 								// }
 							}
-							current.append($(this));
+							if (!($(this).find('td').hasClass("course_header") && last == $(this).find('td').text())) {
+								current.append($(this));
+							}
 						});
-						loadNextPages(response);
+						update();
 					}
-				})
-			} else {
-				update();
+				});
+				// chrome.runtime.sendMessage({
+				// 	method: "GET",
+				// 	action: "xhttp",
+				// 	url: link,
+				// 	data: ""
+				// }, function (response) {
+				// 	if (response) {
+				// 		var nextpage = $('<div/>').html(response).contents();
+				// 		var current = $('tbody');
+				// 		var last = current.find('.course_header>h2:last').text();
+				// 		console.log(last);
+				// 		next = nextpage.find("#next_nav_link");
+				// 		done = true;
+				// 		nextpage.find('tbody>tr').each(function () {
+				// 			if (!($(this).find('td').hasClass("course_header") && $(this).has('th').length == 0)) {
+				// 				$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
+				// 				// if ($(this).find('td[data-th="Status"]').text().includes('waitlisted')) {
+				// 				// 	$(this).find('td').each(function () {
+				// 				// 		$(this).css('background-color', '#E0E0E0');
+				// 				// 	});
+				// 				// }
+				// 			}
+				// 			if (!($(this).find('td').hasClass("course_header") && last == $(this).find('td').text())) {
+				// 				current.append($(this));
+				// 			}
+				// 		});
+				// 		update();
+				// 	}
+				// })
 			}
 		}
 	});
@@ -214,18 +257,12 @@ function update() {
 					unique: uniquenum
 				}, function (response) {
 					if (response.isConflict && data.courseConflictHighlight) {
-						$(thisForm).find('td').each(function () {
-							$(this).css('color', '#F44336').css('text-decoration', 'line-through').css('font-weight', 'normal');
-						});
+						$(thisForm).find('td').css('color', '#F44336').css('text-decoration', 'line-through').css('font-weight', 'normal');
 					} else {
-						$(thisForm).find('td').each(function () {
-							$(this).css('color', 'black').css('text-decoration', 'none').css('font-weight', 'normal');
-						});
+						$(thisForm).find('td').css('color', 'black').css('text-decoration', 'none').css('font-weight', 'normal');
 					}
 					if (response.alreadyContains) {
-						$(thisForm).find('td').each(function () {
-							$(this).css('color', '#4CAF50').css('text-decoration', 'none').css('font-weight', 'bold');
-						});
+						$(thisForm).find('td').css('color', '#4CAF50').css('text-decoration', 'none').css('font-weight', 'bold');
 					}
 				});
 			}

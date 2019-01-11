@@ -157,6 +157,9 @@ function add(request, sender, sendResponse) {
 				savedCourses: courses
 			});
 		}
+		chrome.browserAction.setBadgeBackgroundColor({
+			color: '#bf5700'
+		});
 		chrome.browserAction.setBadgeText({ text: "" + courses.length });
 		sendResponse({
 			done: "Added: (" + request.course.unique + ") " + request.course.coursename,
@@ -176,6 +179,9 @@ function remove(request, sender, sendResponse) {
 		courses.splice(index, 1);
 		chrome.storage.sync.set({
 			savedCourses: courses
+		});
+		chrome.browserAction.setBadgeBackgroundColor({
+			color: '#bf5700'
 		});
 		chrome.browserAction.setBadgeText({ text: "" + courses.length });
 		sendResponse({
