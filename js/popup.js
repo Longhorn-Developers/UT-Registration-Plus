@@ -220,11 +220,8 @@ $(document).ready(function () {
 					type: "octet/stream"
 				}));
 				exportlink.setAttribute('href', url);
-				var name = prompt('W');
-				if (name) {
-					exportlink.setAttribute('download', name + '.json');
-					exportlink.click();
-				}
+				exportlink.setAttribute('download', 'my_courses.json');
+				exportlink.click();
 			} else {
 				alert('You have no Saved Courses to export.');
 			}
