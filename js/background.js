@@ -187,9 +187,15 @@ function remove(request, sender, sendResponse) {
 		chrome.browserAction.setBadgeBackgroundColor({
 			color: '#bf5700'
 		});
-		chrome.browserAction.setBadgeText({
-			text: "" + courses.length
-		});
+		if (courses.length > 0) {
+			chrome.browserAction.setBadgeText({
+				text: "" + courses.length
+			});
+		} else {
+			chrome.browserAction.setBadgeText({
+				text: ""
+			});
+		}
 		sendResponse({
 			done: "Removed: (" + request.course.unique + ") " + request.course.coursename,
 			label: "Add Course +"
