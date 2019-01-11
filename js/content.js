@@ -33,6 +33,11 @@ const butdelay = 75;
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 $(function () {
 	next = $("#next_nav_link");
+	chrome.storage.sync.get('loadAll', function (data) {
+		if (data.loadAll) {
+			$('[title*="next listing"]').remove();
+		}
+	});
 	loadDataBase();
 	//make heading and modal
 	if (!$("#kw_results_table").length) {
@@ -156,7 +161,6 @@ $(function () {
 function loadNextPages() {
 	chrome.storage.sync.get('loadAll', function (data) {
 		if (data.loadAll) {
-			$('[title*="next listing"]').remove();
 			let link = next.prop('href');
 			if (done && next && link) {
 				$("#nextlabel").css('display', 'inline-block');
