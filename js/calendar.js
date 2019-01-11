@@ -108,12 +108,17 @@ $(function () {
             window.open(currLink);
         }, butdelay);
     });
+    console.log($("#calendar").width());
     $("#save").click(() => {
-        html2canvas(document.querySelector("#calendar"), {
-            foreignObjectRendering: true
-        }).then(canvas => {
+        let cropper = document.createElement('canvas').getContext('2d');
+        html2canvas(document.getElementById("calendar"), {
+            foreignObjectRendering: true,
+        }).then(c => {
+            cropper.canvas.width = $("#calendar").width();
+            cropper.canvas.height = $("#calendar").height() + 10;
+            cropper.drawImage(c, 0, 0);
             var a = document.createElement('a');
-            a.href = canvas.toDataURL("image/png");
+            a.href = cropper.canvas.toDataURL("image/png");
             a.download = 'mySchedule.png';
             a.click();
         });
@@ -178,7 +183,7 @@ $(function () {
             var description = title.substring(title.indexOf('with'));
             var time = event.start._d.toUTCString();
             cal.addEvent(classname, description, event.building, event.start._i, event.end._i, {
-                rrule: `RRULE:FREQ=WEEKLY;BYDAY=${time.substring(0, time.indexOf(",")-1).toUpperCase()};INTERVAL=1`
+                rrule: `RRULE:FREQ=WEEKLY;BYDAY=${time.substring(0, time.indexOf(",") - 1).toUpperCase()};INTERVAL=1`
             });
         }
         cal.download("My_Course_Calendar");
@@ -292,17 +297,17 @@ $(function () {
             title: `${department}-${course_nbr} with ${uncapProf}`,
             start: beg +
                 moment()
-                .day(fullday)
-                ._d.toString()
-                .split(" ")[2] +
+                    .day(fullday)
+                    ._d.toString()
+                    .split(" ")[2] +
                 "T" +
                 session[1][0] +
                 ":00",
             end: beg +
                 moment()
-                .day(fullday)
-                ._d.toString()
-                .split(" ")[2] +
+                    .day(fullday)
+                    ._d.toString()
+                    .split(" ")[2] +
                 "T" +
                 session[1][1] +
                 ":00",
