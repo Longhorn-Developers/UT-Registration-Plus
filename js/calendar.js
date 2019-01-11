@@ -4,6 +4,7 @@ $(function () {
         '#FF5252', '#E91E63', '#009688', '#00BCD4',
         '#4E342E', '#424242', '#9E9E9E'
     ];
+
     const days = new Map([
         ["M", "Monday"],
         ["T", "Tuesday"],
