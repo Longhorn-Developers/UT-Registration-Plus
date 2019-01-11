@@ -108,6 +108,37 @@ $(function () {
             window.open(currLink);
         }, butdelay);
     });
+    $("#save").click(() => {
+        html2canvas(document.querySelector("#calendar"), {
+            foreignObjectRendering: true
+        }).then(canvas => {
+            var a = document.createElement('a');
+            a.href = canvas.toDataURL("image/png");
+            a.download = 'mySchedule.png';
+            a.click();
+        });
+    });
+    $("#clear").click(() => {
+        /*Clear the list and the storage of courses*/
+        chrome.storage.sync.set({
+            savedCourses: []
+        });
+        chrome.tabs.query({}, function (tabs) {
+            for (var i = 0; i < tabs.length; i++) {
+                chrome.tabs.sendMessage(tabs[i].id, {
+                    command: "updateCourseList"
+                });
+            }
+        });
+        updateCalendar();
+        chrome.browserAction.setBadgeBackgroundColor({
+            color: '#bf5700'
+        });
+        chrome.browserAction.setBadgeText({
+            text: ""
+        });
+
+    });
     $("#remove").click(() => {
         setTimeout(() => {
             chrome.runtime.sendMessage({

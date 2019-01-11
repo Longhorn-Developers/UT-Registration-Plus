@@ -11,10 +11,16 @@
 <body>
     <div style='display:flex'>
         <div id='calendar' style="flex-grow: 1"></div>
-        <div>
-            <button id="export" class="matbut" style="font-size:medium; background:#4CAF50;margin: 10px;white-space: nowrap;text-align: center;">Export
-                Schedule</button>
-
+        <div class="card" id="header" style="text-align:center;margin:5px 0px 0px 15px;">
+            <h1 style="font-weight:500">Schedule</h1>
+            <div style="margin:5px;display: flex;flex-direction: column;">
+                <button id="clear" class="matbut" style="font-size:medium; background:#4CAF50;margin: 10px;white-space: nowrap;text-align: center;">Clear
+                    All</button>
+                <button id="save" class="matbut" style="font-size:medium; background:#FF9800;margin: 10px;white-space: nowrap;text-align: center;">Save
+                    as PNG</button>
+                <button id="export" class="matbut" style="font-size:medium; background:#FF0000;margin: 10px;white-space: nowrap;text-align: center;">Export
+                    to ICS</button>
+            </div>
         </div>
     </div>
 
@@ -22,6 +28,6 @@
 
 
 
-
-<script src='js/calendar.js'></script>
+<script src='js/html2canvas.min.js'></script>
 <script src='js/ics.min.js'></script>
+<script src='js/calendar.js'></script>

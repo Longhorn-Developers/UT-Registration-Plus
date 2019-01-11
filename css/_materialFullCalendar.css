@@ -74,9 +74,16 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
     border-width: 1px !important;
     padding: 2px 3px 2px 3px !important;
     vertical-align: top !important;
+    border-left-width: 0;
+
+}
+
+.fc-row fc-widget-header {
+    border-color: transparent;
 }
 
 .fc td {
+    border-top-width: 0;
     padding: 3px !important;
 }
 
@@ -155,10 +162,12 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
         transform: scale(0, 0);
         opacity: 1;
     }
+
     20% {
         transform: scale(25, 25);
         opacity: 1;
     }
+
     100% {
         opacity: 0;
         transform: scale(40, 40);
@@ -279,6 +288,18 @@ body a:visited {
     font-size: medium;
 }
 
+.fc td,
+.fc th {
+    border-color: #E7E7E7;
+
+}
+
+.fc-time-grid .fc-slats td {
+    height: 1.5em;
+    border-bottom: initial;
+    border-color: #E7E7E7;
+}
+
 /* The Close Button */
 
 .close {
@@ -310,4 +331,9 @@ body a:visited {
     padding: 2px 16px;
     display: block;
     transition: width 300ms ease-in-out, height 300ms ease-in-out;
+}
+
+
+tbody {
+    border-width: 0px;
 }
