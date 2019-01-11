@@ -45,7 +45,7 @@ $(function () {
 		$("table").after(`<div style="text-align:center">
 							  <div class="loader"></div>
 							  <br>
-						  	<h2 id="nextlabel"style="color: #bf5700;display:none;">Loading Courses</h2>
+						  	<h1 id="nextlabel"style="color: #FF9800;display:none;">Loading Courses</h1>
 						  </div>`);
 		var modhtml = `<div class=modal id=myModal>
 							<div class=modal-content>
