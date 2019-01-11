@@ -66,8 +66,10 @@ function showEmpty() {
 		"No Work Happens On PCL 5th Floor.", "Sophomore But Freshman By Credit.", "Pain is temporary, GPA is forever.",
 		"You've Yee'd Your Last Haw.", "lol everything is already waitlisted.", "At Least You're Not At A&M.",
 		`It's ${moment().format("h:mm")} and OU Still Sucks.`, 'TeXAs iS BaCK GuYZ', "'Academically Challenged'",
-		'Does McCombs teach Parseltongue?'
+		'Does McCombs teach Parseltongue?', 'Lets make Daddy Fenves proud.', 'Feel bad if you say Wampus.', 'No Cruce Enfrente Del Bus.',
+		'Midterm 1 has been Unmuted', 'Omae Wa Mou Shindeiru...', 'Bevo Bucks are the new Bitcoin'
 	]
+	// console.log(emptyText.length);
 	$("#courseList").hide();
 	$("#empty").fadeIn(200);
 	$("#main").html(emptyText[Math.floor(Math.random() * emptyText.length)]);
@@ -218,8 +220,11 @@ $(document).ready(function () {
 					type: "octet/stream"
 				}));
 				exportlink.setAttribute('href', url);
-				exportlink.setAttribute('download', 'my_courses.json');
-				exportlink.click();
+				var name = prompt('W');
+				if (name) {
+					exportlink.setAttribute('download', name + '.json');
+					exportlink.click();
+				}
 			} else {
 				alert('You have no Saved Courses to export.');
 			}
@@ -264,7 +269,9 @@ $("#importOrig").change(function (e) {
 				chrome.browserAction.setBadgeBackgroundColor({
 					color: '#bf5700'
 				});
-				chrome.browserAction.setBadgeText({ text: "" + impCourses.length });
+				chrome.browserAction.setBadgeText({
+					text: "" + impCourses.length
+				});
 				chrome.tabs.query({}, function (tabs) {
 					for (var i = 0; i < tabs.length; i++) {
 						chrome.tabs.sendMessage(tabs[i].id, {
@@ -376,7 +383,9 @@ function clear() {
 	chrome.browserAction.setBadgeBackgroundColor({
 		color: '#bf5700'
 	});
-	chrome.browserAction.setBadgeText({ text: "" });
+	chrome.browserAction.setBadgeText({
+		text: ""
+	});
 	$("#courseList").empty()
 	console.log("cleared");
 	showEmpty();

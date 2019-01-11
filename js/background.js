@@ -3,7 +3,9 @@ chrome.storage.sync.get('savedCourses', function (data) {
 		chrome.browserAction.setBadgeBackgroundColor({
 			color: '#bf5700'
 		});
-		chrome.browserAction.setBadgeText({ text: "" + data.savedCourses.length });
+		chrome.browserAction.setBadgeText({
+			text: "" + data.savedCourses.length
+		});
 	}
 });
 /* Handle messages and their commands from content and popup scripts*/
@@ -160,7 +162,9 @@ function add(request, sender, sendResponse) {
 		chrome.browserAction.setBadgeBackgroundColor({
 			color: '#bf5700'
 		});
-		chrome.browserAction.setBadgeText({ text: "" + courses.length });
+		chrome.browserAction.setBadgeText({
+			text: "" + courses.length
+		});
 		sendResponse({
 			done: "Added: (" + request.course.unique + ") " + request.course.coursename,
 			label: "Remove Course -"
@@ -183,7 +187,9 @@ function remove(request, sender, sendResponse) {
 		chrome.browserAction.setBadgeBackgroundColor({
 			color: '#bf5700'
 		});
-		chrome.browserAction.setBadgeText({ text: "" + courses.length });
+		chrome.browserAction.setBadgeText({
+			text: "" + courses.length
+		});
 		sendResponse({
 			done: "Removed: (" + request.course.unique + ") " + request.course.coursename,
 			label: "Add Course +"
