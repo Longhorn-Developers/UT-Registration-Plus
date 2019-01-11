@@ -106,7 +106,7 @@ $(function () {
 	});
 
 	$(window).scroll(function () {
-		if ($(document).height() <= $(window).scrollTop() + $(window).height() + 100) {
+		if ($(document).height() <= $(window).scrollTop() + $(window).height() + 160) {
 			loadNextPages();
 		}
 	});
