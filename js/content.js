@@ -31,26 +31,26 @@ const fadetime = 150;
 const butdelay = 75;
 //This extension may be super lit, but you know what's even more lit?
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
-$(function () {
-	next = $("#next_nav_link");
-	chrome.storage.sync.get('loadAll', function (data) {
-		if (data.loadAll) {
-			$('[title*="next listing"]').remove();
-		}
-	});
-	loadDataBase();
-	//make heading and modal
-	if (!$("#kw_results_table").length) {
-		$("table thead th:last-child").after('<th scope=col>Plus</th>');
-		$("table").after(`<div style="text-align:center">
-							  <div class="loader"></div>
+
+next = $("#next_nav_link");
+chrome.storage.sync.get('loadAll', function (data) {
+	if (data.loadAll) {
+		$('[title*="next listing"]').remove();
+	}
+});
+loadDataBase();
+//make heading and modal
+if (!$("#kw_results_table").length) {
+	$("table thead th:last-child").after('<th scope=col>Plus</th>');
+	$("table").after(`<div style="text-align:center">
+							  <div class="loader" id='loader' ></div>
 							  <br>
 							  <h1 id="nextlabel"style="color: #FF9800;display:none;">Loading Courses</h1>
 							  <h1 id="retrylabel"style="color: #F44336;display:none;">Failed to Load Courses</h1>
 							  <br>
 							  <button class=matbut id="retry" style="background: #F44336;display:none;">Retry</button>
 							  </div>`);
-		var modhtml = `<div class=modal id=myModal>
+	var modhtml = `<div class=modal id=myModal>
 							<div class=modal-content>
 							   <span class=close>×</span>
 							   <div class=card>
@@ -80,92 +80,91 @@ $(function () {
 								</div>
 							</div>
 						</div>`;
-		$("#container").prepend(modhtml);
-		$("#myModal").prepend("<div id='snackbar'>defaultmessage..</div>");
-		//go through all the rows in the list
-		$('table').find('tr').each(function () {
-			if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
-				//if a course row, then add the extension button
-				$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
-				// if ($(this).find('td[data-th="Status"]').text().includes('waitlisted')) {
-				// 	$(this).find('td').each(function () {
-				// 		$(this).css('background-color', '#E0E0E0');
-				// 	});
-				// }
-			}
-		});
-	}
-	//update the conflicts
-	update(0);
-	/*Handle the button clicks*/
-	$("tbody").on('click', '.distButton', function () {
-		var row = $(this).closest('tr');
-		$('.modal-content').stop().animate({
-			scrollTop: 0
-		}, 500);
-		$(this).blur();
-		getCourseInfo(row);
-		getDistribution();
-	});
-
-	$(window).scroll(function () {
-		if ($(document).height() <= $(window).scrollTop() + $(window).height() + 130) {
-			loadNextPages();
+	$("#container").prepend(modhtml);
+	$("#myModal").prepend("<div id='snackbar'>defaultmessage..</div>");
+	//go through all the rows in the list
+	$('table').find('tr').each(function () {
+		if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
+			//if a course row, then add the extension button
+			$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
+			// if ($(this).find('td[data-th="Status"]').text().includes('waitlisted')) {
+			// 	$(this).find('td').each(function () {
+			// 		$(this).css('background-color', '#E0E0E0');
+			// 	});
+			// }
 		}
 	});
-
-	$("#saveCourse").click(function () {
-		saveCourse();
-	});
-
-	$("#Syllabi").click(function () {
-		setTimeout(function () {
-			window.open(`https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?semester=&department=${department}&course_number=${course_nbr}&course_title=&unique=&instructor_first=&instructor_last=${profname}&course_type=In+Residence&search=Search`);
-		}, butdelay);
-	});
-	$("#rateMyProf").click(function () {
-		setTimeout(function () {
-			window.open(rmpLink);
-		}, butdelay);
-	});
-	$("#eCIS").click(function () {
-		setTimeout(function () {
-			window.open(eCISLink);
-		}, butdelay);
-	});
-	$("#textbook").click(function () {
-		setTimeout(function () {
-			window.open(textbookLink);
-		}, butdelay);
-	});
-	$("#semesters").on('change', function () {
-		var sem = $(this).val();
-		sem = sem == "Aggregate" ? undefined : sem;
-		getDistribution(sem);
-	});
-
-	$("#retry").click(function () {
-		$("#retrylabel").hide();
-		$('#retry').hide();
-		loadNextPages();
-	});
-	$(document).keydown(function (e) {
-		/*Close Modal when hit escape*/
-		if (e.keyCode == 27) {
-			close();
-		} else if (e.keyCode == 13 && $('#myModal').is(':visible')) {
-			/*save course when hit enter*/
-			saveCourse();
-		}
-	});
-	/*Listen for update mssage coming from popup*/
-	chrome.runtime.onMessage.addListener(
-		function (request, sender, sendResponse) {
-			if (request.command == "updateCourseList") {
-				update(0);
-			}
-		});
+}
+//update the conflicts
+update(0);
+/*Handle the button clicks*/
+$("tbody").on('click', '#distButton', function () {
+	var row = $(this).closest('tr');
+	$('.modal-content').stop().animate({
+		scrollTop: 0
+	}, 500);
+	$(this).blur();
+	getCourseInfo(row);
+	getDistribution();
 });
+
+$(window).scroll(function () {
+	if ($(document).height() <= $(window).scrollTop() + $(window).height() + 130) {
+		loadNextPages();
+	}
+});
+
+$("#myModal").on('click', '#saveCourse', function () {
+	saveCourse();
+});
+
+$("#Syllabi").click(function () {
+	setTimeout(function () {
+		window.open(`https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?semester=&department=${department}&course_number=${course_nbr}&course_title=&unique=&instructor_first=&instructor_last=${profname}&course_type=In+Residence&search=Search`);
+	}, butdelay);
+});
+$("#rateMyProf").click(function () {
+	setTimeout(function () {
+		window.open(rmpLink);
+	}, butdelay);
+});
+$("#eCIS").click(function () {
+	setTimeout(function () {
+		window.open(eCISLink);
+	}, butdelay);
+});
+$("#textbook").click(function () {
+	setTimeout(function () {
+		window.open(textbookLink);
+	}, butdelay);
+});
+$("#semesters").on('change', function () {
+	var sem = $(this).val();
+	sem = sem == "Aggregate" ? undefined : sem;
+	getDistribution(sem);
+});
+
+$("#retry").click(function () {
+	$("#retrylabel").hide();
+	$(this).hide();
+	loadNextPages();
+});
+$(document).keydown(function (e) {
+	/*Close Modal when hit escape*/
+	if (e.keyCode == 27) {
+		close();
+	} else if (e.keyCode == 13 && $('#myModal').is(':visible')) {
+		/*save course when hit enter*/
+		saveCourse();
+	}
+});
+/*Listen for update mssage coming from popup*/
+chrome.runtime.onMessage.addListener(
+	function (request, sender, sendResponse) {
+		if (request.command == "updateCourseList") {
+			update(0);
+		}
+	});
 
 function loadNextPages() {
 	chrome.storage.sync.get('loadAll', function (data) {
@@ -173,7 +172,7 @@ function loadNextPages() {
 			let link = next.prop('href');
 			if (done && next && link) {
 				$("#nextlabel").css('display', 'inline-block');
-				$('.loader').css('display', 'inline-block');
+				$('#loader').css('display', 'inline-block');
 				done = false;
 				$.get(link, function (response) {
 					if (response) {
@@ -186,10 +185,11 @@ function loadNextPages() {
 						next = nextpage.find("#next_nav_link");
 						done = true;
 						$("#nextlabel").hide();
-						$('.loader').hide();
+						$('#loader').hide();
 						var newrows = [];
 						nextpage.find('tbody>tr').each(function () {
-							if (!($(this).find('td').hasClass("course_header") && $(this).has('th').length == 0)) {
+							let hasCourseHead = $(this).find('td').hasClass("course_header");
+							if (!(hasCourseHead && $(this).has('th').length == 0)) {
 								$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
 								// if ($(this).find('td[data-th="Status"]').text().includes('waitlisted')) {
 								// 	$(this).find('td').each(function () {
@@ -197,18 +197,19 @@ function loadNextPages() {
 								// 	});
 								// }
 							}
-							if (!($(this).find('td').hasClass("course_header") && last == $(this).find('td').text())) {
+							if (!(hasCourseHead && last == $(this).find('td').text())) {
 								newrows.push($(this));
 							}
 						});
 						current.append(newrows);
 						// console.log($('tbody tr').length + " " + $('tr>td.course_header').length);
-						update(oldlength + 1);
+						// update(oldlength + 1);
+						update(oldlength + 1)
 					}
 				}).fail(function () {
 					done = true;
 					$("#nextlabel").hide();
-					$('.loader').hide();
+					$('#loader').hide();
 					$("#retrylabel").css('display', 'inline-block');
 					$('#retry').css('display', 'inline-block');
 				});
@@ -306,7 +307,7 @@ function Course(coursename, unique, profname, datetimearr, status, link, registe
 function getCourseInfo(row) {
 	console.log('WHAT');
 	semesterCode = new URL(window.location.href).pathname.split('/')[4];
-	$(".dateTimePlace").remove();
+	$("h2.dateTimePlace").remove();
 	$('table').find('tr').each(function () {
 		if ($(this).find('td').hasClass("course_header")) {
 			coursename = $(this).find('td').text() + "";
@@ -324,12 +325,14 @@ function getCourseInfo(row) {
 			}
 			var numlines = $(this).find('td[data-th="Days"]>span').length;
 			datetimearr = [];
+			var lines = [];
 			for (var i = 0; i < numlines; i++) {
 				var date = $(this).find('td[data-th="Days"]>span:eq(' + i + ')').text();
 				var time = $(this).find('td[data-th="Hour"]>span:eq(' + i + ')').text();
 				var place = $(this).find('td[data-th="Room"]>span:eq(' + i + ')').text();
-				$("#topbuttons").before(`<h2 class="dateTimePlace">${makeLine(date, time, place)}</th>`);
+				lines.push($(`<h2 class="dateTimePlace">${makeLine(date, time, place)}</th>`));
 			}
+			$("#topbuttons").before(lines);
 			return false;
 		}
 	});
@@ -338,7 +341,7 @@ function getCourseInfo(row) {
 		coursename = $("#details h2").text();
 		var gotname = $("table").find("td[data-th='Instructor']").text();
 		if (gotname != "") {
-			profinit = $("table").find("td[data-th='Instructor']").text().split(", ")[1].substring(0, 1);
+			profinit = gotname.split(", ")[1].substring(0, 1);
 		} else {
 			profinit = "";
 		}
@@ -456,16 +459,17 @@ function openDialog(dep, cls, sem, professor, res) {
 	} else {
 		var semesters = res.values[0][18].split(",").reverse();
 		semesters.unshift('Aggregate');
+		var sems = [];
 		for (var i = 0; i < semesters.length; i++) {
-			$("#semesters").append(`<option value="${semesters[i]}">${semesters[i]}</option>`)
+			sems.push($(`<option value="${semesters[i]}">${semesters[i]}</option>`));
 		}
+		$("#semesters").append(sems);
 		data = res.values[0];
 	}
 	var modal = document.getElementById('myModal');
 	var span = document.getElementsByClassName("close")[0];
 	modal.style.display = "block";
 
-	$("#title").text(prettifyTitle());
 	var color = "black";
 	if (status.includes("open")) {
 		color = "#4CAF50";
@@ -474,7 +478,7 @@ function openDialog(dep, cls, sem, professor, res) {
 	} else if (status.includes("closed") || status.includes("cancelled")) {
 		color = "#FF5722";
 	}
-	$("#title").append("<span style='color:" + color + ";font-size:medium;'>" + " #" + uniquenum + "</>");
+	$("#title").text(prettifyTitle()).append("<span style='color:" + color + ";font-size:medium;'>" + " #" + uniquenum + "</>");
 
 	if (typeof profinit != "undefined" && profinit.length > 1) {
 		profinit = profinit.substring(0, 1);
@@ -675,7 +679,6 @@ function getDescription() {
 					sentence = "<li class='descriptionli'>" + sentence + "</li>";
 				}
 				output += sentence;
-
 			});
 			description = output;
 			$("#description").animate({
