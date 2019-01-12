@@ -115,7 +115,9 @@ $(window).scroll(function () {
 });
 
 $("#myModal").on('click', '#saveCourse', function () {
-	saveCourse();
+	setTimeout(function () {
+		saveCourse();
+	}, 0);
 });
 
 $("#Syllabi").click(function () {
@@ -243,6 +245,9 @@ function saveCourse() {
 /* Update the course list to show if the row contains a course that conflicts with the saved course is one of the saved courses */
 function update(start) {
 	chrome.storage.sync.get('courseConflictHighlight', function (data) {
+		var red = 0;
+		var black = 0;
+		var green = 0;
 		$('table').find('tr').each(function (i) {
 			if (i >= start) {
 				if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
@@ -254,18 +259,33 @@ function update(start) {
 						dtarr: getDtarr(this),
 						unique: uniquenum
 					}, function (response) {
-						if (response.isConflict && data.courseConflictHighlight) {
-							$(thisForm).find('td').css('color', '#F44336').css('text-decoration', 'line-through').css('font-weight', 'normal');
-						} else {
-							$(thisForm).find('td').css('color', 'black').css('text-decoration', 'none').css('font-weight', 'normal');
+						var tds = $(thisForm).find('td');
+						// console.log(tds.css('color'));
+						if (response.isConflict && data.courseConflictHighlight && !response.alreadyContains) {
+							if (tds.css('color') != 'rgb(244, 67, 54)') {
+								console.log('made red ' + uniquenum);
+								red++;
+								tds.css('color', '#F44336').css('text-decoration', 'line-through').css('font-weight', 'normal');
+							}
+						} else if (!response.alreadyContains) {
+							if (tds.css('color') != 'rgb(51, 51, 51)') {
+								console.log('made black ' + uniquenum);
+								black++;
+								tds.css('color', 'black').css('text-decoration', 'none').css('font-weight', 'normal');
+							}
 						}
 						if (response.alreadyContains) {
-							$(thisForm).find('td').css('color', '#4CAF50').css('text-decoration', 'none').css('font-weight', 'bold');
+							if (tds.css('color') != 'rgb(76, 175, 80)') {
+								green++;
+								console.log('made green ' + uniquenum);
+								tds.css('color', '#4CAF50').css('text-decoration', 'none').css('font-weight', 'bold');
+							}
 						}
 					});
 				}
 			}
 		});
+		//console.log(`red: ${red} black: ${black} green: ${green}`);
 	});
 }
 
@@ -665,7 +685,7 @@ function getDescription() {
 		data: ""
 	}, function (response) {
 		if (response) {
-			console.log(response);
+			// console.log(response);
 			var output = "";
 			var object = $('<div/>').html(response).contents();
 			object.find('#details > p').each(function () {
