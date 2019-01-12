@@ -45,8 +45,11 @@ $(function () {
 		$("table").after(`<div style="text-align:center">
 							  <div class="loader"></div>
 							  <br>
-						  	<h1 id="nextlabel"style="color: #FF9800;display:none;">Loading Courses</h1>
-						  </div>`);
+							  <h1 id="nextlabel"style="color: #FF9800;display:none;">Loading Courses</h1>
+							  <h1 id="retrylabel"style="color: #F44336;display:none;">Failed to Load Courses</h1>
+							  <br>
+							  <button class=matbut id="retry" style="background: #F44336;display:none;">Retry</button>
+							  </div>`);
 		var modhtml = `<div class=modal id=myModal>
 							<div class=modal-content>
 							   <span class=close>×</span>
@@ -93,7 +96,7 @@ $(function () {
 		});
 	}
 	//update the conflicts
-	update();
+	update(0);
 	/*Handle the button clicks*/
 	$("tbody").on('click', '.distButton', function () {
 		var row = $(this).closest('tr');
@@ -140,6 +143,12 @@ $(function () {
 		sem = sem == "Aggregate" ? undefined : sem;
 		getDistribution(sem);
 	});
+
+	$("#retry").click(function () {
+		$("#retrylabel").hide();
+		$('#retry').hide();
+		loadNextPages();
+	});
 	$(document).keydown(function (e) {
 		/*Close Modal when hit escape*/
 		if (e.keyCode == 27) {
@@ -153,7 +162,7 @@ $(function () {
 	chrome.runtime.onMessage.addListener(
 		function (request, sender, sendResponse) {
 			if (request.command == "updateCourseList") {
-				update();
+				update(0);
 			}
 		});
 });
@@ -170,12 +179,15 @@ function loadNextPages() {
 					if (response) {
 						var nextpage = $('<div/>').html(response).contents();
 						var current = $('tbody');
+						var oldlength = $('tbody tr').length;
+						// console.log(oldlength);
 						var last = current.find('.course_header>h2:last').text();
-						console.log(last);
+						// console.log(last);
 						next = nextpage.find("#next_nav_link");
 						done = true;
 						$("#nextlabel").hide();
 						$('.loader').hide();
+						var newrows = [];
 						nextpage.find('tbody>tr').each(function () {
 							if (!($(this).find('td').hasClass("course_header") && $(this).has('th').length == 0)) {
 								$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
@@ -186,41 +198,20 @@ function loadNextPages() {
 								// }
 							}
 							if (!($(this).find('td').hasClass("course_header") && last == $(this).find('td').text())) {
-								current.append($(this));
+								newrows.push($(this));
 							}
 						});
-						update();
+						current.append(newrows);
+						// console.log($('tbody tr').length + " " + $('tr>td.course_header').length);
+						update(oldlength + 1);
 					}
+				}).fail(function () {
+					done = true;
+					$("#nextlabel").hide();
+					$('.loader').hide();
+					$("#retrylabel").css('display', 'inline-block');
+					$('#retry').css('display', 'inline-block');
 				});
-				// chrome.runtime.sendMessage({
-				// 	method: "GET",
-				// 	action: "xhttp",
-				// 	url: link,
-				// 	data: ""
-				// }, function (response) {
-				// 	if (response) {
-				// 		var nextpage = $('<div/>').html(response).contents();
-				// 		var current = $('tbody');
-				// 		var last = current.find('.course_header>h2:last').text();
-				// 		console.log(last);
-				// 		next = nextpage.find("#next_nav_link");
-				// 		done = true;
-				// 		nextpage.find('tbody>tr').each(function () {
-				// 			if (!($(this).find('td').hasClass("course_header") && $(this).has('th').length == 0)) {
-				// 				$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
-				// 				// if ($(this).find('td[data-th="Status"]').text().includes('waitlisted')) {
-				// 				// 	$(this).find('td').each(function () {
-				// 				// 		$(this).css('background-color', '#E0E0E0');
-				// 				// 	});
-				// 				// }
-				// 			}
-				// 			if (!($(this).find('td').hasClass("course_header") && last == $(this).find('td').text())) {
-				// 				current.append($(this));
-				// 			}
-				// 		});
-				// 		update();
-				// 	}
-				// })
 			}
 		}
 	});
@@ -249,26 +240,29 @@ function saveCourse() {
 }
 
 /* Update the course list to show if the row contains a course that conflicts with the saved course is one of the saved courses */
-function update() {
+function update(start) {
 	chrome.storage.sync.get('courseConflictHighlight', function (data) {
-		$('table').find('tr').each(function () {
-			if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
-				var thisForm = this;
-				var uniquenum = $(this).find('td[data-th="Unique"]').text();
-				chrome.runtime.sendMessage({
-					command: "isSingleConflict",
-					dtarr: getDtarr(this),
-					unique: uniquenum
-				}, function (response) {
-					if (response.isConflict && data.courseConflictHighlight) {
-						$(thisForm).find('td').css('color', '#F44336').css('text-decoration', 'line-through').css('font-weight', 'normal');
-					} else {
-						$(thisForm).find('td').css('color', 'black').css('text-decoration', 'none').css('font-weight', 'normal');
-					}
-					if (response.alreadyContains) {
-						$(thisForm).find('td').css('color', '#4CAF50').css('text-decoration', 'none').css('font-weight', 'bold');
-					}
-				});
+		$('table').find('tr').each(function (i) {
+			if (i >= start) {
+				if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
+					var thisForm = this;
+					var uniquenum = $(this).find('td[data-th="Unique"]').text();
+					console.log(uniquenum);
+					chrome.runtime.sendMessage({
+						command: "isSingleConflict",
+						dtarr: getDtarr(this),
+						unique: uniquenum
+					}, function (response) {
+						if (response.isConflict && data.courseConflictHighlight) {
+							$(thisForm).find('td').css('color', '#F44336').css('text-decoration', 'line-through').css('font-weight', 'normal');
+						} else {
+							$(thisForm).find('td').css('color', 'black').css('text-decoration', 'none').css('font-weight', 'normal');
+						}
+						if (response.alreadyContains) {
+							$(thisForm).find('td').css('color', '#4CAF50').css('text-decoration', 'none').css('font-weight', 'bold');
+						}
+					});
+				}
 			}
 		});
 	});
