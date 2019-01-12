@@ -14,15 +14,14 @@
     "*://*.login.utexas.edu/login/*"
   ],
   "content_scripts": [{
-      "css": ["css/styles.css"],
-      "js": ["js/moment.min.js", "js/sql-memory-growth.js", "js/highcharts.js", "js/jquery-3.3.1.min.js", "js/content.js"],
-      "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
-    }, {
-      "css": ["css/styles.css"],
-      "js": ["js/moment.min.js", "js/sql-memory-growth.js", "js/highcharts.js", "js/jquery-3.3.1.min.js", "js/import.js"],
-      "matches": ["https://utdirect.utexas.edu/registrar/waitlist/wl_see_my_waitlists.WBX", "https://utdirect.utexas.edu/registration/classlist.WBX*"]
-    }
-  ],
+    "css": ["css/styles.css"],
+    "js": ["js/moment.min.js", "js/sql-memory-growth.js", "js/highcharts.js", "js/jquery-3.3.1.min.js", "js/content.js"],
+    "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
+  }, {
+    "css": ["css/styles.css"],
+    "js": ["js/moment.min.js", "js/sql-memory-growth.js", "js/highcharts.js", "js/jquery-3.3.1.min.js", "js/import.js"],
+    "matches": ["https://utdirect.utexas.edu/registrar/waitlist/wl_see_my_waitlists.WBX", "https://utdirect.utexas.edu/registration/classlist.WBX*"]
+  }],
   "web_accessible_resources": [
     "grades.db", "images/disticon.png"
   ],

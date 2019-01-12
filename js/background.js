@@ -77,6 +77,15 @@ chrome.runtime.onInstalled.addListener(function (details) {
 		});
 	} else if (details.reason == "update") {
 		console.log("updated");
+		chrome.storage.sync.get('loadAll', function (data) {
+			if (data.loadAll == undefined) {
+				chrome.storage.sync.set({
+					loadAll: true
+				}, function () {
+					console.log('initial loadAll: true');
+				});
+			}
+		});
 	}
 });
 
