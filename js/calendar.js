@@ -241,13 +241,19 @@ $(function () {
     function setAllEvents(savedCourses) {
         colorCounter = 0;
         classSchedules = [];
+        var hours = 0;
         for (let i = 0; i < savedCourses.length; i++) {
+            var classInfo = savedCourses[i];
+            var course_nbr = classInfo.coursename.substring(classInfo.coursename.search(/\d/), classInfo.coursename.indexOf(" ", classInfo.coursename.search(/\d/)));
+            hours += parseInt(course_nbr.substring(course_nbr.search(/\d/), course_nbr.search(/\d/) + 1));
             for (let j = 0; j < savedCourses[i].datetimearr.length; j++) {
                 let session = savedCourses[i].datetimearr[j]; // One single session for a class
                 setEventForSection(session, colorCounter, i);
             }
             colorCounter++;
         }
+        $("#hours").text(hours + " Hours");
+        $("#num").text(savedCourses.length + " Courses");
     }
 
     //create the event object for every section

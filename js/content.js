@@ -439,7 +439,7 @@ function getDistribution(sem) {
 
 /*Open the modal and show all the data*/
 function openDialog(dep, cls, sem, professor, res) {
-	$("#myModal").fadeIn(100);
+	$("#myModal").fadeIn(fadetime);
 	//initial text on the "save course button"
 
 
