@@ -248,7 +248,7 @@ function update(start) {
 				if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
 					var thisForm = this;
 					var uniquenum = $(this).find('td[data-th="Unique"]').text();
-					console.log(uniquenum);
+					// console.log(uniquenum);
 					chrome.runtime.sendMessage({
 						command: "isSingleConflict",
 						dtarr: getDtarr(this),
@@ -665,6 +665,7 @@ function getDescription() {
 		data: ""
 	}, function (response) {
 		if (response) {
+			console.log(response);
 			var output = "";
 			var object = $('<div/>').html(response).contents();
 			object.find('#details > p').each(function () {
@@ -681,6 +682,9 @@ function getDescription() {
 				output += sentence;
 			});
 			description = output;
+			if (!description) {
+				description = "<p style='color:red;font-style:bold'>You have been logged out. Please refresh the page and log back in using your UT EID and password.</p>"
+			}
 			$("#description").animate({
 				'opacity': 0
 			}, 200, function () {
