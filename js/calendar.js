@@ -5,6 +5,14 @@ $(function () {
         '#4E342E', '#424242', '#9E9E9E'
     ];
 
+    var options = {
+
+        foreignObjectRendering: true,
+        logging: true,
+        removeContainer: true,
+        async: true,
+    }
+
     const days = new Map([
         ["M", "Monday"],
         ["T", "Tuesday"],
@@ -14,19 +22,18 @@ $(function () {
     ]);
     const fadetime = 150;
     const butdelay = 75;
-    $("#calendar").prepend(`<div id="myModal" class="modal">
+    $("#calendar").after(`<div id="myModal" class="modal">
                                 <div class="modal-content">
                                 <span class="close">&times;</span>
                                 <div class="card">
                                     <div id="colorStrip" style="height:10px;"></div>
                                     <div class="cardcontainer">
-                                        <div>
+                                        <div id='header'>
                                             <div style="display:flex;">
                                                 <h2 id="classname">Classname</h2>
                                             </div>
                                             <p id="prof">Prof</p>
                                         </div>
-                                        <div id="timelines"></div>
                                         <button id="info" class="matbut" style="font-size:medium; margin-right: auto; margin-left:auto; background: #2196F3;">More Info</button>
                                         <button id="register" class="matbut" style="font-size:medium; margin-right: auto; margin-left:10px; background: #4CAF50;">Register</button>
                                         <button id="remove" class="matbut" style="font-size:medium;margin:10px;background: #FF0000;">Remove</button>
@@ -75,7 +82,31 @@ $(function () {
                 $("#colorStrip").css('background-color', data.color);
                 currindex = data.index;
                 $("#classname").html(`${savedCourses[currindex].coursename} <span style='font-size:small'>(${savedCourses[currindex].unique})</span>`);
-                $("#timelines").append(makeLine(savedCourses[currindex].datetimearr));
+                chrome.runtime.sendMessage({
+                    command: "getLine",
+                    dtarr: savedCourses[currindex].datetimearr,
+                }, function (response) {
+                    // update the DOM
+                    $('#timelines').remove();
+                    setTimeout(function () {
+                        var arr = response.line;
+                        console.log(arr);
+                        var output = "";
+                        for (let i = 0; i < arr.length; i++) {
+                            let line = arr[i];
+                            output +=
+                                `<p class='time' style='font-size:large;'>
+                                    <span style='display:inline-block;'>${line[0]}:</span>
+                                    <span style='margin-left:10px;display:inline-block;text-align:center;'>${line[1]} to ${line[2]}</span>
+                                    <span style='float:right;display:inline-block;text-align:right;width: 25%;'>
+                                        <a target='_blank' style='color:#3c87a3;text-decoration:none;'href='https://maps.utexas.edu/buildings/UTM/${line[3]}'>${line[4]}</a>
+                                    </span>
+                                </p>`;
+                        }
+                        $("#header").after("<div id='timelines'>" + output + "</div");
+                    }, 0);
+
+                });
 
                 var uncapProf = prettifyName(savedCourses[currindex].profname);
                 if (uncapProf == "") {
@@ -108,20 +139,8 @@ $(function () {
             window.open(currLink);
         }, butdelay);
     });
-    console.log($("#calendar").width());
     $("#save").click(() => {
-        let cropper = document.createElement('canvas').getContext('2d');
-        html2canvas(document.getElementById("calendar"), {
-            foreignObjectRendering: true,
-        }).then(c => {
-            cropper.canvas.width = $("#calendar").width();
-            cropper.canvas.height = $("#calendar").height() + 10;
-            cropper.drawImage(c, 0, 0);
-            var a = document.createElement('a');
-            a.href = cropper.canvas.toDataURL("image/png");
-            a.download = 'mySchedule.png';
-            a.click();
-        });
+        takePicture();
     });
     $("#clear").click(() => {
         /*Clear the list and the storage of courses*/
@@ -189,40 +208,19 @@ $(function () {
         cal.download("My_Course_Calendar");
     });
 
-    /* convert from the dtarr and maek the time lines*/
-    function makeLine(datetimearr) {
-        $(".time").remove();
-        //converted times back
-        var output = "";
-        var dtmap = makeMap(datetimearr);
-        var timearr = Array.from(dtmap.keys());
-        var dayarr = Array.from(dtmap.values());
-        for (var i = 0; i < dayarr.length; i++) {
-            var place = findLoc(dayarr[i], timearr[i], datetimearr);
-            var building = place.substring(0, place.search(/\d/) - 1);
-            if (building == "") {
-                building = "Undecided Location";
-            }
-            output += `<p class='time'><span>${dayarr[i]}</span>: ${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}<span style='float:right';><a target='_blank' href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span></p>`;
-        }
-        return output;
-    }
-
-    function makeMap(datetimearr) {
-        var dtmap = new Map([]);
-        for (var i = 0; i < datetimearr.length; i++) {
-            //console.log(datetimearr[i][1][0]);
-            datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm A"]).format("h:mm A");
-            datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm A"]).format("h:mm A");
-        }
-        for (var i = 0; i < datetimearr.length; i++) {
-            if (dtmap.has(String(datetimearr[i][1]))) {
-                dtmap.set(String(datetimearr[i][1]), dtmap.get(String(datetimearr[i][1])) + datetimearr[i][0]);
-            } else {
-                dtmap.set(String(datetimearr[i][1]), datetimearr[i][0]);
-            }
-        }
-        return dtmap
+    function takePicture() {
+        var width = $("#calendar").width();
+        var height = $("#calendar").height();
+        let cropper = document.createElement('canvas').getContext('2d');
+        html2canvas(document.querySelector("#calendar"), options).then(c => {
+            cropper.canvas.width = width;
+            cropper.canvas.height = height;
+            cropper.drawImage(c, 0, 0);
+            var a = document.createElement('a');
+            a.href = cropper.canvas.toDataURL("image/png");
+            a.download = 'mySchedule.png';
+            a.click();
+        });
     }
 
     /*Close Modal when hit escape*/
@@ -239,31 +237,6 @@ $(function () {
             $("#myModal").fadeOut(fadetime);
         }
     }
-    //find the location of a class given its days and timearrs.
-    function findLoc(day, timearr, datetimearr) {
-        for (let i = 0; i < datetimearr.length; i++) {
-            var dtl = datetimearr[i];
-            // console.log(dtl[1]);
-            //  console.log(timearr);
-            if (day.includes(dtl[0])) {
-                if (JSON.stringify(timearr) == JSON.stringify(fixDtl1(dtl[1]))) {
-                    return dtl[2];
-                }
-            }
-        }
-    }
-
-    function fixDtl1(dtl1) {
-        let output = "";
-        for (let i = 0; i < dtl1.length; i++) {
-            output += dtl1[i];
-            if (i != dtl1.length - 1) {
-                output += ",";
-            }
-        }
-        return output;
-    }
-
     // Iterate through each saved course and add to 'event'
     function setAllEvents(savedCourses) {
         colorCounter = 0;
@@ -297,17 +270,17 @@ $(function () {
             title: `${department}-${course_nbr} with ${uncapProf}`,
             start: beg +
                 moment()
-                    .day(fullday)
-                    ._d.toString()
-                    .split(" ")[2] +
+                .day(fullday)
+                ._d.toString()
+                .split(" ")[2] +
                 "T" +
                 session[1][0] +
                 ":00",
             end: beg +
                 moment()
-                    .day(fullday)
-                    ._d.toString()
-                    .split(" ")[2] +
+                .day(fullday)
+                ._d.toString()
+                .split(" ")[2] +
                 "T" +
                 session[1][1] +
                 ":00",
