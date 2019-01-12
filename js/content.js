@@ -477,8 +477,33 @@ function openDialog(dep, cls, sem, professor, res) {
 		data = [];
 		$("#semesters").append("<option>No Data</option>")
 	} else {
-		var semesters = res.values[0][18].split(",").reverse();
-		semesters.unshift('Aggregate');
+		var semesters = res.values[0][18].split(",");
+		semesters.sort(function (a, b) {
+			var as = a.split(' ')[0];
+			var ay = parseInt(a.split(' ')[1]);
+			var bs = b.split(' ')[0];
+			var by = parseInt(b.split(' ')[1]);
+			if (ay < by) {
+				return -1;
+			}
+			if (ay > by) {
+				return 1;
+			}
+			var seas = {
+				"Spring": 0,
+				"Fall": 1,
+				"Summer": 2,
+				"Winter": 3
+			}
+			if (seas[as] < seas[bs]) {
+				return -1;
+			}
+			if (seas[as] > seas[bs]) {
+				return 1;
+			}
+			return 0;
+		});
+		semesters.reverse().unshift('Aggregate');
 		var sems = [];
 		for (var i = 0; i < semesters.length; i++) {
 			sems.push($(`<option value="${semesters[i]}">${semesters[i]}</option>`));
