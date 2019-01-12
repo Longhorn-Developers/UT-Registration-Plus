@@ -6,6 +6,7 @@ setCourseList();
 // var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer></div></div></div></div>';
 // $("#html").prepend(modhtml);
 getSemesters();
+var canremove = true;
 
 function setCourseList() {
 	$("#courseList").empty()
@@ -106,7 +107,7 @@ function updateConflicts() {
 					text += "<br>";
 				}
 			}
-			$("#courseList").prepend("<p style='font-size:small; font-weight:bold; color:red; margin:5px 5px 5px 10px'>" + text + "</>");
+			$("#courseList").prepend("<p id='conflict' style='font-size:small; font-weight:bold; color:red; margin:5px 5px 5px 10px'>" + text + "</>");
 		}
 	});
 }
@@ -141,25 +142,31 @@ $(document).ready(function () {
 		/* clear the conflict messages, then remove the course and updateConflicts. update the tabs*/
 		$(this).find("#listRemove").click(function () {
 			var thisForm = this;
-			$(thisForm).closest("ul").find(">p").remove();
-			chrome.runtime.sendMessage({
-				command: "courseStorage",
-				course: courses[$(thisForm).closest("li").attr("id")],
-				action: "remove"
-			}, function (response) {
-				$(thisForm).closest("li").fadeOut(200);
-				if ($(thisForm).closest("ul").children(':visible').length === 1) {
-					showEmpty();
-				}
-				updateConflicts();
-				chrome.tabs.query({}, function (tabs) {
-					for (var i = 0; i < tabs.length; i++) {
-						chrome.tabs.sendMessage(tabs[i].id, {
-							command: "updateCourseList"
-						});
+			if (canremove) {
+				canremove = false;
+				$(thisForm).closest("ul").find("#conflict").remove();
+				chrome.runtime.sendMessage({
+					command: "courseStorage",
+					course: courses[$(thisForm).closest("li").attr("id")],
+					action: "remove"
+				}, function (response) {
+					$(thisForm).closest("li").fadeOut(200);
+					if ($(thisForm).closest("ul").children(':visible').length === 1) {
+						showEmpty();
 					}
+					canremove = true;
+					console.log('computedconflicts');
+					updateConflicts();
+					chrome.tabs.query({}, function (tabs) {
+						for (var i = 0; i < tabs.length; i++) {
+							chrome.tabs.sendMessage(tabs[i].id, {
+								command: "updateCourseList"
+							});
+						}
+					});
 				});
-			});
+			}
+
 		});
 		/* Show the times popout and more info options*/
 		if ($(this).find("#moreInfo").is(":hidden")) {
@@ -223,7 +230,7 @@ $(document).ready(function () {
 				exportlink.setAttribute('download', 'my_courses.json');
 				exportlink.click();
 			} else {
-				alert('You have no Saved Courses to export.');
+				alert('No Saved Courses to Export.');
 			}
 		});
 	});
