@@ -41,7 +41,7 @@ function setCourseList() {
 								<div class='card'>
 									<div class='container' style='background:${color}'>
 										<h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;'>
-											<b>${department} ${course_nbr} <span style='font-size:medium'> with </span><span style='font-size:medium'>${profname} (${courses[i].unique})</span></b>
+											<b>${department} ${course_nbr} <span style='font-size:medium'> with <span style='font-size:medium'>${profname} (${courses[i].unique})</span></b>
 										</h4>
 										<p id='arrow' style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;font-family: sans-serif'>&#9658;</p>
 									</div>
@@ -107,7 +107,7 @@ function updateConflicts() {
 					text += "<br>";
 				}
 			}
-			$("#courseList").prepend("<p id='conflict' style='font-size:small; font-weight:bold; color:red; margin:5px 5px 5px 10px'>" + text + "</>");
+			$("<p id='conflict' style='font-size:small; font-weight:bold; color:red; margin:5px 5px 5px 10px'>" + text + "</>").prependTo("#courseList").hide().fadeIn(200);
 		}
 	});
 }
@@ -144,7 +144,9 @@ $(document).ready(function () {
 			var thisForm = this;
 			if (canremove) {
 				canremove = false;
-				$(thisForm).closest("ul").find("#conflict").remove();
+				$(thisForm).closest("ul").find("#conflict").fadeOut(300, function () {
+					$(this).remove();
+				});
 				chrome.runtime.sendMessage({
 					command: "courseStorage",
 					course: courses[$(thisForm).closest("li").attr("id")],

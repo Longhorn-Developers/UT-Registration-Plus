@@ -43,6 +43,7 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
     opacity: 0;
     border: none;
 }
+
 /* Styling for each event from Schedule */
 
 .fc-time-grid-event.fc-v-event.fc-event {
@@ -54,7 +55,10 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
     opacity: 1;
 }
 
-.html2canvas-container { width: 3000px !important; height: 3000px !important; }
+.html2canvas-container {
+    width: 3000px !important;
+    height: 3000px !important;
+}
 
 
 .fc-time-grid-event.fc-v-event.fc-event:hover {
@@ -328,6 +332,7 @@ body a:visited {
 .card:hover {
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
 
 .cardcontainer {
     padding: 2px 16px;

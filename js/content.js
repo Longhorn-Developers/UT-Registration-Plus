@@ -646,7 +646,11 @@ function prettifyTitle() {
 }
 /* Format the Professor Name */
 function prettifyName() {
-	return profinit + ". " + profname.replace(/\w\S*/g, function (txt) {
+	var fixedprofinit = "";
+	if (profinit) {
+		fixedprofinit = profinit + ". ";
+	}
+	return fixedprofinit + profname.replace(/\w\S*/g, function (txt) {
 		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
 	});
 }
