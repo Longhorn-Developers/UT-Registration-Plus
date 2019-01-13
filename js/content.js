@@ -32,12 +32,25 @@ const butdelay = 75;
 //This extension may be super lit, but you know what's even more lit?
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 
+
+if (document.querySelector('#fos_fl')) {
+	let params = (new URL(document.location)).searchParams;
+	let dep = params.get("fos_fl");
+	let level = params.get("level");
+	if (dep && level) {
+		if (dep.length == 3 && (level == 'U' || level == 'L' || level == 'G')) {
+			document.querySelector('#fos_fl').value = dep;
+			document.querySelector('#level').value = level;
+		}
+	}
+}
 next = $("#next_nav_link");
 chrome.storage.sync.get('loadAll', function (data) {
 	if (data.loadAll) {
 		$('[title*="next listing"]').remove();
 	}
 });
+
 loadDataBase();
 //make heading and modal
 if (!$("#kw_results_table").length) {
