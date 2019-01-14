@@ -120,7 +120,7 @@ function updateConflicts() {
 /* Handle the button clicks */
 $(document).ready(function () {
 
-	$('.copybut').click(function (e) {
+	$("#courseList").on('click', '.copybut', function (e) {
 		e.stopPropagation();
 		var temp = $("<input>");
 		$(this).find('i').text('check');

@@ -122,7 +122,7 @@ $("tbody").on('click', '#distButton', function () {
 });
 
 $(window).scroll(function () {
-	if ($(document).height() <= $(window).scrollTop() + $(window).height() + 130) {
+	if ($(document).height() <= $(window).scrollTop() + $(window).height() + 150) {
 		loadNextPages();
 	}
 });
