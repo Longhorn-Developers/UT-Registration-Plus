@@ -40,7 +40,12 @@ function setCourseList() {
 			var listhtml = `<li id='${i}'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'>
 								<div class='card'>
 									<div class='container' style='background:${color}'>
-										<h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;'>
+									<button class='copybut' id='copybut' value='${courses[i].unique}'>
+									<i style='color:white;float:left;text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.16);font-size:x-large;' id='copyicon' class="material-icons copy">
+									content_copy
+								  </i>
+								  </button>
+										<h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;align-items:center;'>
 											<b>${department} ${course_nbr} <span style='font-size:medium'> with <span style='font-size:medium'>${profname} (${courses[i].unique})</span></b>
 										</h4>
 										<p id='arrow' style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;font-family: sans-serif'>&#9658;</p>
@@ -114,6 +119,22 @@ function updateConflicts() {
 
 /* Handle the button clicks */
 $(document).ready(function () {
+
+	$('.copybut').click(function (e) {
+		e.stopPropagation();
+		var temp = $("<input>");
+		$(this).find('i').text('check');
+		$(this).find('i').css('box-shadow', 'none');
+		$(this).find('i').delay(200).queue(function (n) {
+			$(this).text('content_copy');
+			n();
+		})
+
+		$("body").append(temp);
+		temp.val($(this).val()).select();
+		document.execCommand("copy");
+		temp.remove();
+	});
 	$("#courseList").on('click', 'li', function () {
 		$(this).find("#listMoreInfo").click(function () {
 			window.open(courses[$(this).closest("li").attr("id")].link);
@@ -139,6 +160,7 @@ $(document).ready(function () {
 				});
 			})
 		}
+
 		/* clear the conflict messages, then remove the course and updateConflicts. update the tabs*/
 		$(this).find("#listRemove").click(function () {
 			var thisForm = this;
@@ -286,6 +308,9 @@ $("#importOrig").change(function (e) {
 					}
 				});
 				setCourseList();
+				chrome.runtime.sendMessage({
+					command: "updateStatus",
+				});
 			}
 		} catch (err) {
 
@@ -399,12 +424,7 @@ function clear() {
 
 function getSemesters() {
 	var schedulelist = 'https://registrar.utexas.edu/schedules';
-	chrome.runtime.sendMessage({
-		method: "GET",
-		action: "xhttp",
-		url: schedulelist,
-		data: ""
-	}, function (response) {
+	$.get(schedulelist, function (response) {
 		if (response) {
 			var object = $('<div/>').html(response).contents();
 			object.find('.callout2>ul>li>a').each(function (index) {
@@ -412,12 +432,7 @@ function getSemesters() {
 					if ($(this).text() != "Course Schedule Archive") {
 						var semname = $(this).text().split(" ")[0].substring(0, 2) + " " + $(this).text().split(" ")[1];
 						$("#semesters").append(`<option>${semname}</option>`);
-						chrome.runtime.sendMessage({
-							method: "GET",
-							action: "xhttp",
-							url: $(this).attr('href'),
-							data: ""
-						}, function (response) {
+						$.get($(this).attr('href'), function (response) {
 							if (response) {
 								var object = $('<div/>').html(response).contents();
 								var name = object.find(".page-title").text();

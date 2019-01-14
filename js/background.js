@@ -26,7 +26,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
 			checkConflicts(response);
 			break;
 		case "updateStatus":
-			updateStatus();
+			updateStatus(response);
 			break;
 		case "getLine":
 			getLine(request.dtarr, response);
@@ -41,6 +41,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
 			const xhr = new XMLHttpRequest();
 			const method = request.method ? request.method.toUpperCase() : "GET";
 			xhr.open(method, request.url, true);
+			console.log(request);
 			xhr.onload = () => response(xhr.responseText);
 			xhr.onerror = () => response(xhr.statusText);
 			if (method == "POST") {
@@ -246,15 +247,18 @@ function updateTabs() {
 	});
 }
 
-const UPDATE_INTERVAL = 1000 * 60 * 15 // 15 mins
+const UPDATE_INTERVAL = 1000 * 60; // 1 mins
 setInterval(updateStatus, UPDATE_INTERVAL);
 
-function updateStatus() {
+function updateStatus(sendResponse) {
 	chrome.storage.sync.get('savedCourses', function (data) {
 		var courses = data.savedCourses;
+		var nochange = true;
 		for (let i = 0; i < courses.length; i++) {
 			try {
 				let c = courses[i];
+				let oldstatus = c.status;
+				let oldlink = c.registerlink;
 				var xhr = new XMLHttpRequest();
 				xhr.open("GET", c.link, false);
 				xhr.send();
@@ -266,15 +270,25 @@ function updateStatus() {
 				if (registerlink) {
 					registerlink = registerlink.getAttribute('href');
 				}
+				var haschanged = (newstatus == oldstatus && registerlink == oldlink);
+				if (!haschanged) {
+					console.log(c.unique + 'updated from ' + oldstatus + " to " + newstatus + " and " + oldlink + " to " + registerlink);
+				}
+				nochange &= haschanged;
 				c.registerlink = registerlink;
 				c.status = newstatus;
 			} catch (e) {
 				console.log('Not logged into UT Coursebook. Could not update class statuses.');
 			}
 		}
-		chrome.storage.sync.set({
-			savedCourses: courses
-		});
+		if (!nochange) {
+			chrome.storage.sync.set({
+				savedCourses: courses
+			});
+			console.log('updated status');
+		} else {
+			console.log('no change');
+		}
 		// console.log("updated status' and registerlinks");
 	});
 }
