@@ -40,10 +40,9 @@ function setCourseList() {
 			var listhtml = `<li id='${i}'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'>
 								<div class='card'>
 									<div class='container' style='background:${color}'>
-									<button class='copybut' id='copybut' value='${courses[i].unique}'>
-									<i style='color:white;float:left;text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.16);font-size:x-large;' id='copyicon' class="material-icons copy">
-									content_copy
-								  </i>
+									<button class='copybut' title='Copy Unique #' id='copybut' value='${courses[i].unique}'>
+										<i style='color:white;float:left;text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.16);font-size:x-large;' id='copyicon' class="material-icons copy">content_copy
+										</i>
 								  </button>
 										<h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;align-items:center;'>
 											<b>${department} ${course_nbr} <span style='font-size:medium'> with <span style='font-size:medium'>${profname} (${courses[i].unique})</span></b>
