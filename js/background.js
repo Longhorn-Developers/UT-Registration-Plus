@@ -287,7 +287,7 @@ function updateStatus(sendResponse) {
 			});
 			console.log('updated status');
 		} else {
-			console.log('no change');
+			// console.log('no change');
 		}
 		// console.log("updated status' and registerlinks");
 	});

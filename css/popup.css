@@ -55,6 +55,7 @@ body {
     padding: 0px;
     border: none;
     font-size: 15px;
+    cursor: pointer;
     border-radius: 50%;
     transition: .2s;
 }

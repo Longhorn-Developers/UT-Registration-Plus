@@ -275,6 +275,7 @@ $(document).ready(function () {
 			if (!isNaN(unique)) {
 				if (unique.length == 5) {
 					getInfo($("#semesters").find(":selected").val(), unique);
+					$("#class_id").val('');
 					return;
 				}
 			}
