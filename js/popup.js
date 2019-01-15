@@ -119,13 +119,22 @@ function updateConflicts() {
 /* Handle the button clicks */
 $(document).ready(function () {
 
+
+	$("#courseList").on('mouseover', '.copybut', function () {
+		$(this).addClass('noshadow');
+	}).on('mouseleave', '.copybut', function () {
+		$(this).removeClass('noshadow');
+	});
 	$("#courseList").on('click', '.copybut', function (e) {
 		e.stopPropagation();
 		var temp = $("<input>");
 		$(this).find('i').text('check');
-		$(this).find('i').css('box-shadow', 'none');
-		$(this).find('i').delay(200).queue(function (n) {
+		$(this).stop(true, false).removeAttr('style').removeClass('noshadow', {
+			duration: 200
+		});
+		$(this).find('i').delay(400).queue(function (n) {
 			$(this).text('content_copy');
+			$(this).parent().addClass('noshadow');
 			n();
 		})
 

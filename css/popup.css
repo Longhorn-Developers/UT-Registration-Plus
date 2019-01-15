@@ -64,10 +64,9 @@ body {
     outline: 0;
 }
 
-.copybut:hover {
-    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.16), 0 4px 20px 0 rgba(0, 0, 0, 0.12);
+.noshadow {
+    box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.16);
 }
-
 
 #copyicon {
     font-size: x-large;
