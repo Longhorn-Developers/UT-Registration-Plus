@@ -121,20 +121,23 @@ $(document).ready(function () {
 
 
 	$("#courseList").on('mouseover', '.copybut', function () {
-		$(this).addClass('noshadow');
+		$(this).addClass('shadow');
 	}).on('mouseleave', '.copybut', function () {
-		$(this).removeClass('noshadow');
+		$(this).removeClass('shadow');
 	});
 	$("#courseList").on('click', '.copybut', function (e) {
 		e.stopPropagation();
 		var temp = $("<input>");
 		$(this).find('i').text('check');
-		$(this).stop(true, false).removeAttr('style').removeClass('noshadow', {
+		$(this).stop(true, false).removeAttr('style').removeClass('shadow', {
 			duration: 200
 		});
 		$(this).find('i').delay(400).queue(function (n) {
 			$(this).text('content_copy');
-			$(this).parent().addClass('noshadow');
+			$(this).parent().removeClass('shadow');
+			if ($(this).parent().is(":hover")) {
+				$(this).parent().addClass('shadow');
+			}
 			n();
 		})
 
