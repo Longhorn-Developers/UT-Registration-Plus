@@ -306,11 +306,8 @@ $("#importOrig").change(function (e) {
 				chrome.storage.sync.set({
 					savedCourses: impCourses
 				});
-				chrome.browserAction.setBadgeBackgroundColor({
-					color: '#bf5700'
-				});
-				chrome.browserAction.setBadgeText({
-					text: "" + impCourses.length
+				chrome.runtime.sendMessage({
+					command: "updateBadge"
 				});
 				chrome.tabs.query({}, function (tabs) {
 					for (var i = 0; i < tabs.length; i++) {
@@ -423,11 +420,8 @@ function clear() {
 			});
 		}
 	});
-	chrome.browserAction.setBadgeBackgroundColor({
-		color: '#bf5700'
-	});
-	chrome.browserAction.setBadgeText({
-		text: ""
+	chrome.runtime.sendMessage({
+		command: "updateBadge"
 	});
 	$("#courseList").empty()
 	console.log("cleared");

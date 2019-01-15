@@ -1,13 +1,4 @@
-chrome.storage.sync.get('savedCourses', function (data) {
-	if (data.savedCourses && data.savedCourses.length) {
-		chrome.browserAction.setBadgeBackgroundColor({
-			color: '#bf5700'
-		});
-		chrome.browserAction.setBadgeText({
-			text: "" + data.savedCourses.length
-		});
-	}
-});
+updateBadge(true);
 /* Handle messages and their commands from content and popup scripts*/
 chrome.runtime.onMessage.addListener(function (request, sender, response) {
 	switch (request.command) {
@@ -24,6 +15,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
 			break;
 		case "checkConflicts":
 			checkConflicts(response);
+			break;
+		case "updateBadge":
+			updateBadge();
 			break;
 		case "updateStatus":
 			updateStatus(response);
@@ -89,6 +83,34 @@ chrome.runtime.onInstalled.addListener(function (details) {
 		});
 	}
 });
+
+
+function updateBadge(first) {
+	chrome.storage.sync.get('savedCourses', function (data) {
+		if (data.savedCourses) {
+			let text = "";
+			if (data.savedCourses.length > 0) {
+				text += data.savedCourses.length
+			}
+			chrome.browserAction.setBadgeText({
+				text: text
+			});
+			let timeout = 0;
+			if (!first) {
+				chrome.browserAction.setBadgeBackgroundColor({
+					color: '#FF5722'
+				});
+				timeout = 200;
+			}
+			setTimeout(function () {
+				chrome.browserAction.setBadgeBackgroundColor({
+					color: '#bf5700'
+				});
+			}, timeout);
+
+		}
+	});
+}
 
 /* Find all the conflicts in the courses and send them out/ if there is even a conflict*/
 function checkConflicts(sendResponse) {
@@ -172,12 +194,7 @@ function add(request, sender, sendResponse) {
 				savedCourses: courses
 			});
 		}
-		chrome.browserAction.setBadgeBackgroundColor({
-			color: '#bf5700'
-		});
-		chrome.browserAction.setBadgeText({
-			text: "" + courses.length
-		});
+		updateBadge();
 		sendResponse({
 			done: "Added: (" + request.course.unique + ") " + request.course.coursename,
 			label: "Remove Course -"
@@ -197,18 +214,7 @@ function remove(request, sender, sendResponse) {
 		chrome.storage.sync.set({
 			savedCourses: courses
 		});
-		chrome.browserAction.setBadgeBackgroundColor({
-			color: '#bf5700'
-		});
-		if (courses.length > 0) {
-			chrome.browserAction.setBadgeText({
-				text: "" + courses.length
-			});
-		} else {
-			chrome.browserAction.setBadgeText({
-				text: ""
-			});
-		}
+		updateBadge();
 		sendResponse({
 			done: "Removed: (" + request.course.unique + ") " + request.course.coursename,
 			label: "Add Course +"

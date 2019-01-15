@@ -155,11 +155,8 @@ $(function () {
             }
         });
         updateCalendar();
-        chrome.browserAction.setBadgeBackgroundColor({
-            color: '#bf5700'
-        });
-        chrome.browserAction.setBadgeText({
-            text: ""
+        chrome.runtime.sendMessage({
+            command: "updateBadge"
         });
 
     });
