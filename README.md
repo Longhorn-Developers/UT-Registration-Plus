@@ -18,19 +18,19 @@ This extension tries to streamline most of the unnecessary steps and headaches o
 - Display's a weekly schedule based on your saved courses
 
 <p align="center"> 
-<img src="https://lh3.googleusercontent.com/dJRVQgscngH_6C3-bY5w8s_8YMyDw6PZY2Ico5skdxXTwzPnuEuu0xxrRiKKU8ovozKcBYvzpA=w640-h400-e365">
+<img src="https://lh3.googleusercontent.com/X5hqHGPU-F2lF3_shT2injxd40eFYXLJfZVxpU1v2w1YvFRW1jQMEXu2yzWHKKpqn5huJL-NEHY=w640-h400-e365">
 </p>
 <p align="center"> 
-<img src="https://lh3.googleusercontent.com/iVdSBFwC7SFD7gyvYhDxX3Yltkx8Elig3CxeQPvxTB7_9XhSef0S5YT2Hn6kbLIYbmXf0T7J6A=w640-h400-e365">
+<img src="https://lh3.googleusercontent.com/ZCRxTFKFjpGm5ZRMv2iHzMqdnrQHUx_Ih_XhGhy2O4Yn29YccvU5yXXrWXKuVKsNAmEJJ0As4xc=w640-h400-e365">
 </p>
 <p align="center"> 
-<img src="https://lh3.googleusercontent.com/UX70UQPrgn9VqYYNH2F0W2qPT_j6CLs8E5Y92t-oT1FpP9vJIhKk7whEkbS5EHtaEOwNxNt-vg=w640-h400-e365">
+<img src="https://lh3.googleusercontent.com/3iRi25wDnVqgzc7pnYUXQq1TvdPpAeDjCmIF9hLU-WKmlchEYQUh_xU-XV00fEbKUr2XVKGkOw=w640-h400-e365">
 </p>
 <p align="center"> 
-<img src="https://lh3.googleusercontent.com/9kR2NW0XfCen_aNw0ASiNOyR2yjY_GOIyMGLX4cfwgCqBRa60hL3xca5kY-m2WY_Y5EzJX96wA=w640-h400-e365">
+<img src="https://lh3.googleusercontent.com/x95blI5D1mseNPLOtHETlLmoVtHm0eeye9uyeWSDd5W6m6fSoZxMMMyQTGUFo5swoTgRivGVyw=w640-h400-e365">
 </p>
 <p align="center"> 
-<img src="https://lh3.googleusercontent.com/p5U5pBglB1QJkxUpi_3ct2M_vF6gumVaZMFF0nQHam44BsTFTPen7sClWaDI8o3R4Xg_FlbeZGI=w640-h400-e365">
+<img src="https://lh3.googleusercontent.com/bbey8OGOTtJWUaHGVIU5wewbWg6X6s-gjD15RwXHhvgH_9kax2mE4bcrjem_iZGH-q5z6NT7g94=w640-h400-e365">
 </p>
 
 
