@@ -23,13 +23,17 @@ function setCourseList() {
 		// build and append the course list element
 		for (var i = 0; i < courses.length; i++) {
 			var color;
+			var subcolor;
 			status = courses[i].status;
 			if (status.includes("open")) {
 				color = "#4CAF50";
+				subcolor = "#C8E6C9";
 			} else if (status.includes("waitlisted")) {
 				color = "#FF9800"
+				subcolor = "#FFE0B2";
 			} else if (status.includes("closed") || status.includes("cancelled")) {
 				color = "#FF5722";
+				subcolor = "#FFCCBC";
 			}
 			var department = courses[i].coursename.substring(0, courses[i].coursename.search(/\d/) - 2);
 			var course_nbr = courses[i].coursename.substring(courses[i].coursename.search(/\d/), courses[i].coursename.indexOf(" ", courses[i].coursename.search(/\d/)));
@@ -51,7 +55,7 @@ function setCourseList() {
 									</div>
 								</div>
 								<div id='moreInfo' style='display: none;'>
-									<p style='font-weight:bold;padding:10px;margin:0px 5px 0px 15px;font-size:small;background-color:#FFCDD2;'>${makeLine(i)}</p>
+									<p style='font-weight:bold;padding:10px;margin:0px 5px 0px 15px;font-size:small;background-color:${subcolor};'>${makeLine(i)}</p>
 									<div id='infoButtons' style='border-radius:0px;'>
 										<button class='matbut' id='listRemove'style='float:right;background:#F44336; margin:5px;'>Remove</button>
 										<button class='matbut' id='register' style='float:right;background:#4CAF50; margin:5px;'>Register</button>
@@ -211,7 +215,6 @@ $(document).ready(function () {
 		} else {
 			$(this).find("#moreInfo").fadeOut(200);
 			$(this).find('#arrow').css('transform', '');
-
 		}
 	});
 	$("#clear").click(function () {
