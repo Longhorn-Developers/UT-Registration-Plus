@@ -1,7 +1,7 @@
-* To Do
+# To Do
 *Last Updated: 12/11/18*
 
-** Features: 
+## Features: 
 - [ ] work on UT Planner
 - [ ] work on multiple schedules
 - [ ] polish
@@ -9,10 +9,10 @@
 - [ ] maybe show how many people have a class in their cart
 - [ ] more 'at a glance info'
 
-** Known Bugs:
+## Known Bugs:
 - [ ] Fix the update/install bug
 
-** Completed:
+## Completed:
 - [x] unneeded Logout message on individual course pages
 - [x] RMP not working on individual course pages
 - [x] Textbook button (amber)
