@@ -99,7 +99,7 @@ $(function () {
                                     <span style='display:inline-block;'>${line[0]}:</span>
                                     <span style='margin-left:10px;display:inline-block;text-align:center;'>${line[1]} to ${line[2]}</span>
                                     <span style='float:right;display:inline-block;text-align:right;width: 25%;'>
-                                        <a target='_blank' style='color:#3c87a3;text-decoration:none;'href='https://maps.utexas.edu/buildings/UTM/${line[3]}'>${line[4]}</a>
+                                        <a target='_blank' style='color:#3c87a3;text-decoration:none;'href='${line[3]}'>${line[4]}</a>
                                     </span>
                                 </p>`;
                         }
