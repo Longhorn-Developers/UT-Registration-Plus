@@ -716,14 +716,9 @@ function getDescription() {
 	// console.log(window.location.href);
 	// console.log(profurl);
 	console.log('hello');
-	chrome.runtime.sendMessage({
-		method: "GET",
-		action: "xhttp",
-		url: profurl,
-		data: ""
-	}, function (response) {
-		if (response) {
-			// console.log(response);
+	$.ajax({url: profurl, success: function(response){
+    			if (response) {
+			console.log(profurl);
 			var output = "";
 			var object = $('<div/>').html(response).contents();
 			object.find('#details > p').each(function () {
@@ -740,6 +735,7 @@ function getDescription() {
 				output += sentence;
 			});
 			description = output;
+			console.log(response);
 			if (!description) {
 				description = "<p style='color:red;font-style:bold'>You have been logged out. Please refresh the page and log back in using your UT EID and password.</p>"
 			}
@@ -771,7 +767,7 @@ function getDescription() {
 			rmpLink = "http://www.ratemyprofessors.com/campusRatings.jsp?sid=1255";
 			eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?";
 		}
-	});
+  }});
 }
 /* Load the database*/
 function loadDataBase() {

@@ -83,7 +83,9 @@ ul {
 i {
     padding: 4px 0px;
 }
-
+#header {
+    border-radius: 7px;
+}
 .settings {
     position: absolute;
     bottom: 0;

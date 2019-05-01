@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "UT Registration Plus",
-  "version": "0.2.2.2",
+  "version": "0.2.2.3",
   "options_page": "options.html",
   "description": "Improves the course registration process at the University of Texas at Austin!",
   "permissions": ["tabs",
@@ -26,7 +26,7 @@
     "grades.db", "images/disticon.png"
   ],
   "background": {
-    "scripts": ["js/background.js", "js/moment.min.js", "js/jquery-3.3.1.min.js"],
+    "scripts": ["js/jquery-3.3.1.min.js", "js/background.js", "js/moment.min.js"],
     "persistent": true
   },
   "browser_action": {

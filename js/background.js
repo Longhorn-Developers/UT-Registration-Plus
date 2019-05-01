@@ -36,7 +36,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
             const method = request.method ? request.method.toUpperCase() : "GET";
             xhr.open(method, request.url, true);
             console.log(request);
-            xhr.onload = () => response(xhr.responseText);
+            xhr.onload = () => {
+                console.log(xhr.responseUrl);
+                response(xhr.responseText);
+            }
             xhr.onerror = () => response(xhr.statusText);
             if (method == "POST") {
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -253,9 +256,9 @@ function updateTabs() {
     });
 }
 
-const UPDATE_INTERVAL = 1000 * 60 * 16; // 16 mins
+const UPDATE_INTERVAL = 1000 * 60 * 16;
 setInterval(updateStatus, UPDATE_INTERVAL);
-
+// updateStatus();
 function updateStatus(sendResponse) {
     chrome.storage.sync.get('savedCourses', function(data) {
         var courses = data.savedCourses;
@@ -264,26 +267,28 @@ function updateStatus(sendResponse) {
             try {
                 let c = courses[i];
                 let oldstatus = c.status;
-                let oldlink = c.registerlink;
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", c.link, false);
-                xhr.send();
-                let result = xhr.responseText;
-                let dummy = document.createElement('html');
-                dummy.innerHTML = result;
-                let newstatus = dummy.querySelector('[data-th="Status"]').textContent;
-                let registerlink = dummy.querySelector('td[data-th="Add"] a');
-                if (registerlink) {
-                    registerlink = registerlink.getAttribute('href');
-                }
-                var haschanged = (newstatus == oldstatus && registerlink == oldlink);
-                if (!haschanged) {
-                    console.log(c.unique + 'updated from ' + oldstatus + " to " + newstatus + " and " + oldlink + " to " + registerlink);
-                }
-                nochange &= haschanged;
-                c.registerlink = registerlink;
-                c.status = newstatus;
+                let oldlink = c.link;
+                $.ajax({url: oldlink, success: function(result){
+                    if(result){
+                        console.log(result);
+                        var object = $('<div/>').html(result).contents();
+                        let newstatus = object.find('[data-th="Status"]').text();
+                        let registerlink = object.find('td[data-th="Add"] a');
+                        if (registerlink) {
+                            registerlink = registerlink.attr('href');
+                        }
+                        var haschanged = (newstatus == oldstatus && registerlink == oldlink);
+                        if (!haschanged) {
+                            console.log(c.unique + ' updated from ' + oldstatus + " to " + newstatus + " and " + oldlink + " to " + registerlink);
+                        }
+                        nochange &= haschanged;
+                        c.registerlink = registerlink;
+                        c.status = newstatus;
+                }}});
+            
+                
             } catch (e) {
+                console.log(e);
                 console.log('Not logged into UT Coursebook. Could not update class statuses.');
             }
         }
