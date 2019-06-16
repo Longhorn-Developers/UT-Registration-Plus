@@ -5,12 +5,9 @@
 - [ ] work on UT Planner
 - [ ] work on multiple schedules
 - [ ] polish
-- [ ] clean upcalendar export and add more options to screen
-- [ ] maybe show how many people have a class in their cart
 - [ ] more 'at a glance info'
 
 ## Known Bugs:
-- [ ] Fix the update/install bug
 
 ## Completed:
 - [x] unneeded Logout message on individual course pages
@@ -26,7 +23,9 @@
 - [x] import into and export from UT registration plus
 - [x] Showing the icon on the flags pages
 - [x] Easter egg, no course messages
+- [x] clean upcalendar export and add more options to screen
 - [x] search by unique number
+- [x] Fix the update/install bug
 
 for FIXING DB: 
 
