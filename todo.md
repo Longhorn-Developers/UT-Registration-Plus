@@ -2,10 +2,14 @@
 *Last Updated: 12/11/18*
 
 ## Features: 
-- [ ] work on UT Planner
+- [ ] work on UT Planner & Coursicle
 - [ ] work on multiple schedules
 - [ ] polish
 - [ ] more 'at a glance info'
+- [ ] Rearrange Courses
+- [ ] Firefox Support
+- [ ] RMP 
+- [ ] Conflict indicator ( Possible different section? )
 
 ## Known Bugs:
 
