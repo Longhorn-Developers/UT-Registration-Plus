@@ -1,5 +1,5 @@
 # To Do
-*Last Updated: 12/11/18*
+*Last Updated: 07/28/19*
 
 ## Features: 
 - [ ] work on UT Planner & Coursicle
@@ -8,10 +8,13 @@
 - [ ] more 'at a glance info'
 - [ ] Rearrange Courses
 - [ ] Firefox Support
-- [ ] RMP 
+- [ ] RMP (cumulative score for class based off CIS, RMP, grade dist., etc.)
 - [ ] Conflict indicator ( Possible different section? )
+- [ ] Redesign footer menu
+- [ ] Compare classes mode
 
 ## Known Bugs:
+- [ ] Screenshotting calendar on zoomed browser cuts off image.
 
 ## Completed:
 - [x] unneeded Logout message on individual course pages
