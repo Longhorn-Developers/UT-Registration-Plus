@@ -9,14 +9,15 @@
     "declarativeContent",
     "storage",
     "*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*",
+    "*://*.utexas.collegescheduler.com/terms/*/schedules/*",
     "*://*.catalog.utexas.edu/ribbit/",
     "*://*.registrar.utexas.edu/schedules/*",
     "*://*.login.utexas.edu/login/*"
   ],
   "content_scripts": [{
     "css": ["css/styles.css"],
-    "js": ["js/moment.min.js", "js/sql-memory-growth.js", "js/highcharts.js", "js/jquery-3.3.1.min.js", "js/content.js"],
-    "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
+    "js": ["js/moment.min.js", "js/sql-memory-growth.js", "js/highcharts.js", "js/jquery-3.3.1.min.js", "js/jquery.initialize.min.js", "js/content.js"],
+    "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*", "https://utexas.collegescheduler.com/terms/*"]
   }, {
     "css": ["css/styles.css"],
     "js": ["js/moment.min.js", "js/sql-memory-growth.js", "js/highcharts.js", "js/jquery-3.3.1.min.js", "js/import.js"],

@@ -32,6 +32,10 @@ const butdelay = 75;
 //This extension may be super lit, but you know what's even more lit?
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 
+console.log('UT Registration Plus is running on this page.');
+
+
+var utplanner = false;
 
 if (document.querySelector('#fos_fl')) {
 	let params = (new URL(document.location)).searchParams;
@@ -44,12 +48,26 @@ if (document.querySelector('#fos_fl')) {
 		}
 	}
 }
+
+
 next = $("#next_nav_link");
-chrome.storage.sync.get('loadAll', function (data) {
-	if (data.loadAll) {
-		$('[title*="next listing"]').remove();
-	}
-});
+if(next){
+	chrome.storage.sync.get('loadAll', function (data) {
+		if (data.loadAll) {
+			$('[title*="next listing"]').remove();
+		}
+	});
+}
+if($('html').hasClass('gr__utexas_collegescheduler_com')){
+	utplanner = true;
+	$.initialize("table.section-detail-grid", function() {
+	    $(this).find('thead>tr').append('<th> Plus</th')
+			$(this).find('tbody>tr').each(function(){
+				$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
+			})
+	});
+}
+
 
 loadDataBase();
 //make heading and modal
@@ -111,7 +129,7 @@ if (!$("#kw_results_table").length) {
 //update the conflicts
 update(0);
 /*Handle the button clicks*/
-$("tbody").on('click', '#distButton', function () {
+$("body").on('click', '#distButton', function () {
 	var row = $(this).closest('tr');
 	$('.modal-content').stop().animate({
 		scrollTop: 0
@@ -338,7 +356,7 @@ function Course(coursename, unique, profname, datetimearr, status, link, registe
 
 /*For a row, get all the course information and add the date-time-lines*/
 function getCourseInfo(row) {
-	console.log('WHAT');
+	console.log(row);
 	semesterCode = new URL(window.location.href).pathname.split('/')[4];
 	$("h2.dateTimePlace").remove();
 	$('table').find('tr').each(function () {

@@ -482,35 +482,38 @@ function Course(coursename, unique, profname, datetimearr, status, link, registe
 
 function getInfo(sem, unique) {
 	var link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", link, false);
-	xhr.send();
-	var response = xhr.responseText;
-	if (response) {
-		var output = "";
-		var object = $('<div/>').html(response).contents();
-		console.log(object.find('.error').text());
-		if (object.find('.error').text().trim() == 'No class was found for your input.') {
-			window.confirm(`Could not find a course with unique number: ${unique}`);
-		} else {
-			var c = getCourseObject(object, link);
-			console.log(c);
-			if (c.coursename) {
-				chrome.runtime.sendMessage({
-					command: "courseStorage",
-					course: c,
-					action: "add"
-				}, function () {
-					chrome.runtime.sendMessage({
-						command: "updateCourseList"
-					});
-					setCourseList();
-				});
-			} else {
-				window.confirm("There Was An Error. Please check if you are logged into Utexas.")
-			}
-		}
-	}
+	window.open(link);
+	// $.ajax({
+	// 	url: link,
+	// 	success: function (response) {
+	// 		console.log(response)
+	// 		if (response) {
+	// 			var output = "";
+	// 			var object = $('<div/>').html(response).contents();
+	// 			console.log(object.find('.error').text());
+	// 			if (object.find('.error').text().trim() == 'No class was found for your input.') {
+	// 				window.confirm(`Could not find a course with unique number: ${unique}`);
+	// 			} else {
+	// 				var c = getCourseObject(object, link);
+	// 				console.log(c);
+	// 				if (c.coursename) {
+	// 					chrome.runtime.sendMessage({
+	// 						command: "courseStorage",
+	// 						course: c,
+	// 						action: "add"
+	// 					}, function () {
+	// 						chrome.runtime.sendMessage({
+	// 							command: "updateCourseList"
+	// 						});
+	// 						setCourseList();
+	// 					});
+	// 				} else {
+	// 					window.confirm("There Was An Error. Please check if you are logged into Utexas.")
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// });
 }
 
 
