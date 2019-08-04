@@ -34,9 +34,6 @@ const butdelay = 75;
 
 console.log('UT Registration Plus is running on this page.');
 
-
-var utplanner = false;
-
 if (document.querySelector('#fos_fl')) {
 	let params = (new URL(document.location)).searchParams;
 	let dep = params.get("fos_fl");
@@ -51,25 +48,14 @@ if (document.querySelector('#fos_fl')) {
 
 
 next = $("#next_nav_link");
-if(next){
+if (next) {
 	chrome.storage.sync.get('loadAll', function (data) {
 		if (data.loadAll) {
 			$('[title*="next listing"]').remove();
 		}
 	});
 }
-if($('html').hasClass('gr__utexas_collegescheduler_com')){
-	utplanner = true;
-	$.initialize("table.section-detail-grid", function() {
-	    $(this).find('thead>tr').append('<th> Plus</th')
-			$(this).find('tbody>tr').each(function(){
-				$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
-			})
-	});
-}
 
-
-loadDataBase();
 //make heading and modal
 if (!$("#kw_results_table").length) {
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
@@ -470,27 +456,30 @@ function getDistribution(sem) {
 		query += "and sem like '%" + sem + "%'";
 	}
 	query += "order by a1+a2+a3+b1+b2+b3+c1+c2+c3+d1+d2+d3+f desc";
-	var res = grades.exec(query)[0];
-	var output = "";
-	if (!sem) {
-		openDialog(department, coursename, "aggregate", profname, res);
-	} else {
-		var data;
-		if (typeof res == 'undefined' || profname == "") {
-			data = [];
+	alert(query)
+	chrome.runtime.sendMessage({
+		command: "gradesQuery",
+		query: query
+	}, function (response) {
+		var res = response.data;
+		if (!sem) {
+			openDialog(department, coursename, "aggregate", profname, res);
 		} else {
-			data = res.values[0];
+			var data;
+			if (typeof res == 'undefined' || profname == "") {
+				data = [];
+			} else {
+				data = res.values[0];
+			}
+			setChart(data);
 		}
-		setChart(data);
-	}
+	});
 }
 
 /*Open the modal and show all the data*/
 function openDialog(dep, cls, sem, professor, res) {
 	$("#myModal").fadeIn(fadetime);
 	//initial text on the "save course button"
-
-
 	chrome.runtime.sendMessage({
 		command: "alreadyContains",
 		unique: uniquenum
@@ -734,77 +723,59 @@ function getDescription() {
 	// console.log(window.location.href);
 	// console.log(profurl);
 	console.log('hello');
-	$.ajax({url: profurl, success: function(response){
-    			if (response) {
-			console.log(profurl);
-			var output = "";
-			var object = $('<div/>').html(response).contents();
-			object.find('#details > p').each(function () {
-				var sentence = $(this).text();
-				if (sentence.indexOf("Prerequisite") == 0) {
-					sentence = "<li style='font-weight: bold;' class='descriptionli'>" + sentence + "</li>";
-				} else if (sentence.indexOf("May be") >= 0) {
-					sentence = "<li style='font-style: italic;' class='descriptionli'>" + sentence + "</li>";
-				} else if (sentence.indexOf("Restricted to") == 0) {
-					sentence = "<li style='color:red;' class='descriptionli'>" + sentence + "</li>";
-				} else {
-					sentence = "<li class='descriptionli'>" + sentence + "</li>";
+	$.ajax({
+		url: profurl,
+		success: function (response) {
+			if (response) {
+				console.log(profurl);
+				var output = "";
+				var object = $('<div/>').html(response).contents();
+				object.find('#details > p').each(function () {
+					var sentence = $(this).text();
+					if (sentence.indexOf("Prerequisite") == 0) {
+						sentence = "<li style='font-weight: bold;' class='descriptionli'>" + sentence + "</li>";
+					} else if (sentence.indexOf("May be") >= 0) {
+						sentence = "<li style='font-style: italic;' class='descriptionli'>" + sentence + "</li>";
+					} else if (sentence.indexOf("Restricted to") == 0) {
+						sentence = "<li style='color:red;' class='descriptionli'>" + sentence + "</li>";
+					} else {
+						sentence = "<li class='descriptionli'>" + sentence + "</li>";
+					}
+					output += sentence;
+				});
+				description = output;
+				console.log(response);
+				if (!description) {
+					description = "<p style='color:red;font-style:bold'>You have been logged out. Please refresh the page and log back in using your UT EID and password.</p>"
 				}
-				output += sentence;
-			});
-			description = output;
-			console.log(response);
-			if (!description) {
-				description = "<p style='color:red;font-style:bold'>You have been logged out. Please refresh the page and log back in using your UT EID and password.</p>"
-			}
-			$("#description").animate({
-				'opacity': 0
-			}, 200, function () {
-				$(this).html(description).animate({
-					'opacity': 1
-				}, 200);
-			});
-			var first = object.find('td[data-th="Instructor"]').text();
-			first = first.substring(first.indexOf(", "), first.indexOf(" ", first.indexOf(", ") + 2));
-			first = first.substring(2);
-			rmpLink = `http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query=${first} ${profname};&facetSearch=true`;
-			if (profname == "") {
-				eCISLink = `http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?s_in_action_sw=S&s_in_search_type_sw=C&s_in_max_nbr_return=10&s_in_search_course_dept=${department}&s_in_search_course_num=${course_nbr}`;
+				$("#description").animate({
+					'opacity': 0
+				}, 200, function () {
+					$(this).html(description).animate({
+						'opacity': 1
+					}, 200);
+				});
+				var first = object.find('td[data-th="Instructor"]').text();
+				first = first.substring(first.indexOf(", "), first.indexOf(" ", first.indexOf(", ") + 2));
+				first = first.substring(2);
+				rmpLink = `http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query=${first} ${profname};&facetSearch=true`;
+				if (profname == "") {
+					eCISLink = `http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?s_in_action_sw=S&s_in_search_type_sw=C&s_in_max_nbr_return=10&s_in_search_course_dept=${department}&s_in_search_course_num=${course_nbr}`;
+				} else {
+					eCISLink = `http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?&s_in_action_sw=S&s_in_search_type_sw=N&s_in_search_name=${profname.substring(0, 1) + profname.substring(1).toLowerCase()}%2C%20${first.substring(0, 1) + first.substring(1).toLowerCase()}`;
+				}
 			} else {
-				eCISLink = `http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?&s_in_action_sw=S&s_in_search_type_sw=N&s_in_search_name=${profname.substring(0, 1) + profname.substring(1).toLowerCase()}%2C%20${first.substring(0, 1) + first.substring(1).toLowerCase()}`;
+				description = "<p style='color:red;font-style:bold'>You have been logged out. Please refresh the page and log back in using your UT EID and password.</p>"
+				$("#description").animate({
+					'opacity': 0
+				}, 200, function () {
+					$(this).html(description).animate({
+						'opacity': 1
+					}, 200);
+				});
+				rmpLink = "http://www.ratemyprofessors.com/campusRatings.jsp?sid=1255";
+				eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?";
 			}
-		} else {
-			description = "<p style='color:red;font-style:bold'>You have been logged out. Please refresh the page and log back in using your UT EID and password.</p>"
-			$("#description").animate({
-				'opacity': 0
-			}, 200, function () {
-				$(this).html(description).animate({
-					'opacity': 1
-				}, 200);
-			});
-			rmpLink = "http://www.ratemyprofessors.com/campusRatings.jsp?sid=1255";
-			eCISLink = "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?";
 		}
-  }});
-}
-/* Load the database*/
-function loadDataBase() {
-	sql = window.SQL;
-	loadBinaryFile('grades.db', function (data) {
-		var sqldb = new SQL.Database(data);
-		grades = sqldb;
 	});
 }
-/* load the database from file */
-function loadBinaryFile(path, success) {
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", chrome.extension.getURL(path), true);
-	xhr.responseType = "arraybuffer";
-	xhr.onload = function () {
-		var data = new Uint8Array(xhr.response);
-		var arr = new Array();
-		for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
-		success(arr.join(""));
-	};
-	xhr.send();
-};
