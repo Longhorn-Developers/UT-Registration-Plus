@@ -68,8 +68,6 @@ function setCourseList() {
 	});
 }
 
-
-
 function showEmpty() {
 	var emptyText = ["Doesn't Look Like Anything To Me.", "You Can't Fail Classes You're Not In.", "Pro-Tip: Don't Take O-Chem.",
 		"No Work Happens On PCL 5th Floor.", "Sophomore But Freshman By Credit.", "Pain is temporary, GPA is forever.",
@@ -122,7 +120,6 @@ function updateConflicts() {
 
 /* Handle the button clicks */
 $(document).ready(function () {
-
 
 	$("#courseList").on('mouseover', '.copybut', function () {
 		$(this).addClass('shadow');
@@ -241,16 +238,18 @@ $(document).ready(function () {
 	$("#search").click(function () {
 		if ($("#search>i").text() == 'close') {
 			$("#search>i").text('search');
-			$("#class_id").hide();
+			$("#class_id_input").hide();
 			$("#semcon").hide();
 			$("#semesters").hide();
+			$("#search-popup").addClass('hide');
 			// $(this).removeClass('selected');
 		} else {
 			$("#search>i").text('close');
-			$("#class_id").show();
+			$("#class_id_input").show();
 			$("#semesters").show();
 			$("#semcon").show();
-			$('#class_id').focus();
+			$('#class_id_input').focus();
+			$("#search-popup").removeClass('hide');
 			// $(this).addClass('selected');
 		}
 	});
@@ -272,31 +271,32 @@ $(document).ready(function () {
 			}
 		});
 	});
-	$("#class_id").on("keyup", function (e) {
-		if (e.keyCode == 13) {
-			var unique = $(this).val();
-			if (!isNaN(unique)) {
-				if (unique.length == 5) {
-					getInfo($("#semesters").find(":selected").val(), unique);
-					$("#class_id").val('');
-					return;
-				}
+
+	$("#search-class").click(() => {
+		var uniqueId = $("#class_id_input").val();
+		if (!isNaN(uniqueId)) {
+			if (uniqueId.length == 5) {
+				let selectedSemester = $("#semesters").find(":selected").val();
+				openCoursePage(selectedSemester, uniqueId);
+				$("#class_id_input").val('');
+				return;
 			}
-			alert("Invalid Input");
 		}
-	})
+		alert("Oops, check your input. Class IDs should have 5 digits!");
+	});
+
 	$("#open").click(function () {
 		chrome.tabs.create({
 			'url': "options.html"
 		});
 	});
+
 	$("#calendar").click(function () {
 		chrome.tabs.create({
 			'url': "calendar.html"
 		});
 	});
 });
-
 
 $("#importOrig").change(function (e) {
 	var files = e.target.files;
@@ -384,7 +384,6 @@ function makeLine(index) {
 	return output;
 }
 
-
 //find the location of a class given its days and timearrs.
 function findLoc(day, timearr, datetimearr) {
 	for (let i = 0; i < datetimearr.length; i++) {
@@ -409,7 +408,6 @@ function fixDtl1(dtl1) {
 	}
 	return output;
 }
-
 
 /*Clear the list and the storage of courses*/
 function clear() {
@@ -439,17 +437,24 @@ function getSemesters() {
 			object.find('.callout2>ul>li>a').each(function (index) {
 				if (index < 2) {
 					if ($(this).text() != "Course Schedule Archive") {
-						var semname = $(this).text().split(" ")[0].substring(0, 2) + " " + $(this).text().split(" ")[1];
+						const semester = $(this).text().split(" ")[0];
+						const year = $(this).text().split(" ")[1]
+						let semname = semester + " " + year;
+						console.log('semname:::: ' + semname);
 						$("#semesters").append(`<option>${semname}</option>`);
 						$.get($(this).attr('href'), function (response) {
 							if (response) {
 								var object = $('<div/>').html(response).contents();
+
+								// Check title of page and see if it matches semester name
 								var name = object.find(".page-title").text();
 								name = name.substring(name.lastIndexOf('|') + 1).trim();
-								name = name.split(" ")[0].substring(0, 2) + " " + name.split(" ")[1];
-								console.log(name);
+								name = name.split(" ")[0] + " " + name.split(" ")[1];
+
+								console.log('name:::: ' + name);
 								object.find('.gobutton>a').each(function () {
 									var semnum = $(this).attr('href').substring($(this).attr('href').lastIndexOf('/') + 1);
+									console.log('semnum:::: ' + semnum);
 									$("option").each(function () {
 										console.log($(this).text());
 										if ($(this).text() == name) {
@@ -467,7 +472,6 @@ function getSemesters() {
 	});
 }
 
-
 /*Course object for passing to background*/
 function Course(coursename, unique, profname, datetimearr, status, link, registerlink) {
 	this.coursename = coursename;
@@ -479,43 +483,10 @@ function Course(coursename, unique, profname, datetimearr, status, link, registe
 	this.registerlink = registerlink;
 }
 
-
-function getInfo(sem, unique) {
+function openCoursePage(sem, unique) {
 	var link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
 	window.open(link);
-	// $.ajax({
-	// 	url: link,
-	// 	success: function (response) {
-	// 		console.log(response)
-	// 		if (response) {
-	// 			var output = "";
-	// 			var object = $('<div/>').html(response).contents();
-	// 			console.log(object.find('.error').text());
-	// 			if (object.find('.error').text().trim() == 'No class was found for your input.') {
-	// 				window.confirm(`Could not find a course with unique number: ${unique}`);
-	// 			} else {
-	// 				var c = getCourseObject(object, link);
-	// 				console.log(c);
-	// 				if (c.coursename) {
-	// 					chrome.runtime.sendMessage({
-	// 						command: "courseStorage",
-	// 						course: c,
-	// 						action: "add"
-	// 					}, function () {
-	// 						chrome.runtime.sendMessage({
-	// 							command: "updateCourseList"
-	// 						});
-	// 						setCourseList();
-	// 					});
-	// 				} else {
-	// 					window.confirm("There Was An Error. Please check if you are logged into Utexas.")
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// });
 }
-
 
 /*For a row, get all the course information and add the date-time-lines*/
 function getCourseObject(object, link) {

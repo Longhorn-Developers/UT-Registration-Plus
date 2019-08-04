@@ -37,8 +37,6 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
 
 */
 
-/* Remove that awful yellow color and border from today in Schedule */
-
 .fc-state-highlight {
     opacity: 0;
     border: none;
