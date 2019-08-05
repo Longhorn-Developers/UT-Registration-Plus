@@ -1,4 +1,3 @@
-var grades;
 var rmpLink;
 var next;
 var bottom;
@@ -20,15 +19,7 @@ var semesterCode;
 var isIndividual = false;
 var done = true;
 
-const days = new Map([
-	["M", "Monday"],
-	["T", "Tuesday"],
-	["W", "Wednesday"],
-	["TH", "Thursday"],
-	["F", "Friday"]
-]);
-const fadetime = 150;
-const butdelay = 75;
+
 //This extension may be super lit, but you know what's even more lit?
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 
@@ -209,7 +200,7 @@ function loadNextPages() {
 						nextpage.find('tbody>tr').each(function () {
 							let hasCourseHead = $(this).find('td').hasClass("course_header");
 							if (!(hasCourseHead && $(this).has('th').length == 0)) {
-								$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
+								$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
 								// if ($(this).find('td[data-th="Status"]').text().includes('waitlisted')) {
 								// 	$(this).find('td').each(function () {
 								// 		$(this).css('background-color', '#E0E0E0');
@@ -456,7 +447,6 @@ function getDistribution(sem) {
 		query += "and sem like '%" + sem + "%'";
 	}
 	query += "order by a1+a2+a3+b1+b2+b3+c1+c2+c3+d1+d2+d3+f desc";
-	alert(query)
 	chrome.runtime.sendMessage({
 		command: "gradesQuery",
 		query: query
@@ -494,35 +484,11 @@ function openDialog(dep, cls, sem, professor, res) {
 	var data;
 	$("#semesters").empty();
 	if (typeof res == 'undefined' || profname == "") {
-		data = [];
 		$("#semesters").append("<option>No Data</option>")
+		data = [];
 	} else {
 		var semesters = res.values[0][18].split(",");
-		semesters.sort(function (a, b) {
-			var as = a.split(' ')[0];
-			var ay = parseInt(a.split(' ')[1]);
-			var bs = b.split(' ')[0];
-			var by = parseInt(b.split(' ')[1]);
-			if (ay < by) {
-				return -1;
-			}
-			if (ay > by) {
-				return 1;
-			}
-			var seas = {
-				"Spring": 0,
-				"Fall": 1,
-				"Summer": 2,
-				"Winter": 3
-			}
-			if (seas[as] < seas[bs]) {
-				return -1;
-			}
-			if (seas[as] > seas[bs]) {
-				return 1;
-			}
-			return 0;
-		});
+		semesters.sort(semesterSort);
 		semesters.reverse().unshift('Aggregate');
 		var sems = [];
 		for (var i = 0; i < semesters.length; i++) {
@@ -575,112 +541,7 @@ function close() {
 
 function setChart(data) {
 	//set up the chart
-	chart = Highcharts.chart('chart', {
-		chart: {
-			type: 'column',
-			backgroundColor: ' #fefefe',
-			spacingLeft: 10
-		},
-		title: {
-			text: null
-		},
-		subtitle: {
-			text: null
-		},
-		legend: {
-			enabled: false
-		},
-		xAxis: {
-			title: {
-				text: 'Grades'
-			},
-			categories: [
-				'A',
-				'A-',
-				'B+',
-				'B',
-				'B-',
-				'C+',
-				'C',
-				'C-',
-				'D+',
-				'D',
-				'D-',
-				'F'
-			],
-			crosshair: true
-		},
-		yAxis: {
-			min: 0,
-			title: {
-				text: 'Students'
-			}
-		},
-		credits: {
-			enabled: false
-		},
-		lang: {
-			noData: "The professor hasn't taught this class :("
-		},
-		tooltip: {
-			headerFormat: '<span style="font-size:small; font-weight:bold">{point.key}</span><table>',
-			pointFormat: '<td style="color:{black};padding:0;font-size:small; font-weight:bold;"><b>{point.y:.0f} Students</b></td>',
-			footerFormat: '</table>',
-			shared: true,
-			useHTML: true
-		},
-		plotOptions: {
-			bar: {
-				pointPadding: 0.2,
-				borderWidth: 0
-			},
-			series: {
-				animation: {
-					duration: 700
-				}
-			}
-		},
-		series: [{
-			name: 'Grades',
-			data: [{
-				y: data[6],
-				color: '#4CAF50'
-			}, {
-				y: data[7],
-				color: '#8BC34A'
-			}, {
-				y: data[8],
-				color: '#CDDC39'
-			}, {
-				y: data[9],
-				color: '#FFEB3B'
-			}, {
-				y: data[10],
-				color: '#FFC107'
-			}, {
-				y: data[11],
-				color: '#FFA000'
-			}, {
-				y: data[12],
-				color: '#F57C00'
-			}, {
-				y: data[13],
-				color: '#FF5722'
-			}, {
-				y: data[14],
-				color: '#FF5252'
-			}, {
-				y: data[15],
-				color: '#E64A19'
-			}, {
-				y: data[16],
-				color: '#F44336'
-			}, {
-				y: data[17],
-				color: '#D32F2F'
-			}]
-		}]
-	}, function (chart) { // on complete
+	chart = Highcharts.chart('chart', buildChartConfig(data), function (chart) { // on complete
 		if (data.length == 0) {
 			//if no data, then show the message and hide the series
 			chart.renderer.text('Could not find data for this Instructor teaching this Course.', 100, 120)
@@ -746,7 +607,7 @@ function getDescription() {
 				description = output;
 				console.log(response);
 				if (!description) {
-					description = "<p style='color:red;font-style:bold'>You have been logged out. Please refresh the page and log back in using your UT EID and password.</p>"
+					description = "<p style='color:red;font-style:bold'>There was an error. Please refresh the page and/or log back in using your UT EID and password.</p>"
 				}
 				$("#description").animate({
 					'opacity': 0
