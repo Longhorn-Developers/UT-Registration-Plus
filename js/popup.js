@@ -126,6 +126,7 @@ $(document).ready(function () {
 	}).on('mouseleave', '.copybut', function () {
 		$(this).removeClass('shadow');
 	});
+
 	$("#courseList").on('click', '.copybut', function (e) {
 		e.stopPropagation();
 		var temp = $("<input>");
@@ -147,6 +148,7 @@ $(document).ready(function () {
 		document.execCommand("copy");
 		temp.remove();
 	});
+
 	$("#courseList").on('click', 'li', function () {
 		$(this).find("#listMoreInfo").click(function () {
 			window.open(courses[$(this).closest("li").attr("id")].link);
@@ -214,49 +216,58 @@ $(document).ready(function () {
 			$(this).find('#arrow').css('transform', '');
 		}
 	});
+
 	$("#clear").click(function () {
 		clear();
 	});
+
 	$("#schedule").click(function () {
 		chrome.tabs.create({
 			'url': 'https://registrar.utexas.edu/schedules'
 		});
 	});
+
 	$("#impexp").click(function () {
+		// Close import export window
 		if ($("#impexp>i").text() == 'close') {
-			$('#import').hide();
-			$('#export').hide();
-			$("#impexp>i").text('import_export');
+			hideImportExportPopup();
 			// $(this).removeClass('selected');
 		} else {
-			$("#impexp>i").text('close');
-			$('#import').show();
+			// Open import export window
+			
+			// If search window open, close it first to prevent overlap
+			if ($("#search>i").text() == 'close') {
+				hideSearchPopup();
+			}
+			
+			showImportExportPopup();
 			// $(this).addClass('selected');
-			$('#export').show();
 		}
 	});
+
 	$("#search").click(function () {
+		// Close search window
 		if ($("#search>i").text() == 'close') {
-			$("#search>i").text('search');
-			$("#class_id_input").hide();
-			$("#semcon").hide();
-			$("#semesters").hide();
-			$("#search-popup").addClass('hide');
+			hideSearchPopup();
 			// $(this).removeClass('selected');
 		} else {
-			$("#search>i").text('close');
-			$("#class_id_input").show();
-			$("#semesters").show();
-			$("#semcon").show();
-			$('#class_id_input').focus();
-			$("#search-popup").removeClass('hide');
+			// Open search window
+
+			// If import export window open, close it first to prevent overlap
+			if ($("#impexp>i").text() == 'close') {
+				hideImportExportPopup();
+			}
+			
+			showSearchPopup();
 			// $(this).addClass('selected');
 		}
 	});
-	$('#import').click(function () {
+
+	$('#import-class').click(function () {
 		$("#importOrig").click();
 	});
-	$('#export').click(function () {
+
+	$('#export-class').click(function () {
 		chrome.storage.sync.get('savedCourses', function (data) {
 			if (data.savedCourses.length > 0) {
 				var exportlink = document.createElement('a');
@@ -296,6 +307,7 @@ $(document).ready(function () {
 			'url': "calendar.html"
 		});
 	});
+
 });
 
 $("#importOrig").change(function (e) {
@@ -526,11 +538,38 @@ function getDtarr(object) {
 	return dtarr;
 }
 
-/*Convert time to 24hour format*/
+/* Convert time to 24hour format */
 function convertTime(time) {
 	var converted = time.replace(/\./g, '').split("-");
 	for (var i = 0; i < 2; i++) {
 		converted[i] = moment(converted[i], ["h:mm A"]).format("HH:mm");
 	}
 	return converted;
+}
+
+function hideSearchPopup() {
+	$("#search>i").text('search');
+	$("#class_id_input").hide();
+	$("#semcon").hide();
+	$("#semesters").hide();
+	$("#search-popup").addClass('hide');
+}
+
+function showSearchPopup() {
+	$("#search>i").text('close');
+	$("#class_id_input").show();
+	$("#semesters").show();
+	$("#semcon").show();
+	$('#class_id_input').focus();
+	$("#search-popup").removeClass('hide');
+}
+
+function hideImportExportPopup() {
+	$("#import-export-popup").addClass('hide');
+	$("#impexp>i").text('import_export');
+}
+
+function showImportExportPopup() {
+	$("#impexp>i").text('close');
+	$("#import-export-popup").removeClass('hide');
 }

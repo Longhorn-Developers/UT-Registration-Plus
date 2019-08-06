@@ -85,8 +85,9 @@ i {
 }
 
 .settings {
-    position: relative;
-    float: right;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
     display: flex;
     vertical-align: middle;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
@@ -245,6 +246,18 @@ input[type=number]::-webkit-outer-spin-button {
     width: 120px;
 }
 
+#import-export-popup {
+    background: white;
+    color: #747474;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    position: absolute;
+    margin: auto;
+    bottom: 42px;
+    right: 10px;
+    border-radius: inherit;
+    width: 160px;
+}
+
 .flex-container {
     display: flex;
     flex-direction: column;
@@ -314,6 +327,37 @@ input[type=number]::-webkit-outer-spin-button {
     font-size: inherit;
     padding: 7px 11px;
     margin: 8px 0px;
+}
+
+.simple-menu-option {
+    display: inline-block;
+    color: rgba(0, 0, 45, 0.48);
+    border: none;
+    font-size: 17px;
+    overflow: hidden;
+    vertical-align: middle;
+    text-align: left;
+    padding: 10px 0px 5px 5px;
+    border-radius: 7px;
+}
+
+.simple-menu-option i {
+    font-size: 19px;
+    vertical-align: middle;
+    margin-top: 0px;
+    margin-left: 0px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+}
+
+.simple-menu-option:hover {
+    background-color: rgba(177, 175, 175, 0.324);
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.simple-menu-option:focus {
+    outline: none;
 }
 
 .hide {
