@@ -1,6 +1,8 @@
 updateBadge(true);
+var grades;
+loadDataBase()
 /* Handle messages and their commands from content and popup scripts*/
-chrome.runtime.onMessage.addListener(function(request, sender, response) {
+chrome.runtime.onMessage.addListener(function (request, sender, response) {
     switch (request.command) {
         case "courseStorage":
             if (request.action == "add") {
@@ -31,6 +33,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
         case "updateCourseList":
             updateTabs();
             break;
+        case "gradesQuery":
+            executeQuery(request.query, response);
         default:
             const xhr = new XMLHttpRequest();
             const method = request.method ? request.method.toUpperCase() : "GET";
@@ -51,35 +55,35 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
 });
 
 /* Initially set the course data in storage */
-chrome.runtime.onInstalled.addListener(function(details) {
+chrome.runtime.onInstalled.addListener(function (details) {
     if (details.reason == "install") {
-        chrome.storage.sync.get('savedCourses', function(data) {
+        chrome.storage.sync.get('savedCourses', function (data) {
             if (!data.savedCourses) {
                 var arr = new Array();
                 chrome.storage.sync.set({
                     savedCourses: arr
-                }, function() {
+                }, function () {
                     console.log('initial course list');
                 });
                 chrome.storage.sync.set({
                     courseConflictHighlight: true
-                }, function() {
+                }, function () {
                     console.log('initial highlighting: true');
                 });
                 chrome.storage.sync.set({
                     loadAll: true
-                }, function() {
+                }, function () {
                     console.log('initial loadAll: true');
                 });
             }
         });
     } else if (details.reason == "update") {
         console.log("updated");
-        chrome.storage.sync.get('loadAll', function(data) {
+        chrome.storage.sync.get('loadAll', function (data) {
             if (data.loadAll == undefined) {
                 chrome.storage.sync.set({
                     loadAll: true
-                }, function() {
+                }, function () {
                     console.log('initial loadAll: true');
                 });
             }
@@ -88,8 +92,39 @@ chrome.runtime.onInstalled.addListener(function(details) {
 });
 
 
+function executeQuery(query, sendResponse) {
+    console.log(grades)
+    var res = grades.exec(query)[0];
+    sendResponse({
+        data: res,
+    });
+}
+
+
+/* Load the database*/
+function loadDataBase() {
+    sql = window.SQL;
+    loadBinaryFile('grades.db', function (data) {
+        var sqldb = new SQL.Database(data);
+        grades = sqldb;
+    });
+}
+/* load the database from file */
+function loadBinaryFile(path, success) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", chrome.extension.getURL(path), true);
+    xhr.responseType = "arraybuffer";
+    xhr.onload = function () {
+        var data = new Uint8Array(xhr.response);
+        var arr = new Array();
+        for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+        success(arr.join(""));
+    };
+    xhr.send();
+};
+
 function updateBadge(first) {
-    chrome.storage.sync.get('savedCourses', function(data) {
+    chrome.storage.sync.get('savedCourses', function (data) {
         if (data.savedCourses) {
             let text = "";
             if (data.savedCourses.length > 0) {
@@ -105,7 +140,7 @@ function updateBadge(first) {
                 });
                 timeout = 200;
             }
-            setTimeout(function() {
+            setTimeout(function () {
                 chrome.browserAction.setBadgeBackgroundColor({
                     color: '#bf5700'
                 });
@@ -117,7 +152,7 @@ function updateBadge(first) {
 
 /* Find all the conflicts in the courses and send them out/ if there is even a conflict*/
 function checkConflicts(sendResponse) {
-    chrome.storage.sync.get('savedCourses', function(data) {
+    chrome.storage.sync.get('savedCourses', function (data) {
         var conflicts = [];
         var courses = data.savedCourses;
         for (var i = 0; i < courses.length; i++) {
@@ -144,7 +179,7 @@ function checkConflicts(sendResponse) {
 
 /* Find if the course at unique and with currdatearr is contained in the saved courses and if it conflicts with any other courses*/
 function isSingleConflict(currdatearr, unique, sendResponse) {
-    chrome.storage.sync.get('savedCourses', function(data) {
+    chrome.storage.sync.get('savedCourses', function (data) {
         var courses = data.savedCourses;
         var conflict = false;
         for (var i = 0; i < courses.length; i++) {
@@ -188,7 +223,7 @@ function isConflict(adtarr, bdtarr) {
 
 /* Add the requested course to the storage*/
 function add(request, sender, sendResponse) {
-    chrome.storage.sync.get('savedCourses', function(data) {
+    chrome.storage.sync.get('savedCourses', function (data) {
         var courses = data.savedCourses;
         if (!contains(courses, request.course.unique)) {
             courses.push(request.course)
@@ -206,7 +241,7 @@ function add(request, sender, sendResponse) {
 }
 /* Find and Remove the requested course from the storage*/
 function remove(request, sender, sendResponse) {
-    chrome.storage.sync.get('savedCourses', function(data) {
+    chrome.storage.sync.get('savedCourses', function (data) {
         var courses = data.savedCourses;
         console.log(courses);
         var index = 0;
@@ -227,7 +262,7 @@ function remove(request, sender, sendResponse) {
 
 /* Find if the unique is already contained within the storage*/
 function alreadyContains(unique, sendResponse) {
-    chrome.storage.sync.get('savedCourses', function(data) {
+    chrome.storage.sync.get('savedCourses', function (data) {
         var courses = data.savedCourses;
         sendResponse({
             alreadyContains: contains(courses, unique)
@@ -247,7 +282,7 @@ function contains(courses, unique) {
 }
 
 function updateTabs() {
-    chrome.tabs.query({}, function(tabs) {
+    chrome.tabs.query({}, function (tabs) {
         for (var i = 0; i < tabs.length; i++) {
             chrome.tabs.sendMessage(tabs[i].id, {
                 command: "updateCourseList"
@@ -260,7 +295,7 @@ const UPDATE_INTERVAL = 1000 * 60 * 16;
 setInterval(updateStatus, UPDATE_INTERVAL);
 // updateStatus();
 function updateStatus(sendResponse) {
-    chrome.storage.sync.get('savedCourses', function(data) {
+    chrome.storage.sync.get('savedCourses', function (data) {
         var courses = data.savedCourses;
         var nochange = true;
         for (let i = 0; i < courses.length; i++) {
@@ -268,25 +303,29 @@ function updateStatus(sendResponse) {
                 let c = courses[i];
                 let oldstatus = c.status;
                 let oldlink = c.link;
-                $.ajax({url: oldlink, success: function(result){
-                    if(result){
-                        console.log(result);
-                        var object = $('<div/>').html(result).contents();
-                        let newstatus = object.find('[data-th="Status"]').text();
-                        let registerlink = object.find('td[data-th="Add"] a');
-                        if (registerlink) {
-                            registerlink = registerlink.attr('href');
+                $.ajax({
+                    url: oldlink,
+                    success: function (result) {
+                        if (result) {
+                            console.log(result);
+                            var object = $('<div/>').html(result).contents();
+                            let newstatus = object.find('[data-th="Status"]').text();
+                            let registerlink = object.find('td[data-th="Add"] a');
+                            if (registerlink) {
+                                registerlink = registerlink.attr('href');
+                            }
+                            var haschanged = (newstatus == oldstatus && registerlink == oldlink);
+                            if (!haschanged) {
+                                console.log(c.unique + ' updated from ' + oldstatus + " to " + newstatus + " and " + oldlink + " to " + registerlink);
+                            }
+                            nochange &= haschanged;
+                            c.registerlink = registerlink;
+                            c.status = newstatus;
                         }
-                        var haschanged = (newstatus == oldstatus && registerlink == oldlink);
-                        if (!haschanged) {
-                            console.log(c.unique + ' updated from ' + oldstatus + " to " + newstatus + " and " + oldlink + " to " + registerlink);
-                        }
-                        nochange &= haschanged;
-                        c.registerlink = registerlink;
-                        c.status = newstatus;
-                }}});
-            
-                
+                    }
+                });
+
+
             } catch (e) {
                 console.log(e);
                 console.log('Not logged into UT Coursebook. Could not update class statuses.');
