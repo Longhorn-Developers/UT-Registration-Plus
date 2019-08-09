@@ -1,23 +1,7 @@
-var rmpLink;
-var next;
+var next = $("#next_nav_link");
 var bottom;
-var eCISLink;
-var textbookLink;
-var coursename;
-var profname;
-var profinit;
-var uniquenum;
-var profurl;
-var registerlink;
-var department;
-var course_nbr;
-var datetimearr = [];
-var chart;
-var description;
-var status;
 var semesterCode;
-var isIndividual = false;
-var done = true;
+var doneLoading = true;
 
 
 var curr_course = {}
@@ -29,27 +13,14 @@ var curr_course = {}
 console.log('UT Registration Plus is running on this page.');
 
 semesterCode = new URL(window.location.href).pathname.split('/')[4];
+
+
 $(window).scroll(function () {
 	if ($(document).height() <= $(window).scrollTop() + $(window).height() + 150) {
 		loadNextPages();
 	}
 });
 
-
-if (document.querySelector('#fos_fl')) {
-	let params = (new URL(document.location)).searchParams;
-	let dep = params.get("fos_fl");
-	let level = params.get("level");
-	if (dep && level) {
-		if (dep.length == 3 && (level == 'U' || level == 'L' || level == 'G')) {
-			document.querySelector('#fos_fl').value = dep;
-			document.querySelector('#level').value = level;
-		}
-	}
-}
-
-
-next = $("#next_nav_link");
 if (next) {
 	chrome.storage.sync.get('loadAll', function (data) {
 		if (data.loadAll) {
@@ -58,50 +29,18 @@ if (next) {
 	});
 }
 
-
-
 //make heading and modal
 if (!$("#kw_results_table").length) {
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
 	$("table").after(`<div style="text-align:center">
-						<div class="loader" id='loader' ></div>
+						<div class="loader" id='loader'></div>
 						<br>
 						<h1 id="nextlabel"style="color: #FF9800;display:none;">Loading Courses</h1>
 						<h1 id="retrylabel"style="color: #F44336;display:none;">Failed to Load Courses</h1>
 						<br>
 						<button class=matbut id="retry" style="background: #F44336;display:none;">Retry</button>
 					  </div>`);
-	var modhtml = `<div class=modal id=myModal>
-							<div class=modal-content>
-							   <span class=close>×</span>
-							   <div class=card>
-									<div class=cardcontainer>
-									   <h2 class=title id="title">Computer Fluency (C S 302)</h2>
-									   <h2 class=profname id="profname">with Bruce Porter</h2>
-									   <div id="topbuttons" class=topbuttons>
-											   <button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button>
-											   <button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button>
-											   <button class=matbut id="textbook" style="background: #FFC107;"> Textbook </button>
-											   <button class=matbut id="Syllabi"> Past Syllabi </button>
-											   <button class=matbut id="saveCourse" style="background: #F44336;"> Save Course +</button>
-										</div>
-									</div>
-								</div>
-								<div class=card>
-									<div class=cardcontainer style="">
-										<ul class=description id="description" style="list-style-type:disc"></ul>
-									</div>
-								</div>
-								<div class=card style='text-align:center'>
-									<select id="semesters" style='text-align-last:center;color:#666666;fill:#666666;'>
-									</select>
-									<div id="chartcontainer" class=cardcontainer>
-										<div id=chart></div>
-									</div>
-								</div>
-							</div>
-						</div>`;
-	$("#container").prepend(modhtml);
+	$("#container").prepend(mainModal());
 	$("#myModal").prepend("<div id='snackbar'>save course popup...</div>");
 	//go through all the rows in the list
 	$('table').find('tr').each(function () {
@@ -239,7 +178,6 @@ function buildBasicCourseInfo(row, course_name, individual) {
 }
 
 
-
 function buildTimeTitle(course_info) {
 	$("h2.dateTimePlace").remove();
 	let {
@@ -283,43 +221,48 @@ function getCourseInfo(row) {
 	return curr_course;
 }
 
+
+function toggleLoadingPage(loading) {
+	if (loading) {
+		$('#loader').css('display', 'inline-block');
+		$("#nextlabel").css('display', 'inline-block');
+	} else {
+		$('#loader').hide();
+		$("#nextlabel").hide();
+	}
+}
+
 function loadNextPages() {
 	chrome.storage.sync.get('loadAll', function (data) {
 		if (data.loadAll) {
 			let link = next.prop('href');
-			if (done && next && link) {
-				$("#nextlabel").css('display', 'inline-block');
-				$('#loader').css('display', 'inline-block');
-				done = false;
+			if (doneLoading && next && link) {
+				toggleLoadingPage(true);
+				doneLoading = false;
 				$.get(link, function (response) {
 					if (response) {
 						var nextpage = $('<div/>').html(response).contents();
 						var current = $('tbody');
 						var oldlength = $('tbody tr').length;
-						// console.log(oldlength);
 						var last = current.find('.course_header>h2:last').text();
-						// console.log(last);
 						next = nextpage.find("#next_nav_link");
-						done = true;
+						doneLoading = true;
 						$("#nextlabel").hide();
 						$('#loader').hide();
 						var newrows = [];
 						nextpage.find('tbody>tr').each(function () {
 							let hasCourseHead = $(this).find('td').hasClass("course_header");
-							if (!(hasCourseHead && $(this).has('th').length == 0)) {
+							if (!(hasCourseHead && $(this).has('th').length == 0))
 								$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
-							}
-							if (!(hasCourseHead && last == $(this).find('td').text())) {
+							if (!(hasCourseHead && last == $(this).find('td').text()))
 								newrows.push($(this));
-							}
 						});
 						current.append(newrows);
 						update(oldlength + 1)
 					}
 				}).fail(function () {
-					done = true;
-					$("#nextlabel").hide();
-					$('#loader').hide();
+					doneLoading = true;
+					toggleLoadingPage(false);
 					$("#retrylabel").css('display', 'inline-block');
 					$('#retry').css('display', 'inline-block');
 				});
@@ -367,9 +310,7 @@ function toggleSnackbar() {
 /* Update the course list to show if the row contains a course that conflicts with the saved course is one of the saved courses */
 function update(start) {
 	chrome.storage.sync.get('courseConflictHighlight', function (data) {
-		var red = 0;
-		var black = 0;
-		var green = 0;
+		let canHighlight = data.courseConflictHighlight;
 		$('table').find('tr').each(function (i) {
 			if (i >= start) {
 				if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
@@ -380,30 +321,32 @@ function update(start) {
 						dtarr: getDayTimeArray(this),
 						unique: uniquenum
 					}, function (response) {
-						var tds = $(thisForm).find('td');
-						if (response.isConflict && data.courseConflictHighlight && !response.alreadyContains) {
-							if (tds.css('color') != 'rgb(244, 67, 54)') {
-								red++;
-								tds.css('color', '#F44336').css('text-decoration', 'line-through').css('font-weight', 'normal');
-							}
-						} else if (!response.alreadyContains) {
-							if (tds.css('color') != 'rgb(51, 51, 51)') {
-								black++;
-								tds.css('color', 'black').css('text-decoration', 'none').css('font-weight', 'normal');
-							}
-						}
-						if (response.alreadyContains) {
-							if (tds.css('color') != 'rgb(76, 175, 80)') {
-								green++;
-								tds.css('color', '#4CAF50').css('text-decoration', 'none').css('font-weight', 'bold');
-							}
-						}
+						let {
+							isConflict,
+							alreadyContains
+						} = response
+						updateTextHighlighting($(thisForm).find('td'), canHighlight, isConflict, alreadyContains);
 					});
 				}
 			}
 		});
 	});
 }
+
+function updateTextHighlighting(tds, canHighlight, isConflict, alreadyContains) {
+	if (isConflict && canHighlight && !alreadyContains) {
+		if (tds.css('color') != 'rgb(244, 67, 54)')
+			tds.css('color', '#F44336').css('text-decoration', 'line-through').css('font-weight', 'normal');
+	} else if (!alreadyContains) {
+		if (tds.css('color') != 'rgb(51, 51, 51)')
+			tds.css('color', 'black').css('text-decoration', 'none').css('font-weight', 'normal');
+	}
+	if (alreadyContains) {
+		if (tds.css('color') != 'rgb(76, 175, 80)')
+			tds.css('color', '#4CAF50').css('text-decoration', 'none').css('font-weight', 'bold');
+	}
+}
+
 
 /* For a row, get the date-time-array for checking conflicts*/
 function getDayTimeArray(row, course_info) {
@@ -536,8 +479,8 @@ function close() {
 }
 
 function setChart(data) {
-	//set up the chart
-	chart = Highcharts.chart('chart', buildChartConfig(data), function (chart) { // on complete
+	// set up the chart
+	Highcharts.chart('chart', buildChartConfig(data), function (chart) { // on complete
 		if (data.length == 0) {
 			//if no data, then show the message and hide the series
 			chart.renderer.text('Could not find data for this Instructor teaching this Course.', 100, 120)
@@ -552,7 +495,6 @@ function setChart(data) {
 				ser.hide();
 			});
 		}
-
 	});
 }
 
@@ -621,5 +563,6 @@ function updateLinks(course_info, first_name) {
 function extractFirstName(response_node) {
 	let full_name = response_node.find('td[data-th="Instructor"]').text().split(', ');
 	let first = full_name[full_name.length - 1];
+	first = first.indexOf(' ') > 0 ? first.split(' ')[0] : first;
 	return capitalizeString(first);
 }

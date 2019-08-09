@@ -17,12 +17,12 @@
   "content_scripts": [{
     "css": ["css/styles.css"],
     "js": ["js/lib/moment.min.js", "js/lib/highcharts.js", "js/lib/jquery-3.3.1.min.js", "js/lib/jquery.initialize.min.js", "js/config.js", "js/util.js",
-      "js/courseCatalog.js"
+      "js/qol.js", "js/courseCatalog.js"
     ],
     "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
   }, {
     "css": ["css/styles.css"],
-    "js": ["js/lib/moment.min.js", "js/lib/highcharts.js", "js/lib/jquery-3.3.1.min.js", "js/lib/jquery.initialize.min.js", "js/config.js", "js/util.js", "js/utPlanner.js"],
+    "js": ["js/lib/moment.min.js", "js/lib/highcharts.js", "js/lib/jquery-3.3.1.min.js", "js/lib/jquery.initialize.min.js", "js/config.js", "js/util.js", "js/templates.js", "js/utPlanner.js"],
     "matches": ["https://utexas.collegescheduler.com/*"]
   }, {
     "css": ["css/styles.css"],
