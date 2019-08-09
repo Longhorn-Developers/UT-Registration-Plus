@@ -102,12 +102,9 @@ function openDialog(course_data, res) {
     $("#profname").text(buildProfTitle(course_data));
     $("#myModal").fadeIn(fadetime);
     buildSemestersDropdown(course_data, res)
-    var data;
-    if (badData(course_data, res)) {
-        data = [];
-    } else {
+    var data = []
+    if (!badData(course_data, res))
         data = res.values[0];
-    }
     setChart(data);
 }
 
@@ -172,9 +169,7 @@ function buildTimeTitle(times) {
     return lines
 }
 
-function close() {
-    $("#myModal").fadeOut(fadetime);
-}
+
 
 function makeLine(date, time, place) {
     var arr = seperateDays(date)
@@ -185,20 +180,7 @@ function makeLine(date, time, place) {
 }
 
 
-function seperateDays(date) {
-    let arr = [];
-    for (var i = 0; i < date.length; i++) {
-        let letter = date.charAt(i);
-        if (letter == "T" && i < date.length - 1 && date.charAt(i + 1) == "H") {
-            arr.push(days.get("TH"));
-        } else {
-            if (letter != "H") {
-                arr.push(days.get(letter));
-            }
-        }
-    }
-    return arr;
-}
+
 
 function prettifyDaysText(arr) {
     var output = "";
@@ -238,4 +220,8 @@ function setChart(data) {
             });
         }
     });
+}
+
+function close() {
+    $("#myModal").fadeOut(fadetime);
 }

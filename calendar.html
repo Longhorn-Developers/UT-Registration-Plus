@@ -3,31 +3,37 @@
 <head>
     <link rel='stylesheet' href='css/fullcalendar.min.css' />
     <link rel='stylesheet' href='css/_materialFullCalendar.css' />
-    <script src='js/jquery-3.3.1.min.js'></script>
-    <script src='js/moment.min.js'></script>
-    <script src='js/fullcalendar.min.js'></script>
+    <script src='js/lib/jquery-3.3.1.min.js'></script>
+    <script src='js/lib/moment.min.js'></script>
+    <script src='js/lib/fullcalendar.min.js'></script>
 </head>
 
 <body>
     <div style='display:flex'>
         <div id='calendar' style="flex-grow: 1"></div>
-        <div class="card" id="header" style="text-align:center;margin:5px 0px 0px 15px;display: inline-table;padding-bottom: 5px;">
-            <h1 id='hours' style="font-size:30px;font-weight:500;  border-bottom: 3px solid black;display: inline-block;padding-bottom: 5px;margin-bottom: 5px;">0
+        <div class="card" id="header"
+            style="text-align:center;margin:5px 0px 0px 15px;display: inline-table;padding-bottom: 5px;">
+            <h1 id='hours'
+                style="font-size:30px;font-weight:500;  border-bottom: 3px solid black;display: inline-block;padding-bottom: 5px;margin-bottom: 5px;">
+                0
                 hours</h1>
             <h1 id='num' style="font-size:20px;font-weight:500; margin: 2px;">0
                 Courses</h1>
             <br>
             <div style="margin:5px;display: flex;flex-direction: column;">
-                <button id="clear" class="matbut" style="font-size:medium; background:#4CAF50;margin: 10px;white-space: nowrap;text-align: center;">Clear
+                <button id="clear" class="matbut"
+                    style="font-size:medium; background:#4CAF50;margin: 10px;white-space: nowrap;text-align: center;">Clear
                     All</button>
-                <button id="save" class="matbut" style="font-size:medium; background:#FF9800;margin: 10px;white-space: nowrap;text-align: center;">Save
+                <button id="save" class="matbut"
+                    style="font-size:medium; background:#FF9800;margin: 10px;white-space: nowrap;text-align: center;">Save
                     as PNG</button>
-                <button id="export" class="matbut" style="font-size:medium; background:#FF0000;margin: 10px;white-space: nowrap;text-align: center;">Export
+                <button id="export" class="matbut"
+                    style="font-size:medium; background:#FF0000;margin: 10px;white-space: nowrap;text-align: center;">Export
                     Cal</button>
             </div>
         </div>
     </div>
 </body>
-<script src='js/html2canvas.min.js'></script>
-<script src='js/ics.min.js'></script>
+<script src='js/lib/html2canvas.min.js'></script>
+<script src='js/lib/ics.min.js'></script>
 <script src='js/calendar.js'></script>
