@@ -132,6 +132,16 @@ function sepNameParts(name) {
 	return [name, department, number];
 }
 
+function updateLinks(course_info, first_name) {
+	let {
+		prof_name,
+		number
+	} = course_info;
+	course_info["first_name"] = first_name;
+	course_info["links"]["rate_my_prof"] = `http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query=${first_name} ${prof_name};&facetSearch=true`;
+	course_info["links"]["ecis"] = profname ? `http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?&s_in_action_sw=S&s_in_search_type_sw=N&s_in_search_name=${prof_name}%2C%20${first_name}` :
+		`http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?s_in_action_sw=S&s_in_search_type_sw=C&s_in_max_nbr_return=10&s_in_search_course_dept=${department}&s_in_search_course_num=${number}`;
+}
 
 
 function buildCourseLinks(course_info) {
@@ -175,25 +185,6 @@ function buildBasicCourseInfo(row, course_name, individual) {
 		"links": {}
 	}
 	return buildCourseLinks(course_info);
-}
-
-
-function buildTimeTitle(course_info) {
-	$("h2.dateTimePlace").remove();
-	let {
-		days,
-		times,
-		places
-	} = course_info["time_data"]
-	datetimearr = [];
-	var lines = [];
-	for (var i = 0; i < days.length; i++) {
-		var date = days[i];
-		var time = times[i];
-		var place = places[i];
-		lines.push($(`<h2 class="dateTimePlace">${makeLine(date, time, place)}</th>`));
-	}
-	return lines;
 }
 
 /*For a row, get all the course information and add the date-time-lines*/
@@ -401,9 +392,26 @@ function getDistribution(course_data, sem) {
 	});
 }
 
-
 function buildTitle(course_data) {
 	return `${course_data["name"]} (${course_data["department"]} ${course_data["number"]})`
+}
+
+function buildTimeTitle(course_info) {
+	$("h2.dateTimePlace").remove();
+	let {
+		days,
+		times,
+		places
+	} = course_info["time_data"]
+	datetimearr = [];
+	var lines = [];
+	for (var i = 0; i < days.length; i++) {
+		var date = days[i];
+		var time = times[i];
+		var place = places[i];
+		lines.push($(`<h2 class="dateTimePlace">${makeLine(date, time, place)}</th>`));
+	}
+	return lines;
 }
 
 function buildProfTitle(course_data) {
@@ -461,22 +469,7 @@ function openDialog(course_info, res) {
 
 }
 
-function allowClosing() {
-	$('.close').click(function () {
-		close();
-	});
-	$('#myModal').click(function (event) {
-		if (event.target.id == 'myModal') {
-			close();
-		}
-	});
 
-}
-
-function close() {
-	$("#myModal").fadeOut(fadetime);
-	$("#snackbar").attr("class", "");
-}
 
 function setChart(data) {
 	// set up the chart
@@ -518,6 +511,15 @@ function buildFormattedDescription(description_lines) {
 }
 
 
+
+
+function extractFirstName(response_node) {
+	let full_name = response_node.find('td[data-th="Instructor"]').text().split(', ');
+	let first = full_name[full_name.length - 1];
+	first = first.indexOf(' ') > 0 ? first.split(' ')[0] : first;
+	return capitalizeString(first);
+}
+
 function displayDescription(description) {
 	$("#description").animate({
 		'opacity': 0
@@ -548,21 +550,19 @@ function getDescription(course_info) {
 	});
 }
 
+function allowClosing() {
+	$('.close').click(function () {
+		close();
+	});
+	$('#myModal').click(function (event) {
+		if (event.target.id == 'myModal') {
+			close();
+		}
+	});
 
-function updateLinks(course_info, first_name) {
-	let {
-		prof_name,
-		number
-	} = course_info;
-	course_info["first_name"] = first_name;
-	course_info["links"]["rate_my_prof"] = `http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query=${first_name} ${prof_name};&facetSearch=true`;
-	course_info["links"]["ecis"] = profname ? `http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?&s_in_action_sw=S&s_in_search_type_sw=N&s_in_search_name=${prof_name}%2C%20${first_name}` :
-		`http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?s_in_action_sw=S&s_in_search_type_sw=C&s_in_max_nbr_return=10&s_in_search_course_dept=${department}&s_in_search_course_num=${number}`;
 }
 
-function extractFirstName(response_node) {
-	let full_name = response_node.find('td[data-th="Instructor"]').text().split(', ');
-	let first = full_name[full_name.length - 1];
-	first = first.indexOf(' ') > 0 ? first.split(' ')[0] : first;
-	return capitalizeString(first);
+function close() {
+	$("#myModal").fadeOut(fadetime);
+	$("#snackbar").attr("class", "");
 }
