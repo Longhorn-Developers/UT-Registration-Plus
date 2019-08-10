@@ -2,36 +2,12 @@ if ($('html').hasClass('gr__utexas_collegescheduler_com')) {
     $.initialize("table.section-detail-grid", function () {
         $(this).find('thead>tr').append('<th> Plus</th')
         $(this).find('tbody>tr').each(function () {
-            $(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
+            $(this).append(extensionButton());
         })
     });
 }
-
 curr_course = {}
-var modhtml = `<div class=modal id=myModal>
-							<div class=modal-content>
-							   <span class=close>×</span>
-							   <div class=card>
-									<div class=cardcontainer>
-									   <h2 class=title id="title">Computer Fluency (C S 302)</h2>
-									   <h2 class=profname id="profname">with Bruce Porter</h2>
-									   <div id="topbuttons" class=topbuttons>
-											   <button class=matbut id="rateMyProf" style="background: #4CAF50;"> RMP </button>
-											   <button class=matbut id="eCIS" style="background: #CDDC39;"> eCIS </button>
-											   <button class=matbut id="Syllabi"> Past Syllabi </button>
-										</div>
-									</div>
-								</div>
-								<div class=card style='text-align:center'>
-                                    <select id="semesters" style='text-align-last:center;color:#666666;fill:#666666;'></select>
-                                    <div class="loader" id='loader' style="position:absolute;"></div>
-									<div id="chartcontainer" class=cardcontainer>
-										<div id=chart></div>
-									</div>
-								</div>
-							</div>
-						</div>`;
-$("body").prepend(modhtml);
+$("body").prepend(mainModal());
 
 $("body").on('click', '#distButton', function () {
     var row = $(this).closest('tr');
@@ -84,15 +60,14 @@ $("#semesters").on('change', function () {
 });
 
 
-function showLoading(loading) {
+function toggleChartLoading(loading) {
     if (loading) {
-        $('#loader').css('display', 'inline-block');
+        $('#chartload').css('display', 'inline-block');
         $("#chart").hide();
     } else {
-        $('#loader').hide();
+        $('#chartload').hide();
         $("#chart").show();
     }
-
 }
 
 
@@ -135,7 +110,7 @@ function buildSemestersDropdown(course_data, res) {
 
 /*Query the grades database*/
 function getDistribution(course_data, sem) {
-    showLoading(true);
+    toggleChartLoading(true);
     let query = buildQuery(course_data, sem);
     chrome.runtime.sendMessage({
         command: "gradesQuery",
@@ -203,7 +178,7 @@ function prettifyDaysText(arr) {
 
 function setChart(data) {
     //set up the chart
-    showLoading(false);
+    toggleChartLoading(false);
     chart = Highcharts.chart('chart', buildChartConfig(data), function (chart) { // on complete
         if (data.length == 0) {
             //if no data, then show the message and hide the series

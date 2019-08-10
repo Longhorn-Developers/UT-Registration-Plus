@@ -1,3 +1,8 @@
+function extensionButton() {
+    return `<td data-th="Plus"><input type="image" class="distButton" id="distButton" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`
+}
+
+
 function mainModal() {
     return `<div class=modal id=myModal>
         <div class=modal-content>
@@ -17,12 +22,18 @@ function mainModal() {
             </div>
             <div class=card>
                 <div class=cardcontainer style="">
+                    <div class="chartloader">
+                        <div class="loader" id='descload'></div>
+                    </div>
                     <ul class=description id="description" style="list-style-type:disc"></ul>
                 </div>
             </div>
             <div class=card style='text-align:center'>
                 <select id="semesters" style='text-align-last:center;color:#666666;fill:#666666;'>
                 </select>
+                <div class="chartloader">
+                    <div class="loader" id='chartload'></div>
+                </div>
                 <div id="chartcontainer" class=cardcontainer>
                     <div id=chart></div>
                 </div>

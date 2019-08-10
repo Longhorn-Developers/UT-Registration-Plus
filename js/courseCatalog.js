@@ -1,6 +1,5 @@
 var next = $("#next_nav_link");
-var bottom;
-var semesterCode;
+var semesterCode = new URL(window.location.href).pathname.split('/')[4];
 var doneLoading = true;
 
 
@@ -11,9 +10,6 @@ var curr_course = {}
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 
 console.log('UT Registration Plus is running on this page.');
-
-semesterCode = new URL(window.location.href).pathname.split('/')[4];
-
 
 $(window).scroll(function () {
 	if ($(document).height() <= $(window).scrollTop() + $(window).height() + 150) {
@@ -212,56 +208,6 @@ function getCourseInfo(row) {
 	return curr_course;
 }
 
-
-function toggleLoadingPage(loading) {
-	if (loading) {
-		$('#loader').css('display', 'inline-block');
-		$("#nextlabel").css('display', 'inline-block');
-	} else {
-		$('#loader').hide();
-		$("#nextlabel").hide();
-	}
-}
-
-function loadNextPages() {
-	chrome.storage.sync.get('loadAll', function (data) {
-		if (data.loadAll) {
-			let link = next.prop('href');
-			if (doneLoading && next && link) {
-				toggleLoadingPage(true);
-				doneLoading = false;
-				$.get(link, function (response) {
-					if (response) {
-						var nextpage = $('<div/>').html(response).contents();
-						var current = $('tbody');
-						var oldlength = $('tbody tr').length;
-						var last = current.find('.course_header>h2:last').text();
-						next = nextpage.find("#next_nav_link");
-						doneLoading = true;
-						$("#nextlabel").hide();
-						$('#loader').hide();
-						var newrows = [];
-						nextpage.find('tbody>tr').each(function () {
-							let hasCourseHead = $(this).find('td').hasClass("course_header");
-							if (!(hasCourseHead && $(this).has('th').length == 0))
-								$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
-							if (!(hasCourseHead && last == $(this).find('td').text()))
-								newrows.push($(this));
-						});
-						current.append(newrows);
-						update(oldlength + 1)
-					}
-				}).fail(function () {
-					doneLoading = true;
-					toggleLoadingPage(false);
-					$("#retrylabel").css('display', 'inline-block');
-					$('#retry').css('display', 'inline-block');
-				});
-			}
-		}
-	});
-}
-
 function saveCourse() {
 	let {
 		full_name,
@@ -376,7 +322,7 @@ function badData(course_data, res) {
 
 /*Query the grades database*/
 function getDistribution(course_data, sem) {
-	// showLoading(true);
+	toggleChartLoading(true);
 	let query = buildQuery(course_data, sem);
 	chrome.runtime.sendMessage({
 		command: "gradesQuery",
@@ -469,10 +415,9 @@ function openDialog(course_info, res) {
 
 }
 
-
-
 function setChart(data) {
 	// set up the chart
+	toggleChartLoading(false);
 	Highcharts.chart('chart', buildChartConfig(data), function (chart) { // on complete
 		if (data.length == 0) {
 			//if no data, then show the message and hide the series
@@ -491,6 +436,8 @@ function setChart(data) {
 	});
 }
 
+var error_message = "<p style='color:red;font-style:bold'>You have been logged out. Please refresh the page and log back in using your UT EID and password.</p>";
+
 function buildFormattedDescription(description_lines) {
 	let description = ""
 	for (let i in description_lines) {
@@ -506,12 +453,9 @@ function buildFormattedDescription(description_lines) {
 		description += sentence;
 	}
 	if (!description)
-		description = "<p style='color:red;font-style:bold'>There was an error. Please refresh the page and/or log back in using your UT EID and password.</p>"
+		description = error_message;
 	return description;
 }
-
-
-
 
 function extractFirstName(response_node) {
 	let full_name = response_node.find('td[data-th="Instructor"]').text().split(', ');
@@ -521,6 +465,7 @@ function extractFirstName(response_node) {
 }
 
 function displayDescription(description) {
+	toggleDescriptionLoading(false);
 	$("#description").animate({
 		'opacity': 0
 	}, 200, function () {
@@ -532,7 +477,7 @@ function displayDescription(description) {
 
 /*Get the course description from the profurl and highlight the important elements, as well as set the eCIS, and rmp links.*/
 function getDescription(course_info) {
-	console.log('getting description for ')
+	toggleDescriptionLoading(true);
 	$.ajax({
 		url: course_info["individual"],
 		success: function (response) {
@@ -543,8 +488,74 @@ function getDescription(course_info) {
 				let first_name = extractFirstName(response_node);
 				updateLinks(course_info, first_name);
 			} else {
-				description = "<p style='color:red;font-style:bold'>You have been logged out. Please refresh the page and log back in using your UT EID and password.</p>"
-				displayDescription(description);
+				displayDescription(error_message);
+			}
+		}
+	});
+}
+
+function toggleLoadingPage(loading) {
+	if (loading) {
+		$('#loader').css('display', 'inline-block');
+		$("#nextlabel").css('display', 'inline-block');
+	} else {
+		$('#loader').hide();
+		$("#nextlabel").hide();
+	}
+}
+
+function toggleChartLoading(loading) {
+	if (loading) {
+		$('#chartload').css('display', 'inline-block');
+		$("#chart").hide();
+	} else {
+		$('#chartload').hide();
+		$("#chart").show();
+	}
+}
+
+function toggleDescriptionLoading(loading) {
+	if (loading) {
+		$('#descload').css('display', 'inline-block');
+	} else {
+		$('#descload').hide();
+	}
+}
+
+function loadNextPages() {
+	chrome.storage.sync.get('loadAll', function (data) {
+		if (data.loadAll) {
+			let link = next.prop('href');
+			if (doneLoading && next && link) {
+				toggleLoadingPage(true);
+				doneLoading = false;
+				$.get(link, function (response) {
+					if (response) {
+						var nextpage = $('<div/>').html(response).contents();
+						var current = $('tbody');
+						var oldlength = $('tbody tr').length;
+						var last = current.find('.course_header>h2:last').text();
+						next = nextpage.find("#next_nav_link");
+						doneLoading = true;
+						$("#nextlabel").hide();
+						$('#loader').hide();
+						var newrows = [];
+						nextpage.find('tbody>tr').each(function () {
+							let hasCourseHead = $(this).find('td').hasClass("course_header");
+							if (!(hasCourseHead && $(this).has('th').length == 0))
+								$(this).append(extensionButton());
+							if (!(hasCourseHead && last == $(this).find('td').text()))
+								newrows.push($(this));
+						});
+						current.append(newrows);
+						update(oldlength + 1)
+					}
+				}).fail(function () {
+					doneLoading = true;
+					toggleLoadingPage(false);
+					$("#retrylabel").css('display', 'inline-block');
+					$('#retry').css('display', 'inline-block');
+				});
 			}
 		}
 	});
@@ -559,7 +570,6 @@ function allowClosing() {
 			close();
 		}
 	});
-
 }
 
 function close() {
