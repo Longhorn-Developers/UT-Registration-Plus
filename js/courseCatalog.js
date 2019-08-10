@@ -1,53 +1,58 @@
-var next = $("#next_nav_link");
-var semesterCode = new URL(window.location.href).pathname.split('/')[4];
-var doneLoading = true;
-
+console.log(`UT Registration Plus is running on this page: ${window.location.href}`);
 
 var curr_course = {}
+var semesterCode = new URL(window.location.href).pathname.split('/')[4];
+var doneLoading = true;
+updateListConflictHighlighting();
 
+
+
+var next = $("#next_nav_link");
+if (next) {
+	chrome.storage.sync.get('loadAll', function (data) {
+		if (data.loadAll)
+			$('[title*="next listing"]').remove();
+	});
+}
 
 //This extension may be super lit, but you know what's even more lit?
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 
-console.log('UT Registration Plus is running on this page.');
-
 $(window).scroll(function () {
-	if ($(document).height() <= $(window).scrollTop() + $(window).height() + 150) {
+	if ($(document).height() <= $(window).scrollTop() + $(window).height() + 150)
 		loadNextPages();
-	}
 });
 
-if (next) {
-	chrome.storage.sync.get('loadAll', function (data) {
-		if (data.loadAll) {
-			$('[title*="next listing"]').remove();
+
+if (document.querySelector('#fos_fl')) {
+	let params = (new URL(document.location)).searchParams;
+	let dep = params.get("fos_fl");
+	let level = params.get("level");
+	if (dep && level) {
+		if (dep.length == 3 && (level == 'U' || level == 'L' || level == 'G')) {
+			document.querySelector('#fos_fl').value = dep;
+			document.querySelector('#level').value = level;
 		}
-	});
+	}
 }
 
 //make heading and modal
 if (!$("#kw_results_table").length) {
-	$("table thead th:last-child").after('<th scope=col>Plus</th>');
-	$("table").after(`<div style="text-align:center">
-						<div class="loader" id='loader'></div>
-						<br>
-						<h1 id="nextlabel"style="color: #FF9800;display:none;">Loading Courses</h1>
-						<h1 id="retrylabel"style="color: #F44336;display:none;">Failed to Load Courses</h1>
-						<br>
-						<button class=matbut id="retry" style="background: #F44336;display:none;">Retry</button>
-					  </div>`);
-	$("#container").prepend(mainModal());
+	$("table").after(Template.catalogLoading());
+	$("#container").prepend(Template.mainModal());
 	$("#myModal").prepend("<div id='snackbar'>save course popup...</div>");
-	//go through all the rows in the list
+
+	// now add to the table 
+	$("table thead th:last-child").after('<th scope=col>Plus</th>');
 	$('table').find('tr').each(function () {
 		if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
-			//if a course row, then add the extension button
-			$(this).append(`<td data-th="Plus"><input type="image" class="distButton" id="distButton" style="vertical-align: bottom; display:block;" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`);
+			$(this).append(Template.extensionButton());
 		}
 	});
 }
-//update the conflicts
-update(0);
+
+
+
 /*Handle the button clicks*/
 $("body").on('click', '#distButton', function () {
 	var row = $(this).closest('tr');
@@ -97,27 +102,6 @@ $("#retry").click(function () {
 	$(this).hide();
 	loadNextPages();
 });
-
-
-
-
-$(document).keydown(function (e) {
-	/*Close Modal when hit escape*/
-	if (e.keyCode == 27) {
-		close();
-	} else if (e.keyCode == 13 && $('#myModal').is(':visible')) {
-		saveCourse();
-	}
-});
-
-/*Listen for update mssage coming from popup*/
-chrome.runtime.onMessage.addListener(
-	function (request, sender, sendResponse) {
-		if (request.command == "updateCourseList") {
-			update(0);
-		}
-	}
-);
 
 
 function sepNameParts(name) {
@@ -234,18 +218,8 @@ function saveCourse() {
 	});
 }
 
-
-function toggleSnackbar() {
-	setTimeout(function () {
-		$("#snackbar").attr("class", "show");
-	}, 200);
-	setTimeout(function () {
-		$("#snackbar").attr("class", "");
-	}, 3000);
-}
-
 /* Update the course list to show if the row contains a course that conflicts with the saved course is one of the saved courses */
-function update(start) {
+function updateListConflictHighlighting(start = 0) {
 	chrome.storage.sync.get('courseConflictHighlight', function (data) {
 		let canHighlight = data.courseConflictHighlight;
 		$('table').find('tr').each(function (i) {
@@ -494,11 +468,60 @@ function getDescription(course_info) {
 	});
 }
 
+function loadNextPages() {
+	chrome.storage.sync.get('loadAll', function (data) {
+		if (data.loadAll) {
+			let link = next.prop('href');
+			if (doneLoading && next && link) {
+				toggleLoadingPage(true);
+				$.get(link, function (response) {
+					if (response) {
+						var nextpage = $('<div/>').html(response).contents();
+						var current = $('tbody');
+						var oldlength = $('tbody tr').length;
+						var last = current.find('.course_header>h2:last').text();
+						next = nextpage.find("#next_nav_link");
+						toggleLoadingPage(false);
+						var newrows = [];
+						nextpage.find('tbody>tr').each(function () {
+							let hasCourseHead = $(this).find('td').hasClass("course_header");
+							if (!(hasCourseHead && $(this).has('th').length == 0))
+								$(this).append(Template.extensionButton());
+							if (!(hasCourseHead && last == $(this).find('td').text()))
+								newrows.push($(this));
+						});
+						current.append(newrows);
+						updateListConflictHighlighting(oldlength + 1)
+					}
+				}).fail(function () {
+					toggleLoadingPage(false);
+					$("#retrylabel").css('display', 'inline-block');
+					$('#retry').css('display', 'inline-block');
+				});
+			}
+		}
+	});
+}
+
+
+
+/*Listen for update mssage coming from popup*/
+chrome.runtime.onMessage.addListener(
+	function (request, sender, sendResponse) {
+		if (request.command == "updateCourseList") {
+			updateListConflictHighlighting(0);
+		}
+	}
+);
+
+
 function toggleLoadingPage(loading) {
 	if (loading) {
+		doneLoading = false;
 		$('#loader').css('display', 'inline-block');
 		$("#nextlabel").css('display', 'inline-block');
 	} else {
+		doneLoading = true;
 		$('#loader').hide();
 		$("#nextlabel").hide();
 	}
@@ -522,44 +545,24 @@ function toggleDescriptionLoading(loading) {
 	}
 }
 
-function loadNextPages() {
-	chrome.storage.sync.get('loadAll', function (data) {
-		if (data.loadAll) {
-			let link = next.prop('href');
-			if (doneLoading && next && link) {
-				toggleLoadingPage(true);
-				doneLoading = false;
-				$.get(link, function (response) {
-					if (response) {
-						var nextpage = $('<div/>').html(response).contents();
-						var current = $('tbody');
-						var oldlength = $('tbody tr').length;
-						var last = current.find('.course_header>h2:last').text();
-						next = nextpage.find("#next_nav_link");
-						doneLoading = true;
-						$("#nextlabel").hide();
-						$('#loader').hide();
-						var newrows = [];
-						nextpage.find('tbody>tr').each(function () {
-							let hasCourseHead = $(this).find('td').hasClass("course_header");
-							if (!(hasCourseHead && $(this).has('th').length == 0))
-								$(this).append(extensionButton());
-							if (!(hasCourseHead && last == $(this).find('td').text()))
-								newrows.push($(this));
-						});
-						current.append(newrows);
-						update(oldlength + 1)
-					}
-				}).fail(function () {
-					doneLoading = true;
-					toggleLoadingPage(false);
-					$("#retrylabel").css('display', 'inline-block');
-					$('#retry').css('display', 'inline-block');
-				});
-			}
-		}
-	});
+function toggleSnackbar() {
+	setTimeout(function () {
+		$("#snackbar").attr("class", "show");
+	}, 200);
+	setTimeout(function () {
+		$("#snackbar").attr("class", "");
+	}, 3000);
 }
+
+$(document).keydown(function (e) {
+	/*Close Modal when hit escape*/
+	if (e.keyCode == 27) {
+		close();
+	} else if (e.keyCode == 13 && $('#myModal').is(':visible')) {
+		saveCourse();
+	}
+});
+
 
 function allowClosing() {
 	$('.close').click(function () {

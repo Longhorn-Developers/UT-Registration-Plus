@@ -2,12 +2,12 @@ if ($('html').hasClass('gr__utexas_collegescheduler_com')) {
     $.initialize("table.section-detail-grid", function () {
         $(this).find('thead>tr').append('<th> Plus</th')
         $(this).find('tbody>tr').each(function () {
-            $(this).append(extensionButton());
+            $(this).append(Template.extensionButton());
         })
     });
 }
 curr_course = {}
-$("body").prepend(mainModal());
+$("body").prepend(Template.mainModal());
 
 $("body").on('click', '#distButton', function () {
     var row = $(this).closest('tr');
