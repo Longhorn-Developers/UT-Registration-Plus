@@ -11,8 +11,14 @@ class Colors {
         '#FF5252', '#E91E63', '#009688', '#00BCD4',
         '#4E342E', '#424242', '#9E9E9E'
     ];
-}
+    static open = "#4CAF50";
+    static waitlisted = "#FF9800";
+    static closed = "#FF5722";
 
+    static highlight_conflict = "#F44336";
+    static highlight_default = "#333333";
+    static highlight_saved = "#4CAF50";
+}
 
 class Export {
     static png_options = {
@@ -21,4 +27,9 @@ class Export {
         removeContainer: true,
         async: true,
     }
+}
+
+
+class Text {
+
 }

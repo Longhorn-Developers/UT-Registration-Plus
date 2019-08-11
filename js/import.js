@@ -6,24 +6,23 @@ $(function () {
 	console.log(window.location.href);
 	var importbutton = "<button class='matbut' id='import' style='margin:20px 0px 20px 0px;'><span style='font-size:small'>Import into </span><b>UT Reg Plus<b></h2></button><br>";
 	waitlist = !(window.location.href.includes('https://utdirect.utexas.edu/registration/classlist.WBX'));
-	if(waitlist){
+	if (waitlist) {
 		sem = $('[name="s_ccyys"]').val();
 		$("[href='#top']").before(importbutton);
 	} else {
 		sem = $("option[selected='selected']").val();
 		$("table").after(importbutton);
 	}
-	console.log(sem);
 	$("#import").prepend("<div id='snackbar'>defaultmessage..</div>");
 	$("#import").click(function () {
-		if(waitlist){
+		if (waitlist) {
 			$(".tbg").last().find(".tbon>td:first-child").each(function () {
 				let unique = $(this).text().replace(/\s/g, '');
 				link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
 				getInfo();
 			});
 		} else {
-			$("tr>td:first-child").each(function(){
+			$("tr>td:first-child").each(function () {
 				let unique = $(this).text().replace(/\s/g, '');
 				link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
 				getInfo();

@@ -1,8 +1,10 @@
 console.log(`UT Registration Plus is running on this page: ${window.location.href}`);
 
 var curr_course = {}
-var semesterCode = new URL(window.location.href).pathname.split('/')[4];
-var doneLoading = true;
+
+
+var semester_code = new URL(window.location.href).pathname.split('/')[4];
+var done_loading = true;
 updateListConflictHighlighting();
 
 
@@ -64,45 +66,6 @@ $("body").on('click', '#distButton', function () {
 	getDistribution(curr_course);
 });
 
-$("#myModal").on('click', '#saveCourse', function () {
-	setTimeout(function () {
-		saveCourse();
-	}, 0);
-});
-
-$("#Syllabi").click(function () {
-	setTimeout(function () {
-		window.open(curr_course["links"]["syllabi"]);
-	}, Timing.button_delay);
-});
-$("#rateMyProf").click(function () {
-	setTimeout(function () {
-		window.open(curr_course["links"]["rate_my_prof"]);
-	}, Timing.button_delay);
-});
-$("#eCIS").click(function () {
-	setTimeout(function () {
-		window.open(curr_course["links"]["ecis"]);
-	}, Timing.button_delay);
-});
-$("#textbook").click(function () {
-	setTimeout(function () {
-		window.open(curr_course["links"]["textbook"]);
-	}, Timing.button_delay);
-});
-$("#semesters").on('change', function () {
-	let sem = $(this).val();
-	sem = sem == "Aggregate" ? undefined : sem;
-	getDistribution(curr_course, sem);
-});
-
-$("#retry").click(function () {
-	$("#retrylabel").hide();
-	$(this).hide();
-	loadNextPages();
-});
-
-
 
 function updateLinks(course_info, first_name) {
 	let {
@@ -124,7 +87,7 @@ function buildCourseLinks(course_info) {
 		prof_name
 	} = course_info
 	links = {
-		"textbook": `https://www.universitycoop.com/adoption-search-results?sn=${semesterCode}__${department}__${number}__${unique}`,
+		"textbook": `https://www.universitycoop.com/adoption-search-results?sn=${semester_code}__${department}__${number}__${unique}`,
 		"syllabi": `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?semester=&department=${department}&course_number=${number}&course_title=&unique=&instructor_first=&instructor_last=${prof_name}&course_type=In+Residence&search=Search`,
 		//default ones (before first name can be used)
 		"rate_my_prof": "http://www.ratemyprofessors.com/campusRatings.jsp?sid=1255",
@@ -221,18 +184,18 @@ function updateListConflictHighlighting(start = 0) {
 		$('table').find('tr').each(function (i) {
 			if (i >= start) {
 				if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
-					var thisForm = this;
-					var uniquenum = $(this).find('td[data-th="Unique"]').text();
+					var this_form = this;
+					var unique = $(this).find('td[data-th="Unique"]').text();
 					chrome.runtime.sendMessage({
 						command: "isSingleConflict",
 						dtarr: getDayTimeArray(this),
-						unique: uniquenum
+						unique: unique
 					}, function (response) {
 						let {
 							isConflict,
 							alreadyContains
 						} = response
-						updateTextHighlighting($(thisForm).find('td'), canHighlight, isConflict, alreadyContains);
+						updateTextHighlighting($(this_form).find('td'), canHighlight, isConflict, alreadyContains);
 					});
 				}
 			}
@@ -241,23 +204,24 @@ function updateListConflictHighlighting(start = 0) {
 }
 
 function updateTextHighlighting(tds, canHighlight, isConflict, alreadyContains) {
+	let current_color = rgb2hex(tds.css('color'));
 	if (isConflict && canHighlight && !alreadyContains) {
-		if (tds.css('color') != 'rgb(244, 67, 54)')
-			tds.css('color', '#F44336').css('text-decoration', 'line-through').css('font-weight', 'normal');
+		if (current_color != Colors.highlight_conflict)
+			tds.css('color', Colors.highlight_conflict).css('text-decoration', 'line-through').css('font-weight', 'normal');
 	} else if (!alreadyContains) {
-		if (tds.css('color') != 'rgb(51, 51, 51)')
-			tds.css('color', 'black').css('text-decoration', 'none').css('font-weight', 'normal');
+		if (tds.css('color') != Colors.highlight_default)
+			tds.css('color', Colors.highlight_default).css('text-decoration', 'none').css('font-weight', 'normal');
 	}
 	if (alreadyContains) {
-		if (tds.css('color') != 'rgb(76, 175, 80)')
-			tds.css('color', '#4CAF50').css('text-decoration', 'none').css('font-weight', 'bold');
+		if (tds.css('color') != Colors.highlight_saved)
+			tds.css('color', Colors.highlight_saved).css('text-decoration', 'none').css('font-weight', 'bold');
 	}
 }
 
 
 /* For a row, get the date-time-array for checking conflicts*/
 function getDayTimeArray(row, course_info) {
-	var daytimearray = []
+	var day_time_array = []
 	let days = course_info ? course_info["time_data"]["days"] : $(row).find('td[data-th="Days"]>span').toArray().map(x => $(x).text().trim());
 	let times = course_info ? course_info["time_data"]["times"] : $(row).find('td[data-th="Hour"]>span').toArray().map(x => $(x).text().trim());
 	let places = course_info ? course_info["time_data"]["places"] : $(row).find('td[data-th="Room"]>span').toArray().map(x => $(x).text().trim());
@@ -268,20 +232,20 @@ function getDayTimeArray(row, course_info) {
 		for (var j = 0; j < date.length; j++) {
 			let letter = date.charAt(j);
 			if (letter == "T" && j < date.length - 1 && date.charAt(j + 1) == "H") {
-				daytimearray.push(["TH", convertTime(time), place]);
+				day_time_array.push(["TH", convertTime(time), place]);
 			} else {
 				if (letter != "H")
-					daytimearray.push([letter, convertTime(time), place]);
+					day_time_array.push([letter, convertTime(time), place]);
 			}
 		}
 	}
-	return daytimearray;
+	return day_time_array;
 }
 
 function convertDateTimeArrToLine(date, time, place) {
-	var arr = seperateDays(date)
-	var output = prettifyDaysText(arr)
-	var building = place.substring(0, place.search(/\d/) - 1);
+	let arr = seperateDays(date)
+	let output = prettifyDaysText(arr)
+	let building = place.substring(0, place.search(/\d/) - 1);
 	building = building == "" ? "Undecided Location" : building;
 	return `${output} at ${time.replace(/\./g, '').replace(/\-/g, ' to ')} in <a style='font-size:medium' target='_blank' href='https://maps.utexas.edu/buildings/UTM/${building}'>${building}</>`;
 }
@@ -319,9 +283,8 @@ function buildTimeTitle(course_info) {
 		times,
 		places
 	} = course_info["time_data"]
-	datetimearr = [];
 	var lines = [];
-	for (var i = 0; i < days.length; i++) {
+	for (let i = 0; i < days.length; i++) {
 		var date = days[i];
 		var time = times[i];
 		var place = places[i];
@@ -382,7 +345,6 @@ function openDialog(course_info, res) {
 	//close button
 	allowClosing();
 	setChart(data);
-
 }
 
 function setChart(data) {
@@ -468,26 +430,26 @@ function loadNextPages() {
 	chrome.storage.sync.get('loadAll', function (data) {
 		if (data.loadAll) {
 			let link = next.prop('href');
-			if (doneLoading && next && link) {
+			if (done_loading && next && link) {
 				toggleLoadingPage(true);
 				$.get(link, function (response) {
 					if (response) {
-						var nextpage = $('<div/>').html(response).contents();
+						var next_page = $('<div/>').html(response).contents();
 						var current = $('tbody');
-						var oldlength = $('tbody tr').length;
+						var old_length = $('tbody tr').length;
 						var last = current.find('.course_header>h2:last').text();
-						next = nextpage.find("#next_nav_link");
+						next = next_page.find("#next_nav_link");
 						toggleLoadingPage(false);
-						var newrows = [];
-						nextpage.find('tbody>tr').each(function () {
-							let hasCourseHead = $(this).find('td').hasClass("course_header");
-							if (!(hasCourseHead && $(this).has('th').length == 0))
+						var new_rows = [];
+						next_page.find('tbody>tr').each(function () {
+							let has_course_header = $(this).find('td').hasClass("course_header");
+							if (!(has_course_header && $(this).has('th').length == 0))
 								$(this).append(Template.extensionButton());
-							if (!(hasCourseHead && last == $(this).find('td').text()))
-								newrows.push($(this));
+							if (!(has_course_header && last == $(this).find('td').text()))
+								new_rows.push($(this));
 						});
-						current.append(newrows);
-						updateListConflictHighlighting(oldlength + 1)
+						current.append(new_rows);
+						updateListConflictHighlighting(old_length + 1)
 					}
 				}).fail(function () {
 					toggleLoadingPage(false);
@@ -499,7 +461,43 @@ function loadNextPages() {
 	});
 }
 
+$("#myModal").on('click', '#saveCourse', function () {
+	setTimeout(function () {
+		saveCourse();
+	}, 0);
+});
 
+$("#Syllabi").click(function () {
+	setTimeout(function () {
+		window.open(curr_course["links"]["syllabi"]);
+	}, Timing.button_delay);
+});
+$("#rateMyProf").click(function () {
+	setTimeout(function () {
+		window.open(curr_course["links"]["rate_my_prof"]);
+	}, Timing.button_delay);
+});
+$("#eCIS").click(function () {
+	setTimeout(function () {
+		window.open(curr_course["links"]["ecis"]);
+	}, Timing.button_delay);
+});
+$("#textbook").click(function () {
+	setTimeout(function () {
+		window.open(curr_course["links"]["textbook"]);
+	}, Timing.button_delay);
+});
+$("#semesters").on('change', function () {
+	let sem = $(this).val();
+	sem = sem == "Aggregate" ? undefined : sem;
+	getDistribution(curr_course, sem);
+});
+
+$("#retry").click(function () {
+	$("#retrylabel").hide();
+	$(this).hide();
+	loadNextPages();
+});
 
 /*Listen for update mssage coming from popup*/
 chrome.runtime.onMessage.addListener(
@@ -513,11 +511,11 @@ chrome.runtime.onMessage.addListener(
 
 function toggleLoadingPage(loading) {
 	if (loading) {
-		doneLoading = false;
+		done_loading = false;
 		$('#loader').css('display', 'inline-block');
 		$("#nextlabel").css('display', 'inline-block');
 	} else {
-		doneLoading = true;
+		done_loading = true;
 		$('#loader').hide();
 		$("#nextlabel").hide();
 	}

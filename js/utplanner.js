@@ -144,36 +144,12 @@ function buildTimeTitle(times) {
     return lines
 }
 
-
-
 function makeLine(date, time, place) {
     var arr = seperateDays(date)
     var output = prettifyDaysText(arr)
     var building = place.substring(0, place.search(/\d/) - 1);
     building = building == "" ? "Undecided Location" : building;
     return `${output} at ${time.replace(/\./g, '').replace(/\-/g, ' to ')} in <a style='font-size:medium' target='_blank' href='https://maps.utexas.edu/buildings/UTM/${building}'>${building}</>`;
-}
-
-
-
-
-function prettifyDaysText(arr) {
-    var output = "";
-    if (arr.length > 2) {
-        for (var i = 0; i < arr.length; i++) {
-            if (i < arr.length - 1)
-                output += arr[i] + ", "
-            if (i == arr.length - 2)
-                output += "and ";
-            if (i == arr.length - 1)
-                output += arr[i];
-        }
-    } else if (arr.length == 2) {
-        output = arr[0] + " and " + arr[1];
-    } else {
-        output = arr[0];
-    }
-    return output
 }
 
 function setChart(data) {

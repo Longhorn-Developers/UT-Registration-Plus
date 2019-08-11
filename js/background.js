@@ -308,21 +308,17 @@ function updateStatus(sendResponse) {
                             var object = $('<div/>').html(result).contents();
                             let newstatus = object.find('[data-th="Status"]').text();
                             let registerlink = object.find('td[data-th="Add"] a');
-                            if (registerlink) {
+                            if (registerlink)
                                 registerlink = registerlink.attr('href');
-                            }
                             var haschanged = (newstatus == oldstatus && registerlink == oldlink);
-                            if (!haschanged) {
+                            if (!haschanged)
                                 console.log(c.unique + ' updated from ' + oldstatus + " to " + newstatus + " and " + oldlink + " to " + registerlink);
-                            }
                             nochange &= haschanged;
                             c.registerlink = registerlink;
                             c.status = newstatus;
                         }
                     }
                 });
-
-
             } catch (e) {
                 console.log(e);
                 console.log('Not logged into UT Coursebook. Could not update class statuses.');
@@ -333,9 +329,6 @@ function updateStatus(sendResponse) {
                 savedCourses: courses
             });
             console.log('updated status');
-        } else {
-            // console.log('no change');
         }
-        // console.log("updated status' and registerlinks");
     });
 }

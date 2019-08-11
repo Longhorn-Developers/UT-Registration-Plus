@@ -6,25 +6,19 @@ const days = new Map([
     ["F", "Friday"]
 ]);
 
-const semOrder = {
-    "Spring": 0,
-    "Fall": 1,
-    "Summer": 2,
-    "Winter": 3
-}
-
-
 function getStatusColor(status) {
     let color = "black";
     if (status.includes("open")) {
-        color = "#4CAF50";
+        color = Colors.open;
     } else if (status.includes("waitlisted")) {
-        color = "#FF9800"
+        color = Colors.waitlisted;
     } else if (status.includes("closed") || status.includes("cancelled")) {
-        color = "#FF5722";
+        color = Colors.closed;
     }
     return color;
 }
+
+
 
 function buildQuery(course_data, sem) {
     let query = !sem ? "select * from agg" : "select * from grades";
@@ -106,6 +100,12 @@ function prettifyDaysText(arr) {
 
 
 function semesterSort(semA, semB) {
+    let semOrder = {
+        "Spring": 0,
+        "Fall": 1,
+        "Summer": 2,
+        "Winter": 3
+    }
     let aName = semA.split(' ')[0];
     let aYear = parseInt(semA.split(' ')[1]);
     let bName = semB.split(' ')[0];
@@ -298,4 +298,13 @@ function reformatDateTime(dtl1) {
         }
     }
     return output;
+}
+
+function rgb2hex(rgb) {
+    rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+
+    function hex(x) {
+        return ("0" + parseInt(x).toString(16)).slice(-2);
+    }
+    return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
 }

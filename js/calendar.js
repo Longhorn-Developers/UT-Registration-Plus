@@ -11,8 +11,6 @@ var curr_course = {}
 
 $("#calendar").after(Template.calendarModal());
 
-
-
 chrome.storage.sync.get("savedCourses", function (data) {
     // Iterate through each saved course and add to 'event'
     saved_courses = data.savedCourses;
@@ -75,13 +73,12 @@ function setUpModal() {
 
 function setRegisterButton(status, registerlink) {
     if (canNotRegister(status, registerlink))
-        $("#register").text("Can't Register").css("background-color", "#FF5722");
+        $("#register").text("Can't Register").css("background-color", Colors.closed);
     else if (status.includes("waitlisted"))
-        $("#register").text("Join Waitlist").css("background-color", "#FF9800");
+        $("#register").text("Join Waitlist").css("background-color", Colors.waitlisted);
     else
-        $("#register").text("Register").css("background-color", "#4CAF50");
+        $("#register").text("Register").css("background-color", Colors.open);
 }
-
 
 function canNotRegister(status, registerlink) {
     return status.includes("closed") || status.includes("cancelled") || !status || !registerlink
@@ -100,15 +97,15 @@ function buildTimeTitle(datetimearr) {
 
 
 // Iterate through each saved course and add to 'event'
-function buildEventSource(savedCourses) {
+function buildEventSource(saved_courses) {
     color_counter = 0;
     let event_source = [];
     var hours = 0;
-    for (let i = 0; i < savedCourses.length; i++) {
+    for (let i = 0; i < saved_courses.length; i++) {
         let {
             coursename,
             datetimearr
-        } = savedCourses[i];
+        } = saved_courses[i];
         let number = seperateCourseNameParts(coursename).number;
         hours += parseInt(number.charAt(0));
         for (let j = 0; j < datetimearr.length; j++) {
@@ -118,9 +115,13 @@ function buildEventSource(savedCourses) {
         }
         color_counter++;
     }
-    $("#hours").text(hours + " Hours");
-    $("#num").text(savedCourses.length + " Courses");
+    displayMetaData(hours, saved_courses);
     return event_source;
+}
+
+function displayMetaData(hours, saved_courses) {
+    $("#hours").text(hours + " Hours");
+    $("#num").text(saved_courses.length + " Courses");
 }
 
 //create the event object for every section
@@ -176,8 +177,6 @@ chrome.runtime.onMessage.addListener(
         }
     }
 );
-
-
 
 
 $("#info").click(() => {
