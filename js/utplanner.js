@@ -75,7 +75,7 @@ function openDialog(course_data, res) {
     $("#title").text(buildTitle(course_data))
     $("#topbuttons").before(buildTimeTitle(course_data["times"]));
     $("#profname").text(buildProfTitle(course_data));
-    $("#myModal").fadeIn(fadetime);
+    $("#myModal").fadeIn(Timing.fade_time);
     buildSemestersDropdown(course_data, res)
     var data = []
     if (!badData(course_data, res))
@@ -198,5 +198,5 @@ function setChart(data) {
 }
 
 function close() {
-    $("#myModal").fadeOut(fadetime);
+    $("#myModal").fadeOut(Timing.fade_time);
 }

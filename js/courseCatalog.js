@@ -64,7 +64,6 @@ $("body").on('click', '#distButton', function () {
 	getDistribution(curr_course);
 });
 
-
 $("#myModal").on('click', '#saveCourse', function () {
 	setTimeout(function () {
 		saveCourse();
@@ -74,25 +73,25 @@ $("#myModal").on('click', '#saveCourse', function () {
 $("#Syllabi").click(function () {
 	setTimeout(function () {
 		window.open(curr_course["links"]["syllabi"]);
-	}, butdelay);
+	}, Timing.button_delay);
 });
 $("#rateMyProf").click(function () {
 	setTimeout(function () {
 		window.open(curr_course["links"]["rate_my_prof"]);
-	}, butdelay);
+	}, Timing.button_delay);
 });
 $("#eCIS").click(function () {
 	setTimeout(function () {
 		window.open(curr_course["links"]["ecis"]);
-	}, butdelay);
+	}, Timing.button_delay);
 });
 $("#textbook").click(function () {
 	setTimeout(function () {
 		window.open(curr_course["links"]["textbook"]);
-	}, butdelay);
+	}, Timing.button_delay);
 });
 $("#semesters").on('change', function () {
-	var sem = $(this).val();
+	let sem = $(this).val();
 	sem = sem == "Aggregate" ? undefined : sem;
 	getDistribution(curr_course, sem);
 });
@@ -104,13 +103,6 @@ $("#retry").click(function () {
 });
 
 
-function sepNameParts(name) {
-	numIndex = name.search(/\d/);
-	department = name.substring(0, numIndex).trim();
-	number = name.substring(numIndex, name.indexOf(" ", numIndex)).trim();
-	name = capitalizeString(name.substring(name.indexOf(" ", numIndex)).trim());
-	return [name, department, number];
-}
 
 function updateLinks(course_info, first_name) {
 	let {
@@ -143,14 +135,18 @@ function buildCourseLinks(course_info) {
 }
 
 function buildBasicCourseInfo(row, course_name, individual) {
-	let namedata = sepNameParts(course_name)
+	let {
+		name,
+		department,
+		number
+	} = seperateCourseNameParts(course_name);
 	let instructor_text = $(row).find('td[data-th="Instructor"]').text();
 	let has_initial = instructor_text.indexOf(',') > 0;
 	course_info = {
 		"full_name": course_name,
-		"name": namedata[0],
-		"department": namedata[1],
-		"number": namedata[2],
+		"name": name,
+		"department": department,
+		"number": number,
 		"individual": individual ? individual : $(row).find('td[data-th="Unique"] a').prop('href'),
 		"register": $(row).find('td[data-th="Add"] a').prop('href'),
 		"unique": $(row).find('td[data-th="Unique"]').text(),
@@ -282,7 +278,7 @@ function getDayTimeArray(row, course_info) {
 	return daytimearray;
 }
 
-function makeLine(date, time, place) {
+function convertDateTimeArrToLine(date, time, place) {
 	var arr = seperateDays(date)
 	var output = prettifyDaysText(arr)
 	var building = place.substring(0, place.search(/\d/) - 1);
@@ -329,7 +325,7 @@ function buildTimeTitle(course_info) {
 		var date = days[i];
 		var time = times[i];
 		var place = places[i];
-		lines.push($(`<h2 class="dateTimePlace">${makeLine(date, time, place)}</th>`));
+		lines.push($(`<h2 class="dateTimePlace">${convertDateTimeArrToLine(date, time, place)}</th>`));
 	}
 	return lines;
 }
@@ -365,7 +361,7 @@ function openDialog(course_info, res) {
 	$("#title").text(buildTitle(course_info))
 	$("#topbuttons").before(buildTimeTitle(course_info));
 	$("#profname").text(buildProfTitle(course_info));
-	$("#myModal").fadeIn(fadetime);
+	$("#myModal").fadeIn(Timing.fade_time);
 	//initial text on the "save course button"
 	chrome.runtime.sendMessage({
 		command: "alreadyContains",
@@ -576,6 +572,6 @@ function allowClosing() {
 }
 
 function close() {
-	$("#myModal").fadeOut(fadetime);
+	$("#myModal").fadeOut(Timing.fade_time);
 	$("#snackbar").attr("class", "");
 }

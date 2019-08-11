@@ -24,9 +24,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
         case "updateStatus":
             updateStatus(response);
             break;
-        case "getLine":
-            getLine(request.dtarr, response);
-            break;
         case "alreadyContains":
             alreadyContains(request.unique, response);
             break;
@@ -341,72 +338,4 @@ function updateStatus(sendResponse) {
         }
         // console.log("updated status' and registerlinks");
     });
-}
-
-/* Find if the unique is already contained within the storage*/
-function getLine(datetimearr, sendResponse) {
-    var output = makeLine(datetimearr);
-    console.log(output);
-    sendResponse({
-        line: output
-    });
-}
-
-/* convert from the dtarr and maek the time lines*/
-function makeLine(datetimearr) {
-    //converted times back
-    var output = [];
-    var dtmap = makeMap(datetimearr);
-    var timearr = Array.from(dtmap.keys());
-    var dayarr = Array.from(dtmap.values());
-    for (var i = 0; i < dayarr.length; i++) {
-        var place = findLoc(dayarr[i], timearr[i], datetimearr);
-        var building = place.substring(0, place.search(/\d/) - 1);
-        if (building == "") {
-            building = "Undecided Location";
-        }
-        output.push([dayarr[i], timearr[i].split(",")[0], timearr[i].split(",")[1], 'https://maps.utexas.edu/buildings/UTM/' + building, place]);
-    }
-    return output;
-}
-
-function makeMap(datetimearr) {
-    var dtmap = new Map([]);
-    for (var i = 0; i < datetimearr.length; i++) {
-        //console.log(datetimearr[i][1][0]);
-        datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm A"]).format("h:mm A");
-        datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm A"]).format("h:mm A");
-    }
-    for (var i = 0; i < datetimearr.length; i++) {
-        if (dtmap.has(String(datetimearr[i][1]))) {
-            dtmap.set(String(datetimearr[i][1]), dtmap.get(String(datetimearr[i][1])) + datetimearr[i][0]);
-        } else {
-            dtmap.set(String(datetimearr[i][1]), datetimearr[i][0]);
-        }
-    }
-    return dtmap
-}
-//find the location of a class given its days and timearrs.
-function findLoc(day, timearr, datetimearr) {
-    for (let i = 0; i < datetimearr.length; i++) {
-        var dtl = datetimearr[i];
-        // console.log(dtl[1]);
-        //  console.log(timearr);
-        if (day.includes(dtl[0])) {
-            if (JSON.stringify(timearr) == JSON.stringify(fixDtl1(dtl[1]))) {
-                return dtl[2];
-            }
-        }
-    }
-}
-
-function fixDtl1(dtl1) {
-    let output = "";
-    for (let i = 0; i < dtl1.length; i++) {
-        output += dtl1[i];
-        if (i != dtl1.length - 1) {
-            output += ",";
-        }
-    }
-    return output;
 }

@@ -229,3 +229,73 @@ function buildChartConfig(data) {
         }]
     }
 }
+
+function seperateCourseNameParts(name) {
+    let num_index = name.search(/\d/);
+    department = name.substring(0, num_index).trim();
+    number = name.substring(num_index, name.indexOf(" ", num_index)).trim();
+    name = capitalizeString(name.substring(name.indexOf(" ", num_index)).trim());
+    return {
+        name: name,
+        department: department,
+        number: number
+    }
+}
+
+/* convert from the dtarr and maek the time lines*/
+function convertDateTimeArrToLine(datetimearr) {
+    var output = [];
+    var dtmap = makeDateTimeApp(datetimearr);
+    var timearr = Array.from(dtmap.keys());
+    var dayarr = Array.from(dtmap.values());
+    for (var i = 0; i < dayarr.length; i++) {
+        var place = findLocation(dayarr[i], timearr[i], datetimearr);
+        var building = place.substring(0, place.search(/\d/) - 1);
+        if (building == "") {
+            building = "Undecided Location";
+        }
+        output.push([dayarr[i], timearr[i].split(",")[0], timearr[i].split(",")[1], 'https://maps.utexas.edu/buildings/UTM/' + building, place]);
+    }
+    return output;
+}
+
+function makeDateTimeApp(datetimearr) {
+    var dtmap = new Map([]);
+    for (var i = 0; i < datetimearr.length; i++) {
+        //console.log(datetimearr[i][1][0]);
+        datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm A"]).format("h:mm A");
+        datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm A"]).format("h:mm A");
+    }
+    for (var i = 0; i < datetimearr.length; i++) {
+        if (dtmap.has(String(datetimearr[i][1]))) {
+            dtmap.set(String(datetimearr[i][1]), dtmap.get(String(datetimearr[i][1])) + datetimearr[i][0]);
+        } else {
+            dtmap.set(String(datetimearr[i][1]), datetimearr[i][0]);
+        }
+    }
+    return dtmap
+}
+//find the location of a class given its days and timearrs.
+function findLocation(day, timearr, datetimearr) {
+    for (let i = 0; i < datetimearr.length; i++) {
+        var dtl = datetimearr[i];
+        // console.log(dtl[1]);
+        //  console.log(timearr);
+        if (day.includes(dtl[0])) {
+            if (JSON.stringify(timearr) == JSON.stringify(reformatDateTime(dtl[1]))) {
+                return dtl[2];
+            }
+        }
+    }
+}
+
+function reformatDateTime(dtl1) {
+    let output = "";
+    for (let i = 0; i < dtl1.length; i++) {
+        output += dtl1[i];
+        if (i != dtl1.length - 1) {
+            output += ",";
+        }
+    }
+    return output;
+}
