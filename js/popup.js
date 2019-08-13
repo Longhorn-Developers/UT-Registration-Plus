@@ -84,8 +84,8 @@ $("#clear").click(function () {
 	chrome.storage.sync.set({
 		savedCourses: []
 	});
+	$("#courseList").empty();
 	updateAllTabsCourseList();
-	$("#courseList").empty()
 	showEmpty();
 });
 
@@ -291,37 +291,6 @@ function handleMoreInfo(clicked_item, curr_course) {
 	});
 }
 
-
-function getSemesters() {
-	var schedule_list = 'https://registrar.utexas.edu/schedules';
-	$.get(schedule_list, function (response) {
-		if (response) {
-			htmlToNode(response).find('.callout2>ul>li>a').each(function (i) {
-				if (i < Popup.num_semesters) {
-					let sem_name = $(this).text().trim();
-					if (sem_name != "Course Schedule Archive") {
-						$("#semesters").append(`<option>${sem_name}</option>`);
-						$.get($(this).attr('href'), function (response) {
-							if (response) {
-								let response_node = htmlToNode(response);
-								let name = response_node.find(".page-title").text().substring(17).trim();
-								response_node.find('.gobutton>a').each(function () {
-									let link = $(this).attr('href');
-									var sem_num = link.substring(link.lastIndexOf('/') + 1).trim();
-									$("option").each(function () {
-										if ($(this).text() == name)
-											$(this).val(sem_num);
-									})
-								});
-							}
-						});
-					}
-				}
-			});
-		}
-	});
-}
-
 function handleEmpty() {
 	if (courses.length != 0) {
 		$("#empty").hide();
@@ -391,4 +360,36 @@ function hideImportExportPopup() {
 function showImportExportPopup() {
 	$("#impexp>i").text('close');
 	$("#import-export-popup").removeClass('hide');
+}
+
+
+
+function getSemesters() {
+	var schedule_list = 'https://registrar.utexas.edu/schedules';
+	$.get(schedule_list, function (response) {
+		if (response) {
+			htmlToNode(response).find('.callout2>ul>li>a').each(function (i) {
+				if (i < Popup.num_semesters) {
+					let sem_name = $(this).text().trim();
+					if (sem_name != "Course Schedule Archive") {
+						$("#semesters").append(`<option>${sem_name}</option>`);
+						$.get($(this).attr('href'), function (response) {
+							if (response) {
+								let response_node = htmlToNode(response);
+								let name = response_node.find(".page-title").text().substring(17).trim();
+								response_node.find('.gobutton>a').each(function () {
+									let link = $(this).attr('href');
+									var sem_num = link.substring(link.lastIndexOf('/') + 1).trim();
+									$("option").each(function () {
+										if ($(this).text() == name)
+											$(this).val(sem_num);
+									})
+								});
+							}
+						});
+					}
+				}
+			});
+		}
+	});
 }

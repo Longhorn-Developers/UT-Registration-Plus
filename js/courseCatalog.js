@@ -413,7 +413,8 @@ function getDescription(course_info) {
 		url: course_info["individual"],
 		success: function (response) {
 			if (response) {
-				description_lines = htmlToNode(response).find('#details > p').toArray().map(x => $(x).text());
+				let response_node = htmlToNode(response);
+				description_lines = response_node.find('#details > p').toArray().map(x => $(x).text());
 				displayDescription(buildFormattedDescription(description_lines));
 				let first_name = extractFirstName(response_node);
 				updateLinks(course_info, first_name);
