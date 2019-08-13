@@ -29,7 +29,7 @@ function setCourseList() {
 				number
 			} = seperateCourseNameParts(coursename)
 
-			let list_html = Template.popupListItem(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
+			let list_html = Template.Popup.list_item(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
 			$("#courseList").append(list_html);
 		}
 	});
@@ -44,7 +44,7 @@ function buildTimeLines(datetimearr) {
 	} else {
 		for (let i = 0; i < lines.length; i++) {
 			let line = lines[i];
-			output += Template.popupLine(line)
+			output += Template.Popup.line(line)
 		}
 	}
 	return output;
@@ -65,7 +65,7 @@ function updateConflicts() {
 				if (i != between.length - 1)
 					conflict_message += "<br>";
 			}
-			$(Template.popupConflictMessage(conflict_message)).prependTo("#courseList").hide().fadeIn(200);
+			$(Template.Popup.conflict_message(conflict_message)).prependTo("#courseList").hide().fadeIn(200);
 		}
 	});
 }

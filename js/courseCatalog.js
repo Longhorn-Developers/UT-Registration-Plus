@@ -40,15 +40,15 @@ if (document.querySelector('#fos_fl')) {
 
 //make heading and modal
 if (!$("#kw_results_table").length) {
-	$("table").after(Template.catalogLoading());
-	$("#container").prepend(Template.mainModal());
+	$("table").after(Template.Catalog.loading());
+	$("#container").prepend(Template.Main.modal());
 	$("#myModal").prepend("<div id='snackbar'>save course popup...</div>");
 
 	// now add to the table 
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
 	$('table').find('tr').each(function () {
 		if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
-			$(this).append(Template.extensionButton());
+			$(this).append(Template.Main.extension_button());
 		}
 	});
 }
@@ -442,7 +442,7 @@ function loadNextPages() {
 						next_page.find('tbody>tr').each(function () {
 							let has_course_header = $(this).find('td').hasClass("course_header");
 							if (!(has_course_header && $(this).has('th').length == 0))
-								$(this).append(Template.extensionButton());
+								$(this).append(Template.Main.extension_button());
 							if (!(has_course_header && last == $(this).find('td').text()))
 								new_rows.push($(this));
 						});

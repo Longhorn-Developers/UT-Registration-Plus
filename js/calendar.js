@@ -9,7 +9,7 @@ var {
 var saved_courses = [];
 var curr_course = {}
 
-$("#calendar").after(Template.calendarModal());
+$("#calendar").after(Template.Calendar.modal());
 
 chrome.storage.sync.get("savedCourses", function (data) {
     // Iterate through each saved course and add to 'event'
@@ -86,7 +86,7 @@ function buildTimeTitle(datetimearr) {
     var output = "";
     for (let i = 0; i < arr.length; i++) {
         let line = arr[i];
-        output += Template.calendarLine(line);
+        output += Template.Calendar.line(line);
     }
     $("#header").after(`<div id='timelines'>${output}</div`);
 }
