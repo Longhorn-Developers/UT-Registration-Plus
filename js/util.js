@@ -6,14 +6,14 @@ const days = new Map([
     ["F", "Friday"]
 ]);
 
-function getStatusColor(status) {
+function getStatusColor(status, sub = false) {
     let color = "black";
     if (status.includes("open")) {
-        color = Colors.open;
+        color = sub ? Colors.open_light : Colors.open;
     } else if (status.includes("waitlisted")) {
-        color = Colors.waitlisted;
+        color = sub ? Colors.waitlisted_light : Colors.waitlisted;
     } else if (status.includes("closed") || status.includes("cancelled")) {
-        color = Colors.closed;
+        color = sub ? Colors.closed_light : Colors.closed;
     }
     return color;
 }
@@ -98,6 +98,42 @@ function prettifyDaysText(arr) {
     return output
 }
 
+function seperateCourseNameParts(name) {
+    let num_index = name.search(/\d/);
+    department = name.substring(0, num_index).trim();
+    number = name.substring(num_index, name.indexOf(" ", num_index)).trim();
+    name = capitalizeString(name.substring(name.indexOf(" ", num_index)).trim());
+    return {
+        name: name,
+        department: department,
+        number: number
+    }
+}
+
+
+
+
+function updateAllTabsCourseList() {
+    chrome.tabs.query({}, function (tabs) {
+        for (var i = 0; i < tabs.length; i++) {
+            chrome.tabs.sendMessage(tabs[i].id, {
+                command: "updateCourseList"
+            });
+        }
+    });
+}
+
+function setCurrentTabUrl(link) {
+    chrome.tabs.query({
+        currentWindow: true,
+        active: true
+    }, function (tab) {
+        chrome.tabs.update(tab.id, {
+            url: link
+        });
+    });
+}
+
 
 function semesterSort(semA, semB) {
     let semOrder = {
@@ -119,6 +155,77 @@ function semesterSort(semA, semB) {
     if (semOrder[aName] > semOrder[bName])
         return 1;
     return 0;
+}
+
+/* convert from the dtarr and maek the time lines*/
+function convertDateTimeArrToLine(datetimearr) {
+    var output = [];
+    console.log(datetimearr)
+    var dtmap = makeDateTimeMap(datetimearr);
+    var timearr = Array.from(dtmap.keys());
+    var dayarr = Array.from(dtmap.values());
+    console.log(timearr);
+    console.log(dayarr);
+    for (var i = 0; i < dayarr.length; i++) {
+        var place = findLocation(dayarr[i], timearr[i], datetimearr);
+        var building = place.substring(0, place.search(/\d/)).trim();
+        building = building ? building : "Undecided Location"
+        output.push({
+            "days": dayarr[i],
+            "start_time": timearr[i].split(",")[0],
+            "end_time": timearr[i].split(',')[1],
+            "location_link": `https://maps.utexas.edu/buildings/UTM/${building}`,
+            "location_full": place
+        })
+    }
+    return output;
+}
+
+function makeDateTimeMap(datetimearr) {
+    var dtmap = new Map([]);
+    for (var i = 0; i < datetimearr.length; i++) {
+        datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm A"]).format("h:mm A");
+        datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm A"]).format("h:mm A");
+    }
+    for (var i = 0; i < datetimearr.length; i++) {
+        if (dtmap.has(String(datetimearr[i][1]))) {
+            dtmap.set(String(datetimearr[i][1]), dtmap.get(String(datetimearr[i][1])) + datetimearr[i][0]);
+        } else {
+            dtmap.set(String(datetimearr[i][1]), datetimearr[i][0]);
+        }
+    }
+    return dtmap
+}
+//find the location of a class given its days and timearrs.
+function findLocation(day, timearr, datetimearr) {
+    for (let i = 0; i < datetimearr.length; i++) {
+        var dtl = datetimearr[i];
+        if (day.includes(dtl[0])) {
+            if (JSON.stringify(timearr) == JSON.stringify(reformatDateTime(dtl[1]))) {
+                return dtl[2];
+            }
+        }
+    }
+}
+
+function reformatDateTime(dtl1) {
+    let output = "";
+    for (let i = 0; i < dtl1.length; i++) {
+        output += dtl1[i];
+        if (i != dtl1.length - 1) {
+            output += ",";
+        }
+    }
+    return output;
+}
+
+function rgb2hex(rgb) {
+    rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+
+    function hex(x) {
+        return ("0" + parseInt(x).toString(16)).slice(-2);
+    }
+    return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
 }
 
 function buildChartConfig(data) {
@@ -230,81 +337,6 @@ function buildChartConfig(data) {
     }
 }
 
-function seperateCourseNameParts(name) {
-    let num_index = name.search(/\d/);
-    department = name.substring(0, num_index).trim();
-    number = name.substring(num_index, name.indexOf(" ", num_index)).trim();
-    name = capitalizeString(name.substring(name.indexOf(" ", num_index)).trim());
-    return {
-        name: name,
-        department: department,
-        number: number
-    }
-}
-
-/* convert from the dtarr and maek the time lines*/
-function convertDateTimeArrToLine(datetimearr) {
-    var output = [];
-    var dtmap = makeDateTimeApp(datetimearr);
-    var timearr = Array.from(dtmap.keys());
-    var dayarr = Array.from(dtmap.values());
-    for (var i = 0; i < dayarr.length; i++) {
-        var place = findLocation(dayarr[i], timearr[i], datetimearr);
-        var building = place.substring(0, place.search(/\d/) - 1);
-        if (building == "") {
-            building = "Undecided Location";
-        }
-        output.push([dayarr[i], timearr[i].split(",")[0], timearr[i].split(",")[1], 'https://maps.utexas.edu/buildings/UTM/' + building, place]);
-    }
-    return output;
-}
-
-function makeDateTimeApp(datetimearr) {
-    var dtmap = new Map([]);
-    for (var i = 0; i < datetimearr.length; i++) {
-        //console.log(datetimearr[i][1][0]);
-        datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm A"]).format("h:mm A");
-        datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm A"]).format("h:mm A");
-    }
-    for (var i = 0; i < datetimearr.length; i++) {
-        if (dtmap.has(String(datetimearr[i][1]))) {
-            dtmap.set(String(datetimearr[i][1]), dtmap.get(String(datetimearr[i][1])) + datetimearr[i][0]);
-        } else {
-            dtmap.set(String(datetimearr[i][1]), datetimearr[i][0]);
-        }
-    }
-    return dtmap
-}
-//find the location of a class given its days and timearrs.
-function findLocation(day, timearr, datetimearr) {
-    for (let i = 0; i < datetimearr.length; i++) {
-        var dtl = datetimearr[i];
-        // console.log(dtl[1]);
-        //  console.log(timearr);
-        if (day.includes(dtl[0])) {
-            if (JSON.stringify(timearr) == JSON.stringify(reformatDateTime(dtl[1]))) {
-                return dtl[2];
-            }
-        }
-    }
-}
-
-function reformatDateTime(dtl1) {
-    let output = "";
-    for (let i = 0; i < dtl1.length; i++) {
-        output += dtl1[i];
-        if (i != dtl1.length - 1) {
-            output += ",";
-        }
-    }
-    return output;
-}
-
-function rgb2hex(rgb) {
-    rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-
-    function hex(x) {
-        return ("0" + parseInt(x).toString(16)).slice(-2);
-    }
-    return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+function canNotRegister(status, register_link) {
+    return status.includes("closed") || status.includes("cancelled") || !status || !register_link
 }

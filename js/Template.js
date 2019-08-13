@@ -52,13 +52,62 @@ class Template {
     }
 
     static calendarLine(line) {
+        let {
+            days,
+            start_time,
+            end_time,
+            location_link,
+            location_full
+        } = line;
         return `<p class='time' style='font-size:large;'>
-                    <span style='display:inline-block;'>${line[0]}:</span>
-                    <span style='margin-left:10px;display:inline-block;text-align:center;'>${line[1]} to ${line[2]}</span>
+                    <span style='display:inline-block;'>${days}:</span>
+                    <span style='margin-left:10px;display:inline-block;text-align:center;'>${start_time} to ${end_time}</span>
                     <span style='float:right;display:inline-block;text-align:right;width: 25%;'>
-                        <a target='_blank' style='color:#3c87a3;text-decoration:none;'href='${line[3]}'>${line[4]}</a>
+                        <a target='_blank' style='color:#3c87a3;text-decoration:none;'href='${location_link}'>${location_full}</a>
                     </span>
                 </p>`
+    }
+
+    static popupListItem(i, list_tile_color, unique, department, number, profname, list_sub_color, line) {
+        return `<li id='${i}'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'>
+								<div class='card'>
+									<div class='container' style='background:${list_tile_color}'>
+									<button class='copybut' title='Copy Unique #' id='copybut' value='${unique}'>
+										<i style='color:white;float:left;text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.16);font-size:x-large;' id='copyicon' class="material-icons copy">content_copy
+										</i>
+								  </button>
+										<h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;align-items:center;'>
+											<b>${department} ${number} <span style='font-size:medium'> with <span style='font-size:medium'>${profname} (${unique})</span></b>
+										</h4>
+										<p id='arrow' style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;font-family: sans-serif'>&#9658;</p>
+									</div>
+								</div>
+								<div id='moreInfo' style='display: none;'>
+									<p style='font-weight:bold;padding:10px;margin:0px 5px 0px 15px;font-size:small;background-color:${list_sub_color};'>${line}</p>
+									<div id='infoButtons' style='border-radius:0px;'>
+										<button class='matbut' id='listRemove'style='float:right;background:#F44336; margin:5px;'>Remove</button>
+										<button class='matbut' id='register' style='float:right;background:#4CAF50; margin:5px;'>Register</button>
+										<button class='matbut' id='listMoreInfo' style='float:right;background:#2196F3; margin:5px;'>More Info</button>
+									</div>
+								</div>
+							</li>`;
+    }
+
+    static popupLine(line) {
+        let {
+            days,
+            start_time,
+            end_time,
+            location_link,
+            location_full
+        } = line;
+
+        return `<span style='display:inline-block;width: 20%;'>${days}:</span>
+                <span style='margin-left:10px;display:inline-block;width: 50%;text-align:center;'>${start_time} to ${end_time}</span>
+                <span style='float:right;display:inline-block;text-align:right;width: 25%;'>
+                    <a target='_blank' style='color:#3c87a3;text-decoration:none;'href='${location_link}'>${location_full}</a>
+                </span>
+                <br>`
     }
 
 
@@ -82,4 +131,10 @@ class Template {
                     </div>
                 </div>`
     }
+
+
+    static popupConflictMessage(conflict_message) {
+        return `<p id='conflict' style='font-size:small; font-weight:bold; color:red; margin:5px 5px 5px 10px'>${conflict_message}</>`
+    }
+
 }

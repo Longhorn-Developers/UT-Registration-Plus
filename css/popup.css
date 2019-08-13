@@ -246,17 +246,6 @@ input[type=number]::-webkit-outer-spin-button {
     width: 120px;
 }
 
-#import-export-popup {
-    background: white;
-    color: #747474;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-    position: absolute;
-    margin: auto;
-    bottom: 42px;
-    right: 10px;
-    border-radius: inherit;
-    width: 160px;
-}
 
 .flex-container {
     display: flex;
@@ -329,15 +318,30 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 8px 0px;
 }
 
+#import-export-popup {
+    background: white;
+    color: #747474;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    position: absolute;
+    margin: auto;
+    bottom: 42px;
+    right: 10px;
+    border-radius: inherit;
+    width: 140px;
+}
+
+
 .simple-menu-option {
     display: inline-block;
     color: rgba(0, 0, 45, 0.48);
     border: none;
-    font-size: 17px;
+    background-color: white;
+    font-size: 15px;
     overflow: hidden;
     vertical-align: middle;
+    cursor: pointer;
     text-align: left;
-    padding: 10px 0px 5px 5px;
+    padding: 5px 0px 5px 5px;
     border-radius: 7px;
 }
 
@@ -350,10 +354,11 @@ input[type=number]::-webkit-outer-spin-button {
     margin-bottom: 3px;
 }
 
+
 .simple-menu-option:hover {
-    background-color: rgba(177, 175, 175, 0.324);
-    -webkit-transition-duration: 0.4s; /* Safari */
+    background-color: rgba(177, 175, 175, 0.200);
     transition-duration: 0.4s;
+    color: #FF9800;
 }
 
 .simple-menu-option:focus {

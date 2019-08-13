@@ -15,6 +15,10 @@ class Colors {
     static waitlisted = "#FF9800";
     static closed = "#FF5722";
 
+    static open_light = "#C8E6C9";
+    static waitlisted_light = "#FFE0B2";
+    static closed_light = "#FFCCBC";
+
     static highlight_conflict = "#F44336";
     static highlight_default = "#333333";
     static highlight_saved = "#4CAF50";
@@ -32,4 +36,16 @@ class Export {
 
 class Text {
 
+
+    static emptyText() {
+        let index = Math.floor(Math.random() * emptyText.length);
+        let arr = ["Doesn't Look Like Anything To Me.", "You Can't Fail Classes You're Not In.", "Pro-Tip: Don't Take O-Chem.",
+            "No Work Happens On PCL 5th Floor.", "Sophomore But Freshman By Credit.", "Pain is temporary, GPA is forever.",
+            "You've Yee'd Your Last Haw.", "lol everything is already waitlisted.", "At Least You're Not At A&M.",
+            `It's ${moment().format("h:mm")} and OU Still Sucks.`, 'TeXAs iS BaCK GuYZ', "'Academically Challenged'",
+            'Does McCombs teach Parseltongue?', 'Lets make Daddy Fenves proud.', 'Feel bad if you say Wampus.', 'No Cruce Enfrente Del Bus.',
+            'Midterm 1 has been Unmuted', 'Omae Wa Mou Shindeiru...', 'Bevo Bucks are the new Bitcoin'
+        ]
+        return arr[index];
+    }
 }

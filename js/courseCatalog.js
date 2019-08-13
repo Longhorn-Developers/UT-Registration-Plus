@@ -184,18 +184,17 @@ function updateListConflictHighlighting(start = 0) {
 		$('table').find('tr').each(function (i) {
 			if (i >= start) {
 				if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
-					var this_form = this;
 					var unique = $(this).find('td[data-th="Unique"]').text();
 					chrome.runtime.sendMessage({
 						command: "isSingleConflict",
 						dtarr: getDayTimeArray(this),
 						unique: unique
-					}, function (response) {
+					}, (response) => {
 						let {
 							isConflict,
 							alreadyContains
 						} = response
-						updateTextHighlighting($(this_form).find('td'), canHighlight, isConflict, alreadyContains);
+						updateTextHighlighting($(this).find('td'), canHighlight, isConflict, alreadyContains);
 					});
 				}
 			}

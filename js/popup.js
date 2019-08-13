@@ -1,99 +1,62 @@
 var courses;
-// get the courses from storage
 
 setCourseList();
-
-// var modhtml = '<div class=modal id=myModal><div class=modal-content><span class=close>×</span><div class=card><div class=cardcontainer></div></div></div></div>';
-// $("#html").prepend(modhtml);
 getSemesters();
-var canremove = true;
+var can_remove = true;
+
 
 function setCourseList() {
 	$("#courseList").empty()
 	chrome.storage.sync.get('savedCourses', function (data) {
 		updateConflicts();
 		courses = data.savedCourses
-		console.log(courses.length);
-		if (courses.length != 0) {
-			$("#empty").hide();
-			$("#courseList").show();
-		} else {
-			showEmpty();
-		}
+		handleEmpty();
 		// build and append the course list element
 		for (var i = 0; i < courses.length; i++) {
-			var color;
-			var subcolor;
-			status = courses[i].status;
-			if (status.includes("open")) {
-				color = "#4CAF50";
-				subcolor = "#C8E6C9";
-			} else if (status.includes("waitlisted")) {
-				color = "#FF9800"
-				subcolor = "#FFE0B2";
-			} else if (status.includes("closed") || status.includes("cancelled")) {
-				color = "#FF5722";
-				subcolor = "#FFCCBC";
-			}
-			var department = courses[i].coursename.substring(0, courses[i].coursename.search(/\d/) - 2);
-			var course_nbr = courses[i].coursename.substring(courses[i].coursename.search(/\d/), courses[i].coursename.indexOf(" ", courses[i].coursename.search(/\d/)));
-			var profname = prettifyName(courses[i].profname);
-			if (profname == "") {
-				profname = "Undecided Professor";
-			}
-			var listhtml = `<li id='${i}'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'>
-								<div class='card'>
-									<div class='container' style='background:${color}'>
-									<button class='copybut' title='Copy Unique #' id='copybut' value='${courses[i].unique}'>
-										<i style='color:white;float:left;text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.16);font-size:x-large;' id='copyicon' class="material-icons copy">content_copy
-										</i>
-								  </button>
-										<h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;align-items:center;'>
-											<b>${department} ${course_nbr} <span style='font-size:medium'> with <span style='font-size:medium'>${profname} (${courses[i].unique})</span></b>
-										</h4>
-										<p id='arrow' style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;font-family: sans-serif'>&#9658;</p>
-									</div>
-								</div>
-								<div id='moreInfo' style='display: none;'>
-									<p style='font-weight:bold;padding:10px;margin:0px 5px 0px 15px;font-size:small;background-color:${subcolor};'>${makeLine(i)}</p>
-									<div id='infoButtons' style='border-radius:0px;'>
-										<button class='matbut' id='listRemove'style='float:right;background:#F44336; margin:5px;'>Remove</button>
-										<button class='matbut' id='register' style='float:right;background:#4CAF50; margin:5px;'>Register</button>
-										<button class='matbut' id='listMoreInfo' style='float:right;background:#2196F3; margin:5px;'>More Info</button>
-									</div>
-								</div>
-							</li>`;
-			$("#courseList").append(listhtml);
+			let {
+				coursename,
+				unique,
+				profname,
+				status,
+				datetimearr
+			} = courses[i];
+			profname = capitalizeString(profname);
+			let line = buildTimeLines(datetimearr);
+			let list_tile_color = getStatusColor(status)
+			let list_sub_color = getStatusColor(status, true);
+			let {
+				department,
+				number
+			} = seperateCourseNameParts(coursename)
+
+			let list_html = Template.popupListItem(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
+			$("#courseList").append(list_html);
 		}
 	});
 }
 
-function showEmpty() {
-	var emptyText = ["Doesn't Look Like Anything To Me.", "You Can't Fail Classes You're Not In.", "Pro-Tip: Don't Take O-Chem.",
-		"No Work Happens On PCL 5th Floor.", "Sophomore But Freshman By Credit.", "Pain is temporary, GPA is forever.",
-		"You've Yee'd Your Last Haw.", "lol everything is already waitlisted.", "At Least You're Not At A&M.",
-		`It's ${moment().format("h:mm")} and OU Still Sucks.`, 'TeXAs iS BaCK GuYZ', "'Academically Challenged'",
-		'Does McCombs teach Parseltongue?', 'Lets make Daddy Fenves proud.', 'Feel bad if you say Wampus.', 'No Cruce Enfrente Del Bus.',
-		'Midterm 1 has been Unmuted', 'Omae Wa Mou Shindeiru...', 'Bevo Bucks are the new Bitcoin'
-	]
-	// console.log(emptyText.length);
-	$("#courseList").hide();
-	$("#empty").fadeIn(200);
-	$("#main").html(emptyText[Math.floor(Math.random() * emptyText.length)]);
+/* convert from the dtarr and maek the time lines*/
+function buildTimeLines(datetimearr) {
+	let lines = convertDateTimeArrToLine(datetimearr);
+	let output = "";
+	if (lines.length == 0) {
+		output = "<span style='font-size:medium;'>This class has no meeting times.</span>"
+	} else {
+		for (let i = 0; i < lines.length; i++) {
+			let line = lines[i];
+			output += Template.popupLine(line)
+		}
+	}
+	return output;
 }
 
 /* prettify the name for the conflict messages*/
-function getSimpleName(coursename, unique) {
-	var department = coursename.substring(0, coursename.search(/\d/) - 2);
-	var course_nbr = coursename.substring(coursename.search(/\d/), coursename.indexOf(" ", coursename.search(/\d/)));
-	return department + " " + course_nbr + " (" + unique + ")";
-}
-
-/* Format the Professor Name */
-function prettifyName(profname) {
-	return profname.replace(/\w\S*/g, function (txt) {
-		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-	});
+function formatShortenedCourseName(course) {
+	let {
+		number,
+		department
+	} = seperateCourseNameParts(course.coursename)
+	return `${department} ${number} (${course.unique})`;
 }
 
 /* Update the conflict messages */
@@ -101,213 +64,203 @@ function updateConflicts() {
 	chrome.runtime.sendMessage({
 		command: "checkConflicts"
 	}, function (response) {
-		var isConflicted = [];
 		if (response.isConflict) {
 			var between = response.between;
-			var text = "";
+			let conflict_message = "";
 			for (var i = 0; i < between.length; i++) {
-				text += "CONFLICT: " + getSimpleName(between[i][0].coursename, between[i][0].unique) + " and " + getSimpleName(between[i][1].coursename, between[i][1].unique);
-				isConflicted.push(between[i][0].unique);
-				isConflicted.push(between[i][1].unique);
-				if (i != between.length - 1) {
-					text += "<br>";
-				}
+				let courseA = between[i][0];
+				let courseB = between[i][1];
+				conflict_message += `CONFLICT: ${formatShortenedCourseName(courseA)} and ${formatShortenedCourseName(courseB)}`;
+				if (i != between.length - 1)
+					conflict_message += "<br>";
 			}
-			$("<p id='conflict' style='font-size:small; font-weight:bold; color:red; margin:5px 5px 5px 10px'>" + text + "</>").prependTo("#courseList").hide().fadeIn(200);
+			$(Template.popupConflictMessage(conflict_message)).prependTo("#courseList").hide().fadeIn(200);
 		}
 	});
 }
 
-/* Handle the button clicks */
-$(document).ready(function () {
 
-	$("#courseList").on('mouseover', '.copybut', function () {
-		$(this).addClass('shadow');
-	}).on('mouseleave', '.copybut', function () {
-		$(this).removeClass('shadow');
-	});
 
-	$("#courseList").on('click', '.copybut', function (e) {
-		e.stopPropagation();
-		var temp = $("<input>");
-		$(this).find('i').text('check');
-		$(this).stop(true, false).removeAttr('style').removeClass('shadow', {
-			duration: 200
-		});
-		$(this).find('i').delay(400).queue(function (n) {
-			$(this).text('content_copy');
-			$(this).parent().removeClass('shadow');
-			if ($(this).parent().is(":hover")) {
-				$(this).parent().addClass('shadow');
-			}
-			n();
+function handleRegisterButton(clicked_item, curr_course) {
+	let {
+		status,
+		registerlink
+	} = curr_course;
+	let register_button = $(clicked_item).find("#register");
+	let can_not_register = canNotRegister(status, registerlink);
+
+	let register_text = can_not_register ? "Can't Register" :
+		status.includes("waitlisted") ? "Join Waitlist" : "Register";
+	let register_color = can_not_register ? Colors.closed :
+		status.includes("waitlisted") ? Colors.waitlisted : Colors.open;
+
+	$(register_button).text(register_text).css('background-color', register_color);
+	if (!can_not_register) {
+		$(register_button).click(function () {
+			setCurrentTabUrl(registerlink);
 		})
+	}
+}
 
-		$("body").append(temp);
-		temp.val($(this).val()).select();
-		document.execCommand("copy");
-		temp.remove();
-	});
-
-	$("#courseList").on('click', 'li', function () {
-		$(this).find("#listMoreInfo").click(function () {
-			window.open(courses[$(this).closest("li").attr("id")].link);
-		});
-		let status = courses[$(this).closest("li").attr("id")].status;
-		let registerlink = courses[$(this).closest("li").attr("id")].registerlink;
-		if (status.includes("closed") || status.includes("cancelled") || !status || !registerlink) {
-			$(this).find("#register").text("Can't Register").css("background-color", "#FF5722");
-		} else {
-			if (status.includes("waitlisted")) {
-				$(this).find("#register").text("Join Waitlist").css("background-color", "#FF9800");
-			} else {
-				$(this).find("#register").text("Register").css("background-color", "#4CAF50");
-			}
-			$(this).find("#register").click(function () {
-				chrome.tabs.query({
-					currentWindow: true,
-					active: true
-				}, function (tab) {
-					chrome.tabs.update(tab.id, {
-						url: registerlink
-					});
-				});
-			})
-		}
-
-		/* clear the conflict messages, then remove the course and updateConflicts. update the tabs*/
-		$(this).find("#listRemove").click(function () {
-			var thisForm = this;
-			if (canremove) {
-				canremove = false;
-				$(thisForm).closest("ul").find("#conflict").fadeOut(300, function () {
-					$(this).remove();
-				});
-				chrome.runtime.sendMessage({
-					command: "courseStorage",
-					course: courses[$(thisForm).closest("li").attr("id")],
-					action: "remove"
-				}, function (response) {
-					$(thisForm).closest("li").fadeOut(200);
-					if ($(thisForm).closest("ul").children(':visible').length === 1) {
-						showEmpty();
-					}
-					canremove = true;
-					console.log('computedconflicts');
-					updateConflicts();
-					chrome.tabs.query({}, function (tabs) {
-						for (var i = 0; i < tabs.length; i++) {
-							chrome.tabs.sendMessage(tabs[i].id, {
-								command: "updateCourseList"
-							});
-						}
-					});
-				});
-			}
-
-		});
-		/* Show the times popout and more info options*/
-		if ($(this).find("#moreInfo").is(":hidden")) {
-			$(this).find("#moreInfo").fadeIn(200);
-			$(this).find('#arrow').css('transform', 'rotate(90deg)');
-
-		} else {
-			$(this).find("#moreInfo").fadeOut(200);
-			$(this).find('#arrow').css('transform', '');
+function handleRemoveButton(clicked_item, curr_course) {
+	let list = $(clicked_item).closest("ul");
+	$(clicked_item).find("#listRemove").click(function () {
+		if (can_remove) {
+			can_remove = false;
+			$(list).find("#conflict").fadeOut(300, function () {
+				$(clicked_item).remove();
+			});
+			chrome.runtime.sendMessage({
+				command: "courseStorage",
+				course: curr_course,
+				action: "remove"
+			}, () => {
+				$(clicked_item).fadeOut(200);
+				if ($(list).children(':visible').length === 1)
+					showEmpty();
+				can_remove = true;
+				updateConflicts();
+				updateAllTabsCourseList();
+			});
 		}
 	});
+}
 
-	$("#clear").click(function () {
-		clear();
+function handleMoreInfo(clicked_item, curr_course) {
+	$(clicked_item).find("#listMoreInfo").click(function () {
+		window.open(curr_course.link);
 	});
+}
 
-	$("#schedule").click(function () {
-		chrome.tabs.create({
-			'url': 'https://registrar.utexas.edu/schedules'
-		});
+function copyButtonAnimation() {
+	$(this).find('i').text('check');
+	$(this).stop(true, false).removeAttr('style').removeClass('shadow', {
+		duration: 200
 	});
-
-	$("#impexp").click(function () {
-		// Close import export window
-		if ($("#impexp>i").text() == 'close') {
-			hideImportExportPopup();
-			// $(this).removeClass('selected');
-		} else {
-			// Open import export window
-			
-			// If search window open, close it first to prevent overlap
-			if ($("#search>i").text() == 'close') {
-				hideSearchPopup();
-			}
-			
-			showImportExportPopup();
-			// $(this).addClass('selected');
+	$(this).find('i').delay(400).queue(function (n) {
+		$(this).text('content_copy');
+		$(this).parent().removeClass('shadow');
+		if ($(this).parent().is(":hover")) {
+			$(this).parent().addClass('shadow');
 		}
-	});
+		n();
+	})
+}
 
-	$("#search").click(function () {
-		// Close search window
+
+function toggleTimeDropdown(clicked_item) {
+	let more_info_button = $(clicked_item).find('#moreInfo');
+	let arrow = $('clicked_item').find("#arrow");
+	if ($(more_info_button).is(":hidden")) {
+		$(more_info_button).fadeIn(200);
+		$(arrow).css('transform', 'rotate(90deg)');
+	} else {
+		$(more_info_button).fadeOut(200);
+		$(arrow).css('transform', '');
+	}
+}
+
+
+$("#courseList").on('mouseover', '.copybut', function () {
+	$(this).addClass('shadow');
+}).on('mouseleave', '.copybut', function () {
+	$(this).removeClass('shadow');
+});
+
+$("#courseList").on('click', '.copybut', function (e) {
+	e.stopPropagation();
+	var temp = $("<input>");
+	copyButtonAnimation();
+	$("body").append(temp);
+	temp.val($(this).val()).select();
+	document.execCommand("copy");
+	temp.remove();
+});
+
+$("#courseList").on('click', 'li', function () {
+	let clicked_item = $(this).closest('li');
+	let curr_course = courses[$(clicked_item).attr("id")];
+	handleMoreInfo(clicked_item, curr_course);
+	handleRegisterButton(clicked_item, curr_course)
+	handleRemoveButton(clicked_item, curr_course)
+	toggleTimeDropdown(clicked_item);
+});
+
+$("#clear").click(function () {
+	clear();
+});
+
+$("#schedule").click(function () {
+	chrome.tabs.create({
+		'url': 'https://registrar.utexas.edu/schedules'
+	});
+});
+
+$("#impexp").click(function () {
+	if ($("#impexp>i").text() == 'close') {
+		hideImportExportPopup();
+	} else {
 		if ($("#search>i").text() == 'close') {
 			hideSearchPopup();
-			// $(this).removeClass('selected');
+		}
+		showImportExportPopup();
+	}
+});
+
+$("#search").click(function () {
+	if ($("#search>i").text() == 'close') {
+		hideSearchPopup();
+	} else {
+		if ($("#impexp>i").text() == 'close') {
+			hideImportExportPopup();
+		}
+		showSearchPopup();
+	}
+});
+
+$('#import-class').click(function () {
+	$("#importOrig").click();
+});
+
+$('#export-class').click(function () {
+	chrome.storage.sync.get('savedCourses', function (data) {
+		if (data.savedCourses.length > 0) {
+			var exportlink = document.createElement('a');
+			var url = window.URL.createObjectURL(new Blob([JSON.stringify(data.savedCourses, null, 4)], {
+				type: "octet/stream"
+			}));
+			exportlink.setAttribute('href', url);
+			exportlink.setAttribute('download', 'my_courses.json');
+			exportlink.click();
 		} else {
-			// Open search window
-
-			// If import export window open, close it first to prevent overlap
-			if ($("#impexp>i").text() == 'close') {
-				hideImportExportPopup();
-			}
-			
-			showSearchPopup();
-			// $(this).addClass('selected');
+			alert('No Saved Courses to Export.');
 		}
 	});
+});
 
-	$('#import-class').click(function () {
-		$("#importOrig").click();
-	});
-
-	$('#export-class').click(function () {
-		chrome.storage.sync.get('savedCourses', function (data) {
-			if (data.savedCourses.length > 0) {
-				var exportlink = document.createElement('a');
-				var url = window.URL.createObjectURL(new Blob([JSON.stringify(data.savedCourses, null, 4)], {
-					type: "octet/stream"
-				}));
-				exportlink.setAttribute('href', url);
-				exportlink.setAttribute('download', 'my_courses.json');
-				exportlink.click();
-			} else {
-				alert('No Saved Courses to Export.');
-			}
-		});
-	});
-
-	$("#search-class").click(() => {
-		var uniqueId = $("#class_id_input").val();
-		if (!isNaN(uniqueId)) {
-			if (uniqueId.length == 5) {
-				let selectedSemester = $("#semesters").find(":selected").val();
-				openCoursePage(selectedSemester, uniqueId);
-				$("#class_id_input").val('');
-				return;
-			}
+$("#search-class").click(() => {
+	var unique_id = $("#class_id_input").val();
+	if (!isNaN(unique_id)) {
+		if (unique_id.length == 5) {
+			let selected_semester = $("#semesters").find(":selected").val();
+			openCoursePage(selected_semester, unique_id);
+			$("#class_id_input").val('');
+			return;
 		}
-		alert("Oops, check your input. Class IDs should have 5 digits!");
-	});
+	}
+	alert("Oops, check your input. Class IDs should have 5 digits!");
+});
 
-	$("#open").click(function () {
-		chrome.tabs.create({
-			'url': "options.html"
-		});
+$("#options_button").click(function () {
+	chrome.tabs.create({
+		'url': "options.html"
 	});
+});
 
-	$("#calendar").click(function () {
-		chrome.tabs.create({
-			'url': "calendar.html"
-		});
+$("#calendar").click(function () {
+	chrome.tabs.create({
+		'url': "calendar.html"
 	});
-
 });
 
 $("#importOrig").change(function (e) {
@@ -315,124 +268,50 @@ $("#importOrig").change(function (e) {
 	var reader = new FileReader();
 	reader.onload = function () {
 		try {
-			var impCourses = JSON.parse(this.result);
-			console.log(impCourses);
-			if (impCourses && impCourses.length && (impCourses.length == 0 || validateObject(impCourses))) {
+			var imported_courses = JSON.parse(this.result);
+			if (imported_courses && imported_courses.length && (imported_courses.length == 0 || validateObject(imported_courses))) {
 				chrome.storage.sync.set({
-					savedCourses: impCourses
+					savedCourses: imported_courses
 				});
 				chrome.runtime.sendMessage({
 					command: "updateBadge"
 				});
-				chrome.tabs.query({}, function (tabs) {
-					for (var i = 0; i < tabs.length; i++) {
-						chrome.tabs.sendMessage(tabs[i].id, {
-							command: "updateCourseList"
-						});
-					}
-				});
+				updateAllTabsCourseList();
 				setCourseList();
 				chrome.runtime.sendMessage({
 					command: "updateStatus",
 				});
 			}
 		} catch (err) {
-
+			console.log(err);
 		}
 		importOrig.value = '';
 	}
 	reader.readAsText(files[0]);
 });
 
-function validateObject(impCourses) {
-	for (var i = 0; i < impCourses.length; i++) {
-		var course = impCourses[i];
-		var isValid = true;
+function validateObject(imported_courses) {
+	for (var i = 0; i < imported_courses.length; i++) {
+		var course = imported_courses[i];
+		var is_valid = true;
 		var props = ["coursename", "datetimearr", "link", "profname", "status", "unique"];
-		console.log(course.coursename);
 		for (let j = 0; j < props.length; j++) {
-			isValid &= course.hasOwnProperty(props[j]);
+			is_valid &= course.hasOwnProperty(props[j]);
 		}
-		console.log(isValid);
-		if (!isValid) {
+		if (!is_valid) {
 			return false;
 		}
 	}
 	return true;
 }
 
-/* convert from the dtarr and maek the time lines*/
-function makeLine(index) {
-	var datetimearr = courses[index].datetimearr;
-	//converted times back
-	var dtmap = new Map([]);
-	for (var i = 0; i < datetimearr.length; i++) {
-		datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm"]).format("h:mm a");
-		datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm"]).format("h:mm a");
-	}
-	for (var i = 0; i < datetimearr.length; i++) {
-		if (dtmap.has(String(datetimearr[i][1]))) {
-			dtmap.set(String(datetimearr[i][1]), dtmap.get(String(datetimearr[i][1])) + datetimearr[i][0]);
-		} else {
-			dtmap.set(String(datetimearr[i][1]), datetimearr[i][0]);
-		}
-	}
-	var output = "";
-	var timearr = Array.from(dtmap.keys());
-	var dayarr = Array.from(dtmap.values());
-
-	if (timearr.length == 0) {
-		output = "<span style='font-size:medium;'>This class has no meeting times.</span>"
-	} else {
-		for (var i = 0; i < dayarr.length; i++) {
-			var place = findLoc(dayarr[i], timearr[i], datetimearr);
-			var building = place.substring(0, place.search(/\d/) - 1);
-			if (building == "") {
-				building = "Undecided Location";
-			}
-			output += `<span style='display:inline-block;width: 20%;'>${dayarr[i]}:</span><span style='margin-left:10px;display:inline-block;width: 50%;text-align:center;'>${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}</span><span style='float:right;display:inline-block;text-align:right;width: 25%;'><a target='_blank' style='color:#3c87a3;text-decoration:none;'href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span><br>`;
-		}
-	}
-	return output;
-}
-
-//find the location of a class given its days and timearrs.
-function findLoc(day, timearr, datetimearr) {
-	for (let i = 0; i < datetimearr.length; i++) {
-		var dtl = datetimearr[i];
-		// console.log(dtl[1]);
-		// console.log(timearr);
-		if (day.includes(dtl[0])) {
-			if (JSON.stringify(timearr) == JSON.stringify(fixDtl1(dtl[1]))) {
-				return dtl[2];
-			}
-		}
-	}
-}
-
-function fixDtl1(dtl1) {
-	let output = "";
-	for (let i = 0; i < dtl1.length; i++) {
-		output += dtl1[i];
-		if (i != dtl1.length - 1) {
-			output += ",";
-		}
-	}
-	return output;
-}
 
 /*Clear the list and the storage of courses*/
 function clear() {
 	chrome.storage.sync.set({
 		savedCourses: []
 	});
-	chrome.tabs.query({}, function (tabs) {
-		for (var i = 0; i < tabs.length; i++) {
-			chrome.tabs.sendMessage(tabs[i].id, {
-				command: "updateCourseList"
-			});
-		}
-	});
+	updateAllTabsCourseList();
 	chrome.runtime.sendMessage({
 		command: "updateBadge"
 	});
@@ -442,8 +321,8 @@ function clear() {
 }
 
 function getSemesters() {
-	var schedulelist = 'https://registrar.utexas.edu/schedules';
-	$.get(schedulelist, function (response) {
+	var schedule_list = 'https://registrar.utexas.edu/schedules';
+	$.get(schedule_list, function (response) {
 		if (response) {
 			var object = $('<div/>').html(response).contents();
 			object.find('.callout2>ul>li>a').each(function (index) {
@@ -451,9 +330,9 @@ function getSemesters() {
 					if ($(this).text() != "Course Schedule Archive") {
 						const semester = $(this).text().split(" ")[0];
 						const year = $(this).text().split(" ")[1]
-						let semname = semester + " " + year;
-						console.log('semname:::: ' + semname);
-						$("#semesters").append(`<option>${semname}</option>`);
+						let sem_name = semester + " " + year;
+						console.log('semname:::: ' + sem_name);
+						$("#semesters").append(`<option>${sem_name}</option>`);
 						$.get($(this).attr('href'), function (response) {
 							if (response) {
 								var object = $('<div/>').html(response).contents();
@@ -465,12 +344,12 @@ function getSemesters() {
 
 								console.log('name:::: ' + name);
 								object.find('.gobutton>a').each(function () {
-									var semnum = $(this).attr('href').substring($(this).attr('href').lastIndexOf('/') + 1);
-									console.log('semnum:::: ' + semnum);
+									var sem_num = $(this).attr('href').substring($(this).attr('href').lastIndexOf('/') + 1);
+									console.log('semnum:::: ' + sem_num);
 									$("option").each(function () {
 										console.log($(this).text());
 										if ($(this).text() == name) {
-											$(this).val(semnum);
+											$(this).val(sem_num);
 											console.log($(this).val());
 										}
 									})
@@ -484,67 +363,24 @@ function getSemesters() {
 	});
 }
 
-/*Course object for passing to background*/
-function Course(coursename, unique, profname, datetimearr, status, link, registerlink) {
-	this.coursename = coursename;
-	this.unique = unique;
-	this.profname = profname;
-	this.datetimearr = datetimearr;
-	this.status = status;
-	this.link = link;
-	this.registerlink = registerlink;
-}
-
 function openCoursePage(sem, unique) {
 	var link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
 	window.open(link);
 }
 
-/*For a row, get all the course information and add the date-time-lines*/
-function getCourseObject(object, link) {
-	let coursename = object.find("#details h2").text();
-	let uniquenum = object.find('td[data-th="Unique"]').text();
-	let profname = object.find("td[data-th='Instructor']").text().split(', ')[0];
-	if (profname.indexOf(" ") == 0) {
-		profname = profname.substring(1);
+function handleEmpty() {
+	if (courses.length != 0) {
+		$("#empty").hide();
+		$("#courseList").show();
+	} else {
+		showEmpty();
 	}
-	let datetimearr = getDtarr(object);
-	let status = object.find('td[data-th="Status"]').text();
-	let indlink = link;
-	let registerlink = object.find('td[data-th="Add"] a').prop('href');
-	return new Course(coursename, uniquenum, profname, datetimearr, status, indlink, registerlink);
 }
 
-/* For a row, get the date-time-array for checking conflicts*/
-function getDtarr(object) {
-	var numlines = object.find('td[data-th="Days"]>span').length;
-	var dtarr = [];
-	for (var i = 0; i < numlines; i++) {
-		var date = object.find('td[data-th="Days"]>span:eq(' + i + ')').text();
-		var time = object.find('td[data-th="Hour"]>span:eq(' + i + ')').text();
-		var place = object.find('td[data-th="Room"]>span:eq(' + i + ')').text();
-		for (var j = 0; j < date.length; j++) {
-			var letter = date.charAt(j);
-			var day = "";
-			if (letter == "T" && j < date.length - 1 && date.charAt(j + 1) == "H") {
-				dtarr.push(["TH", convertTime(time), place]);
-			} else {
-				if (letter != "H") {
-					dtarr.push([letter, convertTime(time), place]);
-				}
-			}
-		}
-	}
-	return dtarr;
-}
-
-/* Convert time to 24hour format */
-function convertTime(time) {
-	var converted = time.replace(/\./g, '').split("-");
-	for (var i = 0; i < 2; i++) {
-		converted[i] = moment(converted[i], ["h:mm A"]).format("HH:mm");
-	}
-	return converted;
+function showEmpty() {
+	$("#courseList").hide();
+	$("#empty").fadeIn(200);
+	$("#main").html(Text.emptyText());
 }
 
 function hideSearchPopup() {

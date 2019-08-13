@@ -80,17 +80,13 @@ function setRegisterButton(status, registerlink) {
         $("#register").text("Register").css("background-color", Colors.open);
 }
 
-function canNotRegister(status, registerlink) {
-    return status.includes("closed") || status.includes("cancelled") || !status || !registerlink
-}
-
-
 function buildTimeTitle(datetimearr) {
     $('#timelines').remove();
     var arr = convertDateTimeArrToLine(datetimearr)
     var output = "";
     for (let i = 0; i < arr.length; i++) {
-        output += Template.calendarLine(arr[i]);
+        let line = arr[i];
+        output += Template.calendarLine(line);
     }
     $("#header").after(`<div id='timelines'>${output}</div`);
 }
@@ -196,13 +192,7 @@ $("#clear").click(() => {
     chrome.storage.sync.set({
         savedCourses: []
     });
-    chrome.tabs.query({}, function (tabs) {
-        for (let i = 0; i < tabs.length; i++) {
-            chrome.tabs.sendMessage(tabs[i].id, {
-                command: "updateCourseList"
-            });
-        }
-    });
+    updateAllTabsCourseList();
     updateCalendar();
     chrome.runtime.sendMessage({
         command: "updateBadge"
@@ -219,13 +209,7 @@ $("#remove").click(() => {
         }, function () {
             $("#myModal").fadeOut(calendar_fade_time);
             updateCalendar();
-            chrome.tabs.query({}, function (tabs) {
-                for (let i = 0; i < tabs.length; i++) {
-                    chrome.tabs.sendMessage(tabs[i].id, {
-                        command: "updateCourseList"
-                    });
-                }
-            });
+            updateAllTabsCourseList();
         });
     }, button_delay);
 });
