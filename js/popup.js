@@ -2,8 +2,8 @@ var courses;
 
 setCourseList();
 getSemesters();
-var can_remove = true;
 
+var can_remove = true;
 
 function setCourseList() {
 	$("#courseList").empty()
@@ -79,6 +79,19 @@ function formatShortenedCourseName(course) {
 	return `${department} ${number} (${course.unique})`;
 }
 
+$(document).click(function(event) {
+	$target = $(event.target);
+	
+	// If we're not clicking on search button or search popup, and popup is visible, hide it
+	if (!$target.closest('#search').length && !$target.closest('#search-popup').length && $('#search-popup').is(":visible")) {
+		hideSearchPopup();
+	}
+
+	// If we're not clicking on import/export button or imp/exp popup, and popup is visible, hide it
+	if (!$target.closest('#impexp').length && !$target.closest('#import-export-popup').length && $('#import-export-popup').is(":visible")) {
+		hideImportExportPopup();
+	}
+});
 
 $("#clear").click(function () {
 	chrome.storage.sync.set({
