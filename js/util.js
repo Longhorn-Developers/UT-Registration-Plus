@@ -123,6 +123,10 @@ function updateAllTabsCourseList() {
     });
 }
 
+function htmlToNode(response) {
+    return $('<div/>').html(response).contents();
+}
+
 function setCurrentTabUrl(link) {
     chrome.tabs.query({
         currentWindow: true,
@@ -207,6 +211,26 @@ function findLocation(day, timearr, datetimearr) {
         }
     }
 }
+
+
+function validateCourses(courses) {
+    for (var i = 0; i < courses.length; i++) {
+        if (!validateCourseObject(courses[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function validateCourseObject(course) {
+    var is_valid = true;
+    var props = ["coursename", "datetimearr", "link", "profname", "status", "unique"];
+    for (let j = 0; j < props.length; j++) {
+        is_valid &= course.hasOwnProperty(props[j]);
+    }
+    return is_valid;
+}
+
 
 function reformatDateTime(dtl1) {
     let output = "";

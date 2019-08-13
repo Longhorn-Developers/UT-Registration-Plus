@@ -22,6 +22,9 @@ class Colors {
     static highlight_conflict = "#F44336";
     static highlight_default = "#333333";
     static highlight_saved = "#4CAF50";
+
+    static badge_flash = "#FF5722";
+    static badge_default = "#bf5700";
 }
 
 class Export {
@@ -33,12 +36,13 @@ class Export {
     }
 }
 
+class Popup {
+    static num_semesters = 2;
+}
+
 
 class Text {
-
-
     static emptyText() {
-        let index = Math.floor(Math.random() * emptyText.length);
         let arr = ["Doesn't Look Like Anything To Me.", "You Can't Fail Classes You're Not In.", "Pro-Tip: Don't Take O-Chem.",
             "No Work Happens On PCL 5th Floor.", "Sophomore But Freshman By Credit.", "Pain is temporary, GPA is forever.",
             "You've Yee'd Your Last Haw.", "lol everything is already waitlisted.", "At Least You're Not At A&M.",
@@ -46,6 +50,8 @@ class Text {
             'Does McCombs teach Parseltongue?', 'Lets make Daddy Fenves proud.', 'Feel bad if you say Wampus.', 'No Cruce Enfrente Del Bus.',
             'Midterm 1 has been Unmuted', 'Omae Wa Mou Shindeiru...', 'Bevo Bucks are the new Bitcoin'
         ]
+        let index = Math.floor(Math.random() * arr.length);
+
         return arr[index];
     }
 }

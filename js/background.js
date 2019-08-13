@@ -89,6 +89,16 @@ chrome.runtime.onInstalled.addListener(function (details) {
 });
 
 
+chrome.storage.onChanged.addListener(function (changes) {
+    for (key in changes) {
+        console.log(changes);
+        if (key === 'savedCourses') {
+            updateBadge(false, changes.savedCourses.newValue);
+        }
+    }
+});
+
+
 function executeQuery(query, sendResponse) {
     console.log(grades)
     var res = grades.exec(query)[0];
@@ -96,7 +106,6 @@ function executeQuery(query, sendResponse) {
         data: res,
     });
 }
-
 
 /* Load the database*/
 function loadDataBase() {
@@ -120,31 +129,34 @@ function loadBinaryFile(path, success) {
     xhr.send();
 };
 
-function updateBadge(first) {
-    chrome.storage.sync.get('savedCourses', function (data) {
-        if (data.savedCourses) {
-            let text = "";
-            if (data.savedCourses.length > 0) {
-                text += data.savedCourses.length
-            }
-            chrome.browserAction.setBadgeText({
-                text: text
-            });
-            let timeout = 0;
-            if (!first) {
-                chrome.browserAction.setBadgeBackgroundColor({
-                    color: '#FF5722'
-                });
-                timeout = 200;
-            }
-            setTimeout(function () {
-                chrome.browserAction.setBadgeBackgroundColor({
-                    color: '#bf5700'
-                });
-            }, timeout);
+function updateBadge(first, new_changes) {
+    if (new_changes) {
+        updateBadgeText(first, new_changes);
+    } else {
+        chrome.storage.sync.get('savedCourses', function (data) {
+            let courses = data.savedCourses;
+            updateBadgeText(first, courses);
+        });
+    }
+}
 
-        }
+
+function updateBadgeText(first, courses) {
+    let badge_text = courses.length > 0 ? `${courses.length}` : "";
+    let flash_time = !first ? 200 : 0;
+    chrome.browserAction.setBadgeText({
+        text: badge_text
     });
+    if (!first) {
+        chrome.browserAction.setBadgeBackgroundColor({
+            color: Colors.badge_flash
+        });
+    }
+    setTimeout(function () {
+        chrome.browserAction.setBadgeBackgroundColor({
+            color: Colors.badge_default
+        });
+    }, flash_time);
 }
 
 /* Find all the conflicts in the courses and send them out/ if there is even a conflict*/
@@ -229,7 +241,6 @@ function add(request, sender, sendResponse) {
                 savedCourses: courses
             });
         }
-        updateBadge();
         sendResponse({
             done: "Added: (" + request.course.unique + ") " + request.course.coursename,
             label: "Remove Course -"
@@ -249,7 +260,6 @@ function remove(request, sender, sendResponse) {
         chrome.storage.sync.set({
             savedCourses: courses
         });
-        updateBadge();
         sendResponse({
             done: "Removed: (" + request.course.unique + ") " + request.course.coursename,
             label: "Add Course +"
@@ -291,6 +301,8 @@ function updateTabs() {
 const UPDATE_INTERVAL = 1000 * 60 * 16;
 setInterval(updateStatus, UPDATE_INTERVAL);
 // updateStatus();
+
+
 function updateStatus(sendResponse) {
     chrome.storage.sync.get('savedCourses', function (data) {
         var courses = data.savedCourses;

@@ -35,7 +35,7 @@
     "grades.db", "images/disticon.png"
   ],
   "background": {
-    "scripts": ["js/lib/jquery-3.3.1.min.js", "js/lib/sql-memory-growth.js", "js/lib/moment.min.js", "js/background.js"],
+    "scripts": ["js/lib/jquery-3.3.1.min.js", "js/lib/sql-memory-growth.js", "js/lib/moment.min.js", "js/config.js", "js/background.js"],
     "persistent": true
   },
   "browser_action": {

@@ -194,9 +194,6 @@ $("#clear").click(() => {
     });
     updateAllTabsCourseList();
     updateCalendar();
-    chrome.runtime.sendMessage({
-        command: "updateBadge"
-    });
 });
 
 

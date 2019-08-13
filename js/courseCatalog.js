@@ -413,8 +413,7 @@ function getDescription(course_info) {
 		url: course_info["individual"],
 		success: function (response) {
 			if (response) {
-				response_node = $('<div/>').html(response).contents();
-				description_lines = response_node.find('#details > p').toArray().map(x => $(x).text());
+				description_lines = htmlToNode(response).find('#details > p').toArray().map(x => $(x).text());
 				displayDescription(buildFormattedDescription(description_lines));
 				let first_name = extractFirstName(response_node);
 				updateLinks(course_info, first_name);
@@ -433,7 +432,7 @@ function loadNextPages() {
 				toggleLoadingPage(true);
 				$.get(link, function (response) {
 					if (response) {
-						var next_page = $('<div/>').html(response).contents();
+						var next_page = htmlToNode(response);
 						var current = $('tbody');
 						var old_length = $('tbody tr').length;
 						var last = current.find('.course_header>h2:last').text();

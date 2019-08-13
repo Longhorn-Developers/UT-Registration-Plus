@@ -50,15 +50,6 @@ function buildTimeLines(datetimearr) {
 	return output;
 }
 
-/* prettify the name for the conflict messages*/
-function formatShortenedCourseName(course) {
-	let {
-		number,
-		department
-	} = seperateCourseNameParts(course.coursename)
-	return `${department} ${number} (${course.unique})`;
-}
-
 /* Update the conflict messages */
 function updateConflicts() {
 	chrome.runtime.sendMessage({
@@ -79,9 +70,177 @@ function updateConflicts() {
 	});
 }
 
+/* prettify the name for the conflict messages*/
+function formatShortenedCourseName(course) {
+	let {
+		number,
+		department
+	} = seperateCourseNameParts(course.coursename)
+	return `${department} ${number} (${course.unique})`;
+}
 
 
-function handleRegisterButton(clicked_item, curr_course) {
+$("#clear").click(function () {
+	chrome.storage.sync.set({
+		savedCourses: []
+	});
+	updateAllTabsCourseList();
+	$("#courseList").empty()
+	showEmpty();
+});
+
+$("#schedule").click(function () {
+	chrome.tabs.create({
+		'url': 'https://registrar.utexas.edu/schedules'
+	});
+});
+
+$("#calendar").click(function () {
+	chrome.tabs.create({
+		'url': "calendar.html"
+	});
+});
+
+
+$("#impexp").click(function () {
+	if ($("#impexp>i").text() == 'close') {
+		hideImportExportPopup();
+	} else {
+		if ($("#search>i").text() == 'close') {
+			hideSearchPopup();
+		}
+		showImportExportPopup();
+	}
+});
+
+$("#search").click(function () {
+	if ($("#search>i").text() == 'close') {
+		hideSearchPopup();
+	} else {
+		if ($("#impexp>i").text() == 'close') {
+			hideImportExportPopup();
+		}
+		showSearchPopup();
+	}
+});
+
+$('#import-class').click(function () {
+	$("#import_input").click();
+});
+
+function isImportedValid(imported_courses) {
+	return imported_courses && imported_courses.length && (imported_courses.length == 0 || validateCourses(imported_courses))
+}
+
+$("#import_input").change(function (e) {
+	var files = e.target.files;
+	var reader = new FileReader();
+	reader.onload = function () {
+		try {
+			var imported_courses = JSON.parse(this.result);
+			if (isImportedValid(imported_courses)) {
+				chrome.storage.sync.set({
+					savedCourses: imported_courses
+				});
+				updateAllTabsCourseList();
+				setCourseList();
+				hideImportExportPopup();
+			} else {
+				Alert('There was an error.');
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	}
+	reader.readAsText(files[0]);
+});
+
+
+function exportCourses(url) {
+	var exportlink = document.createElement('a');
+	exportlink.setAttribute('href', url);
+	exportlink.setAttribute('download', 'my_courses.json');
+	exportlink.click();
+}
+
+function createBlob(export_courses) {
+	return new Blob([JSON.stringify(export_courses, null, 4)], {
+		type: "octet/stream"
+	})
+}
+
+$('#export-class').click(function () {
+	chrome.storage.sync.get('savedCourses', function (data) {
+		let export_courses = data.savedCourses;
+		if (export_courses.length > 0) {
+			let url = window.URL.createObjectURL(createBlob(export_courses));
+			exportCourses(url);
+		} else {
+			alert('No Saved Courses to Export.');
+		}
+		hideImportExportPopup();
+	});
+});
+
+
+function openCoursePage(sem, unique) {
+	var link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
+	window.open(link);
+}
+
+$("#search-class").click(() => {
+	var unique_id = $("#class_id_input").val();
+	if (!isNaN(unique_id)) {
+		if (unique_id.length == 5) {
+			let selected_semester = $("#semesters").find(":selected").val();
+			openCoursePage(selected_semester, unique_id);
+			$("#class_id_input").val('');
+			return;
+		}
+	}
+	alert("Oops, check your input. Class IDs should have 5 digits!");
+});
+
+$("#options_button").click(function () {
+	chrome.tabs.create({
+		'url': "options.html"
+	});
+});
+
+
+
+$("#courseList").on('mouseover', '.copybut', function () {
+	$(this).addClass('shadow');
+}).on('mouseleave', '.copybut', function () {
+	$(this).removeClass('shadow');
+});
+
+$("#courseList").on('click', '.copybut', function (e) {
+	e.stopPropagation();
+	copyButtonAnimation();
+	let unique = $(this).val();
+	copyUnique(unique);
+});
+
+function copyUnique(unique) {
+	var temp = $("<input>");
+	$("body").append(temp);
+	temp.val(unique).select();
+	document.execCommand("copy");
+	temp.remove();
+}
+
+$("#courseList").on('click', 'li', function () {
+	let clicked_item = $(this).closest('li');
+	let curr_course = courses[$(clicked_item).attr("id")];
+	handleMoreInfo(clicked_item, curr_course);
+	handleRegister(clicked_item, curr_course)
+	handleRemove(clicked_item, curr_course)
+	toggleTimeDropdown(clicked_item);
+});
+
+
+function handleRegister(clicked_item, curr_course) {
 	let {
 		status,
 		registerlink
@@ -102,7 +261,7 @@ function handleRegisterButton(clicked_item, curr_course) {
 	}
 }
 
-function handleRemoveButton(clicked_item, curr_course) {
+function handleRemove(clicked_item, curr_course) {
 	let list = $(clicked_item).closest("ul");
 	$(clicked_item).find("#listRemove").click(function () {
 		if (can_remove) {
@@ -132,6 +291,47 @@ function handleMoreInfo(clicked_item, curr_course) {
 	});
 }
 
+
+function getSemesters() {
+	var schedule_list = 'https://registrar.utexas.edu/schedules';
+	$.get(schedule_list, function (response) {
+		if (response) {
+			htmlToNode(response).find('.callout2>ul>li>a').each(function (i) {
+				if (i < Popup.num_semesters) {
+					let sem_name = $(this).text().trim();
+					if (sem_name != "Course Schedule Archive") {
+						$("#semesters").append(`<option>${sem_name}</option>`);
+						$.get($(this).attr('href'), function (response) {
+							if (response) {
+								let response_node = htmlToNode(response);
+								let name = response_node.find(".page-title").text().substring(17).trim();
+								response_node.find('.gobutton>a').each(function () {
+									let link = $(this).attr('href');
+									var sem_num = link.substring(link.lastIndexOf('/') + 1).trim();
+									$("option").each(function () {
+										if ($(this).text() == name)
+											$(this).val(sem_num);
+									})
+								});
+							}
+						});
+					}
+				}
+			});
+		}
+	});
+}
+
+function handleEmpty() {
+	if (courses.length != 0) {
+		$("#empty").hide();
+		$("#courseList").show();
+	} else {
+		showEmpty();
+	}
+}
+
+
 function copyButtonAnimation() {
 	$(this).find('i').text('check');
 	$(this).stop(true, false).removeAttr('style').removeClass('shadow', {
@@ -157,223 +357,6 @@ function toggleTimeDropdown(clicked_item) {
 	} else {
 		$(more_info_button).fadeOut(200);
 		$(arrow).css('transform', '');
-	}
-}
-
-
-$("#courseList").on('mouseover', '.copybut', function () {
-	$(this).addClass('shadow');
-}).on('mouseleave', '.copybut', function () {
-	$(this).removeClass('shadow');
-});
-
-$("#courseList").on('click', '.copybut', function (e) {
-	e.stopPropagation();
-	var temp = $("<input>");
-	copyButtonAnimation();
-	$("body").append(temp);
-	temp.val($(this).val()).select();
-	document.execCommand("copy");
-	temp.remove();
-});
-
-$("#courseList").on('click', 'li', function () {
-	let clicked_item = $(this).closest('li');
-	let curr_course = courses[$(clicked_item).attr("id")];
-	handleMoreInfo(clicked_item, curr_course);
-	handleRegisterButton(clicked_item, curr_course)
-	handleRemoveButton(clicked_item, curr_course)
-	toggleTimeDropdown(clicked_item);
-});
-
-$("#clear").click(function () {
-	clear();
-});
-
-$("#schedule").click(function () {
-	chrome.tabs.create({
-		'url': 'https://registrar.utexas.edu/schedules'
-	});
-});
-
-$("#impexp").click(function () {
-	if ($("#impexp>i").text() == 'close') {
-		hideImportExportPopup();
-	} else {
-		if ($("#search>i").text() == 'close') {
-			hideSearchPopup();
-		}
-		showImportExportPopup();
-	}
-});
-
-$("#search").click(function () {
-	if ($("#search>i").text() == 'close') {
-		hideSearchPopup();
-	} else {
-		if ($("#impexp>i").text() == 'close') {
-			hideImportExportPopup();
-		}
-		showSearchPopup();
-	}
-});
-
-$('#import-class').click(function () {
-	$("#importOrig").click();
-});
-
-$('#export-class').click(function () {
-	chrome.storage.sync.get('savedCourses', function (data) {
-		if (data.savedCourses.length > 0) {
-			var exportlink = document.createElement('a');
-			var url = window.URL.createObjectURL(new Blob([JSON.stringify(data.savedCourses, null, 4)], {
-				type: "octet/stream"
-			}));
-			exportlink.setAttribute('href', url);
-			exportlink.setAttribute('download', 'my_courses.json');
-			exportlink.click();
-		} else {
-			alert('No Saved Courses to Export.');
-		}
-	});
-});
-
-$("#search-class").click(() => {
-	var unique_id = $("#class_id_input").val();
-	if (!isNaN(unique_id)) {
-		if (unique_id.length == 5) {
-			let selected_semester = $("#semesters").find(":selected").val();
-			openCoursePage(selected_semester, unique_id);
-			$("#class_id_input").val('');
-			return;
-		}
-	}
-	alert("Oops, check your input. Class IDs should have 5 digits!");
-});
-
-$("#options_button").click(function () {
-	chrome.tabs.create({
-		'url': "options.html"
-	});
-});
-
-$("#calendar").click(function () {
-	chrome.tabs.create({
-		'url': "calendar.html"
-	});
-});
-
-$("#importOrig").change(function (e) {
-	var files = e.target.files;
-	var reader = new FileReader();
-	reader.onload = function () {
-		try {
-			var imported_courses = JSON.parse(this.result);
-			if (imported_courses && imported_courses.length && (imported_courses.length == 0 || validateObject(imported_courses))) {
-				chrome.storage.sync.set({
-					savedCourses: imported_courses
-				});
-				chrome.runtime.sendMessage({
-					command: "updateBadge"
-				});
-				updateAllTabsCourseList();
-				setCourseList();
-				chrome.runtime.sendMessage({
-					command: "updateStatus",
-				});
-			}
-		} catch (err) {
-			console.log(err);
-		}
-		importOrig.value = '';
-	}
-	reader.readAsText(files[0]);
-});
-
-function validateObject(imported_courses) {
-	for (var i = 0; i < imported_courses.length; i++) {
-		var course = imported_courses[i];
-		var is_valid = true;
-		var props = ["coursename", "datetimearr", "link", "profname", "status", "unique"];
-		for (let j = 0; j < props.length; j++) {
-			is_valid &= course.hasOwnProperty(props[j]);
-		}
-		if (!is_valid) {
-			return false;
-		}
-	}
-	return true;
-}
-
-
-/*Clear the list and the storage of courses*/
-function clear() {
-	chrome.storage.sync.set({
-		savedCourses: []
-	});
-	updateAllTabsCourseList();
-	chrome.runtime.sendMessage({
-		command: "updateBadge"
-	});
-	$("#courseList").empty()
-	console.log("cleared");
-	showEmpty();
-}
-
-function getSemesters() {
-	var schedule_list = 'https://registrar.utexas.edu/schedules';
-	$.get(schedule_list, function (response) {
-		if (response) {
-			var object = $('<div/>').html(response).contents();
-			object.find('.callout2>ul>li>a').each(function (index) {
-				if (index < 2) {
-					if ($(this).text() != "Course Schedule Archive") {
-						const semester = $(this).text().split(" ")[0];
-						const year = $(this).text().split(" ")[1]
-						let sem_name = semester + " " + year;
-						console.log('semname:::: ' + sem_name);
-						$("#semesters").append(`<option>${sem_name}</option>`);
-						$.get($(this).attr('href'), function (response) {
-							if (response) {
-								var object = $('<div/>').html(response).contents();
-
-								// Check title of page and see if it matches semester name
-								var name = object.find(".page-title").text();
-								name = name.substring(name.lastIndexOf('|') + 1).trim();
-								name = name.split(" ")[0] + " " + name.split(" ")[1];
-
-								console.log('name:::: ' + name);
-								object.find('.gobutton>a').each(function () {
-									var sem_num = $(this).attr('href').substring($(this).attr('href').lastIndexOf('/') + 1);
-									console.log('semnum:::: ' + sem_num);
-									$("option").each(function () {
-										console.log($(this).text());
-										if ($(this).text() == name) {
-											$(this).val(sem_num);
-											console.log($(this).val());
-										}
-									})
-								});
-							}
-						});
-					}
-				}
-			});
-		}
-	});
-}
-
-function openCoursePage(sem, unique) {
-	var link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
-	window.open(link);
-}
-
-function handleEmpty() {
-	if (courses.length != 0) {
-		$("#empty").hide();
-		$("#courseList").show();
-	} else {
-		showEmpty();
 	}
 }
 

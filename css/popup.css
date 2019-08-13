@@ -341,7 +341,7 @@ input[type=number]::-webkit-outer-spin-button {
     vertical-align: middle;
     cursor: pointer;
     text-align: left;
-    padding: 5px 0px 5px 5px;
+    padding: 10px 0px 5px 5px;
     border-radius: 7px;
 }
 
