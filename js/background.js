@@ -164,12 +164,12 @@ function checkConflicts(sendResponse) {
     chrome.storage.sync.get('savedCourses', function (data) {
         var conflicts = [];
         var courses = data.savedCourses;
-        for (var i = 0; i < courses.length; i++) {
-            for (var j = i + 1; j < courses.length; j++) {
-                if (isConflict(courses[i].datetimearr, courses[j].datetimearr)) {
-                    console.log("conflict");
-                    conflicts.push([courses[i], courses[j]]);
-                }
+        for (let i = 0; i < courses.length; i++) {
+            for (let j = i + 1; j < courses.length; j++) {
+                let course_a = courses[i];
+                let course_b = courses[j];
+                if (isConflict(course_a.datetimearr, course_b.datetimearr))
+                    conflicts.push([course_a, course_b]);
             }
         }
         if (conflicts.length == 0) {
@@ -177,7 +177,6 @@ function checkConflicts(sendResponse) {
                 isConflict: false
             });
         } else {
-            console.log(conflicts);
             sendResponse({
                 isConflict: true,
                 between: conflicts
@@ -191,19 +190,15 @@ function isSingleConflict(currdatearr, unique, sendResponse) {
     chrome.storage.sync.get('savedCourses', function (data) {
         var courses = data.savedCourses;
         var conflict = false;
-        for (var i = 0; i < courses.length; i++) {
-            if (isConflict(currdatearr, courses[i].datetimearr)) {
-                conflict = true;
-                break;
-            }
-        }
         var contains = false;
-        var i = 0;
-        while (i < courses.length && !contains) {
-            if (courses[i].unique == unique) {
+        for (let i = 0; i < courses.length; i++) {
+            let course = courses[i];
+            if (!conflict && isConflict(currdatearr, course.datetimearr)) {
+                conflict = true;
+            }
+            if (!contains && isSameCourse(course, unique)) {
                 contains = true;
             }
-            i++;
         }
         sendResponse({
             isConflict: conflict,
@@ -212,16 +207,19 @@ function isSingleConflict(currdatearr, unique, sendResponse) {
     });
 }
 
+
+
+
 /* Check if conflict between two date-time-arrs*/
 function isConflict(adtarr, bdtarr) {
     for (var i = 0; i < adtarr.length; i++) {
-        var currday = adtarr[i][0];
-        var currtimes = adtarr[i][1];
+        var current_day = adtarr[i][0];
+        var current_times = adtarr[i][1];
         for (var j = 0; j < bdtarr.length; j++) {
-            var nextday = bdtarr[j][0];
-            var nextimes = bdtarr[j][1];
-            if (nextday == currday) {
-                if (currtimes[0] < nextimes[1] && currtimes[1] > nextimes[0]) {
+            var next_day = bdtarr[j][0];
+            var next_times = bdtarr[j][1];
+            if (next_day == current_day) {
+                if (current_times[0] < next_times[1] && current_times[1] > next_times[0]) {
                     return true;
                 }
             }
@@ -280,12 +278,16 @@ function alreadyContains(unique, sendResponse) {
 function contains(courses, unique) {
     var i = 0;
     while (i < courses.length) {
-        if (courses[i].unique == unique) {
+        if (isSameCourse(courses[i], unique)) {
             return true;
         }
         i++;
     }
     return false;
+}
+
+function isSameCourse(course, unique) {
+    return course.unique == unique
 }
 
 function updateTabs() {
@@ -306,28 +308,28 @@ setInterval(updateStatus, UPDATE_INTERVAL);
 function updateStatus(sendResponse) {
     chrome.storage.sync.get('savedCourses', function (data) {
         var courses = data.savedCourses;
-        var nochange = true;
+        var no_change = true;
         for (let i = 0; i < courses.length; i++) {
             try {
                 let c = courses[i];
-                let oldstatus = c.status;
-                let oldlink = c.link;
+                let old_status = c.status;
+                let old_link = c.link;
                 $.ajax({
-                    url: oldlink,
+                    url: old_link,
                     success: function (result) {
                         if (result) {
                             console.log(result);
                             var object = $('<div/>').html(result).contents();
-                            let newstatus = object.find('[data-th="Status"]').text();
-                            let registerlink = object.find('td[data-th="Add"] a');
-                            if (registerlink)
-                                registerlink = registerlink.attr('href');
-                            var haschanged = (newstatus == oldstatus && registerlink == oldlink);
+                            let new_status = object.find('[data-th="Status"]').text();
+                            let register_link = object.find('td[data-th="Add"] a');
+                            if (register_link)
+                                register_link = register_link.attr('href');
+                            var haschanged = (new_status == old_status && register_link == old_link);
                             if (!haschanged)
-                                console.log(c.unique + ' updated from ' + oldstatus + " to " + newstatus + " and " + oldlink + " to " + registerlink);
-                            nochange &= haschanged;
-                            c.registerlink = registerlink;
-                            c.status = newstatus;
+                                console.log(c.unique + ' updated from ' + old_status + " to " + new_status + " and " + old_link + " to " + register_link);
+                            no_change &= haschanged;
+                            c.registerlink = register_link;
+                            c.status = new_status;
                         }
                     }
                 });
@@ -336,7 +338,7 @@ function updateStatus(sendResponse) {
                 console.log('Not logged into UT Coursebook. Could not update class statuses.');
             }
         }
-        if (!nochange) {
+        if (!no_change) {
             chrome.storage.sync.set({
                 savedCourses: courses
             });
