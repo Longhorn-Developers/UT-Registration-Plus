@@ -25,6 +25,29 @@ body {
     min-height: 400px;
 }
 
+#courseList {
+    list-style-type: none;
+    padding: 5px;
+}
+
+#empty {
+    font-weight: normal;
+    font-size: large;
+    margin: 60px 30px 180px 30px;
+    text-align: center;
+}
+
+#empty #main {
+    margin-bottom: 5px;
+}
+
+#empty span {
+    font-size: small;
+    display: table;
+    margin: 0 auto;
+    font-weight: bold;
+}
+
 .settingsbut {
     margin-right: 2px;
     border: 0px;
