@@ -1,119 +1,127 @@
-var link;
 var waitlist;
 var sem;
 $(function () {
-	//template https://utdirect.utexas.edu/apps/registrar/course_schedule/20189/51475/
-	console.log(window.location.href);
-	var importbutton = "<button class='matbut' id='import' style='margin:20px 0px 20px 0px;'><span style='font-size:small'>Import into </span><b>UT Reg Plus<b></h2></button><br>";
 	waitlist = !(window.location.href.includes('https://utdirect.utexas.edu/registration/classlist.WBX'));
-	if (waitlist) {
-		sem = $('[name="s_ccyys"]').val();
-		$("[href='#top']").before(importbutton);
-	} else {
-		sem = $("option[selected='selected']").val();
-		$("table").after(importbutton);
-	}
-	$("#import").prepend("<div id='snackbar'>defaultmessage..</div>");
-	$("#import").click(function () {
-		if (waitlist) {
-			$(".tbg").last().find(".tbon>td:first-child").each(function () {
-				let unique = $(this).text().replace(/\s/g, '');
-				link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
-				getInfo();
-			});
-		} else {
-			$("tr>td:first-child").each(function () {
-				let unique = $(this).text().replace(/\s/g, '');
-				link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
-				getInfo();
-			});
-		}
-		$("#import").text("Courses Saved!").css("background-color", "#4CAF50");
-		setTimeout(function () {
-			$("#import").html("<span style='font-size:small'>Import into </span><b>UT Reg Plus<b></h2>").css("background-color", "#FF9800");
-		}, 1000);
-	});
+	sem = waitlist ? $('[name="s_ccyys"]').val() : $("option[selected='selected']").val();
+	if (waitlist)
+		$("[href='#top']").before(Template.Import.import_button());
+	else
+		$("table").after(Template.Import.import_button());
+	$("#import").prepend("<div id='snackbar'>import snackbar..</div>");
 
+	$("#import").click(function () {
+		search_nodes = waitlist ? $(".tbg").last().find(".tbon>td:first-child") : $("tr>td:first-child");
+		$(search_nodes).each(function () {
+			importCourse($(this));
+		})
+		importButtonAnimation();
+	});
 });
 
-/*Course object for passing to background*/
-function Course(coursename, unique, profname, datetimearr, status, link, registerlink) {
-	this.coursename = coursename;
-	this.unique = unique;
-	this.profname = profname;
-	this.datetimearr = datetimearr;
-	this.status = status;
-	this.link = link;
-	this.registerlink = registerlink;
+
+function importButtonAnimation() {
+	$("#import").text("Courses Saved!").css("background-color", Colors.open);
+	setTimeout(function () {
+		$("#import").html(Template.Import.button_text_default).css('background-color', Colors.waitlisted);
+	}, 1000);
+}
+
+function importCourse(unique_node) {
+	let unique = $(unique_node).text().replace(/\s/g, '');
+	link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
+	buildAddCourse(link);
 }
 
 
-function getInfo(classurl) {
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", link, false);
-	xhr.send();
-	var response = xhr.responseText;
-	if (response) {
-		var output = "";
-		var object = $('<div/>').html(response).contents();
-		var c = getCourseObject(object);
-		console.log(c);
-		chrome.runtime.sendMessage({
-			command: "courseStorage",
-			course: c,
-			action: "add"
-		}, function () {
+function buildAddCourse(link) {
+	$.get(link, function (response) {
+		if (response) {
+			let simp_course = buildSimplifiedCourseObject(response, link);
 			chrome.runtime.sendMessage({
-				command: "updateCourseList"
+				command: "courseStorage",
+				course: simp_course,
+				action: "add"
+			}, function () {
+				chrome.runtime.sendMessage({
+					command: "updateCourseList"
+				});
 			});
-		});
-	}
+		}
+	})
 }
 
+
+function buildSimplifiedCourseObject(response, link) {
+	let imported_course = getCourseObject(htmlToNode(response), link);
+	let {
+		full_name,
+		unique,
+		prof_name,
+		individual,
+		status,
+		register
+	} = curr_course;
+	let dtarr = getDayTimeArray(undefined, curr_course);
+
+	return new Course(full_name, unique, prof_name, dtarr, status, individual, register);
+}
 
 /*For a row, get all the course information and add the date-time-lines*/
-function getCourseObject(object) {
-	let coursename = object.find("#details h2").text();
-	let uniquenum = object.find('td[data-th="Unique"]').text();
-	let profname = object.find("td[data-th='Instructor']").text().split(', ')[0];
-	if (profname.indexOf(" ") == 0) {
-		profname = profname.substring(1);
+function getCourseObject(response_node, individual) {
+	let course_name = $(response_node).find("#details h2").text();
+	let course_row = $(response_node).find('table');
+	curr_course = buildBasicCourseInfo(course_row, course_name, individual);
+}
+
+
+function buildBasicCourseInfo(row, course_name, individual) {
+	let {
+		name,
+		department,
+		number
+	} = seperateCourseNameParts(course_name);
+	let instructor_text = $(row).find('td[data-th="Instructor"]').text();
+	let has_initial = instructor_text.indexOf(',') > 0;
+	course_info = {
+		"full_name": course_name,
+		"name": name,
+		"department": department,
+		"number": number,
+		"individual": individual ? individual : $(row).find('td[data-th="Unique"] a').prop('href'),
+		"register": $(row).find('td[data-th="Add"] a').prop('href'),
+		"unique": $(row).find('td[data-th="Unique"]').text(),
+		"status": $(row).find('td[data-th="Status"]').text(),
+		"prof_name": instructor_text ? has_initial ? capitalizeString(instructor_text.split(', ')[0]) : capitalizeString(instructor_text) : "Undecided",
+		"initial": instructor_text && has_initial ? instructor_text.split(', ')[1].substring(0, 1) : "",
+		"time_data": {
+			"days": $(row).find('td[data-th="Days"]>span').toArray().map(x => $(x).text().trim()),
+			"times": $(row).find('td[data-th="Hour"]>span').toArray().map(x => $(x).text().trim()),
+			"places": $(row).find('td[data-th="Room"]>span').toArray().map(x => $(x).text().trim())
+		},
+		"links": {}
 	}
-	let datetimearr = getDtarr(object);
-	let status = object.find('td[data-th="Status"]').text();
-	let indlink = link;
-	let registerlink = object.find('td[data-th="Add"] a').prop('href');
-	return new Course(coursename, uniquenum, profname, datetimearr, status, indlink, registerlink);
+	return course_info;
 }
 
 /* For a row, get the date-time-array for checking conflicts*/
-function getDtarr(object) {
-	var numlines = object.find('td[data-th="Days"]>span').length;
-	var dtarr = [];
-	for (var i = 0; i < numlines; i++) {
-		var date = object.find('td[data-th="Days"]>span:eq(' + i + ')').text();
-		var time = object.find('td[data-th="Hour"]>span:eq(' + i + ')').text();
-		var place = object.find('td[data-th="Room"]>span:eq(' + i + ')').text();
+function getDayTimeArray(row, course_info) {
+	var day_time_array = []
+	let days = course_info ? course_info["time_data"]["days"] : $(row).find('td[data-th="Days"]>span').toArray().map(x => $(x).text().trim());
+	let times = course_info ? course_info["time_data"]["times"] : $(row).find('td[data-th="Hour"]>span').toArray().map(x => $(x).text().trim());
+	let places = course_info ? course_info["time_data"]["places"] : $(row).find('td[data-th="Room"]>span').toArray().map(x => $(x).text().trim());
+	for (var i = 0; i < days.length; i++) {
+		let date = days[i];
+		let time = times[i];
+		let place = places[i];
 		for (var j = 0; j < date.length; j++) {
-			var letter = date.charAt(j);
-			var day = "";
+			let letter = date.charAt(j);
 			if (letter == "T" && j < date.length - 1 && date.charAt(j + 1) == "H") {
-				dtarr.push(["TH", convertTime(time), place]);
+				day_time_array.push(["TH", convertTime(time), place]);
 			} else {
-				if (letter != "H") {
-					dtarr.push([letter, convertTime(time), place]);
-				}
+				if (letter != "H")
+					day_time_array.push([letter, convertTime(time), place]);
 			}
 		}
 	}
-	return dtarr;
-}
-
-/*Convert time to 24hour format*/
-function convertTime(time) {
-	var converted = time.replace(/\./g, '').split("-");
-	for (var i = 0; i < 2; i++) {
-		converted[i] = moment(converted[i], ["h:mm A"]).format("HH:mm");
-	}
-	return converted;
+	return day_time_array;
 }

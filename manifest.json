@@ -28,7 +28,7 @@
     "matches": ["https://utexas.collegescheduler.com/*"]
   }, {
     "css": ["css/styles.css"],
-    "js": ["js/config.js", "js/lib/moment.min.js", "js/lib/sql-memory-growth.js", "js/lib/highcharts.js", "js/lib/jquery-3.3.1.min.js", "js/import.js"],
+    "js": ["js/config.js", "js/lib/moment.min.js", "js/lib/sql-memory-growth.js", "js/lib/highcharts.js", "js/lib/jquery-3.3.1.min.js", "js/Template.js", "js/util.js", "js/import.js"],
     "matches": ["https://utdirect.utexas.edu/registrar/waitlist/wl_see_my_waitlists.WBX", "https://utdirect.utexas.edu/registration/classlist.WBX*"]
   }],
   "web_accessible_resources": [

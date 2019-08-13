@@ -144,4 +144,13 @@ class Template {
         }
     }
 
+
+    static Import = class Import {
+
+        static button_text_default = "<span style='font-size:small'>Import to </span><b>UT Reg Plus<b>";
+        static import_button() {
+            return `<button class='matbut' id='import' style='margin:20px 0px 20px 0px;'>${this.button_text_default}</button><br>`;
+        }
+    }
+
 }
