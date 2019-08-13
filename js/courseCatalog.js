@@ -152,6 +152,8 @@ function getCourseInfo(row) {
 }
 
 function saveCourse() {
+	console.log(curr_course);
+	console.log(JSON.stringify(curr_course));
 	let {
 		full_name,
 		unique,

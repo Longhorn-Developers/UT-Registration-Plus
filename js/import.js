@@ -36,7 +36,7 @@ function importCourse(unique_node) {
 function buildAddCourse(link) {
 	$.get(link, function (response) {
 		if (response) {
-			let simp_course = buildSimplifiedCourseObject(response);
+			let simp_course = buildSimplifiedCourseObject(response, link);
 			chrome.runtime.sendMessage({
 				command: "courseStorage",
 				course: simp_course,
@@ -51,14 +51,14 @@ function buildAddCourse(link) {
 }
 
 
-function buildSimplifiedCourseObject(response) {
-	let imported_course = getCourseObject(htmlToNode(response));
+function buildSimplifiedCourseObject(response, link) {
+	let imported_course = getCourseObject(htmlToNode(response), link);
 	let {
 		full_name,
 		unique,
 		prof_name,
-		status,
 		individual,
+		status,
 		register
 	} = curr_course;
 	let dtarr = getDayTimeArray(undefined, curr_course);
@@ -67,10 +67,9 @@ function buildSimplifiedCourseObject(response) {
 }
 
 /*For a row, get all the course information and add the date-time-lines*/
-function getCourseObject(response_node) {
+function getCourseObject(response_node, individual) {
 	let course_name = $(response_node).find("#details h2").text();
 	let course_row = $(response_node).find('table');
-	let individual = document.URL;
 	curr_course = buildBasicCourseInfo(course_row, course_name, individual);
 }
 
