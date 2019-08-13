@@ -81,7 +81,7 @@ function formatShortenedCourseName(course) {
 
 $(document).click(function(event) {
 	$target = $(event.target);
-	console.log($target);
+	
 	// If we're not clicking on search button or search popup, and popup is visible, hide it
 	if (!$target.closest('#search').length && !$target.closest('#search-popup').length && $('#search-popup').is(":visible")) {
 		hideSearchPopup();
