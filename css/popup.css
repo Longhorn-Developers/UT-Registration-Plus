@@ -23,6 +23,7 @@ li {
 body {
     min-width: 370px;
     min-height: 400px;
+    position: relative;
 }
 
 #courseList {
@@ -106,10 +107,6 @@ i {
 
 #card-header {
     border-radius: 7px;
-}
-
-#card-body {
-    position: relative;
 }
 
 .settings {
