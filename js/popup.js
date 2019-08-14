@@ -79,9 +79,9 @@ function formatShortenedCourseName(course) {
 	return `${department} ${number} (${course.unique})`;
 }
 
-$(document).click(function(event) {
+$(document).click(function (event) {
 	$target = $(event.target);
-	
+
 	// If we're not clicking on search button or search popup, and popup is visible, hide it
 	if (!$target.closest('#search').length && !$target.closest('#search-popup').length && $('#search-popup').is(":visible")) {
 		hideSearchPopup();
@@ -195,7 +195,6 @@ $('#export-class').click(function () {
 	});
 });
 
-
 function openCoursePage(sem, unique) {
 	var link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
 	window.open(link);
@@ -265,8 +264,8 @@ function handleRegister(clicked_item, curr_course) {
 		status.includes("waitlisted") ? "Join Waitlist" : "Register";
 	let register_color = can_not_register ? Colors.closed :
 		status.includes("waitlisted") ? Colors.waitlisted : Colors.open;
-
 	$(register_button).text(register_text).css('background-color', register_color);
+
 	if (!can_not_register) {
 		$(register_button).click(function () {
 			setCurrentTabUrl(registerlink);
@@ -312,7 +311,6 @@ function handleEmpty() {
 		showEmpty();
 	}
 }
-
 
 function copyButtonAnimation() {
 	$(this).find('i').text('check');

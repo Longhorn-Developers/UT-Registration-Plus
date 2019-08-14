@@ -3,9 +3,10 @@ var sem;
 $(function () {
 	waitlist = !(window.location.href.includes('https://utdirect.utexas.edu/registration/classlist.WBX'));
 	sem = waitlist ? $('[name="s_ccyys"]').val() : $("option[selected='selected']").val();
-	if (waitlist)
+	if (waitlist) {
 		$("[href='#top']").before(Template.Import.import_button());
-	else
+		$("[name='wl_see_my_waitlists']").after(Template.Import.waitlist_import_button());
+	} else
 		$("table").after(Template.Import.import_button());
 	$("#import").prepend("<div id='snackbar'>import snackbar..</div>");
 
@@ -14,15 +15,25 @@ $(function () {
 		$(search_nodes).each(function () {
 			importCourse($(this));
 		})
-		importButtonAnimation();
+		importButtonAnimation($(this));
+	});
+
+	$("#import_waitlist").click(function () {
+		search_nodes = $("tr.tb span:first-child");
+		$(search_nodes).each(function () {
+			importCourse($(this));
+		})
+		importButtonAnimation($(this));
 	});
 });
 
 
-function importButtonAnimation() {
-	$("#import").text("Courses Saved!").css("background-color", Colors.open);
+function importButtonAnimation(button) {
+	let is_waitlisted_button = $(button).attr('id') == "import_waitlist";
+	let return_text = is_waitlisted_button ? Template.Import.waitlist_button_text_default : Template.Import.button_text_default;
+	$(button).text(Template.Import.button_success).css("background-color", Colors.open);
 	setTimeout(function () {
-		$("#import").html(Template.Import.button_text_default).css('background-color', Colors.waitlisted);
+		$(button).html(return_text).css('background-color', Colors.waitlisted);
 	}, 1000);
 }
 

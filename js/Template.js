@@ -147,9 +147,15 @@ class Template {
 
     static Import = class Import {
 
-        static button_text_default = "<span style='font-size:small'>Import to </span><b>UT Reg Plus<b>";
+        static button_text_default = "<span style='font-size:small'>Import to </span><b>UT Reg +<b>";
+        static waitlist_button_text_default = "<span style='font-size:small'>Import Waitlists to </span><b>UT Reg +<b>";
+        static button_success = "Courses Saved!";
         static import_button() {
-            return `<button class='matbut' id='import' style='margin:20px 0px 20px 0px;'>${this.button_text_default}</button><br>`;
+            return `<button class='matbut' id='import' style='margin:15px 0px;'>${this.button_text_default}</button><br>`;
+        }
+
+        static waitlist_import_button() {
+            return `<button class='matbut' id='import_waitlist' style='margin:0px'>${this.waitlist_button_text_default}</button><br>`;
         }
     }
 
