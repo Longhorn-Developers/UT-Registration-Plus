@@ -221,6 +221,11 @@ $("#options_button").click(function () {
 
 
 
+
+
+
+
+
 $("#courseList").on('mouseover', '.copybut', function () {
 	$(this).addClass('shadow');
 }).on('mouseleave', '.copybut', function () {
@@ -229,7 +234,7 @@ $("#courseList").on('mouseover', '.copybut', function () {
 
 $("#courseList").on('click', '.copybut', function (e) {
 	e.stopPropagation();
-	copyButtonAnimation();
+	copyButtonAnimation($(this));
 	let unique = $(this).val();
 	copyUnique(unique);
 });
@@ -312,12 +317,12 @@ function handleEmpty() {
 	}
 }
 
-function copyButtonAnimation() {
-	$(this).find('i').text('check');
-	$(this).stop(true, false).removeAttr('style').removeClass('shadow', {
+function copyButtonAnimation(copy_button) {
+	$(copy_button).find('i').text('check');
+	$(copy_button).stop(true, false).removeAttr('style').removeClass('shadow', {
 		duration: 200
 	});
-	$(this).find('i').delay(400).queue(function (n) {
+	$(copy_button).find('i').delay(400).queue(function (n) {
 		$(this).text('content_copy');
 		$(this).parent().removeClass('shadow');
 		if ($(this).parent().is(":hover")) {
@@ -326,7 +331,6 @@ function copyButtonAnimation() {
 		n();
 	})
 }
-
 
 function toggleTimeDropdown(clicked_item) {
 	let more_info_button = $(clicked_item).find('#moreInfo');
@@ -372,8 +376,6 @@ function showImportExportPopup() {
 	$("#impexp>i").text('close');
 	$("#import-export-popup").removeClass('hide');
 }
-
-
 
 function getSemesters() {
 	var schedule_list = 'https://registrar.utexas.edu/schedules';

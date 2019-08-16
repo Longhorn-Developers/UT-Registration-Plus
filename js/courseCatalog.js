@@ -247,7 +247,7 @@ function convertDateTimeArrToLine(date, time, place) {
 	let arr = seperateDays(date)
 	let output = prettifyDaysText(arr)
 	let building = place.substring(0, place.search(/\d/) - 1);
-	building = building == "" ? "Undecided Location" : building;
+	building = building ? building : "Undecided Location";
 	return `${output} at ${time.replace(/\./g, '').replace(/\-/g, ' to ')} in <a style='font-size:medium' target='_blank' href='https://maps.utexas.edu/buildings/UTM/${building}'>${building}</>`;
 }
 
@@ -337,13 +337,10 @@ function openDialog(course_info, res) {
 			$("#saveCourse").text("Add Course +");
 		}
 	});
-
 	buildSemestersDropdown(course_info, res)
 	var data = []
 	if (!badData(course_info, res))
 		data = res.values[0];
-	let status_color = getStatusColor(course_info["status"]);
-	//close button
 	allowClosing();
 	setChart(data);
 }
