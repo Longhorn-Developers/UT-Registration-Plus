@@ -1,6 +1,12 @@
-updateBadge(true);
 var grades;
+var current_semesters = {};
+
+updateBadge(true);
 loadDataBase()
+getCurrentSemesters();
+
+
+
 /* Handle messages and their commands from content and popup scripts*/
 chrome.runtime.onMessage.addListener(function (request, sender, response) {
     switch (request.command) {
@@ -32,6 +38,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             break;
         case "gradesQuery":
             executeQuery(request.query, response);
+        case "currentSemesters":
+            response({ semesters: current_semesters});
         default:
             const xhr = new XMLHttpRequest();
             const method = request.method ? request.method.toUpperCase() : "GET";
@@ -107,27 +115,37 @@ function executeQuery(query, sendResponse) {
     });
 }
 
-/* Load the database*/
-function loadDataBase() {
-    sql = window.SQL;
-    loadBinaryFile('grades.db', function (data) {
-        var sqldb = new SQL.Database(data);
-        grades = sqldb;
+
+function getCurrentSemesters(){
+    $.get('https://registrar.utexas.edu/schedules', function (response) {
+        if (response) {
+            htmlToNode(response).find('.callout2>ul>li>a').each(function (i) {
+                if (i < Popup.num_semesters) {
+                    let sem_name = $(this).text().trim();
+                    if (sem_name != "Course Schedule Archive") {
+                        // $("#semesters").append(`<option>${sem_name}</option>`);
+                        current_semesters[sem_name] = "code";
+                        $.get($(this).attr('href'), function (response) {
+                            if (response) {
+                                let response_node = htmlToNode(response);
+                                let name = response_node.find(".page-title").text().substring(17).trim();
+                                response_node.find('.gobutton>a').each(function () {
+                                    let link = $(this).attr('href');
+                                    var sem_num = link.substring(link.lastIndexOf('/') + 1).trim();
+                                    if(current_semesters[name] != sem_num){
+                                        current_semesters[name] = sem_num;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        }
     });
 }
-/* load the database from file */
-function loadBinaryFile(path, success) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", chrome.extension.getURL(path), true);
-    xhr.responseType = "arraybuffer";
-    xhr.onload = function () {
-        var data = new Uint8Array(xhr.response);
-        var arr = new Array();
-        for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
-        success(arr.join(""));
-    };
-    xhr.send();
-};
+
+
 
 function updateBadge(first, new_changes) {
     if (new_changes) {
@@ -346,3 +364,25 @@ function updateStatus(sendResponse) {
         }
     });
 }
+
+/* Load the database*/
+function loadDataBase() {
+    sql = window.SQL;
+    loadBinaryFile('grades.db', function (data) {
+        var sqldb = new SQL.Database(data);
+        grades = sqldb;
+    });
+}
+/* load the database from file */
+function loadBinaryFile(path, success) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", chrome.extension.getURL(path), true);
+    xhr.responseType = "arraybuffer";
+    xhr.onload = function () {
+        var data = new Uint8Array(xhr.response);
+        var arr = new Array();
+        for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+        success(arr.join(""));
+    };
+    xhr.send();
+};
