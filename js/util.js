@@ -18,8 +18,6 @@ function getStatusColor(status, sub = false) {
     return color;
 }
 
-
-
 function buildQuery(course_data, sem) {
     let query = !sem ? "select * from agg" : "select * from grades";
     query += " where dept like '%" + course_data["department"] + "%'";
@@ -54,15 +52,16 @@ function capitalizeString(string) {
     return output.trim();
 }
 
-function seperateDays(date) {
+function seperateDays(date, simple=false) {
     let arr = [];
     for (var i = 0; i < date.length; i++) {
         let letter = date.charAt(i);
+        let seperated_letter = letter;
         if (letter == "T" && i < date.length - 1 && date.charAt(i + 1) == "H") {
-            arr.push(days.get("TH"));
+            arr.push(simple ? "TH" : days.get("TH"));
         } else {
             if (letter != "H") {
-                arr.push(days.get(letter));
+                arr.push(simple ? letter : days.get(letter));
             }
         }
     }

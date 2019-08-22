@@ -1,11 +1,7 @@
 var grades;
 var current_semesters = {};
 
-updateBadge(true);
-loadDataBase()
-getCurrentSemesters();
-
-
+onStartup();
 
 /* Handle messages and their commands from content and popup scripts*/
 chrome.runtime.onMessage.addListener(function (request, sender, response) {
@@ -40,6 +36,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             executeQuery(request.query, response);
         case "currentSemesters":
             response({ semesters: current_semesters});
+            getCurrentSemesters();
         default:
             const xhr = new XMLHttpRequest();
             const method = request.method ? request.method.toUpperCase() : "GET";
@@ -106,13 +103,10 @@ chrome.storage.onChanged.addListener(function (changes) {
     }
 });
 
-
-function executeQuery(query, sendResponse) {
-    console.log(grades)
-    var res = grades.exec(query)[0];
-    sendResponse({
-        data: res,
-    });
+function onStartup(){
+    updateBadge(true);
+    loadDataBase()
+    getCurrentSemesters();
 }
 
 
@@ -259,7 +253,8 @@ function add(request, sender, sendResponse) {
         }
         sendResponse({
             done: "Added: (" + request.course.unique + ") " + request.course.coursename,
-            label: "Remove Course -"
+            label: "Remove Course -",
+            value: "remove"
         });
     });
 }
@@ -278,7 +273,8 @@ function remove(request, sender, sendResponse) {
         });
         sendResponse({
             done: "Removed: (" + request.course.unique + ") " + request.course.coursename,
-            label: "Add Course +"
+            label: "Add Course +",
+            value: "add"
         });
     });
 }
@@ -365,6 +361,15 @@ function updateStatus(sendResponse) {
     });
 }
 
+
+function executeQuery(query, sendResponse) {
+    console.log(grades)
+    var res = grades.exec(query)[0];
+    sendResponse({
+        data: res,
+    });
+}
+
 /* Load the database*/
 function loadDataBase() {
     sql = window.SQL;
@@ -386,3 +391,4 @@ function loadBinaryFile(path, success) {
     };
     xhr.send();
 };
+

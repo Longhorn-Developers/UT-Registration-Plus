@@ -168,9 +168,10 @@ function saveCourse() {
 	chrome.runtime.sendMessage({
 		command: "courseStorage",
 		course: c,
-		action: $("#saveCourse").text().substring(0, $("#saveCourse").text().indexOf(" ")).toLowerCase()
+		action: $("#saveCourse").val()
 	}, function (response) {
 		$("#saveCourse").text(response.label);
+		$("#saveCourse").val(response.value);
 		$("#snackbar").text(response.done);
 		toggleSnackbar();
 		chrome.runtime.sendMessage({
@@ -320,12 +321,17 @@ function buildSemestersDropdown(course_data, res) {
 }
 
 
-/*Open the modal and show all the data*/
-function openDialog(course_info, res) {
+function displayBasicCourseInfo(course_info){
 	$("#title").text(buildTitle(course_info))
 	$("#topbuttons").before(buildTimeTitle(course_info));
 	$("#profname").text(buildProfTitle(course_info));
 	$("#myModal").fadeIn(Timing.fade_time);
+	console.log(course_info);
+}
+
+/*Open the modal and show all the data*/
+function openDialog(course_info, res) {
+	displayBasicCourseInfo(course_info);
 	//initial text on the "save course button"
 	chrome.runtime.sendMessage({
 		command: "alreadyContains",
@@ -344,6 +350,9 @@ function openDialog(course_info, res) {
 	allowClosing();
 	setChart(data);
 }
+
+
+
 
 function setChart(data) {
 	// set up the chart
@@ -497,16 +506,6 @@ $("#retry").click(function () {
 	loadNextPages();
 });
 
-/*Listen for update mssage coming from popup*/
-chrome.runtime.onMessage.addListener(
-	function (request, sender, sendResponse) {
-		if (request.command == "updateCourseList") {
-			updateListConflictHighlighting(0);
-		}
-	}
-);
-
-
 function toggleLoadingPage(loading) {
 	if (loading) {
 		done_loading = false;
@@ -546,15 +545,6 @@ function toggleSnackbar() {
 	}, 3000);
 }
 
-$(document).keydown(function (e) {
-	/*Close Modal when hit escape*/
-	if (e.keyCode == 27) {
-		close();
-	} else if (e.keyCode == 13 && $('#myModal').is(':visible')) {
-		saveCourse();
-	}
-});
-
 
 function allowClosing() {
 	$('.close').click(function () {
@@ -571,3 +561,23 @@ function close() {
 	$("#myModal").fadeOut(Timing.fade_time);
 	$("#snackbar").attr("class", "");
 }
+
+
+$(document).keydown(function (e) {
+	/*Close Modal when hit escape*/
+	if (e.keyCode == 27) {
+		close();
+	} else if (e.keyCode == 13 && $('#myModal').is(':visible')) {
+		saveCourse();
+	}
+});
+
+
+/*Listen for update mssage coming from popup or calendar or other course catalog pages*/
+chrome.runtime.onMessage.addListener(
+	function (request, sender, sendResponse) {
+		if (request.command == "updateCourseList") {
+			updateListConflictHighlighting(0);
+		}
+	}
+);

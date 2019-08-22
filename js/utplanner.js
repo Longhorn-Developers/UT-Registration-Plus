@@ -1,3 +1,15 @@
+let semester_code = "";
+curr_course = {}
+
+chrome.runtime.sendMessage({
+    command: "currentSemesters"
+}, function(response){
+    let semester_text = $('.row:contains(Semester)').find('span').text();
+    let key = semester_text.split(' ').reverse().join(' ');
+    semester_code = response.semesters[key];
+});
+
+
 if ($('html').hasClass('gr__utexas_collegescheduler_com')) {
     $.initialize("table.section-detail-grid", function () {
         $(this).find('thead>tr').append('<th> Plus</th')
@@ -6,15 +18,11 @@ if ($('html').hasClass('gr__utexas_collegescheduler_com')) {
         })
     });
 }
-curr_course = {}
-$("body").prepend(Template.Main.modal());
 
+$("body").prepend(Template.UTPlanner.modal());
 $("body").on('click', '#distButton', function () {
     var row = $(this).closest('tr');
-    console.log(row.text())
-    $('.modal-content').stop().animate({
-        scrollTop: 0
-    }, 500);
+    $('.modal-content').stop().animate({ scrollTop: 0 }, 500);
     $(this).blur();
     getCourseInfo(row)
 });
@@ -37,9 +45,10 @@ function getCourseInfo(row) {
         "prof_name": profname,
         "initial": profinit,
         "notes": notes,
+        "individual": `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semester_code}/${uniquenum}/`,
         "times": times,
     }
-    curr_course = course_data;
+    curr_course = buildCourseLinks(course_data);
     getDistribution(course_data);
     var modal = document.getElementById('myModal');
     window.onclick = function (event) {
@@ -47,6 +56,22 @@ function getCourseInfo(row) {
             close();
         }
     }
+}
+
+function buildCourseLinks(course_info) {
+    console.log(semester_code);
+    let {
+        department,
+        number,
+        unique,
+        prof_name
+    } = course_info
+    links = {
+        "textbook": `https://www.universitycoop.com/adoption-search-results?sn=${semester_code}__${department}__${number}__${unique}`,
+        "syllabi": `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?semester=&department=${department}&course_number=${number}&course_title=&unique=&instructor_first=&instructor_last=${prof_name}&course_type=In+Residence&search=Search`,
+    }
+    course_info["links"] = links;
+    return course_info;
 }
 
 function badData(course_data, res) {
@@ -58,6 +83,30 @@ $("#semesters").on('change', function () {
     sem = sem == "Aggregate" ? undefined : sem;
     getDistribution(curr_course, sem);
 });
+
+$("#Syllabi").click(function () {
+    setTimeout(function () {
+        window.open(curr_course["links"]["syllabi"]);
+    }, Timing.button_delay);
+});
+$("#textbook").click(function () {
+    setTimeout(function () {
+        window.open(curr_course["links"]["textbook"]);
+    }, Timing.button_delay);
+});
+
+$("#moreInfo").click(function () {
+    setTimeout(function () {
+        window.open(curr_course["individual"]);
+    }, Timing.button_delay);
+});
+
+$("#myModal").on('click', '#saveCourse', function () {
+    setTimeout(function () {
+        saveCourse();
+    }, 0);
+});
+
 
 
 function toggleChartLoading(loading) {
@@ -72,6 +121,7 @@ function toggleChartLoading(loading) {
 
 
 function openDialog(course_data, res) {
+    console.log(course_data);
     $("#title").text(buildTitle(course_data))
     $("#topbuttons").before(buildTimeTitle(course_data["times"]));
     $("#profname").text(buildProfTitle(course_data));
@@ -81,6 +131,7 @@ function openDialog(course_data, res) {
     if (!badData(course_data, res))
         data = res.values[0];
     setChart(data);
+    allowClosing();
 }
 
 function buildProfTitle(course_data) {
@@ -173,6 +224,64 @@ function setChart(data) {
     });
 }
 
+function standardizeName(department, number, name){
+    return `${department} ${number} ${name}`
+
+}
+
+function saveCourse() {
+    let {
+        department, name, number, prof_name, times, unique, individual
+    } = curr_course;
+    let dtarr = makeDateTimeArray(times);
+    let full_name = standardizeName(department, number, name);
+    var c = new Course(full_name, unique, prof_name, dtarr, "open", individual, "");
+    console.log(c);
+    chrome.runtime.sendMessage({
+        command: "courseStorage",
+        course: c,
+        action: $("#saveCourse").val()
+    }, function (response) {
+        $("#saveCourse").text(response.label);
+        $("#saveCourse").val(response.value);
+        $("#snackbar").text(response.done);
+        toggleSnackbar();
+        chrome.runtime.sendMessage({
+            command: "updateCourseList"
+        });
+    });
+}
+
+
+function makeDateTimeArray(times){
+    let dtarr = [];
+    times.forEach(function(session){
+        date = session.substring(0, session.indexOf(' ')).toUpperCase();
+        time = session.substring(session.indexOf(' ') + 1, session.lastIndexOf('-')).trim().split(' - ');
+        place = session.substring(session.lastIndexOf('-') + 1).trim();
+        timearr = [];
+        time.forEach(function(ind_time){
+            timearr.push(moment(ind_time, ["h:mma"]).format("h:mm A"))
+        })
+        seperateDays(date, true).forEach(function(ind_day){
+            dtarr.push([ind_day, timearr, place]);
+        })
+    });
+    return dtarr;
+}
+
+function allowClosing() {
+    $('.close').click(function () {
+        close();
+    });
+    $('#myModal').click(function (event) {
+        if (event.target.id == 'myModal') {
+            close();
+        }
+    });
+}
+
 function close() {
     $("#myModal").fadeOut(Timing.fade_time);
+    $("#snackbar").attr("class", "");
 }
