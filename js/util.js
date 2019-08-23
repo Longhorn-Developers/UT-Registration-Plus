@@ -14,6 +14,8 @@ function getStatusColor(status, sub = false) {
         color = sub ? Colors.waitlisted_light : Colors.waitlisted;
     } else if (status.includes("closed") || status.includes("cancelled")) {
         color = sub ? Colors.closed_light : Colors.closed;
+    } else {
+        color = sub ? Colors.no_status_light : Colors.no_status;
     }
     return color;
 }

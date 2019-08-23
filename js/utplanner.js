@@ -9,15 +9,12 @@ chrome.runtime.sendMessage({
     semester_code = response.semesters[key];
 });
 
-
-if ($('html').hasClass('gr__utexas_collegescheduler_com')) {
-    $.initialize("table.section-detail-grid", function () {
-        $(this).find('thead>tr').append('<th> Plus</th')
-        $(this).find('tbody>tr').each(function () {
-            $(this).append(Template.Main.extension_button());
-        })
-    });
-}
+$.initialize("table.section-detail-grid", function () {
+    $(this).find('thead>tr').append('<th> Plus</th')
+    $(this).find('tbody>tr').each(function () {
+        $(this).append(Template.Main.extension_button());
+    })
+});
 
 $("body").prepend(Template.UTPlanner.modal());
 $("body").on('click', '#distButton', function () {
@@ -100,13 +97,6 @@ $("#moreInfo").click(function () {
         window.open(curr_course["individual"]);
     }, Timing.button_delay);
 });
-
-$("#myModal").on('click', '#saveCourse', function () {
-    setTimeout(function () {
-        saveCourse();
-    }, 0);
-});
-
 
 
 function toggleChartLoading(loading) {
@@ -227,47 +217,6 @@ function setChart(data) {
 function standardizeName(department, number, name){
     return `${department} ${number} ${name}`
 
-}
-
-function saveCourse() {
-    let {
-        department, name, number, prof_name, times, unique, individual
-    } = curr_course;
-    let dtarr = makeDateTimeArray(times);
-    let full_name = standardizeName(department, number, name);
-    var c = new Course(full_name, unique, prof_name, dtarr, "open", individual, "");
-    console.log(c);
-    chrome.runtime.sendMessage({
-        command: "courseStorage",
-        course: c,
-        action: $("#saveCourse").val()
-    }, function (response) {
-        $("#saveCourse").text(response.label);
-        $("#saveCourse").val(response.value);
-        $("#snackbar").text(response.done);
-        toggleSnackbar();
-        chrome.runtime.sendMessage({
-            command: "updateCourseList"
-        });
-    });
-}
-
-
-function makeDateTimeArray(times){
-    let dtarr = [];
-    times.forEach(function(session){
-        date = session.substring(0, session.indexOf(' ')).toUpperCase();
-        time = session.substring(session.indexOf(' ') + 1, session.lastIndexOf('-')).trim().split(' - ');
-        place = session.substring(session.lastIndexOf('-') + 1).trim();
-        timearr = [];
-        time.forEach(function(ind_time){
-            timearr.push(moment(ind_time, ["h:mma"]).format("h:mm A"))
-        })
-        seperateDays(date, true).forEach(function(ind_day){
-            dtarr.push([ind_day, timearr, place]);
-        })
-    });
-    return dtarr;
 }
 
 function allowClosing() {

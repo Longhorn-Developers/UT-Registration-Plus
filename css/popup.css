@@ -118,7 +118,7 @@ i {
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
     transition: 0.3s;
     padding: 7px 5px 5px 7px;
-    margin: 0px 10px 0px 0px;
+    margin: 0px 5px 0px 0px;
     border-radius: 7px;
 }
 
@@ -392,4 +392,25 @@ input[type=number]::-webkit-outer-spin-button {
 
 .hide {
     display: none !important;
+}
+
+.meta{
+    margin:0;
+    color:#FF9800;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    vertical-align: middle;
+    padding: 7px 5px 5px 7px;
+    margin: 0px 5px 0px 5px;
+    font-size: 10px;
+}
+
+.meta-metric{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.meta-container{
+    margin: 5px 5px 10px 5px;
 }

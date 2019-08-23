@@ -14,10 +14,14 @@ class Colors {
     static open = "#4CAF50";
     static waitlisted = "#FF9800";
     static closed = "#FF5722";
+    static no_status = "#607D8B";
+
 
     static open_light = "#C8E6C9";
     static waitlisted_light = "#FFE0B2";
     static closed_light = "#FFCCBC";
+    static no_status_light = "#CFD8DC";
+
 
     static highlight_conflict = "#F44336";
     static highlight_default = "#333333";

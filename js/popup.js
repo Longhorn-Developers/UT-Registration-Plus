@@ -11,6 +11,7 @@ function setCourseList() {
 		updateConflicts();
 		courses = data.savedCourses
 		handleEmpty();
+		let num_hours = 0;
 		// build and append the course list element
 		for (var i = 0; i < courses.length; i++) {
 			let {
@@ -28,10 +29,12 @@ function setCourseList() {
 				department,
 				number
 			} = seperateCourseNameParts(coursename)
+			num_hours += parseInt(number.substring(0,1));
 
 			let list_html = Template.Popup.list_item(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
 			$("#courseList").append(list_html);
 		}
+		$("#meta-metric").text(num_hours);
 	});
 }
 
@@ -139,6 +142,7 @@ $("#search").click(function () {
 
 $('#import-class').click(function () {
 	$("#import_input").click();
+	console.log('back to improting');
 });
 
 function isImportedValid(imported_courses) {
@@ -146,6 +150,7 @@ function isImportedValid(imported_courses) {
 }
 
 $("#import_input").change(function (e) {
+	console.log('hello');
 	var files = e.target.files;
 	var reader = new FileReader();
 	reader.onload = function () {
@@ -158,6 +163,7 @@ $("#import_input").change(function (e) {
 				updateAllTabsCourseList();
 				setCourseList();
 				hideImportExportPopup();
+				$("#import_input").val('');
 			} else {
 				Alert('There was an error.');
 			}
@@ -219,13 +225,6 @@ $("#options_button").click(function () {
 	});
 });
 
-
-
-
-
-
-
-
 $("#courseList").on('mouseover', '.copybut', function () {
 	$(this).addClass('shadow');
 }).on('mouseleave', '.copybut', function () {
@@ -264,11 +263,16 @@ function handleRegister(clicked_item, curr_course) {
 	} = curr_course;
 	let register_button = $(clicked_item).find("#register");
 	let can_not_register = canNotRegister(status, registerlink);
-
 	let register_text = can_not_register ? "Can't Register" :
 		status.includes("waitlisted") ? "Join Waitlist" : "Register";
 	let register_color = can_not_register ? Colors.closed :
 		status.includes("waitlisted") ? Colors.waitlisted : Colors.open;
+
+	if(!status){
+		register_text = "No Status";
+		register_color = Colors.no_status;
+	}
+
 	$(register_button).text(register_text).css('background-color', register_color);
 
 	if (!can_not_register) {
@@ -286,6 +290,7 @@ function handleRemove(clicked_item, curr_course) {
 			$(list).find("#conflict").fadeOut(300, function () {
 				$(clicked_item).remove();
 			});
+			subtractHours(curr_course);
 			chrome.runtime.sendMessage({
 				command: "courseStorage",
 				course: curr_course,
@@ -300,6 +305,15 @@ function handleRemove(clicked_item, curr_course) {
 			});
 		}
 	});
+}
+
+
+function subtractHours(curr_course){
+	let curr_total_hours = parseInt($("#meta-metric").text());
+	let curr_course_number = seperateCourseNameParts(curr_course.coursename).number;
+	let curr_individual_hours = parseInt(curr_course_number.substring(0,1));
+	$("#meta-metric").text(curr_total_hours-curr_individual_hours);
+
 }
 
 function handleMoreInfo(clicked_item, curr_course) {
@@ -348,6 +362,7 @@ function showEmpty() {
 	$("#courseList").hide();
 	$("#empty").fadeIn(200);
 	$("#main").html(Text.emptyText());
+	$("#meta-metric").text('0');
 }
 
 function hideSearchPopup() {

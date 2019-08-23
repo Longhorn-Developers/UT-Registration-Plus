@@ -70,7 +70,7 @@ class Template {
                                         <button class=matbut id="moreInfo" style="background: #2196F3;"> More Info </button>
                                         <button class=matbut id="textbook" style="background: #FFC107;"> Textbook </button>
                                         <button class=matbut id="Syllabi"> Past Syllabi </button>
-                                        <button class=matbut id="saveCourse" value="add" style="background: #F44336;"> Save Course +</button>
+                                        <button class=matbut id="saveCourse" value="add" style="background: #F44336;opacity:.4;"> Unable to Save</button>
                                     </div>
                                 </div>
                             </div>

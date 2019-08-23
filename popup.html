@@ -31,55 +31,55 @@
     <div style="margin-bottom: 0px; display:inline-block"></div>
     <input type="file" id="import_input" accept=".json" style="display:none" />
 
-    <div class="settings">
+    <div>
+      <div id="meta-data" class="meta-container">
+        <p class="meta"> <span class="meta-metric" id="meta-metric">17</span> hr</p>
+      </div>  
+      <div class="settings">
+        <button title='Search' style="background-color:white;margin-left: 5px;margin-right: 3px;" class="settingsbut"
+          id='search'>
+          <i style='color:#FF9800' class="material-icons">
+            search
+          </i>
+        </button>
 
-      <button title='Search' style="background-color:white;margin-left: 5px;margin-right: 3px;" class="settingsbut"
-        id='search'>
-        <i style='color:#FF9800' class="material-icons">
-          search
-        </i>
-      </button>
-
-      <div id="search-popup" class="hide">
-        <div class="flex-container">
-
-          <div id='semcon' class="select-style item">
-            <label>
-              <select id="semesters"></select>
-            </label>
+        <div id="search-popup" class="hide">
+          <div class="flex-container">
+            <div id='semcon' class="select-style item">
+              <label>
+                <select id="semesters"></select>
+              </label>
+            </div>
+            <input type="text" id="class_id_input" class="item" name="class_id" maxlength="5"
+              placeholder="Course ID #"></input>
           </div>
-
-          <input type="text" id="class_id_input" class="item" name="class_id" maxlength="5"
-            placeholder="Course ID #"></input>
-
+          <button id="search-class" class="matbut">Search</button>
         </div>
 
-        <button id="search-class" class="matbut">Search</button>
-      </div>
+        <button title='Import/Export' style="background-color:white;" class="settingsbut" id='impexp'>
+          <i style='color:#FF9800' class="material-icons">
+            import_export
+          </i>
+        </button>
 
-      <button title='Import/Export' style="background-color:white;" class="settingsbut" id='impexp'>
-        <i style='color:#FF9800' class="material-icons">
-          import_export
-        </i>
-      </button>
-
-      <div id="import-export-popup" class="hide">
-        <div class="flex-container">
-          <button id="import-class" class="simple-menu-option">
-            <i class="material-icons">file_upload</i>Import Classes
-          </button>
-          <button id="export-class" class="simple-menu-option">
-            <i class="material-icons">file_download</i>Export Classes
-          </button>
+        <div id="import-export-popup" class="hide">
+          <div class="flex-container">
+            <button id="import-class" class="simple-menu-option">
+              <i class="material-icons">file_upload</i>Import Classes
+            </button>
+            <button id="export-class" class="simple-menu-option">
+              <i class="material-icons">file_download</i>Export Classes
+            </button>
+          </div>
         </div>
+
+        <button title='Options' style="background-color:white; margin-right: 0px;" class="settingsbut"
+          id='options_button'>
+          <i style='color:#FF9800' class="material-icons">
+            settings
+          </i>
+        </button>
       </div>
-
-      <button title='Options' style="background-color:white; margin-right: 0px;" class="settingsbut"
-        id='options_button'>
-        <i style='color:#FF9800' class="material-icons">
-          settings
-        </i></button>
-
     </div>
   </div>
 

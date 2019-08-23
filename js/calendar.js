@@ -14,6 +14,7 @@ $("#calendar").after(Template.Calendar.modal());
 chrome.storage.sync.get("savedCourses", function (data) {
     // Iterate through each saved course and add to 'event'
     saved_courses = data.savedCourses;
+    console.log(saved_courses);
     let event_source = buildEventSource(saved_courses);
 
     $("#calendar").fullCalendar({

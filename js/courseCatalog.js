@@ -337,11 +337,11 @@ function openDialog(course_info, res) {
 		command: "alreadyContains",
 		unique: course_info["unique"]
 	}, function (response) {
-		if (response.alreadyContains) {
-			$("#saveCourse").text("Remove Course -");
-		} else {
-			$("#saveCourse").text("Add Course +");
-		}
+
+		let button_text = response.alreadyContains ? "Remove Course -" : "Add Course +";
+		let button_val = response.alreadyContains ? "remove" : "add";
+		$("#saveCourse").text(button_text);
+		$("#saveCourse").val(button_val);
 	});
 	buildSemestersDropdown(course_info, res)
 	var data = []
