@@ -2,12 +2,8 @@ console.log(`UT Registration Plus is running on this page: ${window.location.hre
 
 var curr_course = {}
 
-
 var semester_code = new URL(window.location.href).pathname.split('/')[4];
 var done_loading = true;
-updateListConflictHighlighting();
-
-
 
 var next = $("#next_nav_link");
 if (next) {
@@ -19,12 +15,6 @@ if (next) {
 
 //This extension may be super lit, but you know what's even more lit?
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
-
-$(window).scroll(function () {
-	if ($(document).height() <= $(window).scrollTop() + $(window).height() + 150)
-		loadNextPages();
-});
-
 
 if (document.querySelector('#fos_fl')) {
 	let params = (new URL(document.location)).searchParams;
@@ -53,9 +43,18 @@ if (!$("#kw_results_table").length) {
 	});
 }
 
+if(isIndividualCoursePage()){
+	chrome.runtime.sendMessage({
+		command: "shouldOpen",
+	}, function (response) {
+		if(response.open){
+			$("#distButton").click();
+		}
+	});
+}
 
+updateListConflictHighlighting();
 
-/*Handle the button clicks*/
 $("body").on('click', '#distButton', function () {
 	var row = $(this).closest('tr');
 	$('.modal-content').stop().animate({
@@ -131,7 +130,7 @@ function getCourseInfo(row) {
 	let course_name = "";
 	let course_row = {}
 	let individual = undefined;
-	if ($("#textbook_button").length) {
+	if (isIndividualCoursePage()) {
 		course_name = $("#details h2").text();
 		course_row = $('table');
 		individual = document.URL;
@@ -562,6 +561,14 @@ function close() {
 	$("#snackbar").attr("class", "");
 }
 
+/*Listen for update mssage coming from popup or calendar or other course catalog pages*/
+chrome.runtime.onMessage.addListener(
+	function (request, sender, sendResponse) {
+		if (request.command == "updateCourseList") {
+			updateListConflictHighlighting(0);
+		}
+	}
+);
 
 $(document).keydown(function (e) {
 	/*Close Modal when hit escape*/
@@ -573,11 +580,8 @@ $(document).keydown(function (e) {
 });
 
 
-/*Listen for update mssage coming from popup or calendar or other course catalog pages*/
-chrome.runtime.onMessage.addListener(
-	function (request, sender, sendResponse) {
-		if (request.command == "updateCourseList") {
-			updateListConflictHighlighting(0);
-		}
-	}
-);
+$(window).scroll(function () {
+	if ($(document).height() <= $(window).scrollTop() + $(window).height() + 150)
+		loadNextPages();
+});
+

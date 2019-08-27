@@ -93,9 +93,7 @@ $("#textbook").click(function () {
 });
 
 $("#moreInfo").click(function () {
-    setTimeout(function () {
-        window.open(curr_course["individual"]);
-    }, Timing.button_delay);
+    openMoreInfoWithOpenModal(curr_course["individual"]);
 });
 
 

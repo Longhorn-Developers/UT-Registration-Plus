@@ -111,6 +111,9 @@ function seperateCourseNameParts(name) {
     }
 }
 
+function isIndividualCoursePage(){
+    return $("#textbook_button").length != 0;
+}
 
 
 
@@ -137,6 +140,10 @@ function setCurrentTabUrl(link) {
             url: link
         });
     });
+}
+
+function openMoreInfoWithOpenModal(link){
+    chrome.runtime.sendMessage({ command: "setOpen", url: link });
 }
 
 

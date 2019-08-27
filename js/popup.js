@@ -203,7 +203,7 @@ $('#export-class').click(function () {
 
 function openCoursePage(sem, unique) {
 	var link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
-	window.open(link);
+	openMoreInfoWithOpenModal(link);
 }
 
 $("#search-class").click(() => {
@@ -318,7 +318,7 @@ function subtractHours(curr_course){
 
 function handleMoreInfo(clicked_item, curr_course) {
 	$(clicked_item).find("#listMoreInfo").click(function () {
-		window.open(curr_course.link);
+		openMoreInfoWithOpenModal(curr_course.link);
 	});
 }
 

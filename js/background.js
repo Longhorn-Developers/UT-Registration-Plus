@@ -1,6 +1,6 @@
 var grades;
 var current_semesters = {};
-
+var should_open = false;
 onStartup();
 
 /* Handle messages and their commands from content and popup scripts*/
@@ -34,9 +34,19 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             break;
         case "gradesQuery":
             executeQuery(request.query, response);
+            break;
         case "currentSemesters":
             response({ semesters: current_semesters});
             getCurrentSemesters();
+            break;
+        case "setOpen":
+            should_open = true;
+            chrome.tabs.create({ url: request.url});
+            break;
+        case "shouldOpen":
+            response({open : should_open});
+            should_open = false;
+            break;
         default:
             const xhr = new XMLHttpRequest();
             const method = request.method ? request.method.toUpperCase() : "GET";

@@ -47,9 +47,6 @@ chrome.storage.sync.get("savedCourses", function (data) {
     });
 });
 
-
-
-
 function displayModal(data) {
     $("#myModal").fadeIn(calendar_fade_time);
     $("#colorStrip").css('background-color', data.color);
@@ -177,9 +174,7 @@ chrome.runtime.onMessage.addListener(
 
 
 $("#info").click(() => {
-    setTimeout(() => {
-        window.open(curr_course.link);
-    }, button_delay);
+    openMoreInfoWithOpenModal(curr_course.link);
 });
 
 
