@@ -1,5 +1,6 @@
 var grades;
 var current_semesters = {};
+var departments = [];
 var should_open = false;
 onStartup();
 
@@ -38,6 +39,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
         case "currentSemesters":
             response({ semesters: current_semesters});
             getCurrentSemesters();
+            break;
+        case "currentDepartments":
+            response({departments: departments});
             break;
         case "setOpen":
             should_open = true;
@@ -117,8 +121,8 @@ function onStartup(){
     updateBadge(true);
     loadDataBase()
     getCurrentSemesters();
+    getCurrentDepartments();
 }
-
 
 function getCurrentSemesters(){
     $.get('https://registrar.utexas.edu/schedules', function (response) {
@@ -150,6 +154,19 @@ function getCurrentSemesters(){
 }
 
 
+function getCurrentDepartments(){
+  $.get('https://catalog.utexas.edu/undergraduate/appendix-b/', function(response){
+    if(response){;
+      departments = [];
+      htmlToNode(response).find('.column1').each(function(i){
+        if(i > 0){
+          let abv = $(this).text();
+          departments.push(abv);
+        }
+      });
+    }
+  });
+}
 
 function updateBadge(first, new_changes) {
     if (new_changes) {
@@ -401,4 +418,3 @@ function loadBinaryFile(path, success) {
     };
     xhr.send();
 };
-

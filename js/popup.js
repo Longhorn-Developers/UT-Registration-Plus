@@ -2,6 +2,7 @@ var courses;
 
 setCourseList();
 getSemesters();
+getDepartments();
 
 var can_remove = true;
 
@@ -105,9 +106,9 @@ $("#clear").click(function () {
 	showEmpty();
 });
 
-$("#schedule").click(function () {
+$("#RIS").click(function () {
 	chrome.tabs.create({
-		'url': 'https://registrar.utexas.edu/schedules'
+		'url': 'https://utdirect.utexas.edu/registrar/ris.WBX'
 	});
 });
 
@@ -201,22 +202,16 @@ $('#export-class').click(function () {
 	});
 });
 
-function openCoursePage(sem, unique) {
-	var link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
-	openMoreInfoWithOpenModal(link);
+function openSearch(semester, department, level) {
+	var link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semester}/results/?fos_fl=${department}&level=${level}&search_type_main=FIELD`
+	chrome.tabs.create({ url: link});
 }
 
 $("#search-class").click(() => {
-	var unique_id = $("#class_id_input").val();
-	if (!isNaN(unique_id)) {
-		if (unique_id.length == 5) {
-			let selected_semester = $("#semesters").find(":selected").val();
-			openCoursePage(selected_semester, unique_id);
-			$("#class_id_input").val('');
-			return;
-		}
-	}
-	alert("Oops, check your input. Class IDs should have 5 digits!");
+	let semester = $("#semesters").find(":selected").val();
+	let department = $("#department").find(":selected").val();
+	let level = $("#level").find(":selected").val();
+	openSearch(semester, department, level);
 });
 
 $("#options_button").click(function () {
@@ -367,9 +362,10 @@ function showEmpty() {
 
 function hideSearchPopup() {
 	$("#search>i").text('search');
-	$("#class_id_input").hide();
 	$("#semcon").hide();
+	$("#depcon").hide();
 	$("#semesters").hide();
+	$("#levcon").hide();
 	$("#search-popup").addClass('hide');
 }
 
@@ -378,7 +374,8 @@ function showSearchPopup() {
 	$("#class_id_input").show();
 	$("#semesters").show();
 	$("#semcon").show();
-	$('#class_id_input').focus();
+	$("#depcon").show();
+	$("#levcon").show();
 	$("#search-popup").removeClass('hide');
 }
 
@@ -397,11 +394,24 @@ function getSemesters() {
 		command: "currentSemesters"
 	}, function(response){
 		let { semesters } = response;
-		console.log(semesters);
 		let semester_names = Object.keys(semesters);
 		for(let i = 0; i<semester_names.length;i++){
 			let name = semester_names[i];
 			$("#semesters").append(`<option value='${semesters[name]}'>${name}</option>`);
 		}
+	});
+}
+
+function getDepartments() {
+	chrome.runtime.sendMessage({
+		command: "currentDepartments"
+	}, function(response){
+		let { departments } = response;
+		console.log(departments);
+		for(let i = 0; i<departments.length; i++){
+			let abv = departments[i];
+			$("#department").append(`<option value='${abv}'>${abv}</option>`);
+		}
+		$("#department").val('C S');
 	});
 }

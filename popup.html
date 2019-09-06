@@ -12,7 +12,7 @@
   <div class="card" id="card-header">
     <div id="buttons" style="padding: 5px 10px 5px 10px;display: flex;justify-content: space-between;">
       <button id="clear" class="matbut" style="font-size:15px; background:#4CAF50;margin: 7px;">Clear All</button>
-      <button id="schedule" class="matbut" style="font-size:15px;background:#FF9800;margin: 7px;">Course List</button>
+      <button id="RIS" class="matbut" style="font-size:15px;background:#FF9800;margin: 7px;">Registrar Info </button>
       <button id="calendar" class="matbut" style="font-size:15px; background: #FF0000; margin:7px;">My Schedule</button>
     </div>
   </div>
@@ -34,7 +34,7 @@
     <div>
       <div id="meta-data" class="meta-container">
         <p class="meta"> <span class="meta-metric" id="meta-metric">17</span> hr</p>
-      </div>  
+      </div>
       <div class="settings">
         <button title='Search' style="background-color:white;margin-left: 5px;margin-right: 3px;" class="settingsbut"
           id='search'>
@@ -50,8 +50,22 @@
                 <select id="semesters"></select>
               </label>
             </div>
-            <input type="text" id="class_id_input" class="item" name="class_id" maxlength="5"
-              placeholder="Course ID #"></input>
+            <div id='depcon' class="select-style item">
+              <label>
+                <select id="department"></select>
+              </label>
+            </div>
+            <div id='levcon' class="select-style item">
+              <label>
+                <select id="level">
+                    <option value="L">Lower</option>
+                    <option value="U">Upper</option>
+                    <option value="G">Grad</option>
+                </select>
+              </label>
+            </div>
+            <!-- <input type="text" id="class_id_input" class="class_id_input item" name="class_id" maxlength="5"
+              placeholder="Course ID #"></input> -->
           </div>
           <button id="search-class" class="matbut">Search</button>
         </div>

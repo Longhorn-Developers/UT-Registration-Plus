@@ -283,7 +283,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .select-style {
     border: 1px solid #979797;
-    margin: 10px 0px;
+    margin: 5px 0px;
     border-radius: 5px;
     display: none;
     background: transparent no-repeat 90% 50%;
@@ -324,7 +324,7 @@ input[type=number]::-webkit-outer-spin-button {
     outline: none;
 }
 
-#class_id_input {
+.class_id_input {
     display: none;
     border: 1px solid #979797;
     border-radius: 5px;
@@ -332,7 +332,7 @@ input[type=number]::-webkit-outer-spin-button {
     padding: 5px 8px;
 }
 
-#class_id_input::placeholder {
+.class_id_input::placeholder {
     color: rgba(0, 0, 45, 0.48);
 }
 
