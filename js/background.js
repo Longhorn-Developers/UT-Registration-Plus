@@ -159,7 +159,7 @@ function getCurrentDepartments(){
     if(response){;
       departments = [];
       htmlToNode(response).find('.column1').each(function(i){
-        if(i > 0){
+        if(i > 1){
           let abv = $(this).text();
           departments.push(abv);
         }
