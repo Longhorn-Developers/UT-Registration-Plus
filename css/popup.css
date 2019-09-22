@@ -26,13 +26,34 @@ body {
     position: relative;
 }
 
-#courseList {
+.conflict_message{
+    font-size:small;
+    font-weight:bold;
+    color:red;
+    margin:5px 5px 5px 10px;
+}
+
+.course_list {
     list-style-type: none;
     padding: 5px;
     margin-bottom: 30px;
 }
 
-#empty {
+.course_list_card {
+    cursor: pointer;
+}
+
+.course_list_item {
+    padding: 0px 5px 5px 5px;
+    overflow-y: auto;
+    max-height:400px;
+}
+
+.course_list_item_subtext {
+    font-size:medium;
+}
+
+.empty_message {
     font-weight: normal;
     font-size: large;
     margin: 60px 30px 200px 30px;
@@ -50,7 +71,44 @@ body {
     font-weight: bold;
 }
 
-.settingsbut {
+
+.time_line_days {
+    display:inline-block;
+    width: 20%;
+}
+
+.time_line_hours {
+    margin-left:10px;
+    display:inline-block;
+    width: 50%;
+    text-align:center;
+}
+
+.time_line_location {
+    float:right;
+    display:inline-block;
+    text-align:right;
+    width: 25%;
+}
+
+.time_line_location_link {
+    color:#3c87a3;
+    text-decoration:none;
+}
+
+.more_info_button{
+    background: #2196F3;
+}
+
+.remove_button {
+    background: #F44336;
+}
+
+.register_button {
+    background: #4CAF50;
+}
+
+.settings_button {
     margin-right: 2px;
     border: 0px;
     border-radius: 50%;
@@ -59,11 +117,11 @@ body {
 }
 
 
-.settingsbut:focus {
+.settings_button:focus {
     outline: 0;
 }
 
-.settingsbut:hover {
+.settings_button:hover {
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.16), 0 4px 15px 0 rgba(0, 0, 0, 0.12);
     opacity: 1;
 }
@@ -72,12 +130,12 @@ body {
     box-shadow: 0 0 0 1pt #FF9800;
 }
 
-.settingsbut:focus:after:hover {
+.settings_button:focus:after:hover {
     outline: 0;
     transition: 0.3s;
 }
 
-.copybut {
+.copy_button {
     background-color: transparent;
     padding: 0px;
     border: none;
@@ -87,7 +145,7 @@ body {
     transition: .2s;
 }
 
-.copybut:focus {
+.copy_button:focus {
     outline: 0;
 }
 
@@ -95,18 +153,45 @@ body {
     box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.16);
 }
 
-#copyicon {
-    font-size: x-large;
-    border-radius: 50%;
-    padding: 3px;
-}
-
 i {
     padding: 4px 0px;
 }
 
-#card-header {
+.copy_button_icon {
+    color:white;
+    float:left;
+    border-radius: 50%;
+    padding: 3px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.16);
+    font-size: x-large;
+}
+
+.header_container{
     border-radius: 7px;
+}
+
+.header_buttons {
+    padding: 5px 10px 5px 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header_button {
+    font-size:15px !important;
+    margin: 7px !important;
+}
+
+
+.clear_button {
+     background:#4CAF50;
+}
+
+.ris_button {
+    background:#FF9800;
+}
+
+.schedule_button {
+    background: #FF0000;
 }
 
 .settings {
@@ -122,11 +207,7 @@ i {
     border-radius: 7px;
 }
 
-/* .settings:hover {
-    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
-} */
-
-.matbut {
+.material_button {
     border: none;
     outline: none;
     cursor: pointer;
@@ -137,22 +218,74 @@ i {
     font-size: medium;
     font-style: bold;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-    background: #ff9800;
-}
-
-.matbut {
     position: relative;
     overflow: hidden;
 }
 
-.truncate {
+.course_name_truncate_box {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 80%;
+    color:white;
+    margin:5px;
+    display:inline-block;
+    font-size:large;
+    align-items:center;
 }
 
-.matbut:after {
+.settings_divider {
+    margin-bottom: 0px;
+    display:inline-block;
+}
+
+.search_button {
+    background-color:white;
+    margin-left: 5px;
+    margin-right: 3px;
+}
+.course_list_item_options {
+    display: none;
+}
+.import_button {
+    background-color:white;
+}
+
+.options_button {
+    background-color:white;
+    margin-right: 0px;
+}
+
+.settings_icon {
+    color:#FF9800;
+}
+
+.course_list_item_time_box {
+    font-weight:bold;
+    padding:10px;
+    margin:0px 5px 0px 15px;
+    font-size:small;
+}
+
+.course_list_item_options_button_container {
+    border-radius:0px;
+}
+
+.course_list_item_options_buttons{
+    float:right;
+    margin:5px;
+}
+
+.arrow {
+    float:right;
+    font-size:small;
+    display:inline-block;
+    margin-top:10px;
+    color:white;
+    font-family: sans-serif;
+}
+
+.material_button:after {
     content: "";
     position: absolute;
     top: 50%;
@@ -231,7 +364,7 @@ i {
     }
 }
 
-.matbut:focus:not(:active)::after {
+.material_button:focus:not(:active)::after {
     animation: ripple 1s ease-out;
 }
 

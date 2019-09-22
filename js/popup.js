@@ -220,13 +220,13 @@ $("#options_button").click(function () {
 	});
 });
 
-$("#courseList").on('mouseover', '.copybut', function () {
+$("#courseList").on('mouseover', '.copy_button', function () {
 	$(this).addClass('shadow');
-}).on('mouseleave', '.copybut', function () {
+}).on('mouseleave', '.copy_button', function () {
 	$(this).removeClass('shadow');
 });
 
-$("#courseList").on('click', '.copybut', function (e) {
+$("#courseList").on('click', '.copy_button', function (e) {
 	e.stopPropagation();
 	copyButtonAnimation($(this));
 	let unique = $(this).val();
@@ -343,7 +343,7 @@ function copyButtonAnimation(copy_button) {
 
 function toggleTimeDropdown(clicked_item) {
 	let more_info_button = $(clicked_item).find('#moreInfo');
-	let arrow = $('clicked_item').find("#arrow");
+	let arrow = $(clicked_item).find("#arrow");
 	if ($(more_info_button).is(":hidden")) {
 		$(more_info_button).fadeIn(200);
 		$(arrow).css('transform', 'rotate(90deg)');
