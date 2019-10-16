@@ -232,3 +232,11 @@ function close() {
     $("#myModal").fadeOut(Timing.fade_time);
     $("#snackbar").attr("class", "");
 }
+
+
+$(document).keydown(function (e) {
+	/*Close Modal when hit escape*/
+	if (e.keyCode == 27) {
+		close();
+	}
+});
