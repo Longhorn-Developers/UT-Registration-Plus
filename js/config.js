@@ -54,3 +54,6 @@ Text.emptyText = function(){
 
     return arr[index];
 }
+Text.button_text_default = "<span style='font-size:small'>Import to </span><b>UT Reg +<b>";
+Text.waitlist_button_text_default = "<span style='font-size:small'>Import Waitlists to </span><b>UT Reg +<b>";
+Text.button_success = "Courses Saved!";

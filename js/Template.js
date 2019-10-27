@@ -171,15 +171,11 @@ Template.Popup = class {
     }
 }
 Template.Import = class {
-
-    static button_text_default = "<span style='font-size:small'>Import to </span><b>UT Reg +<b>";
-    static waitlist_button_text_default = "<span style='font-size:small'>Import Waitlists to </span><b>UT Reg +<b>";
-    static button_success = "Courses Saved!";
     static import_button() {
-        return `<button class='material-button' id='import' style='margin:15px 0px;'>${this.button_text_default}</button><br>`;
+        return `<button class='material-button' id='import' style='margin:15px 0px;'>${Text.button_text_default}</button><br>`;
     }
 
     static waitlist_import_button() {
-        return `<button class='material-button' id='import_waitlist' style='margin:0px'>${this.waitlist_button_text_default}</button><br>`;
+        return `<button class='material-button' id='import_waitlist' style='margin:0px'>${Text.waitlist_button_text_default}</button><br>`;
     }
 }

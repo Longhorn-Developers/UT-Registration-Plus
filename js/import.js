@@ -30,8 +30,8 @@ $(function () {
 
 function importButtonAnimation(button) {
 	let is_waitlisted_button = $(button).attr('id') == "import_waitlist";
-	let return_text = is_waitlisted_button ? Template.Import.waitlist_button_text_default : Template.Import.button_text_default;
-	$(button).text(Template.Import.button_success).css("background-color", Colors.open);
+	let return_text = is_waitlisted_button ? Text.waitlist_button_text_default : Text.button_text_default;
+	$(button).text(Text.button_success).css("background-color", Colors.open);
 	setTimeout(function () {
 		$(button).html(return_text).css('background-color', Colors.waitlisted);
 	}, 1000);
