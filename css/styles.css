@@ -133,11 +133,23 @@
     cursor: pointer;
 }
 
-.topbuttons .matbut {
+.topbuttons .material-button {
     display: inline-block;
 }
 
-.matbut {
+.rmp-button {
+
+}
+
+.ecis-button {
+    
+}
+
+.textbook-button{
+
+}
+
+.material-button {
     border: none;
     outline: none;
     cursor: pointer;
@@ -149,14 +161,11 @@
     font-style: bold;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     background: #ff9800;
-}
-
-.matbut {
     position: relative;
     overflow: hidden;
 }
 
-.matbut:after {
+.material-button:after {
     content: "";
     position: absolute;
     top: 50%;
@@ -187,7 +196,7 @@
     }
 }
 
-.matbut:focus:not(:active)::after {
+.material-button:focus:not(:active)::after {
     animation: ripple 1s ease-out;
 }
 
