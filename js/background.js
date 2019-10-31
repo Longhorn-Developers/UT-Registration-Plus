@@ -228,12 +228,14 @@ function checkConflicts(sendResponse) {
 function isSingleConflict(currdatearr, unique, sendResponse) {
     chrome.storage.sync.get('savedCourses', function (data) {
         var courses = data.savedCourses;
+        var conflict_list = [];
         var conflict = false;
         var contains = false;
         for (let i = 0; i < courses.length; i++) {
             let course = courses[i];
-            if (!conflict && isConflict(currdatearr, course.datetimearr)) {
+            if (isConflict(currdatearr, course.datetimearr)) {
                 conflict = true;
+                conflict_list.push(course);
             }
             if (!contains && isSameCourse(course, unique)) {
                 contains = true;
@@ -241,7 +243,8 @@ function isSingleConflict(currdatearr, unique, sendResponse) {
         }
         sendResponse({
             isConflict: conflict,
-            alreadyContains: contains
+            alreadyContains: contains,
+            conflictList: conflict_list
         });
     });
 }

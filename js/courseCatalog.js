@@ -194,9 +194,10 @@ function updateListConflictHighlighting(start = 0) {
 					}, (response) => {
 						let {
 							isConflict,
-							alreadyContains
+							alreadyContains,
+							conflictList
 						} = response
-						updateTextHighlighting($(this).find('td'), canHighlight, isConflict, alreadyContains);
+						updateTextHighlighting($(this).find('td'), canHighlight, isConflict, alreadyContains, conflictList, $(this), unique);
 					});
 				}
 			}
@@ -204,11 +205,35 @@ function updateListConflictHighlighting(start = 0) {
 	});
 }
 
-function updateTextHighlighting(tds, canHighlight, isConflict, alreadyContains) {
+function updateTextHighlighting(tds, canHighlight, isConflict, alreadyContains, conflictList, row, unique) {
+	if(conflictList.length){
+		console.log(conflictList);
+	}
+	conflict_texts = row.find('.tooltiptext');
+	let unique_list = conflictList.filter(function(course){
+		if(course.unique != unique){
+			return true;
+		}
+		return false;
+	}).map(function(course){
+		return course.unique;
+	});
+	if(isConflict && unique_list.length){
+		if(conflict_texts){
+			row.find('.tooltiptext').remove();
+		}
+		row.addClass('tooltip');
+		row.append(`<span class='tooltiptext'><span style='text-decoration: underline;'>Conflicts:</span> ${unique_list.join(',\n')}</span>`);
+	} else {
+		row.removeClass('tooltip');
+		conflict_texts.remove();
+	}
 	let current_color = rgb2hex(tds.css('color'));
 	if (isConflict && canHighlight && !alreadyContains) {
-		if (current_color != Colors.highlight_conflict)
-			tds.css('color', Colors.highlight_conflict).css('text-decoration', 'line-through').css('font-weight', 'normal');
+		if (current_color != Colors.highlight_conflict){
+			tds.css('color', Colors.highlight_conflict).css('text-decoration', 'line-through').css('font-weight', 'normal')
+		}
+
 	} else if (!alreadyContains) {
 		if (tds.css('color') != Colors.highlight_default)
 			tds.css('color', Colors.highlight_default).css('text-decoration', 'none').css('font-weight', 'normal');

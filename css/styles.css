@@ -234,6 +234,31 @@
     outline: 0;
 }
 
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: black;
+  background:rgba(1,1,1,0.5);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  font-size: 10px;
+  max-width: 50px;
+  margin-left: 5px;
+  padding: 5px 10px;
+  z-index: 2;
+  position: absolute;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+
 @-webkit-keyframes fadein {
     from {
         bottom: 0;
