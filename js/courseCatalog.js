@@ -34,7 +34,7 @@ if (!$("#kw_results_table").length) {
 	$("#container").prepend(Template.Main.modal());
 	$("#myModal").prepend("<div id='snackbar'>save course popup...</div>");
 
-	// now add to the table 
+	// now add to the table
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
 	$('table').find('tr').each(function () {
 		if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
@@ -216,14 +216,15 @@ function updateTextHighlighting(tds, canHighlight, isConflict, alreadyContains, 
 		}
 		return false;
 	}).map(function(course){
-		return course.unique;
+		let { name, department, number} = seperateCourseNameParts(course.coursename);
+		return `${department} ${number} (${course.unique})`;
 	});
 	if(isConflict && unique_list.length){
 		if(conflict_texts){
 			row.find('.tooltiptext').remove();
 		}
 		row.addClass('tooltip');
-		row.append(`<span class='tooltiptext'><span style='text-decoration: underline;'>Conflicts:</span> ${unique_list.join(',\n')}</span>`);
+		row.append(`<span class='tooltiptext'><span style='text-decoration: underline;'>Conflicts:<br></span> ${unique_list.join('<br>')}</span>`);
 	} else {
 		row.removeClass('tooltip');
 		conflict_texts.remove();
@@ -609,4 +610,3 @@ $(window).scroll(function () {
 	if ($(document).height() <= $(window).scrollTop() + $(window).height() + 150)
 		loadNextPages();
 });
-

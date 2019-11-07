@@ -54,6 +54,19 @@ function capitalizeString(string) {
     return output.trim();
 }
 
+function seperateCourseNameParts(name) {
+    let num_index = name.search(/\d/);
+    department = name.substring(0, num_index).trim();
+    number = name.substring(num_index, name.indexOf(" ", num_index)).trim();
+    name = capitalizeString(name.substring(name.indexOf(" ", num_index)).trim());
+    return {
+        name: name,
+        department: department,
+        number: number
+    }
+}
+
+
 function seperateDays(date, simple=false) {
     let arr = [];
     for (var i = 0; i < date.length; i++) {
@@ -97,18 +110,6 @@ function prettifyDaysText(arr) {
         output = arr[0];
     }
     return output
-}
-
-function seperateCourseNameParts(name) {
-    let num_index = name.search(/\d/);
-    department = name.substring(0, num_index).trim();
-    number = name.substring(num_index, name.indexOf(" ", num_index)).trim();
-    name = capitalizeString(name.substring(name.indexOf(" ", num_index)).trim());
-    return {
-        name: name,
-        department: department,
-        number: number
-    }
 }
 
 function isIndividualCoursePage(){
