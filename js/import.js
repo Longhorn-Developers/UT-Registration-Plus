@@ -5,9 +5,12 @@ $(function () {
 	sem = waitlist ? $('[name="s_ccyys"]').val() : $("option[selected='selected']").val();
 	if (waitlist) {
 		$("[href='#top']").before(Template.Import.import_button());
+		$("[name='wl_see_my_waitlists']").before(Template.import.store_waitlist_message());
 		$("[name='wl_see_my_waitlists']").after(Template.Import.waitlist_import_button());
-	} else
+		extractWaitlistInfo();
+	} else {
 		$("table").after(Template.Import.import_button());
+	}
 	$("#import").prepend("<div id='snackbar'>import snackbar..</div>");
 
 	$("#import").click(function () {
@@ -26,6 +29,27 @@ $(function () {
 		importButtonAnimation($(this));
 	});
 });
+
+
+function extractWaitlistInfo(){
+	let class_boxes = $("[name='wl_see_my_waitlists']>table");
+	let waitlist_info = [];
+	$(class_boxes).each(function(){
+		let data = $(this).find('tr.tb span');
+		let unique_num = $(data[0]).text().trim();
+		let class_name = $(data[1]).text().trim().split('\n').filter(part => part.trim() != '').map(part => part.trim()).join(' ');
+		let waitlist_size = $(this).find('tr.tbon:eq(2) td:eq(1)').text().trim().split(' of ')[1];
+
+		waitlist_info.push({
+			"id": unique_num,
+			"class": class_name,
+			"wait": waitlist_size,
+			"time": moment().format('DD-MM-YYYY HH:mm:ss')
+		});
+	});
+	console.log(waitlist_info);
+	return waitlist_info;
+}
 
 
 function importButtonAnimation(button) {

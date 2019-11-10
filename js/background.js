@@ -2,6 +2,13 @@ var grades;
 var current_semesters = {};
 var departments = [];
 var should_open = false;
+
+const default_options = {
+    "loadAll": true,
+    "courseConflictHighlight": true,
+    "storeWaitlist": true,
+}
+
 onStartup();
 
 /* Handle messages and their commands from content and popup scripts*/
@@ -51,6 +58,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             response({open : should_open});
             should_open = false;
             break;
+        case "getOptionsValue":
+            getOptionsValue(request.key, response);
+            break;
+        case "setOptionsValue":
+            setOptionsValue(request.key, request.value, response);
+            break;
         default:
             const xhr = new XMLHttpRequest();
             const method = request.method ? request.method.toUpperCase() : "GET";
@@ -73,37 +86,19 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
 /* Initially set the course data in storage */
 chrome.runtime.onInstalled.addListener(function (details) {
     if (details.reason == "install") {
+        setDefaultOptions();
         chrome.storage.sync.get('savedCourses', function (data) {
             if (!data.savedCourses) {
-                var arr = new Array();
                 chrome.storage.sync.set({
-                    savedCourses: arr
+                    savedCourses: new Array()
                 }, function () {
                     console.log('initial course list');
-                });
-                chrome.storage.sync.set({
-                    courseConflictHighlight: true
-                }, function () {
-                    console.log('initial highlighting: true');
-                });
-                chrome.storage.sync.set({
-                    loadAll: true
-                }, function () {
-                    console.log('initial loadAll: true');
                 });
             }
         });
     } else if (details.reason == "update") {
         console.log("updated");
-        chrome.storage.sync.get('loadAll', function (data) {
-            if (data.loadAll == undefined) {
-                chrome.storage.sync.set({
-                    loadAll: true
-                }, function () {
-                    console.log('initial loadAll: true');
-                });
-            }
-        });
+        setDefaultOptions();
     }
 });
 
@@ -122,6 +117,51 @@ function onStartup(){
     loadDataBase()
     getCurrentSemesters();
     getCurrentDepartments();
+}
+
+function getOptionsValue(key, sendResponse){
+    chrome.storage.sync.get('options', function (data) {
+        if (!data.options) {
+            setDefaultOptions();
+        } else {
+            sendResponse({
+                'value': data.options[key]
+            });
+        }
+    });
+}
+
+function setOptionsValue(key, value, sendResponse){
+    chrome.storage.sync.get('options', function (data) {
+        let new_options = data.options;
+        if (!data.options) {
+            setDefaultOptions();
+            new_options = default_options;
+        }
+        new_options[key] = value;
+        chrome.storage.sync.set({
+            options: new_options
+        }, function () {
+            console.log(key);
+            console.log(new_options);
+            sendResponse({
+                'value': new_options[key]
+            });
+        });
+    });
+}
+
+function setDefaultOptions(){
+    chrome.storage.sync.get('options', function (data) {
+        if (!data.options) {
+            chrome.storage.sync.set({
+                options: default_options
+            }, function () {
+                console.log('default options:');
+                console.log(default_options);
+            });
+        }
+    });
 }
 
 function getCurrentSemesters(){

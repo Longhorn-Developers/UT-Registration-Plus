@@ -178,4 +178,25 @@ Template.Import = class {
     static waitlist_import_button() {
         return `<button class='material-button' id='import_waitlist' style='margin:0px'>${Text.waitlist_button_text_default}</button><br>`;
     }
+
+    static store_waitlist_message(){
+        return `<h1 id="nextlabel"style="color: #FF9800;display:none;"></h1>`
+    }
+
+}
+
+Template.Options = class {
+    static options_row(key, enabled){
+        let button_text = enabled ?  "Turn Off" : "Turn On";
+        let button_color = enabled ?  Colors.closed  : Colors.open;
+        let label_text = capitalizeString(key.replace(/([A-Z]+)*([A-Z][a-z])/g, "$1 $2"));
+        return `<h2 style="padding: 5px 16px 5px 16px; font-weight: normal;display: inline-block;text-align:left;">
+                    ${label_text}
+                </h2>
+                <button id="${key}" value=${enabled} class="material-button" style="display:inline-block;font-size:medium; float:right; background:${button_color}">
+                    ${button_text}
+                </button>
+                <br>`
+
+    }
 }

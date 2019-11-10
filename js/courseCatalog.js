@@ -7,9 +7,13 @@ var done_loading = true;
 
 var next = $("#next_nav_link");
 if (next) {
-	chrome.storage.sync.get('loadAll', function (data) {
-		if (data.loadAll)
+	chrome.runtime.sendMessage({
+		command: "getOptionsValue",
+		key: "loadAll",
+	}, function (response) {
+		if(response.value){
 			$('[title*="next listing"]').remove();
+		}
 	});
 }
 
@@ -181,8 +185,11 @@ function saveCourse() {
 
 /* Update the course list to show if the row contains a course that conflicts with the saved course is one of the saved courses */
 function updateListConflictHighlighting(start = 0) {
-	chrome.storage.sync.get('courseConflictHighlight', function (data) {
-		let canHighlight = data.courseConflictHighlight;
+	chrome.runtime.sendMessage({
+		command: "getOptionsValue",
+		key: "courseConflictHighlight",
+	}, function (response) {
+		let canHighlight = response.value;
 		$('table').find('tr').each(function (i) {
 			if (i >= start) {
 				if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
@@ -459,8 +466,11 @@ function getDescription(course_info) {
 }
 
 function loadNextPages() {
-	chrome.storage.sync.get('loadAll', function (data) {
-		if (data.loadAll) {
+	chrome.runtime.sendMessage({
+		command: "getOptionsValue",
+		key: "loadAll",
+	}, function (response) {
+		if(response.value){
 			let link = next.prop('href');
 			if (done_loading && next && link) {
 				toggleLoadingPage(true);
