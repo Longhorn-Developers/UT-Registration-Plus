@@ -5,9 +5,10 @@ $(function () {
 	sem = waitlist ? $('[name="s_ccyys"]').val() : $("option[selected='selected']").val();
 	if (waitlist) {
 		$("[href='#top']").before(Template.Import.import_button());
-		$("[name='wl_see_my_waitlists']").before(Template.import.store_waitlist_message());
+		// $("[name='wl_see_my_waitlists']").before(Template.import.store_waitlist_message());
 		$("[name='wl_see_my_waitlists']").after(Template.Import.waitlist_import_button());
-		extractWaitlistInfo();
+		let waitlist_status = extractWaitlistStatus();
+		pushWaitlistStatus(waitlist_status);
 	} else {
 		$("table").after(Template.Import.import_button());
 	}
@@ -31,7 +32,7 @@ $(function () {
 });
 
 
-function extractWaitlistInfo(){
+function extractWaitlistStatus(){
 	let class_boxes = $("[name='wl_see_my_waitlists']>table");
 	let waitlist_info = [];
 	$(class_boxes).each(function(){
@@ -41,10 +42,12 @@ function extractWaitlistInfo(){
 		let waitlist_size = $(this).find('tr.tbon:eq(2) td:eq(1)').text().trim().split(' of ')[1];
 
 		waitlist_info.push({
-			"id": unique_num,
-			"class": class_name,
-			"wait": waitlist_size,
-			"time": moment().format('DD-MM-YYYY HH:mm:ss')
+			"record": {
+				"id": unique_num,
+				"class": class_name,
+				"wait": waitlist_size,
+				"time": moment().format('DD-MM-YYYY HH:mm:ss')
+			}
 		});
 	});
 	console.log(waitlist_info);
@@ -65,6 +68,19 @@ function importCourse(unique_node) {
 	let unique = $(unique_node).text().replace(/\s/g, '');
 	link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
 	buildAddCourse(link);
+}
+
+ function pushWaitlistStatus(waitlist_status){
+	waitlist_status.forEach(course => {
+		console.log(course);
+		fetch(Waitlist.db_push_hook, {
+		    method: 'POST',
+		    headers: {
+		      'Content-Type': 'application/json'
+		    },
+	    	body: JSON.stringify(course) // push each course to the db
+	  	});
+	});
 }
 
 

@@ -57,3 +57,7 @@ Text.emptyText = function(){
 Text.button_text_default = "<span style='font-size:small'>Import to </span><b>UT Reg +<b>";
 Text.waitlist_button_text_default = "<span style='font-size:small'>Import Waitlists to </span><b>UT Reg +<b>";
 Text.button_success = "Courses Saved!";
+
+class Waitlist{}
+Waitlist.db_push_hook = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/waitlist-info-pnyrh/service/wait_aid/incoming_webhook/pushVal";
+Waitlist.db_pull_hook = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/waitlist-info-pnyrh/service/wait_aid/incoming_webhook/getDB";
