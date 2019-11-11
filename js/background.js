@@ -1,5 +1,6 @@
 var grades;
 var current_semesters = {};
+var waitlist_status = [];
 var departments = [];
 var should_open = false;
 
@@ -49,6 +50,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             break;
         case "currentDepartments":
             response({departments: departments});
+            break;
+        case "currentWaitlists":
+            response({waitlists: waitlist_status});
             break;
         case "setOpen":
             should_open = true;
@@ -117,8 +121,17 @@ function onStartup(){
     loadDataBase()
     getCurrentSemesters();
     getCurrentDepartments();
+    getWaitlistData();
 }
 
+
+function getWaitlistData(){
+    fetch(Waitlist.db_pull_hook)
+      .then((resp) => resp.json()) // Transform the data into json
+      .then(function(waitlists) {
+    	  waitlist_status = waitlists;
+     });
+}
 function getOptionsValue(key, sendResponse){
     chrome.storage.sync.get('options', function (data) {
         if (!data.options) {

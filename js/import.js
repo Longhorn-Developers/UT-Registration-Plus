@@ -5,10 +5,17 @@ $(function () {
 	sem = waitlist ? $('[name="s_ccyys"]').val() : $("option[selected='selected']").val();
 	if (waitlist) {
 		$("[href='#top']").before(Template.Import.import_button());
-		// $("[name='wl_see_my_waitlists']").before(Template.import.store_waitlist_message());
-		$("[name='wl_see_my_waitlists']").after(Template.Import.waitlist_import_button());
-		let waitlist_status = extractWaitlistStatus();
-		pushWaitlistStatus(waitlist_status);
+		chrome.runtime.sendMessage({
+			command: "getOptionsValue",
+			key: "storeWaitlist",
+		}, function (response) {
+			if(response.value){
+				$("[name='wl_see_my_waitlists']").after(Template.Import.waitlist_import_button());
+				let waitlist_status = extractWaitlistStatus();
+				pushWaitlistStatus(waitlist_status);
+			}
+			$("[name='wl_see_my_waitlists']").before(Template.Import.store_waitlist_message(response.value));
+		});
 	} else {
 		$("table").after(Template.Import.import_button());
 	}

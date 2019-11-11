@@ -179,8 +179,14 @@ Template.Import = class {
         return `<button class='material-button' id='import_waitlist' style='margin:0px'>${Text.waitlist_button_text_default}</button><br>`;
     }
 
-    static store_waitlist_message(){
-        return `<h1 id="nextlabel"style="color: #FF9800;display:none;"></h1>`
+    static store_waitlist_message(enabled){
+        let text = enabled ? "Thank you for letting us keep our Waitlist Status Database current!" : "UT Registration Waitlist Database updating disabled :(";
+        let subtext = enabled ? "disabled" : "enabled";
+        let color = enabled ? Colors.waitlisted : Colors.closed;
+        return `<div style="text-align:center">
+                    <h2 style="color: ${color}">${text}</h2>
+                    <h4 style="color: ${color}">( Can be ${subtext} in options )</h4>
+                </div>`
     }
 
 }

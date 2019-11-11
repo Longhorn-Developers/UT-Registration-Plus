@@ -1,6 +1,7 @@
 console.log(`UT Registration Plus is running on this page: ${window.location.href}`);
 
 var curr_course = {}
+var waitlist_data = [];
 
 var semester_code = new URL(window.location.href).pathname.split('/')[4];
 var done_loading = true;
@@ -17,6 +18,7 @@ if (next) {
 	});
 }
 
+
 //This extension may be super lit, but you know what's even more lit?
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
 
@@ -32,6 +34,7 @@ if (document.querySelector('#fos_fl')) {
 	}
 }
 
+
 //make heading and modal
 if (!$("#kw_results_table").length) {
 	$("table").after(Template.Catalog.loading());
@@ -39,13 +42,16 @@ if (!$("#kw_results_table").length) {
 	$("#myModal").prepend("<div id='snackbar'>save course popup...</div>");
 
 	// now add to the table
+	$("table thead th:eq(5)").after('<th scope=col>Waitlist</th>');
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
 	$('table').find('tr').each(function () {
 		if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
 			$(this).append(Template.Main.extension_button());
+			$(this).find('td:eq(5)').after(`<td data-th="Waitlist"></td>`);
 		}
 	});
 }
+updateWaitlistData();
 
 if(isIndividualCoursePage()){
 	chrome.runtime.sendMessage({
@@ -179,6 +185,27 @@ function saveCourse() {
 		toggleSnackbar();
 		chrome.runtime.sendMessage({
 			command: "updateCourseList"
+		});
+	});
+}
+
+function updateWaitlistData(start = 0){
+	chrome.runtime.sendMessage({
+		command: "currentWaitlists",
+	}, response => {
+		waitlist_data = response.waitlists;
+		$('table').find('tr').each(function (i) {
+			if (i >= start) {
+				if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
+					let unique = $(this).find('td[data-th="Unique"]').text();
+					let from_waitlist = waitlist_data.find(function(course){
+						console.log(course.id);
+						return course.id == unique;
+					});
+					let spot = from_waitlist ? from_waitlist.wait : "";
+					$(this).find('td[data-th="Waitlist"]').text(spot);
+				}
+			}
 		});
 	});
 }
@@ -336,6 +363,8 @@ function buildProfTitle(course_data) {
 }
 
 
+
+
 function buildSemestersDropdown(course_data, res) {
 	$("#semesters").empty();
 	if (badData(course_data, res)) {
@@ -487,11 +516,13 @@ function loadNextPages() {
 							let has_course_header = $(this).find('td').hasClass("course_header");
 							if (!(has_course_header && $(this).has('th').length == 0))
 								$(this).append(Template.Main.extension_button());
+								$(this).find('td:eq(5)').after(`<td data-th='Waitlist'></td>`);
 							if (!(has_course_header && last == $(this).find('td').text()))
 								new_rows.push($(this));
 						});
 						current.append(new_rows);
-						updateListConflictHighlighting(old_length + 1)
+						updateListConflictHighlighting(old_length + 1);
+						updateWaitlistData(old_length + 1);
 					}
 				}).fail(function () {
 					toggleLoadingPage(false);
