@@ -1,5 +1,5 @@
 # To Do
-*Last Updated: 07/28/19*
+*Last Updated: 11/28/19*
 
 ## Features: 
 - [ ] work on UT Planner & Coursicle
@@ -10,7 +10,6 @@
 - [ ] Firefox Support
 - [ ] RMP (cumulative score for class based off CIS, RMP, grade dist., etc.)
 - [ ] Conflict indicator ( Possible different section? )
-- [ ] Redesign footer menu
 - [ ] Compare classes mode
 
 ## Known Bugs:
@@ -33,6 +32,7 @@
 - [x] clean upcalendar export and add more options to screen
 - [x] search by unique number
 - [x] Fix the update/install bug
+- [x] Redesign footer menu
 
 for FIXING DB: 
 
