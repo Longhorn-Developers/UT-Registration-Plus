@@ -548,3 +548,16 @@ input[type=number]::-webkit-outer-spin-button {
 .meta-container{
     margin: 5px 5px 10px 5px;
 }
+
+.input-box{
+    color: rgba(0, 0, 45, 0.48);
+    border: 1px solid #8C8C8C;
+    font-size: 11px;
+    padding: 5px;
+    border-radius: 7px;
+    width: 90%;
+}
+
+.input-box::placeholder {
+    color: rgba(0, 0, 45, 0.345);
+}
