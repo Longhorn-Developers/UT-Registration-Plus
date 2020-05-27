@@ -232,6 +232,8 @@ $(function () {
 
     //create the event object for every section
     function setEventForSection(session, colorCounter, i) {
+        console.log(moment().startOf('month').format("YYYY-MM-D"));
+        console.log(moment().day(fullday));
         var fullday = days.get(session[0]);
         var classInfo = savedCourses[i];
         var department = classInfo.coursename.substring(0, classInfo.coursename.search(/\d/) - 2);
@@ -242,7 +244,7 @@ $(function () {
         }
         classSchedules.push({
             title: `${department}-${course_nbr} with ${uncapProf}`,
-            start: moment().startOf('week').format("YYYY-MM-") +
+            start: moment().startOf('month').format("YYYY-MM-") +
                 moment()
                 .day(fullday)
                 ._d.toString()
@@ -250,7 +252,7 @@ $(function () {
                 "T" +
                 session[1][0] +
                 ":00",
-            end: moment().startOf('week').format("YYYY-MM-") +
+            end: moment().startOf('month').format("YYYY-MM-") +
                 moment()
                 .day(fullday)
                 ._d.toString()
