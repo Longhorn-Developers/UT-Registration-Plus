@@ -154,6 +154,7 @@ body {
 }
 
 i {
+    font-style: normal;
     padding: 4px 0px;
 }
 
@@ -181,9 +182,20 @@ i {
     margin: 7px !important;
 }
 
+.notify_me_button {
+    background:#4CAF50;
+}
 
 .clear_button {
-     background:#4CAF50;
+    background-color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-radius: 10px;
+    font-size: medium;
+    font-style: normal;
+    position: relative;
+    overflow: hidden;
 }
 
 .ris_button {
