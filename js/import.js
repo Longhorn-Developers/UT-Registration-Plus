@@ -49,12 +49,10 @@ function extractWaitlistStatus(){
 		let waitlist_size = $(this).find('tr.tbon:eq(2) td:eq(1)').text().trim().split(' of ')[1];
 
 		waitlist_info.push({
-			"record": {
-				"id": unique_num,
-				"class": class_name,
-				"wait": waitlist_size,
-				"time": moment().format('DD-MM-YYYY HH:mm:ss')
-			}
+			"unique": unique_num,
+			"name": class_name,
+			"size": waitlist_size,
+			"time": moment().format('DD-MM-YYYY HH:mm:ss')
 		});
 	});
 	console.log(waitlist_info);
@@ -78,16 +76,14 @@ function importCourse(unique_node) {
 }
 
  function pushWaitlistStatus(waitlist_status){
-	waitlist_status.forEach(course => {
-		console.log(course);
-		fetch(Waitlist.db_push_hook, {
-		    method: 'POST',
-		    headers: {
-		      'Content-Type': 'application/json'
-		    },
-	    	body: JSON.stringify(course) // push each course to the db
-	  	});
-	});
+	console.log(waitlist_status);
+	fetch(Waitlist.db_push_hook, {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(waitlist_status)
+	  });
 }
 
 

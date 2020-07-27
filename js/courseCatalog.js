@@ -199,10 +199,10 @@ function updateWaitlistData(start = 0){
 				if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
 					let unique = $(this).find('td[data-th="Unique"]').text();
 					let from_waitlist = waitlist_data.find(function(course){
-						console.log(course.id);
-						return course.id == unique;
+						console.log(course.unique);
+						return course.unique == unique;
 					});
-					let spot = from_waitlist ? from_waitlist.wait : "";
+					let spot = from_waitlist ? from_waitlist.size : "";
 					$(this).find('td[data-th="Waitlist"]').text(spot);
 				}
 			}

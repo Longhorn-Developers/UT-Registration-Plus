@@ -59,5 +59,6 @@ Text.waitlist_button_text_default = "<span style='font-size:small'>Import Waitli
 Text.button_success = "Courses Saved!";
 
 class Waitlist{}
-Waitlist.db_push_hook = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/waitlist-info-pnyrh/service/wait_aid/incoming_webhook/pushVal";
+Waitlist.db_push_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/CourseSchedule/incoming_webhook/UpdateValues";
+// Waitlist.db_push_hook = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/waitlist-info-pnyrh/service/wait_aid/incoming_webhook/pushVal";
 Waitlist.db_pull_hook = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/waitlist-info-pnyrh/service/wait_aid/incoming_webhook/getDB";
