@@ -38,7 +38,6 @@ $(function () {
 	});
 });
 
-
 function extractWaitlistStatus(){
 	let class_boxes = $("[name='wl_see_my_waitlists']>table");
 	let waitlist_info = [];
@@ -58,7 +57,6 @@ function extractWaitlistStatus(){
 	console.log(waitlist_info);
 	return waitlist_info;
 }
-
 
 function importButtonAnimation(button) {
 	let is_waitlisted_button = $(button).attr('id') == "import_waitlist";
@@ -86,7 +84,6 @@ function importCourse(unique_node) {
 	  });
 }
 
-
 function buildAddCourse(link) {
 	$.get(link, function (response) {
 		if (response) {
@@ -103,7 +100,6 @@ function buildAddCourse(link) {
 		}
 	})
 }
-
 
 function buildSimplifiedCourseObject(response, link) {
 	let imported_course = getCourseObject(htmlToNode(response), link);
@@ -126,7 +122,6 @@ function getCourseObject(response_node, individual) {
 	let course_row = $(response_node).find('table');
 	curr_course = buildBasicCourseInfo(course_row, course_name, individual);
 }
-
 
 function buildBasicCourseInfo(row, course_name, individual) {
 	let {
