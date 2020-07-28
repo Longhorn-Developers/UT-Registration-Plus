@@ -48,10 +48,12 @@ function extractWaitlistStatus(){
 		let waitlist_size = $(this).find('tr.tbon:eq(2) td:eq(1)').text().trim().split(' of ')[1];
 
 		waitlist_info.push({
-			"unique": unique_num,
-			"name": class_name,
-			"size": waitlist_size,
-			"time": moment().format('DD-MM-YYYY HH:mm:ss')
+			"record": {
+				"id": unique_num,
+				"class": class_name,
+				"wait": waitlist_size,
+				"time": moment().format('DD-MM-YYYY HH:mm:ss')
+			}
 		});
 	});
 	console.log(waitlist_info);
