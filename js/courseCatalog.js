@@ -34,6 +34,8 @@ if (document.querySelector('#fos_fl')) {
 	}
 }
 
+catalogScrape();
+pushScheduleData(course_schedule);
 
 //make heading and modal
 if (!$("#kw_results_table").length) {
@@ -51,6 +53,7 @@ if (!$("#kw_results_table").length) {
 		}
 	});
 }
+
 updateWaitlistData();
 
 if(isIndividualCoursePage()){
@@ -521,6 +524,8 @@ function loadNextPages() {
 								new_rows.push($(this));
 						});
 						current.append(new_rows);
+						catalogScrape();
+						pushScheduleData(course_schedule);
 						updateListConflictHighlighting(old_length + 1);
 						updateWaitlistData(old_length + 1);
 					}

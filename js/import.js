@@ -44,7 +44,7 @@ function extractWaitlistStatus(){
 	$(class_boxes).each(function(){
 		let data = $(this).find('tr.tb span');
 		let unique_num = $(data[0]).text().trim();
-		let class_name = $(data[1]).text().trim().split('\n').filter(part => part.trim() != '').map(part => part.trim()).join(' ');
+		let class_name = $(data[1]).text().trim().split('\n').filter(part => part.trim() != '').map(part => part.trim()).join(' ').toUpperCase();
 		let waitlist_size = $(this).find('tr.tbon:eq(2) td:eq(1)').text().trim().split(' of ')[1];
 
 		waitlist_info.push({
