@@ -1,4 +1,4 @@
-var course_schedule = [];
+var course_schedule = {};
 
 function catalogScrape() {
 	let course_name = "";
@@ -11,7 +11,6 @@ function catalogScrape() {
 				course_name = $(this).find('td').text() + "";
 			}
 			else if (course_name) {
-				course_row = $(this);
 				extractCourseData($(this), course_name);
 			}
 		})
@@ -19,24 +18,21 @@ function catalogScrape() {
 }
 
 function extractCourseData(row, course_name) {
-	course_name = course_name.trim().split('\n').filter(part => part.trim() != '').map(part => part.trim()).join(' ');
 	let unique_num = $(row).find('td[data-th="Unique"]').text();
-	let class_name = course_name;
+	let class_name = course_name.trim().split('\n').filter(part => part.trim() != '').map(part => part.trim()).join(' ');
 	let professor = $(row).find('td[data-th="Instructor"]').text();
 	let status = $(row).find('td[data-th="Status"]').text();
 
-	course_schedule.push({
-		"record": {
-			"id": unique_num,
-			"class": class_name,
-			"professor": professor,
-			"status": status
-		}
-	});
+	let course = {
+		"id": unique_num,
+		"class": class_name,
+		"professor": professor,
+		"status": status
+	};
+	course_schedule[unique_num] = course;
 }
 
 function pushScheduleData(course_schedule){
-	console.log("start");
 	fetch(Schedule.db_push_hook, {
 		method: 'POST',
 		headers: {

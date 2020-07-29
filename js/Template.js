@@ -15,6 +15,7 @@ Template.Main = class {
                                     <button class=material-button id="textbook" style="background: #FFC107;"> Textbook </button>
                                     <button class=material-button id="Syllabi"> Past Syllabi </button>
                                     <button class=material-button id="saveCourse" value="add" style="background: #F44336;"> Save Course +</button>
+                                    <button class=material-button id="notifyMe" value="notification" style="background: #00BCD4;"> Notify Me +</button>
                                 </div>
                             </div>
                         </div>
