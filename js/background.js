@@ -23,6 +23,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
                 remove(request, sender, response);
             }
             break;
+        case "courseNotify":
+            if (request.action == "subscribe") {
+                subscribe(request, sender, response);
+            }
+            if (request.action == "unsubscribe") {
+                unsubscribe(request, sender, response);
+            }
+            break;
         case "isSingleConflict":
             isSingleConflict(request.dtarr, request.unique, response);
             break;
@@ -37,6 +45,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             break;
         case "alreadyContains":
             alreadyContains(request.unique, response);
+            break;
+        case "alreadyNotified":
+            alreadyNotified(request.unique, response);
             break;
         case "updateCourseList":
             updateTabs();
@@ -122,8 +133,20 @@ function onStartup(){
     getCurrentSemesters();
     getCurrentDepartments();
     getWaitlistData();
+    getNotificationData();
 }
 
+function getNotificationData(){
+    chrome.storage.sync.get('notifications', function (data) {
+        if (!data.notifications) {
+            chrome.storage.sync.set({
+                notifications: new Array()
+            }, function () {
+                console.log('initial course list');
+            });
+        }
+    });
+}
 
 function getWaitlistData(){
     fetch(Waitlist.db_pull_hook)
@@ -362,12 +385,58 @@ function remove(request, sender, sendResponse) {
     });
 }
 
+
 /* Find if the unique is already contained within the storage*/
 function alreadyContains(unique, sendResponse) {
     chrome.storage.sync.get('savedCourses', function (data) {
         var courses = data.savedCourses;
         sendResponse({
             alreadyContains: contains(courses, unique)
+        });
+    });
+}
+
+function subscribe(request, sender, sendResponse) {
+    chrome.storage.sync.get('notifications', function (data) {
+        var courses = data.notifications;
+        if (!contains(courses, request.course.id)) {
+            courses.push(request.course)
+            chrome.storage.sync.set({
+                notifications: courses
+            });
+        }
+        sendResponse({
+            done: "Subscribed: (" + request.course.id + ") " + request.course.class,
+            label: "Stop Notifying Me -",
+            value: "unsubscribe"
+        });
+    });
+}
+
+function unsubscribe(request, sender, sendResponse) {
+    chrome.storage.sync.get('notifications', function (data) {
+        var courses = data.notifications;
+        var index = 0;
+        while (index < courses.length && courses[index].id != request.course.id) {
+            index++;
+        }
+        courses.splice(index, 1);
+        chrome.storage.sync.set({
+            notifications: courses
+        });
+        sendResponse({
+            done: "Unsubscribed: (" + request.course.id + ") " + request.course.class,
+            label: "Notify Me +",
+            value: "subscribe"
+        });
+    });
+}
+
+function alreadyNotified(unique, sendResponse) {
+    chrome.storage.sync.get('notifications', function (data) {
+        var courses = data.notifications;
+        sendResponse({
+            alreadyNotified: contains(courses, unique)
         });
     });
 }
@@ -384,7 +453,7 @@ function contains(courses, unique) {
 }
 
 function isSameCourse(course, unique) {
-    return course.unique == unique
+    return course.unique == unique || course.id == unique;
 }
 
 function updateTabs() {

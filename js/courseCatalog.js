@@ -401,11 +401,19 @@ function openDialog(course_info, res) {
 		command: "alreadyContains",
 		unique: course_info["unique"]
 	}, function (response) {
-
 		let button_text = response.alreadyContains ? "Remove Course -" : "Add Course +";
 		let button_val = response.alreadyContains ? "remove" : "add";
 		$("#saveCourse").text(button_text);
 		$("#saveCourse").val(button_val);
+	});
+	chrome.runtime.sendMessage({
+		command: "alreadyNotified",
+		unique: course_info["unique"]
+	}, function (response) {
+		let notify_text = response.alreadyNotified ? "Stop Notifying Me -" : "Notify Me +";
+		let notify_val = response.alreadyNotified ? "unsubscribe" : "subscribe";
+		$("#notifyMe").text(notify_text);
+		$("#notifyMe").val(notify_val);
 	});
 	buildSemestersDropdown(course_info, res)
 	var data = []
@@ -414,9 +422,6 @@ function openDialog(course_info, res) {
 	allowClosing();
 	setChart(data);
 }
-
-
-
 
 function setChart(data) {
 	// set up the chart
@@ -538,6 +543,12 @@ function loadNextPages() {
 		}
 	});
 }
+
+$("#myModal").on('click', '#notifyMe', function () {
+	setTimeout(function () {
+		trackCourse();
+	}, 0);
+});
 
 $("#myModal").on('click', '#saveCourse', function () {
 	setTimeout(function () {

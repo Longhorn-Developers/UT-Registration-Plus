@@ -41,3 +41,17 @@ function pushScheduleData(course_schedule){
 		body: JSON.stringify(course_schedule)
 	  });
 }
+
+function trackCourse() {
+	course = course_schedule[curr_course.unique];
+	chrome.runtime.sendMessage({
+		command: "courseNotify",
+		course: course,
+		action: $("#notifyMe").val()
+	}, function (response) {
+		$("#notifyMe").text(response.label);
+		$("#notifyMe").val(response.value);
+		$("#snackbar").text(response.done);
+		toggleSnackbar();
+	});
+}
