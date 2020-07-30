@@ -48,7 +48,7 @@ function buildTimeLines(datetimearr) {
 	} else {
 		for (let i = 0; i < lines.length; i++) {
 			let line = lines[i];
-			output += Template.Popup.line(line)
+			output += Template.Popup.line(line);
 		}
 	}
 	return output;

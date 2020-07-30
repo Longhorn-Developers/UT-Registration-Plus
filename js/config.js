@@ -3,24 +3,22 @@ Timing.fade_time = 100;
 Timing.calendar_fade_time = 100;
 Timing.button_delay = 75;
 
-
 class Colors{}
 Colors.material_colors = ['#4CAF50', '#CDDC39',
     '#FFC107', '#2196F3', '#F57C00', '#9C27B0', '#FF5722', '#673AB7',
     '#FF5252', '#E91E63', '#009688', '#00BCD4',
     '#4E342E', '#424242', '#9E9E9E'
 ];
+
 Colors.open = "#4CAF50";
 Colors.waitlisted = "#FF9800";
 Colors.closed = "#FF5722";
 Colors.no_status = "#607D8B";
 
-
 Colors.open_light = "#C8E6C9";
 Colors.waitlisted_light = "#FFE0B2";
 Colors.closed_light = "#FFCCBC";
 Colors.no_status_light = "#CFD8DC";
-
 
 Colors.highlight_conflict = "#F44336";
 Colors.highlight_default = "#333333";
@@ -28,7 +26,6 @@ Colors.highlight_saved = "#4CAF50";
 
 Colors.badge_flash = "#FF5722";
 Colors.badge_default = "#bf5700";
-
 
 class Export{}
 Export.png_options = {

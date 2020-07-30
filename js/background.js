@@ -155,6 +155,7 @@ function getWaitlistData(){
     	  waitlist_status = waitlists;
      });
 }
+
 function getOptionsValue(key, sendResponse){
     chrome.storage.sync.get('options', function (data) {
         if (!data.options) {
@@ -229,7 +230,6 @@ function getCurrentSemesters(){
     });
 }
 
-
 function getCurrentDepartments(){
   $.get('https://catalog.utexas.edu/undergraduate/appendix-b/', function(response){
     if(response){;
@@ -254,7 +254,6 @@ function updateBadge(first, new_changes) {
         });
     }
 }
-
 
 function updateBadgeText(first, courses) {
     let badge_text = courses.length > 0 ? `${courses.length}` : "";
@@ -325,9 +324,6 @@ function isSingleConflict(currdatearr, unique, sendResponse) {
     });
 }
 
-
-
-
 /* Check if conflict between two date-time-arrs*/
 function isConflict(adtarr, bdtarr) {
     for (var i = 0; i < adtarr.length; i++) {
@@ -364,6 +360,7 @@ function add(request, sender, sendResponse) {
         });
     });
 }
+
 /* Find and Remove the requested course from the storage*/
 function remove(request, sender, sendResponse) {
     chrome.storage.sync.get('savedCourses', function (data) {
@@ -384,7 +381,6 @@ function remove(request, sender, sendResponse) {
         });
     });
 }
-
 
 /* Find if the unique is already contained within the storage*/
 function alreadyContains(unique, sendResponse) {
@@ -468,8 +464,6 @@ function updateTabs() {
 
 const UPDATE_INTERVAL = 1000 * 60 * 16;
 setInterval(updateStatus, UPDATE_INTERVAL);
-// updateStatus();
-
 
 function updateStatus(sendResponse) {
     chrome.storage.sync.get('savedCourses', function (data) {
@@ -512,7 +506,6 @@ function updateStatus(sendResponse) {
         }
     });
 }
-
 
 function executeQuery(query, sendResponse) {
     console.log(grades)

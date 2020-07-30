@@ -232,6 +232,8 @@ i {
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     position: relative;
     overflow: hidden;
+    word-spacing: 30px;
+    width: 30%;
 }
 
 .course_name_truncate_box {

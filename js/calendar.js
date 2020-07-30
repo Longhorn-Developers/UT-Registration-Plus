@@ -4,11 +4,8 @@ var {
     button_delay
 } = Timing;
 
-
-
 var saved_courses = [];
 var curr_course = {}
-
 $("#calendar").after(Template.Calendar.modal());
 
 chrome.storage.sync.get("savedCourses", function (data) {
@@ -16,7 +13,6 @@ chrome.storage.sync.get("savedCourses", function (data) {
     saved_courses = data.savedCourses;
     console.log(saved_courses);
     let event_source = buildEventSource(saved_courses);
-
     $("#calendar").fullCalendar({
         editable: false, // Don't allow editing of events
         handleWindowResize: true,
@@ -89,7 +85,6 @@ function buildTimeTitle(datetimearr) {
     $("#header").after(`<div id='timelines'>${output}</div`);
 }
 
-
 // Iterate through each saved course and add to 'event'
 function buildEventSource(saved_courses) {
     color_counter = 0;
@@ -133,7 +128,6 @@ function setEventForSection(session, colorCounter, i) {
     beg_day = calculateBeginningDate(full_day)
     start_date = formatCalculateDate(beg_day, full_day, session[1][0]);
     end_date = formatCalculateDate(beg_day, full_day, session[1][1]);
-
     event_obj = {
         title: `${department}-${number} with ${capitalizeString(profname)}`,
         start: start_date,
@@ -164,6 +158,7 @@ function updateCalendar() {
         $("#calendar").fullCalendar('addEventSource', event_source, true);
     });
 }
+
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         if (request.command == "updateCourseList" || request.command == "courseAdded") {
@@ -172,16 +167,13 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
-
 $("#info").click(() => {
     openMoreInfoWithOpenModal(curr_course.link);
 });
 
-
 $("#save").click(() => {
     takePicture();
 });
-
 
 $("#clear").click(() => {
     /*Clear the list and the storage of courses*/
@@ -191,7 +183,6 @@ $("#clear").click(() => {
     updateAllTabsCourseList();
     updateCalendar();
 });
-
 
 $("#remove").click(() => {
     setTimeout(() => {
@@ -206,7 +197,6 @@ $("#remove").click(() => {
         });
     }, button_delay);
 });
-
 
 $("#register").click(function () {
     let {
@@ -229,7 +219,6 @@ $("#export").click(function () {
     }
     cal.download("My_Course_Calendar");
 });
-
 
 function buildICSFile(cal, event) {
     let {
@@ -261,7 +250,6 @@ function takePicture() {
     });
 }
 
-
 /*Close Modal when hit escape*/
 $(document).keydown((e) => {
     if (e.keyCode == 27) {
@@ -272,6 +260,7 @@ $(document).keydown((e) => {
 $('.close').click(function () {
     close();
 });
+
 $('#myModal').click(function (event) {
     if (event.target.id == 'myModal') {
         close();

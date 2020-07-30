@@ -20,7 +20,6 @@ $(function () {
 		$("table").after(Template.Import.import_button());
 	}
 	$("#import").prepend("<div id='snackbar'>import snackbar..</div>");
-
 	$("#import").click(function () {
 		search_nodes = waitlist ? $(".tbg").last().find(".tbon>td:first-child") : $("tr>td:first-child");
 		$(search_nodes).each(function () {
@@ -28,7 +27,6 @@ $(function () {
 		})
 		importButtonAnimation($(this));
 	});
-
 	$("#import_waitlist").click(function () {
 		search_nodes = $("tr.tb span:first-child");
 		$(search_nodes).each(function () {
@@ -44,15 +42,13 @@ function extractWaitlistStatus(){
 	$(class_boxes).each(function(){
 		let data = $(this).find('tr.tb span');
 		let unique_num = $(data[0]).text().trim();
-		let class_name = $(data[1]).text().trim().split('\n').filter(part => part.trim() != '').map(part => part.trim()).join(' ').toUpperCase();
+		let class_name = $(data[1]).text().replace(/\s\s+/g, ' ').trim().toUpperCase();
 		let waitlist_size = $(this).find('tr.tbon:eq(2) td:eq(1)').text().trim().split(' of ')[1];
-
 		waitlist_info.push({
 			"record": {
 				"id": unique_num,
 				"class": class_name,
 				"wait": waitlist_size,
-				"time": moment().format('DD-MM-YYYY HH:mm:ss')
 			}
 		});
 	});
@@ -114,7 +110,6 @@ function buildSimplifiedCourseObject(response, link) {
 		register
 	} = curr_course;
 	let dtarr = getDayTimeArray(undefined, curr_course);
-
 	return new Course(full_name, unique, prof_name, dtarr, status, individual, register);
 }
 

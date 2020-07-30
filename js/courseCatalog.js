@@ -1,8 +1,6 @@
 console.log(`UT Registration Plus is running on this page: ${window.location.href}`);
-
 var curr_course = {}
 var waitlist_data = [];
-
 var semester_code = new URL(window.location.href).pathname.split('/')[4];
 var done_loading = true;
 
@@ -18,10 +16,8 @@ if (next) {
 	});
 }
 
-
 //This extension may be super lit, but you know what's even more lit?
 //Matthew Tran's twitter and insta: @MATTHEWTRANN and @matthew.trann
-
 if (document.querySelector('#fos_fl')) {
 	let params = (new URL(document.location)).searchParams;
 	let dep = params.get("fos_fl");
@@ -42,7 +38,6 @@ if (!$("#kw_results_table").length) {
 	$("table").after(Template.Catalog.loading());
 	$("#container").prepend(Template.Main.modal());
 	$("#myModal").prepend("<div id='snackbar'>save course popup...</div>");
-
 	// now add to the table
 	$("table thead th:eq(5)").after('<th scope=col>Waitlist</th>');
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
@@ -175,7 +170,6 @@ function saveCourse() {
 		register
 	} = curr_course;
 	let dtarr = getDayTimeArray(undefined, curr_course);
-
 	var c = new Course(full_name, unique, prof_name, dtarr, status, individual, register);
 	chrome.runtime.sendMessage({
 		command: "courseStorage",
@@ -282,7 +276,6 @@ function updateTextHighlighting(tds, canHighlight, isConflict, alreadyContains, 
 	}
 }
 
-
 /* For a row, get the date-time-array for checking conflicts*/
 function getDayTimeArray(row, course_info) {
 	var day_time_array = []
@@ -365,9 +358,6 @@ function buildProfTitle(course_data) {
 	return `with ${initial?initial+". ":""}${prof_name}`;
 }
 
-
-
-
 function buildSemestersDropdown(course_data, res) {
 	$("#semesters").empty();
 	if (badData(course_data, res)) {
@@ -383,7 +373,6 @@ function buildSemestersDropdown(course_data, res) {
 		$("#semesters").append(sems);
 	}
 }
-
 
 function displayBasicCourseInfo(course_info){
 	$("#title").text(buildTitle(course_info))
@@ -561,21 +550,25 @@ $("#Syllabi").click(function () {
 		window.open(curr_course["links"]["syllabi"]);
 	}, Timing.button_delay);
 });
+
 $("#rateMyProf").click(function () {
 	setTimeout(function () {
 		window.open(curr_course["links"]["rate_my_prof"]);
 	}, Timing.button_delay);
 });
+
 $("#eCIS").click(function () {
 	setTimeout(function () {
 		window.open(curr_course["links"]["ecis"]);
 	}, Timing.button_delay);
 });
+
 $("#textbook").click(function () {
 	setTimeout(function () {
 		window.open(curr_course["links"]["textbook"]);
 	}, Timing.button_delay);
 });
+
 $("#semesters").on('change', function () {
 	let sem = $(this).val();
 	sem = sem == "Aggregate" ? undefined : sem;
@@ -627,7 +620,6 @@ function toggleSnackbar() {
 	}, 3000);
 }
 
-
 function allowClosing() {
 	$('.close').click(function () {
 		close();
@@ -661,7 +653,6 @@ $(document).keydown(function (e) {
 		saveCourse();
 	}
 });
-
 
 $(window).scroll(function () {
 	if ($(document).height() <= $(window).scrollTop() + $(window).height() + 150)

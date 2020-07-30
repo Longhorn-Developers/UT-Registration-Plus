@@ -126,6 +126,7 @@ Template.Calendar = class {
     }
 }
 Template.Popup = class {
+
     static list_item(i, list_tile_color, unique, department, number, profname, list_sub_color, line) {
         return `<li id='${i}' class='course_list_item'>
                                 <div class='card course_list_card'>
