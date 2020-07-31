@@ -38,19 +38,18 @@ $(function () {
 
 function extractWaitlistStatus(){
 	let class_boxes = $("[name='wl_see_my_waitlists']>table");
-	let waitlist_info = [];
+	let waitlist_info = {};
 	$(class_boxes).each(function(){
 		let data = $(this).find('tr.tb span');
 		let unique_num = $(data[0]).text().trim();
 		let class_name = $(data[1]).text().replace(/\s\s+/g, ' ').trim().toUpperCase();
 		let waitlist_size = $(this).find('tr.tbon:eq(2) td:eq(1)').text().trim().split(' of ')[1];
-		waitlist_info.push({
-			"record": {
-				"id": unique_num,
-				"class": class_name,
-				"wait": waitlist_size,
-			}
-		});
+		let course = {
+			"id": unique_num,
+			"class": class_name,
+			"wait": waitlist_size,
+		}
+		waitlist_info[unique_num] = course;
 	});
 	console.log(waitlist_info);
 	return waitlist_info;

@@ -39,6 +39,12 @@ body {
     margin-bottom: 30px;
 }
 
+.notifications_list {
+    list-style-type: none;
+    padding: 5px;
+    margin-bottom: 30px;
+}
+
 .course_list_card {
     cursor: pointer;
 }
@@ -97,15 +103,23 @@ body {
 }
 
 .more_info_button{
-    background: #2196F3;
-}
-
-.remove_button {
-    background: #F44336;
+    background: #FFC107;
+    height: 55px;
 }
 
 .register_button {
     background: #4CAF50;
+    height: 55px;
+}
+
+.remove_button {
+    background: #F44336;
+    height: 55px;
+}
+
+.unsubscribe_button {
+    background:#00BCD4;
+    height: 55px;
 }
 
 .settings_button {
@@ -182,7 +196,7 @@ i {
     margin: 7px !important;
 }
 
-.notify_me_button {
+.notifications_tab_button {
     background:#00BCD4;
 }
 

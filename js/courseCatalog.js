@@ -71,6 +71,9 @@ $("body").on('click', '#distButton', function () {
 	$(this).blur();
 	curr_course = getCourseInfo(row);
 	getDistribution(curr_course);
+	chrome.storage.sync.get('notifications', function(data) {
+		console.log(data.notifications);
+	});
 });
 
 
@@ -399,10 +402,10 @@ function openDialog(course_info, res) {
 		command: "alreadyNotified",
 		unique: course_info["unique"]
 	}, function (response) {
-		let notify_text = response.alreadyNotified ? "Stop Notifying Me -" : "Notify Me +";
-		let notify_val = response.alreadyNotified ? "unsubscribe" : "subscribe";
-		$("#notifyMe").text(notify_text);
-		$("#notifyMe").val(notify_val);
+		let notify_me_text = response.alreadyNotified ? "Stop Notifying Me -" : "Notify Me +";
+		let notify_me_val = response.alreadyNotified ? "unsubscribe" : "subscribe";
+		$("#notifyMe").text(notify_me_text);
+		$("#notifyMe").val(notify_me_val);
 	});
 	buildSemestersDropdown(course_info, res)
 	var data = []

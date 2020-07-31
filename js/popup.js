@@ -1,10 +1,13 @@
 var courses;
+var tab = "#courseList"
 
 setCourseList();
+setNotificationsList()
 getSemesters();
 getDepartments();
 
 var can_remove = true;
+var can_unsubscribe = true;
 
 function setCourseList() {
 	$("#courseList").empty()
@@ -37,6 +40,35 @@ function setCourseList() {
 		}
 		$("#meta-metric").text(num_hours);
 	});
+}
+
+function setNotificationsList() {
+	$("#notificationsList").empty()
+	chrome.storage.sync.get('notifications', function (data) {
+		courses = data.notifications
+		// build and append the course list element
+		for (var i = 0; i < courses.length; i++) {
+			let {
+				coursename,
+				unique,
+				profname,
+				status,
+				datetimearr
+			} = courses[i];
+			profname = capitalizeString(profname);
+			let line = buildTimeLines(datetimearr);
+			let list_tile_color = getStatusColor(status)
+			let list_sub_color = getStatusColor(status, true);
+			let {
+				department,
+				number
+			} = seperateCourseNameParts(coursename)
+
+			let notification = Template.Popup.notification(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
+			$("#notificationsList").append(notification);
+		}
+	});
+	$("#notificationsList").hide()
 }
 
 /* convert from the dtarr and maek the time lines*/
@@ -104,6 +136,22 @@ $("#clear").click(function () {
 	$("#courseList").empty();
 	updateAllTabsCourseList();
 	showEmpty();
+});
+
+$("#notificationsTab").click(function () {
+	if (tab == "#courseList") {
+		tab = ("#notificationsTab");
+		$("#notificationsTab").text("Hide Notified");
+		$("#courseList").hide();
+		$("#meta-data").hide();
+		$("#notificationsList").fadeIn(400);
+	} else {
+		tab = ("#courseList");
+		$("#notificationsTab").text("Show Notified");
+		$("#notificationsList").hide();
+		$("#courseList").fadeIn(400);
+		$("#meta-data").fadeIn(400);
+	}
 });
 
 $("#RIS").click(function () {
@@ -233,6 +281,19 @@ $("#courseList").on('click', '.copy_button', function (e) {
 	copyUnique(unique);
 });
 
+$("#notificationsList").on('mouseover', '.copy_button', function () {
+	$(this).addClass('shadow');
+}).on('mouseleave', '.copy_button', function () {
+	$(this).removeClass('shadow');
+});
+
+$("#notificationsList").on('click', '.copy_button', function (e) {
+	e.stopPropagation();
+	copyButtonAnimation($(this));
+	let unique = $(this).val();
+	copyUnique(unique);
+});
+
 function copyUnique(unique) {
 	var temp = $("<input>");
 	$("body").append(temp);
@@ -247,6 +308,15 @@ $("#courseList").on('click', 'li', function () {
 	handleMoreInfo(clicked_item, curr_course);
 	handleRegister(clicked_item, curr_course)
 	handleRemove(clicked_item, curr_course)
+	toggleTimeDropdown(clicked_item);
+});
+
+$("#notificationsList").on('click', 'li', function () {
+	let clicked_item = $(this).closest('li');
+	let curr_course = courses[$(clicked_item).attr("id")];
+	handleMoreInfo(clicked_item, curr_course);
+	handleRegister(clicked_item, curr_course)
+	handleUnsubscribe(clicked_item, curr_course)
 	toggleTimeDropdown(clicked_item);
 });
 
@@ -302,6 +372,22 @@ function handleRemove(clicked_item, curr_course) {
 	});
 }
 
+function handleUnsubscribe(clicked_item, curr_course) {
+	let list = $(clicked_item).closest("ul");
+	$(clicked_item).find("#unsubscribe").click(function () {
+		if (can_remove) {
+			can_remove = false;
+			chrome.runtime.sendMessage({
+				command: "courseNotification",
+				course: curr_course,
+				action: "unsubscribe"
+			}, () => {
+				$(clicked_item).fadeOut(200);
+				can_remove = true;
+			});
+		}
+	});
+}
 
 function subtractHours(curr_course){
 	let curr_total_hours = parseInt($("#meta-metric").text());

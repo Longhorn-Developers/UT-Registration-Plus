@@ -52,10 +52,19 @@ function pushScheduleData(course_schedule){
 }
 
 function trackCourse() {
-	course = course_schedule[curr_course.unique];
+	let {
+		full_name,
+		unique,
+		prof_name,
+		status,
+		individual,
+		register
+	} = curr_course;
+	let dtarr = getDayTimeArray(undefined, curr_course);
+	var c = new Course(full_name, unique, prof_name, dtarr, status, individual, register);
 	chrome.runtime.sendMessage({
-		command: "courseNotify",
-		course: course,
+		command: "courseNotification",
+		course: c,
 		action: $("#notifyMe").val()
 	}, function (response) {
 		$("#notifyMe").text(response.label);

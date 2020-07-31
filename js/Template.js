@@ -151,6 +151,30 @@ Template.Popup = class {
                             </li>`;
     }
 
+    static notification(i, list_tile_color, unique, department, number, profname, list_sub_color, line) {
+        return `<li id='${i}' class='course_list_item'>
+                                <div class='card course_list_card'>
+                                    <div class='container' style='background:#FFFFFF'>
+                                        <button class='copy_button' title='Copy Unique #' value='${unique}'>
+                                            <i id='copyicon' class="material-icons copy_button_icon" style='color: ${list_tile_color}; text-shadow: none;' >content_copy</i>
+                                        </button>
+                                        <h4 class='course_name_truncate_box'>
+                                            <b style='color: ${list_tile_color};'>${department} ${number} <span class='course_list_item_subtext'> with ${profname} (${unique})</span></b>
+                                        </h4>
+                                        <p id='arrow' class='arrow' style='color: ${list_tile_color};'>&#9658;</p>
+                                    </div>
+                                </div>
+                                <div id='moreInfo' class='course_list_item_options'>
+                                    <p style='background-color:${list_sub_color};' class='course_list_item_time_box'>${line}</p>
+                                    <div id='infoButtons' class='course_list_item_options_button_container'>
+                                        <button class='material_button course_list_item_options_buttons unsubscribe_button' id='unsubscribe'>Unsubscribe</button>
+                                        <button class='material_button course_list_item_options_buttons register_button' id='register'>Register</button>
+                                        <button class='material_button course_list_item_options_buttons more_info_button' id='listMoreInfo'>More Info</button>
+                                    </div>
+                                </div>
+                            </li>`;
+    }
+
     static conflict_message(conflict_message) {
         return `<p id='conflict' class='conflict_message'>${conflict_message}</>`
     }

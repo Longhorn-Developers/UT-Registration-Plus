@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
                 remove(request, sender, response);
             }
             break;
-        case "courseNotify":
+        case "courseNotification":
             if (request.action == "subscribe") {
                 subscribe(request, sender, response);
             }
@@ -395,14 +395,14 @@ function alreadyContains(unique, sendResponse) {
 function subscribe(request, sender, sendResponse) {
     chrome.storage.sync.get('notifications', function (data) {
         var courses = data.notifications;
-        if (!contains(courses, request.course.id)) {
+        if (!contains(courses, request.course.unique)) {
             courses.push(request.course)
             chrome.storage.sync.set({
                 notifications: courses
             });
         }
         sendResponse({
-            done: "Subscribed: (" + request.course.id + ") " + request.course.class,
+            done: "Subscribed: (" + request.course.unique + ") " + request.course.coursename,
             label: "Stop Notifying Me -",
             value: "unsubscribe"
         });
@@ -413,7 +413,7 @@ function unsubscribe(request, sender, sendResponse) {
     chrome.storage.sync.get('notifications', function (data) {
         var courses = data.notifications;
         var index = 0;
-        while (index < courses.length && courses[index].id != request.course.id) {
+        while (index < courses.length && courses[index].unique != request.course.unique) {
             index++;
         }
         courses.splice(index, 1);
@@ -421,7 +421,7 @@ function unsubscribe(request, sender, sendResponse) {
             notifications: courses
         });
         sendResponse({
-            done: "Unsubscribed: (" + request.course.id + ") " + request.course.class,
+            done: "Unsubscribed: (" + request.course.unique + ") " + request.course.coursename,
             label: "Notify Me +",
             value: "subscribe"
         });
@@ -449,7 +449,7 @@ function contains(courses, unique) {
 }
 
 function isSameCourse(course, unique) {
-    return course.unique == unique || course.id == unique;
+    return course.unique == unique;
 }
 
 function updateTabs() {
