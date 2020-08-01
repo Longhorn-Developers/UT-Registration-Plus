@@ -2,7 +2,6 @@ var courses;
 var tab = "#courseList"
 
 setCourseList();
-setNotificationsList()
 getSemesters();
 getDepartments();
 
@@ -40,6 +39,7 @@ function setCourseList() {
 		}
 		$("#meta-metric").text(num_hours);
 	});
+	$("#notificationsList").hide()
 }
 
 function setNotificationsList() {
@@ -140,16 +140,22 @@ $("#clear").click(function () {
 
 $("#notificationsTab").click(function () {
 	if (tab == "#courseList") {
-		tab = ("#notificationsTab");
+		$(tab).empty()
+		$(tab).hide()
+		tab = "#notificationsList";
+		setNotificationsList()
+
 		$("#notificationsTab").text("Hide Notified");
-		$("#courseList").hide();
+		$(tab).fadeIn(400);
 		$("#meta-data").hide();
-		$("#notificationsList").fadeIn(400);
 	} else {
-		tab = ("#courseList");
+		$(tab).empty()
+		$(tab).hide()
+		tab = "#courseList";
+		setCourseList();
+
 		$("#notificationsTab").text("Show Notified");
-		$("#notificationsList").hide();
-		$("#courseList").fadeIn(400);
+		$(tab).fadeIn(400);
 		$("#meta-data").fadeIn(400);
 	}
 });
