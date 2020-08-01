@@ -1,5 +1,5 @@
 var courses;
-var tab = "#courseList"
+var tab = "#courseList";
 
 setCourseList();
 getSemesters();
@@ -9,7 +9,14 @@ var can_remove = true;
 var can_unsubscribe = true;
 
 function setCourseList() {
-	$("#courseList").empty()
+	// any tabs we were just on - clear/hide them and start fresh
+	$(tab).empty();
+	$(tab).hide();
+	$("#meta-data").hide();
+
+	// build the schedule and show it, setting it as the active tab
+	tab = "#courseList";
+	$(tab).empty();
 	chrome.storage.sync.get('savedCourses', function (data) {
 		updateConflicts();
 		courses = data.savedCourses
@@ -35,17 +42,27 @@ function setCourseList() {
 			num_hours += parseInt(number.substring(0,1));
 
 			let list_html = Template.Popup.list_item(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
-			$("#courseList").append(list_html);
+			$(tab).append(list_html);
 		}
 		$("#meta-metric").text(num_hours);
 	});
-	$("#notificationsList").hide()
+	$("#meta-data").fadeIn(400);
+	$(tab).fadeIn(400);
+	$("#notificationsList").hide();
 }
 
 function setNotificationsList() {
-	$("#notificationsList").empty()
+	// any tabs we were just on - clear/hide them and start fresh
+	$(tab).empty();
+	$(tab).hide();
+	$("#meta-data").hide();
+
+	// build the schedule and show it, setting it as the active tab
+	tab = "#notificationsList";
+	$(tab).empty()
 	chrome.storage.sync.get('notifications', function (data) {
 		courses = data.notifications
+		handleEmpty();
 		// build and append the course list element
 		for (var i = 0; i < courses.length; i++) {
 			let {
@@ -65,10 +82,11 @@ function setNotificationsList() {
 			} = seperateCourseNameParts(coursename)
 
 			let notification = Template.Popup.notification(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
-			$("#notificationsList").append(notification);
+			$(tab).append(notification);
 		}
 	});
-	$("#notificationsList").hide()
+	$(tab).fadeIn(400);
+	$("#courseList").hide();
 }
 
 /* convert from the dtarr and maek the time lines*/
@@ -130,33 +148,27 @@ $(document).click(function (event) {
 });
 
 $("#clear").click(function () {
-	chrome.storage.sync.set({
-		savedCourses: []
-	});
-	$("#courseList").empty();
-	updateAllTabsCourseList();
+	if (tab == "#courseList") {
+		chrome.storage.sync.set({
+			savedCourses: []
+		});
+		updateAllTabsCourseList();
+	} else {
+		chrome.storage.sync.set({
+			notifications: []
+		});
+	}
+	$(tab).empty();
 	showEmpty();
 });
 
 $("#notificationsTab").click(function () {
 	if (tab == "#courseList") {
-		$(tab).empty()
-		$(tab).hide()
-		tab = "#notificationsList";
-		setNotificationsList()
-
 		$("#notificationsTab").text("Hide Notified");
-		$(tab).fadeIn(400);
-		$("#meta-data").hide();
+		setNotificationsList();
 	} else {
-		$(tab).empty()
-		$(tab).hide()
-		tab = "#courseList";
-		setCourseList();
-
 		$("#notificationsTab").text("Show Notified");
-		$(tab).fadeIn(400);
-		$("#meta-data").fadeIn(400);
+		setCourseList();
 	}
 });
 
@@ -412,7 +424,7 @@ function handleMoreInfo(clicked_item, curr_course) {
 function handleEmpty() {
 	if (courses.length != 0) {
 		$("#empty").hide();
-		$("#courseList").show();
+		$(tab).show();
 	} else {
 		showEmpty();
 	}
@@ -446,10 +458,12 @@ function toggleTimeDropdown(clicked_item) {
 }
 
 function showEmpty() {
-	$("#courseList").hide();
+	$(tab).hide();
 	$("#empty").fadeIn(200);
 	$("#main").html(Text.emptyText());
-	$("#meta-metric").text('0');
+	if (tab == "#courseList") {
+		$("#meta-metric").text('0');
+	}
 }
 
 function hideSearchPopup() {
