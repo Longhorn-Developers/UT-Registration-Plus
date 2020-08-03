@@ -12,7 +12,7 @@ function setCourseList() {
 	// any tabs we were just on - clear/hide them and start fresh
 	$(tab).empty();
 	$(tab).hide();
-	$("#meta-data").hide();
+	$(".meta").hide();
 
 	// build the schedule and show it, setting it as the active tab
 	tab = "#courseList";
@@ -46,7 +46,7 @@ function setCourseList() {
 		}
 		$("#meta-metric").text(num_hours);
 	});
-	$("#meta-data").fadeIn(400);
+	$(".meta").fadeIn(400);
 	$(tab).fadeIn(400);
 	$("#notificationsList").hide();
 }
@@ -55,7 +55,7 @@ function setNotificationsList() {
 	// any tabs we were just on - clear/hide them and start fresh
 	$(tab).empty();
 	$(tab).hide();
-	$("#meta-data").hide();
+	$(".meta").hide();
 
 	// build the schedule and show it, setting it as the active tab
 	tab = "#notificationsList";
@@ -141,6 +141,11 @@ $(document).click(function (event) {
 		hideSearchPopup();
 	}
 
+	// If we're not clicking on contactInfo button or imp/exp popup, and popup is visible, hide it
+	if (!$target.closest('#contact').length && !$target.closest('#contact-info-popup').length && $('#contact-info-popup').is(":visible")) {
+		hideContactInfoPopup();
+	}
+
 	// If we're not clicking on import/export button or imp/exp popup, and popup is visible, hide it
 	if (!$target.closest('#impexp').length && !$target.closest('#import-export-popup').length && $('#import-export-popup').is(":visible")) {
 		hideImportExportPopup();
@@ -192,8 +197,38 @@ $("#impexp").click(function () {
 		if ($("#search>i").text() == 'close') {
 			hideSearchPopup();
 		}
+		if ($("#contact>i").text() == 'close') {
+			hideContactInfoPopup();
+		}
 		showImportExportPopup();
 	}
+});
+
+
+$("#contact").click(function () {
+	if ($("#contact>i").text() == 'close') {
+		hideContactInfoPopup();
+	} else {
+		if ($("#impexp>i").text() == 'close') {
+			hideImportExportPopup();
+		}
+		if ($("#search>i").text() == 'close') {
+			hideSearchPopup();
+		}
+		showContactInfoPopup();
+	}
+});
+
+$("#submit").click(function (view) {
+	chrome.storage.sync.get('contactInfo', function(data) {
+		temp_info = {
+			"email": document.getElementById("email").value,
+			"phone": document.getElementById("phone").value
+		}
+		chrome.storage.sync.set({
+			contactInfo: temp_info
+		});
+	});
 });
 
 $("#search").click(function () {
@@ -202,6 +237,9 @@ $("#search").click(function () {
 	} else {
 		if ($("#impexp>i").text() == 'close') {
 			hideImportExportPopup();
+		}
+		if ($("#contact>i").text() == 'close') {
+			hideContactInfoPopup();
 		}
 		showSearchPopup();
 	}
@@ -493,6 +531,16 @@ function hideImportExportPopup() {
 function showImportExportPopup() {
 	$("#impexp>i").text('close');
 	$("#import-export-popup").removeClass('hide');
+}
+
+function hideContactInfoPopup() {
+	$("#contact-info-popup").addClass('hide');
+	$("#contact>i").text('notifications_none');
+}
+
+function showContactInfoPopup() {
+	$("#contact>i").text('close');
+	$("#contact-info-popup").removeClass('hide');
 }
 
 function getSemesters() {

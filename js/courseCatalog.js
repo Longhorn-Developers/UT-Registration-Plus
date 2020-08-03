@@ -1,5 +1,5 @@
 console.log(`UT Registration Plus is running on this page: ${window.location.href}`);
-var curr_course = {}
+var curr_course = {};
 var waitlist_data = [];
 var semester_code = new URL(window.location.href).pathname.split('/')[4];
 var done_loading = true;
@@ -31,7 +31,7 @@ if (document.querySelector('#fos_fl')) {
 }
 
 catalogScrape();
-pushScheduleData(course_schedule);
+
 
 //make heading and modal
 if (!$("#kw_results_table").length) {
@@ -71,9 +71,6 @@ $("body").on('click', '#distButton', function () {
 	$(this).blur();
 	curr_course = getCourseInfo(row);
 	getDistribution(curr_course);
-	chrome.storage.sync.get('notifications', function(data) {
-		console.log(data.notifications);
-	});
 });
 
 
@@ -199,7 +196,7 @@ function updateWaitlistData(start = 0){
 				if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
 					let unique = $(this).find('td[data-th="Unique"]').text();
 					let from_waitlist = waitlist_data.find(function(course){
-						console.log(course.id);
+						// console.log(course.id);
 						return course.id == unique;
 					});
 					let spot = from_waitlist ? from_waitlist.wait : "";
@@ -522,7 +519,6 @@ function loadNextPages() {
 						});
 						current.append(new_rows);
 						catalogScrape();
-						pushScheduleData(course_schedule);
 						updateListConflictHighlighting(old_length + 1);
 						updateWaitlistData(old_length + 1);
 					}

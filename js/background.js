@@ -1,8 +1,8 @@
 var grades;
 var current_semesters = {};
-var waitlist_status = [];
 var departments = [];
 var should_open = false;
+var waitlist_status = [];
 
 const default_options = {
     "loadAll": true,
@@ -134,6 +134,19 @@ function onStartup(){
     getCurrentDepartments();
     getWaitlistData();
     getNotificationData();
+    getContactInfo()
+}
+
+function getContactInfo() {
+    chrome.storage.sync.get('contactInfo', function (data) {
+        if (!data.contactInfo) {
+            chrome.storage.sync.set({
+                contactInfo: {}
+            }, function () {
+                console.log('retrieving contact information');
+            });
+        }
+    });
 }
 
 function getNotificationData(){

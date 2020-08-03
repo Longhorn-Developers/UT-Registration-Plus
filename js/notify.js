@@ -1,20 +1,25 @@
 var course_schedule = {};
 
 function catalogScrape() {
-	let course_name = "";
-	if (isIndividualCoursePage()) {
-		course_name = $("#details h2").text();
-		extractCourseData($('table'), course_name);
-	} else {
-		$('table').find('tr').each(function () {
-			if ($(this).find('td').hasClass("course_header")) {
-				course_name = $(this).find('td').text() + "";
-			}
-			else if (course_name) {
-				extractCourseData($(this), course_name);
-			}
-		})
-	}
+	chrome.storage.sync.get('notifications', function(data) {
+		let course_name = "";
+		if (isIndividualCoursePage()) {
+			course_name = $("#details h2").text();
+			extractCourseData($('table'), course_name);
+		} else {
+			$('table').find('tr').each(function () {
+				if ($(this).find('td').hasClass("course_header")) {
+					course_name = $(this).find('td').text() + "";
+				}
+				else if (course_name) {
+					extractCourseData($(this), course_name);
+				}
+			})
+		}
+		notifications = data.notifications;
+		notifications.forEach(course => delete course_schedule[course.unique]);
+		pushScheduleData();
+	});
 }
 
 function displayTime(unformattedTime) {
@@ -41,14 +46,14 @@ function extractCourseData(row, course_name) {
 	course_schedule[course.id] = course;
 }
 
-function pushScheduleData(course_schedule){
+function pushScheduleData(){
 	fetch(Schedule.db_push_hook, {
 		method: 'POST',
 		headers: {
 		  'Content-Type': 'application/json'
 		},
 		body: JSON.stringify(course_schedule)
-	  });
+	});
 }
 
 function trackCourse() {
@@ -61,7 +66,7 @@ function trackCourse() {
 		register
 	} = curr_course;
 	let dtarr = getDayTimeArray(undefined, curr_course);
-	var c = new Course(full_name, unique, prof_name, dtarr, status, individual, register);
+	let c = new Course(full_name, unique, prof_name, dtarr, status, individual, register);
 	chrome.runtime.sendMessage({
 		command: "courseNotification",
 		course: c,
@@ -71,5 +76,25 @@ function trackCourse() {
 		$("#notifyMe").val(response.value);
 		$("#snackbar").text(response.done);
 		toggleSnackbar();
+		signUpForNotifs(c.unique);
 	});
+}
+
+function signUpForNotifs(unique) {
+	let signUp = {};
+	chrome.storage.sync.get('contactInfo', function (data) {
+        if (data.contactInfo) {
+			signUp[unique] = {
+				"email": data.contactInfo.email,
+				"phone": data.contactInfo.phone
+			}
+			fetch(Notification.db_push_hook, {
+				method: 'POST',
+				headers: {
+				  'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(signUp)
+			});
+        }
+    });
 }
