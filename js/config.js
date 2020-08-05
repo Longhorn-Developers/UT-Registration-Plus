@@ -55,8 +55,14 @@ Text.button_text_default = "<span style='font-size:small'>Import to </span><b>UT
 Text.waitlist_button_text_default = "<span style='font-size:small'>Import Waitlists to </span><b>UT Reg +<b>";
 Text.button_success = "Courses Saved!";
 
+class Contact{}
+Contact.db_update_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/StudentContactInfo/incoming_webhook/UpdateStudentContact";
+Contact.db_optout_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/StudentContactInfo/incoming_webhook/OptOutStudentContact";
+
 class Notification{}
-Notification.db_push_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/NotificationData/incoming_webhook/UpdateNotifs"
+Notification.db_add_notif_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/NotificationData/incoming_webhook/AddNotif";
+Notification.db_remove_notif_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/NotificationData/incoming_webhook/RemoveNotif";
+Notification.db_clear_notif_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/NotificationData/incoming_webhook/ClearAllNotif";
 
 class Schedule{}
 Schedule.db_push_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/CourseSchedule/incoming_webhook/UpdateSchedule";

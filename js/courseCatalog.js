@@ -534,7 +534,16 @@ function loadNextPages() {
 
 $("#myModal").on('click', '#notifyMe', function () {
 	setTimeout(function () {
-		trackCourse();
+		chrome.runtime.sendMessage({
+			command: "hasContactInfo",
+		}, function (response) {
+			console.log(response.hasContactInfo);
+			if(response.hasContactInfo){
+				trackCourse();
+			} else {
+				alert("UT Registration Plus: Please enter contact information (bell button within the extension menu) before adding courses to your notification list, so we know where to message you. \n\nThanks! :)", "");
+			}
+		});
 	}, 0);
 });
 

@@ -527,22 +527,21 @@ input[type=number]::-webkit-outer-spin-button {
 
 }
 
+.contact_button {
+    border-radius: 7px;
+    color: rgba(255, 152, 0, 0.8);
+    margin-left: 20px;
+}
+
 .contact_info::placeholder {
     color: rgb(135, 133, 155);
 }
 
-#submit {
-    border-radius: 7px;
-    color: rgba(255, 152, 0, 0.8);
-    width: 100%;
-}
-
-#submit:focus{
+.contact_button:focus{
     outline: none;
 }
 
-
-#submit:hover{
+.contact_button:hover{
     cursor: pointer;
 }
 

@@ -159,8 +159,25 @@ $("#clear").click(function () {
 		});
 		updateAllTabsCourseList();
 	} else {
-		chrome.storage.sync.set({
-			notifications: []
+		chrome.storage.sync.get('contactInfo', function(dataOne) {
+			chrome.storage.sync.get('notifications', function(dataTwo) {
+				let storedContact = dataOne.contactInfo["uteid"];
+				let storedNotifications = dataTwo.notifications.map(course => course.unique);
+				chrome.storage.sync.set({
+					notifications: new Array()
+				});
+				let removed_info = {
+					"uteid": storedContact,
+					"courses": storedNotifications
+				};
+				fetch(Notification.db_clear_notif_hook, {
+					method: 'POST',
+					headers: {
+					  'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(removed_info)
+				});
+			});
 		});
 	}
 	$(tab).empty();
@@ -168,13 +185,22 @@ $("#clear").click(function () {
 });
 
 $("#notificationsTab").click(function () {
-	if (tab == "#courseList") {
-		$("#notificationsTab").text("Hide Notified");
-		setNotificationsList();
-	} else {
-		$("#notificationsTab").text("Show Notified");
-		setCourseList();
-	}
+	chrome.runtime.sendMessage({
+		command: "hasContactInfo",
+	}, function (response) {
+		console.log(response.hasContactInfo);
+		if(response.hasContactInfo){
+			if (tab == "#courseList") {
+				$("#notificationsTab").text("Hide Notified");
+				setNotificationsList();
+			} else {
+				$("#notificationsTab").text("Show Notified");
+				setCourseList();
+			}
+		} else {
+			alert("UT Registration Plus: Please enter contact information (bell button within the extension menu) before adding courses to your notification list, so we know where to message you. \n\nThanks! :)", "");
+		}
+	});
 });
 
 $("#RIS").click(function () {
@@ -204,7 +230,6 @@ $("#impexp").click(function () {
 	}
 });
 
-
 $("#contact").click(function () {
 	if ($("#contact>i").text() == 'close') {
 		hideContactInfoPopup();
@@ -219,16 +244,65 @@ $("#contact").click(function () {
 	}
 });
 
-$("#submit").click(function (view) {
-	chrome.storage.sync.get('contactInfo', function(data) {
-		temp_info = {
-			"email": document.getElementById("email").value,
-			"phone": document.getElementById("phone").value
+$("#contact-info-popup").submit(function (view) {
+	chrome.storage.sync.get('contactInfo', function() {
+		saved_info = {
+			"uteid": $("#uteid").val(),
+			"email": $("#email").val(),
+			"phone": $("#phone").val()
 		}
 		chrome.storage.sync.set({
-			contactInfo: temp_info
+			contactInfo: saved_info
+		});
+		fetch(Contact.db_update_hook, {
+			method: 'POST',
+			headers: {
+			  'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(saved_info)
 		});
 	});
+	view.preventDefault();
+	setTimeout(function() {
+		window.location.href="popup.html";
+	}, 300);
+});
+
+$("#removeInfo").click(function (view) {
+	let result = confirm("Opting out will result in removing all courses from your notification list as well as clearing all of your contact information to prevent further communication.\n\nAre you sure you want to opt out?");
+	if (result) {
+		chrome.storage.sync.get('contactInfo', function(dataOne) {
+			chrome.storage.sync.get('notifications', function(dataTwo) {
+				let storedContact = dataOne.contactInfo["uteid"];
+				let storedNotifications = dataTwo.notifications.map(course => course.unique);
+				chrome.storage.sync.set({
+					notifications: new Array()
+				});
+				chrome.storage.sync.set({
+					contactInfo: {
+						"uteid": "",
+						"email": "",
+						"phone": ""
+					}
+				});
+				let removed_info = {
+					"uteid": storedContact,
+					"courses": storedNotifications
+				};
+				fetch(Contact.db_optout_hook, {
+					method: 'POST',
+					headers: {
+					  'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(removed_info)
+				});
+			});
+		});
+		view.preventDefault();
+		setTimeout(function() {
+			window.location.href="popup.html";
+		}, 300);
+	}
 });
 
 $("#search").click(function () {
@@ -441,6 +515,22 @@ function handleUnsubscribe(clicked_item, curr_course) {
 				$(clicked_item).fadeOut(200);
 				can_remove = true;
 			});
+			chrome.storage.sync.get('contactInfo', function (data) {
+				let storedUTEID = data.contactInfo.uteid;
+				if (storedUTEID) {
+					let remove = {
+						"id": curr_course.unique,
+						"uteid": storedUTEID
+					};
+					fetch(Notification.db_remove_notif_hook, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(remove)
+					});
+				}
+			});
 		}
 	});
 }
@@ -536,9 +626,28 @@ function showImportExportPopup() {
 function hideContactInfoPopup() {
 	$("#contact-info-popup").addClass('hide');
 	$("#contact>i").text('notifications_none');
+	window.location.href="popup.html";
 }
 
 function showContactInfoPopup() {
+	chrome.storage.sync.get('contactInfo', function(data) {
+		let storedUTEID = data.contactInfo.uteid;
+		let storedEmail = data.contactInfo.email;
+		let storedPhone = data.contactInfo.phone;
+		if (storedUTEID || storedEmail || storedPhone) {
+			$("#saveInfo").prop("value", "Update");
+			$(".contact_button").css("margin-left", "16px");
+		}
+		if (storedUTEID.length > 0) {
+			$("#uteid").val(storedUTEID);
+		}
+		if (storedEmail.length > 0) {
+			$("#email").val(storedEmail);
+		}
+		if (storedPhone.length > 0) {
+			$("#phone").val(storedPhone);
+		}
+	});
 	$("#contact>i").text('close');
 	$("#contact-info-popup").removeClass('hide');
 }

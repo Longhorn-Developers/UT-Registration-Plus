@@ -5,9 +5,10 @@ var should_open = false;
 var waitlist_status = [];
 
 const default_options = {
-    "loadAll": true,
     "courseConflictHighlight": true,
-    "storeWaitlist": true,
+    "loadAll": true,
+    "readCourseSchedule": true,
+    "storeWaitlist": true
 }
 
 onStartup();
@@ -48,6 +49,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             break;
         case "alreadyNotified":
             alreadyNotified(request.unique, response);
+            break;
+        case "hasContactInfo":
+            hasContactInfo(response);
             break;
         case "updateCourseList":
             updateTabs();
@@ -129,19 +133,23 @@ chrome.storage.onChanged.addListener(function (changes) {
 
 function onStartup(){
     updateBadge(true);
-    loadDataBase()
-    getCurrentSemesters();
     getCurrentDepartments();
-    getWaitlistData();
-    getNotificationData();
+    getCurrentSemesters();
+    loadDataBase()
     getContactInfo()
+    getNotificationData();
+    getWaitlistData();
 }
 
 function getContactInfo() {
     chrome.storage.sync.get('contactInfo', function (data) {
-        if (!data.contactInfo) {
+        if (data.contactInfo) {
             chrome.storage.sync.set({
-                contactInfo: {}
+                contactInfo: {
+                    "uteid": "",
+                    "email": "",
+                    "phone": ""
+                }
             }, function () {
                 console.log('retrieving contact information');
             });
@@ -463,6 +471,16 @@ function contains(courses, unique) {
 
 function isSameCourse(course, unique) {
     return course.unique == unique;
+}
+
+function hasContactInfo(sendResponse) {
+    chrome.storage.sync.get('contactInfo', function (data) {
+        var contactInfo = data.contactInfo;
+        var checkCurrentInfo = (contactInfo.uteid && (contactInfo.email || phone)) ? true : false;
+        sendResponse({
+            hasContactInfo: checkCurrentInfo
+        });
+    });
 }
 
 function updateTabs() {

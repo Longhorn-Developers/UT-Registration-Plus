@@ -64,10 +64,12 @@
         </button>
         <div id="contact-info-popup" class="hide">
           <div class="flex-container">
-            <form>
+            <form id="contact-info-form">
+              <input type="text" id="uteid" class="contact_info" placeholder="UT EID: abc123" required>
               <input type="email" id="email" class="contact_info" placeholder="Email: abc@utexas.edu">
-              <input type="tel" id="phone" class="contact_info" placeholder="Phone: 1234567890" pattern="[0-9]{3}[0-9]{3}[0-9]{4}">
-              <button id="submit" class="contact_info">Submit</buttonid="submit" class="contact_info">
+              <input type="tel" id="phone" class="contact_info" placeholder="Phone: 0123456789" pattern="[0-9]{10}">
+              <input type="submit" id="saveInfo" class="contact_info contact_button" value="Save">
+              <button id="removeInfo" class="contact_info contact_button">Opt Out</button>
             </form>
           </div>
         </div>

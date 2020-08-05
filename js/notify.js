@@ -1,24 +1,31 @@
 var course_schedule = {};
 
 function catalogScrape() {
-	chrome.storage.sync.get('notifications', function(data) {
-		let course_name = "";
-		if (isIndividualCoursePage()) {
-			course_name = $("#details h2").text();
-			extractCourseData($('table'), course_name);
-		} else {
-			$('table').find('tr').each(function () {
-				if ($(this).find('td').hasClass("course_header")) {
-					course_name = $(this).find('td').text() + "";
+	chrome.runtime.sendMessage({
+		command: "getOptionsValue",
+		key: "readCourseSchedule",
+	}, function (response) {
+		if (response.value) {
+			chrome.storage.sync.get('notifications', function(data) {
+				let course_name = "";
+				if (isIndividualCoursePage()) {
+					course_name = $("#details h2").text();
+					extractCourseData($('table'), course_name);
+				} else {
+					$('table').find('tr').each(function () {
+						if ($(this).find('td').hasClass("course_header")) {
+							course_name = $(this).find('td').text() + "";
+						}
+						else if (course_name) {
+							extractCourseData($(this), course_name);
+						}
+					})
 				}
-				else if (course_name) {
-					extractCourseData($(this), course_name);
-				}
-			})
+				notifications = data.notifications;
+				notifications.forEach(course => delete course_schedule[course.unique]);
+				pushScheduleData();
+			});
 		}
-		notifications = data.notifications;
-		notifications.forEach(course => delete course_schedule[course.unique]);
-		pushScheduleData();
 	});
 }
 
@@ -41,7 +48,7 @@ function extractCourseData(row, course_name) {
 			"times": $(row).find('td[data-th="Hour"]>span').toArray().map(x => $(x).text().trim())
 		}),
 		"register": $(row).find('td[data-th="Add"] a').prop('href'),
-		"status": $(row).find('td[data-th="Status"]').text(),
+		"status": $(row).find('td[data-th="Status"]').text().toUpperCase(),
 	}
 	course_schedule[course.id] = course;
 }
@@ -76,25 +83,50 @@ function trackCourse() {
 		$("#notifyMe").val(response.value);
 		$("#snackbar").text(response.done);
 		toggleSnackbar();
-		signUpForNotifs(c.unique);
+		if (response.done.includes("Subscribed")) {
+			signUpForNotifs(c.unique);
+		} else if (response.done.includes("Unsubscribed")) {
+			removeFromNotifs(c.unique);
+		}
 	});
 }
 
 function signUpForNotifs(unique) {
-	let signUp = {};
 	chrome.storage.sync.get('contactInfo', function (data) {
         if (data.contactInfo) {
-			signUp[unique] = {
-				"email": data.contactInfo.email,
-				"phone": data.contactInfo.phone
+			let storedUTEID = data.contactInfo.uteid;
+			if (storedUTEID) {
+				let signUp = {
+					"id": unique,
+					"uteid": storedUTEID
+				};
+				fetch(Notification.db_add_notif_hook, {
+					method: 'POST',
+					headers: {
+					  'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(signUp)
+				});
 			}
-			fetch(Notification.db_push_hook, {
+        }
+    });
+}
+
+function removeFromNotifs(unique) {
+	chrome.storage.sync.get('contactInfo', function (data) {
+		let storedUTEID = data.contactInfo.uteid;
+		if (storedUTEID) {
+			let remove = {
+				"id": unique,
+				"uteid": storedUTEID
+			};
+			fetch(Notification.db_remove_notif_hook, {
 				method: 'POST',
 				headers: {
-				  'Content-Type': 'application/json'
+					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify(signUp)
+				body: JSON.stringify(remove)
 			});
-        }
+		}
     });
 }
