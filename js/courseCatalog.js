@@ -537,11 +537,10 @@ $("#myModal").on('click', '#notifyMe', function () {
 		chrome.runtime.sendMessage({
 			command: "hasContactInfo",
 		}, function (response) {
-			console.log(response.hasContactInfo);
 			if(response.hasContactInfo){
 				trackCourse();
 			} else {
-				alert("UT Registration Plus: Please enter contact information (bell button within the extension menu) before adding courses to your notification list, so we know where to message you. \n\nThanks! :)", "");
+				alert("UT Registration Plus:\n\nPlease enter your UT EID as well as one form of contact: email or phone (located at bell icon within the extension menu).\n\nThis allows us to know where to message you about courses that have been added to your notification list. Thanks! :)", "");
 			}
 		});
 	}, 0);

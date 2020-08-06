@@ -433,6 +433,11 @@ input[type=number]::-webkit-outer-spin-button {
     width: 120px;
 }
 
+.flex-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
 
 .flex-container {
     display: flex;
@@ -527,14 +532,13 @@ input[type=number]::-webkit-outer-spin-button {
 
 }
 
-.contact_button {
-    border-radius: 7px;
-    color: rgba(255, 152, 0, 0.8);
-    margin-left: 20px;
-}
-
 .contact_info::placeholder {
     color: rgb(135, 133, 155);
+}
+
+.contact_button {
+    /* border-radius: 7px; */
+    color: rgb(255, 152, 0);
 }
 
 .contact_button:focus{

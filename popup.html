@@ -63,15 +63,15 @@
           <i class="material-icons settings_icon">notifications_none</i>
         </button>
         <div id="contact-info-popup" class="hide">
-          <div class="flex-container">
-            <form id="contact-info-form">
-              <input type="text" id="uteid" class="contact_info" placeholder="UT EID: abc123" required>
-              <input type="email" id="email" class="contact_info" placeholder="Email: abc@utexas.edu">
-              <input type="tel" id="phone" class="contact_info" placeholder="Phone: 0123456789" pattern="[0-9]{10}">
+          <form id="contact-info-form">
+            <input type="text" id="uteid" class="contact_info" placeholder="UT EID: abc123" required>
+            <input type="email" id="email" class="contact_info" placeholder="Email: abc@utexas.edu">
+            <input type="tel" id="phone" class="contact_info" placeholder="Phone: 0123456789" pattern="[0-9]{10}">
+            <div class="flex-buttons">
               <input type="submit" id="saveInfo" class="contact_info contact_button" value="Save">
               <button id="removeInfo" class="contact_info contact_button">Opt Out</button>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
         <button title='Import/Export' class="settings_button import_button" id='impexp'>
           <i class="material-icons settings_icon">import_export</i>

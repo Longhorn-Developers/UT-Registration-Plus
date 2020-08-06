@@ -476,7 +476,7 @@ function isSameCourse(course, unique) {
 function hasContactInfo(sendResponse) {
     chrome.storage.sync.get('contactInfo', function (data) {
         var contactInfo = data.contactInfo;
-        var checkCurrentInfo = (contactInfo.uteid && (contactInfo.email || phone)) ? true : false;
+        var checkCurrentInfo = (contactInfo.uteid && (contactInfo.email || contactInfo.phone)) ? true : false;
         sendResponse({
             hasContactInfo: checkCurrentInfo
         });

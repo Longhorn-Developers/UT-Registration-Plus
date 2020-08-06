@@ -46,8 +46,8 @@ function setCourseList() {
 		}
 		$("#meta-metric").text(num_hours);
 	});
-	$(".meta").fadeIn(400);
-	$(tab).fadeIn(400);
+	$(".meta").fadeIn(500);
+	$(tab).fadeIn(500);
 	$("#notificationsList").hide();
 }
 
@@ -85,7 +85,7 @@ function setNotificationsList() {
 			$(tab).append(notification);
 		}
 	});
-	$(tab).fadeIn(400);
+	$(tab).fadeIn(500);
 	$("#courseList").hide();
 }
 
@@ -119,7 +119,7 @@ function updateConflicts() {
 				if (i != between.length - 1)
 					conflict_message += "<br>";
 			}
-			$(Template.Popup.conflict_message(conflict_message)).prependTo("#courseList").hide().fadeIn(200);
+			$(Template.Popup.conflict_message(conflict_message)).prependTo("#courseList").hide().fadeIn(250);
 		}
 	});
 }
@@ -188,7 +188,6 @@ $("#notificationsTab").click(function () {
 	chrome.runtime.sendMessage({
 		command: "hasContactInfo",
 	}, function (response) {
-		console.log(response.hasContactInfo);
 		if(response.hasContactInfo){
 			if (tab == "#courseList") {
 				$("#notificationsTab").text("Hide Notified");
@@ -198,7 +197,7 @@ $("#notificationsTab").click(function () {
 				setCourseList();
 			}
 		} else {
-			alert("UT Registration Plus: Please enter contact information (bell button within the extension menu) before adding courses to your notification list, so we know where to message you. \n\nThanks! :)", "");
+			alert("Please enter your UT EID as well as one form of contact: email or phone (located at bell icon within the extension menu).\n\nThis allows us to know where to message you about courses that have been added to your notification list. Thanks! :)", "");
 		}
 	});
 });
@@ -254,22 +253,28 @@ $("#contact-info-popup").submit(function (view) {
 		chrome.storage.sync.set({
 			contactInfo: saved_info
 		});
-		fetch(Contact.db_update_hook, {
-			method: 'POST',
-			headers: {
-			  'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(saved_info)
-		});
+		let checkCurrentInfo = (saved_info.uteid && (saved_info.email || saved_info.phone)) ? true : false;
+		if (checkCurrentInfo) {
+			fetch(Contact.db_update_hook, {
+				method: 'POST',
+				headers: {
+				  'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(saved_info)
+			});
+		}
 	});
+	$("#saveInfo").val("Saved!");
+	$("#saveInfo").css("color", "#4CAF50");
 	view.preventDefault();
 	setTimeout(function() {
 		window.location.href="popup.html";
-	}, 300);
+	}, 500);
 });
 
 $("#removeInfo").click(function (view) {
 	let result = confirm("Opting out will result in removing all courses from your notification list as well as clearing all of your contact information to prevent further communication.\n\nAre you sure you want to opt out?");
+	console.log(result);
 	if (result) {
 		chrome.storage.sync.get('contactInfo', function(dataOne) {
 			chrome.storage.sync.get('notifications', function(dataTwo) {
@@ -298,11 +303,13 @@ $("#removeInfo").click(function (view) {
 				});
 			});
 		});
-		view.preventDefault();
+		$("#removeInfo").text("Removed!");
+		$("#removeInfo").css("color", "#F44336");
 		setTimeout(function() {
-			window.location.href="popup.html";
-		}, 300);
-	}
+				window.location.href="popup.html";
+			}, 500);
+		}
+	view.preventDefault();
 });
 
 $("#search").click(function () {
@@ -482,7 +489,7 @@ function handleRemove(clicked_item, curr_course) {
 	$(clicked_item).find("#listRemove").click(function () {
 		if (can_remove) {
 			can_remove = false;
-			$(list).find("#conflict").fadeOut(300, function () {
+			$(list).find("#conflict").fadeOut(250, function () {
 				$(clicked_item).remove();
 			});
 			subtractHours(curr_course);
@@ -491,7 +498,7 @@ function handleRemove(clicked_item, curr_course) {
 				course: curr_course,
 				action: "remove"
 			}, () => {
-				$(clicked_item).fadeOut(200);
+				$(clicked_item).fadeOut(250);
 				if ($(list).children(':visible').length === 1)
 					showEmpty();
 				can_remove = true;
@@ -512,7 +519,7 @@ function handleUnsubscribe(clicked_item, curr_course) {
 				course: curr_course,
 				action: "unsubscribe"
 			}, () => {
-				$(clicked_item).fadeOut(200);
+				$(clicked_item).fadeOut(250);
 				can_remove = true;
 			});
 			chrome.storage.sync.get('contactInfo', function (data) {
@@ -561,9 +568,9 @@ function handleEmpty() {
 function copyButtonAnimation(copy_button) {
 	$(copy_button).find('i').text('check');
 	$(copy_button).stop(true, false).removeAttr('style').removeClass('shadow', {
-		duration: 200
+		duration: 250
 	});
-	$(copy_button).find('i').delay(400).queue(function (n) {
+	$(copy_button).find('i').delay(500).queue(function (n) {
 		$(this).text('content_copy');
 		$(this).parent().removeClass('shadow');
 		if ($(this).parent().is(":hover")) {
@@ -577,17 +584,17 @@ function toggleTimeDropdown(clicked_item) {
 	let more_info_button = $(clicked_item).find('#moreInfo');
 	let arrow = $(clicked_item).find("#arrow");
 	if ($(more_info_button).is(":hidden")) {
-		$(more_info_button).fadeIn(200);
+		$(more_info_button).fadeIn(250);
 		$(arrow).css('transform', 'rotate(90deg)');
 	} else {
-		$(more_info_button).fadeOut(200);
+		$(more_info_button).fadeOut(250);
 		$(arrow).css('transform', '');
 	}
 }
 
 function showEmpty() {
 	$(tab).hide();
-	$("#empty").fadeIn(200);
+	$("#empty").fadeIn(250);
 	$("#main").html(Text.emptyText());
 	if (tab == "#courseList") {
 		$("#meta-metric").text('0');
@@ -624,9 +631,11 @@ function showImportExportPopup() {
 }
 
 function hideContactInfoPopup() {
-	$("#contact-info-popup").addClass('hide');
-	$("#contact>i").text('notifications_none');
-	window.location.href="popup.html";
+	setTimeout(function() {
+		$("#contact-info-popup").addClass('hide');
+		$("#contact>i").text('notifications_none');
+		window.location.href="popup.html";
+	}, 500);
 }
 
 function showContactInfoPopup() {
@@ -636,10 +645,11 @@ function showContactInfoPopup() {
 		let storedPhone = data.contactInfo.phone;
 		if (storedUTEID || storedEmail || storedPhone) {
 			$("#saveInfo").prop("value", "Update");
-			$(".contact_button").css("margin-left", "16px");
 		}
 		if (storedUTEID.length > 0) {
 			$("#uteid").val(storedUTEID);
+			$("#uteid").css("color", "rgb(255, 152, 0)");
+			$("#uteid").attr("readonly", true);
 		}
 		if (storedEmail.length > 0) {
 			$("#email").val(storedEmail);
