@@ -244,34 +244,47 @@ $("#contact").click(function () {
 });
 
 $("#contact-info-popup").submit(function (view) {
-	chrome.storage.sync.get('contactInfo', function() {
-		saved_info = {
-			"uteid": $("#uteid").val(),
-			"email": $("#email").val(),
-			"phone": $("#phone").val()
-		}
-		chrome.storage.sync.set({
-			contactInfo: saved_info
-		});
-		let checkCurrentInfo = (saved_info.uteid && (saved_info.email || saved_info.phone)) ? true : false;
-		if (checkCurrentInfo) {
-			fetch(Contact.db_update_hook, {
-				method: 'POST',
-				headers: {
-				  'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(saved_info)
+	fetch(Contact.db_auth_check_UTEID_hook, {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({"uteid": $("#uteid").val()})
+	})
+	.then((response) => response.json())
+	.then(function(authorized) {
+		if (($("#saveInfo").val() == "Save" && authorized) || $("#saveInfo").val() == "Update") {
+			chrome.storage.sync.get('contactInfo', function() {
+				saved_info = {
+					"uteid": $("#uteid").val(),
+					"email": $("#email").val(),
+					"phone": $("#phone").val()
+				}
+				chrome.storage.sync.set({
+					contactInfo: saved_info
+				});
+				if (saved_info.uteid && (saved_info.email || saved_info.phone)) {
+					fetch(Contact.db_update_hook, {
+						method: 'POST',
+						headers: {
+						  'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(saved_info)
+					});
+				}
 			});
+			$("#saveInfo").val("Saved!");
+			$("#saveInfo").css("color", "#4CAF50");
+			setTimeout(function() {
+				$("#saveInfo").val("Save");
+				$("#saveInfo").css("color", "#FF9800");
+				hideContactInfoPopup();
+			}, 500);
+		} else {
+			alert("We're sorry, but it seems that this UT EID is already in use. Please double check the value you have entered.\n\nIf there still appears to be an issue, please reach out to us at UTCourseNotifications@gmail.com, so we can help you resolve the matter.")
 		}
 	});
-	$("#saveInfo").val("Saved!");
-	$("#saveInfo").css("color", "#4CAF50");
 	view.preventDefault();
-	setTimeout(function() {
-		$("#saveInfo").val("Saved!");
-		$("#saveInfo").css("color", "#FF9800");
-		hideContactInfoPopup();
-	}, 500);
 });
 
 $("#removeInfo").click(function (view) {
@@ -305,15 +318,16 @@ $("#removeInfo").click(function (view) {
 				});
 			});
 		});
+		view.preventDefault();
 		$("#removeInfo").text("Removed!");
 		$("#removeInfo").css("color", "#F44336");
 		setTimeout(function() {
+			$("#saveInfo").val("Save");
 			$("#removeInfo").text("Opt Out");
 			$("#removeInfo").css("color", "#FF9800");
 			hideContactInfoPopup();
-			}, 500);
-		}
-	view.preventDefault();
+		}, 500);
+	}
 });
 
 $("#search").click(function () {
@@ -649,6 +663,8 @@ function showContactInfoPopup() {
 		let storedPhone = data.contactInfo.phone;
 		if (storedUTEID || storedEmail || storedPhone) {
 			$("#saveInfo").prop("value", "Update");
+		} else {
+			$("#saveInfo").prop("value", "Save");
 		}
 		if (storedUTEID.length > 0) {
 			$("#uteid").val(storedUTEID);

@@ -67,6 +67,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             response({departments: departments});
             break;
         case "currentWaitlists":
+            getWaitlistData();
             response({waitlists: waitlist_status});
             break;
         case "setOpen":

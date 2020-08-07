@@ -56,6 +56,7 @@ Text.waitlist_button_text_default = "<span style='font-size:small'>Import Waitli
 Text.button_success = "Courses Saved!";
 
 class Contact{}
+Contact.db_auth_check_UTEID_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/StudentContactInfo/incoming_webhook/CheckUTEID";
 Contact.db_update_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/StudentContactInfo/incoming_webhook/UpdateStudentContact";
 Contact.db_optout_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/StudentContactInfo/incoming_webhook/OptOutStudentContact";
 
@@ -70,4 +71,4 @@ Schedule.db_pull_hook = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app
 
 class Waitlist{}
 Waitlist.db_push_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/CourseSchedule/incoming_webhook/UpdateWaitlists";
-Waitlist.db_pull_hook = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/waitlist-info-pnyrh/service/wait_aid/incoming_webhook/getDB";
+Waitlist.db_pull_hook = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/ut-registration-plus-wyzdn/service/CourseSchedule/incoming_webhook/GetWaitlistInfo";
