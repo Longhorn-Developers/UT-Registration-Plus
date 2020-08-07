@@ -197,7 +197,7 @@ $("#notificationsTab").click(function () {
 				setCourseList();
 			}
 		} else {
-			alert("Please enter your UT EID as well as one form of contact: email or phone (located at bell icon within the extension menu).\n\nThis allows us to know where to message you about courses that have been added to your notification list. Thanks! :)", "");
+			alert("UT Registration Plus:\n\nPlease click on the bell icon within the extension menu to enter your UT EID as well as one point of contact: email or phone.\n\nThis allows us to know where to message you about courses that have been added to your notification list. Thanks! :)", "");
 		}
 	});
 });
@@ -268,7 +268,9 @@ $("#contact-info-popup").submit(function (view) {
 	$("#saveInfo").css("color", "#4CAF50");
 	view.preventDefault();
 	setTimeout(function() {
-		window.location.href="popup.html";
+		$("#saveInfo").val("Saved!");
+		$("#saveInfo").css("color", "#FF9800");
+		hideContactInfoPopup();
 	}, 500);
 });
 
@@ -306,7 +308,9 @@ $("#removeInfo").click(function (view) {
 		$("#removeInfo").text("Removed!");
 		$("#removeInfo").css("color", "#F44336");
 		setTimeout(function() {
-				window.location.href="popup.html";
+			$("#removeInfo").text("Opt Out");
+			$("#removeInfo").css("color", "#FF9800");
+			hideContactInfoPopup();
 			}, 500);
 		}
 	view.preventDefault();
@@ -631,11 +635,11 @@ function showImportExportPopup() {
 }
 
 function hideContactInfoPopup() {
-	setTimeout(function() {
-		$("#contact-info-popup").addClass('hide');
-		$("#contact>i").text('notifications_none');
-		window.location.href="popup.html";
-	}, 500);
+	$("#contact>i").text('notifications_none');
+	$("#contact-info-popup").addClass('hide');
+	$('#contact-info-form').trigger("reset");
+	$("#uteid").css("color", "rgb(135, 133, 155)");
+	$("#uteid").attr("readonly", false);
 }
 
 function showContactInfoPopup() {
@@ -648,7 +652,7 @@ function showContactInfoPopup() {
 		}
 		if (storedUTEID.length > 0) {
 			$("#uteid").val(storedUTEID);
-			$("#uteid").css("color", "rgb(255, 152, 0)");
+			$("#uteid").css("color", "#FF9800");
 			$("#uteid").attr("readonly", true);
 		}
 		if (storedEmail.length > 0) {
