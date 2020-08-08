@@ -83,50 +83,50 @@ function trackCourse() {
 		$("#notifyMe").val(response.value);
 		$("#snackbar").text(response.done);
 		toggleSnackbar();
-		if (response.done.includes("Subscribed")) {
-			signUpForNotifs(c.unique);
-		} else if (response.done.includes("Unsubscribed")) {
-			removeFromNotifs(c.unique);
-		}
+		// if (response.done.includes("Subscribed")) {
+		// 	signUpForNotifs(c.unique);
+		// } else if (response.done.includes("Unsubscribed")) {
+		// 	removeFromNotifs(c.unique);
+		// }
 	});
 }
 
-function signUpForNotifs(unique) {
-	chrome.storage.sync.get('contactInfo', function (data) {
-        if (data.contactInfo) {
-			let storedUTEID = data.contactInfo.uteid;
-			if (storedUTEID) {
-				let signUp = {
-					"id": unique,
-					"uteid": storedUTEID
-				};
-				fetch(Notification.db_add_notif_hook, {
-					method: 'POST',
-					headers: {
-					  'Content-Type': 'application/json'
-					},
-					body: JSON.stringify(signUp)
-				});
-			}
-        }
-    });
-}
+// function signUpForNotifs(unique) {
+// 	chrome.storage.sync.get('contactInfo', function (data) {
+//         if (data.contactInfo) {
+// 			let storedUTEID = data.contactInfo.uteid;
+// 			if (storedUTEID) {
+// 				let signUp = {
+// 					"id": unique,
+// 					"uteid": storedUTEID
+// 				};
+// 				fetch(Notification.db_add_notif_hook, {
+// 					method: 'POST',
+// 					headers: {
+// 					  'Content-Type': 'application/json'
+// 					},
+// 					body: JSON.stringify(signUp)
+// 				});
+// 			}
+//         }
+//     });
+// }
 
-function removeFromNotifs(unique) {
-	chrome.storage.sync.get('contactInfo', function (data) {
-		let storedUTEID = data.contactInfo.uteid;
-		if (storedUTEID) {
-			let remove = {
-				"id": unique,
-				"uteid": storedUTEID
-			};
-			fetch(Notification.db_remove_notif_hook, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(remove)
-			});
-		}
-    });
-}
+// function removeFromNotifs(unique) {
+// 	chrome.storage.sync.get('contactInfo', function (data) {
+// 		let storedUTEID = data.contactInfo.uteid;
+// 		if (storedUTEID) {
+// 			let remove = {
+// 				"id": unique,
+// 				"uteid": storedUTEID
+// 			};
+// 			fetch(Notification.db_remove_notif_hook, {
+// 				method: 'POST',
+// 				headers: {
+// 					'Content-Type': 'application/json'
+// 				},
+// 				body: JSON.stringify(remove)
+// 			});
+// 		}
+//     });
+// }

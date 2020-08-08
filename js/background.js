@@ -136,15 +136,15 @@ function onStartup(){
     updateBadge(true);
     getCurrentDepartments();
     getCurrentSemesters();
-    loadDataBase()
-    getContactInfo()
+    loadDataBase();
+    getContactInfo();
     getNotificationData();
     getWaitlistData();
 }
 
 function getContactInfo() {
     chrome.storage.sync.get('contactInfo', function (data) {
-        if (data.contactInfo) {
+        if (!data.contactInfo) {
             chrome.storage.sync.set({
                 contactInfo: {
                     "uteid": "",
@@ -415,38 +415,84 @@ function alreadyContains(unique, sendResponse) {
 }
 
 function subscribe(request, sender, sendResponse) {
-    chrome.storage.sync.get('notifications', function (data) {
-        var courses = data.notifications;
-        if (!contains(courses, request.course.unique)) {
-            courses.push(request.course)
-            chrome.storage.sync.set({
-                notifications: courses
-            });
+    chrome.storage.sync.get('contactInfo', function (data) {
+        if (data.contactInfo) {
+			let storedUTEID = data.contactInfo.uteid;
+			if (storedUTEID) {
+				let signUp = {
+					"id": request.course.unique,
+					"uteid": storedUTEID
+				};
+				fetch(Notification.db_add_notif_hook, {
+					method: 'POST',
+					headers: {
+					  'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(signUp)
+                })
+                .then((response) => response.json())
+				.then(function(acknowledged) {
+					if (acknowledged) {
+						chrome.storage.sync.get('notifications', function (data) {
+                            var courses = data.notifications;
+                            if (!contains(courses, request.course.unique)) {
+                                courses.push(request.course)
+                                chrome.storage.sync.set({
+                                    notifications: courses
+                                });
+                            }
+                            sendResponse({
+                                done: "Subscribed: (" + request.course.unique + ") " + request.course.coursename,
+                                label: "Stop Notifying Me -",
+                                value: "unsubscribe"
+                            });
+                        });
+					}
+				});
+			}
         }
-        sendResponse({
-            done: "Subscribed: (" + request.course.unique + ") " + request.course.coursename,
-            label: "Stop Notifying Me -",
-            value: "unsubscribe"
-        });
     });
 }
 
 function unsubscribe(request, sender, sendResponse) {
-    chrome.storage.sync.get('notifications', function (data) {
-        var courses = data.notifications;
-        var index = 0;
-        while (index < courses.length && courses[index].unique != request.course.unique) {
-            index++;
+    chrome.storage.sync.get('contactInfo', function (data) {
+        if (data.contactInfo) {
+            let storedUTEID = data.contactInfo.uteid;
+            if (storedUTEID) {
+                let remove = {
+                    "id": request.course.unique,
+                    "uteid": storedUTEID
+                };
+                fetch(Notification.db_remove_notif_hook, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(remove)
+                })
+                .then((response) => response.json())
+                .then(function(acknowledged) {
+                    if (acknowledged) {
+                        chrome.storage.sync.get('notifications', function (data) {
+                            var courses = data.notifications;
+                            var index = 0;
+                            while (index < courses.length && courses[index].unique != request.course.unique) {
+                                index++;
+                            }
+                            courses.splice(index, 1);
+                            chrome.storage.sync.set({
+                                notifications: courses
+                            });
+                            sendResponse({
+                                done: "Unsubscribed: (" + request.course.unique + ") " + request.course.coursename,
+                                label: "Notify Me +",
+                                value: "subscribe"
+                            });
+                        });
+                    }
+                });
+            }
         }
-        courses.splice(index, 1);
-        chrome.storage.sync.set({
-            notifications: courses
-        });
-        sendResponse({
-            done: "Unsubscribed: (" + request.course.unique + ") " + request.course.coursename,
-            label: "Notify Me +",
-            value: "subscribe"
-        });
     });
 }
 
