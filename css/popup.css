@@ -537,7 +537,6 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .contact_button {
-    /* border-radius: 7px; */
     color: rgb(255, 152, 0);
 }
 

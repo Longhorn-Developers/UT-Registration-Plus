@@ -7,8 +7,8 @@ var waitlist_status = [];
 const default_options = {
     "courseConflictHighlight": true,
     "loadAll": true,
-    "readCourseSchedule": true,
-    "storeWaitlist": true
+    "readCourseSchedule": true, //allow user to opt in/out of scraping course schedule
+    "storeWaitlist": true //allow user to opt in/out of scraping waitlist data
 }
 
 onStartup();
@@ -134,14 +134,15 @@ chrome.storage.onChanged.addListener(function (changes) {
 
 function onStartup(){
     updateBadge(true);
-    getCurrentDepartments();
-    getCurrentSemesters();
     loadDataBase();
+    getCurrentSemesters();
+    getCurrentDepartments();
     getContactInfo();
     getNotificationData();
     getWaitlistData();
 }
 
+//If user has provided contact info retrieve from local storage else, initialize local storage with empty values
 function getContactInfo() {
     chrome.storage.sync.get('contactInfo', function (data) {
         if (!data.contactInfo) {
@@ -158,13 +159,14 @@ function getContactInfo() {
     });
 }
 
+//If user has opted in for notifs,retrieve from local storage. Else initialize local storage with empty array.
 function getNotificationData(){
     chrome.storage.sync.get('notifications', function (data) {
         if (!data.notifications) {
             chrome.storage.sync.set({
                 notifications: new Array()
             }, function () {
-                console.log('initial course list');
+                console.log('retrieving notifications list');
             });
         }
     });
@@ -414,7 +416,10 @@ function alreadyContains(unique, sendResponse) {
     });
 }
 
+
+//Call when user opts in for course notifs on "Notify Me" button click in course schedule modal
 function subscribe(request, sender, sendResponse) {
+    //Retrieve contact info for user
     chrome.storage.sync.get('contactInfo', function (data) {
         if (data.contactInfo) {
 			let storedUTEID = data.contactInfo.uteid;
@@ -422,7 +427,8 @@ function subscribe(request, sender, sendResponse) {
 				let signUp = {
 					"id": request.course.unique,
 					"uteid": storedUTEID
-				};
+                };
+                //Push course unique and user uteid for storage
 				fetch(Notification.db_add_notif_hook, {
 					method: 'POST',
 					headers: {
@@ -430,10 +436,12 @@ function subscribe(request, sender, sendResponse) {
 					},
 					body: JSON.stringify(signUp)
                 })
+                //Wait for database response to determine how to proceed
                 .then((response) => response.json())
 				.then(function(acknowledged) {
 					if (acknowledged) {
-						chrome.storage.sync.get('notifications', function (data) {
+                        //If DB update successful, reflect subscription locally
+                        chrome.storage.sync.get('notifications', function (data) {
                             var courses = data.notifications;
                             if (!contains(courses, request.course.unique)) {
                                 courses.push(request.course)
@@ -454,7 +462,9 @@ function subscribe(request, sender, sendResponse) {
     });
 }
 
+//Call when user selects "Stop Notifying Me" or "Unsubscribe" button in course schedule modal or popup
 function unsubscribe(request, sender, sendResponse) {
+    //Retrieve contact info for user
     chrome.storage.sync.get('contactInfo', function (data) {
         if (data.contactInfo) {
             let storedUTEID = data.contactInfo.uteid;
@@ -463,6 +473,7 @@ function unsubscribe(request, sender, sendResponse) {
                     "id": request.course.unique,
                     "uteid": storedUTEID
                 };
+                //Push course unique and user uteid for removal
                 fetch(Notification.db_remove_notif_hook, {
                     method: 'POST',
                     headers: {
@@ -470,9 +481,11 @@ function unsubscribe(request, sender, sendResponse) {
                     },
                     body: JSON.stringify(remove)
                 })
+                //Wait for database response to determine how to proceed
                 .then((response) => response.json())
                 .then(function(acknowledged) {
                     if (acknowledged) {
+                        //If DB update successful, reflect unsubscription locally
                         chrome.storage.sync.get('notifications', function (data) {
                             var courses = data.notifications;
                             var index = 0;
@@ -495,6 +508,8 @@ function unsubscribe(request, sender, sendResponse) {
         }
     });
 }
+
+/* Find if the unique is already contained within notifications*/
 
 function alreadyNotified(unique, sendResponse) {
     chrome.storage.sync.get('notifications', function (data) {
@@ -520,6 +535,7 @@ function isSameCourse(course, unique) {
     return course.unique == unique;
 }
 
+//Checking if user has provided contat info
 function hasContactInfo(sendResponse) {
     chrome.storage.sync.get('contactInfo', function (data) {
         var contactInfo = data.contactInfo;

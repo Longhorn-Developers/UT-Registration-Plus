@@ -1,5 +1,5 @@
 var courses;
-var tab = "#courseList";
+var tab = "#courseList"; //Indicates which tab of popup to display
 
 setCourseList();
 getSemesters();
@@ -31,6 +31,7 @@ function setCourseList() {
 				status,
 				datetimearr
 			} = courses[i];
+			//Style course information for popup UI list elements
 			profname = capitalizeString(profname);
 			let line = buildTimeLines(datetimearr);
 			let list_tile_color = getStatusColor(status)
@@ -40,12 +41,13 @@ function setCourseList() {
 				number
 			} = seperateCourseNameParts(coursename)
 			num_hours += parseInt(number.substring(0,1));
-
 			let list_html = Template.Popup.list_item(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
+			//Add styled list element to the current tab being viewed
 			$(tab).append(list_html);
 		}
 		$("#meta-metric").text(num_hours);
 	});
+	//Handle smooth transition for tab display
 	$(".meta").fadeIn(500);
 	$(tab).fadeIn(500);
 	$("#notificationsList").hide();
@@ -72,6 +74,7 @@ function setNotificationsList() {
 				status,
 				datetimearr
 			} = courses[i];
+			//Style course information for popup UI list elements
 			profname = capitalizeString(profname);
 			let line = buildTimeLines(datetimearr);
 			let list_tile_color = getStatusColor(status)
@@ -80,8 +83,8 @@ function setNotificationsList() {
 				department,
 				number
 			} = seperateCourseNameParts(coursename)
-
 			let notification = Template.Popup.notification(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
+			//Add styled list element to the current tab being viewed
 			$(tab).append(notification);
 		}
 	});
@@ -152,6 +155,7 @@ $(document).click(function (event) {
 	}
 });
 
+//Empty current tab's list
 $("#clear").click(function () {
 	if (tab == "#courseList") {
 		chrome.storage.sync.set({
@@ -159,6 +163,7 @@ $("#clear").click(function () {
 		});
 		updateAllTabsCourseList();
 	} else {
+		//Grab contact info and notification list to clear subscriptions
 		chrome.storage.sync.get('contactInfo', function(dataOne) {
 			chrome.storage.sync.get('notifications', function(dataTwo) {
 				let storedContact = dataOne.contactInfo["uteid"];
@@ -167,6 +172,7 @@ $("#clear").click(function () {
 					"uteid": storedContact,
 					"courses": storedNotifications
 				};
+				//Clearing user from notifications in DB.
 				fetch(Notification.db_clear_notif_hook, {
 					method: 'POST',
 					headers: {
@@ -174,6 +180,7 @@ $("#clear").click(function () {
 					},
 					body: JSON.stringify(removed_info)
 				})
+				//If DB update successful, update local storage
 				.then((response) => response.json())
 				.then(function(acknowledged) {
 					if (acknowledged) {
@@ -189,6 +196,7 @@ $("#clear").click(function () {
 	}
 });
 
+//Managaes the list shown on current tab (course schedule or notifications).
 $("#notificationsTab").click(function () {
 	chrome.runtime.sendMessage({
 		command: "hasContactInfo",
@@ -202,6 +210,7 @@ $("#notificationsTab").click(function () {
 				setCourseList();
 			}
 		} else {
+			//If user has not filled in contact info alert them to fill out before adding to notifications list.
 			alert("UT Registration Plus:\n\nPlease click on the bell icon within the extension menu to enter your UT EID as well as one point of contact: email or phone.\n\nThis allows us to know where to message you about courses that have been added to your notification list. Thanks! :)", "");
 		}
 	});
@@ -234,6 +243,7 @@ $("#impexp").click(function () {
 	}
 });
 
+//When opening contact form, hide all other popups.
 $("#contact").click(function () {
 	if ($("#contact>i").text() == 'close') {
 		hideContactInfoPopup();
@@ -248,7 +258,9 @@ $("#contact").click(function () {
 	}
 });
 
+//Activate on "Save/Update" of contact info
 $("#contact-info-popup").submit(function (view) {
+	//Check if UTEID already exists in DB
 	fetch(Contact.db_auth_check_UTEID_hook, {
 		method: 'POST',
 		headers: {
@@ -258,6 +270,7 @@ $("#contact-info-popup").submit(function (view) {
 	})
 	.then((response) => response.json())
 	.then(function(authorized) {
+		//Set UTEID as immutable for local change: If new unique UTEID and first submission of contact info, allow user to push UTEID, otherwise user must be accessing a UTEID on a non-initial submission
 		if (($("#saveInfo").val() == "Save" && authorized) || $("#saveInfo").val() == "Update") {
 			chrome.storage.sync.get('contactInfo', function() {
 				saved_info = {
@@ -265,6 +278,7 @@ $("#contact-info-popup").submit(function (view) {
 					"email": $("#email").val(),
 					"phone": $("#phone").val()
 				}
+				//Only post to DB if UTEID is sent with either email or phone.
 				if (saved_info.uteid && (saved_info.email || saved_info.phone)) {
 					fetch(Contact.db_update_hook, {
 						method: 'POST',
@@ -273,6 +287,7 @@ $("#contact-info-popup").submit(function (view) {
 						},
 						body: JSON.stringify(saved_info)
 					})
+					//If DB update successful indicate with animation confirmation.
 					.then((response) => response.json())
 					.then(function(acknowledged) {
 						if (acknowledged) {
@@ -291,24 +306,29 @@ $("#contact-info-popup").submit(function (view) {
 				}
 			});
 		} else {
+			//UTEID is already in DB and user doesn't have access on first submission
 			alert("We're sorry, but it seems that this UT EID is already in use. Please double check the value you have entered.\n\nIf there still appears to be an issue, please reach out to us at UTCourseNotifications@gmail.com, so we can help you resolve the matter.")
 		}
 	});
 	view.preventDefault();
 });
 
+//Activate on "Opt Out" of contact info
 $("#removeInfo").click(function (view) {
 	let result = confirm("Opting out will result in removing all courses from your notification list as well as clearing all of your contact information to prevent further communication.\n\nAre you sure you want to opt out?");
 	console.log(result);
+	//True if user confirms opting out
 	if (result) {
 		chrome.storage.sync.get('contactInfo', function(dataOne) {
 			chrome.storage.sync.get('notifications', function(dataTwo) {
+				//Get EID and get current notification list to remove from
 				let storedContact = dataOne.contactInfo["uteid"];
 				let storedNotifications = dataTwo.notifications.map(course => course.unique);
 				let removed_info = {
 					"uteid": storedContact,
 					"courses": storedNotifications
 				};
+				//Remove from DB
 				fetch(Contact.db_optout_hook, {
 					method: 'POST',
 					headers: {
@@ -316,6 +336,7 @@ $("#removeInfo").click(function (view) {
 					},
 					body: JSON.stringify(removed_info)
 				})
+				//If DB update successful then update locally
 				.then((response) => response.json())
 				.then(function(acknowledged) {
 					if (acknowledged) {
@@ -329,6 +350,8 @@ $("#removeInfo").click(function (view) {
 								"phone": ""
 							}
 						});
+
+						//Animate confirmation in popup
 						$("#notificationsTab").text("Show Notified");
 						$(tab).empty();
 						showEmpty();
@@ -455,12 +478,14 @@ $("#courseList").on('click', '.copy_button', function (e) {
 	copyUnique(unique);
 });
 
+//Animate notifications list and course on mouser over location.
 $("#notificationsList").on('mouseover', '.copy_button', function () {
 	$(this).addClass('shadow');
 }).on('mouseleave', '.copy_button', function () {
 	$(this).removeClass('shadow');
 });
 
+//Copy unique associated with course selected.
 $("#notificationsList").on('click', '.copy_button', function (e) {
 	e.stopPropagation();
 	copyButtonAnimation($(this));
@@ -485,6 +510,7 @@ $("#courseList").on('click', 'li', function () {
 	toggleTimeDropdown(clicked_item);
 });
 
+//When user clicks a course notifications list display necessary info and action links.
 $("#notificationsList").on('click', 'li', function () {
 	let clicked_item = $(this).closest('li');
 	let curr_course = courses[$(clicked_item).attr("id")];
@@ -546,15 +572,18 @@ function handleRemove(clicked_item, curr_course) {
 	});
 }
 
+//Activate when user clicks "Unsibscribe" from popup.
 function handleUnsubscribe(clicked_item, curr_course) {
 	$(clicked_item).find("#unsubscribe").click(function () {
 		chrome.storage.sync.get('contactInfo', function (data) {
+			//Get user UTEID and course they want to remove.
 			let storedUTEID = data.contactInfo.uteid;
 			if (storedUTEID) {
 				let remove = {
 					"id": curr_course.unique,
 					"uteid": storedUTEID
 				};
+				//Send removal to DB.
 				fetch(Notification.db_remove_notif_hook, {
 					method: 'POST',
 					headers: {
@@ -562,6 +591,7 @@ function handleUnsubscribe(clicked_item, curr_course) {
 					},
 					body: JSON.stringify(remove)
 				})
+				//If DB update successful update locally and animate for confirmation.
 				.then((response) => response.json())
 				.then(function(acknowledged) {
 					if (acknowledged) {
@@ -671,6 +701,7 @@ function showImportExportPopup() {
 	$("#import-export-popup").removeClass('hide');
 }
 
+//Clear form when hidden updating and resetting values accordingly (make UTEID mutable in-case of opt out).
 function hideContactInfoPopup() {
 	$("#contact>i").text('notifications_none');
 	$("#contact-info-popup").addClass('hide');
@@ -679,6 +710,7 @@ function hideContactInfoPopup() {
 	$("#uteid").attr("readonly", false);
 }
 
+//Populate contact info form if user already has stored values (ensure UTEID is immutable).
 function showContactInfoPopup() {
 	chrome.storage.sync.get('contactInfo', function(data) {
 		let storedUTEID = data.contactInfo.uteid;

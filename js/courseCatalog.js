@@ -1,8 +1,8 @@
 console.log(`UT Registration Plus is running on this page: ${window.location.href}`);
 var curr_course = {};
-var waitlist_data = [];
-var semester_code = new URL(window.location.href).pathname.split('/')[4];
 var done_loading = true;
+var semester_code = new URL(window.location.href).pathname.split('/')[4];
+var waitlist_data = [];
 
 var next = $("#next_nav_link");
 if (next) {
@@ -196,7 +196,7 @@ function updateWaitlistData(start = 0){
 				if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
 					let unique = $(this).find('td[data-th="Unique"]').text();
 					let from_waitlist = waitlist_data.find(function(course){
-						// console.log(course.id);
+						console.log(course.id);
 						return course.id == unique;
 					});
 					let spot = from_waitlist ? from_waitlist.wait : "";
@@ -395,6 +395,7 @@ function openDialog(course_info, res) {
 		$("#saveCourse").text(button_text);
 		$("#saveCourse").val(button_val);
 	});
+	//initial text on the "notify me button"
 	chrome.runtime.sendMessage({
 		command: "alreadyNotified",
 		unique: course_info["unique"]
@@ -532,10 +533,11 @@ function loadNextPages() {
 	});
 }
 
+//Allow user to add courses to notifs ONLY if contact info has been provided. Else alert
 $("#myModal").on('click', '#notifyMe', function () {
 	setTimeout(function () {
 		chrome.runtime.sendMessage({
-			command: "hasContactInfo",
+			command: "hasContactInfo",c
 		}, function (response) {
 			if(response.hasContactInfo){
 				trackCourse();

@@ -1,13 +1,18 @@
+//Associate unique id's with course catalog info in dictionary to push to DB and for quick lookup
 var course_schedule = {};
 
+//Course schedule web scrape pushing fields to DB
 function catalogScrape() {
+	//Check if user has allowed for web scrape in settings
 	chrome.runtime.sendMessage({
 		command: "getOptionsValue",
 		key: "readCourseSchedule",
 	}, function (response) {
 		if (response.value) {
+			//Determine if individual course page or on full catalog and scrape/store accordingly
 			chrome.storage.sync.get('notifications', function(data) {
 				let course_name = "";
+				notifications = data.notifications;
 				if (isIndividualCoursePage()) {
 					course_name = $("#details h2").text();
 					extractCourseData($('table'), course_name);
@@ -21,7 +26,7 @@ function catalogScrape() {
 						}
 					})
 				}
-				notifications = data.notifications;
+				//If course on notification list prevent pushing to DB (allows fairness to students who see course update first on catalog), else push to DB
 				notifications.forEach(course => delete course_schedule[course.unique]);
 				pushScheduleData();
 			});
@@ -29,6 +34,7 @@ function catalogScrape() {
 	});
 }
 
+//Format course time field for DB
 function displayTime(unformattedTime) {
 	let formattedTime = "";
 	for (i = 0; i < unformattedTime.days.length; i++) {
@@ -37,6 +43,7 @@ function displayTime(unformattedTime) {
 	return formattedTime.slice(0, -1);
 }
 
+//Build course object to store in course_schedule dictionary (unique:{course obj}).
 function extractCourseData(row, course_name) {
 	let course = {
 		"id": $(row).find('td[data-th="Unique"]').text(),
@@ -53,6 +60,7 @@ function extractCourseData(row, course_name) {
 	course_schedule[course.id] = course;
 }
 
+//POST course schedule to DB
 function pushScheduleData(){
 	fetch(Schedule.db_push_hook, {
 		method: 'POST',
@@ -63,6 +71,7 @@ function pushScheduleData(){
 	});
 }
 
+//Call when a user interacts with a course from the course schedule; grab the info for the current course they selected, and sendMessage to background to check if it's a subscribe or unsubscribe action -> handle accordingly with DB and local storage
 function trackCourse() {
 	let {
 		full_name,
@@ -83,50 +92,5 @@ function trackCourse() {
 		$("#notifyMe").val(response.value);
 		$("#snackbar").text(response.done);
 		toggleSnackbar();
-		// if (response.done.includes("Subscribed")) {
-		// 	signUpForNotifs(c.unique);
-		// } else if (response.done.includes("Unsubscribed")) {
-		// 	removeFromNotifs(c.unique);
-		// }
 	});
 }
-
-// function signUpForNotifs(unique) {
-// 	chrome.storage.sync.get('contactInfo', function (data) {
-//         if (data.contactInfo) {
-// 			let storedUTEID = data.contactInfo.uteid;
-// 			if (storedUTEID) {
-// 				let signUp = {
-// 					"id": unique,
-// 					"uteid": storedUTEID
-// 				};
-// 				fetch(Notification.db_add_notif_hook, {
-// 					method: 'POST',
-// 					headers: {
-// 					  'Content-Type': 'application/json'
-// 					},
-// 					body: JSON.stringify(signUp)
-// 				});
-// 			}
-//         }
-//     });
-// }
-
-// function removeFromNotifs(unique) {
-// 	chrome.storage.sync.get('contactInfo', function (data) {
-// 		let storedUTEID = data.contactInfo.uteid;
-// 		if (storedUTEID) {
-// 			let remove = {
-// 				"id": unique,
-// 				"uteid": storedUTEID
-// 			};
-// 			fetch(Notification.db_remove_notif_hook, {
-// 				method: 'POST',
-// 				headers: {
-// 					'Content-Type': 'application/json'
-// 				},
-// 				body: JSON.stringify(remove)
-// 			});
-// 		}
-//     });
-// }
