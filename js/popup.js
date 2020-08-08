@@ -211,7 +211,7 @@ $("#notificationsTab").click(function () {
 			}
 		} else {
 			//If user has not filled in contact info alert them to fill out before adding to notifications list.
-			alert("UT Registration Plus:\n\nPlease click on the bell icon within the extension menu to enter your UT EID as well as one point of contact: email or phone.\n\nThis allows us to know where to message you about courses that have been added to your notification list. Thanks! :)", "");
+			alert("Please click on the bell icon within the extension menu to enter your UT EID as well as one point of contact: email or phone.\n\nThis allows us to know where to message you about courses that have been added to your notification list. Thanks! :)", "");
 		}
 	});
 });
