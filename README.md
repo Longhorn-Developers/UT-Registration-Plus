@@ -33,5 +33,5 @@ This extension tries to streamline most of the unnecessary steps and headaches o
 <img src="https://lh3.googleusercontent.com/bbey8OGOTtJWUaHGVIU5wewbWg6X6s-gjD15RwXHhvgH_9kax2mE4bcrjem_iZGH-q5z6NT7g94=w640-h400-e365">
 </p>
 
-
+# 2.0 coming soon....
 
