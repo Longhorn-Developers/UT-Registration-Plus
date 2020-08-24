@@ -4,10 +4,10 @@ var departments = [];
 var should_open = false;
 
 const default_options = {
-    "loadAll": true,
-    "courseConflictHighlight": true,
-    "storeWaitlist": true,
-}
+    loadAll: true,
+    courseConflictHighlight: true,
+    storeWaitlist: true,
+};
 
 onStartup();
 
@@ -44,18 +44,18 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             executeQuery(request.query, response);
             break;
         case "currentSemesters":
-            response({ semesters: current_semesters});
+            response({ semesters: current_semesters });
             getCurrentSemesters();
             break;
         case "currentDepartments":
-            response({departments: departments});
+            response({ departments: departments });
             break;
         case "setOpen":
             should_open = true;
-            chrome.tabs.create({ url: request.url});
+            chrome.tabs.create({ url: request.url });
             break;
         case "shouldOpen":
-            response({open : should_open});
+            response({ open: should_open });
             should_open = false;
             break;
         case "getOptionsValue":
@@ -72,7 +72,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             xhr.onload = () => {
                 console.log(xhr.responseUrl);
                 response(xhr.responseText);
-            }
+            };
             xhr.onerror = () => response(xhr.statusText);
             if (method == "POST") {
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -87,13 +87,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
 chrome.runtime.onInstalled.addListener(function (details) {
     if (details.reason == "install") {
         setDefaultOptions();
-        chrome.storage.sync.get('savedCourses', function (data) {
+        chrome.storage.sync.get("savedCourses", function (data) {
             if (!data.savedCourses) {
-                chrome.storage.sync.set({
-                    savedCourses: new Array()
-                }, function () {
-                    console.log('initial course list');
-                });
+                chrome.storage.sync.set(
+                    {
+                        savedCourses: new Array(),
+                    },
+                    function () {
+                        console.log("initial course list");
+                    }
+                );
             }
         });
     } else if (details.reason == "update") {
@@ -102,163 +105,169 @@ chrome.runtime.onInstalled.addListener(function (details) {
     }
 });
 
-
 chrome.storage.onChanged.addListener(function (changes) {
     for (key in changes) {
         console.log(changes);
-        if (key === 'savedCourses') {
+        if (key === "savedCourses") {
             updateBadge(false, changes.savedCourses.newValue);
         }
     }
 });
 
-function onStartup(){
+function onStartup() {
     updateBadge(true);
-    loadDataBase()
+    loadDataBase();
     getCurrentSemesters();
     getCurrentDepartments();
 }
 
-function getOptionsValue(key, sendResponse){
-    chrome.storage.sync.get('options', function (data) {
+function getOptionsValue(key, sendResponse) {
+    chrome.storage.sync.get("options", function (data) {
         if (!data.options) {
             setDefaultOptions();
         } else {
             sendResponse({
-                'value': data.options[key]
+                value: data.options[key],
             });
         }
     });
 }
 
-function setOptionsValue(key, value, sendResponse){
-    chrome.storage.sync.get('options', function (data) {
+function setOptionsValue(key, value, sendResponse) {
+    chrome.storage.sync.get("options", function (data) {
         let new_options = data.options;
         if (!data.options) {
             setDefaultOptions();
             new_options = default_options;
         }
         new_options[key] = value;
-        chrome.storage.sync.set({
-            options: new_options
-        }, function () {
-            console.log(key);
-            console.log(new_options);
-            sendResponse({
-                'value': new_options[key]
-            });
-        });
+        chrome.storage.sync.set(
+            {
+                options: new_options,
+            },
+            function () {
+                console.log(key);
+                console.log(new_options);
+                sendResponse({
+                    value: new_options[key],
+                });
+            }
+        );
     });
 }
 
-function setDefaultOptions(){
-    chrome.storage.sync.get('options', function (data) {
+function setDefaultOptions() {
+    chrome.storage.sync.get("options", function (data) {
         if (!data.options) {
-            chrome.storage.sync.set({
-                options: default_options
-            }, function () {
-                console.log('default options:');
-                console.log(default_options);
-            });
-        }
-    });
-}
-
-function getCurrentSemesters(){
-    $.get('https://registrar.utexas.edu/schedules', function (response) {
-        if (response) {
-            htmlToNode(response).find('.callout2>ul>li>a').each(function (i) {
-                if (i < Popup.num_semesters) {
-                    let sem_name = $(this).text().trim();
-                    if (sem_name != "Course Schedule Archive") {
-                        // $("#semesters").append(`<option>${sem_name}</option>`);
-                        current_semesters[sem_name] = "code";
-                        $.get($(this).attr('href'), function (response) {
-                            if (response) {
-                                let response_node = htmlToNode(response);
-                                let name = response_node.find(".page-title").text().substring(17).trim();
-                                response_node.find('.gobutton>a').each(function () {
-                                    let link = $(this).attr('href');
-                                    var sem_num = link.substring(link.lastIndexOf('/') + 1).trim();
-                                    if(current_semesters[name] != sem_num){
-                                        current_semesters[name] = sem_num;
-                                    }
-                                });
-                            }
-                        });
-                    }
+            chrome.storage.sync.set(
+                {
+                    options: default_options,
+                },
+                function () {
+                    console.log("default options:");
+                    console.log(default_options);
                 }
-            });
+            );
         }
     });
 }
 
-
-function getCurrentDepartments(){
-  $.get('https://catalog.utexas.edu/undergraduate/appendix-b/', function(response){
-    if(response){;
-      departments = [];
-      htmlToNode(response).find('.column1').each(function(i){
-        if(i > 1){
-          let abv = $(this).text();
-          departments.push(abv);
+function getCurrentSemesters() {
+    $.get("https://registrar.utexas.edu/schedules", function (response) {
+        if (response) {
+            htmlToNode(response)
+                .find(".callout2>ul>li>a")
+                .each(function (i) {
+                    if (i < Popup.num_semesters) {
+                        let sem_name = $(this).text().trim();
+                        if (sem_name != "Course Schedule Archive") {
+                            // $("#semesters").append(`<option>${sem_name}</option>`);
+                            current_semesters[sem_name] = "code";
+                            $.get($(this).attr("href"), function (response) {
+                                if (response) {
+                                    let response_node = htmlToNode(response);
+                                    let name = response_node.find(".page-title").text().substring(17).trim();
+                                    response_node.find(".gobutton>a").each(function () {
+                                        let link = $(this).attr("href");
+                                        var sem_num = link.substring(link.lastIndexOf("/") + 1).trim();
+                                        if (current_semesters[name] != sem_num) {
+                                            current_semesters[name] = sem_num;
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
         }
-      });
-    }
-  });
+    });
+}
+
+function getCurrentDepartments() {
+    $.get("https://catalog.utexas.edu/undergraduate/appendix-b/", function (response) {
+        if (response) {
+            departments = [];
+            htmlToNode(response)
+                .find(".column1")
+                .each(function (i) {
+                    if (i > 1) {
+                        let abv = $(this).text();
+                        departments.push(abv);
+                    }
+                });
+        }
+    });
 }
 
 function updateBadge(first, new_changes) {
     if (new_changes) {
         updateBadgeText(first, new_changes);
     } else {
-        chrome.storage.sync.get('savedCourses', function (data) {
+        chrome.storage.sync.get("savedCourses", function (data) {
             let courses = data.savedCourses;
             updateBadgeText(first, courses);
         });
     }
 }
 
-
 function updateBadgeText(first, courses) {
     let badge_text = courses.length > 0 ? `${courses.length}` : "";
     let flash_time = !first ? 200 : 0;
     chrome.browserAction.setBadgeText({
-        text: badge_text
+        text: badge_text,
     });
     if (!first) {
         chrome.browserAction.setBadgeBackgroundColor({
-            color: Colors.badge_flash
+            color: Colors.badge_flash,
         });
     }
     setTimeout(function () {
         chrome.browserAction.setBadgeBackgroundColor({
-            color: Colors.badge_default
+            color: Colors.badge_default,
         });
     }, flash_time);
 }
 
 /* Find all the conflicts in the courses and send them out/ if there is even a conflict*/
 function checkConflicts(sendResponse) {
-    chrome.storage.sync.get('savedCourses', function (data) {
+    chrome.storage.sync.get("savedCourses", function (data) {
         var conflicts = [];
         var courses = data.savedCourses;
         for (let i = 0; i < courses.length; i++) {
             for (let j = i + 1; j < courses.length; j++) {
                 let course_a = courses[i];
                 let course_b = courses[j];
-                if (isConflict(course_a.datetimearr, course_b.datetimearr))
-                    conflicts.push([course_a, course_b]);
+                if (isConflict(course_a.datetimearr, course_b.datetimearr)) conflicts.push([course_a, course_b]);
             }
         }
         if (conflicts.length == 0) {
             sendResponse({
-                isConflict: false
+                isConflict: false,
             });
         } else {
             sendResponse({
                 isConflict: true,
-                between: conflicts
+                between: conflicts,
             });
         }
     });
@@ -266,7 +275,7 @@ function checkConflicts(sendResponse) {
 
 /* Find if the course at unique and with currdatearr is contained in the saved courses and if it conflicts with any other courses*/
 function isSingleConflict(currdatearr, unique, sendResponse) {
-    chrome.storage.sync.get('savedCourses', function (data) {
+    chrome.storage.sync.get("savedCourses", function (data) {
         var courses = data.savedCourses;
         var conflict_list = [];
         var conflict = false;
@@ -284,13 +293,10 @@ function isSingleConflict(currdatearr, unique, sendResponse) {
         sendResponse({
             isConflict: conflict,
             alreadyContains: contains,
-            conflictList: conflict_list
+            conflictList: conflict_list,
         });
     });
 }
-
-
-
 
 /* Check if conflict between two date-time-arrs*/
 function isConflict(adtarr, bdtarr) {
@@ -312,25 +318,25 @@ function isConflict(adtarr, bdtarr) {
 
 /* Add the requested course to the storage*/
 function add(request, sender, sendResponse) {
-    chrome.storage.sync.get('savedCourses', function (data) {
+    chrome.storage.sync.get("savedCourses", function (data) {
         var courses = data.savedCourses;
         if (!contains(courses, request.course.unique)) {
-            courses.push(request.course)
+            courses.push(request.course);
             console.log(courses);
             chrome.storage.sync.set({
-                savedCourses: courses
+                savedCourses: courses,
             });
         }
         sendResponse({
             done: "Added: (" + request.course.unique + ") " + request.course.coursename,
             label: "Remove Course -",
-            value: "remove"
+            value: "remove",
         });
     });
 }
 /* Find and Remove the requested course from the storage*/
 function remove(request, sender, sendResponse) {
-    chrome.storage.sync.get('savedCourses', function (data) {
+    chrome.storage.sync.get("savedCourses", function (data) {
         var courses = data.savedCourses;
         console.log(courses);
         var index = 0;
@@ -339,22 +345,22 @@ function remove(request, sender, sendResponse) {
         }
         courses.splice(index, 1);
         chrome.storage.sync.set({
-            savedCourses: courses
+            savedCourses: courses,
         });
         sendResponse({
             done: "Removed: (" + request.course.unique + ") " + request.course.coursename,
             label: "Add Course +",
-            value: "add"
+            value: "add",
         });
     });
 }
 
 /* Find if the unique is already contained within the storage*/
 function alreadyContains(unique, sendResponse) {
-    chrome.storage.sync.get('savedCourses', function (data) {
+    chrome.storage.sync.get("savedCourses", function (data) {
         var courses = data.savedCourses;
         sendResponse({
-            alreadyContains: contains(courses, unique)
+            alreadyContains: contains(courses, unique),
         });
     });
 }
@@ -371,14 +377,14 @@ function contains(courses, unique) {
 }
 
 function isSameCourse(course, unique) {
-    return course.unique == unique
+    return course.unique == unique;
 }
 
 function updateTabs() {
     chrome.tabs.query({}, function (tabs) {
         for (var i = 0; i < tabs.length; i++) {
             chrome.tabs.sendMessage(tabs[i].id, {
-                command: "updateCourseList"
+                command: "updateCourseList",
             });
         }
     });
@@ -388,9 +394,8 @@ const UPDATE_INTERVAL = 1000 * 60 * 16;
 setInterval(updateStatus, UPDATE_INTERVAL);
 // updateStatus();
 
-
 function updateStatus(sendResponse) {
-    chrome.storage.sync.get('savedCourses', function (data) {
+    chrome.storage.sync.get("savedCourses", function (data) {
         var courses = data.savedCourses;
         var no_change = true;
         for (let i = 0; i < courses.length; i++) {
@@ -403,37 +408,34 @@ function updateStatus(sendResponse) {
                     success: function (result) {
                         if (result) {
                             console.log(result);
-                            var object = $('<div/>').html(result).contents();
+                            var object = $("<div/>").html(result).contents();
                             let new_status = object.find('[data-th="Status"]').text();
                             let register_link = object.find('td[data-th="Add"] a');
-                            if (register_link)
-                                register_link = register_link.attr('href');
-                            var haschanged = (new_status == old_status && register_link == old_link);
-                            if (!haschanged)
-                                console.log(c.unique + ' updated from ' + old_status + " to " + new_status + " and " + old_link + " to " + register_link);
+                            if (register_link) register_link = register_link.attr("href");
+                            var haschanged = new_status == old_status && register_link == old_link;
+                            if (!haschanged) console.log(c.unique + " updated from " + old_status + " to " + new_status + " and " + old_link + " to " + register_link);
                             no_change &= haschanged;
                             c.registerlink = register_link;
                             c.status = new_status;
                         }
-                    }
+                    },
                 });
             } catch (e) {
                 console.log(e);
-                console.log('Not logged into UT Coursebook. Could not update class statuses.');
+                console.log("Not logged into UT Coursebook. Could not update class statuses.");
             }
         }
         if (!no_change) {
             chrome.storage.sync.set({
-                savedCourses: courses
+                savedCourses: courses,
             });
-            console.log('updated status');
+            console.log("updated status");
         }
     });
 }
 
-
 function executeQuery(query, sendResponse) {
-    console.log(grades)
+    console.log(grades);
     var res = grades.exec(query)[0];
     sendResponse({
         data: res,
@@ -443,7 +445,7 @@ function executeQuery(query, sendResponse) {
 /* Load the database*/
 function loadDataBase() {
     sql = window.SQL;
-    loadBinaryFile('grades.db', function (data) {
+    loadBinaryFile("grades.db", function (data) {
         var sqldb = new SQL.Database(data);
         grades = sqldb;
     });
@@ -460,4 +462,4 @@ function loadBinaryFile(path, success) {
         success(arr.join(""));
     };
     xhr.send();
-};
+}

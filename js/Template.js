@@ -1,4 +1,4 @@
-class Template{}
+class Template {}
 
 Template.Main = class {
     static modal() {
@@ -37,12 +37,12 @@ Template.Main = class {
                             </div>
                         </div>
                     </div>
-                </div>`
+                </div>`;
     }
     static extension_button() {
-        return `<td data-th="Plus"><input type="image" class="distButton" id="distButton" width="20" height="20" src='${chrome.extension.getURL('images/disticon.png')}'/></td>`
+        return `<td data-th="Plus"><input type="image" class="distButton" id="distButton" width="20" height="20" src='${chrome.extension.getURL("images/disticon.png")}'/></td>`;
     }
-}
+};
 Template.Catalog = class {
     static loading() {
         return `<div style="text-align:center">
@@ -52,11 +52,11 @@ Template.Catalog = class {
                         <h1 id="retrylabel"style="color: #F44336;display:none;">Failed to Load Courses</h1>
                         <br>
                         <button class=material-button id="retry" style="background: #F44336;display:none;">Retry</button>
-                </div>`
+                </div>`;
     }
-}
+};
 Template.UTPlanner = class {
-    static modal(){
+    static modal() {
         return `<div class=modal id=myModal>
                     <div class=modal-content>
                     <span class=close>×</span>
@@ -83,25 +83,19 @@ Template.UTPlanner = class {
                             </div>
                         </div>
                     </div>
-                </div>`
+                </div>`;
     }
-}
+};
 Template.Calendar = class {
     static line(line) {
-        let {
-            days,
-            start_time,
-            end_time,
-            location_link,
-            location_full
-        } = line;
+        let { days, start_time, end_time, location_link, location_full } = line;
         return `<p class='time' style='font-size:large;'>
                     <span style='display:inline-block;'>${days}:</span>
                     <span style='margin-left:10px;display:inline-block;text-align:center;'>${start_time} to ${end_time}</span>
                     <span style='float:right;display:inline-block;text-align:right;width: 25%;'>
                         <a target='_blank' style='color:#3c87a3;text-decoration:none;'href='${location_link}'>${location_full}</a>
                     </span>
-                </p>`
+                </p>`;
     }
     static modal() {
         return `<div id="myModal" class="modal">
@@ -121,9 +115,9 @@ Template.Calendar = class {
                             <button id="remove" class="matbut" style="font-size:medium;margin:10px;background: #FF0000;">Remove</button>
                         </div>
                     </div>
-                </div>`
+                </div>`;
     }
-}
+};
 Template.Popup = class {
     static list_item(i, list_tile_color, unique, department, number, profname, list_sub_color, line) {
         return `<li id='${i}' class='course_list_item'>
@@ -150,26 +144,20 @@ Template.Popup = class {
     }
 
     static conflict_message(conflict_message) {
-        return `<p id='conflict' class='conflict_message'>${conflict_message}</>`
+        return `<p id='conflict' class='conflict_message'>${conflict_message}</>`;
     }
 
     static line(line) {
-        let {
-            days,
-            start_time,
-            end_time,
-            location_link,
-            location_full
-        } = line;
+        let { days, start_time, end_time, location_link, location_full } = line;
 
         return `<span class='time_line_days'>${days}:</span>
                 <span class='time_line_hours'>${start_time} to ${end_time}</span>
                 <span class='time_line_location'>
                     <a target='_blank' class= 'time_line_location_link' href='${location_link}'>${location_full}</a>
                 </span>
-                <br>`
+                <br>`;
     }
-}
+};
 Template.Import = class {
     static import_button() {
         return `<button class='material-button' id='import' style='margin:15px 0px;'>${Text.button_text_default}</button><br>`;
@@ -179,16 +167,15 @@ Template.Import = class {
         return `<button class='material-button' id='import_waitlist' style='margin:0px'>${Text.waitlist_button_text_default}</button><br>`;
     }
 
-    static store_waitlist_message(){
-        return `<h1 id="nextlabel"style="color: #FF9800;display:none;"></h1>`
+    static store_waitlist_message() {
+        return `<h1 id="nextlabel"style="color: #FF9800;display:none;"></h1>`;
     }
-
-}
+};
 
 Template.Options = class {
-    static options_row(key, enabled){
-        let button_text = enabled ?  "Turn Off" : "Turn On";
-        let button_color = enabled ?  Colors.closed  : Colors.open;
+    static options_row(key, enabled) {
+        let button_text = enabled ? "Turn Off" : "Turn On";
+        let button_color = enabled ? Colors.closed : Colors.open;
         let label_text = capitalizeString(key.replace(/([A-Z]+)*([A-Z][a-z])/g, "$1 $2"));
         return `<h2 style="padding: 5px 16px 5px 16px; font-weight: normal;display: inline-block;text-align:left;">
                     ${label_text}
@@ -196,7 +183,14 @@ Template.Options = class {
                 <button id="${key}" value=${enabled} class="material-button" style="display:inline-block;font-size:medium; float:right; background:${button_color}">
                     ${button_text}
                 </button>
-                <br>`
-
+                <br>`;
     }
-}
+
+    static contributor_card(username, name, image_url, profile_url) {
+        return `<div class='card contributor-card' id="${username}" data-url="${profile_url}">
+                    <img class='contributor-image' src="${image_url}"></img>
+                    ${name ? `<p class='contributor-name'>${name}</p>` : ""}
+                    <p class='contributor-username'>${username}</p>
+                </div>`;
+    }
+};
