@@ -30,7 +30,7 @@ function setCourseList() {
 				department,
 				number
 			} = seperateCourseNameParts(coursename)
-			num_hours += parseInt(number.substring(0,1));
+			num_hours += parseInt(number.substring(0, 1));
 
 			let list_html = Template.Popup.list_item(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
 			$("#courseList").append(list_html);
@@ -202,16 +202,22 @@ $('#export-class').click(function () {
 	});
 });
 
-function openSearch(semester, department, level) {
-	var link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semester}/results/?fos_fl=${department}&level=${level}&search_type_main=FIELD`
-	chrome.tabs.create({ url: link});
+function openSearch(semester, department, level, courseCode) {
+	var link = "";
+	if (courseCode) {
+		link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semester}/results/?search_type_main=COURSE&fos_cn=${department}&course_number=${courseCode}`
+	} else {
+		link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semester}/results/?fos_fl=${department}&level=${level}&search_type_main=FIELD`;
+	}
+	chrome.tabs.create({ url: link });
 }
 
 $("#search-class").click(() => {
 	let semester = $("#semesters").find(":selected").val();
 	let department = $("#department").find(":selected").val();
 	let level = $("#level").find(":selected").val();
-	openSearch(semester, department, level);
+	let courseCode = $("#courseCode").val();
+	openSearch(semester, department, level, courseCode);
 });
 
 $("#options_button").click(function () {
@@ -263,7 +269,7 @@ function handleRegister(clicked_item, curr_course) {
 	let register_color = can_not_register ? Colors.closed :
 		status.includes("waitlisted") ? Colors.waitlisted : Colors.open;
 
-	if(!status){
+	if (!status) {
 		register_text = "No Status";
 		register_color = Colors.no_status;
 	}
@@ -303,11 +309,11 @@ function handleRemove(clicked_item, curr_course) {
 }
 
 
-function subtractHours(curr_course){
+function subtractHours(curr_course) {
 	let curr_total_hours = parseInt($("#meta-metric").text());
 	let curr_course_number = seperateCourseNameParts(curr_course.coursename).number;
-	let curr_individual_hours = parseInt(curr_course_number.substring(0,1));
-	$("#meta-metric").text(curr_total_hours-curr_individual_hours);
+	let curr_individual_hours = parseInt(curr_course_number.substring(0, 1));
+	$("#meta-metric").text(curr_total_hours - curr_individual_hours);
 
 }
 
@@ -392,10 +398,10 @@ function showImportExportPopup() {
 function getSemesters() {
 	chrome.runtime.sendMessage({
 		command: "currentSemesters"
-	}, function(response){
+	}, function (response) {
 		let { semesters } = response;
 		let semester_names = Object.keys(semesters);
-		for(let i = 0; i<semester_names.length;i++){
+		for (let i = 0; i < semester_names.length; i++) {
 			let name = semester_names[i];
 			$("#semesters").append(`<option value='${semesters[name]}'>${name}</option>`);
 		}
@@ -405,10 +411,10 @@ function getSemesters() {
 function getDepartments() {
 	chrome.runtime.sendMessage({
 		command: "currentDepartments"
-	}, function(response){
+	}, function (response) {
 		let { departments } = response;
 		console.log(departments);
-		for(let i = 0; i<departments.length; i++){
+		for (let i = 0; i < departments.length; i++) {
 			let abv = departments[i];
 			$("#department").append(`<option value='${abv}'>${abv}</option>`);
 		}
