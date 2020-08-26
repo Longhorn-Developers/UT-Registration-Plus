@@ -1,8 +1,10 @@
-var grades;
+console.log(`UT Registration Plus background page: ${window.location.href}`);
+var grades; // caching the grades database in memory for faster queries
 var current_semesters = {};
 var departments = [];
-var should_open = false;
+var should_open = false; // toggled flag for automatically opening popup on new pages when 'more info' hit
 
+// these are the default options that the extension currently supports
 const default_options = {
     loadAll: true,
     courseConflictHighlight: true,
@@ -10,6 +12,13 @@ const default_options = {
 };
 
 onStartup();
+
+function onStartup() {
+    updateBadge(true);
+    loadDataBase();
+    getCurrentSemesters();
+    getCurrentDepartments();
+}
 
 /* Handle messages and their commands from content and popup scripts*/
 chrome.runtime.onMessage.addListener(function (request, sender, response) {
@@ -89,38 +98,27 @@ chrome.runtime.onInstalled.addListener(function (details) {
         setDefaultOptions();
         chrome.storage.sync.get("savedCourses", function (data) {
             if (!data.savedCourses) {
-                chrome.storage.sync.set(
-                    {
-                        savedCourses: new Array(),
-                    },
-                    function () {
-                        console.log("initial course list");
-                    }
-                );
+                chrome.storage.sync.set({
+                    savedCourses: [],
+                });
             }
         });
     } else if (details.reason == "update") {
-        console.log("updated");
+        // if there's been an update, call setDefaultOptions in case their settings have gotten wiped
         setDefaultOptions();
+        console.log("updated");
     }
 });
 
 chrome.storage.onChanged.addListener(function (changes) {
     for (key in changes) {
-        console.log(changes);
         if (key === "savedCourses") {
-            updateBadge(false, changes.savedCourses.newValue);
+            updateBadge(false, changes.savedCourses.newValue); // update the extension popup badge whenever the savedCourses have been changed
         }
     }
 });
 
-function onStartup() {
-    updateBadge(true);
-    loadDataBase();
-    getCurrentSemesters();
-    getCurrentDepartments();
-}
-
+// get the value of an option if it exists
 function getOptionsValue(key, sendResponse) {
     chrome.storage.sync.get("options", function (data) {
         if (!data.options) {
@@ -133,10 +131,12 @@ function getOptionsValue(key, sendResponse) {
     });
 }
 
+// set the value of an option if it exists
 function setOptionsValue(key, value, sendResponse) {
     chrome.storage.sync.get("options", function (data) {
         let new_options = data.options;
         if (!data.options) {
+            // if there are no options set, set the defaults
             setDefaultOptions();
             new_options = default_options;
         }
@@ -146,8 +146,6 @@ function setOptionsValue(key, value, sendResponse) {
                 options: new_options,
             },
             function () {
-                console.log(key);
-                console.log(new_options);
                 sendResponse({
                     value: new_options[key],
                 });
@@ -156,6 +154,7 @@ function setOptionsValue(key, value, sendResponse) {
     });
 }
 
+// set the default options if the options haven't been set before
 function setDefaultOptions() {
     chrome.storage.sync.get("options", function (data) {
         if (!data.options) {
@@ -164,20 +163,21 @@ function setDefaultOptions() {
                     options: default_options,
                 },
                 function () {
-                    console.log("default options:");
-                    console.log(default_options);
+                    console.log("default options:", default_options);
                 }
             );
         }
     });
 }
 
+// scrape the registrar schedules page for caching the current active semesters
 function getCurrentSemesters() {
     $.get("https://registrar.utexas.edu/schedules", function (response) {
         if (response) {
             htmlToNode(response)
                 .find(".callout2>ul>li>a")
                 .each(function (i) {
+                    // only show as many semesters as we want to display
                     if (i < Popup.num_semesters) {
                         let sem_name = $(this).text().trim();
                         if (sem_name != "Course Schedule Archive") {
@@ -203,14 +203,14 @@ function getCurrentSemesters() {
     });
 }
 
+// use the utexas review api for getting the list of departments
 function getCurrentDepartments() {
     $.get("https://www.utexasreview.com/api/get_major", function (response) {
         if (response) {
-            console.log("getCurrentDepartments -> response", response);
             let { majors } = response;
             let indices = Object.keys(majors);
             let new_departments = [];
-            for(let i = 0; i<indices.length; i++){
+            for (let i = 0; i < indices.length; i++) {
                 new_departments.push(majors[i].abr);
             }
             departments = new_departments;
@@ -218,6 +218,7 @@ function getCurrentDepartments() {
     });
 }
 
+// update the badge text to reflect the new changes
 function updateBadge(first, new_changes) {
     if (new_changes) {
         updateBadgeText(first, new_changes);
@@ -229,6 +230,7 @@ function updateBadge(first, new_changes) {
     }
 }
 
+// update the badge text to show the number of courses that have been saved by the user
 function updateBadgeText(first, courses) {
     let badge_text = courses.length > 0 ? `${courses.length}` : "";
     let flash_time = !first ? 200 : 0;
@@ -236,6 +238,7 @@ function updateBadgeText(first, courses) {
         text: badge_text,
     });
     if (!first) {
+        // if isn't the first install of the extension, flash the badge to bring attention to it
         chrome.browserAction.setBadgeBackgroundColor({
             color: Colors.badge_flash,
         });
@@ -259,16 +262,10 @@ function checkConflicts(sendResponse) {
                 if (isConflict(course_a.datetimearr, course_b.datetimearr)) conflicts.push([course_a, course_b]);
             }
         }
-        if (conflicts.length == 0) {
-            sendResponse({
-                isConflict: false,
-            });
-        } else {
-            sendResponse({
-                isConflict: true,
-                between: conflicts,
-            });
-        }
+        sendResponse({
+            isConflict: conflicts.length === 0,
+            between: conflicts.length ? conflicts : undefined,
+        });
     });
 }
 
@@ -364,6 +361,7 @@ function alreadyContains(unique, sendResponse) {
     });
 }
 
+// find if a course with the current unique number exists in the user's saved courses
 function contains(courses, unique) {
     var i = 0;
     while (i < courses.length) {
@@ -375,10 +373,12 @@ function contains(courses, unique) {
     return false;
 }
 
+// does it have the same unique number as provided
 function isSameCourse(course, unique) {
     return course.unique == unique;
 }
 
+// send a message to every tab open to updateit's course list (and thus recalculate its conflicts highlighting)
 function updateTabs() {
     chrome.tabs.query({}, function (tabs) {
         for (var i = 0; i < tabs.length; i++) {
@@ -389,52 +389,52 @@ function updateTabs() {
     });
 }
 
-const UPDATE_INTERVAL = 1000 * 60 * 16;
-setInterval(updateStatus, UPDATE_INTERVAL);
-// updateStatus();
+// const UPDATE_INTERVAL = 1000 * 60 * 16;
+// setInterval(updateStatus, UPDATE_INTERVAL);
+// // updateStatus();
 
-function updateStatus(sendResponse) {
-    chrome.storage.sync.get("savedCourses", function (data) {
-        var courses = data.savedCourses;
-        var no_change = true;
-        for (let i = 0; i < courses.length; i++) {
-            try {
-                let c = courses[i];
-                let old_status = c.status;
-                let old_link = c.link;
-                $.ajax({
-                    url: old_link,
-                    success: function (result) {
-                        if (result) {
-                            console.log(result);
-                            var object = $("<div/>").html(result).contents();
-                            let new_status = object.find('[data-th="Status"]').text();
-                            let register_link = object.find('td[data-th="Add"] a');
-                            if (register_link) register_link = register_link.attr("href");
-                            var haschanged = new_status == old_status && register_link == old_link;
-                            if (!haschanged) console.log(c.unique + " updated from " + old_status + " to " + new_status + " and " + old_link + " to " + register_link);
-                            no_change &= haschanged;
-                            c.registerlink = register_link;
-                            c.status = new_status;
-                        }
-                    },
-                });
-            } catch (e) {
-                console.log(e);
-                console.log("Not logged into UT Coursebook. Could not update class statuses.");
-            }
-        }
-        if (!no_change) {
-            chrome.storage.sync.set({
-                savedCourses: courses,
-            });
-            console.log("updated status");
-        }
-    });
-}
+// function updateStatus(sendResponse) {
+//     chrome.storage.sync.get("savedCourses", function (data) {
+//         var courses = data.savedCourses;
+//         var no_change = true;
+//         for (let i = 0; i < courses.length; i++) {
+//             try {
+//                 let c = courses[i];
+//                 let old_status = c.status;
+//                 let old_link = c.link;
+//                 $.ajax({
+//                     url: old_link,
+//                     success: function (result) {
+//                         if (result) {
+//                             console.log(result);
+//                             var object = $("<div/>").html(result).contents();
+//                             let new_status = object.find('[data-th="Status"]').text();
+//                             let register_link = object.find('td[data-th="Add"] a');
+//                             if (register_link) register_link = register_link.attr("href");
+//                             var haschanged = new_status == old_status && register_link == old_link;
+//                             if (!haschanged) console.log(c.unique + " updated from " + old_status + " to " + new_status + " and " + old_link + " to " + register_link);
+//                             no_change &= haschanged;
+//                             c.registerlink = register_link;
+//                             c.status = new_status;
+//                         }
+//                     },
+//                 });
+//             } catch (e) {
+//                 console.log(e);
+//                 console.log("Not logged into UT Coursebook. Could not update class statuses.");
+//             }
+//         }
+//         if (!no_change) {
+//             chrome.storage.sync.set({
+//                 savedCourses: courses,
+//             });
+//             console.log("updated status");
+//         }
+//     });
+// }
 
+// execute a query on the grades database
 function executeQuery(query, sendResponse) {
-    console.log(grades);
     var res = grades.exec(query)[0];
     sendResponse({
         data: res,
