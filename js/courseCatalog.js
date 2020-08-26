@@ -537,7 +537,7 @@ function loadNextPages() {
 $("#myModal").on('click', '#notifyMe', function () {
 	setTimeout(function () {
 		chrome.runtime.sendMessage({
-			command: "hasContactInfo",c
+			command: "hasContactInfo",
 		}, function (response) {
 			if(response.hasContactInfo){
 				trackCourse();
