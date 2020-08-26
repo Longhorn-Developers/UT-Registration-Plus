@@ -204,17 +204,16 @@ function getCurrentSemesters() {
 }
 
 function getCurrentDepartments() {
-    $.get("https://catalog.utexas.edu/undergraduate/appendix-b/", function (response) {
+    $.get("https://www.utexasreview.com/api/get_major", function (response) {
         if (response) {
-            departments = [];
-            htmlToNode(response)
-                .find(".column1")
-                .each(function (i) {
-                    if (i > 1) {
-                        let abv = $(this).text();
-                        departments.push(abv);
-                    }
-                });
+            console.log("getCurrentDepartments -> response", response);
+            let { majors } = response;
+            let indices = Object.keys(majors);
+            let new_departments = [];
+            for(let i = 0; i<indices.length; i++){
+                new_departments.push(majors[i].abr);
+            }
+            departments = new_departments;
         }
     });
 }
