@@ -8,7 +8,7 @@ Template.Main = class {
                     <div class=card>
                             <div class=cardcontainer>
                             <h2 class=title id="title">Computer Fluency (C S 302)</h2>
-                            <h2 class=profname id="profname">with Bruce Porter</h2>
+                            <h2 class=profname id="profname">with <a id="professor_link">Bruce Porter</a></h2>
                             <div id="topbuttons" class=topbuttons>
                                     <button class=material-button id="rateMyProf" style="background: #4CAF50;"> RMP </button>
                                     <button class=material-button id="eCIS" style="background: #CDDC39;"> eCIS </button>

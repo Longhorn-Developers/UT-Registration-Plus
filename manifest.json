@@ -4,7 +4,8 @@
     "version": "1.2.2.6",
     "options_page": "options.html",
     "description": "Improves the course registration process at the University of Texas at Austin!",
-    "permissions": ["tabs",
+    "permissions": [
+        "tabs",
         "declarativeContent",
         "storage",
         "*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*",
@@ -13,30 +14,49 @@
         "*://*.registrar.utexas.edu/schedules/*",
         "*://*.login.utexas.edu/login/*"
     ],
-    "content_scripts": [{
-        "css": ["css/styles.css"],
-        "js": ["js/config.js", "js/lib/moment.min.js", "js/lib/highcharts.js", "js/lib/jquery-3.3.1.min.js", "js/lib/jquery.initialize.min.js", "js/util.js",
-            "js/Template.js", "js/courseCatalog.js"
-        ],
-        "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
-    }, {
-        "css": ["css/styles.css"],
-        "js": ["js/config.js", "js/lib/moment.min.js", "js/lib/highcharts.js", "js/lib/jquery-3.3.1.min.js", "js/lib/jquery.initialize.min.js", "js/util.js",
-            "js/Template.js", "js/utPlanner.js"
-        ],
-        "matches": ["https://utexas.collegescheduler.com/*"]
-    }, {
-        "css": ["css/styles.css"],
-        "js": ["js/config.js", "js/lib/moment.min.js", "js/lib/highcharts.js", "js/lib/jquery-3.3.1.min.js", "js/Template.js", "js/util.js", "js/import.js"],
-        "matches": ["https://utdirect.utexas.edu/registrar/waitlist/wl_see_my_waitlists.WBX", "https://utdirect.utexas.edu/registration/classlist.WBX*"]
-    }],
-    "web_accessible_resources": [
-        "grades.db", "images/disticon.png"
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "admin@instok.app"
+        }
+    },
+    "content_scripts": [
+        {
+            "css": ["css/styles.css"],
+            "js": [
+                "js/config.js",
+                "js/lib/moment.min.js",
+                "js/lib/highcharts.js",
+                "js/lib/jquery-3.3.1.min.js",
+                "js/lib/jquery.initialize.min.js",
+                "js/util.js",
+                "js/Template.js",
+                "js/courseCatalog.js"
+            ],
+            "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
+        },
+        {
+            "css": ["css/styles.css"],
+            "js": [
+                "js/config.js",
+                "js/lib/moment.min.js",
+                "js/lib/highcharts.js",
+                "js/lib/jquery-3.3.1.min.js",
+                "js/lib/jquery.initialize.min.js",
+                "js/util.js",
+                "js/Template.js",
+                "js/utPlanner.js"
+            ],
+            "matches": ["https://utexas.collegescheduler.com/*"]
+        },
+        {
+            "css": ["css/styles.css"],
+            "js": ["js/config.js", "js/lib/moment.min.js", "js/lib/highcharts.js", "js/lib/jquery-3.3.1.min.js", "js/Template.js", "js/util.js", "js/import.js"],
+            "matches": ["https://utdirect.utexas.edu/registrar/waitlist/wl_see_my_waitlists.WBX", "https://utdirect.utexas.edu/registration/classlist.WBX*"]
+        }
     ],
+    "web_accessible_resources": ["grades.db", "images/disticon.png"],
     "background": {
-        "scripts": ["js/lib/jquery-3.3.1.min.js", "js/lib/sql-memory-growth.js", "js/lib/moment.min.js", "js/config.js", "js/util.js",
-            "js/background.js"
-        ],
+        "scripts": ["js/lib/jquery-3.3.1.min.js", "js/lib/sql-memory-growth.js", "js/lib/moment.min.js", "js/config.js", "js/util.js", "js/background.js"],
         "persistent": true
     },
     "browser_action": {
