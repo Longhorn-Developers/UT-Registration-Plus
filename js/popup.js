@@ -1,246 +1,422 @@
 var courses;
-// get the courses from storage
-chrome.storage.sync.get('savedCourses', function (data) {
-	//find, build, and show the messages for the conflicts in the saved courses
-	chrome.runtime.sendMessage({
-		command: "checkConflicts"
-	}, function (response) {
-		var isConflicted = [];
-		if (response.isConflict) {
-			var between = response.between;
-			var text = "";
-			for (var i = 0; i < between.length; i++) {
-				text += "CONFLICT: " + getSimpleName(between[i][0].coursename, between[i][0].unique) + " and " + getSimpleName(between[i][1].coursename, between[i][1].unique);
-				isConflicted.push(between[i][0].unique);
-				isConflicted.push(between[i][1].unique);
-				if (i != between.length - 1) {
-					text += "<br>";
-				}
-			}
-			$("#courseList").prepend("<p style='font-size:small; font-weight:bold; color:red; margin:5px 5px 5px 10px'>" + text + "</>");
-		}
-	});
-	courses = data.savedCourses;
-	if (courses.length != 0) {
-		$("#empty").hide();
-	}
-	// build and append the course list element
-	for (var i = 0; i < courses.length; i++) {
-		var color;
-		status = courses[i].status;
-		if (status.includes("open")) {
-			color = "#4CAF50";
-		} else if (status.includes("waitlisted")) {
-			color = "#FF9800"
-		} else if (status.includes("closed") || status.includes("cancelled")) {
-			color = "#FF5722";
-		}
-		var department = courses[i].coursename.substring(0, courses[i].coursename.search(/\d/) - 2);
-		var course_nbr = courses[i].coursename.substring(courses[i].coursename.search(/\d/), courses[i].coursename.indexOf(" ", courses[i].coursename.search(/\d/)));
-		var profname = prettifyName(courses[i].profname);
-		if (profname == "") {
-			profname = "Undecided Professor";
-		}
-		var listhtml = "<li id='" + i + "'style='padding: 0px 5px 5px 5px; overflow-y: auto;max-height:400px;'><div class='card'><div class='container' style='background:" + color + "''><h4 class='truncate' style='color:white;margin:5px; display:inline-block;font-size:large;'><b>" + department + " " + course_nbr + "<span style='font-size:medium'>" + " with </span><span style='font-size:medium'>" + profname + " (" + courses[i].unique + ")" + "</span></b></h4><p id='arrow' style='float:right;font-size:small;display:inline-block;margin-top:10px;color:white;'>&#9658;</p></div></div><div id='moreInfo' style='display: none;'><p style='font-weight:bold;padding:10px;margin:0px 5px 0px 15px;font-size:small;background-color:#FFCDD2;'>" + makeLine(i) + "</p><div id='infoButtons' style='border-radius:0px;'><button class='matbut' id='listRemove'style='float:right;background:#F44336; margin:5px;'>Remove</button><button class='matbut' id='register' style='float:right;background:#4CAF50; margin:5px;'>Register</button><button class='matbut' id='listMoreInfo' style='float:right;background:#2196F3; margin:5px;'>More Info</button></div></div></li>";
-		$("#courseList").append(listhtml);
-	}
-});
 
-/* prettify the name for the conflict messages*/
-function getSimpleName(coursename, unique) {
-	var department = coursename.substring(0, coursename.search(/\d/) - 2);
-	var course_nbr = coursename.substring(coursename.search(/\d/), coursename.indexOf(" ", coursename.search(/\d/)));
-	return department + " " + course_nbr + " (" + unique + ")";
+setCourseList();
+getSemesters();
+getDepartments();
+
+var can_remove = true;
+
+function setCourseList() {
+    $("#courseList").empty();
+    chrome.storage.sync.get("savedCourses", function (data) {
+        updateConflicts();
+        courses = data.savedCourses;
+        handleEmpty();
+        let num_hours = 0;
+        // build and append the course list element
+        for (var i = 0; i < courses.length; i++) {
+            let { coursename, unique, profname, status, datetimearr } = courses[i];
+            profname = capitalizeString(profname);
+            let line = buildTimeLines(datetimearr);
+            let list_tile_color = getStatusColor(status);
+            let list_sub_color = getStatusColor(status, true);
+            let { department, number } = seperateCourseNameParts(coursename);
+            num_hours += parseInt(number.substring(0, 1));
+
+            let list_html = Template.Popup.list_item(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
+            $("#courseList").append(list_html);
+        }
+        $("#meta-metric").text(num_hours);
+    });
 }
 
-/* Format the Professor Name */
-function prettifyName(profname) {
-	return profname.replace(/\w\S*/g, function (txt) {
-		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-	});
+/* convert from the dtarr and maek the time lines*/
+function buildTimeLines(datetimearr) {
+    let lines = convertDateTimeArrToLine(datetimearr);
+    let output = "";
+    if (lines.length == 0) {
+        output = "<span style='font-size:medium;'>This class has no meeting times.</span>";
+    } else {
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
+            output += Template.Popup.line(line);
+        }
+    }
+    return output;
 }
 
 /* Update the conflict messages */
 function updateConflicts() {
-	chrome.runtime.sendMessage({
-		command: "checkConflicts"
-	}, function (response) {
-		var isConflicted = [];
-		if (response.isConflict) {
-			var between = response.between;
-			var text = "";
-			for (var i = 0; i < between.length; i++) {
-				text += "CONFLICT: " + getSimpleName(between[i][0].coursename, between[i][0].unique) + " and " + getSimpleName(between[i][1].coursename, between[i][1].unique);
-				isConflicted.push(between[i][0].unique);
-				isConflicted.push(between[i][1].unique);
-				if (i != between.length - 1) {
-					text += "<br>";
-				}
-			}
-			$("#courseList").prepend("<p style='font-size:small; font-weight:bold; color:red; margin:5px 5px 5px 10px'>" + text + "</>");
-		}
-	});
+    chrome.runtime.sendMessage(
+        {
+            command: "checkConflicts",
+        },
+        function (response) {
+            if (response.isConflict) {
+                var between = response.between;
+                let conflict_message = "";
+                for (var i = 0; i < between.length; i++) {
+                    let courseA = between[i][0];
+                    let courseB = between[i][1];
+                    conflict_message += `CONFLICT: ${formatShortenedCourseName(courseA)} and ${formatShortenedCourseName(courseB)}`;
+                    if (i != between.length - 1) conflict_message += "<br>";
+                }
+                $(Template.Popup.conflict_message(conflict_message)).prependTo("#courseList").hide().fadeIn(200);
+            }
+        }
+    );
 }
 
-/* Handle the button clicks */
-$(document).ready(function () {
-	$("#courseList li").click(function () {
-		$(this).find("#listMoreInfo").click(function () {
-			window.open(courses[$(this).closest("li").attr("id")].link);
-		});
-		let status = courses[$(this).closest("li").attr("id")].status;
-		let registerlink = courses[$(this).closest("li").attr("id")].registerlink;
-		if (status.includes("closed") || status.includes("cancelled") || !status || !registerlink) {
-			$(this).find("#register").text("Can't Register").css("background-color", "#FF5722");
-		} else {
-			if (status.includes("waitlisted")) {
-				$(this).find("#register").text("Join Waitlist").css("background-color", "#FF9800");
-			} else {
-				$(this).find("#register").text("Register").css("background-color", "#4CAF50");
-			}
-			$(this).find("#register").click(function () {
-				chrome.tabs.query({
-					currentWindow: true,
-					active: true
-				}, function (tab) {
-					chrome.tabs.update(tab.id, {
-						url: registerlink
-					});
-				});
-			})
-		}
-		/* clear the conflict messages, then remove the course and updateConflicts. update the tabs*/
-		$(this).find("#listRemove").click(function () {
-			var thisForm = this;
-			$(thisForm).closest("ul").find(">p").remove();
-			chrome.runtime.sendMessage({
-				command: "courseStorage",
-				course: courses[$(thisForm).closest("li").attr("id")],
-				action: "remove"
-			}, function (response) {
-				$(thisForm).closest("li").fadeOut(200);
-				if ($(thisForm).closest("ul").children(':visible').length === 1) {
-					$("#courseList").fadeOut(300, function () {
-						$("#empty").fadeIn(200);
-					});
-				}
-				updateConflicts();
-				chrome.tabs.query({}, function (tabs) {
-					for (var i = 0; i < tabs.length; i++) {
-						chrome.tabs.sendMessage(tabs[i].id, {
-							command: "updateCourseList"
-						});
-					}
-				});
-			});
-		});
-		/* Show the times popout and more info options*/
-		if ($(this).find("#moreInfo").is(":hidden")) {
-			$(this).find("#moreInfo").fadeIn(200);
-			$(this).find('#arrow').css('transform', 'rotate(90deg)');
+/* prettify the name for the conflict messages*/
+function formatShortenedCourseName(course) {
+    let { number, department } = seperateCourseNameParts(course.coursename);
+    return `${department} ${number} (${course.unique})`;
+}
 
-		} else {
-			$(this).find("#moreInfo").fadeOut(200);
-			$(this).find('#arrow').css('transform', '');
+$(document).click(function (event) {
+    $target = $(event.target);
 
-		}
-	});
-	$("#clear").click(function () {
-		clear();
-	});
-	$("#schedule").click(function () {
-		chrome.tabs.create({
-			'url': 'https://registrar.utexas.edu/schedules'
-		});
-	});
-	$("#open").click(function () {
-		chrome.tabs.create({
-			'url': "options.html"
-		});
-	});
-	$("#calendar").click(function () {
-		chrome.tabs.create({
-			'url': "calendar.html"
-		});
-	});
+    // If we're not clicking on search button or search popup, and popup is visible, hide it
+    if (!$target.closest("#search").length && !$target.closest("#search-popup").length && $("#search-popup").is(":visible")) {
+        hideSearchPopup();
+    }
+
+    // If we're not clicking on import/export button or imp/exp popup, and popup is visible, hide it
+    if (!$target.closest("#impexp").length && !$target.closest("#import-export-popup").length && $("#import-export-popup").is(":visible")) {
+        hideImportExportPopup();
+    }
 });
 
-/* convert from the dtarr and maek the time lines*/
-function makeLine(index) {
-	var datetimearr = courses[index].datetimearr;
-	//converted times back
-	var dtmap = new Map([]);
-	for (var i = 0; i < datetimearr.length; i++) {
-		datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm"]).format("h:mm a");
-		datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm"]).format("h:mm a");
-	}
-	for (var i = 0; i < datetimearr.length; i++) {
-		if (dtmap.has(String(datetimearr[i][1]))) {
-			dtmap.set(String(datetimearr[i][1]), dtmap.get(String(datetimearr[i][1])) + datetimearr[i][0]);
-		} else {
-			dtmap.set(String(datetimearr[i][1]), datetimearr[i][0]);
-		}
-	}
-	var output = "";
-	var timearr = Array.from(dtmap.keys());
-	var dayarr = Array.from(dtmap.values());
+$("#clear").click(function () {
+    chrome.storage.sync.set({
+        savedCourses: [],
+    });
+    $("#courseList").empty();
+    updateAllTabsCourseList();
+    showEmpty();
+});
 
-	if (timearr.length == 0) {
-		output = "<span style='font-size:medium;'>This class has no meeting times.</span>"
-	} else {
-		for (var i = 0; i < dayarr.length; i++) {
-			var place = findLoc(dayarr[i], timearr[i], datetimearr);
-			var building = place.substring(0, place.search(/\d/) - 1);
-			if (building == "") {
-				building = "Undecided Location";
-			}
-			output += `<span style='display:inline-block;width: 20%;'>${dayarr[i]}:</span><span style='margin-left:10px;display:inline-block;width: 50%;text-align:center;'>${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}</span><span style='float:right;display:inline-block;text-align:right;width: 25%;'><a target='_blank' style='color:#3c87a3;text-decoration:none;'href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span><br>`;
-		}
-	}
-	return output;
+$("#RIS").click(function () {
+    chrome.tabs.create({
+        url: "https://utdirect.utexas.edu/registrar/ris.WBX",
+    });
+});
+
+$("#calendar").click(function () {
+    chrome.tabs.create({
+        url: "calendar.html",
+    });
+});
+
+$("#impexp").click(function () {
+    if ($("#impexp>i").text() == "close") {
+        hideImportExportPopup();
+    } else {
+        if ($("#search>i").text() == "close") {
+            hideSearchPopup();
+        }
+        showImportExportPopup();
+    }
+});
+
+$("#search").click(function () {
+    if ($("#search>i").text() == "close") {
+        hideSearchPopup();
+    } else {
+        if ($("#impexp>i").text() == "close") {
+            hideImportExportPopup();
+        }
+        showSearchPopup();
+    }
+});
+
+$("#import-class").click(function () {
+    $("#import_input").click();
+    console.log("back to improting");
+});
+
+function isImportedValid(imported_courses) {
+    return imported_courses && imported_courses.length && (imported_courses.length == 0 || validateCourses(imported_courses));
 }
 
+$("#import_input").change(function (e) {
+    console.log("hello");
+    var files = e.target.files;
+    var reader = new FileReader();
+    reader.onload = function () {
+        try {
+            var imported_courses = JSON.parse(this.result);
+            if (isImportedValid(imported_courses)) {
+                chrome.storage.sync.set({
+                    savedCourses: imported_courses,
+                });
+                updateAllTabsCourseList();
+                setCourseList();
+                hideImportExportPopup();
+                $("#import_input").val("");
+            } else {
+                Alert("There was an error.");
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    reader.readAsText(files[0]);
+});
 
-//find the location of a class given its days and timearrs.
-function findLoc(day, timearr, datetimearr) {
-	for (let i = 0; i < datetimearr.length; i++) {
-		var dtl = datetimearr[i];
-		// console.log(dtl[1]);
-		// console.log(timearr);
-		if (day.includes(dtl[0])) {
-			if (JSON.stringify(timearr) == JSON.stringify(fixDtl1(dtl[1]))) {
-				return dtl[2];
-			}
-		}
-	}
+function exportCourses(url) {
+    var exportlink = document.createElement("a");
+    exportlink.setAttribute("href", url);
+    exportlink.setAttribute("download", "my_courses.json");
+    exportlink.click();
 }
 
-function fixDtl1(dtl1) {
-	let output = "";
-	for (let i = 0; i < dtl1.length; i++) {
-		output += dtl1[i];
-		if (i != dtl1.length - 1) {
-			output += ",";
-		}
-	}
-	return output;
+function createBlob(export_courses) {
+    return new Blob([JSON.stringify(export_courses, null, 4)], {
+        type: "octet/stream",
+    });
 }
 
+$("#export-class").click(function () {
+    chrome.storage.sync.get("savedCourses", function (data) {
+        let export_courses = data.savedCourses;
+        if (export_courses.length > 0) {
+            let url = window.URL.createObjectURL(createBlob(export_courses));
+            exportCourses(url);
+        } else {
+            alert("No Saved Courses to Export.");
+        }
+        hideImportExportPopup();
+    });
+});
 
-/*Clear the list and the storage of courses*/
-function clear() {
-	chrome.storage.sync.set({
-		savedCourses: []
-	});
-	chrome.tabs.query({}, function (tabs) {
-		for (var i = 0; i < tabs.length; i++) {
-			chrome.tabs.sendMessage(tabs[i].id, {
-				command: "updateCourseList"
-			});
-		}
-	});
-	console.log("cleared");
-	$("#courseList").fadeOut(300, function () {
-		$("#empty").fadeIn(200);
-	});
+function openSearch(semester, department, level, courseCode) {
+    var link = "";
+    if (courseCode) {
+        link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semester}/results/?search_type_main=COURSE&fos_cn=${department}&course_number=${courseCode}`;
+    } else {
+        link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semester}/results/?fos_fl=${department}&level=${level}&search_type_main=FIELD`;
+    }
+    chrome.tabs.create({ url: link });
+}
+
+$("#search-class").click(() => {
+    let semester = $("#semesters").find(":selected").val();
+    let department = $("#department").find(":selected").val();
+    let level = $("#level").find(":selected").val();
+    let courseCode = $("#courseCode").val();
+    openSearch(semester, department, level, courseCode);
+});
+
+$("#options_button").click(function () {
+    chrome.tabs.create({
+        url: "options.html",
+    });
+});
+
+$("#courseList")
+    .on("mouseover", ".copy_button", function () {
+        $(this).addClass("shadow");
+    })
+    .on("mouseleave", ".copy_button", function () {
+        $(this).removeClass("shadow");
+    });
+
+$("#courseList").on("click", ".copy_button", function (e) {
+    e.stopPropagation();
+    copyButtonAnimation($(this));
+    let unique = $(this).val();
+    copyUnique(unique);
+});
+
+function copyUnique(unique) {
+    var temp = $("<input>");
+    $("body").append(temp);
+    temp.val(unique).select();
+    document.execCommand("copy");
+    temp.remove();
+}
+
+$("#courseList").on("click", "li", function () {
+    let clicked_item = $(this).closest("li");
+    let curr_course = courses[$(clicked_item).attr("id")];
+    handleMoreInfo(clicked_item, curr_course);
+    handleRegister(clicked_item, curr_course);
+    handleRemove(clicked_item, curr_course);
+    toggleTimeDropdown(clicked_item);
+});
+
+function handleRegister(clicked_item, curr_course) {
+    let { status, registerlink } = curr_course;
+    let register_button = $(clicked_item).find("#register");
+    let can_not_register = canNotRegister(status, registerlink);
+    let register_text = can_not_register ? "Can't Register" : status.includes("waitlisted") ? "Join Waitlist" : "Register";
+    let register_color = can_not_register ? Colors.closed : status.includes("waitlisted") ? Colors.waitlisted : Colors.open;
+
+    if (!status) {
+        register_text = "No Status";
+        register_color = Colors.no_status;
+    }
+
+    $(register_button).text(register_text).css("background-color", register_color);
+
+    if (!can_not_register) {
+        $(register_button).click(function () {
+            setCurrentTabUrl(registerlink);
+        });
+    }
+}
+
+function handleRemove(clicked_item, curr_course) {
+    let list = $(clicked_item).closest("ul");
+    $(clicked_item)
+        .find("#listRemove")
+        .click(function () {
+            if (can_remove) {
+                can_remove = false;
+                $(list)
+                    .find("#conflict")
+                    .fadeOut(300, function () {
+                        $(clicked_item).remove();
+                    });
+                subtractHours(curr_course);
+                chrome.runtime.sendMessage(
+                    {
+                        command: "courseStorage",
+                        course: curr_course,
+                        action: "remove",
+                    },
+                    () => {
+                        $(clicked_item).fadeOut(200);
+                        if ($(list).children(":visible").length === 1) showEmpty();
+                        can_remove = true;
+                        updateConflicts();
+                        updateAllTabsCourseList();
+                    }
+                );
+            }
+        });
+}
+
+function subtractHours(curr_course) {
+    let curr_total_hours = parseInt($("#meta-metric").text());
+    let curr_course_number = seperateCourseNameParts(curr_course.coursename).number;
+    let curr_individual_hours = parseInt(curr_course_number.substring(0, 1));
+    $("#meta-metric").text(curr_total_hours - curr_individual_hours);
+}
+
+function handleMoreInfo(clicked_item, curr_course) {
+    $(clicked_item)
+        .find("#listMoreInfo")
+        .click(function () {
+            openMoreInfoWithOpenModal(curr_course.link);
+        });
+}
+
+function handleEmpty() {
+    if (courses.length != 0) {
+        $("#empty").hide();
+        $("#courseList").show();
+    } else {
+        showEmpty();
+    }
+}
+
+function copyButtonAnimation(copy_button) {
+    $(copy_button).find("i").text("check");
+    $(copy_button).stop(true, false).removeAttr("style").removeClass("shadow", {
+        duration: 200,
+    });
+    $(copy_button)
+        .find("i")
+        .delay(400)
+        .queue(function (n) {
+            $(this).text("content_copy");
+            $(this).parent().removeClass("shadow");
+            if ($(this).parent().is(":hover")) {
+                $(this).parent().addClass("shadow");
+            }
+            n();
+        });
+}
+
+function toggleTimeDropdown(clicked_item) {
+    let more_info_button = $(clicked_item).find("#moreInfo");
+    let arrow = $(clicked_item).find("#arrow");
+    if ($(more_info_button).is(":hidden")) {
+        $(more_info_button).fadeIn(200);
+        $(arrow).css("transform", "rotate(90deg)");
+    } else {
+        $(more_info_button).fadeOut(200);
+        $(arrow).css("transform", "");
+    }
+}
+
+function showEmpty() {
+    $("#courseList").hide();
+    $("#empty").fadeIn(200);
+    $("#main").html(Text.emptyText());
+    $("#meta-metric").text("0");
+}
+
+function hideSearchPopup() {
+    $("#search>i").text("search");
+    $("#semcon").hide();
+    $("#depcon").hide();
+    $("#semesters").hide();
+    $("#levcon").hide();
+    $("#search-popup").addClass("hide");
+}
+
+function showSearchPopup() {
+    $("#search>i").text("close");
+    $("#class_id_input").show();
+    $("#semesters").show();
+    $("#semcon").show();
+    $("#depcon").show();
+    $("#levcon").show();
+    $("#search-popup").removeClass("hide");
+}
+
+function hideImportExportPopup() {
+    $("#import-export-popup").addClass("hide");
+    $("#impexp>i").text("import_export");
+}
+
+function showImportExportPopup() {
+    $("#impexp>i").text("close");
+    $("#import-export-popup").removeClass("hide");
+}
+
+function getSemesters() {
+    chrome.runtime.sendMessage(
+        {
+            command: "currentSemesters",
+        },
+        function (response) {
+            let { semesters } = response;
+            let semester_names = Object.keys(semesters);
+            for (let i = 0; i < semester_names.length; i++) {
+                let name = semester_names[i];
+                $("#semesters").append(`<option value='${semesters[name]}'>${name}</option>`);
+            }
+        }
+    );
+}
+
+function getDepartments() {
+    chrome.runtime.sendMessage(
+        {
+            command: "currentDepartments",
+        },
+        function (response) {
+            let { departments } = response;
+            console.log(departments);
+            for (let i = 0; i < departments.length; i++) {
+                let abv = departments[i];
+                $("#department").append(`<option value='${abv}'>${abv}</option>`);
+            }
+            // $("#department").val('C S');
+        }
+    );
 }

@@ -1,296 +1,283 @@
-$(function () {
-    const materialColors = ['#4CAF50', '#CDDC39',
-        '#FFC107', '#2196F3', '#F57C00', '#9C27B0', '#FF5722', '#673AB7',
-        '#FF5252', '#E91E63', '#009688', '#00BCD4',
-        '#4E342E', '#424242', '#9E9E9E'
-    ];
-    const days = new Map([
-        ["M", "Monday"],
-        ["T", "Tuesday"],
-        ["W", "Wednesday"],
-        ["TH", "Thursday"],
-        ["F", "Friday"]
-    ]);
-    const fadetime = 150;
-    const butdelay = 75;
-    $("#calendar").prepend('<div id="myModal" class="modal"><div class="modal-content"><span class="close">&times;</span><div class="card"><div id="colorStrip" style="height:10px;"></div><div class="cardcontainer"><div><div style="display:flex;"><h2 id="classname">Classname</h2></div><p id="prof">Prof</p></div><div id="timelines"></div><button id="info" class="matbut" style="font-size:medium; margin-right: auto; margin-left:auto; background: #2196F3;">More Info</button><button id="register" class="matbut" style="font-size:medium; margin-right: auto; margin-left:10px; background: #4CAF50;">Register</button><button id="remove" class="matbut" style="font-size:medium;margin:10px;background: #FF0000;">Remove</button></div></div></div></div>');
-    // Counter to iterate through material colors to avoid duplicates
-    var colorCounter = 0;
-    // Each schedule needs to store 'TITLE - START TIME - END TIME - COLOR'
-    var classSchedules = [];
-    var savedCourses = [];
-    var currindex = 0;
-    chrome.storage.sync.get("savedCourses", function (data) {
-        // Iterate through each saved course and add to 'event'
-        savedCourses = data.savedCourses;
-        setAllEvents(savedCourses);
+var color_counter = 0;
+var {
+    calendar_fade_time,
+    button_delay
+} = Timing;
 
-        $("#calendar").fullCalendar({
-            editable: false, // Don't allow editing of events
-            handleWindowResize: true,
-            weekends: false, // will hide Saturdays and Sundays
-            slotDuration: "00:30:00", // 15 minute intervals on vertical column
-            slotEventOverlap: false, // No overlapping between events
-            defaultView: "agendaWeek", // Only show week view
-            header: false, // Hide buttons/titles
-            minTime: "08:00:00", // Start time
-            maxTime: "21:00:01", // End time
-            columnHeaderFormat: "ddd", // Only show day of the week names
-            displayEventTime: true, // Display event time
-            allDaySlot: false,
-            Duration: {
-                hours: 1
-            },
-            height: 'auto',
-            events: classSchedules,
-            slotLabelFormat: [
-                'h:mm A' // lower level of text
-            ],
-            eventRender: function (event, element, view) {
-                $(element).css("padding", "5px");
-                $(element).css("margin-bottom", "5px");
 
-            },
-            eventClick: function (data, event, view) {
-                $("#myModal").fadeIn(fadetime);
-                $("#colorStrip").css('background-color', data.color);
-                currindex = data.index;
-                $("#classname").html(`${savedCourses[currindex].coursename} <span style='font-size:small'>(${savedCourses[currindex].unique})</span>`);
-                $("#timelines").append(makeLine(savedCourses[currindex].datetimearr));
 
-                var uncapProf = prettifyName(savedCourses[currindex].profname);
-                if (uncapProf == "") {
-                    uncapProf = "Undecided";
-                }
-                $("#prof").html(`with <span style='font-weight:bold;'>${uncapProf}</span>`);
+var saved_courses = [];
+var curr_course = {}
 
-                let status = savedCourses[currindex].status;
+$("#calendar").after(Template.Calendar.modal());
 
-                let registerlink = savedCourses[currindex].registerlink;
-                if (status.includes("closed") || status.includes("cancelled") || !status || !registerlink) {
-                    $("#register").text("Can't Register").css("background-color", "#FF5722");
-                } else if (status.includes("waitlisted")) {
-                    $("#register").text("Join Waitlist").css("background-color", "#FF9800");
-                } else {
-                    $("#register").text("Register").css("background-color", "#4CAF50");
-                }
-                var cal = ics();
-                for (i in savedCourses) {
-                    let course = savedCourses[i];
-                    var dtmap = makeMap(course.datetimearr);
-                    var timearr = Array.from(dtmap.keys());
-                    var dayarr = Array.from(dtmap.values());
-                    console.log(timearr);
-                    console.log(dayarr);
-                    for (var i = 0; i < dayarr.length; i++) {
-                        var place = findLoc(dayarr[i], timearr[i], course.datetimearr);
-                        var building = place.substring(0, place.search(/\d/) - 1);
-                        if (building == "") {
-                            building = "Undecided Location";
-                        }
-                        //cal.addEvent(subject, description, location, begin, end, rrule)
-                        let rrurle = {
-                            freq: "WEEKLY",
-                            interval: 1,
-                            byday: [""]
-
-                        }
-                        //  cal.addEvent(course.coursename, `with${course.profname}`, building, '', '', '');
-                        //      output += `<p class='time'><span>${dayarr[i]}</span>: ${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}<span style='float:right';><a target='_blank' href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span></p>`;
-                    }
-
-                }
-                cal.download();
-            }
-        });
-    });
-
-    // When the user clicks on <span> (x), close the modal
-    $(".close").click(() => {
-        $("#myModal").fadeOut(fadetime);
-    });
-    $("#info").click(() => {
-        var currLink = savedCourses[currindex].link;
-        setTimeout(() => {
-            window.open(currLink);
-        }, butdelay);
-    });
-    $("#remove").click(() => {
-        setTimeout(() => {
-            chrome.runtime.sendMessage({
-                command: "courseStorage",
-                course: savedCourses[currindex],
-                action: "remove"
-            }, function (response) {
-                $("#myModal").fadeOut(fadetime);
-                updateCalendar();
-                chrome.tabs.query({}, function (tabs) {
-                    for (var i = 0; i < tabs.length; i++) {
-                        chrome.tabs.sendMessage(tabs[i].id, {
-                            command: "updateCourseList"
-                        });
-                    }
-                });
-            });
-        }, butdelay);
-    });
-    $("#register").click(function () {
-        let registerlink = savedCourses[currindex].registerlink;
-        let status = savedCourses[currindex].status;
-        if (!(status.includes("closed") || status.includes("cancelled") || !status || !registerlink)) {
-            setTimeout(() => {
-                window.open(registerlink);
-            }, butdelay);
-        }
-    });
-
-    /* convert from the dtarr and maek the time lines*/
-    function makeLine(datetimearr) {
-        $(".time").remove();
-        //converted times back
-        var output = "";
-        var dtmap = makeMap(datetimearr);
-        var timearr = Array.from(dtmap.keys());
-        var dayarr = Array.from(dtmap.values());
-        for (var i = 0; i < dayarr.length; i++) {
-            var place = findLoc(dayarr[i], timearr[i], datetimearr);
-            var building = place.substring(0, place.search(/\d/) - 1);
-            if (building == "") {
-                building = "Undecided Location";
-            }
-            output += `<p class='time'><span>${dayarr[i]}</span>: ${timearr[i].split(",")[0]} to ${timearr[i].split(",")[1]}<span style='float:right';><a target='_blank' href='https://maps.utexas.edu/buildings/UTM/${building}'>${place}</a></span></p>`;
-        }
-        return output;
-    }
-
-    function makeMap(datetimearr) {
-        var dtmap = new Map([]);
-        for (var i = 0; i < datetimearr.length; i++) {
-            //console.log(datetimearr[i][1][0]);
-            datetimearr[i][1][0] = moment(datetimearr[i][1][0], ["HH:mm A"]).format("h:mm A");
-            datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm A"]).format("h:mm A");
-        }
-        for (var i = 0; i < datetimearr.length; i++) {
-            if (dtmap.has(String(datetimearr[i][1]))) {
-                dtmap.set(String(datetimearr[i][1]), dtmap.get(String(datetimearr[i][1])) + datetimearr[i][0]);
-            } else {
-                dtmap.set(String(datetimearr[i][1]), datetimearr[i][0]);
-            }
-        }
-        return dtmap
-    }
-
-    /*Close Modal when hit escape*/
-    $(document).keydown((e) => {
-        if (e.keyCode == 27) {
-            $("#myModal").fadeOut(fadetime);
-        }
-        $("#snackbar").attr("class", "");
-    });
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = (event) => {
-        var modal = document.getElementById("myModal");
-        if (event.target == modal) {
-            $("#myModal").fadeOut(fadetime);
-        }
-    }
-    //find the location of a class given its days and timearrs.
-    function findLoc(day, timearr, datetimearr) {
-        for (let i = 0; i < datetimearr.length; i++) {
-            var dtl = datetimearr[i];
-            // console.log(dtl[1]);
-            //  console.log(timearr);
-            if (day.includes(dtl[0])) {
-                if (JSON.stringify(timearr) == JSON.stringify(fixDtl1(dtl[1]))) {
-                    return dtl[2];
-                }
-            }
-        }
-    }
-
-    function fixDtl1(dtl1) {
-        let output = "";
-        for (let i = 0; i < dtl1.length; i++) {
-            output += dtl1[i];
-            if (i != dtl1.length - 1) {
-                output += ",";
-            }
-        }
-        return output;
-    }
-
+chrome.storage.sync.get("savedCourses", function (data) {
     // Iterate through each saved course and add to 'event'
-    function setAllEvents(savedCourses) {
-        colorCounter = 0;
-        classSchedules = [];
-        for (let i = 0; i < savedCourses.length; i++) {
-            for (let j = 0; j < savedCourses[i].datetimearr.length; j++) {
-                let session = savedCourses[i].datetimearr[j]; // One single session for a class
-                setEventForSection(session, colorCounter, i);
-            }
-            colorCounter++;
+    saved_courses = data.savedCourses;
+    console.log(saved_courses);
+    let event_source = buildEventSource(saved_courses);
+
+    $("#calendar").fullCalendar({
+        editable: false, // Don't allow editing of events
+        handleWindowResize: true,
+        weekends: false, // will hide Saturdays and Sundays
+        slotDuration: "00:30:00", // 15 minute intervals on vertical column
+        slotEventOverlap: false, // No overlapping between events
+        defaultView: "agendaWeek", // Only show week view
+        header: false, // Hide buttons/titles
+        minTime: "08:00:00", // Start time
+        maxTime: "21:00:01", // End time
+        columnHeaderFormat: "ddd", // Only show day of the week names
+        displayEventTime: true, // Display event time
+        allDaySlot: false,
+        Duration: {
+            hours: 1
+        },
+        height: 'auto',
+        events: event_source,
+        slotLabelFormat: [
+            'h:mm A' // lower level of text
+        ],
+        eventRender: function (event, element, view) {
+            $(element).css("padding", "5px").css("margin-bottom", "5px");
+        },
+        eventClick: function (data, event, view) {
+            displayModal(data)
+        }
+    });
+});
+
+function displayModal(data) {
+    $("#myModal").fadeIn(calendar_fade_time);
+    $("#colorStrip").css('background-color', data.color);
+    curr_course = saved_courses[data.index];
+    setUpModal()
+}
+
+function setUpModal() {
+    let {
+        coursename,
+        unique,
+        datetimearr,
+        profname,
+        status,
+        registerlink
+    } = curr_course;
+    $("#classname").html(`${coursename} <span style='font-size:small'>(${unique})</span>`);
+    buildTimeTitle(datetimearr);
+    $("#prof").html(`with <span style='font-weight:bold;'>${capitalizeString(profname)}</span>`);
+    setRegisterButton(status, registerlink)
+}
+
+function setRegisterButton(status, registerlink) {
+    if (canNotRegister(status, registerlink))
+        $("#register").text("Can't Register").css("background-color", Colors.closed);
+    else if (status.includes("waitlisted"))
+        $("#register").text("Join Waitlist").css("background-color", Colors.waitlisted);
+    else
+        $("#register").text("Register").css("background-color", Colors.open);
+}
+
+function buildTimeTitle(datetimearr) {
+    $('#timelines').remove();
+    var arr = convertDateTimeArrToLine(datetimearr)
+    var output = "";
+    for (let i = 0; i < arr.length; i++) {
+        let line = arr[i];
+        output += Template.Calendar.line(line);
+    }
+    $("#header").after(`<div id='timelines'>${output}</div`);
+}
+
+
+// Iterate through each saved course and add to 'event'
+function buildEventSource(saved_courses) {
+    color_counter = 0;
+    let event_source = [];
+    var hours = 0;
+    for (let i = 0; i < saved_courses.length; i++) {
+        let {
+            coursename,
+            datetimearr
+        } = saved_courses[i];
+        let number = seperateCourseNameParts(coursename).number;
+        hours += parseInt(number.charAt(0));
+        for (let j = 0; j < datetimearr.length; j++) {
+            let session = datetimearr[j]; // One single session for a class
+            let event_obj = setEventForSection(session, color_counter, i);
+            event_source.push(event_obj);
+        }
+        color_counter++;
+    }
+    displayMetaData(hours, saved_courses);
+    return event_source;
+}
+
+function displayMetaData(hours, saved_courses) {
+    $("#hours").text(hours + " Hours");
+    $("#num").text(saved_courses.length + " Courses");
+}
+
+//create the event object for every section
+function setEventForSection(session, colorCounter, i) {
+    let full_day = days.get(session[0]);
+    let course = saved_courses[i];
+    let {
+        coursename,
+        profname,
+    } = course;
+    let {
+        department,
+        number
+    } = seperateCourseNameParts(coursename)
+    beg_day = calculateBeginningDate(full_day)
+    start_date = formatCalculateDate(beg_day, full_day, session[1][0]);
+    end_date = formatCalculateDate(beg_day, full_day, session[1][1]);
+
+    event_obj = {
+        title: `${department}-${number} with ${capitalizeString(profname)}`,
+        start: start_date,
+        end: end_date,
+        color: Colors.material_colors[colorCounter],
+        building: session[2],
+        index: i,
+        allday: false
+    };
+    return event_obj;
+}
+
+function formatCalculateDate(beg_day, full_day, hour) {
+    return beg_day + moment().day(full_day)._d.toString().split(" ")[2] + "T" + hour + ":00";
+}
+
+function calculateBeginningDate(full_day) {
+    var year = moment().day(full_day)._d.toString().split(" ")[3];
+    var month_num = moment(moment().day(full_day)._d.toString().split(" ")[1], "MMM").format('MM');
+    return `${year}-${month_num}-`;
+}
+
+function updateCalendar() {
+    chrome.storage.sync.get("savedCourses", function (data) {
+        saved_courses = data.savedCourses
+        let event_source = buildEventSource(saved_courses);
+        $('#calendar').fullCalendar('removeEventSources');
+        $("#calendar").fullCalendar('addEventSource', event_source, true);
+    });
+}
+chrome.runtime.onMessage.addListener(
+    function (request, sender, sendResponse) {
+        if (request.command == "updateCourseList" || request.command == "courseAdded") {
+            updateCalendar();
         }
     }
+);
 
-    //create the event object for every section
-    function setEventForSection(session, colorCounter, i) {
-        // console.log(moment().startOf('month').format("YYYY-MM-D"));
-        // console.log(moment().day(fullday));
-        var fullday = days.get(session[0]);
-        var classInfo = savedCourses[i];
-        var department = classInfo.coursename.substring(0, classInfo.coursename.search(/\d/) - 2);
-        var course_nbr = classInfo.coursename.substring(classInfo.coursename.search(/\d/), classInfo.coursename.indexOf(" ", classInfo.coursename.search(/\d/)));
-        var uncapProf = prettifyName(classInfo.profname);
-        if (uncapProf == "") {
-            uncapProf = "Undecided";
-        }
 
-        var year = moment().day(fullday)._d.toString().split(" ")[3];
-        var monthNum = moment(moment().day(fullday)._d.toString().split(" ")[1], "MMM").format('MM');
-        var beg = `${year}-${monthNum}-`;
-        classSchedules.push({
-            title: `${department}-${course_nbr} with ${uncapProf}`,
-            start: beg +
-                moment()
-                .day(fullday)
-                ._d.toString()
-                .split(" ")[2] +
-                "T" +
-                session[1][0] +
-                ":00",
-            end: beg +
-                moment()
-                .day(fullday)
-                ._d.toString()
-                .split(" ")[2] +
-                "T" +
-                session[1][1] +
-                ":00",
-            color: materialColors[colorCounter],
-            index: i,
-            allday: false
-        });
-    }
-    chrome.runtime.onMessage.addListener(
-        function (request, sender, sendResponse) {
-            if (request.command == "updateCourseList" || request.command == "courseAdded") {
-                updateCalendar();
-            }
-        });
+$("#info").click(() => {
+    openMoreInfoWithOpenModal(curr_course.link);
+});
 
-    function updateCalendar() {
-        chrome.storage.sync.get("savedCourses", function (data) {
-            savedCourses = data.savedCourses
-            setAllEvents(data.savedCourses);
-            // console.log(classSchedules);
-            $('#calendar').fullCalendar('removeEventSources');
-            $("#calendar").fullCalendar('addEventSource', classSchedules, true);
+
+$("#save").click(() => {
+    takePicture();
+});
+
+
+$("#clear").click(() => {
+    /*Clear the list and the storage of courses*/
+    chrome.storage.sync.set({
+        savedCourses: []
+    });
+    updateAllTabsCourseList();
+    updateCalendar();
+});
+
+
+$("#remove").click(() => {
+    setTimeout(() => {
+        chrome.runtime.sendMessage({
+            command: "courseStorage",
+            course: curr_course,
+            action: "remove"
+        }, function () {
+            $("#myModal").fadeOut(calendar_fade_time);
+            updateCalendar();
+            updateAllTabsCourseList();
         });
-    }
-    /* Format the Professor Name */
-    function prettifyName(profname) {
-        return profname.replace(/\w\S*/g, function (txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        });
+    }, button_delay);
+});
+
+
+$("#register").click(function () {
+    let {
+        registerlink,
+        status
+    } = curr_course;
+    if (!canNotRegister(status, registerlink)) {
+        setTimeout(() => {
+            window.open(registerlink);
+        }, button_delay);
     }
 });
+
+$("#export").click(function () {
+    var cal = ics();
+    var calendarEvents = $('#calendar').fullCalendar('clientEvents');
+    for (i in calendarEvents) {
+        var event = calendarEvents[i];
+        buildICSFile(cal, event);
+    }
+    cal.download("My_Course_Calendar");
+});
+
+
+function buildICSFile(cal, event) {
+    let {
+        title,
+        start,
+        end,
+        building
+    } = event;
+    let class_name = title.split('with')[0];
+    let description = `with ${title.split('with')[1]}`;
+    let time = start._d.toUTCString();
+    cal.addEvent(class_name, description, building, start._i, end._i, {
+        rrule: `RRULE:FREQ=WEEKLY;BYDAY=${time.substring(0, time.indexOf(",") - 1).toUpperCase()};INTERVAL=1`
+    });
+}
+
+function takePicture() {
+    var width = $("#calendar").width();
+    var height = $("#calendar").height();
+    let cropper = document.createElement('canvas').getContext('2d');
+    html2canvas(document.querySelector("#calendar"), Export.png_options).then(c => {
+        cropper.canvas.width = width;
+        cropper.canvas.height = height;
+        cropper.drawImage(c, 0, 0);
+        var a = document.createElement('a');
+        a.href = cropper.canvas.toDataURL("image/png");
+        a.download = 'mySchedule.png';
+        a.click();
+    });
+}
+
+
+/*Close Modal when hit escape*/
+$(document).keydown((e) => {
+    if (e.keyCode == 27) {
+        $("#myModal").fadeOut(calendar_fade_time);
+    }
+});
+
+$('.close').click(function () {
+    close();
+});
+$('#myModal').click(function (event) {
+    if (event.target.id == 'myModal') {
+        close();
+    }
+});
+
+function close() {
+    $("#myModal").fadeOut(calendar_fade_time);
+}

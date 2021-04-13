@@ -2,7 +2,7 @@
     display: none;
     position: fixed;
     z-index: 1;
-    padding-top: 100px;
+    padding-top: 75px;
     left: 0;
     top: 0;
     width: 100%;
@@ -21,7 +21,26 @@
     width: 50%;
 }
 
-/* The Close Button */
+.loader {
+    border: 10px solid #f3f3f3;
+    border-top: 10px solid #FF9800;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: none;
+    animation: spin 2s linear infinite;
+}
+
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 .close {
     color: #aaaaaa;
@@ -35,8 +54,13 @@
     font-size: x-large;
     font-weight: bold;
     padding-top: 5px;
+    line-height: 1;
     padding-left: 5px;
     margin: 5px 0px 5px 0px;
+}
+
+.distButton {
+    vertical-align: bottom;
 }
 
 .description {
@@ -45,17 +69,34 @@
     font-weight: normal;
 }
 
+
+.chartloader {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    left: 0;
+    right: 0;
+}
+
 .profname {
     margin-left: 5px;
     padding-bottom: 5px;
     font-size: medium;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 .dateTimePlace {
     margin-left: 5px;
+    margin-bottom: 0px;
+    margin-top: 0px;
     font-size: smaller;
     font-weight: bold;
+}
+
+#chartcontainer {
+    max-width: 100%;
+    height: 250px;
 }
 
 #chart {
@@ -92,11 +133,23 @@
     cursor: pointer;
 }
 
-.topbuttons .matbut {
+.topbuttons .material-button {
     display: inline-block;
 }
 
-.matbut {
+.rmp-button {
+
+}
+
+.ecis-button {
+
+}
+
+.textbook-button{
+
+}
+
+.material-button {
     border: none;
     outline: none;
     cursor: pointer;
@@ -108,14 +161,11 @@
     font-style: bold;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     background: #ff9800;
-}
-
-.matbut {
     position: relative;
     overflow: hidden;
 }
 
-.matbut:after {
+.material-button:after {
     content: "";
     position: absolute;
     top: 50%;
@@ -134,17 +184,19 @@
         transform: scale(0, 0);
         opacity: 1;
     }
-    20% {
+
+    15% {
         transform: scale(25, 25);
         opacity: 1;
     }
+
     100% {
         opacity: 0;
         transform: scale(40, 40);
     }
 }
 
-.matbut:focus:not(:active)::after {
+.material-button:focus:not(:active)::after {
     animation: ripple 1s ease-out;
 }
 
@@ -161,7 +213,8 @@
     left: 50%;
     bottom: 30px;
 }
-.descriptionli{
+
+.descriptionli {
     padding: 0px 5px 5px 5px;
 }
 
@@ -171,11 +224,47 @@
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
+#semesters {
+    padding: 5px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+#semesters:focus {
+    outline: 0;
+}
+
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: black;
+  background:rgba(1,1,1,0.5);
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  font-size: 10px;
+  max-width: 100px;
+  margin-left: 5px;
+  padding: 5px 10px;
+  z-index: 2;
+  position: absolute;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+
 @-webkit-keyframes fadein {
     from {
         bottom: 0;
         opacity: 0;
     }
+
     to {
         bottom: 30px;
         opacity: 1;
@@ -187,6 +276,7 @@
         bottom: 0;
         opacity: 0;
     }
+
     to {
         bottom: 30px;
         opacity: 1;
@@ -198,6 +288,7 @@
         bottom: 30px;
         opacity: 1;
     }
+
     to {
         bottom: 0;
         opacity: 0;
@@ -209,6 +300,7 @@
         bottom: 30px;
         opacity: 1;
     }
+
     to {
         bottom: 0;
         opacity: 0;

@@ -37,8 +37,6 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
 
 */
 
-/* Remove that awful yellow color and border from today in Schedule */
-
 .fc-state-highlight {
     opacity: 0;
     border: none;
@@ -54,6 +52,12 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
     transition: 0.3s;
     opacity: 1;
 }
+
+.html2canvas-container {
+    width: 3000px !important;
+    height: 3000px !important;
+}
+
 
 .fc-time-grid-event.fc-v-event.fc-event:hover {
     box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.3);
@@ -72,11 +76,18 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
 .fc th {
     border-style: ridge !important;
     border-width: 1px !important;
-    padding: 2px 3px 2px 3px !important;
+    padding: 4px 3px 0px 3px !important;
     vertical-align: top !important;
+    border-left-width: 0;
+
+}
+
+.fc-row fc-widget-header {
+    border-color: transparent;
 }
 
 .fc td {
+    border-top-width: 0;
     padding: 3px !important;
 }
 
@@ -155,10 +166,12 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
         transform: scale(0, 0);
         opacity: 1;
     }
+
     20% {
         transform: scale(25, 25);
         opacity: 1;
     }
+
     100% {
         opacity: 0;
         transform: scale(40, 40);
@@ -279,6 +292,18 @@ body a:visited {
     font-size: medium;
 }
 
+.fc td,
+.fc th {
+    border-color: #E7E7E7;
+
+}
+
+.fc-time-grid .fc-slats td {
+    height: 1.5em;
+    border-bottom: initial;
+    border-color: #E7E7E7;
+}
+
 /* The Close Button */
 
 .close {
@@ -306,8 +331,14 @@ body a:visited {
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+
 .cardcontainer {
     padding: 2px 16px;
     display: block;
     transition: width 300ms ease-in-out, height 300ms ease-in-out;
+}
+
+
+tbody {
+    border-width: 0px;
 }

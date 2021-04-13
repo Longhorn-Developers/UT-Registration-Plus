@@ -9,7 +9,7 @@
 }
 
 .container {
-    padding: 2px 16px;
+    padding: 3px 16px 3px 12px;
 }
 
 h2 {
@@ -23,18 +23,191 @@ li {
 body {
     min-width: 370px;
     min-height: 400px;
+    position: relative;
 }
 
-.settingsbut {
+.conflict_message{
+    font-size:small;
+    font-weight:bold;
+    color:red;
+    margin:5px 5px 5px 10px;
+}
+
+.course_list {
+    list-style-type: none;
+    padding: 5px;
+    margin-bottom: 30px;
+}
+
+.course_list_card {
+    cursor: pointer;
+}
+
+.course_list_item {
+    padding: 0px 5px 5px 5px;
+    overflow-y: auto;
+    max-height:400px;
+}
+
+.course_list_item_subtext {
+    font-size:medium;
+}
+
+.empty_message {
+    font-weight: normal;
+    font-size: large;
+    margin: 60px 30px 200px 30px;
+    text-align: center;
+}
+
+#empty #main {
+    margin-bottom: 5px;
+}
+
+#empty span {
+    font-size: small;
+    display: table;
+    margin: 0 auto;
+    font-weight: bold;
+}
+
+
+.time_line_days {
+    display:inline-block;
+    width: 20%;
+}
+
+.time_line_hours {
+    margin-left:10px;
+    display:inline-block;
+    width: 50%;
+    text-align:center;
+}
+
+.time_line_location {
+    float:right;
+    display:inline-block;
+    text-align:right;
+    width: 25%;
+}
+
+.time_line_location_link {
+    color:#3c87a3;
+    text-decoration:none;
+}
+
+.more_info_button{
+    background: #2196F3;
+}
+
+.remove_button {
+    background: #F44336;
+}
+
+.register_button {
+    background: #4CAF50;
+}
+
+.settings_button {
+    margin-right: 2px;
+    border: 0px;
+    border-radius: 50%;
+    transition: 0.3s;
+    opacity: 0.5;
+}
+
+
+.settings_button:focus {
+    outline: 0;
+}
+
+.settings_button:hover {
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.16), 0 4px 15px 0 rgba(0, 0, 0, 0.12);
+    opacity: 1;
+}
+
+.selected {
+    box-shadow: 0 0 0 1pt #FF9800;
+}
+
+.settings_button:focus:after:hover {
+    outline: 0;
+    transition: 0.3s;
+}
+
+.copy_button {
+    background-color: transparent;
+    padding: 0px;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: .2s;
+}
+
+.copy_button:focus {
+    outline: 0;
+}
+
+.shadow {
+    box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.16);
+}
+
+i {
+    padding: 4px 0px;
+}
+
+.copy_button_icon {
+    color:white;
+    float:left;
+    border-radius: 50%;
+    padding: 3px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.16);
+    font-size: x-large;
+}
+
+.header_container{
+    border-radius: 7px;
+}
+
+.header_buttons {
+    padding: 5px 10px 5px 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header_button {
+    font-size:15px !important;
+    margin: 7px !important;
+}
+
+
+.clear_button {
+     background:#4CAF50;
+}
+
+.ris_button {
+    background:#FF9800;
+}
+
+.schedule_button {
+    background: #FF0000;
+}
+
+.settings {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    float: right;
-    margin-right: 5px;
-    border: 0px
+    bottom: 0px;
+    right: 0px;
+    display: flex;
+    vertical-align: middle;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    transition: 0.3s;
+    padding: 7px 5px 5px 7px;
+    margin: 0px 5px 0px 0px;
+    border-radius: 7px;
 }
 
-.matbut {
+.material_button {
     border: none;
     outline: none;
     cursor: pointer;
@@ -45,22 +218,74 @@ body {
     font-size: medium;
     font-style: bold;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-    background: #ff9800;
-}
-
-.matbut {
     position: relative;
     overflow: hidden;
 }
 
-.truncate {
+.course_name_truncate_box {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 80%;
+    color:white;
+    margin:5px;
+    display:inline-block;
+    font-size:large;
+    align-items:center;
 }
 
-.matbut:after {
+.settings_divider {
+    margin-bottom: 0px;
+    display:inline-block;
+}
+
+.search_button {
+    background-color:white;
+    margin-left: 5px;
+    margin-right: 3px;
+}
+.course_list_item_options {
+    display: none;
+}
+.import_button {
+    background-color:white;
+}
+
+.options_button {
+    background-color:white;
+    margin-right: 0px;
+}
+
+.settings_icon {
+    color:#FF9800;
+}
+
+.course_list_item_time_box {
+    font-weight:bold;
+    padding:10px;
+    margin:0px 5px 0px 15px;
+    font-size:small;
+}
+
+.course_list_item_options_button_container {
+    border-radius:0px;
+}
+
+.course_list_item_options_buttons{
+    float:right;
+    margin:5px;
+}
+
+.arrow {
+    float:right;
+    font-size:small;
+    display:inline-block;
+    margin-top:10px;
+    color:white;
+    font-family: sans-serif;
+}
+
+.material_button:after {
     content: "";
     position: absolute;
     top: 50%;
@@ -88,6 +313,40 @@ body {
     transform-origin: 50% 50%;
 }
 
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    max-height: 85%;
+    overflow-y: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+}
+
+/* The Close Button */
+
+.close {
+    color: #aaaaaa;
+    float: right;
+    padding: 5px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+
 @keyframes ripple {
     0% {
         transform: scale(0, 0);
@@ -105,10 +364,200 @@ body {
     }
 }
 
-.matbut:focus:not(:active)::after {
+.material_button:focus:not(:active)::after {
     animation: ripple 1s ease-out;
 }
 
+
 .card:focus:not(:active)::after {
     animation: ripple 1s ease-out;
+}
+
+
+input {
+    border-radius: 5px;
+    color: rgba(0, 0, 45, 0.48)
+}
+
+input:focus {
+    outline: 0;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+#search-popup {
+    background: white;
+    color: #747474;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    position: absolute;
+    margin: auto;
+    bottom: 42px;
+    right: 20px;
+    padding: 10px;
+    border-radius: inherit;
+    width: 120px;
+}
+
+
+.flex-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    flex: 1 1 auto;
+}
+
+.select-style {
+    border: 1px solid #979797;
+    margin: 5px 0px;
+    border-radius: 5px;
+    display: none;
+    background: transparent no-repeat 90% 50%;
+    position: relative;
+}
+
+.select-style:after {
+    content: '\e5c5';
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    color: rgba(0, 0, 45, 0.48);
+
+    position: absolute;
+    pointer-events: none;
+
+    bottom: 0px;
+    right: 0px;
+}
+
+.select-style select {
+    padding: 5px 8px;
+    border: none;
+    color: rgba(0, 0, 45, 0.48);
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 120px;
+    word-break: normal;
+    -ms-word-break: normal;
+    overflow: visible;
+}
+
+.select-style select:focus {
+    outline: none;
+}
+
+.class_id_input {
+    display: none;
+    border: 1px solid #979797;
+    border-radius: 5px;
+    margin: 10px 0px;
+    padding: 5px 8px;
+}
+
+.class_id_input::placeholder {
+    color: rgba(0, 0, 45, 0.48);
+}
+
+.search-button {
+    float: right;
+    font-size: inherit;
+    padding: 7px 11px;
+    margin: 8px 0px;
+    background-color: #FF9800;
+}
+
+#import-export-popup {
+    background: white;
+    color: #747474;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    position: absolute;
+    margin: auto;
+    bottom: 42px;
+    right: 10px;
+    border-radius: inherit;
+    width: 140px;
+}
+
+
+.simple-menu-option {
+    display: inline-block;
+    color: rgba(0, 0, 45, 0.48);
+    border: none;
+    background-color: white;
+    font-size: 15px;
+    overflow: hidden;
+    vertical-align: middle;
+    cursor: pointer;
+    text-align: left;
+    padding: 10px 0px 5px 5px;
+    border-radius: 7px;
+}
+
+.simple-menu-option i {
+    font-size: 19px;
+    vertical-align: middle;
+    margin-top: 0px;
+    margin-left: 0px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+}
+
+
+.simple-menu-option:hover {
+    background-color: rgba(177, 175, 175, 0.200);
+    transition-duration: 0.4s;
+    /* color: #FF9800; */
+}
+
+.simple-menu-option:focus {
+    outline: none;
+}
+
+.hide {
+    display: none !important;
+}
+
+.meta{
+    margin:0;
+    color:#FF9800;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    vertical-align: middle;
+    padding: 7px 5px 5px 7px;
+    margin: 0px 5px 0px 5px;
+    font-size: 10px;
+}
+
+.meta-metric{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.meta-container{
+    margin: 5px 5px 10px 5px;
+}
+
+.input-box{
+    color: rgba(0, 0, 45, 0.48);
+    border: 1px solid #8C8C8C;
+    font-size: 11px;
+    padding: 5px;
+    border-radius: 7px;
+    width: 90%;
+}
+
+.input-box::placeholder {
+    color: rgba(0, 0, 45, 0.345);
 }
