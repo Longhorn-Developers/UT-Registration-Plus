@@ -1,5 +1,8 @@
-# UT Registration Plus
+
+# UT Registration Plus 
+## (or Sriram's Sexy Scheduling Script)
 [Try it for yourself on the Chrome Web Store](https://chrome.google.com/webstore/detail/hboadpjkoaieogjimneceaahlppnipaa)
+
 
 We've all been there. 20 tabs of Rate My Professor, Catalyst, and the UT Course Catalog open and you still don't know what classes to take. 
 This extension tries to streamline most of the unnecessary steps and headaches of registering for classes at UT Austin. 
