@@ -184,7 +184,7 @@ function buildTimeTitle(times) {
 }
 
 function makeLine(date, time, place) {
-    var arr = seperateDays(date)
+    var arr = separateDays(date)
     var output = prettifyDaysText(arr)
     var building = place.substring(0, place.search(/\d/) - 1);
     building = building == "" ? "Undecided Location" : building;

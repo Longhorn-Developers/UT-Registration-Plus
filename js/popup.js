@@ -20,7 +20,7 @@ function setCourseList() {
             let line = buildTimeLines(datetimearr);
             let list_tile_color = getStatusColor(status);
             let list_sub_color = getStatusColor(status, true);
-            let { department, number } = seperateCourseNameParts(coursename);
+            let { department, number } = separateCourseNameParts(coursename);
             num_hours += parseInt(number.substring(0, 1));
 
             let list_html = Template.Popup.list_item(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
@@ -69,7 +69,7 @@ function updateConflicts() {
 
 /* prettify the name for the conflict messages*/
 function formatShortenedCourseName(course) {
-    let { number, department } = seperateCourseNameParts(course.coursename);
+    let { number, department } = separateCourseNameParts(course.coursename);
     return `${department} ${number} (${course.unique})`;
 }
 
@@ -300,7 +300,7 @@ function handleRemove(clicked_item, curr_course) {
 
 function subtractHours(curr_course) {
     let curr_total_hours = parseInt($("#meta-metric").text());
-    let curr_course_number = seperateCourseNameParts(curr_course.coursename).number;
+    let curr_course_number = separateCourseNameParts(curr_course.coursename).number;
     let curr_individual_hours = parseInt(curr_course_number.substring(0, 1));
     $("#meta-metric").text(curr_total_hours - curr_individual_hours);
 }

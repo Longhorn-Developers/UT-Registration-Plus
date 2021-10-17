@@ -54,7 +54,7 @@ function capitalizeString(string) {
     return output.trim();
 }
 
-function seperateCourseNameParts(name) {
+function separateCourseNameParts(name) {
     let num_index = name.search(/\d/);
     department = name.substring(0, num_index).trim();
     number = name.substring(num_index, name.indexOf(" ", num_index)).trim();
@@ -67,11 +67,11 @@ function seperateCourseNameParts(name) {
 }
 
 
-function seperateDays(date, simple=false) {
+function separateDays(date, simple=false) {
     let arr = [];
     for (var i = 0; i < date.length; i++) {
         let letter = date.charAt(i);
-        let seperated_letter = letter;
+        let separated_letter = letter;
         if (letter == "T" && i < date.length - 1 && date.charAt(i + 1) == "H") {
             arr.push(simple ? "TH" : days.get("TH"));
         } else {

@@ -100,7 +100,7 @@ function buildEventSource(saved_courses) {
             coursename,
             datetimearr
         } = saved_courses[i];
-        let number = seperateCourseNameParts(coursename).number;
+        let number = separateCourseNameParts(coursename).number;
         hours += parseInt(number.charAt(0));
         for (let j = 0; j < datetimearr.length; j++) {
             let session = datetimearr[j]; // One single session for a class
@@ -129,7 +129,7 @@ function setEventForSection(session, colorCounter, i) {
     let {
         department,
         number
-    } = seperateCourseNameParts(coursename)
+    } = separateCourseNameParts(coursename)
     beg_day = calculateBeginningDate(full_day)
     start_date = formatCalculateDate(beg_day, full_day, session[1][0]);
     end_date = formatCalculateDate(beg_day, full_day, session[1][1]);
