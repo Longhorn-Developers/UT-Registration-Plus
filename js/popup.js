@@ -12,7 +12,7 @@ function setCourseList() {
         updateConflicts();
         courses = data.savedCourses;
         handleEmpty();
-        let num_hours = 0;
+        let hours = 0;
         // build and append the course list element
         for (var i = 0; i < courses.length; i++) {
             let { coursename, unique, profname, status, datetimearr } = courses[i];
@@ -21,12 +21,19 @@ function setCourseList() {
             let list_tile_color = getStatusColor(status);
             let list_sub_color = getStatusColor(status, true);
             let { department, number } = separateCourseNameParts(coursename);
-            num_hours += parseInt(number.substring(0, 1));
-
+            let class_length = parseInt(number.charAt(0));
+            let multi_semester_code = number.slice(-1);
+            if (["A","B"].includes(multi_semester_code)) {
+                hours += Math.floor(class_length/2);
+            } else if (["X","Y","Z"].includes(multi_semester_code)) {
+                hours += Math.floor(class_length/3);
+            } else {
+                hours += class_length;
+            }
             let list_html = Template.Popup.list_item(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
             $("#courseList").append(list_html);
         }
-        $("#meta-metric").text(num_hours);
+        $("#meta-metric").text(hours);
     });
 }
 
@@ -301,8 +308,17 @@ function handleRemove(clicked_item, curr_course) {
 function subtractHours(curr_course) {
     let curr_total_hours = parseInt($("#meta-metric").text());
     let curr_course_number = separateCourseNameParts(curr_course.coursename).number;
-    let curr_individual_hours = parseInt(curr_course_number.substring(0, 1));
-    $("#meta-metric").text(curr_total_hours - curr_individual_hours);
+    let class_length = parseInt(curr_course_number.charAt(0));
+    let multi_semester_code = curr_course_number.slice(-1);
+    if (["A","B"].includes(multi_semester_code)) {
+        $("#meta-metric").text(curr_total_hours - Math.floor(class_length/2));
+    } else if (["X","Y","Z"].includes(multi_semester_code)) {
+        $("#meta-metric").text(curr_total_hours - Math.floor(class_length/3));
+    } else {
+        $("#meta-metric").text(curr_total_hours - class_length);
+    }
+
+    
 }
 
 function handleMoreInfo(clicked_item, curr_course) {

@@ -101,7 +101,15 @@ function buildEventSource(saved_courses) {
             datetimearr
         } = saved_courses[i];
         let number = separateCourseNameParts(coursename).number;
-        hours += parseInt(number.charAt(0));
+        let class_length = parseInt(number.charAt(0));
+        let multi_semester_code = number.slice(-1);
+        if (["A","B"].includes(multi_semester_code)) {
+            hours += Math.floor(class_length/2);
+        } else if (["X","Y","Z"].includes(multi_semester_code)) {
+            hours += Math.floor(class_length/3);
+        } else {
+            hours += class_length;
+        }
         for (let j = 0; j < datetimearr.length; j++) {
             let session = datetimearr[j]; // One single session for a class
             let event_obj = setEventForSection(session, color_counter, i);
