@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "UT Registration Plus",
-    "version": "1.2.2.6",
+    "version": "1.2.2.7",
     "options_page": "options.html",
     "description": "Improves the course registration process at the University of Texas at Austin!",
     "permissions": [
@@ -14,11 +14,6 @@
         "*://*.registrar.utexas.edu/schedules/*",
         "*://*.login.utexas.edu/login/*"
     ],
-    "browser_specific_settings": {
-        "gecko": {
-            "id": "sghsri@gmail.com"
-        }
-    },
     "content_scripts": [
         {
             "css": ["css/styles.css"],
