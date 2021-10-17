@@ -257,7 +257,7 @@ function checkConflicts(sendResponse) {
             }
         }
         sendResponse({
-            isConflict: conflicts.length === 0,
+            isConflict: conflicts.length !== 0,
             between: conflicts.length ? conflicts : undefined,
         });
     });

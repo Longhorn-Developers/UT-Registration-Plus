@@ -23,10 +23,10 @@ function setCourseList() {
             let { department, number } = separateCourseNameParts(coursename);
             let class_length = parseInt(number.charAt(0));
             let multi_semester_code = number.slice(-1);
-            if (["A","B"].includes(multi_semester_code)) {
-                hours += Math.floor(class_length/2);
-            } else if (["X","Y","Z"].includes(multi_semester_code)) {
-                hours += Math.floor(class_length/3);
+            if (["A", "B"].includes(multi_semester_code)) {
+                hours += Math.floor(class_length / 2);
+            } else if (["X", "Y", "Z"].includes(multi_semester_code)) {
+                hours += Math.floor(class_length / 3);
             } else {
                 hours += class_length;
             }
@@ -59,6 +59,7 @@ function updateConflicts() {
             command: "checkConflicts",
         },
         function (response) {
+            console.log("updateConflicts -> response", response);
             if (response.isConflict) {
                 var between = response.between;
                 let conflict_message = "";
@@ -310,15 +311,13 @@ function subtractHours(curr_course) {
     let curr_course_number = separateCourseNameParts(curr_course.coursename).number;
     let class_length = parseInt(curr_course_number.charAt(0));
     let multi_semester_code = curr_course_number.slice(-1);
-    if (["A","B"].includes(multi_semester_code)) {
-        $("#meta-metric").text(curr_total_hours - Math.floor(class_length/2));
-    } else if (["X","Y","Z"].includes(multi_semester_code)) {
-        $("#meta-metric").text(curr_total_hours - Math.floor(class_length/3));
+    if (["A", "B"].includes(multi_semester_code)) {
+        $("#meta-metric").text(curr_total_hours - Math.floor(class_length / 2));
+    } else if (["X", "Y", "Z"].includes(multi_semester_code)) {
+        $("#meta-metric").text(curr_total_hours - Math.floor(class_length / 3));
     } else {
         $("#meta-metric").text(curr_total_hours - class_length);
     }
-
-    
 }
 
 function handleMoreInfo(clicked_item, curr_course) {
