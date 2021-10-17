@@ -105,7 +105,7 @@ function buildBasicCourseInfo(row, course_name, individual) {
 		name,
 		department,
 		number
-	} = seperateCourseNameParts(course_name);
+	} = separateCourseNameParts(course_name);
 	let instructor_text = $(row).find('td[data-th="Instructor"]').text();
 	let has_initial = instructor_text.indexOf(',') > 0;
 	course_info = {
@@ -223,7 +223,7 @@ function updateTextHighlighting(tds, canHighlight, isConflict, alreadyContains, 
 		}
 		return false;
 	}).map(function(course){
-		let { name, department, number} = seperateCourseNameParts(course.coursename);
+		let { name, department, number} = separateCourseNameParts(course.coursename);
 		return `${department} ${number} (${course.unique})`;
 	});
 	if(isConflict && unique_list.length){
@@ -277,7 +277,7 @@ function getDayTimeArray(row, course_info) {
 }
 
 function convertDateTimeArrToLine(date, time, place) {
-	let arr = seperateDays(date)
+	let arr = separateDays(date)
 	let output = prettifyDaysText(arr)
 	let building = place.substring(0, place.search(/\d/) - 1);
 	building = building ? building : "Undecided Location";

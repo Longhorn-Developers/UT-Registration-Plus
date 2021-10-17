@@ -114,7 +114,7 @@ function buildBasicCourseInfo(row, course_name, individual) {
 		name,
 		department,
 		number
-	} = seperateCourseNameParts(course_name);
+	} = separateCourseNameParts(course_name);
 	let instructor_text = $(row).find('td[data-th="Instructor"]').text();
 	let has_initial = instructor_text.indexOf(',') > 0;
 	course_info = {
