@@ -5,7 +5,7 @@ $(function () {
 	sem = waitlist ? $('[name="s_ccyys"]').val() : $("option[selected='selected']").val();
 	if (waitlist) {
 		$("[href='#top']").before(Template.Import.import_button());
-		$("[name='wl_see_my_waitlists']").before(Template.import.store_waitlist_message());
+		$("[name='wl_see_my_waitlists']").before(Template.Import.store_waitlist_message());
 		$("[name='wl_see_my_waitlists']").after(Template.Import.waitlist_import_button());
 		extractWaitlistInfo();
 	} else {
