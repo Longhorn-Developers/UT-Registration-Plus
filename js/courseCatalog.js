@@ -213,9 +213,6 @@ function updateListConflictHighlighting(start = 0) {
 }
 
 function updateTextHighlighting(tds, canHighlight, isConflict, alreadyContains, conflictList, row, unique) {
-	if(conflictList.length){
-		console.log(conflictList);
-	}
 	conflict_texts = row.find('.tooltiptext');
 	let unique_list = conflictList.filter(function(course){
 		if(course.unique != unique){
