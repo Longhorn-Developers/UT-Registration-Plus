@@ -205,15 +205,9 @@ function getCurrentSemesters() {
 
 // use the utexas review api for getting the list of departments
 function getCurrentDepartments() {
-    $.get("https://www.utexasreview.com/api/get_major", function (response) {
+    $.get("https://raw.githubusercontent.com/sghsri/UT-Registration-Plus/master/docs/departments.json", function (response) {
         if (response) {
-            let { majors } = response;
-            let indices = Object.keys(majors);
-            let new_departments = [];
-            for (let i = 0; i < indices.length; i++) {
-                new_departments.push(majors[i].abr);
-            }
-            departments = new_departments;
+            departments = JSON.parse(response);
         }
     });
 }
@@ -263,7 +257,7 @@ function checkConflicts(sendResponse) {
             }
         }
         sendResponse({
-            isConflict: conflicts.length === 0,
+            isConflict: conflicts.length !== 0,
             between: conflicts.length ? conflicts : undefined,
         });
     });
