@@ -465,7 +465,9 @@ function getDescription(course_info) {
 	});
 }
 
-function loadNextPages() {
+function loadNextPages(num_pages) {
+	if (num_pages === undefined) num_pages = 1;
+	if (num_pages == 0) return;
 	chrome.runtime.sendMessage({
 		command: "getOptionsValue",
 		key: "loadAll",
@@ -493,6 +495,7 @@ function loadNextPages() {
 						current.append(new_rows);
 						updateListConflictHighlighting(old_length + 1)
 					}
+					loadNextPages(n-1);
 				}).fail(function () {
 					toggleLoadingPage(false);
 					$("#retrylabel").css('display', 'inline-block');
@@ -619,4 +622,9 @@ $(document).keydown(function (e) {
 $(window).scroll(function () {
 	if ($(document).height() <= $(window).scrollTop() + $(window).height() + 150)
 		loadNextPages();
+});
+
+
+$(window).on('load', function () {
+	loadNextPages(3);
 });
