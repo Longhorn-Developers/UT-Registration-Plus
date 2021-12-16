@@ -21,7 +21,7 @@ function getStatusColor(status, sub = false) {
 }
 
 function buildQuery(course_data, sem) {
-    let query = !sem ? "select * from agg" : "select * from grades";
+    let query = !sem ? "select * from utrp_agg" : "select * from utrp_grades";
     query += " where dept like '%" + course_data["department"] + "%'";
     query += " and prof like '%" + course_data["prof_name"].replace(/'/g, "") + "%'";
     query += " and course_nbr like '%" + course_data["number"] + "%'";
