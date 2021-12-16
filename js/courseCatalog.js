@@ -492,7 +492,7 @@ function loadNextPages(num_pages) {
 						current.append(new_rows);
 						updateListConflictHighlighting(old_length + 1)
 					}
-					loadNextPages(n-1);
+					loadNextPages(num_pages-1);
 				}).fail(function () {
 					toggleLoadingPage(false);
 					$("#retrylabel").css('display', 'inline-block');
