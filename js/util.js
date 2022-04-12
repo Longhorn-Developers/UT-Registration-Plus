@@ -59,6 +59,9 @@ function separateCourseNameParts(name) {
     department = name.substring(0, num_index).trim();
     number = name.substring(num_index, name.indexOf(" ", num_index)).trim();
     name = capitalizeString(name.substring(name.indexOf(" ", num_index)).trim());
+    if ("fsnw".indexOf(department.charAt(department.length-1)) != -1) {
+        department = department.substring(0,department.length-2)
+    }
     return {
         name: name,
         department: department,
