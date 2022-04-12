@@ -22,13 +22,19 @@ function getStatusColor(status, sub = false) {
 
 function buildQuery(course_data, sem) {
     let query = !sem ? "select * from utrp_agg" : "select * from utrp_grades";
-    query += " where dept like '%" + course_data["department"] + "%'";
-    query += " and prof like '%" + course_data["prof_name"].replace(/'/g, "") + "%'";
-    query += " and course_nbr like '%" + course_data["number"] + "%'";
-    if (sem) {
-        query += "and sem like '%" + sem + "%'";
+    query += " where prof like '%" + course_data["prof_name"].replace(/'/g, "") + "%'";
+    query += " and (case when dept like '%" + course_data["department"] + "%' then 1 else 0 end";
+    if (course_data["department"] == "ECE") {
+        query += " + case when dept like '%E E%' then 1 else 0 end";    
+    } else if (course_data["department"] == "E E") {
+        query += " + case when dept like '%ECE%' then 1 else 0 end";    
     }
-    return query + "order by a1+a2+a3+b1+b2+b3+c1+c2+c3+d1+d2+d3+f desc";
+    query += " + case when course_name like '%" + course_data["name"] + "%' then 1 else 0 end";
+    query += " + case when course_nbr like '%" + course_data["number"] + "%' then 1 else 0 end) > 1";
+    if (sem) {
+        query += " and sem like '%" + sem + "%'";
+    }
+    return query + " order by a1+a2+a3+b1+b2+b3+c1+c2+c3+d1+d2+d3+f desc";
 }
 
 /*Course object for passing to background*/
