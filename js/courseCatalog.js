@@ -91,10 +91,21 @@ function buildCourseLinks(course_info) {
 	} = course_info
 	links = {
 		"textbook": `https://www.universitycoop.com/adoption-search-results?sn=${semester_code}__${department}__${number}__${unique}`,
-		"syllabi": `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${number}&course_title=&unique=&instructor_first=&instructor_last=${prof_name}&course_type=In+Residence&search=Search`,
+		"syllabi": [
+			`https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${number}&course_title=&unique=&instructor_first=&instructor_last=${prof_name}&course_type=In+Residence&search=Search`,
+		],
 		//default ones (before first name can be used)
 		"rate_my_prof": "http://www.ratemyprofessors.com/campusRatings.jsp?sid=1255",
 		"ecis": "http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?"
+	}
+	if (department == "ECE") {
+		links["syllabi"].push(
+			`https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=E+E&course_number=${number}&course_title=&unique=&instructor_first=&instructor_last=${prof_name}&course_type=In+Residence&search=Search`,
+		)
+	} else if (department == "E E") {
+		links["syllabi"].push(
+			`https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=ECE&course_number=${number}&course_title=&unique=&instructor_first=&instructor_last=${prof_name}&course_type=In+Residence&search=Search`,
+		)
 	}
 	course_info["links"] = links;
 	return course_info;
@@ -511,7 +522,9 @@ $("#myModal").on('click', '#saveCourse', function () {
 
 $("#Syllabi").click(function () {
 	setTimeout(function () {
-		window.open(curr_course["links"]["syllabi"]);
+		for (syllabus_link of curr_course["links"]["syllabi"]) {
+			window.open(syllabus_link);
+		}
 	}, Timing.button_delay);
 });
 $("#rateMyProf").click(function () {
