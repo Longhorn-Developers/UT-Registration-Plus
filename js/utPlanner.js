@@ -82,9 +82,11 @@ $("#semesters").on('change', function () {
 });
 
 $("#Syllabi").click(function () {
-    setTimeout(function () {
-        window.open(curr_course["links"]["syllabi"]);
-    }, Timing.button_delay);
+	setTimeout(function () {
+		for (syllabus_link of curr_course["links"]["syllabi"]) {
+			window.open(syllabus_link);
+		}
+	}, Timing.button_delay);
 });
 $("#textbook").click(function () {
     setTimeout(function () {
