@@ -65,7 +65,7 @@ function setUpModal() {
     } = curr_course;
     $("#classname").html(`${coursename} <span style='font-size:small'>(${unique})</span>`);
     buildTimeTitle(datetimearr);
-    $("#prof").html(`with <span style='font-weight:bold;'>${capitalizeString(profname)}</span>`);
+    $("#prof").html(`with <span style='font-weight:bold;'>${capitalizeStringPreserveSeparators(profname)}</span>`);
     setRegisterButton(status, registerlink)
 }
 
@@ -143,7 +143,7 @@ function setEventForSection(session, colorCounter, i) {
     end_date = formatCalculateDate(beg_day, full_day, session[1][1]);
 
     event_obj = {
-        title: `${department}-${number} with ${capitalizeString(profname)}`,
+        title: `${department}-${number} with ${capitalizeStringPreserveSeparators(profname)}`,
         start: start_date,
         end: end_date,
         color: Colors.material_colors[colorCounter],

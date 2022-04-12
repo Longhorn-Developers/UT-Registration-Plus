@@ -126,7 +126,7 @@ function buildBasicCourseInfo(row, course_name, individual) {
 		"register": $(row).find('td[data-th="Add"] a').prop('href'),
 		"unique": $(row).find('td[data-th="Unique"]').text(),
 		"status": $(row).find('td[data-th="Status"]').text(),
-		"prof_name": instructor_text ? has_initial ? capitalizeString(instructor_text.split(', ')[0]) : capitalizeString(instructor_text) : "Undecided",
+		"prof_name": instructor_text ? has_initial ? capitalizeStringPreserveSeparators(instructor_text.split(', ')[0]) : capitalizeStringPreserveSeparators(instructor_text) : "Undecided",
 		"initial": instructor_text && has_initial ? instructor_text.split(', ')[1].substring(0, 1) : "",
 		"time_data": {
 			"days": $(row).find('td[data-th="Days"]>span').toArray().map(x => $(x).text().trim()),

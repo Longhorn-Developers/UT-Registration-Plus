@@ -54,6 +54,20 @@ function capitalizeString(string) {
     return output.trim();
 }
 
+function capitalizeStringPreserveSeparators(string) {
+    //if one word, and if multiple words:
+    let output = "";
+    string = string.trim();
+    words = string.split(/[. ,\/-]/);
+    partitions = [""].concat(string.match(/[. ,\/-]+/g));
+    for (let i in words) {
+        word = words[i];
+        capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        output += partitions[i] +  capitalizedWord;
+    }
+    return output.trim();
+}
+
 function separateCourseNameParts(name) {
     let num_index = name.search(/\d/);
     department = name.substring(0, num_index).trim();

@@ -16,7 +16,7 @@ function setCourseList() {
         // build and append the course list element
         for (var i = 0; i < courses.length; i++) {
             let { coursename, unique, profname, status, datetimearr } = courses[i];
-            profname = capitalizeString(profname);
+            profname = capitalizeStringPreserveSeparators(profname);
             let line = buildTimeLines(datetimearr);
             let list_tile_color = getStatusColor(status);
             let list_sub_color = getStatusColor(status, true);
