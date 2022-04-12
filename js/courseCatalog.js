@@ -76,9 +76,9 @@ function updateLinks(course_info, first_name) {
 		number
 	} = course_info;
 	course_info["first_name"] = first_name;
-	course_info["links"]["rate_my_prof"] = `http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query=${first_name} ${prof_name};&facetSearch=true`;
-	course_info["links"]["ecis"] = profname ? `http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?&s_in_action_sw=S&s_in_search_type_sw=N&s_in_search_name=${prof_name}%2C%20${first_name}` :
-		`http://utdirect.utexas.edu/ctl/ecis/results/index.WBX?s_in_action_sw=S&s_in_search_type_sw=C&s_in_max_nbr_return=10&s_in_search_course_dept=${department}&s_in_search_course_num=${number}`;
+	course_info["links"]["rate_my_prof"] = `http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+texas+at+austin&queryoption=HEADER&query=${first_name} ${prof_name}&facetSearch=true`;
+	course_info["links"]["ecis"] = profname ? `https://utdirect.utexas.edu/ctl/ecis/results/search.WBX?s_in_search_type_sw=N&s_in_max_nbr_return=10&s_in_search_name=${prof_name}%2C+${first_name}` :
+		`http://utdirect.utexas.edu/ctl/ecis/results/search.WBX?s_in_search_type_sw=C&s_in_search_course_dept=${department}&s_in_search_course_num=${number}`;
 }
 
 
