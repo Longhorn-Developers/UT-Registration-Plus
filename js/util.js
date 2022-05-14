@@ -29,7 +29,7 @@ function buildQuery(course_data, sem) {
     } else if (course_data["department"] == "E E") {
         query += " + case when dept like '%ECE%' then 1 else 0 end";    
     }
-    query += " + case when course_name like '%" + course_data["name"] + "%' then 1 else 0 end";
+    query += " + case when course_name like '%" + course_data["name"] + "%' then 2 else 0 end";
     query += " + case when course_nbr like '%" + course_data["number"] + "%' then 1 else 0 end) > 1";
     if (sem) {
         query += " and sem like '%" + sem + "%'";
