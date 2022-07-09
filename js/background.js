@@ -18,6 +18,7 @@ function onStartup() {
     loadDataBase();
     getCurrentSemesters();
     getCurrentDepartments();
+    move(0,2);
 }
 
 /* Handle messages and their commands from content and popup scripts*/
@@ -324,6 +325,20 @@ function add(request, sender, sendResponse) {
         });
     });
 }
+
+/* Moves a requested course in storage*/
+function move(initPos, newPos) {
+    chrome.storage.sync.get("savedCourses", function (data) {
+        var courses = data.savedCourses;
+        [courses[initPos], courses[newPos]] = [courses[newPos], courses[initPos]];
+        //courses.push(request.course);
+        console.log(courses);
+        chrome.storage.sync.set({
+            savedCourses: courses,
+        });
+    })
+}
+
 /* Find and Remove the requested course from the storage*/
 function remove(request, sender, sendResponse) {
     chrome.storage.sync.get("savedCourses", function (data) {
