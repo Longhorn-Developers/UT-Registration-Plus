@@ -123,7 +123,7 @@ Template.Popup = class {
         return `<li id='${i}' class='course_list_item'>
                                 <div class='card course_list_card'>
                                     <div class='container' style='background:${list_tile_color}'>
-                                        <button class='moveUp_button' title='Move Up' value='moveUp'>
+                                        <button class='moveUp_button' id='moveUpButton' title='Move Up' value='moveUp'>
                                             <i id='moveUpicon' class="material-icons moveUp_button_icon">move_up</i>
                                         </button>
                                         <button class='copy_button' title='Copy Unique #' value='${unique}'>

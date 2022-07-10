@@ -18,7 +18,6 @@ function onStartup() {
     loadDataBase();
     getCurrentSemesters();
     getCurrentDepartments();
-    //move(0,2);
 }
 
 /* Handle messages and their commands from content and popup scripts*/
@@ -27,6 +26,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
         case "courseStorage":
             if (request.action == "add") {
                 add(request, sender, response);
+            }
+            if (request.action == "moveUp") {
+                moveUp(request, sender, response);
             }
             if (request.action == "remove") {
                 remove(request, sender, response);
@@ -327,17 +329,33 @@ function add(request, sender, sendResponse) {
 }
 
 /* Moves a requested course in storage*/
-function move(initPos, newPos) {
+function moveUp(request, sender, sendResponse) {
     chrome.storage.sync.get("savedCourses", function (data) {
         var courses = data.savedCourses;
-        [courses[initPos], courses[newPos]] = [courses[newPos], courses[initPos]];
-        //courses.push(request.course);
-        console.log(courses);
-        chrome.storage.sync.set({
-            savedCourses: courses,
-        });
+        console.log(courses)
+        var index = 0;
+        while (index < courses.length && courses[index].unique != request.course.unique) {
+            index++;
+        }
+        if(index==0) {
+            sendResponse({
+                response: "failed"
+            });
+        } else {
+            [courses[index], courses[index-1]] = [courses[index-1], courses[index]];
+            chrome.storage.sync.set({
+                savedCourses: courses,
+            });
+            sendResponse({
+                response: "success",
+                done: "Moved: (" + request.course.unique + ") " + request.course.coursename,
+                label: "Remove Course -",
+                value: "remove",
+            });
+        }
     })
 }
+
 
 /* Find and Remove the requested course from the storage*/
 function remove(request, sender, sendResponse) {

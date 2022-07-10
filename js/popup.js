@@ -246,7 +246,9 @@ $("#courseList").on("click", ".copy_button", function (e) {
 $("#courseList").on("click", ".moveUp_button", function (e) {
     e.stopPropagation();
     moveUpButtonAnimation($(this));
-    
+    let clicked_item = $(this).closest("li");
+    let curr_course = courses[$(clicked_item).attr("id")];
+    handleMoveUp(clicked_item,curr_course)
 });
 
 function copyUnique(unique) {
@@ -285,6 +287,25 @@ function handleRegister(clicked_item, curr_course) {
             setCurrentTabUrl(registerlink);
         });
     }
+}
+
+function handleMoveUp(clicked_item, curr_course) {
+
+    chrome.runtime.sendMessage(
+        {
+            command: "courseStorage",
+            course: curr_course,
+            action: "moveUp",
+        }, function(response) {
+            if(response.response == "success") {
+                setCourseList();
+            } else {
+                //$('#cantMoveUp').css('display','block');
+                $('#cantMoveUp').fadeIn(500);
+                $('#cantMoveUp').delay(1000).fadeOut(500);
+            }
+        });
+
 }
 
 function handleRemove(clicked_item, curr_course) {
