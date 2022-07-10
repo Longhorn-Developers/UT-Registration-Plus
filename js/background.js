@@ -18,7 +18,7 @@ function onStartup() {
     loadDataBase();
     getCurrentSemesters();
     getCurrentDepartments();
-    move(0,2);
+    //move(0,2);
 }
 
 /* Handle messages and their commands from content and popup scripts*/

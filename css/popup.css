@@ -166,6 +166,29 @@ i {
     font-size: x-large;
 }
 
+.moveUp_button {
+    background-color: transparent;
+    padding: 0px;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: .2s;
+}
+
+.moveUp_button:focus {
+    outline: 0;
+}
+
+.moveUp_button_icon {
+    color:white;
+    float:left;
+    border-radius: 50%;
+    padding: 3px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.16);
+    font-size: x-large;
+}
+
 .header_container{
     border-radius: 7px;
 }

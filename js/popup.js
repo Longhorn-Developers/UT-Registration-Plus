@@ -228,6 +228,12 @@ $("#courseList")
     })
     .on("mouseleave", ".copy_button", function () {
         $(this).removeClass("shadow");
+    })
+    .on("mouseover", ".moveUp_button", function () {
+        $(this).addClass("shadow");
+    })
+    .on("mouseleave", ".moveUp_button", function () {
+        $(this).removeClass("shadow");
     });
 
 $("#courseList").on("click", ".copy_button", function (e) {
@@ -235,6 +241,12 @@ $("#courseList").on("click", ".copy_button", function (e) {
     copyButtonAnimation($(this));
     let unique = $(this).val();
     copyUnique(unique);
+});
+
+$("#courseList").on("click", ".moveUp_button", function (e) {
+    e.stopPropagation();
+    moveUpButtonAnimation($(this));
+    
 });
 
 function copyUnique(unique) {
@@ -347,6 +359,24 @@ function copyButtonAnimation(copy_button) {
         .delay(400)
         .queue(function (n) {
             $(this).text("content_copy");
+            $(this).parent().removeClass("shadow");
+            if ($(this).parent().is(":hover")) {
+                $(this).parent().addClass("shadow");
+            }
+            n();
+        });
+}
+
+function moveUpButtonAnimation(moveUp_button) {
+    $(moveUp_button).find("i").text("check");
+    $(moveUp_button).stop(true, false).removeAttr("style").removeClass("shadow", {
+        duration: 200,
+    });
+    $(moveUp_button)
+        .find("i")
+        .delay(400)
+        .queue(function (n) {
+            $(this).text("move_up");
             $(this).parent().removeClass("shadow");
             if ($(this).parent().is(":hover")) {
                 $(this).parent().addClass("shadow");
