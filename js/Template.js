@@ -192,11 +192,21 @@ Template.Options = class {
                 <br>`;
     }
 
-    static contributor_card(username, name, image_url, profile_url) {
+    static contributor_card(username, image_url, profile_url) {
         return `<div class='card contributor-card' id="${username}" data-url="${profile_url}">
                     <img class='contributor-image' src="${image_url}"></img>
-                    ${name ? `<p class='contributor-name'>${name}</p>` : ""}
                     <p class='contributor-username'>${username}</p>
                 </div>`;
     }
+
+     //Removed the name column since it wasn't being used. Former code is commented below
+     /*
+     static contributor_card(username, name, image_url, profile_url) {
+        return `<div class='card contributor-card' id="${username}" data-url="${profile_url}">
+                    <img class='contributor-image' src="${image_url}"></img>
+                    //${name ? `<p class='contributor-name'>${name}</p>` : ""}
+                    <p class='contributor-username'>${username}</p>
+                </div>`;
+    }
+    */
 };
