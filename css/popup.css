@@ -143,6 +143,8 @@ body {
     cursor: pointer;
     border-radius: 50%;
     transition: .2s;
+    position: absolute;
+    right: 20px;
 }
 
 .copy_button:focus {

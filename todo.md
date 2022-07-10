@@ -6,7 +6,6 @@
 - [ ] work on multiple schedules
 - [ ] polish
 - [ ] more 'at a glance info'
-- [ ] Rearrange Courses
 - [ ] Firefox Support
 - [ ] RMP (cumulative score for class based off CIS, RMP, grade dist., etc.)
 - [ ] Conflict indicator ( Possible different section? )
@@ -14,8 +13,10 @@
 
 ## Known Bugs:
 - [ ] Screenshotting calendar on zoomed browser cuts off image.
+- [ ] When moving courses while scrolled down, the popup scrolls back up after moving a course
 
 ## Completed:
+- [x] Rearrange Courses
 - [x] unneeded Logout message on individual course pages
 - [x] RMP not working on individual course pages
 - [x] Textbook button (amber)
