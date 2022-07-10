@@ -126,6 +126,9 @@ Template.Popup = class {
                                         <button class='moveUp_button' id='moveUpButton' title='Move Up' value='moveUp'>
                                             <i id='moveUpicon' class="material-icons moveUp_button_icon">move_up</i>
                                         </button>
+                                        <button class='moveDown_button' id='moveDownButton' title='Move Down' value='moveDown'>
+                                            <i id='moveDownicon' class="material-icons moveDown_button_icon">move_down</i>
+                                        </button>
                                         <button class='copy_button' title='Copy Unique #' value='${unique}'>
                                             <i id='copyicon' class="material-icons copy_button_icon">content_copy</i>
                                         </button>

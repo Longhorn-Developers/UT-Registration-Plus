@@ -30,6 +30,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             if (request.action == "moveUp") {
                 moveUp(request, sender, response);
             }
+            if (request.action == "moveDown") {
+                moveDown(request, sender, response);
+            }
             if (request.action == "remove") {
                 remove(request, sender, response);
             }
@@ -328,7 +331,7 @@ function add(request, sender, sendResponse) {
     });
 }
 
-/* Moves a requested course in storage*/
+/* Moves a requested course up one spot in storage*/
 function moveUp(request, sender, sendResponse) {
     chrome.storage.sync.get("savedCourses", function (data) {
         var courses = data.savedCourses;
@@ -337,7 +340,7 @@ function moveUp(request, sender, sendResponse) {
         while (index < courses.length && courses[index].unique != request.course.unique) {
             index++;
         }
-        if(index==0) {
+        if(index<=0) {
             sendResponse({
                 response: "failed"
             });
@@ -349,8 +352,36 @@ function moveUp(request, sender, sendResponse) {
             sendResponse({
                 response: "success",
                 done: "Moved: (" + request.course.unique + ") " + request.course.coursename,
-                label: "Remove Course -",
-                value: "remove",
+                label: "Move Course Up -",
+                value: "moveUp",
+            });
+        }
+    })
+}
+
+/* Moves a requested course down one spot in storage*/
+function moveDown(request, sender, sendResponse) {
+    chrome.storage.sync.get("savedCourses", function (data) {
+        var courses = data.savedCourses;
+        console.log(courses)
+        var index = 0;
+        while (index < courses.length && courses[index].unique != request.course.unique) {
+            index++;
+        }
+        if(index>=courses.length-1) {
+            sendResponse({
+                response: "failed"
+            });
+        } else {
+            [courses[index], courses[index+1]] = [courses[index+1], courses[index]];
+            chrome.storage.sync.set({
+                savedCourses: courses,
+            });
+            sendResponse({
+                response: "success",
+                done: "Moved: (" + request.course.unique + ") " + request.course.coursename,
+                label: "Move Course Down -",
+                value: "moveDown",
             });
         }
     })

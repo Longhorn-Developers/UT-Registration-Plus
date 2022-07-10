@@ -156,6 +156,15 @@ body {
     display: none;
 }
 
+#cantMoveDown {
+    margin: auto;
+    width: 80%;
+    text-align: center;
+    margin-top: -30px;
+    padding: 0 0 60px 0;
+    display: none;
+}
+
 .shadow {
     box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.16);
 }
@@ -188,6 +197,29 @@ i {
 }
 
 .moveUp_button_icon {
+    color:white;
+    float:left;
+    border-radius: 50%;
+    padding: 3px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.16);
+    font-size: x-large;
+}
+
+.moveDown_button {
+    background-color: transparent;
+    padding: 0px;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: .2s;
+}
+
+.moveDown_button:focus {
+    outline: 0;
+}
+
+.moveDown_button_icon {
     color:white;
     float:left;
     border-radius: 50%;

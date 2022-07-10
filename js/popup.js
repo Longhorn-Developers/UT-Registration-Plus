@@ -251,6 +251,14 @@ $("#courseList").on("click", ".moveUp_button", function (e) {
     handleMoveUp(clicked_item,curr_course)
 });
 
+$("#courseList").on("click", ".moveDown_button", function (e) {
+    e.stopPropagation();
+    moveDownButtonAnimation($(this));
+    let clicked_item = $(this).closest("li");
+    let curr_course = courses[$(clicked_item).attr("id")];
+    handleMoveDown(clicked_item,curr_course)
+});
+
 function copyUnique(unique) {
     var temp = $("<input>");
     $("body").append(temp);
@@ -300,9 +308,26 @@ function handleMoveUp(clicked_item, curr_course) {
             if(response.response == "success") {
                 setCourseList();
             } else {
-                //$('#cantMoveUp').css('display','block');
                 $('#cantMoveUp').fadeIn(500);
                 $('#cantMoveUp').delay(1000).fadeOut(500);
+            }
+        });
+
+}
+
+function handleMoveDown(clicked_item, curr_course) {
+
+    chrome.runtime.sendMessage(
+        {
+            command: "courseStorage",
+            course: curr_course,
+            action: "moveDown",
+        }, function(response) {
+            if(response.response == "success") {
+                setCourseList();
+            } else {
+                $('#cantMoveDown').fadeIn(500);
+                $('#cantMoveDown').delay(1000).fadeOut(500);
             }
         });
 
@@ -398,6 +423,24 @@ function moveUpButtonAnimation(moveUp_button) {
         .delay(400)
         .queue(function (n) {
             $(this).text("move_up");
+            $(this).parent().removeClass("shadow");
+            if ($(this).parent().is(":hover")) {
+                $(this).parent().addClass("shadow");
+            }
+            n();
+        });
+}
+
+function moveDownButtonAnimation(moveDown_button) {
+    $(moveDown_button).find("i").text("check");
+    $(moveDown_button).stop(true, false).removeAttr("style").removeClass("shadow", {
+        duration: 200,
+    });
+    $(moveDown_button)
+        .find("i")
+        .delay(400)
+        .queue(function (n) {
+            $(this).text("move_down");
             $(this).parent().removeClass("shadow");
             if ($(this).parent().is(":hover")) {
                 $(this).parent().addClass("shadow");
