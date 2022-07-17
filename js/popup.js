@@ -140,7 +140,7 @@ $("#search").click(function () {
 
 $("#import-class").click(function () {
     $("#import_input").click();
-    console.log("back to improting");
+    console.log("back to importing");
 });
 
 function isImportedValid(imported_courses) {
@@ -234,7 +234,14 @@ $("#courseList")
     })
     .on("mouseleave", ".moveUp_button", function () {
         $(this).removeClass("shadow");
+    })
+    .on("mouseover", ".moveDown_button", function () {
+        $(this).addClass("shadow");
+    })
+    .on("mouseleave", ".moveDown_button", function () {
+        $(this).removeClass("shadow");
     });
+    
 
 $("#courseList").on("click", ".copy_button", function (e) {
     e.stopPropagation();
