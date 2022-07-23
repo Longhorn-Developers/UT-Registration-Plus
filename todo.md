@@ -13,7 +13,6 @@
 
 ## Known Bugs:
 - [ ] Screenshotting calendar on zoomed browser cuts off image.
-- [ ] When moving courses while scrolled down, the popup scrolls back up after moving a course
 
 ## Completed:
 - [x] Rearrange Courses
@@ -34,6 +33,7 @@
 - [x] search by unique number
 - [x] Fix the update/install bug
 - [x] Redesign footer menu
+- [x] Fix the scrolling up when list refresh bug
 
 for FIXING DB: 
 

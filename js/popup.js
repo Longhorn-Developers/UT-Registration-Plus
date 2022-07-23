@@ -37,6 +37,34 @@ function setCourseList() {
     });
 }
 
+function organizeCourseList() {
+    chrome.storage.sync.get("savedCourses", function (data) {
+        courses = data.savedCourses;
+        let hours = 0;
+        let list_html = ""
+        for (var i = 0; i < courses.length; i++) {
+            let { coursename, unique, profname, status, datetimearr } = courses[i];
+            profname = capitalizeString(profname);
+            let line = buildTimeLines(datetimearr);
+            let list_tile_color = getStatusColor(status);
+            let list_sub_color = getStatusColor(status, true);
+            let { department, number } = separateCourseNameParts(coursename);
+            let class_length = parseInt(number.charAt(0));
+            let multi_semester_code = number.slice(-1);
+            if (["A", "B"].includes(multi_semester_code)) {
+                hours += Math.floor(class_length / 2);
+            } else if (["X", "Y", "Z"].includes(multi_semester_code)) {
+                hours += Math.floor(class_length / 3);
+            } else {
+                hours += class_length;
+            }
+            list_html += Template.Popup.list_item(i, list_tile_color, unique, department, number, profname, list_sub_color, line);
+        }
+        $("#courseList").html(list_html);
+        $("#meta-metric").text(hours);
+    });
+}
+
 /* convert from the dtarr and maek the time lines*/
 function buildTimeLines(datetimearr) {
     let lines = convertDateTimeArrToLine(datetimearr);
@@ -313,7 +341,7 @@ function handleMoveUp(clicked_item, curr_course) {
             action: "moveUp",
         }, function(response) {
             if(response.response == "success") {
-                setCourseList();
+                organizeCourseList();
             } else {
                 $('#cantMoveUp').fadeIn(500);
                 $('#cantMoveUp').delay(1000).fadeOut(500);
@@ -331,7 +359,7 @@ function handleMoveDown(clicked_item, curr_course) {
             action: "moveDown",
         }, function(response) {
             if(response.response == "success") {
-                setCourseList();
+                organizeCourseList();
             } else {
                 $('#cantMoveDown').fadeIn(500);
                 $('#cantMoveDown').delay(1000).fadeOut(500);
