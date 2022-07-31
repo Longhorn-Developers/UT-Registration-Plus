@@ -128,9 +128,10 @@ function updateAllTabsCourseList() {
     });
 }
 
-function htmlToNode(response) {
-    return $('<div/>').html(response).contents();
-}
+// function htmlToNode(response) {
+//     //return $('<div/>').html(response).contents();
+//     return fetch(html(response).contents());
+// }
 
 function setCurrentTabUrl(link) {
     chrome.tabs.query({

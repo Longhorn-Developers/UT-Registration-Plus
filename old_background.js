@@ -171,7 +171,7 @@ function setDefaultOptions() {
 }
 
 // scrape the registrar schedules page for caching the current active semesters
-function getCurrentSemesters() {
+function old_getCurrentSemesters() {
     $.get("https://registrar.utexas.edu/schedules", function (response) {
         if (response) {
             htmlToNode(response)

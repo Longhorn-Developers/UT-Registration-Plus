@@ -47,7 +47,7 @@ Export.png_options = {
 };
 
 class Popup {}
-Popup.num_semesters = 2;
+Popup.num_semesters = 3;
 
 class Text {}
 Text.emptyText = function () {
