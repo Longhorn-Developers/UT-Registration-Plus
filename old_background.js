@@ -228,17 +228,17 @@ function updateBadge(first, new_changes) {
 function updateBadgeText(first, courses) {
     let badge_text = courses.length > 0 ? `${courses.length}` : "";
     let flash_time = !first ? 200 : 0;
-    chrome.browserAction.setBadgeText({
+    chrome.action.setBadgeText({
         text: badge_text,
     });
     if (!first) {
         // if isn't the first install of the extension, flash the badge to bring attention to it
-        chrome.browserAction.setBadgeBackgroundColor({
+        chrome.action.setBadgeBackgroundColor({
             color: Colors.badge_flash,
         });
     }
     setTimeout(function () {
-        chrome.browserAction.setBadgeBackgroundColor({
+        chrome.action.setBadgeBackgroundColor({
             color: Colors.badge_default,
         });
     }, flash_time);
@@ -442,6 +442,7 @@ function loadDataBase() {
         var sqldb = new SQL.Database(data);
         grades = sqldb;
     });
+    
 }
 /* load the database from file */
 function loadBinaryFile(path, success) {
