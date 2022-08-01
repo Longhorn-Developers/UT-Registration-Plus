@@ -9,6 +9,8 @@ const default_options = {
     storeWaitlist: true,
 };
 
+///ISSUES: on startup after inactive, have to click off and back on to reload data. How to circumvent?
+
 onStartup();
 function onStartup() {
     console.log('start');
@@ -24,8 +26,33 @@ function onStartup() {
     
     //loadDataBase(); Not workling yet, see function notes
 
-    getCurrentSemesters().then((data) => {semesters = data});
+    getCurrentSemesters()
+
+    //getCurrentDepartments();
+
+    console.log('end')
 }
+
+
+chrome.runtime.onMessage.addListener(function (request, sender, response) {
+    console.log(request.command)
+    switch (request.command) {
+        case "courseStorage":
+            if (request.action == "add") {
+                add(request, sender, response);
+            }
+            if (request.action == "remove") {
+                remove(request, sender, response);
+            }
+            break;
+        case "currentSemesters":
+            response({ semesters: current_semesters });
+            getCurrentSemesters();
+            break;
+    }
+    return true;
+});
+
 
 
 // update the badge text to reflect the new changes
@@ -61,12 +88,25 @@ function updateBadgeText(first, courses) {
     }, flash_time);
 }
 
+function setDefaultOptions() {
+    chrome.storage.sync.get("options", function (data) {
+        if (!data.options) {
+            chrome.storage.sync.set(
+                {
+                    options: default_options,
+                },
+                function () {
+                    console.log("default options:", default_options);
+                }
+            );
+        }
+    });
+}
+
 async function getCurrentSemesters() {
-
     let webData;
-
-    async function goFetch() {
-        return fetch("https://registrar.utexas.edu/schedules")
+    async function goFetch(linkend="") {
+        return fetch("https://registrar.utexas.edu/schedules/" + linkend)
         .then((response) => { 
             return response.text()
             .then((data) => {
@@ -82,20 +122,48 @@ async function getCurrentSemesters() {
     let i = 0
     for(let row=0; row<arr.length; row++) {
         if(arr[row].startsWith('<li><a href="https://registrar.utexas.edu/schedules/') && arr[row][52] != "a") {
+            let newWebData;
             let start = arr[row].indexOf('Schedule">')+10;
-            let end = arr[row].indexOf('</a></li>')
-            console.log(arr[row].substring(start,end));
+            let end = arr[row].indexOf('</a></li>');
+            let name = arr[row].substring(start,end);
+
+            let num = arr[row].indexOf('"https://registrar.utexas.edu/schedules/">')+53;
+            let numend = arr[row].indexOf('" target');
+            let short_sem_num = arr[row].substring(num,numend);
+
+            //console.log(name + " " + short_sem_num); //important
+
+            current_semesters[name] = "code";
+
+            await goFetch(short_sem_num).then((data) => {newWebData = data});
+            arr2 = newWebData.split("\n")
+            //console.log(arr2)
+
+            for(let row2=0; row2<arr2.length; row2++) {
+                //console.log(arr2[row2])
+                if(arr2[row2].startsWith('<div class="gobutton"><a href="')) {
+                    let start2 = arr2[row2].indexOf('<div class="gobutton"><a href="')+31;
+                    let end2 = arr2[row2].indexOf('" target="');
+                    var scheduleLink = arr2[row2].substring(start2,end2);
+                    var sem_num = scheduleLink.substring(scheduleLink.lastIndexOf("/") + 1).trim();
+                    if (current_semesters[name] != sem_num) {
+                        current_semesters[name] = sem_num;
+                    }
+                    break;
+                }
+            }
+            //console.log(scheduleLink + " " + sem_num) //important
+
             i+=1
         }
         if(i > Popup.num_semesters) {
             break;
         }
     }
-    
-
+    //console.log(current_semesters)
 }
 
-function oldGetCurrentSemesters() {
+function old_GetCurrentSemesters() { //depricated: remove when finished
     $.get("https://registrar.utexas.edu/schedules", function (response) {
         console.log(response)
         if (response) {
@@ -126,8 +194,71 @@ function oldGetCurrentSemesters() {
                 });
         }
     });
+}
 
-    
+/* Initially set the course data in storage */
+chrome.runtime.onInstalled.addListener(function (details) {
+    if (details.reason == "install") {
+        setDefaultOptions();
+        chrome.storage.sync.get("savedCourses", function (data) {
+            if (!data.savedCourses) {
+                chrome.storage.sync.set({
+                    savedCourses: [],
+                });
+            }
+        });
+    } else if (details.reason == "update") {
+        // if there's been an update, call setDefaultOptions in case their settings have gotten wiped
+        setDefaultOptions();
+        console.log("updated");
+    }
+});
+
+chrome.storage.onChanged.addListener(function (changes) {
+    for (key in changes) {
+        if (key === "savedCourses") {
+            updateBadge(false, changes.savedCourses.newValue); // update the extension popup badge whenever the savedCourses have been changed
+        }
+    }
+});
+
+/* Add the requested course to the storage*/
+function add(request, sender, sendResponse) {
+    chrome.storage.sync.get("savedCourses", function (data) {
+        var courses = data.savedCourses;
+        if (!contains(courses, request.course.unique)) {
+            courses.push(request.course);
+            console.log(courses);
+            chrome.storage.sync.set({
+                savedCourses: courses,
+            });
+        }
+        sendResponse({
+            done: "Added: (" + request.course.unique + ") " + request.course.coursename,
+            label: "Remove Course -",
+            value: "remove",
+        });
+    });
+}
+/* Find and Remove the requested course from the storage*/
+function remove(request, sender, sendResponse) {
+    chrome.storage.sync.get("savedCourses", function (data) {
+        var courses = data.savedCourses;
+        console.log(courses);
+        var index = 0;
+        while (index < courses.length && courses[index].unique != request.course.unique) {
+            index++;
+        }
+        courses.splice(index, 1);
+        chrome.storage.sync.set({
+            savedCourses: courses,
+        });
+        sendResponse({
+            done: "Removed: (" + request.course.unique + ") " + request.course.coursename,
+            label: "Add Course +",
+            value: "add",
+        });
+    });
 }
 
 

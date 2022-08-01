@@ -307,7 +307,7 @@ function isConflict(adtarr, bdtarr) {
 }
 
 /* Add the requested course to the storage*/
-function add(request, sender, sendResponse) {
+function old_add(request, sender, sendResponse) {
     chrome.storage.sync.get("savedCourses", function (data) {
         var courses = data.savedCourses;
         if (!contains(courses, request.course.unique)) {
@@ -325,7 +325,7 @@ function add(request, sender, sendResponse) {
     });
 }
 /* Find and Remove the requested course from the storage*/
-function remove(request, sender, sendResponse) {
+function old_remove(request, sender, sendResponse) {
     chrome.storage.sync.get("savedCourses", function (data) {
         var courses = data.savedCourses;
         console.log(courses);
