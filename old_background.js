@@ -11,9 +11,9 @@ const default_options = {
     storeWaitlist: true,
 };
 
-onStartup();
+old_onStartup();
 
-function onStartup() {
+function old_onStartup() {
     updateBadge(true);
     loadDataBase();
     getCurrentSemesters();
@@ -21,6 +21,7 @@ function onStartup() {
 }
 
 /* Handle messages and their commands from content and popup scripts*/
+
 chrome.runtime.onMessage.addListener(function (request, sender, response) {
     switch (request.command) {
         case "courseStorage":
@@ -53,10 +54,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             executeQuery(request.query, response);
             break;
         case "currentSemesters":
-            response({ semesters: current_semesters });
             getCurrentSemesters();
+            response({ semesters: current_semesters });
             break;
         case "currentDepartments":
+            getCurrentDepartments();
             response({ departments: departments });
             break;
         case "setOpen":
@@ -119,12 +121,12 @@ chrome.storage.onChanged.addListener(function (changes) {
 });
 
 // get the value of an option if it exists
-function getOptionsValue(key, sendResponse) {
+function old_getOptionsValue(key, sendResponse) {
     chrome.storage.sync.get("options", function (data) {
         if (!data.options) {
-            setDefaultOptions();
+            old_setDefaultOptions();
         } else {
-            sendResponse({
+            old_sendResponse({
                 value: data.options[key],
             });
         }
@@ -132,12 +134,12 @@ function getOptionsValue(key, sendResponse) {
 }
 
 // set the value of an option if it exists
-function setOptionsValue(key, value, sendResponse) {
+function old_setOptionsValue(key, value, sendResponse) {
     chrome.storage.sync.get("options", function (data) {
         let new_options = data.options;
         if (!data.options) {
             // if there are no options set, set the defaults
-            setDefaultOptions();
+            old_setDefaultOptions();
             new_options = default_options;
         }
         new_options[key] = value;
@@ -146,7 +148,7 @@ function setOptionsValue(key, value, sendResponse) {
                 options: new_options,
             },
             function () {
-                sendResponse({
+                old_sendResponse({
                     value: new_options[key],
                 });
             }
@@ -204,7 +206,7 @@ function old_getCurrentSemesters() {
 }
 
 // use the utexas review api for getting the list of departments
-function getCurrentDepartments() {
+function old_getCurrentDepartments() {
     $.get("https://raw.githubusercontent.com/sghsri/UT-Registration-Plus/master/docs/departments.json", function (response) {
         if (response) {
             departments = JSON.parse(response);
@@ -213,19 +215,19 @@ function getCurrentDepartments() {
 }
 
 // update the badge text to reflect the new changes
-function updateBadge(first, new_changes) {
+function old_updateBadge(first, new_changes) {
     if (new_changes) {
-        updateBadgeText(first, new_changes);
+        old_updateBadgeText(first, new_changes);
     } else {
         chrome.storage.sync.get("savedCourses", function (data) {
             let courses = data.savedCourses;
-            updateBadgeText(first, courses);
+            old_updateBadgeText(first, courses);
         });
     }
 }
 
 // update the badge text to show the number of courses that have been saved by the user
-function updateBadgeText(first, courses) {
+function old_updateBadgeText(first, courses) {
     let badge_text = courses.length > 0 ? `${courses.length}` : "";
     let flash_time = !first ? 200 : 0;
     chrome.action.setBadgeText({
@@ -245,7 +247,7 @@ function updateBadgeText(first, courses) {
 }
 
 /* Find all the conflicts in the courses and send them out/ if there is even a conflict*/
-function checkConflicts(sendResponse) {
+function old_checkConflicts(sendResponse) {
     chrome.storage.sync.get("savedCourses", function (data) {
         var conflicts = [];
         var courses = data.savedCourses;
@@ -253,7 +255,7 @@ function checkConflicts(sendResponse) {
             for (let j = i + 1; j < courses.length; j++) {
                 let course_a = courses[i];
                 let course_b = courses[j];
-                if (isConflict(course_a.datetimearr, course_b.datetimearr)) conflicts.push([course_a, course_b]);
+                if (old_isConflict(course_a.datetimearr, course_b.datetimearr)) conflicts.push([course_a, course_b]);
             }
         }
         sendResponse({
@@ -264,7 +266,7 @@ function checkConflicts(sendResponse) {
 }
 
 /* Find if the course at unique and with currdatearr is contained in the saved courses and if it conflicts with any other courses*/
-function isSingleConflict(currdatearr, unique, sendResponse) {
+function old_isSingleConflict(currdatearr, unique, sendResponse) {
     chrome.storage.sync.get("savedCourses", function (data) {
         var courses = data.savedCourses;
         var conflict_list = [];
@@ -272,7 +274,7 @@ function isSingleConflict(currdatearr, unique, sendResponse) {
         var contains = false;
         for (let i = 0; i < courses.length; i++) {
             let course = courses[i];
-            if (isConflict(currdatearr, course.datetimearr)) {
+            if (old_isConflict(currdatearr, course.datetimearr)) {
                 conflict = true;
                 conflict_list.push(course);
             }
@@ -289,7 +291,7 @@ function isSingleConflict(currdatearr, unique, sendResponse) {
 }
 
 /* Check if conflict between two date-time-arrs*/
-function isConflict(adtarr, bdtarr) {
+function old_isConflict(adtarr, bdtarr) {
     for (var i = 0; i < adtarr.length; i++) {
         var current_day = adtarr[i][0];
         var current_times = adtarr[i][1];
@@ -346,7 +348,7 @@ function old_remove(request, sender, sendResponse) {
 }
 
 /* Find if the unique is already contained within the storage*/
-function alreadyContains(unique, sendResponse) {
+function old_alreadyContains(unique, sendResponse) {
     chrome.storage.sync.get("savedCourses", function (data) {
         var courses = data.savedCourses;
         sendResponse({
@@ -356,7 +358,7 @@ function alreadyContains(unique, sendResponse) {
 }
 
 // find if a course with the current unique number exists in the user's saved courses
-function contains(courses, unique) {
+function old_contains(courses, unique) {
     var i = 0;
     while (i < courses.length) {
         if (isSameCourse(courses[i], unique)) {
@@ -368,12 +370,12 @@ function contains(courses, unique) {
 }
 
 // does it have the same unique number as provided
-function isSameCourse(course, unique) {
+function old_isSameCourse(course, unique) {
     return course.unique == unique;
 }
 
 // send a message to every tab open to updateit's course list (and thus recalculate its conflicts highlighting)
-function updateTabs() {
+function old_updateTabs() {
     chrome.tabs.query({}, function (tabs) {
         for (var i = 0; i < tabs.length; i++) {
             chrome.tabs.sendMessage(tabs[i].id, {
@@ -428,7 +430,7 @@ function updateTabs() {
 // }
 
 // execute a query on the grades database
-function executeQuery(query, sendResponse) {
+function old_executeQuery(query, sendResponse) {
     var res = grades.exec(query)[0];
     sendResponse({
         data: res,
@@ -436,7 +438,7 @@ function executeQuery(query, sendResponse) {
 }
 
 /* Load the database*/
-function loadDataBase() {
+function old_loadDataBase() {
     sql = window.SQL;
     loadBinaryFile("grades.db", function (data) {
         var sqldb = new SQL.Database(data);
@@ -445,7 +447,7 @@ function loadDataBase() {
     
 }
 /* load the database from file */
-function loadBinaryFile(path, success) {
+function old_loadBinaryFile(path, success) {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", chrome.extension.getURL(path), true);
     xhr.responseType = "arraybuffer";

@@ -9,7 +9,10 @@ const default_options = {
     storeWaitlist: true,
 };
 
-///ISSUES: on startup after inactive, have to click off and back on to reload data. How to circumvent?
+///ISSUES: 
+//1. on startup after inactive, have to click off and back on to reload data. How to circumvent?
+//2. when adding/removing/importing courses there is a weird error. The function works perfectly but still logs an error (But not in the console) [if it works it works?]
+//3. 
 
 onStartup();
 function onStartup() {
@@ -45,47 +48,140 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
                 remove(request, sender, response);
             }
             break;
+        case "isSingleConflict":
+            isSingleConflict(request.dtarr, request.unique, response);
+            break;
+
+        //below unchecked
+        case "checkConflicts":
+            checkConflicts(response);
+            break;
+        case "updateBadge":
+            updateBadge();
+            break;
+
+        ///unused func?
+        case "updateStatus":
+            console.log('this function doesn\'t exist. check the old_background file for the commented version')
+            updateStatus(response);
+            break;
+        ///
+
+        case "alreadyContains":
+            alreadyContains(request.unique, response);
+            break;
+        case "updateCourseList":
+            updateTabs();
+            break;
+        case "gradesQuery":
+            executeQuery(request.query, response);
+            break;
+        //
+        
         case "currentSemesters":
-            response({ semesters: current_semesters });
             getCurrentSemesters();
+            response({ semesters: current_semesters });
+            break;
+
+        //below unchecked
+        case "currentDepartments":
+            getCurrentDepartments();
+            response({ departments: departments });
+            break;
+        case "setOpen":
+            should_open = true;
+            chrome.tabs.create({ url: request.url });
+            break;
+        case "shouldOpen":
+            response({ open: should_open });
+            should_open = false;
+            break;
+
+        case "getOptionsValue":
+            getOptionsValue(request.key, response);
+            break;
+
+        case "setOptionsValue":
+            setOptionsValue(request.key, request.value, response);
+            break;
+        
+        default: //this wont work because of xhr
+            const xhr = new XMLHttpRequest();
+            const method = request.method ? request.method.toUpperCase() : "GET";
+            xhr.open(method, request.url, true);
+            console.log(request);
+            xhr.onload = () => {
+                console.log(xhr.responseUrl);
+                response(xhr.responseText);
+            };
+            xhr.onerror = () => response(xhr.statusText);
+            if (method == "POST") {
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            }
+            xhr.send(request.data);
             break;
     }
     return true;
 });
 
-
-
-// update the badge text to reflect the new changes
-function updateBadge(first, new_changes) {
-    if (new_changes) {
-        updateBadgeText(first, new_changes);
-    } else {
+/* Initially set the course data in storage */
+chrome.runtime.onInstalled.addListener(function (details) {
+    if (details.reason == "install") {
+        setDefaultOptions();
         chrome.storage.sync.get("savedCourses", function (data) {
-            let courses = data.savedCourses;
-            updateBadgeText(first, courses);
+            if (!data.savedCourses) {
+                chrome.storage.sync.set({
+                    savedCourses: [],
+                });
+            }
         });
+    } else if (details.reason == "update") {
+        // if there's been an update, call setDefaultOptions in case their settings have gotten wiped
+        setDefaultOptions();
+        console.log("updated");
     }
-}
-// update the badge text to show the number of courses that have been saved by the user
-function updateBadgeText(first, courses) {
-    let badge_text = courses.length > 0 ? `${courses.length}` : "";
-    let flash_time = !first ? 200 : 0;
-    chrome.action.setBadgeText({
-        text: badge_text,
+});
+
+chrome.storage.onChanged.addListener(function (changes) {
+    for (key in changes) {
+        if (key === "savedCourses") {
+            updateBadge(false, changes.savedCourses.newValue); // update the extension popup badge whenever the savedCourses have been changed
+        }
+    }
+});
+
+function getOptionsValue(key, sendResponse) {
+    chrome.storage.sync.get("options", function (data) {
+        if (!data.options) {
+            setDefaultOptions();
+        } else {
+            sendResponse({
+                value: data.options[key],
+            });
+        }
     });
-    if (!first) {
-        // if isn't the first install of the extension, flash the badge to bring attention to it
-        chrome.action.setBadgeBackgroundColor({
-            color: Colors.badge_flash
-            //color: '#33FF33'
-        });
-    }
-    setTimeout(function () {
-        chrome.action.setBadgeBackgroundColor({
-            color: Colors.badge_default
-            //color: '#33FF33'
-        });
-    }, flash_time);
+}
+
+function setOptionsValue(key, value, sendResponse) {
+    chrome.storage.sync.get("options", function (data) {
+        let new_options = data.options;
+        if (!data.options) {
+            // if there are no options set, set the defaults
+            setDefaultOptions();
+            new_options = default_options;
+        }
+        new_options[key] = value;
+        chrome.storage.sync.set(
+            {
+                options: new_options,
+            },
+            function () {
+                sendResponse({
+                    value: new_options[key],
+                });
+            }
+        );
+    });
 }
 
 function setDefaultOptions() {
@@ -196,31 +292,122 @@ function old_GetCurrentSemesters() { //depricated: remove when finished
     });
 }
 
-/* Initially set the course data in storage */
-chrome.runtime.onInstalled.addListener(function (details) {
-    if (details.reason == "install") {
-        setDefaultOptions();
-        chrome.storage.sync.get("savedCourses", function (data) {
-            if (!data.savedCourses) {
-                chrome.storage.sync.set({
-                    savedCourses: [],
-                });
-            }
-        });
-    } else if (details.reason == "update") {
-        // if there's been an update, call setDefaultOptions in case their settings have gotten wiped
-        setDefaultOptions();
-        console.log("updated");
-    }
-});
+function getCurrentDepartments() { //WILL NOT WORK #BROKE
+    $.get("https://raw.githubusercontent.com/sghsri/UT-Registration-Plus/master/docs/departments.json", function (response) {
+        if (response) {
+            departments = JSON.parse(response);
+        }
+    });
+}
 
-chrome.storage.onChanged.addListener(function (changes) {
-    for (key in changes) {
-        if (key === "savedCourses") {
-            updateBadge(false, changes.savedCourses.newValue); // update the extension popup badge whenever the savedCourses have been changed
+// update the badge text to reflect the new changes
+function updateBadge(first, new_changes) {
+    if (new_changes) {
+        updateBadgeText(first, new_changes);
+    } else {
+        chrome.storage.sync.get("savedCourses", function (data) {
+            let courses = data.savedCourses;
+            updateBadgeText(first, courses);
+        });
+    }
+}
+
+// update the badge text to show the number of courses that have been saved by the user
+function updateBadgeText(first, courses) {
+    let badge_text = courses.length > 0 ? `${courses.length}` : "";
+    let flash_time = !first ? 200 : 0;
+    chrome.action.setBadgeText({
+        text: badge_text,
+    });
+    if (!first) {
+        // if isn't the first install of the extension, flash the badge to bring attention to it
+        chrome.action.setBadgeBackgroundColor({
+            color: Colors.badge_flash
+            //color: '#33FF33'
+        });
+    }
+    setTimeout(function () {
+        chrome.action.setBadgeBackgroundColor({
+            color: Colors.badge_default
+            //color: '#33FF33'
+        });
+    }, flash_time);
+}
+
+function checkConflicts(sendResponse) {
+    chrome.storage.sync.get("savedCourses", function (data) {
+        var conflicts = [];
+        var courses = data.savedCourses;
+        for (let i = 0; i < courses.length; i++) {
+            for (let j = i + 1; j < courses.length; j++) {
+                let course_a = courses[i];
+                let course_b = courses[j];
+                if (isConflict(course_a.datetimearr, course_b.datetimearr)) conflicts.push([course_a, course_b]);
+            }
+        }
+        sendResponse({
+            isConflict: conflicts.length !== 0,
+            between: conflicts.length ? conflicts : undefined,
+        });
+    });
+}
+
+function isSingleConflict(currdatearr, unique, sendResponse) {
+    chrome.storage.sync.get("savedCourses", function (data) {
+        var courses = data.savedCourses;
+        var conflict_list = [];
+        var conflict = false;
+        var contains = false;
+        for (let i = 0; i < courses.length; i++) {
+            let course = courses[i];
+            if (isConflict(currdatearr, course.datetimearr)) {
+                conflict = true;
+                conflict_list.push(course);
+            }
+            if (!contains && isSameCourse(course, unique)) {
+                contains = true;
+            }
+        }
+        sendResponse({
+            isConflict: conflict,
+            alreadyContains: contains,
+            conflictList: conflict_list,
+        });
+    });
+}
+
+/* Check if conflict between two date-time-arrs*/
+function isConflict(adtarr, bdtarr) {
+    for (var i = 0; i < adtarr.length; i++) {
+        var current_day = adtarr[i][0];
+        var current_times = adtarr[i][1];
+        for (var j = 0; j < bdtarr.length; j++) {
+            var next_day = bdtarr[j][0];
+            var next_times = bdtarr[j][1];
+            if (next_day == current_day) {
+                if (current_times[0] < next_times[1] && current_times[1] > next_times[0]) {
+                    return true;
+                }
+            }
         }
     }
-});
+    return false;
+}
+
+function setDefaultOptions() {
+    chrome.storage.sync.get("options", function (data) {
+        if (!data.options) {
+            chrome.storage.sync.set(
+                {
+                    options: default_options,
+                },
+                function () {
+                    console.log("default options:", default_options);
+                }
+            );
+        }
+    });
+}
 
 /* Add the requested course to the storage*/
 function add(request, sender, sendResponse) {
@@ -261,6 +448,48 @@ function remove(request, sender, sendResponse) {
     });
 }
 
+function alreadyContains(unique, sendResponse) {
+    chrome.storage.sync.get("savedCourses", function (data) {
+        var courses = data.savedCourses;
+        sendResponse({
+            alreadyContains: contains(courses, unique),
+        });
+    });
+}
+
+// find if a course with the current unique number exists in the user's saved courses
+function contains(courses, unique) {
+    var i = 0;
+    while (i < courses.length) {
+        if (isSameCourse(courses[i], unique)) {
+            return true;
+        }
+        i++;
+    }
+    return false;
+}
+
+// does it have the same unique number as provided
+function isSameCourse(course, unique) {
+    return course.unique == unique;
+}
+
+function updateTabs() {
+    chrome.tabs.query({}, function (tabs) {
+        for (var i = 0; i < tabs.length; i++) {
+            chrome.tabs.sendMessage(tabs[i].id, {
+                command: "updateCourseList",
+            });
+        }
+    });
+}
+
+function executeQuery(query, sendResponse) {
+    var res = grades.exec(query)[0];
+    sendResponse({
+        data: res,
+    });
+}
 
 
 ////Currently not working: XMLHttpRequest is outdated. Find a way to post to web sql (or other source, mongodb?) using fetch
