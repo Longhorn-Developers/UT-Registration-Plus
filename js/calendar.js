@@ -255,8 +255,8 @@ function buildICSFile(cal, event) {
 }
 
 function takePicture() {
-    var width = $("#calendar").width();
-    var height = $("#calendar").height();
+    var width = $("#calendar").width() * window.devicePixelRatio;
+    var height = $("#calendar").height() * window.devicePixelRatio;
     let cropper = document.createElement('canvas').getContext('2d');
     html2canvas(document.querySelector("#calendar"), Export.png_options).then(c => {
         cropper.canvas.width = width;
