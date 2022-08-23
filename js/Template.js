@@ -40,7 +40,8 @@ Template.Main = class {
                 </div>`;
     }
     static extension_button() {
-        return `<td data-th="Plus"><input type="image" class="distButton" id="distButton" width="20" height="20" src='${chrome.extension.getURL("images/disticon.png")}'/></td>`;
+        //getting here okay
+        return `<td data-th="Plus"><input type="image" class="distButton" id="distButton" width="20" height="20" src='${chrome.runtime.getURL("images/disticon.png")}'/></td>`;
     }
 };
 Template.Catalog = class {

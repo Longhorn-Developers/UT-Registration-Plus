@@ -1,7 +1,7 @@
 var courses;
 
 setCourseList();
-getSemesters();
+getSemesters(); //goes blank after the service worker dies. Requires closing and reopening popup to repopulate semester data
 getDepartments();
 
 var can_remove = true;
@@ -288,20 +288,20 @@ function handleRemove(clicked_item, curr_course) {
                         $(clicked_item).remove();
                     });
                 subtractHours(curr_course);
-                chrome.runtime.sendMessage(
-                    {
-                        command: "courseStorage",
-                        course: curr_course,
-                        action: "remove",
-                    },
-                    () => {
-                        $(clicked_item).fadeOut(200);
-                        if ($(list).children(":visible").length === 1) showEmpty();
-                        can_remove = true;
-                        updateConflicts();
-                        updateAllTabsCourseList();
-                    }
-                );
+                // chrome.runtime.sendMessage(
+                //     {
+                //         command: "courseStorage",
+                //         course: curr_course,
+                //         action: "remove",
+                //     },
+                //     () => {
+                //         $(clicked_item).fadeOut(200);
+                //         if ($(list).children(":visible").length === 1) showEmpty();
+                //         can_remove = true;
+                //         updateConflicts();
+                //         updateAllTabsCourseList();
+                //     }
+                // );
             }
         });
 }

@@ -41,6 +41,9 @@ if (!$("#kw_results_table").length) {
 	// now add to the table
 	$("table thead th:last-child").after('<th scope=col>Plus</th>');
 	$('table').find('tr').each(function () {
+
+		
+
 		if (!($(this).find('td').hasClass("course_header")) && $(this).has('th').length == 0) {
 			$(this).append(Template.Main.extension_button());
 		}

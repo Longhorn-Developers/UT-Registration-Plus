@@ -31,7 +31,7 @@ function onStartup() {
 
     getCurrentSemesters()
 
-    //getCurrentDepartments();
+    getCurrentDepartments();
 
     console.log('end')
 }
@@ -226,17 +226,12 @@ async function getCurrentSemesters() {
             let num = arr[row].indexOf('"https://registrar.utexas.edu/schedules/">')+53;
             let numend = arr[row].indexOf('" target');
             let short_sem_num = arr[row].substring(num,numend);
-
-            //console.log(name + " " + short_sem_num); //important
-
             current_semesters[name] = "code";
 
             await goFetch(short_sem_num).then((data) => {newWebData = data});
             arr2 = newWebData.split("\n")
-            //console.log(arr2)
 
             for(let row2=0; row2<arr2.length; row2++) {
-                //console.log(arr2[row2])
                 if(arr2[row2].startsWith('<div class="gobutton"><a href="')) {
                     let start2 = arr2[row2].indexOf('<div class="gobutton"><a href="')+31;
                     let end2 = arr2[row2].indexOf('" target="');
@@ -248,56 +243,28 @@ async function getCurrentSemesters() {
                     break;
                 }
             }
-            //console.log(scheduleLink + " " + sem_num) //important
-
             i+=1
         }
         if(i > Popup.num_semesters) {
             break;
         }
     }
-    //console.log(current_semesters)
 }
 
-function old_GetCurrentSemesters() { //depricated: remove when finished
-    $.get("https://registrar.utexas.edu/schedules", function (response) {
-        console.log(response)
-        if (response) {
-            htmlToNode(response)
-                .find(".callout2>ul>li>a")
-                .each(function (i) {
-                    // only show as many semesters as we want to display
-                    if (i < Popup.num_semesters) {
-                        let sem_name = $(this).text().trim();
-                        if (sem_name != "Course Schedule Archive") {
-                            // $("#semesters").append(`<option>${sem_name}</option>`);
-                            current_semesters[sem_name] = "code";
-                            $.get($(this).attr("href"), function (response) {
-                                if (response) {
-                                    let response_node = htmlToNode(response);
-                                    let name = response_node.find(".page-title").text().substring(17).trim();
-                                    response_node.find(".gobutton>a").each(function () {
-                                        let link = $(this).attr("href");
-                                        var sem_num = link.substring(link.lastIndexOf("/") + 1).trim();
-                                        if (current_semesters[name] != sem_num) {
-                                            current_semesters[name] = sem_num;
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    }
-                });
-        }
-    });
-}
+async function getCurrentDepartments() { //WILL NOT WORK #BROKE
+    async function goFetch() {
+        return fetch("https://raw.githubusercontent.com/sghsri/UT-Registration-Plus/master/docs/departments.json")
+        .then((response) => { 
+            return response.text()
+            .then((data) => {
+                return data;
+            }).catch((err) => {
+                console.log(err);
+            }) 
+        }); 
+    }
 
-function getCurrentDepartments() { //WILL NOT WORK #BROKE
-    $.get("https://raw.githubusercontent.com/sghsri/UT-Registration-Plus/master/docs/departments.json", function (response) {
-        if (response) {
-            departments = JSON.parse(response);
-        }
-    });
+    await goFetch().then((data) => {departments = JSON.parse(data)});
 }
 
 // update the badge text to reflect the new changes
@@ -485,7 +452,7 @@ function updateTabs() {
 }
 
 function executeQuery(query, sendResponse) {
-    var res = grades.exec(query)[0];
+    //var res = grades.exec(query)[0];
     sendResponse({
         data: res,
     });
