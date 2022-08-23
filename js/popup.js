@@ -436,18 +436,12 @@ function getDepartments() {
         },
         function (response) {
             let { departments } = response;
-            
-            chrome.storage.sync.get("deptCache", function (data) {
-                chrome.storage.sync.set({
-                    deptCache: departments
-                });
-                deps = data.deptCache
-                
-                for (let i = 0; i < deps.length; i++) {
-                    let abv = deps[i];
-                    $("#department").append(`<option value='${abv}'>${abv}</option>`);
-                }
-            });
+            console.log(departments);
+            for (let i = 0; i < departments.length; i++) {
+                let abv = departments[i];
+                $("#department").append(`<option value='${abv}'>${abv}</option>`);
+            }
+            // $("#department").val('C S');
         }
     );
 }
