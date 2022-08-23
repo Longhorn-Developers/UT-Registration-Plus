@@ -288,20 +288,20 @@ function handleRemove(clicked_item, curr_course) {
                         $(clicked_item).remove();
                     });
                 subtractHours(curr_course);
-                // chrome.runtime.sendMessage(
-                //     {
-                //         command: "courseStorage",
-                //         course: curr_course,
-                //         action: "remove",
-                //     },
-                //     () => {
-                //         $(clicked_item).fadeOut(200);
-                //         if ($(list).children(":visible").length === 1) showEmpty();
-                //         can_remove = true;
-                //         updateConflicts();
-                //         updateAllTabsCourseList();
-                //     }
-                // );
+                chrome.runtime.sendMessage(
+                    {
+                        command: "courseStorage",
+                        course: curr_course,
+                        action: "remove",
+                    },
+                    () => {
+                        $(clicked_item).fadeOut(200);
+                        if ($(list).children(":visible").length === 1) showEmpty();
+                        can_remove = true;
+                        updateConflicts();
+                        updateAllTabsCourseList();
+                    }
+                );
             }
         });
 }
@@ -409,12 +409,22 @@ function getSemesters() {
             command: "currentSemesters",
         },
         function (response) {
-            let { semesters } = response;
-            let semester_names = Object.keys(semesters);
-            for (let i = 0; i < semester_names.length; i++) {
-                let name = semester_names[i];
-                $("#semesters").append(`<option value='${semesters[name]}'>${name}</option>`);
-            }
+            var { sems } = response;
+
+            chrome.storage.sync.get("semesterCache", function (data) {
+                chrome.storage.sync.set({
+                    semesterCache: sems
+                });
+                
+                semesters = data.semesterCache;
+                
+                let semester_names = Object.keys(semesters);
+                for (let i = 0; i < semester_names.length; i++) {
+                    let name = semester_names[i];
+                    $("#semesters").append(`<option value='${semesters[name]}'>${name}</option>`);
+                }
+            });
+
         }
     );
 }

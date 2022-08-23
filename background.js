@@ -2,7 +2,7 @@ var grades; // caching the grades database in memory for faster queries
 var current_semesters = {};
 var departments = [];
 var should_open = false; // toggled flag for automatically opening popup on new pages when 'more info' hit
-var semesters
+var semesters;
 const default_options = {
     loadAll: true,
     courseConflictHighlight: true,
@@ -40,6 +40,8 @@ function onStartup() {
 chrome.runtime.onMessage.addListener(function (request, sender, response) {
     console.log(request.command)
     switch (request.command) {
+        case "help":
+            console.log(request, sender, response)
         case "courseStorage":
             if (request.action == "add") {
                 add(request, sender, response);
@@ -81,6 +83,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
         case "currentSemesters":
             getCurrentSemesters();
             response({ semesters: current_semesters });
+            console.log(current_semesters)
             break;
 
         //below unchecked
@@ -441,17 +444,18 @@ function isSameCourse(course, unique) {
     return course.unique == unique;
 }
 
-function updateTabs() {
-    chrome.tabs.query({}, function (tabs) {
-        for (var i = 0; i < tabs.length; i++) {
-            chrome.tabs.sendMessage(tabs[i].id, {
-                command: "updateCourseList",
-            });
-        }
-    });
+function updateTabs() { //I think this function is useless. Also it breaks the code
+    // chrome.tabs.query({}, function (tabs) {
+    //     for (var i = 0; i < tabs.length; i++) {
+    //         chrome.tabs.sendMessage(tabs[i].id, {
+    //             command: "updateCourseList",
+    //         });
+    //     }
+    // });
 }
 
 function executeQuery(query, sendResponse) {
+    var res = "1";
     //var res = grades.exec(query)[0];
     sendResponse({
         data: res,
