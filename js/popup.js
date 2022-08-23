@@ -435,13 +435,20 @@ function getDepartments() {
             command: "currentDepartments",
         },
         function (response) {
-            let { departments } = response;
-            console.log(departments);
-            for (let i = 0; i < departments.length; i++) {
-                let abv = departments[i];
-                $("#department").append(`<option value='${abv}'>${abv}</option>`);
-            }
-            // $("#department").val('C S');
+            let { deps } = response;
+            
+            chrome.storage.sync.get("deptCache", function (data) {
+                chrome.storage.sync.set({
+                    deptCache: deps
+                });
+                
+                departments = data.deptCache;
+                
+                for (let i = 0; i < departments.length; i++) {
+                    let abv = departments[i];
+                    $("#department").append(`<option value='${abv}'>${abv}</option>`);
+                }
+            });
         }
     );
 }
