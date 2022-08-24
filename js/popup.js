@@ -411,8 +411,8 @@ function getSemesters() {
         function (response) {
             var { sems } = response;
 
-            chrome.storage.sync.get("semesterCache", function (data) {
-                chrome.storage.sync.set({
+            chrome.storage.local.get("semesterCache", function (data) {
+                chrome.storage.local.set({
                     semesterCache: sems
                 });
                 
@@ -437,8 +437,8 @@ function getDepartments() {
         function (response) {
             let { deps } = response;
             
-            chrome.storage.sync.get("deptCache", function (data) {
-                chrome.storage.sync.set({
+            chrome.storage.local.get("deptCache", function (data) {
+                chrome.storage.local.set({
                     deptCache: deps
                 });
                 

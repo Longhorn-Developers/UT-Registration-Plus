@@ -204,6 +204,11 @@ function setDefaultOptions() {
 
 async function getCurrentSemesters() {
     let webData;
+    if(Object.keys(current_semesters).length > 0) {
+        chrome.storage.local.set({
+            semesterCache: current_semesters
+        });
+    }
     async function goFetch(linkend="") {
         return fetch("https://registrar.utexas.edu/schedules/" + linkend)
         .then((response) => { 
@@ -254,7 +259,12 @@ async function getCurrentSemesters() {
     }
 }
 
-async function getCurrentDepartments() { //WILL NOT WORK #BROKE
+async function getCurrentDepartments() {
+    if(departments.length > 0) {
+        chrome.storage.local.set({
+            deptCache: departments
+        });
+    }
     async function goFetch() {
         return fetch("https://raw.githubusercontent.com/sghsri/UT-Registration-Plus/master/docs/departments.json")
         .then((response) => { 
