@@ -15,7 +15,7 @@ const default_options = {
 //3. 
 
 onStartup();
-function onStartup() {
+async function onStartup() {
     console.log('start');
 
     try {
@@ -27,7 +27,8 @@ function onStartup() {
 
     updateBadge(true);
     
-    //loadDataBase(); Not workling yet, see function notes
+    await loadDataBase(); //Not working yet, see function notes
+    console.log(grades);
 
     getCurrentSemesters()
 
@@ -42,6 +43,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
     switch (request.command) {
         case "help":
             console.log(request, sender, response)
+            break;
+        case "getData":
+            loadDataBase();
+            break;
         case "courseStorage":
             if (request.action == "add") {
                 add(request, sender, response);
@@ -465,8 +470,8 @@ function updateTabs() { //I think this function is useless. Also it breaks the c
 }
 
 function executeQuery(query, sendResponse) {
-    var res = "1";
-    //var res = grades.exec(query)[0];
+    var res = "1"; //TEMPORARY
+    //var res = grades.exec(query)[0]; //why this no work
     sendResponse({
         data: res,
     });
@@ -474,6 +479,25 @@ function executeQuery(query, sendResponse) {
 
 
 ////Currently not working: XMLHttpRequest is outdated. Find a way to post to web sql (or other source, mongodb?) using fetch
+
+/* Load the database*/
+async function loadDataBase() {
+    var tgrades;
+    async function goFetch() {
+        return fetch("grades.db")
+        .then((response) => { 
+            return response.text()
+            .then((data) => {
+                return data;
+            }).catch((err) => {
+                console.log(err);
+            }) 
+        }); 
+    }
+
+    await goFetch().then((data) => {tgrades=data});
+    grades = tgrades;
+}
 
 // /* Load the database*/
 // function loadDataBase() {
@@ -484,6 +508,12 @@ function executeQuery(query, sendResponse) {
 //     });
     
 // }
+
+function loadBinaryFile(path, success) {
+    return chrome.runtime.getURL(path);
+}
+
+
 // /* load the database from file */
 // function loadBinaryFile(path, success) {
 //     var xhr = new XMLHttpRequest();
