@@ -35,8 +35,13 @@ $.get("https://api.github.com/repos/sghsri/UT-Registration-Plus/stats/contributo
     for (var contributorData of data) {
         $.get(`https://api.github.com/users/${contributorData.author.login}`, userData => {
             let fullData = { ...contributorData, ...userData };
-            let { login, avatar_url, html_url } = fullData;
-            $("#contributor-list").append(Template.Options.contributor_card(login, "name", avatar_url, html_url));
+            let { login, avatar_url, html_url, name } = fullData;
+            if(name){
+                $("#contributor-list").append(Template.Options.contributor_card(login, name, avatar_url, html_url));
+            }
+            else{
+                $("#contributor-list").append(Template.Options.contributor_card("", login, avatar_url, html_url));
+            }
         });
     }
 });

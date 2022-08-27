@@ -65,8 +65,30 @@
     margin: 0;
 }
 
+.creator-contributor-name {
+    font-weight: bold;
+    margin: 0;
+    border-style: outset;
+    border-color: goldenrod;
+    background-color: gold;
+}
+
+.mv3-contributor-name {
+    font-weight: bold;
+    margin: 0;
+    border-style: outset;
+    border-color: grey;
+    background-color: silver;
+}
+
+.title {
+    font-weight: bold;
+    font-size: small;
+    margin: -0.4rem;
+}
+
 .contributor-username {
-    margin: 0 0 5px 0;
+    margin: -2px 0 5px 0;
     font-style: italic;
 }
 

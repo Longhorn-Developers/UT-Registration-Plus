@@ -16,7 +16,6 @@ const default_options = {
 
 onStartup();
 async function onStartup() {
-    console.log('start');
 
     try {
         importScripts("js/config.js");
@@ -29,13 +28,9 @@ async function onStartup() {
     updateBadge(true);
     
     await loadDataBase(); //Not working yet, see function notes
-    console.log(grades);
 
     getCurrentSemesters()
-
     getCurrentDepartments();
-
-    console.log('end')
 }
 
 
@@ -68,13 +63,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             updateBadge();
             break;
 
-        ///unused func?
-        case "updateStatus":
-            console.log('this function doesn\'t exist. check the old_background file for the commented version')
-            updateStatus(response);
-            break;
-        ///
-
         case "alreadyContains":
             alreadyContains(request.unique, response);
             break;
@@ -89,7 +77,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
         case "currentSemesters":
             getCurrentSemesters();
             response({ semesters: current_semesters });
-            console.log(current_semesters)
             break;
 
         //below unchecked
@@ -114,7 +101,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             setOptionsValue(request.key, request.value, response);
             break;
         
-        default: //this wont work because of xhr
+        default: 
+            //this wont work because of xhr
             const xhr = new XMLHttpRequest();
             const method = request.method ? request.method.toUpperCase() : "GET";
             xhr.open(method, request.url, true);

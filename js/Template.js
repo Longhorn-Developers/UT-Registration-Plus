@@ -188,6 +188,22 @@ Template.Options = class {
     }
 
     static contributor_card(username, name, image_url, profile_url) {
+        if(name === "Sriram Hariharan") {
+            return `<div class='card contributor-card' id="${username}" data-url="${profile_url}">
+                    <img class='contributor-image' src="${image_url}"></img>
+                    ${name ? `<p class='creator-contributor-name'>${name}</p>` : ""}
+                    <p class='title'>Creator of UTRP</p>
+                    <p class='contributor-username'>${username}</p>
+                </div>`;
+        } else if (name === "Lukas Zenick") {
+            return `<div class='card contributor-card' id="${username}" data-url="${profile_url}">
+                    <img class='contributor-image' src="${image_url}"></img>
+                    ${name ? `<p class='mv3-contributor-name'>${name}</p>` : ""}
+                    <p class='title'>Manifest V3</p>
+                    <p class='contributor-username'>${username}</p>
+                </div>`;
+        } 
+
         return `<div class='card contributor-card' id="${username}" data-url="${profile_url}">
                     <img class='contributor-image' src="${image_url}"></img>
                     ${name ? `<p class='contributor-name'>${name}</p>` : ""}
