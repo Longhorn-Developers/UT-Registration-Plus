@@ -21,6 +21,7 @@ async function onStartup() {
     try {
         importScripts("js/config.js");
         importScripts("js/util.js");  
+        importScripts("js/lib/sql-memory-growth.js");
     } catch (e) {
         console.log(e);
     } //imports Colors from config.js
@@ -470,8 +471,8 @@ function updateTabs() { //I think this function is useless. Also it breaks the c
 }
 
 function executeQuery(query, sendResponse) {
-    var res = "1"; //TEMPORARY
-    //var res = grades.exec(query)[0]; //why this no work
+    //var res = "1"; //TEMPORARY
+    var res = grades.exec(query)[0]; //why this no work
     sendResponse({
         data: res,
     });
@@ -486,7 +487,7 @@ async function loadDataBase() {
     async function goFetch() {
         return fetch("grades.db")
         .then((response) => { 
-            return response.text()
+            return response.arrayBuffer()
             .then((data) => {
                 return data;
             }).catch((err) => {
@@ -496,37 +497,9 @@ async function loadDataBase() {
     }
 
     await goFetch().then((data) => {tgrades=data});
-    grades = tgrades;
+    var data2 = new Uint8Array(tgrades);
+    var arr = new Array();
+    for (var i = 0; i != data2.length; ++i) arr[i] = String.fromCharCode(data2[i]);
+    var sqldb = new SQL.Database(arr.join(""));
+    grades = sqldb;
 }
-
-// /* Load the database*/
-// function loadDataBase() {
-//     //sql = window.SQL;
-//     loadBinaryFile("grades.db", function (data) {
-//         var sqldb = new SQL.Database(data);
-//         grades = sqldb;
-//     });
-    
-// }
-
-function loadBinaryFile(path, success) {
-    return chrome.runtime.getURL(path);
-}
-
-
-// /* load the database from file */
-// function loadBinaryFile(path, success) {
-//     var xhr = new XMLHttpRequest();
-//     xhr.open("GET", chrome.runtime.getURL(path), true);
-//     xhr.responseType = "arraybuffer";
-//     xhr.onload = function () {
-//         var data = new Uint8Array(xhr.response);
-//         var arr = new Array();
-//         for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
-//         success(arr.join(""));
-//     };
-//     xhr.send();
-
-//     fetch(chrome.runtime.getURL(path))
-//     .then((response) => response.json())
-// }
