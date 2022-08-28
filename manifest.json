@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "UT Registration Plus",
-    "version": "1.3.0.1",
+    "version": "1.3.0.0",
     "options_page": "options.html",
     "description": "Improves the course registration process at the University of Texas at Austin!",
     "host_permissions": [
