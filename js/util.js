@@ -119,18 +119,17 @@ function isIndividualCoursePage(){
 
 
 function updateAllTabsCourseList() {
-    // chrome.tabs.query({}, function (tabs) {
-    //     for (var i = 0; i < tabs.length; i++) {
-    //         chrome.tabs.sendMessage(tabs[i].id, {
-    //             command: "updateCourseList"
-    //         });
-    //     }
-    // });
+    chrome.tabs.query({}, function (tabs) {
+        for (var i = 0; i < tabs.length; i++) {
+            chrome.tabs.sendMessage(tabs[i].id, {
+                command: "updateCourseList"
+            });
+        }
+    });
 }
 
 function htmlToNode(response) {
     return $('<div/>').html(response).contents();
-    //return fetch(html(response).contents());
 }
 
 function setCurrentTabUrl(link) {
