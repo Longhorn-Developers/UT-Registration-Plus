@@ -1,7 +1,7 @@
 var courses;
 
 setCourseList();
-getSemesters(); //goes blank after the service worker dies. Requires closing and reopening popup to repopulate semester data
+getSemesters()
 getDepartments();
 
 var can_remove = true;
@@ -93,6 +93,24 @@ $(document).click(function (event) {
     if (!$target.closest("#impexp").length && !$target.closest("#import-export-popup").length && $("#import-export-popup").is(":visible")) {
         hideImportExportPopup();
     }
+});
+
+$(document).ready(function(){
+    $('input[name=Button]').on('change', function(){
+    var n = $(this).val();
+    switch(n)
+    {
+            case '1':
+                  //first case
+                  $('#type2').hide();
+                  $('#type1').show();
+
+            case '2':
+                  //second case
+                  $('#type1').hide();
+                  $('#type2').show();
+        }
+    });
 });
 
 $("#clear").click(function () {
@@ -376,6 +394,7 @@ function showEmpty() {
 
 function hideSearchPopup() {
     $("#search>i").text("search");
+    $("#searchtype").hide();
     $("#semcon").hide();
     $("#depcon").hide();
     $("#semesters").hide();
@@ -387,6 +406,7 @@ function showSearchPopup() {
     $("#search>i").text("close");
     $("#class_id_input").show();
     $("#semesters").show();
+    $("#searchtype").show();
     $("#semcon").show();
     $("#depcon").show();
     $("#levcon").show();

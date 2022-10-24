@@ -414,7 +414,16 @@ input[type=number]::-webkit-outer-spin-button {
     flex: 1 1 auto;
 }
 
-.select-style {
+.select-button {
+    margin: 0 0 6px 0;
+}
+
+.ButtonState{display:none}
+.Button{background:#fff; padding: 1px 1.5px 1px 1.5px; border:1px solid #333;
+cursor:pointer;}
+.ButtonState:checked + .Button{background:#CCC;}
+
+.dropdown-style {
     border: 1px solid #979797;
     margin: 5px 0px;
     border-radius: 5px;
@@ -556,6 +565,7 @@ input[type=number]::-webkit-outer-spin-button {
     padding: 5px;
     border-radius: 7px;
     width: 90%;
+    margin: 4px 0px 0px 0px;
 }
 
 .input-box::placeholder {

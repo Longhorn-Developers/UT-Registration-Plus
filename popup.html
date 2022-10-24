@@ -31,19 +31,29 @@
         <button title='Search' class="settings_button search_button" id='search'>
             <i class="material-icons settings_icon">search</i>
         </button>
+
+
         <div id="search-popup" class="hide">
           <div class="flex-container">
-            <div id='semcon' class="select-style item">
+            <div id='searchtype' class="select-style item select-button">
+              <input type="radio" name="Button" class="ButtonState" checked id="Button1" value="1"/>
+              <label class="Button" for="Button1">By Details</label>
+              <input type="radio" name="Button" class="ButtonState" id="Button2" value="2"/>
+              <label class="Button" for="Button2">By Unique</label>
+            </div>
+
+            <div id="type1">
+            <div id='semcon' class="dropdown-style select-style item">
               <label>
                 <select id="semesters"></select>
               </label>
             </div>
-            <div id='depcon' class="select-style item">
+            <div id='depcon' class="dropdown-style select-style item">
               <label>
                 <select id="department"></select>
               </label>
             </div>
-            <div id='levcon' class="select-style item">
+            <div id='levcon' class="dropdown-style select-style item">
               <label>
                 <select id="level">
                     <option value="L">Lower</option>
@@ -56,8 +66,15 @@
               <input class = "input-box" placeholder="Course # (optional)" type="text" id="courseCode"></input>
             </div>
           </div>
+          <div id ="type2" class = "hide">
+            asdfasdf
+          </div>
+            
+          </div>
           <button id="search-class" class="material_button search-button">Search</button>
         </div>
+
+        
         <button title='Import/Export' class="settings_button import_button" id='impexp'>
           <i class="material-icons settings_icon">import_export</i>
         </button>
