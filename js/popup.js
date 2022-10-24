@@ -98,18 +98,8 @@ $(document).click(function (event) {
 $(document).ready(function(){
     $('input[name=Button]').on('change', function(){
     var n = $(this).val();
-    switch(n)
-    {
-            case '1':
-                  //first case
-                  $('#type2').hide();
-                  $('#type1').show();
-
-            case '2':
-                  //second case
-                  $('#type1').hide();
-                  $('#type2').show();
-        }
+    $('#type1').toggle("hide");
+    $('#type2').toggle("hide");
     });
 });
 
