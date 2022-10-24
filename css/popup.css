@@ -408,6 +408,7 @@ input[type=number]::-webkit-outer-spin-button {
 .flex-container {
     display: flex;
     flex-direction: column;
+    white-space: nowrap
 }
 
 .item {
