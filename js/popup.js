@@ -97,7 +97,6 @@ $(document).click(function (event) {
 
 $(document).ready(function(){
     $('input[name=Button]').on('change', function(){
-    var n = $(this).val();
     $('#type1').toggle("hide");
     $('#type2').toggle("hide");
     });
@@ -216,12 +215,27 @@ function openSearch(semester, department, level, courseCode) {
     chrome.tabs.create({ url: link });
 }
 
+function openUniqueSearch(sem, unique) {
+	var link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
+	window.open(link);
+}
+
 $("#search-class").click(() => {
     let semester = $("#semesters").find(":selected").val();
     let department = $("#department").find(":selected").val();
     let level = $("#level").find(":selected").val();
     let courseCode = $("#courseCode").val();
-    openSearch(semester, department, level, courseCode);
+    let uniqueId = $("#class_id_input").val();
+    if (!isNaN(uniqueId) && uniqueId > 0) {
+        if (uniqueId.length == 5) {
+            openUniqueSearch(semester, uniqueId);
+            $("#class_id_input").val('');
+            return;
+        }
+        alert("Oops, check your input. Class IDs should have 5 digits!");
+    } else {
+        openSearch(semester, department, level, courseCode);
+    }
 });
 
 $("#options_button").click(function () {
