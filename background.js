@@ -448,14 +448,14 @@ function isSameCourse(course, unique) {
     return course.unique == unique;
 }
 
-function updateTabs() { //I think this function is useless. Also it breaks the code
-    // chrome.tabs.query({}, function (tabs) {
-    //     for (var i = 0; i < tabs.length; i++) {
-    //         chrome.tabs.sendMessage(tabs[i].id, {
-    //             command: "updateCourseList",
-    //         });
-    //     }
-    // });
+function updateTabs() {
+    chrome.tabs.query({}, function (tabs) {
+        for (var i = 0; i < tabs.length; i++) {
+            chrome.tabs.sendMessage(tabs[i].id, {
+                command: "updateCourseList",
+            });
+        }
+    });
 }
 
 function executeQuery(query, sendResponse) {
