@@ -124,12 +124,16 @@ $("#calendar").click(function () {
 });
 
 $("#donateButton").click(function () {
-    // chrome.tabs.create({
-    //     url: "https://donorbox.org/ut-registration-plus&hide_donation_meter=true",
-    // });
     $('#main').toggle("hide");
     $('#donate').toggle("hide");
+    $('#goBackButton').toggle("hide");
     $('#donorbox').attr("src","https://donorbox.org/embed/ut-registration-plus?default_interval=o&hide_donation_meter=true")
+});
+
+$("#goBackButton").click(function () {
+    $('#main').toggle("hide");
+    $('#donate').toggle("hide");
+    $('#goBackButton').toggle("hide");
 });
 
 $("#impexp").click(function () {
