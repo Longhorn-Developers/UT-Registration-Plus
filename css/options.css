@@ -8,6 +8,11 @@
     text-align: center;
 }
 
+.maintainer-tag {
+    margin: 10px 5px 5px 0px;
+    text-align: center;
+}
+
 .options-card {
     width: 400px;
     margin-left: auto;
