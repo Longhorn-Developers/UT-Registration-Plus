@@ -194,6 +194,36 @@ i {
     background: #FF0000;
 }
 
+.donate_button {
+    background: #2420a9;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: white;
+    margin: 7px 8px 5px 0px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: medium;
+    font-style: bold;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.donate_button:focus {
+    outline: 0;
+}
+
+.donate_button:hover {
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.16), 0 4px 15px 0 rgba(0, 0, 0, 0.12);
+    opacity: 1;
+}
+
+.donate_button:focus:after:hover {
+    outline: 0;
+    transition: 0.3s;
+}
+
 .settings {
     position: absolute;
     bottom: 0px;

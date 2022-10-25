@@ -25,7 +25,8 @@
                 "js/lib/jquery.initialize.min.js",
                 "js/util.js",
                 "js/Template.js",
-                "js/courseCatalog.js"
+                "js/courseCatalog.js",
+                "js/install-popup-button.js"
             ],
             "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"]
         },
@@ -39,7 +40,8 @@
                 "js/lib/jquery.initialize.min.js",
                 "js/util.js",
                 "js/Template.js",
-                "js/utPlanner.js"
+                "js/utPlanner.js",
+                "js/install-popup-button.js"
             ],
             "matches": ["https://utexas.collegescheduler.com/*"]
         },

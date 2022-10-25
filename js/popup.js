@@ -123,6 +123,14 @@ $("#calendar").click(function () {
     });
 });
 
+$("#donateButton").click(function () {
+    // chrome.tabs.create({
+    //     url: "https://donorbox.org/ut-registration-plus&hide_donation_meter=true",
+    // });
+    $('#main').toggle("hide");
+    $('#donate').toggle("hide");
+});
+
 $("#impexp").click(function () {
     if ($("#impexp>i").text() == "close") {
         hideImportExportPopup();
