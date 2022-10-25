@@ -129,6 +129,7 @@ $("#donateButton").click(function () {
     // });
     $('#main').toggle("hide");
     $('#donate').toggle("hide");
+    $('#donorbox').attr("src","https://donorbox.org/embed/ut-registration-plus?default_interval=o&hide_donation_meter=true")
 });
 
 $("#impexp").click(function () {
