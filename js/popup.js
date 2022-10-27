@@ -127,7 +127,15 @@ $("#donateButton").click(function () {
     $('#main').toggle("hide");
     $('#donate').toggle("hide");
     $('#goBackButton').toggle("hide");
-    $('#donorbox').attr("src","https://donorbox.org/embed/ut-registration-plus?default_interval=o&hide_donation_meter=true")
+    var ifr = document.getElementById('donorbox');
+    var fake = document.getElementById('fakeDonorBox');
+    if ( $(ifr).attr('src') == "") {
+        $(ifr).attr("src","https://donorbox.org/embed/ut-registration-plus?default_interval=o&hide_donation_meter=true")
+        ifr.onload = function() {
+            $(fake).attr("style","display:none; max-width: 500px; min-width: 250px; max-height:none!important;")
+        }
+    }
+    $(ifr).attr("style","max-width: 500px; min-width: 250px; max-height:none!important;")
 });
 
 $("#goBackButton").click(function () {
