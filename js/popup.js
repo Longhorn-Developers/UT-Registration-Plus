@@ -124,7 +124,7 @@ $("#calendar").click(function () {
 });
 
 $("#donateButton").click(function () {
-    $('#main').toggle("hide");
+    $('#super').toggle("hide");
     $('#donate').toggle("hide");
     $('#goBackButton').toggle("hide");
     var ifr = document.getElementById('donorbox');
@@ -139,7 +139,7 @@ $("#donateButton").click(function () {
 });
 
 $("#goBackButton").click(function () {
-    $('#main').toggle("hide");
+    $('#super').toggle("hide");
     $('#donate').toggle("hide");
     $('#goBackButton').toggle("hide");
 });
