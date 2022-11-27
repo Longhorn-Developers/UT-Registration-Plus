@@ -9,10 +9,10 @@ const default_options = {
     storeWaitlist: true,
 };
 
+
 ///ISSUES: 
-//1. on startup after inactive, have to click off and back on to reload data. How to circumvent?
-//2. when adding/removing/importing courses there is a weird error. The function works perfectly but still logs an error (But not in the console) [if it works it works?]
-//3. 
+//1. When adding/removing/importing courses there is a weird error. 
+//   The function works perfectly but still logs an error (But not in the console) [if it works it works?]
 
 onStartup();
 async function onStartup() {
@@ -102,7 +102,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             break;
         
         default: 
-            //this wont work because of xhr
+            //TODO: this wont work because of xhr being outdated; what should go here??
             const xhr = new XMLHttpRequest();
             const method = request.method ? request.method.toUpperCase() : "GET";
             xhr.open(method, request.url, true);

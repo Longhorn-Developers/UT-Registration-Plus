@@ -99,7 +99,7 @@
 
     w.dw_open = function () {
         var buttons = queryButtons(), i = 0, len = buttons.length;
-        if (len == 0) throw 'Donation widget button is not exists. If you see these on your WEB page, please, check button installation steps.';
+        if(len == 0) return;
 
         if (shouldOpenNewTab())
           for(; i < len; i++)
