@@ -204,6 +204,7 @@ async function getCurrentSemesters() {
         });
     }
     async function goFetch(linkend="") {
+        console.log("lk " + linkend)
         return fetch("https://registrar.utexas.edu/schedules/" + linkend)
         .then((response) => { 
             return response.text()
@@ -216,18 +217,27 @@ async function getCurrentSemesters() {
     }
 
     await goFetch().then((data) => {webData = data});
+    if(webData == null) {
+        webData = ""
+    }
     let arr = webData.split("\n");
     let i = 0
     for(let row=0; row<arr.length; row++) {
-        if(arr[row].startsWith('<li><a href="https://registrar.utexas.edu/schedules/') && arr[row][52] != "a") {
+        let currentRow = arr[row]
+        if(currentRow.startsWith('<li><a href="https://registrar.utexas.edu/schedules/') && currentRow[52] != "a") {
             let newWebData;
-            let start = arr[row].indexOf('Schedule">')+10;
-            let end = arr[row].indexOf('</a></li>');
-            let name = arr[row].substring(start,end);
+            
+            // let start = currentRow.indexOf('Schedule">')+10;
+            let start = Math.max(currentRow.lastIndexOf('Summer'), Math.max(currentRow.lastIndexOf('Spring'), currentRow.lastIndexOf('Fall')))
+            let end = currentRow.indexOf('</a></li>');
+            console.log(currentRow)
+            console.log(start + "  " + end)
+            let name = currentRow.substring(start,end);
+            console.log("my name: " + name)
 
-            let num = arr[row].indexOf('"https://registrar.utexas.edu/schedules/">')+53;
-            let numend = arr[row].indexOf('" target');
-            let short_sem_num = arr[row].substring(num,numend);
+            let num = currentRow.indexOf('"https://registrar.utexas.edu/schedules/">')+53;
+            let numend = currentRow.indexOf('" target');
+            let short_sem_num = currentRow.substring(num,numend);
             current_semesters[name] = "code";
 
             await goFetch(short_sem_num).then((data) => {newWebData = data});
