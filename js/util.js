@@ -173,20 +173,26 @@ function semesterSort(semA, semB) {
 /* convert from the dtarr and maek the time lines*/
 function convertDateTimeArrToLine(datetimearr) {
     var output = [];
-    console.log(datetimearr)
     var dtmap = makeDateTimeMap(datetimearr);
     var timearr = Array.from(dtmap.keys());
-    var dayarr = Array.from(dtmap.values());
-    console.log(timearr);
-    console.log(dayarr);
+    var temporary = Array.from(dtmap.values())
+    var dayarr = []
+    var locarr = []
+    for(x in temporary) {
+        dayarr.push(temporary[x][0])
+        locarr.push(temporary[x][1])
+    }
+
     for (var i = 0; i < dayarr.length; i++) {
-        var place = findLocation(dayarr[i], timearr[i], datetimearr);
+        //var place = findLocation(dayarr[i], timearr[i], datetimearr);
+        var place = locarr[i]
         var building = place.substring(0, place.search(/\d/)).trim();
         building = building ? building : "Undecided Location"
+        var timearrsplit = timearr[i].split(',')
         output.push({
             "days": dayarr[i],
-            "start_time": timearr[i].split(",")[0],
-            "end_time": timearr[i].split(',')[1],
+            "start_time": timearrsplit[0],
+            "end_time": timearrsplit[1],
             "location_link": `https://maps.utexas.edu/buildings/UTM/${building}`,
             "location_full": place
         })
@@ -201,10 +207,15 @@ function makeDateTimeMap(datetimearr) {
         datetimearr[i][1][1] = moment(datetimearr[i][1][1], ["HH:mm A"]).format("h:mm A");
     }
     for (var i = 0; i < datetimearr.length; i++) {
-        if (dtmap.has(String(datetimearr[i][1]))) {
-            dtmap.set(String(datetimearr[i][1]), dtmap.get(String(datetimearr[i][1])) + datetimearr[i][0]);
+        var instance = datetimearr[i]
+        var day = String(instance[0])
+        var timeslot = String(instance[1])
+        var location = String(instance[2])
+        var key = timeslot + "," + location
+        if (dtmap.has(key) && dtmap.get(key)[1] === location) {
+            dtmap.set(key, [dtmap.get(key)[0] + day, location]);
         } else {
-            dtmap.set(String(datetimearr[i][1]), datetimearr[i][0]);
+            dtmap.set(key, [day, location]);
         }
     }
     return dtmap
