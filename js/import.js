@@ -16,7 +16,7 @@ $(function () {
 	$("#import").click(function () {
 		search_nodes = waitlist ? $(".tbg").last().find(".tbon>td:first-child") : $("tr>td:first-child");
 		$(search_nodes).each(function () {
-			importCourse($(this));
+			importCourse($(this), true);
 		})
 		importButtonAnimation($(this));
 	});
@@ -24,7 +24,7 @@ $(function () {
 	$("#import_waitlist").click(function () {
 		search_nodes = $("tr.tb span:first-child");
 		$(search_nodes).each(function () {
-			importCourse($(this));
+			importCourse($(this), false);
 		})
 		importButtonAnimation($(this));
 	});
@@ -61,17 +61,17 @@ function importButtonAnimation(button) {
 	}, 1000);
 }
 
-function importCourse(unique_node) {
-	let unique = $(unique_node).text().replace(/\s/g, '');
+function importCourse(unique_node, force) {
+	let unique = $(unique_node).text().replace(/\s/g, '').substring(0,5);	
 	link = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${sem}/${unique}/`;
-	buildAddCourse(link);
+	buildAddCourse(link, force)
 }
 
 
-function buildAddCourse(link) {
+function buildAddCourse(link, force) {
 	$.get(link, function (response) {
 		if (response) {
-			let simp_course = buildSimplifiedCourseObject(response, link);
+			let simp_course = buildSimplifiedCourseObject(response, link, force);
 			chrome.runtime.sendMessage({
 				command: "courseStorage",
 				course: simp_course,
@@ -86,7 +86,7 @@ function buildAddCourse(link) {
 }
 
 
-function buildSimplifiedCourseObject(response, link) {
+function buildSimplifiedCourseObject(response, link, force) {
 	let imported_course = getCourseObject(htmlToNode(response), link);
 	let {
 		full_name,
@@ -97,7 +97,9 @@ function buildSimplifiedCourseObject(response, link) {
 		register
 	} = curr_course;
 	let dtarr = getDayTimeArray(undefined, curr_course);
-
+	if(force === true) {
+		status = "open" //forces the green status for courses a user is already registered for
+	}
 	return new Course(full_name, unique, prof_name, dtarr, status, individual, register);
 }
 
