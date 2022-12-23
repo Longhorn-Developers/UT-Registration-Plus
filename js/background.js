@@ -170,37 +170,66 @@ function setDefaultOptions() {
     });
 }
 
-// scrape the registrar schedules page for caching the current active semesters
-function getCurrentSemesters() {
-    $.get("https://registrar.utexas.edu/schedules", function (response) {
-        if (response) {
-            htmlToNode(response)
-                .find(".callout2>ul>li>a")
-                .each(function (i) {
-                    // only show as many semesters as we want to display
-                    if (i < Popup.num_semesters) {
-                        let sem_name = $(this).text().trim();
-                        if (sem_name != "Course Schedule Archive") {
-                            // $("#semesters").append(`<option>${sem_name}</option>`);
-                            current_semesters[sem_name] = "code";
-                            $.get($(this).attr("href"), function (response) {
-                                if (response) {
-                                    let response_node = htmlToNode(response);
-                                    let name = response_node.find(".page-title").text().substring(17).trim();
-                                    response_node.find(".gobutton>a").each(function () {
-                                        let link = $(this).attr("href");
-                                        var sem_num = link.substring(link.lastIndexOf("/") + 1).trim();
-                                        if (current_semesters[name] != sem_num) {
-                                            current_semesters[name] = sem_num;
-                                        }
-                                    });
-                                }
-                            });
-                        }
+async function getCurrentSemesters() {
+    let webData;
+    if(Object.keys(current_semesters).length > 0) {
+        chrome.storage.local.set({
+            semesterCache: current_semesters
+        });
+    }
+    async function goFetch(linkend="") {
+        console.log("lk " + linkend)
+        return fetch("https://registrar.utexas.edu/schedules/" + linkend)
+        .then((response) => {
+            return response.text()
+            .then((data) => {
+                return data;
+            }).catch((err) => {
+                console.log(err);
+            })
+        });
+    }
+
+    await goFetch().then((data) => {webData = data});
+    if(webData == null) {
+        webData = ""
+    }
+    let arr = webData.split("\n");
+    let i = 0
+    for(let row=0; row<arr.length; row++) {
+        let currentRow = arr[row]
+        if(currentRow.startsWith('<li><a href="https://registrar.utexas.edu/schedules/') && currentRow[52] != "a") {
+            let newWebData;
+
+            // let start = currentRow.indexOf('Schedule">')+10;
+            let start = Math.max(currentRow.lastIndexOf('Summer'), Math.max(currentRow.lastIndexOf('Spring'), currentRow.lastIndexOf('Fall')))
+            let end = currentRow.indexOf('</a></li>');
+            console.log(currentRow)
+            console.log(start + "  " + end)
+            let name = currentRow.substring(start,end);
+            console.log("my name: " + name)
+
+            let num = currentRow.indexOf('"https://registrar.utexas.edu/schedules/">')+53;
+            let numend = currentRow.indexOf('" target');
+            let short_sem_num = currentRow.substring(num,numend);
+            current_semesters[name] = "code";
+
+            await goFetch(short_sem_num).then((data) => {newWebData = data});
+            arr2 = newWebData.split("\n")
+
+            for(let row2=0; row2<arr2.length; row2++) {
+                if(arr2[row2].startsWith('<div class="gobutton"><a href="')) {
+                    let start2 = arr2[row2].indexOf('<div class="gobutton"><a href="')+31;
+                    let end2 = arr2[row2].indexOf('" target="');
+                    var scheduleLink = arr2[row2].substring(start2,end2);
+                    var sem_num = scheduleLink.substring(scheduleLink.lastIndexOf("/") + 1).trim();
+                    if (current_semesters[name] != sem_num) {
+                        current_semesters[name] = sem_num;
                     }
-                });
+                }
+            }
         }
-    });
+    }
 }
 
 // use the utexas review api for getting the list of departments
