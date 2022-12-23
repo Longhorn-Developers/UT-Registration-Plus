@@ -226,9 +226,10 @@ async function getCurrentSemesters() {
                     if (current_semesters[name] != sem_num) {
                         current_semesters[name] = sem_num;
                     }
-                });
+                }
+            }
         }
-    });
+    }
 }
 
 // use the utexas review api for getting the list of departments
