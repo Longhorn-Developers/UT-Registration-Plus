@@ -10,6 +10,10 @@ const HOST_PERMISSIONS: string[] = [
     '*://*.login.utexas.edu/login/*',
 ];
 
+if (process.env.NODE_ENV === 'development') {
+    HOST_PERMISSIONS.push('http://localhost:9090/*');
+}
+
 /**
  * Creates a chrome extension manifest from the given version, mode, and
  * @param mode the build mode (development or production)
@@ -41,7 +45,7 @@ export function getManifest(mode: Environment, version: string): chrome.runtime.
         web_accessible_resources: [
             {
                 resources: ['static/media/*', '*'],
-                matches: HOST_PERMISSIONS,
+                matches: ['<all_urls>'],
             },
         ],
         icons: {
