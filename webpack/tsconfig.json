@@ -1,0 +1,15 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "module": "esnext",
+        "esModuleInterop": true,
+        "composite": true,
+        "lib": [
+            "es2021"
+        ],
+        "types": [
+            "chrome",
+            "node"
+        ],
+    },
+}

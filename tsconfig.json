@@ -1,0 +1,55 @@
+{
+    "compilerOptions": {
+        "target": "es2021",
+        "outDir": "./",
+        "noEmit": true,
+        "typeRoots": [
+            "./node_modules/@types",
+            "./@types/"
+        ],
+        "rootDir": "./",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "module": "ES2022",
+        "moduleResolution": "node",
+        "allowJs": true,
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "incremental": true,
+        "lib": [
+            "DOM",
+            "es2021"
+        ],
+        "jsx": "react",
+        "skipLibCheck": true,
+        "strictBindCallApply": true,
+        "pretty": true,
+        "noImplicitReturns": false,
+        "baseUrl": "./",
+        "paths": {
+            "src/*": [
+                "./src/*"
+            ],
+            "webpack/*": [
+                "./webpack/*"
+            ],
+        },
+        "noImplicitThis": true,
+        "noImplicitAny": false,
+        "strictNullChecks": true,
+        "forceConsistentCasingInFileNames": true,
+    },
+    "include": [
+        "src/**/*",
+        "webpack/**/*",
+        "@types/**/*",
+        "./package.json",
+        "./release.config.js",
+        "webpack/plugins/custom/.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/.*/",
+        "build",
+    ],
+}

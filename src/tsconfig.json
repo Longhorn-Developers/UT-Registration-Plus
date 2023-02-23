@@ -1,0 +1,17 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "lib": [
+            "DOM",
+            "es2021"
+        ],
+        "types": [
+            "chrome",
+            "node"
+        ],
+    },
+    "exclude": [
+        "../webpack"
+    ]
+}

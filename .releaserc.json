@@ -1,0 +1,37 @@
+{
+    "branches": [
+        "production",
+        {
+            "name": "preview",
+            "channel": "alpha",
+            "prerelease": "alpha"
+        }
+    ],
+    "plugins": [
+        [
+            "@semantic-release/commit-analyzer",
+            {
+                "preset": "conventionalcommits"
+            }
+        ],
+        [
+            "@semantic-release/release-notes-generator",
+            {
+                "preset": "conventionalcommits"
+            }
+        ],
+        [
+            "@semantic-release/exec",
+            {
+                "prepareCmd": "SEMANTIC_VERSION=${nextRelease.version} npm run build"
+            }
+        ],
+        [
+            "@semantic-release/github",
+            {
+                "assets": "build/**/artifacts/*.*",
+                "failComment": false
+            }
+        ]
+    ]
+}

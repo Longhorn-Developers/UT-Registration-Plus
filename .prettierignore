@@ -1,0 +1,19 @@
+*.css
+# macOS
+.DS_Store
+# Webpack-built output
+/dist
+
+# Extension archives
+/build
+# Optional npm cache directory
+.npm
+
+# Dependency directories and management
+node_modules/
+jspm_packages/
+package.json
+package-lock.json
+
+# Coverage directory used by tools like istanbul
+coverage

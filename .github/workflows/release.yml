@@ -1,0 +1,25 @@
+name: Create Release
+on:
+    push:
+        branches:
+            - production
+            - preview
+jobs:
+    build:
+        name: build extension & create release
+        runs-on: ubuntu-latest
+        concurrency:
+            group: ${{ github.ref }}
+            cancel-in-progress: true
+        steps:
+            - uses: actions/checkout@master
+            - name: Get file permission
+              run: chmod -R 777 .
+
+            - name: Install dependencies
+              run: npm ci
+            - name: Release with semantic-release
+              id: semantic-release
+              run: npx --no-install semantic-release
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

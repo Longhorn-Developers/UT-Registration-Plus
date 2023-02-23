@@ -1,0 +1,9 @@
+@each $weights in '100' '200' '300' '400' '500' '600' '700' '800' '900' {
+    @font-face {
+        font-family: 'Inter';
+        src: url('chrome-extension://__MSG_@@extension_id__/fonts/inter-#{$weights}.woff2') format('woff2');
+        font-display: auto;
+        font-style: normal;
+        font-weight: #{$weights};
+    }
+}

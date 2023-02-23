@@ -1,0 +1,36 @@
+{
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[yaml]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[svg]": {
+        "editor.defaultFormatter": "jock.svg"
+    },
+    "material-icon-theme.activeIconPack": "react",
+    "material-icon-theme.folders.associations": {
+        "analytics": "Json",
+        "background": "Delta",
+        "navigation": "Routes",
+        "logging": "log",
+        "popup": "Layout",
+        "storage": "Database",
+    },
+    "material-icon-theme.files.associations": {
+        "tsconfig.extension.json": "tsconfig",
+        "tsconfig.build.json": "tsconfig",
+        "tsconfig.test.json": "tsconfig"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+}
