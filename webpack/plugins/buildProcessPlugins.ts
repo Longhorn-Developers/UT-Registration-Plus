@@ -9,6 +9,7 @@ import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import HTMLWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import TypeErrorNotifierPlugin from './custom/TypeErrorNotifierPlugin';
 
 /**
@@ -26,6 +27,8 @@ export function getBuildPlugins(mode: Environment, htmlEntries: EntryId[], manif
 
     // make sure that the paths are case sensitive
     plugins.push(new CaseSensitivePathsPlugin());
+
+    plugins.push(new CleanWebpackPlugin());
 
     // specify how the outputed css files should be named
     plugins.push(
