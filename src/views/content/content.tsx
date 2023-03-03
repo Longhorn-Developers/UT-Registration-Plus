@@ -1,18 +1,15 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { bMessenger } from 'src/shared/messages';
 import { ContextInvalidated, createShadowDOM, onContextInvalidated } from 'chrome-extension-toolkit';
-import { Button } from './components/Button/Button';
+import Main from './Main';
 
-bMessenger.getTabId().then(tabId => {
-    console.log('tabId', tabId);
-});
 
 injectReact();
 
+
 async function injectReact() {
-    const shadowDom = createShadowDOM('extension-dom-container');
-    render(<Button />, shadowDom.shadowRoot);
+    const shadowDom = createShadowDOM('ut-registration-plus-dom-container');
+    render(<Main />, shadowDom.shadowRoot);
     await shadowDom.addStyle('static/css/content.css');
 }
 
