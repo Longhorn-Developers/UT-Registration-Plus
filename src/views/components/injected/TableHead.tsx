@@ -3,23 +3,23 @@ import ReactDOM from 'react-dom';
 
 /**
  * This adds a new column to the course catalog table header.
- * @returns
+ * @returns a react portal to the new column or null if the column has not been created yet.
  */
 export default function TableHead({ children }: PropsWithChildren) {
-    const [portalContainer, setPortalContainer] = useState<HTMLTableCellElement | null>(null);
+    const [container, setContainer] = useState<HTMLTableCellElement | null>(null);
 
     useEffect(() => {
-        const portalContainer = document.createElement('th');
-        portalContainer.setAttribute('scope', 'col');
-        portalContainer.setAttribute('id', 'ut-registration-plus-table-head');
+        const container = document.createElement('th');
+        container.setAttribute('scope', 'col');
+        container.setAttribute('id', 'ut-registration-plus-table-head');
         const lastTableHeadCell = document.querySelector('table thead th:last-child');
-        lastTableHeadCell!.after(portalContainer);
-        setPortalContainer(portalContainer);
+        lastTableHeadCell!.after(container);
+        setContainer(container);
     }, []);
 
-    if (!portalContainer) {
+    if (!container) {
         return null;
     }
 
-    return ReactDOM.createPortal(<span>{children}</span>, portalContainer);
+    return ReactDOM.createPortal(<span>{children}</span>, container);
 }

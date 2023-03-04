@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Course } from 'src/shared/types/Course';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
@@ -16,7 +16,7 @@ interface Props {
  */
 export default function CourseCatalogMain({ support }: Props) {
     const [rows, setRows] = React.useState<HTMLTableRowElement[]>([]);
-    const [selectedCourse, setSelectedCourse] = React.useState<Course | null>(null);
+    const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
     const isScrolling = useInfiniteScroll(async () => {
         console.log('infinite scroll');
@@ -32,11 +32,15 @@ export default function CourseCatalogMain({ support }: Props) {
         setRows(rows);
     }, []);
 
+    const handleRowButtonClick = (course: Course) => {
+        setSelectedCourse(course);
+    };
+
     return (
         <div>
             <TableHead>Plus</TableHead>
             {rows.map(row => (
-                <TableRow row={row} />
+                <TableRow row={row} onClick={handleRowButtonClick} />
             ))}
             {isScrolling && <div>Scrolling...</div>}
         </div>
