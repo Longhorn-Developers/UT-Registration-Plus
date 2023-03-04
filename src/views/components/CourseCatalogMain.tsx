@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
-import { bMessenger } from 'src/shared/messages';
 import { Course } from 'src/shared/types/Course';
+import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import { populateSearchInputs } from '../lib/courseCatalog/populateSearchInputs';
 import { SiteSupport } from '../lib/getSiteSupport';
 import { Button } from './common/Button/Button';
@@ -17,6 +17,13 @@ export default function CourseCatalogMain({ support }: Props) {
     const [rows, setRows] = React.useState<HTMLTableRowElement[]>([]);
     const [selectedCourse, setSelectedCourse] = React.useState<Course | null>(null);
 
+    const [shouldHighlight, setShouldHighlight] = React.useState(false);
+
+    const isInfiniteScrollLoading = useInfiniteScroll(async () => {
+        console.log('infinite scroll');
+        return false;
+    });
+
     useEffect(() => {
         populateSearchInputs();
     }, []);
@@ -29,23 +36,41 @@ export default function CourseCatalogMain({ support }: Props) {
     return (
         <div>
             <TableHead />
+            <Button onClick={() => setRows([])}>{shouldHighlight ? 'Unhighlight' : 'Highlight'}</Button>
             {rows.map(row => (
-                <TableRow key={row.id} row={row} />
+                <TableRow row={row} shouldHighlight={shouldHighlight} />
             ))}
+            {isInfiniteScrollLoading && <div>Scrolling...</div>}
         </div>
     );
 }
 
-const TableRow: (props: { row: HTMLTableRowElement }) => JSX.Element | null = ({ row }) => {
+const TableRow: (props: { row: HTMLTableRowElement; shouldHighlight: boolean }) => JSX.Element | null = ({
+    row,
+    shouldHighlight,
+}) => {
     const [portalContainer, setPortalContainer] = React.useState<HTMLTableCellElement | null>(null);
 
     useEffect(() => {
         const portalContainer = document.createElement('td');
-        portalContainer.setAttribute('id', 'ut-registration-plus-table-row-portal');
         const lastTableCell = row.querySelector('td:last-child');
         lastTableCell!.after(portalContainer);
         setPortalContainer(portalContainer);
     }, []);
+
+    useEffect(() => {
+        console.log('shouldHighlight', shouldHighlight);
+        // make the color of the row change when the button is clicked
+        if (shouldHighlight) {
+            row.querySelectorAll('td').forEach(td => {
+                td.style.color = 'red';
+            });
+        } else {
+            row.querySelectorAll('td').forEach(td => {
+                td.style.color = '';
+            });
+        }
+    }, [shouldHighlight, row]);
 
     if (!portalContainer) {
         return null;
