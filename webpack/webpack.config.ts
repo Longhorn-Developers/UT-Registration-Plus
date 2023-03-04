@@ -26,9 +26,9 @@ export default function config(mode: Environment, manifest: chrome.runtime.Manif
 
     // the entry points for the extension (the files that webpack will start bundling from)
     const entry: Entries = {
-        content: [path.resolve('src', 'views', 'content', 'content')],
+        content: [path.resolve('src', 'views')],
+        popup: [path.resolve('src', 'views')],
         background: [path.resolve('src', 'background', 'background')],
-        popup: [path.resolve('src', 'views', 'popup', 'popup')],
     };
 
     // the entries that need an html file to be generated
@@ -39,8 +39,8 @@ export default function config(mode: Environment, manifest: chrome.runtime.Manif
         entry.debug = [path.resolve('src', 'debug')];
 
         // we need to import react-devtools before the react code in development
-        entry.content = [path.resolve('src', 'views', 'reactDevtools'), ...entry.content];
-        entry.popup = [path.resolve('src', 'views', 'reactDevtools'), ...entry.popup];
+        entry.content = [path.resolve('src', 'debug', 'reactDevtools'), ...entry.content];
+        entry.popup = [path.resolve('src', 'debug', 'reactDevtools'), ...entry.popup];
     }
 
     /** @see https://webpack.js.org/configuration for documentation */
