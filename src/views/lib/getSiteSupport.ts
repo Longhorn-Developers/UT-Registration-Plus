@@ -3,7 +3,6 @@
  * a given url/page can correspond to many of these enum values
  */
 export enum SiteSupport {
-    COURSE_CATALOG = 'COURSE_CATALOG',
     COURSE_CATALOG_LIST = 'COURSE_CATALOG_LIST',
     COURSE_CATALOG_DETAILS = 'COURSE_CATALOG_DETAILS',
     UT_PLANNER = 'UT_PLANNER',
@@ -15,22 +14,20 @@ export enum SiteSupport {
  * @param url the url of the current page
  * @returns a list of page types that the current page is
  */
-export default function getSiteSupport(url: string): SiteSupport[] {
+export default function getSiteSupport(url: string): SiteSupport | null {
     if (url.includes('utexas.collegescheduler.com')) {
-        return [SiteSupport.UT_PLANNER];
+        return SiteSupport.UT_PLANNER;
     }
     if (url.includes('utdirect.utexas.edu/apps/registrar/course_schedule')) {
-        const types = [SiteSupport.COURSE_CATALOG];
         if (url.includes('results')) {
-            types.push(SiteSupport.COURSE_CATALOG_LIST);
+            return SiteSupport.COURSE_CATALOG_LIST;
         }
         if (document.querySelector('#details')) {
-            types.push(SiteSupport.COURSE_CATALOG_DETAILS);
+            return SiteSupport.COURSE_CATALOG_DETAILS;
         }
-        return types;
     }
     if (url.includes('utdirect.utexas.edu') && (url.includes('waitlist') || url.includes('classlist'))) {
-        return [SiteSupport.WAITLIST];
+        return SiteSupport.WAITLIST;
     }
-    return [];
+    return null;
 }
