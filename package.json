@@ -6,14 +6,14 @@
     "homepage": "sriramhariharan.com",
     "type": "module",
     "scripts": {
-        "start": "tsx webpack/development.ts",
-        "build": "tsx webpack/production.ts",
+        "start": "NODE_ENV=development tsx webpack/development.ts",
+        "build": "NODE_ENV=production tsx webpack/production.ts",
         "release": "tsx webpack/release.ts",
         "devtools": "react-devtools",
         "lint": "eslint ./ --ext .ts,.tsx"
     },
     "dependencies": {
-        "chrome-extension-toolkit": "^0.0.21",
+        "chrome-extension-toolkit": "^0.0.22",
         "clean-webpack-plugin": "^4.0.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",

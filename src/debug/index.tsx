@@ -93,17 +93,41 @@ function DevDashboard() {
         chrome.storage.session.get(null, result => {
             setSessionStorage(result);
         });
-
-        chrome.storage.onChanged.addListener((changes, areaName) => {
-            if (areaName === 'local') {
-                setLocalStorage({ ...localStorage, ...changes });
-            } else if (areaName === 'sync') {
-                setSyncStorage({ ...syncStorage, ...changes });
-            } else if (areaName === 'session') {
-                setSessionStorage({ ...sessionStorage, ...changes });
-            }
-        });
     }, []);
+
+    // listen for changes to the chrome storage to update the local storage state displayed in the dashboard
+    useEffect(() => {
+        const onChanged = (changes: chrome.storage.StorageChange, areaName: chrome.storage.AreaName) => {
+            let copy = {};
+            if (areaName === 'local') {
+                copy = { ...localStorage };
+            } else if (areaName === 'sync') {
+                copy = { ...syncStorage };
+            } else if (areaName === 'session') {
+                copy = { ...sessionStorage };
+            }
+
+            Object.keys(changes).forEach(key => {
+                copy[key] = changes[key].newValue;
+            });
+
+            if (areaName === 'local') {
+                setLocalStorage(copy);
+            }
+            if (areaName === 'sync') {
+                setSyncStorage(copy);
+            }
+            if (areaName === 'session') {
+                setSessionStorage(copy);
+            }
+        };
+
+        chrome.storage.onChanged.addListener(onChanged);
+
+        return () => {
+            chrome.storage.onChanged.removeListener(onChanged);
+        };
+    }, [localStorage, syncStorage, sessionStorage]);
 
     const handleEditStorage = (areaName: string) => (changes: Record<string, any>) => {
         chrome.storage[areaName].set(changes);
