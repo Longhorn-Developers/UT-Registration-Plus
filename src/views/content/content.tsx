@@ -3,22 +3,27 @@ import { render } from 'react-dom';
 import { ContextInvalidated, createShadowDOM, onContextInvalidated } from 'chrome-extension-toolkit';
 import ContentMain from './ContentMain';
 import colors from '../styles/colors.module.scss';
+import getPageTypes, { PageType } from './lib/getPageTypes';
+import { populateSearchInputs } from './lib/courseSchedule/populateSearchInputs';
 
-console.log('colors:', colors);
+const pageTypes = getPageTypes(window.location.href);
+console.log('pageTypes:', pageTypes);
 
-injectReact();
-
-async function injectReact() {
+if (pageTypes.includes(PageType.COURSE_SCHEDULE)) {
+    if (pageTypes.includes(PageType.COURSE_SCHEDULE_LIST)) {
+        populateSearchInputs();
+    }
     const shadowDom = createShadowDOM('ut-registration-plus-dom-container');
     render(<ContentMain />, shadowDom.shadowRoot);
-    await shadowDom.addStyle('static/css/content.css');
+    shadowDom.addStyle('static/css/content.css');
 }
 
-if (process.env.NODE_ENV === 'development') {
-    onContextInvalidated(() => {
-        const div = document.createElement('div');
-        div.id = 'context-invalidated-container';
-        document.body.appendChild(div);
-        render(<ContextInvalidated color={colors.$CHARCOAL} backgroundColor={colors.$BURNT_ORANGE} />, div);
-    });
-}
+onContextInvalidated(() => {
+    const div = document.createElement('div');
+    div.id = 'context-invalidated-container';
+    document.body.appendChild(div);
+    render(
+        <ContextInvalidated fontFamily='monospace' color={colors.WHITE} backgroundColor={colors.BURNT_ORANGE} />,
+        div
+    );
+});

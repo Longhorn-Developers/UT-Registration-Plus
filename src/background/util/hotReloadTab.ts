@@ -32,6 +32,7 @@ export async function hotReloadTab(): Promise<void> {
 
     chrome.tabs.get(reloadTabId, tab => {
         if (!tab?.id) return;
+        if (!tab.url) return;
         if (!HOT_RELOADING_WHITELIST.find(url => tab.url?.includes(url))) {
             chrome.tabs.reload(tab.id);
         }
