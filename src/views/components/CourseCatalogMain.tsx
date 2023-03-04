@@ -18,7 +18,7 @@ export default function CourseCatalogMain({ support }: Props) {
     const [rows, setRows] = React.useState<HTMLTableRowElement[]>([]);
     const [selectedCourse, setSelectedCourse] = React.useState<Course | null>(null);
 
-    const isInfiniteScrollLoading = useInfiniteScroll(async () => {
+    const isScrolling = useInfiniteScroll(async () => {
         console.log('infinite scroll');
         return false;
     });
@@ -38,7 +38,7 @@ export default function CourseCatalogMain({ support }: Props) {
             {rows.map(row => (
                 <TableRow row={row} />
             ))}
-            {isInfiniteScrollLoading && <div>Scrolling...</div>}
+            {isScrolling && <div>Scrolling...</div>}
         </div>
     );
 }
