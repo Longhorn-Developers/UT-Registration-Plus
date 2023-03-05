@@ -39,9 +39,10 @@ export class CourseCatalogScraper {
     /**
      * Pass in a list of HTMLtable rows and scrape every course from them
      * @param rows the rows of the course catalog table
+     * @param keepHeaders whether to keep the header rows (which contain the course name) in the output
      * @returns an array of course row objects (which contain courses corresponding to the htmltable row)
      */
-    public scrape(rows: NodeListOf<HTMLTableRowElement> | HTMLTableRowElement[]): ScrapedRow[] {
+    public scrape(rows: NodeListOf<HTMLTableRowElement> | HTMLTableRowElement[], keepHeaders = false): ScrapedRow[] {
         const courses: ScrapedRow[] = [];
 
         let fullName = this.getFullName();
@@ -49,6 +50,12 @@ export class CourseCatalogScraper {
         rows.forEach(row => {
             if (this.isHeaderRow(row)) {
                 fullName = this.getFullName(row);
+                if (keepHeaders) {
+                    courses.push({
+                        element: row,
+                        course: null,
+                    });
+                }
                 return;
             }
             // we are now ready to build the course object

@@ -7,3 +7,32 @@
         font-weight: #{$weights};
     }
 }
+
+$light: 300;
+$regular: 400;
+$medium: 500;
+$semi_bold: 600;
+$bold: 700;
+$black: 900;
+
+$x_small: 8px;
+$small: 12px;
+$medium: 16px;
+$large: 24px;
+$x_large: 32px;
+$xx_large: 48px;
+
+:export {
+    light: $light;
+    regular: $regular;
+    medium: $medium;
+    semi_bold: $semi_bold;
+    bold: $bold;
+    black: $black;
+    x_small: $x_small;
+    small: $small;
+    medium: $medium;
+    large: $large;
+    x_large: $x_large;
+    xx_large: $xx_large;
+}

@@ -3,17 +3,17 @@
  * when we import them into ts/tsx files
  */
 export interface ISassColors {
-    BURNT_ORANGE: string;
-    CHARCOAL: string;
-    WHITE: string;
-    TANGERINE: string;
-    SUNSHINE: string;
-    CACTUS: string;
-    TURTLE_POND: string;
-    TURQUOISE: string;
-    BLUEBONNET: string;
-    SHADE: string;
-    LIMESTONE: string;
+    burnt_orange: string;
+    charcoal: string;
+    white: string;
+    tangerine: string;
+    sunshine: string;
+    cactus: string;
+    turtle_pond: string;
+    turquoise: string;
+    bluebonnet: string;
+    shade: string;
+    limestone: string;
 }
 
 declare const colors: ISassColors;

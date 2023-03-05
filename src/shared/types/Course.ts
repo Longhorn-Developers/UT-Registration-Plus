@@ -82,5 +82,5 @@ export class Course {
  */
 export type ScrapedRow = {
     element: HTMLTableRowElement;
-    course: Course;
+    course: Course | null;
 };

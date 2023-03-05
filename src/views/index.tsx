@@ -34,7 +34,7 @@ onContextInvalidated(() => {
     div.id = 'context-invalidated-container';
     document.body.appendChild(div);
     render(
-        <ContextInvalidated fontFamily='monospace' color={colors.WHITE} backgroundColor={colors.BURNT_ORANGE} />,
+        <ContextInvalidated fontFamily='monospace' color={colors.white} backgroundColor={colors.burnt_orange} />,
         div
     );
 });
