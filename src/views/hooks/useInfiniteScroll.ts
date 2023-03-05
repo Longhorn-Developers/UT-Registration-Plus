@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { sleep } from 'src/shared/util/time';
+import { useEffect } from 'react';
 
 /**
  * Hook to execute a callback when the user scrolls to the bottom of the page
@@ -7,32 +6,20 @@ import { sleep } from 'src/shared/util/time';
  * @returns isLoading boolean to indicate if the callback is currently being executed
  */
 
-export default function useInfiniteScroll(callback: () => Promise<boolean>): boolean {
-    const [isLoading, setIsLoading] = useState(false);
+export default function useInfiniteScroll(
+    callback: () => Promise<void> | void,
+    deps?: React.DependencyList | undefined
+) {
+    const isScrolling = () => {
+        const { innerHeight } = window;
+        const { scrollTop, offsetHeight } = document.documentElement;
+        if (innerHeight + scrollTop >= offsetHeight) {
+            callback();
+        }
+    };
 
     useEffect(() => {
         window.addEventListener('scroll', isScrolling);
         return () => window.removeEventListener('scroll', isScrolling);
-    }, []);
-
-    useEffect(() => {
-        if (!isLoading) return;
-        callback().then(isFinished => {
-            if (!isFinished) {
-                sleep(1000).then(() => {
-                    setIsLoading(false);
-                });
-            }
-        });
-    }, [isLoading]);
-
-    function isScrolling() {
-        if (
-            window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight ||
-            isLoading
-        )
-            return;
-        setIsLoading(true);
-    }
-    return isLoading;
+    }, deps);
 }

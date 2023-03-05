@@ -16,7 +16,7 @@ if (isExtensionPopup()) {
 }
 
 if (support === SiteSupport.COURSE_CATALOG_DETAILS || support === SiteSupport.COURSE_CATALOG_LIST) {
-    const shadowDom = createShadowDOM('ut-registration-plus-dom-container');
+    const shadowDom = createShadowDOM('ut-registration-plus-container');
     render(<CourseCatalogMain support={support} />, shadowDom.shadowRoot);
     shadowDom.addStyle('static/css/content.css');
 }

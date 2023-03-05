@@ -78,9 +78,9 @@ export class Course {
 }
 
 /**
- * A helper type that is used to represent a row in the course schedule table, with the actual element corresponding to the course object
+ * A helper type that is used to represent an element in the DOM, with the actual element corresponding to the course object
  */
-export type CourseRow = {
-    rowElement: HTMLTableRowElement;
+export type ScrapedRow = {
+    element: HTMLTableRowElement;
     course: Course;
 };

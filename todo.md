@@ -6,7 +6,7 @@ Last Updated: 03/4/2023
 
 -   [x] scraping course information
 -   [x] injecting plus header and buttons
--   [ ] auto loading next pages
+-   [x] auto loading next pages
 -   [ ] showing course popup
 -   [ ] RMP, eCis, Textbook, and Syllabus buttons
 -   [ ] displaying professor information on popup

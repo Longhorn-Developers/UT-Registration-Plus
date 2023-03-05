@@ -1,4 +1,4 @@
-import { Course, Instructor, Status, InstructionMode, CourseRow } from 'src/shared/types/Course';
+import { Course, Instructor, Status, InstructionMode, ScrapedRow } from 'src/shared/types/Course';
 import { CourseSchedule, CourseMeeting } from 'src/shared/types/CourseSchedule';
 import { SiteSupport } from 'src/views/lib/getSiteSupport';
 
@@ -27,7 +27,7 @@ enum DetailsSelector {
 }
 
 /**
- * A class that allows use to scrape information from UT's course catalog to create our internal representation of a course
+ * A class that allows us to scrape information from UT's course catalog to create our internal representation of a course
  */
 export class CourseCatalogScraper {
     support: SiteSupport;
@@ -41,8 +41,8 @@ export class CourseCatalogScraper {
      * @param rows the rows of the course catalog table
      * @returns an array of course row objects (which contain courses corresponding to the htmltable row)
      */
-    public scrape(rows: NodeListOf<HTMLTableRowElement>): CourseRow[] {
-        const courses: CourseRow[] = [];
+    public scrape(rows: NodeListOf<HTMLTableRowElement> | HTMLTableRowElement[]): ScrapedRow[] {
+        const courses: ScrapedRow[] = [];
 
         let fullName = this.getFullName();
 
@@ -94,7 +94,7 @@ export class CourseCatalogScraper {
                 },
             });
             courses.push({
-                rowElement: row,
+                element: row,
                 course: newCourse,
             });
         });
