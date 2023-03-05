@@ -1,0 +1,8 @@
+@import 'src/views/styles/base.module.scss';
+
+.selectedRow {
+    td {
+        background: green !important;
+        color: white !important;
+    }
+}

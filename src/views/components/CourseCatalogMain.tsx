@@ -8,7 +8,7 @@ import { SiteSupport } from '../lib/getSiteSupport';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
 import CoursePanel from './injected/CoursePanel/CoursePanel';
 import TableHead from './injected/TableHead';
-import TableRow from './injected/TableRow';
+import TableRow from './injected/TableRow/TableRow';
 
 interface Props {
     support: SiteSupport.COURSE_CATALOG_DETAILS | SiteSupport.COURSE_CATALOG_LIST;
@@ -54,6 +54,7 @@ export default function CourseCatalogMain({ support }: Props) {
                 <TableRow
                     element={row.rowElement}
                     course={row.course}
+                    isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
                     support={support}
                     onClick={handleRowButtonClick(row.course)}
                 />
