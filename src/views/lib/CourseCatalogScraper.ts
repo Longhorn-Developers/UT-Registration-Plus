@@ -29,7 +29,7 @@ enum DetailsSelector {
 /**
  * A class that allows use to scrape information from UT's course catalog to create our internal representation of a course
  */
-export class CourseScraper {
+export class CourseCatalogScraper {
     support: SiteSupport;
 
     constructor(support: SiteSupport) {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Course, CourseRow } from 'src/shared/types/Course';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import { useKeyPress } from '../hooks/useKeyPress';
-import { CourseScraper } from '../lib/courseCatalog/CourseScraper';
+import { CourseCatalogScraper } from '../lib/CourseCatalogScraper';
 import { populateSearchInputs } from '../lib/courseCatalog/populateSearchInputs';
 import { SiteSupport } from '../lib/getSiteSupport';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
@@ -31,7 +31,7 @@ export default function CourseCatalogMain({ support }: Props) {
     }, []);
 
     useEffect(() => {
-        const scraper = new CourseScraper(support);
+        const scraper = new CourseCatalogScraper(support);
         const rows = scraper.scrape(document.querySelectorAll<HTMLTableRowElement>('table tbody tr'));
         console.log('useEffect -> rows:', rows);
         setRows(rows);
