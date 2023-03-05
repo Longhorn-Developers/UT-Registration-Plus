@@ -6,6 +6,7 @@ export interface ISassColors {
     burnt_orange: string;
     charcoal: string;
     white: string;
+    black: string;
     tangerine: string;
     sunshine: string;
     cactus: string;

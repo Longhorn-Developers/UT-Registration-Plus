@@ -8,6 +8,15 @@
     }
 }
 
+/* fallback */
+@font-face {
+    font-family: 'Material Icons Round';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('moz-extension://__MSG_@@extension_id__/fonts/material-icons.woff2') format('woff2');
+}
+
 $light: 300;
 $regular: 400;
 $medium: 500;
