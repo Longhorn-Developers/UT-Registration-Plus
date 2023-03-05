@@ -48,6 +48,13 @@ export class CourseSchedule {
         Object.assign(this, courseSchedule);
     }
 
+    /**
+     * Given a string representation of a schedule, parse it into a CourseSchedule object
+     * @param dayLine a string representation of the days of the week that the course is taught: MWF, TR, etc.
+     * @param timeLine a string representation of a time-range that the course is taught: 10:00 am - 11:00 am, 1:00 pm - 2:00 pm, etc.
+     * @param roomLine a string representation of the room that the course is taught in: JGB 2.302, etc.
+     * @returns an array of CourseMeeting objects, which represent the schedule for the course
+     */
     static parse(dayLine: string, timeLine: string, roomLine: string): CourseMeeting[] {
         try {
             let days: Day[] = dayLine
