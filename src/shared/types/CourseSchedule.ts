@@ -14,10 +14,10 @@ const DAY_MAP = {
 } as const;
 
 /** A day of the week that a class is taught */
-type Day = typeof DAY_MAP[keyof typeof DAY_MAP];
+export type Day = typeof DAY_MAP[keyof typeof DAY_MAP];
 
 /** A physical room that a class is taught in */
-type Room = {
+export type Room = {
     /** The UT building code for where the class is taught */
     building: string;
     /** The room number for where the class is taught */

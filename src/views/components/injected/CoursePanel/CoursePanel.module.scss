@@ -1,0 +1,35 @@
+.panelBody {
+    height: auto;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.coursePanelBase {
+    position: fixed;
+    transform: translateY(-50%);
+    top: 15px;
+    right: 15px;
+    z-index: 2147483647;
+}
+
+.coursePanelHeader {
+    display: flex;
+    height: 50;
+    background-color: #29465b;
+    width: 100%;
+
+    .closePanelButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        margin: 5px;
+        margin-left: auto;
+        cursor: pointer;
+        color: white;
+    }
+}

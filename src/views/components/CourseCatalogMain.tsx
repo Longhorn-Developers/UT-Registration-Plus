@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
 import { Course, CourseRow } from 'src/shared/types/Course';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
+import { useKeyPress } from '../hooks/useKeyPress';
 import { CourseScraper } from '../lib/courseCatalog/CourseScraper';
 import { populateSearchInputs } from '../lib/courseCatalog/populateSearchInputs';
 import { SiteSupport } from '../lib/getSiteSupport';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
-import CoursePopup from './injected/CoursePopup/CoursePopup';
+import CoursePanel from './injected/CoursePanel/CoursePanel';
 import TableHead from './injected/TableHead';
 import TableRow from './injected/TableRow';
 
@@ -45,6 +45,8 @@ export default function CourseCatalogMain({ support }: Props) {
         setSelectedCourse(null);
     };
 
+    useKeyPress('Escape', handleClearSelectedCourse);
+
     return (
         <ExtensionRoot>
             <TableHead>Plus</TableHead>
@@ -56,7 +58,7 @@ export default function CourseCatalogMain({ support }: Props) {
                     onClick={handleRowButtonClick(row.course)}
                 />
             ))}
-            {selectedCourse && <CoursePopup course={selectedCourse} onClose={handleClearSelectedCourse} />}
+            {selectedCourse && <CoursePanel course={selectedCourse} onClose={handleClearSelectedCourse} />}
             {isScrolling && <div>Scrolling...</div>}
         </ExtensionRoot>
     );
