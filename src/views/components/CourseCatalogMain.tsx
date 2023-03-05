@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Course, CourseRow, CourseScraper } from 'src/shared/types/Course';
-import { CourseCatalogDetailsScraper } from 'src/shared/types/CourseCatalogDetailsScraper';
-import { CourseCatalogRowScraper } from 'src/shared/types/CourseCatalogRowScraper';
+import { Course, CourseRow } from 'src/shared/types/Course';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
+import { CourseScraper } from '../lib/courseCatalog/CourseScraper';
 import { populateSearchInputs } from '../lib/courseCatalog/populateSearchInputs';
 import { SiteSupport } from '../lib/getSiteSupport';
 import TableHead from './injected/TableHead';
@@ -22,7 +21,7 @@ export default function CourseCatalogMain({ support }: Props) {
 
     const isScrolling = useInfiniteScroll(async () => {
         console.log('infinite scroll');
-        return false;
+        return true;
     });
 
     useEffect(() => {
@@ -30,7 +29,9 @@ export default function CourseCatalogMain({ support }: Props) {
     }, []);
 
     useEffect(() => {
-        const rows = scrapeCourseRows(support);
+        const scraper = new CourseScraper(support);
+        const rows = scraper.scrape(document.querySelectorAll<HTMLTableRowElement>('table tbody tr'));
+        console.log('useEffect -> rows:', rows);
         setRows(rows);
     }, []);
 
@@ -42,44 +43,14 @@ export default function CourseCatalogMain({ support }: Props) {
         <div>
             <TableHead>Plus</TableHead>
             {rows.map(row => (
-                <TableRow element={row.rowElement} support={support} onClick={handleRowButtonClick} />
+                <TableRow
+                    element={row.rowElement}
+                    course={row.course}
+                    support={support}
+                    onClick={handleRowButtonClick}
+                />
             ))}
             {isScrolling && <div>Scrolling...</div>}
         </div>
     );
-}
-
-function scrapeCourseRows(support: SiteSupport): CourseRow[] {
-    const rows: CourseRow[] = [];
-
-    let name: string | null = null;
-    if (support === SiteSupport.COURSE_CATALOG_DETAILS) {
-        const header = document.querySelector('#details h2');
-        if (!header?.textContent) {
-            throw new Error('Could not find course name on course details page.');
-        }
-        name = header.textContent.trim();
-    }
-
-    document.querySelectorAll<HTMLTableRowElement>('table tbody tr').forEach(row => {
-        // rows that have a course header are the start of a new section, so save the section name and skip
-        const header = row.querySelector('td.course_header');
-        if (header?.textContent) {
-            name = header.textContent.trim();
-            return;
-        }
-        if (!name) {
-            throw new Error('Could not find any course sections.');
-        }
-
-        const course = scrapeCourseFromRow(name, support, row);
-    });
-    return rows;
-}
-
-function scrapeCourseFromRow(name: string, support: SiteSupport, row: HTMLTableRowElement): Course {
-    let url = support === SiteSupport.COURSE_CATALOG_DETAILS ? window.location.href : null;
-
-
-    
 }

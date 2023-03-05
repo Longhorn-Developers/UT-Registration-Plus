@@ -18,12 +18,6 @@ export type Instructor = {
  */
 export type InstructionMode = 'Online' | 'In Person' | 'Hybrid';
 
-export type Links = {
-    syllabi?: string;
-    textbook?: string;
-    eCIS?: string;
-};
-
 export enum Status {
     OPEN = 'OPEN',
     CLOSED = 'CLOSED',
@@ -34,16 +28,15 @@ export enum Status {
 export class Course {
     uniqueId: number;
     number: string;
-    name: string;
+    fullName: string;
+    courseName: string;
     department: string;
     status: Status;
     instructors: Instructor[];
     isReserved: boolean;
-    description: string[];
+    description?: string[];
     schedule: CourseSchedule;
-    currentStatus: string;
     url: string;
-    links: Links;
     registerURL?: string;
     flags: string[];
     instructionMode: InstructionMode;
