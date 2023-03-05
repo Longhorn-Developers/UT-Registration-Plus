@@ -28,6 +28,16 @@ export enum Status {
 }
 
 /**
+ * Represents a semester, with the year and the season for when a course is offered
+ */
+export type Semester = {
+    /** The year that the semester is in */
+    year: number;
+    /** The season that the semester is in (Fall, Spring, Summer) */
+    season: string;
+};
+
+/**
  * The internal representation of a course for the extension
  */
 export class Course {
@@ -59,6 +69,8 @@ export class Course {
     flags: string[];
     /** How is the class being taught (online, hybrid, in person, etc) */
     instructionMode: InstructionMode;
+    /** Which semester is the course from */
+    semester: Semester;
 
     constructor(course: Course | Serialized<Course>) {
         Object.assign(this, course);

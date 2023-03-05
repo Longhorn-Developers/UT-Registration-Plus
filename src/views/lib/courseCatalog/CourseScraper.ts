@@ -60,8 +60,18 @@ export class CourseScraper {
             fullName = fullName.replace(/\s\s+/g, ' ').trim();
 
             const [courseName, department, number] = this.separateCourseName(fullName);
-
             const [status, isReserved] = this.getStatus(row);
+
+            // TODO: get semester from somewhere
+            const year = new Date().getFullYear();
+            const month = new Date().getMonth();
+            let season = 'Fall';
+            if (month >= 0 && month < 5) {
+                season = 'Spring';
+            } else if (month >= 5 && month < 8) {
+                season = 'Summer';
+            }
+
             const newCourse = new Course({
                 fullName,
                 courseName,
@@ -77,6 +87,11 @@ export class CourseScraper {
                 instructionMode: this.getInstructionMode(row),
                 instructors: this.getInstructors(row),
                 description: this.getDescription(document),
+                // TODO: get semester from somewhere
+                semester: {
+                    year,
+                    season,
+                },
             });
             courses.push({
                 rowElement: row,
