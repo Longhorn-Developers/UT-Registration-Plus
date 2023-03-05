@@ -5,6 +5,8 @@ import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import { CourseScraper } from '../lib/courseCatalog/CourseScraper';
 import { populateSearchInputs } from '../lib/courseCatalog/populateSearchInputs';
 import { SiteSupport } from '../lib/getSiteSupport';
+import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
+import CoursePopup from './injected/CoursePopup/CoursePopup';
 import TableHead from './injected/TableHead';
 import TableRow from './injected/TableRow';
 
@@ -35,22 +37,27 @@ export default function CourseCatalogMain({ support }: Props) {
         setRows(rows);
     }, []);
 
-    const handleRowButtonClick = (course: Course) => {
+    const handleRowButtonClick = (course: Course) => () => {
         setSelectedCourse(course);
     };
 
+    const handleClearSelectedCourse = () => {
+        setSelectedCourse(null);
+    };
+
     return (
-        <div>
+        <ExtensionRoot>
             <TableHead>Plus</TableHead>
             {rows.map(row => (
                 <TableRow
                     element={row.rowElement}
                     course={row.course}
                     support={support}
-                    onClick={handleRowButtonClick}
+                    onClick={handleRowButtonClick(row.course)}
                 />
             ))}
+            {selectedCourse && <CoursePopup course={selectedCourse} onClose={handleClearSelectedCourse} />}
             {isScrolling && <div>Scrolling...</div>}
-        </div>
+        </ExtensionRoot>
     );
 }

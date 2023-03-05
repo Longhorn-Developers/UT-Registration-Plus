@@ -1,7 +1,10 @@
 import { Course, Instructor, Status, InstructionMode, CourseRow } from 'src/shared/types/Course';
-import { CourseSchedule, CourseSection } from 'src/shared/types/CourseSchedule';
+import { CourseSchedule, CourseMeeting } from 'src/shared/types/CourseSchedule';
 import { SiteSupport } from 'src/views/lib/getSiteSupport';
 
+/**
+ * The selectors that we use to scrape the course catalog list table (https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/results/?fos_fl=C+S&level=U&search_type_main=FIELD)
+ */
 enum TableDataSelector {
     COURSE_HEADER = 'td.course_header',
     UNIQUE_ID = 'td[data-th="Unique"]',
@@ -15,11 +18,17 @@ enum TableDataSelector {
     FLAGS = 'td[data-th="Flags"] ul li',
 }
 
+/**
+ * The selectors that we use to scrape the course details page for an individual course (https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52700/)
+ */
 enum DetailsSelector {
     COURSE_NAME = '#details h2',
     COURSE_DESCRIPTION = '#details p',
 }
 
+/**
+ * A class that allows use to scrape information from UT's course catalog to create our internal representation of a course
+ */
 export class CourseScraper {
     support: SiteSupport;
 
@@ -27,6 +36,11 @@ export class CourseScraper {
         this.support = support;
     }
 
+    /**
+     * Pass in a list of HTMLtable rows and scrape every course from them
+     * @param rows the rows of the course catalog table
+     * @returns an array of course row objects (which contain courses corresponding to the htmltable row)
+     */
     public scrape(rows: NodeListOf<HTMLTableRowElement>): CourseRow[] {
         const courses: CourseRow[] = [];
 
@@ -73,15 +87,26 @@ export class CourseScraper {
         return courses;
     }
 
-    separateCourseName(name: string): [courseName: string, department: string, number: string] {
-        let courseNumberIndex = name.search(/\d/);
-        let department = name.substring(0, courseNumberIndex).trim();
-        let number = name.substring(courseNumberIndex, name.indexOf(' ', courseNumberIndex)).trim();
-        let courseName = name.substring(name.indexOf(' ', courseNumberIndex)).trim();
+    /**
+     * Separate the course name into its department, number, and name
+     * @example separateCourseName("CS 314H - Honors Discrete Structures") => ["Honors Discrete Structures", "CS", "314H"]
+     * @param courseFullName the full name of the course (e.g. "CS 314H - Honors Discrete Structures")
+     * @returns an array of the course name , department, and number
+     */
+    separateCourseName(courseFullName: string): [courseName: string, department: string, number: string] {
+        let courseNumberIndex = courseFullName.search(/\d/);
+        let department = courseFullName.substring(0, courseNumberIndex).trim();
+        let number = courseFullName.substring(courseNumberIndex, courseFullName.indexOf(' ', courseNumberIndex)).trim();
+        let courseName = courseFullName.substring(courseFullName.indexOf(' ', courseNumberIndex)).trim();
 
         return [courseName, department, number];
     }
 
+    /**
+     * Scrape the Unique ID from the course catalog table row
+     * @param row the row of the course catalog table
+     * @returns the uniqueid of the course as a number
+     */
     getUniqueId(row: HTMLTableRowElement): number {
         const div = row.querySelector(TableDataSelector.UNIQUE_ID);
         if (!div) {
@@ -90,11 +115,21 @@ export class CourseScraper {
         return Number(div.textContent);
     }
 
+    /**
+     * Scrapes the individual URL for a given course that takes you to the course details page
+     * @param row the row of the course catalog table
+     * @returns the url of the course details page for the course in the row
+     */
     getURL(row: HTMLTableRowElement): string {
         const div = row.querySelector<HTMLAnchorElement>(`${TableDataSelector.UNIQUE_ID} a`);
         return div?.href || window.location.href;
     }
 
+    /**
+     * Scrape who is teaching the course from the course catalog table row with meta-data about their name
+     * @param row the row of the course catalog table
+     * @returns an array of instructors for the course
+     */
     getInstructors(row: HTMLTableRowElement): Instructor[] {
         const spans = row.querySelectorAll(TableDataSelector.INSTRUCTORS);
         const names = Array.from(spans)
@@ -115,10 +150,20 @@ export class CourseScraper {
         });
     }
 
+    /**
+     * Whether or not this is a header row for a course within the course catalog list (we can't scrape courses from header rows)
+     * @param row the row of the course catalog table
+     * @returns true if this is a header row, false otherwise
+     */
     isHeaderRow(row: HTMLTableRowElement): boolean {
         return row.querySelector(TableDataSelector.COURSE_HEADER) !== null;
     }
 
+    /**
+     * Scrape whether the class is being taught online, in person, or a hybrid of the two
+     * @param row the row of the course catalog table
+     * @returns the instruction mode of the course
+     */
     getInstructionMode(row: HTMLTableRowElement): InstructionMode {
         const text = (row.querySelector(TableDataSelector.INSTRUCTION_MODE)?.textContent || '').toLowerCase();
 
@@ -131,6 +176,11 @@ export class CourseScraper {
         return 'In Person';
     }
 
+    /**
+     * Scrapes the description of the course from the course details page and separates it into an array of cleaned up lines
+     * @param document the document of the course details page to scrape
+     * @returns an array of lines of the course description
+     */
     getDescription(document: Document): string[] {
         const lines = document.querySelectorAll(DetailsSelector.COURSE_DESCRIPTION);
         return Array.from(lines)
@@ -139,6 +189,11 @@ export class CourseScraper {
             .filter(Boolean);
     }
 
+    /**
+     * Get the full name of the course from the course catalog table row (e.g. "CS 314H - Honors Discrete Structures")
+     * @param row the row of the course catalog table
+     * @returns the full name of the course
+     */
     getFullName(row?: HTMLTableRowElement): string {
         if (!row) {
             return document.querySelector(DetailsSelector.COURSE_NAME)?.textContent || '';
@@ -147,11 +202,21 @@ export class CourseScraper {
         return div?.textContent || '';
     }
 
+    /**
+     * When registration is open, the registration URL will show up in the course catalog table row as a link. This will scrape it from the row.
+     * @param row the row of the course catalog table
+     * @returns the registration URL for the course if it is currently displayed, undefined otherwise
+     */
     getRegisterURL(row: HTMLTableRowElement): string | undefined {
         const a = row.querySelector<HTMLAnchorElement>(TableDataSelector.REGISTER_URL);
         return a?.href;
     }
 
+    /**
+     * Scrapes whether the course is open, closed, waitlisted, or cancelled
+     * @param row the row of the course catalog table
+     * @returns
+     */
     getStatus(row: HTMLTableRowElement): [status: Status, isReserved: boolean] {
         const div = row.querySelector(TableDataSelector.STATUS);
         if (!div) {
@@ -178,11 +243,21 @@ export class CourseScraper {
         throw new Error(`Unknown status: ${text}`);
     }
 
+    /**
+     * At UT, some courses have certain "flags" which aid in graduation. This will scrape the flags from the course catalog table row.
+     * @param row
+     * @returns an array of flags for the course
+     */
     getFlags(row: HTMLTableRowElement): string[] {
         const lis = row.querySelectorAll(TableDataSelector.FLAGS);
         return Array.from(lis).map(li => li.textContent || '');
     }
 
+    /**
+     * This will scrape all the time information from the course catalog table row and return it as a CourseSchedule object, which represents all of the meeting timiestimes/places of the course.
+     * @param row the row of the course catalog table
+     * @returns a CourseSchedule object representing all of the meetings of the course
+     */
     getSchedule(row: HTMLTableRowElement): CourseSchedule {
         const dayLines = row.querySelectorAll(TableDataSelector.SCHEDULE_DAYS);
         const hourLines = row.querySelectorAll(TableDataSelector.SCHEDULE_HOURS);
@@ -192,19 +267,17 @@ export class CourseScraper {
             throw new Error('Schedule data is malformed');
         }
 
-        const sections: CourseSection[] = [];
+        const meetings: CourseMeeting[] = [];
 
         for (let i = 0; i < dayLines.length; i += 1) {
-            const lineSections = CourseSchedule.parse(
+            const lineMeetings = CourseSchedule.parse(
                 dayLines[i].textContent || '',
                 hourLines[i].textContent || '',
                 roomLines[i].textContent || ''
             );
-            sections.push(...lineSections);
+            meetings.push(...lineMeetings);
         }
 
-        return new CourseSchedule({
-            sections,
-        });
+        return new CourseSchedule({ meetings });
     }
 }

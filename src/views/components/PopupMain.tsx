@@ -1,5 +1,6 @@
 import React from 'react';
+import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
 
 export default function PopupMain() {
-    return <div>popup</div>;
+    return <ExtensionRoot>Popup</ExtensionRoot>;
 }

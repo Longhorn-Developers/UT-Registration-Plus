@@ -1,6 +1,9 @@
 import { Serialized } from 'chrome-extension-toolkit';
 
-const dayMap = {
+/**
+ * a map of the days of the week that a class is taught, and the corresponding abbreviation
+ */
+const DAY_MAP = {
     M: 'Monday',
     T: 'Tuesday',
     W: 'Wednesday',
@@ -10,28 +13,42 @@ const dayMap = {
     SU: 'Sunday',
 } as const;
 
-type Day = typeof dayMap[keyof typeof dayMap];
+/** A day of the week that a class is taught */
+type Day = typeof DAY_MAP[keyof typeof DAY_MAP];
 
+/** A physical room that a class is taught in */
 type Room = {
+    /** The UT building code for where the class is taught */
     building: string;
+    /** The room number for where the class is taught */
     number: string;
 };
 
-export type CourseSection = {
+/**
+ * This represents one "Meeting Time" for a course, which includes the day of the week that the course is taught, the time that the course is taught, and the location that the course is taught
+ */
+export type CourseMeeting = {
+    /** The day of the week that the course is taught */
     day: Day;
+    /** The start time of the course, in minutes since midnight */
     startTime: number;
+    /** The end time of the course, in minutes since midnight */
     endTime: number;
+    /** The location that the course is taught */
     room?: Room;
 };
 
+/**
+ * This represents the schedule for a course, which includes all the meeting times for the course, as well as helper functions for parsing, serializing, and deserializing the schedule
+ */
 export class CourseSchedule {
-    sections: CourseSection[];
+    meetings: CourseMeeting[];
 
     constructor(courseSchedule: CourseSchedule | Serialized<CourseSchedule>) {
         Object.assign(this, courseSchedule);
     }
 
-    static parse(dayLine: string, timeLine: string, roomLine: string): CourseSection[] {
+    static parse(dayLine: string, timeLine: string, roomLine: string): CourseMeeting[] {
         try {
             let days: Day[] = dayLine
                 .split('')
@@ -44,7 +61,7 @@ export class CourseSchedule {
                     if (char === 'S' && nextChar === 'U') {
                         day += nextChar;
                     }
-                    return dayMap[day];
+                    return DAY_MAP[day];
                 })
                 .filter(Boolean) as Day[];
 
