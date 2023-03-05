@@ -16,7 +16,7 @@ interface IDevStore {
     reloadTabId?: number;
 }
 
-export const devStore = createStore<IDevStore>('DEV_STORE', {
+export const DevStore = createStore<IDevStore>('DEV_STORE', {
     debugTabId: undefined,
     isTabReloading: true,
     wasDebugTabVisible: false,

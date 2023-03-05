@@ -1,4 +1,4 @@
-import { devStore } from 'src/shared/storage/devStore';
+import { DevStore } from 'src/background/storage/DevStore';
 
 /**
  * A list of websites that we don't want to reload when the extension reloads (becuase it'd be hella annoying lmao)
@@ -24,7 +24,7 @@ const HOT_RELOADING_WHITELIST = [
  * @returns a promise that resolves when the tab is reloaded
  */
 export async function hotReloadTab(): Promise<void> {
-    const { getIsTabReloading, getReloadTabId } = devStore;
+    const { getIsTabReloading, getReloadTabId } = DevStore;
 
     const [isTabReloading, reloadTabId] = await Promise.all([getIsTabReloading(), getReloadTabId()]);
 

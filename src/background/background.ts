@@ -5,7 +5,7 @@ import onInstall from './events/onInstall';
 import onNewChromeSession from './events/onNewChromeSession';
 import onServiceWorkerAlive from './events/onServiceWorkerAlive';
 import onUpdate from './events/onUpdate';
-import { sessionStore } from '../shared/storage/sessionStore';
+import { SessionStore } from './storage/SessionStore';
 import browserActionHandler from './handler/browserActionHandler';
 import hotReloadingHandler from './handler/hotReloadingHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
@@ -38,9 +38,9 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
 
 messageListener.listen();
 
-sessionStore.getChromeSessionId().then(async chromeSessionId => {
+SessionStore.getChromeSessionId().then(async chromeSessionId => {
     if (!chromeSessionId) {
-        await sessionStore.setChromeSessionId(generateRandomId(10));
+        await SessionStore.setChromeSessionId(generateRandomId(10));
         onNewChromeSession();
     }
 });
