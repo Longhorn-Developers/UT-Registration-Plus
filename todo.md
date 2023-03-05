@@ -41,6 +41,9 @@ Last Updated: 03/4/2023
 -   [ ] store in db
 -   [ ] extension and website darkmode support
 -   [ ] see who else is looking at certain classes (waitlist, or has it in their schedule)
+-   [ ] github contributors displayed somewhere
+-   [ ] Links to discord/github
+-   [ ] on CS/ECE/MIS pages, show some banner somewhere for students to join the dev team!
 -   [ ] CHECK ALL THE TODOs in CODE BEFORE LAUNCHING
 
 ## LEGACY FROM UTRP-V1

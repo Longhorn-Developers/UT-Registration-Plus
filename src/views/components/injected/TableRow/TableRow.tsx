@@ -29,11 +29,7 @@ export default function TableRow({ support, course, element, isSelected, onClick
     }, []);
 
     useEffect(() => {
-        if (isSelected) {
-            element.classList.add(styles.selectedRow);
-        } else {
-            element.classList.remove(styles.selectedRow);
-        }
+        element.classList[isSelected ? 'add' : 'remove'](styles.selectedRow);
     }, [course, isSelected]);
 
     if (!container) {
