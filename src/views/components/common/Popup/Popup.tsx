@@ -1,18 +1,19 @@
 import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
-import styles from './Panel.module.scss';
+import styles from './Popup.module.scss';
 
 interface Props {
     testId?: string;
     style?: React.CSSProperties;
     className?: string;
+    /** Should it display a subtle dark overlay over the rest of the screen */
     overlay?: boolean;
 }
 
 /**
  *
  */
-export default function Panel(props: PropsWithChildren<Props>) {
+export default function Popup(props: PropsWithChildren<Props>) {
     return (
         <div
             style={props.style}

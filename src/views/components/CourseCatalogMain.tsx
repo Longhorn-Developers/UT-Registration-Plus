@@ -9,7 +9,7 @@ import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
 import Icon from './common/Icon/Icon';
 import Text from './common/Text/Text';
 import AutoLoad from './injected/AutoLoad/AutoLoad';
-import CoursePanel from './injected/CoursePanel/CoursePanel';
+import CoursePopup from './injected/CoursePopup/CoursePopup';
 import TableHead from './injected/TableHead';
 import TableRow from './injected/TableRow/TableRow';
 
@@ -65,6 +65,7 @@ export default function CourseCatalogMain({ support }: Props) {
                 }
                 return (
                     <TableRow
+                        key={row.course.uniqueId}
                         element={row.element}
                         course={row.course}
                         isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
@@ -73,7 +74,7 @@ export default function CourseCatalogMain({ support }: Props) {
                     />
                 );
             })}
-            {selectedCourse && <CoursePanel course={selectedCourse} onClose={handleClearSelectedCourse} />}
+            {selectedCourse && <CoursePopup course={selectedCourse} onClose={handleClearSelectedCourse} />}
             <AutoLoad addRows={addRows} />
         </ExtensionRoot>
     );

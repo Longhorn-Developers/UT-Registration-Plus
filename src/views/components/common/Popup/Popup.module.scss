@@ -18,7 +18,7 @@
 .body {
     overflow-y: auto;
     z-index: 2147483647;
-    background-color: rgb(52, 53, 65);
+    background-color: $white;
     box-shadow: 0px 12px 30px 0px #323e5f29;
     transition: box-shadow 0.15s;
 }

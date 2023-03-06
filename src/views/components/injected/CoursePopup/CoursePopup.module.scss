@@ -1,4 +1,4 @@
-.panelBody {
+.popupBody {
     height: auto;
     color: white;
     padding: 10px;
@@ -7,7 +7,7 @@
     justify-content: center;
 }
 
-.coursePanelBase {
+.coursePopupBase {
     position: fixed;
     transform: translateY(-50%);
     top: 15px;
@@ -15,13 +15,13 @@
     z-index: 2147483647;
 }
 
-.coursePanelHeader {
+.coursePopupHeader {
     display: flex;
     height: 50;
     background-color: #29465b;
     width: 100%;
 
-    .closePanelButton {
+    .closePopupButton {
         display: flex;
         align-items: center;
         justify-content: center;
