@@ -30,6 +30,13 @@ $large_size: 24px;
 $x_large_size: 32px;
 $xx_large_size: 48px;
 
+$x_small_line_height: 12px;
+$small_line_height: 16px;
+$medium_line_height: 20px;
+$large_line_height: 28px;
+$x_large_line_height: 36px;
+$xx_large_line_height: 52px;
+
 :export {
     light_weight: $light_weight;
     regular_weight: $regular_weight;
@@ -44,4 +51,12 @@ $xx_large_size: 48px;
     large_size: $large_size;
     x_large_size: $x_large_size;
     xx_large_size: $xx_large_size;
+
+    x_small_line_height: $x_small_line_height;
+    small_line_height: $small_line_height;
+    medium_line_height: $medium_line_height;
+    large_line_height: $large_line_height;
+    x_large_line_height: $x_large_line_height;
+    xx_large_line_height: $xx_large_line_height;
+    
 }

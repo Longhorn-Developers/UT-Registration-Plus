@@ -1,5 +1,5 @@
 import { Course, Instructor, Status, InstructionMode, ScrapedRow } from 'src/shared/types/Course';
-import { CourseSchedule, CourseMeeting } from 'src/shared/types/CourseSchedule';
+import { CourseSchedule } from 'src/shared/types/CourseSchedule';
 import { SiteSupport } from 'src/views/lib/getSiteSupport';
 
 /**
@@ -289,17 +289,18 @@ export class CourseCatalogScraper {
             throw new Error('Schedule data is malformed');
         }
 
-        const meetings: CourseMeeting[] = [];
+        const schedule = new CourseSchedule();
 
         for (let i = 0; i < dayLines.length; i += 1) {
-            const lineMeetings = CourseSchedule.parse(
-                dayLines[i].textContent || '',
-                hourLines[i].textContent || '',
-                roomLines[i].textContent || ''
+            schedule.meetings.push(
+                CourseSchedule.parse(
+                    dayLines[i].textContent || '',
+                    hourLines[i].textContent || '',
+                    roomLines[i].textContent || ''
+                )
             );
-            meetings.push(...lineMeetings);
         }
 
-        return new CourseSchedule({ meetings });
+        return schedule;
     }
 }

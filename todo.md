@@ -42,7 +42,9 @@ Last Updated: 03/4/2023
 -   [ ] see who else is looking at certain classes (waitlist, or has it in their schedule)
 -   [ ] github contributors displayed somewhere
 -   [ ] Links to discord/github
+-   [ ] my twitter handle for support
 -   [ ] on CS/ECE/MIS pages, show some banner somewhere for students to join the dev team!
+-   [ ] suggest fun classes to take? or classes that are easy A's? or classes that have not a lot of people / lot of people in them?
 -   [ ] CHECK ALL THE TODOs in CODE BEFORE LAUNCHING
 
 ## LEGACY FROM UTRP-V1

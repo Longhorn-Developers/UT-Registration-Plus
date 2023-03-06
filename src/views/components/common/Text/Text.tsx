@@ -25,6 +25,7 @@ export default function Text(props: PropsWithChildren<TextProps>) {
     style.color ??= colors?.[props.color ?? 'charcoal'];
     style.fontSize ??= fonts?.[`${props.size ?? 'medium'}_size`];
     style.fontWeight ??= fonts?.[`${props.weight ?? 'regular'}_weight`];
+    style.lineHeight ??= fonts?.[`${props.size ?? 'medium'}_line_height`];
 
     if (props.span) {
         return (

@@ -72,7 +72,7 @@ export class Course {
     /** Which semester is the course from */
     semester: Semester;
 
-    constructor(course: Course | Serialized<Course>) {
+    constructor(course: Serialized<Course>) {
         Object.assign(this, course);
         this.schedule = new CourseSchedule(course.schedule);
     }
