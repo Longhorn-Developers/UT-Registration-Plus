@@ -33,7 +33,13 @@ export default function CoursePopup({ course, onClose }: Props) {
                         #{course.uniqueId}
                     </Link>
                 </Text>
-                
+                <Text size='medium'>
+                    {course.getInstructorString({
+                        prefix: 'with ',
+                        format: 'first_last',
+                        max: 3,
+                    })}
+                </Text>
             </Card>
         </Popup>
     );

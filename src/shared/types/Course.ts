@@ -76,27 +76,40 @@ export class Course {
         Object.assign(this, course);
     }
 
-    getInstructorString(options: {
-        /** The maximum number of instructors to show */
-        max?: number;
-        format: 'abbr' | 'first_last' | 'last' | 'full_name';
-    }): string {
-        const { max = 3, format } = options;
-
-        if (!this.instructors) {
-            return 'Undecided';
+    /**
+     * Get a string representation of the instructors for this course
+     * @param options - the options for how to format the instructor string
+     * @returns
+     */
+    getInstructorString(options: InstructorFormatOptions): string {
+        const { max = 3, format, prefix = '' } = options;
+        if (!this.instructors.length) {
+            return `${prefix} Undecided`;
         }
 
         const instructors = this.instructors.slice(0, max);
         switch (format) {
             case 'abbr':
-                return instructors.map(instructor => `${instructor.firstName?.[0]}. ${instructor.lastName}`).join(', ');
+                return (
+                    prefix +
+                    instructors
+                        .map(instructor => {
+                            let firstInitial = instructor.firstName?.[0];
+                            if (firstInitial) {
+                                firstInitial += '. ';
+                            }
+                            return `${firstInitial}${instructor.lastName}`;
+                        })
+                        .join(', ')
+                );
             case 'full_name':
-                return instructors.map(instructor => instructor.fullName).join(', ');
+                return prefix + instructors.map(instructor => instructor.fullName).join(', ');
             case 'first_last':
-                return instructors.map(instructor => `${instructor.firstName} ${instructor.lastName}`).join(', ');
+                return (
+                    prefix + instructors.map(instructor => `${instructor.firstName} ${instructor.lastName}`).join(', ')
+                );
             case 'last':
-                return instructors.map(instructor => instructor.lastName).join(', ');
+                return prefix + instructors.map(instructor => instructor.lastName).join(', ');
             default:
                 throw new Error(`Invalid Instructor String format: ${format}`);
         }
@@ -109,4 +122,16 @@ export class Course {
 export type ScrapedRow = {
     element: HTMLTableRowElement;
     course: Course | null;
+};
+
+/**
+ * Options for how to format the instructor string
+ */
+type InstructorFormatOptions = {
+    /** a prefix to add to the string, ex: "with" Mike Scott */
+    prefix?: string;
+    /** The maximum number of instructors to show */
+    max?: number;
+    /** How do you want the names of the professors formatted */
+    format: 'abbr' | 'first_last' | 'last' | 'full_name';
 };
