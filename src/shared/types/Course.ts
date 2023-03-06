@@ -74,6 +74,7 @@ export class Course {
 
     constructor(course: Course | Serialized<Course>) {
         Object.assign(this, course);
+        this.schedule = new CourseSchedule(course.schedule);
     }
 
     /**

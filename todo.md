@@ -7,9 +7,9 @@ Last Updated: 03/4/2023
 -   [x] scraping course information
 -   [x] injecting plus header and buttons
 -   [x] auto loading next pages
--   [ ] showing course popup
+-   [x] showing course popup
 -   [ ] RMP, eCis, Textbook, and Syllabus buttons
--   [ ] displaying professor information on popup
+-   [x] displaying professor information on popup
 -   [ ] saving courses
 -   [ ] Multiple schedule support
 -   [ ] Browser Action Popup
@@ -26,7 +26,6 @@ Last Updated: 03/4/2023
 -   [ ] Grade distribution
 -   [ ] Course description
 -   [ ] Highlight and use rich text to make course description more readable
--   [ ] auto load
 -   [ ] calendar
 -   [ ] calendar file export
 -   [ ] save as png

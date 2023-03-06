@@ -13,7 +13,7 @@
         height: auto;
         color: white;
         padding: 12px;
-        margin: 40px;
+        margin: 50px 20px;
         align-items: center;
         justify-content: center;
 
@@ -25,6 +25,10 @@
             .uniqueId {
                 margin-left: 8px;
             }
+        }
+
+        .instructors {
+            margin-top: 8px;
         }
     }
 }
