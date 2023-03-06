@@ -67,7 +67,7 @@ export function getBuildPlugins(mode: Environment, htmlEntries: EntryId[], manif
             patterns: [
                 {
                     from: path.resolve('public'),
-                    filter: path => (path.includes('icons') ? path.includes(mode) : true),
+                    filter: path => (path.includes('icons/icon') ? path.includes(mode) : true),
                 },
             ],
         })

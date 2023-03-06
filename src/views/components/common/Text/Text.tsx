@@ -1,13 +1,13 @@
 import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
 import colors, { ISassColors } from 'src/views/styles/colors.module.scss';
-import fonts, { ISizes, IWeights } from 'src/views/styles/fonts.module.scss';
+import fonts, { Size, Weight } from 'src/views/styles/fonts.module.scss';
 import styles from './Text.module.scss';
 
 type Props = {
     color?: keyof ISassColors;
-    weight: keyof IWeights;
-    size: keyof ISizes;
+    weight: Weight;
+    size: Size;
     span?: boolean;
     className?: string;
     onClick?: () => void;
@@ -23,8 +23,8 @@ export default function Text(props: PropsWithChildren<Props>) {
 
     style.textAlign ??= props.align;
     style.color ??= colors?.[props.color ?? 'charcoal'];
-    style.fontSize ??= fonts?.[props.size ?? 'medium'];
-    style.fontWeight ??= fonts?.[props.weight ?? 'regular'];
+    style.fontSize ??= fonts?.[`${props.size ?? 'medium'}_size`];
+    style.fontWeight ??= fonts?.[`${props.weight ?? 'regular'}_weight`];
 
     if (props.span) {
         return (

@@ -6,6 +6,7 @@ import getCourseTableRows from '../lib/getCourseTableRows';
 import { SiteSupport } from '../lib/getSiteSupport';
 import { populateSearchInputs } from '../lib/populateSearchInputs';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
+import Icon from './common/Icon/Icon';
 import Text from './common/Text/Text';
 import AutoLoad from './injected/AutoLoad/AutoLoad';
 import CoursePanel from './injected/CoursePanel/CoursePanel';
@@ -53,7 +54,10 @@ export default function CourseCatalogMain({ support }: Props) {
 
     return (
         <ExtensionRoot>
-            <TableHead>Plus</TableHead>
+            <TableHead>
+                Plus
+                <Icon name='add' />
+            </TableHead>
             {rows.map(row => {
                 if (!row.course) {
                     // TODO: handle the course section headers

@@ -8,40 +8,40 @@
     }
 }
 
-/* fallback */
 @font-face {
     font-family: 'Material Icons Round';
     font-style: normal;
-    font-weight: 400;
     font-display: block;
-    src: url('moz-extension://__MSG_@@extension_id__/fonts/material-icons.woff2') format('woff2');
+    font-weight: 400;
+    src: url('chrome-extension://__MSG_@@extension_id__/fonts/material-icons.woff2') format('woff2');
 }
 
-$light: 300;
-$regular: 400;
-$medium: 500;
-$semi_bold: 600;
-$bold: 700;
-$black: 900;
+$light_weight: 300;
+$regular_weight: 400;
+$normal_weight: 500;
+$semi_bold_weight: 600;
+$bold_weight: 700;
+$black_weight: 900;
 
-$x_small: 8px;
-$small: 12px;
-$medium: 16px;
-$large: 24px;
-$x_large: 32px;
-$xx_large: 48px;
+$x_small_size: 8px;
+$small_size: 12px;
+$medium_size: 16px;
+$large_size: 24px;
+$x_large_size: 32px;
+$xx_large_size: 48px;
 
 :export {
-    light: $light;
-    regular: $regular;
-    medium: $medium;
-    semi_bold: $semi_bold;
-    bold: $bold;
-    black: $black;
-    x_small: $x_small;
-    small: $small;
-    medium: $medium;
-    large: $large;
-    x_large: $x_large;
-    xx_large: $xx_large;
+    light_weight: $light_weight;
+    regular_weight: $regular_weight;
+    normal_weight: $normal_weight;
+    semi_bold_weight: $semi_bold_weight;
+    bold_weight: $bold_weight;
+    black_weight: $black_weight;
+
+    x_small_size: $x_small_size;
+    small_size: $small_size;
+    medium_size: $medium_size;
+    large_size: $large_size;
+    x_large_size: $x_large_size;
+    xx_large_size: $xx_large_size;
 }
