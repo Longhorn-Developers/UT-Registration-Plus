@@ -159,12 +159,12 @@ export class CourseCatalogScraper {
             .map(name => name.trim())
             .filter(Boolean);
 
-        return names.map(name => {
-            const [lastName, rest] = name.split(',').map(s => s.trim());
+        return names.map(fullName => {
+            const [lastName, rest] = fullName.split(',').map(s => s.trim());
             const [firstName, middleInitial] = rest.split(' ');
 
             return {
-                name,
+                fullName,
                 firstName,
                 lastName,
                 middleInitial,

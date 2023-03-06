@@ -1,35 +1,30 @@
-.popupBody {
-    height: auto;
-    color: white;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+.popup {
+    border-radius: 12px;
+    position: relative;
 
-.coursePopupBase {
-    position: fixed;
-    transform: translateY(-50%);
-    top: 15px;
-    right: 15px;
-    z-index: 2147483647;
-}
+    .close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        cursor: pointer;
+    }
 
-.coursePopupHeader {
-    display: flex;
-    height: 50;
-    background-color: #29465b;
-    width: 100%;
-
-    .closePopupButton {
-        display: flex;
+    .body {
+        height: auto;
+        color: white;
+        padding: 12px;
+        margin: 40px;
         align-items: center;
         justify-content: center;
-        width: 20px;
-        height: 20px;
-        margin: 5px;
-        margin-left: auto;
-        cursor: pointer;
-        color: white;
+
+        .title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .uniqueId {
+                margin-left: 8px;
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@ import { CourseSchedule } from './CourseSchedule';
  * Also includes a link to their RateMyProfessor page
  */
 export type Instructor = {
-    name: string;
+    fullName: string;
     firstName?: string;
     lastName?: string;
     middleInitial?: string;
@@ -74,6 +74,32 @@ export class Course {
 
     constructor(course: Course | Serialized<Course>) {
         Object.assign(this, course);
+    }
+
+    getInstructorString(options: {
+        /** The maximum number of instructors to show */
+        max?: number;
+        format: 'abbr' | 'first_last' | 'last' | 'full_name';
+    }): string {
+        const { max = 3, format } = options;
+
+        if (!this.instructors) {
+            return 'Undecided';
+        }
+
+        const instructors = this.instructors.slice(0, max);
+        switch (format) {
+            case 'abbr':
+                return instructors.map(instructor => `${instructor.firstName?.[0]}. ${instructor.lastName}`).join(', ');
+            case 'full_name':
+                return instructors.map(instructor => instructor.fullName).join(', ');
+            case 'first_last':
+                return instructors.map(instructor => `${instructor.firstName} ${instructor.lastName}`).join(', ');
+            case 'last':
+                return instructors.map(instructor => instructor.lastName).join(', ');
+            default:
+                throw new Error(`Invalid Instructor String format: ${format}`);
+        }
     }
 }
 

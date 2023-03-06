@@ -4,9 +4,9 @@ import colors, { ISassColors } from 'src/views/styles/colors.module.scss';
 import fonts, { Size, Weight } from 'src/views/styles/fonts.module.scss';
 import styles from './Text.module.scss';
 
-type Props = {
+export type TextProps = {
     color?: keyof ISassColors;
-    weight: Weight;
+    weight?: Weight;
     size: Size;
     span?: boolean;
     className?: string;
@@ -18,7 +18,7 @@ type Props = {
 /**
  * A reusable Text component with props that build on top of the design system for the extension
  */
-export default function Text(props: PropsWithChildren<Props>) {
+export default function Text(props: PropsWithChildren<TextProps>) {
     const style = props.style || {};
 
     style.textAlign ??= props.align;

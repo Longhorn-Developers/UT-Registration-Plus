@@ -1,0 +1,8 @@
+@import 'src/views/styles/base.module.scss';
+
+.card {
+    background: $white;
+    border: 1px solid #c3cee0;
+    box-sizing: border-box;
+    border-radius: 8px;
+}

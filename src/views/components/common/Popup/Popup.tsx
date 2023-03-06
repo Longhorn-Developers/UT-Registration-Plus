@@ -17,16 +17,12 @@ export default function Popup(props: PropsWithChildren<Props>) {
     return (
         <div
             style={props.style}
-            className={classNames(
-                styles.container,
-                {
-                    [styles.overlay]: props.overlay,
-                },
-                props.className
-            )}
+            className={classNames(styles.container, {
+                [styles.overlay]: props.overlay,
+            })}
             data-testid={props.testId}
         >
-            <div className={styles.body}>{props.children}</div>
+            <div className={classNames(styles.body, props.className)}>{props.children}</div>
         </div>
     );
 }
