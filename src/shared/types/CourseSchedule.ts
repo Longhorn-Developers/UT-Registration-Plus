@@ -18,10 +18,10 @@ export class CourseSchedule {
      * Given a string representation of the meeting information for a class, parse it into a CourseMeeting object
      * @param dayLine a string representation of the days of the week that the course is taught: MWF, TR, etc.
      * @param timeLine a string representation of a time-range that the course is taught: 10:00 am - 11:00 am, 1:00 pm - 2:00 pm, etc.
-     * @param roomLine a string representation of the room that the course is taught in: JGB 2.302, etc.
+     * @param locLine a string representation of the location that the course is taught in: JGB 2.302, etc.
      * @returns CourseMeeting object representing the meeting information
      */
-    static parse(dayLine: string, timeLine: string, roomLine: string): CourseMeeting {
+    static parse(dayLine: string, timeLine: string, locLine: string): CourseMeeting {
         try {
             let days: Day[] = dayLine
                 .split('')
@@ -51,19 +51,19 @@ export class CourseSchedule {
                     return Number(hour) * 60 + Number(minute);
                 });
 
-            const [building, number] = roomLine.split(' ');
+            const [building, room] = locLine.split(' ');
 
             return new CourseMeeting({
                 days,
                 startTime,
                 endTime,
-                room: {
+                location: {
                     building,
-                    number,
+                    room,
                 },
             });
         } catch (e) {
-            throw new Error(`Failed to parse schedule: ${dayLine} ${timeLine} ${roomLine}`);
+            throw new Error(`Failed to parse schedule: ${dayLine} ${timeLine} ${locLine}`);
         }
     }
 }

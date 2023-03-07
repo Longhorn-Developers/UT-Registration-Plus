@@ -14,7 +14,7 @@ enum TableDataSelector {
     STATUS = 'td[data-th="Status"]',
     SCHEDULE_DAYS = 'td[data-th="Days"]>span',
     SCHEDULE_HOURS = 'td[data-th="Hour"]>span',
-    SCHEDULE_ROOM = 'td[data-th="Room"]>span',
+    SCHEDULE_LOCATION = 'td[data-th="Room"]>span',
     FLAGS = 'td[data-th="Flags"] ul li',
 }
 
@@ -283,7 +283,7 @@ export class CourseCatalogScraper {
     getSchedule(row: HTMLTableRowElement): CourseSchedule {
         const dayLines = row.querySelectorAll(TableDataSelector.SCHEDULE_DAYS);
         const hourLines = row.querySelectorAll(TableDataSelector.SCHEDULE_HOURS);
-        const roomLines = row.querySelectorAll(TableDataSelector.SCHEDULE_ROOM);
+        const locLines = row.querySelectorAll(TableDataSelector.SCHEDULE_LOCATION);
 
         if (dayLines.length !== hourLines.length) {
             throw new Error('Schedule data is malformed');
@@ -296,7 +296,7 @@ export class CourseCatalogScraper {
                 CourseSchedule.parse(
                     dayLines[i].textContent || '',
                     hourLines[i].textContent || '',
-                    roomLines[i].textContent || ''
+                    locLines[i].textContent || ''
                 )
             );
         }

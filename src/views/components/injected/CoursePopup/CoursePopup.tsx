@@ -18,7 +18,7 @@ interface Props {
 export default function CoursePopup({ course, onClose }: Props) {
     console.log(course);
     return (
-        <Popup className={styles.popup} overlay>
+        <Popup className={styles.popup} overlay onClose={onClose}>
             <Icon className={styles.close} size='large' name='close' onClick={onClose} />
             <Card className={styles.body}>
                 <Text className={styles.title} size='large' weight='bold' color='black'>
@@ -40,6 +40,28 @@ export default function CoursePopup({ course, onClose }: Props) {
                         format: 'first_last',
                     })}
                 </Text>
+
+                {course.schedule.meetings.map(meeting => (
+                    <Text size='medium'>
+                        <Text span size='medium' weight='bold' color='black'>
+                            {meeting.getDaysString({
+                                format: 'long',
+                                separator: 'short',
+                            })}
+                        </Text>
+                        {' at '}
+                        <Text span size='medium'>
+                            {meeting.getTimeString({
+                                separator: 'to',
+                                capitalize: true,
+                            })}
+                        </Text>
+                        {' in '}
+                        <Link span size='medium' weight='bold' color='bluebonnet'>
+                            {meeting.location?.building}
+                        </Link>
+                    </Text>
+                ))}
             </Card>
         </Popup>
     );

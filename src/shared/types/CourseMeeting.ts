@@ -17,11 +17,11 @@ export const DAY_MAP = {
 export type Day = typeof DAY_MAP[keyof typeof DAY_MAP];
 
 /** A physical room that a class is taught in */
-export type Room = {
+export type Location = {
     /** The UT building code for where the class is taught */
     building: string;
     /** The room number for where the class is taught */
-    number: string;
+    room: string;
 };
 
 /**
@@ -35,7 +35,7 @@ export class CourseMeeting {
     /** The end time of the course, in minutes since midnight */
     endTime: number;
     /** The location that the course is taught */
-    room?: Room;
+    location?: Location;
 
     constructor(meeting: Serialized<CourseMeeting>) {
         Object.assign(this, meeting);
@@ -124,5 +124,16 @@ type TimeStringOptions = {
 type DaysStringOptions = {
     /** The format of the days string, short = MWF, long = Monday, Wednesday, Friday */
     format: 'short' | 'long';
+    /**
+     * The separator between the days
+     *
+     * 'none' = `MWF`
+     *
+     * 'conjunction' = `Monday, Wednesday, and Friday`
+     *
+     * 'disjunction' = `Monday, Wednesday, or Friday`
+     *
+     * 'narrow' = `Monday Wednesday Friday`
+     */
     separator: Intl.ListFormatStyle | 'none';
 };
