@@ -7,6 +7,7 @@ interface Props {
     style?: React.CSSProperties;
     onClick?: () => void;
     type?: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'warning' | 'success' | 'info';
+    disabled?: boolean;
     testId?: string;
 }
 
@@ -20,14 +21,17 @@ export function Button({
     type,
     testId,
     children,
+    disabled,
     onClick,
 }: React.PropsWithChildren<Props>): JSX.Element {
     return (
         <button
             style={style}
             data-testId={testId}
-            className={classNames(styles.button, className, styles[type ?? 'primary'])}
-            onClick={onClick}
+            className={classNames(styles.button, className, styles[type ?? 'primary'], {
+                [styles.disabled]: disabled,
+            })}
+            onClick={disabled ? undefined : onClick}
         >
             {children}
         </button>

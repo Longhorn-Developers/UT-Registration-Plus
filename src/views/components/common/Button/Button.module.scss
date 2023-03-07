@@ -16,123 +16,57 @@
     align-items: center;
     justify-content: center;
 
-    &:active {
-        animation: ripple 1s ease-out;
-    }
-
-    $primary: $burnt_orange;
-    $secondary: $charcoal;
-    $tertiary: $bluebonnet;
-    $danger: $speedway_brick;
-    $warning: $tangerine;
-    $success: $turtle_pond;
-    $info: $turquoise;
-
     &:hover {
         background-color: #fff;
         color: #000;
     }
 
-    &.primary {
-        background-color: $primary;
-        color: #fff;
+    &.disabled {
+        cursor: not-allowed !important;
+        opacity: 0.5 !important;
 
-        &:hover {
-            background-color: lighten($primary, 10%);
-        }
-
-        &:active,
         &:active {
-            background-color: darken($primary, 10%);
+            animation: none !important;
         }
     }
 
-    &.secondary {
-        background-color: $secondary;
-        color: #fff;
-
-        &:hover {
-            background-color: lighten($secondary, 10%);
-        }
-
-        &:active,
-        &:active {
-            background-color: darken($secondary, 10%);
-        }
+    &:active {
+        animation: click_animation 0.5s ease-in-out;
     }
 
-    &.tertiary {
-        background-color: $tertiary;
-        color: #fff;
+    @each $color,
+        $value
+            in (
+                primary: $burnt_orange,
+                secondary: $charcoal,
+                tertiary: $bluebonnet,
+                danger: $speedway_brick,
+                warning: $tangerine,
+                success: $turtle_pond,
+                info: $turquoise
+            )
+    {
+        &.#{$color} {
+            background-color: $value;
+            color: #fff;
 
-        &:hover {
-            background-color: lighten($tertiary, 10%);
-        }
+            &:hover {
+                background-color: lighten($value, 10%);
+            }
 
-        &:focus,
-        &:active {
-            background-color: darken($tertiary, 10%);
-        }
-    }
+            &:focus,
+            &:active {
+                background-color: darken($value, 10%);
+            }
 
-    &.danger {
-        background-color: $danger;
-        color: #fff;
-
-        &:hover {
-            background-color: lighten($danger, 10%);
-        }
-
-        &:focus,
-        &:active {
-            background-color: darken($danger, 10%);
-        }
-    }
-
-    &.warning {
-        background-color: $warning;
-        color: #fff;
-
-        &:hover {
-            background-color: lighten($warning, 10%);
-        }
-
-        &:focus,
-        &:active {
-            background-color: darken($warning, 10%);
-        }
-    }
-
-    &.success {
-        background-color: $success;
-        color: #fff;
-
-        &:hover {
-            background-color: lighten($success, 10%);
-        }
-
-        &:focus,
-        &:active {
-            background-color: darken($success, 10%);
-        }
-    }
-
-    &.info {
-        background-color: $info;
-        color: #fff;
-
-        &:hover {
-            background-color: lighten($info, 10%);
-        }
-
-        &:focus,
-        &:active {
-            background-color: darken($info, 10%);
+            &.disabled {
+                background-color: $value !important;
+            }
         }
     }
 }
 
-@keyframes ripple {
+@keyframes click_animation {
     0% {
         transform: scale(1);
     }

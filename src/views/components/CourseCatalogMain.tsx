@@ -66,10 +66,8 @@ export default function CourseCatalogMain({ support }: Props) {
                 return (
                     <TableRow
                         key={row.course.uniqueId}
-                        element={row.element}
-                        course={row.course}
+                        row={row}
                         isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
-                        support={support}
                         onClick={handleRowButtonClick(row.course)}
                     />
                 );

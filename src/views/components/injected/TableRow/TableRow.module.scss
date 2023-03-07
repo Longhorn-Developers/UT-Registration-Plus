@@ -1,8 +1,8 @@
 @import 'src/views/styles/base.module.scss';
 
 .selectedRow {
-    td {
-        background: green !important;
+    * {
+        background: $burnt_orange !important;
         color: white !important;
     }
 }
