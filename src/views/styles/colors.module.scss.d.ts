@@ -15,7 +15,13 @@ export interface ISassColors {
     bluebonnet: string;
     shade: string;
     limestone: string;
+    speedway_brick: string;
 }
+
+/**
+ * A type that represents all the colors that we have in our sass files
+ */
+export type Color = keyof ISassColors;
 
 declare const colors: ISassColors;
 export default colors;

@@ -1,9 +1,9 @@
 import React from 'react';
-import { ISassColors } from 'src/views/styles/colors.module.scss';
+import { Color } from 'src/views/styles/colors.module.scss';
 import styles from './Spinner.module.scss';
 
 type Props = {
-    color?: keyof ISassColors;
+    color?: Color;
 };
 
 /**

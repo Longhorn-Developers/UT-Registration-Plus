@@ -51,16 +51,18 @@ export class CourseSchedule {
                     return Number(hour) * 60 + Number(minute);
                 });
 
-            const [building, room] = locLine.split(' ');
+            const location = locLine.split(' ').filter(Boolean);
 
             return new CourseMeeting({
                 days,
                 startTime,
                 endTime,
-                location: {
-                    building,
-                    room,
-                },
+                location: location.length
+                    ? {
+                          building: location[0],
+                          room: location[1],
+                      }
+                    : undefined,
             });
         } catch (e) {
             throw new Error(`Failed to parse schedule: ${dayLine} ${timeLine} ${locLine}`);

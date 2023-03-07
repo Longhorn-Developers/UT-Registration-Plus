@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Course, ScrapedRow } from 'src/shared/types/Course';
 import { SiteSupport } from 'src/views/lib/getSiteSupport';
 import { Button } from '../../common/Button/Button';
+import Icon from '../../common/Icon/Icon';
 import styles from './TableRow.module.scss';
 
 interface Props {
@@ -29,11 +30,16 @@ export default function TableRow({ support, course, element, isSelected, onClick
 
     useEffect(() => {
         element.classList[isSelected ? 'add' : 'remove'](styles.selectedRow);
-    }, [course, isSelected]);
+    }, [course, isSelected, element.classList]);
 
     if (!container) {
         return null;
     }
 
-    return ReactDOM.createPortal(<Button onClick={onClick}>Plus</Button>, container);
+    return ReactDOM.createPortal(
+        <Button onClick={onClick} type='secondary'>
+            <Icon name='bar_chart' color='white' size='medium' />
+        </Button>,
+        container
+    );
 }

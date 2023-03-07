@@ -6,6 +6,7 @@ import styles from './Link.module.scss';
 
 type Props = TextProps & {
     url?: string;
+    disabled?: boolean;
 };
 
 /**
@@ -21,5 +22,16 @@ export default function Link(props: PropsWithChildren<Props>) {
         passedProps.onClick = () => bMessenger.openNewTab({ url });
     }
 
-    return <Text {...passedProps} className={classNames(styles.link, props.className)} />;
+    return (
+        <Text
+            {...passedProps}
+            className={classNames(
+                styles.link,
+                {
+                    [styles.disabled]: props.disabled,
+                },
+                props.className
+            )}
+        />
+    );
 }

@@ -12,8 +12,134 @@
     transition: all 0.3s ease;
     font-family: 'Inter';
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:active {
+        animation: ripple 1s ease-out;
+    }
+
+    $primary: $burnt_orange;
+    $secondary: $charcoal;
+    $tertiary: $bluebonnet;
+    $danger: $speedway_brick;
+    $warning: $tangerine;
+    $success: $turtle_pond;
+    $info: $turquoise;
+
     &:hover {
         background-color: #fff;
         color: #000;
+    }
+
+    &.primary {
+        background-color: $primary;
+        color: #fff;
+
+        &:hover {
+            background-color: lighten($primary, 10%);
+        }
+
+        &:active,
+        &:active {
+            background-color: darken($primary, 10%);
+        }
+    }
+
+    &.secondary {
+        background-color: $secondary;
+        color: #fff;
+
+        &:hover {
+            background-color: lighten($secondary, 10%);
+        }
+
+        &:active,
+        &:active {
+            background-color: darken($secondary, 10%);
+        }
+    }
+
+    &.tertiary {
+        background-color: $tertiary;
+        color: #fff;
+
+        &:hover {
+            background-color: lighten($tertiary, 10%);
+        }
+
+        &:focus,
+        &:active {
+            background-color: darken($tertiary, 10%);
+        }
+    }
+
+    &.danger {
+        background-color: $danger;
+        color: #fff;
+
+        &:hover {
+            background-color: lighten($danger, 10%);
+        }
+
+        &:focus,
+        &:active {
+            background-color: darken($danger, 10%);
+        }
+    }
+
+    &.warning {
+        background-color: $warning;
+        color: #fff;
+
+        &:hover {
+            background-color: lighten($warning, 10%);
+        }
+
+        &:focus,
+        &:active {
+            background-color: darken($warning, 10%);
+        }
+    }
+
+    &.success {
+        background-color: $success;
+        color: #fff;
+
+        &:hover {
+            background-color: lighten($success, 10%);
+        }
+
+        &:focus,
+        &:active {
+            background-color: darken($success, 10%);
+        }
+    }
+
+    &.info {
+        background-color: $info;
+        color: #fff;
+
+        &:hover {
+            background-color: lighten($info, 10%);
+        }
+
+        &:focus,
+        &:active {
+            background-color: darken($info, 10%);
+        }
+    }
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
     }
 }

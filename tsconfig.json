@@ -47,11 +47,6 @@
         "./release.config.js",
         "webpack/plugins/custom/.ts"
     ],
-    "plugins": [
-        {
-            "name": "typescript-plugin-css-modules"
-        }
-    ],
     "exclude": [
         "node_modules",
         "**/.*/",

@@ -13,7 +13,7 @@ export default function useInfiniteScroll(
     const isScrolling = () => {
         const { innerHeight } = window;
         const { scrollTop, offsetHeight } = document.documentElement;
-        if (innerHeight + scrollTop >= offsetHeight) {
+        if (innerHeight + scrollTop >= offsetHeight - 100) {
             callback();
         }
     };
