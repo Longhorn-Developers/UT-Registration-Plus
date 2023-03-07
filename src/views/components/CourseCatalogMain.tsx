@@ -54,10 +54,7 @@ export default function CourseCatalogMain({ support }: Props) {
 
     return (
         <ExtensionRoot>
-            <TableHead>
-                Plus
-                <Icon name='add' />
-            </TableHead>
+            <TableHead>Plus</TableHead>
             {rows.map(row => {
                 if (!row.course) {
                     // TODO: handle the course section headers

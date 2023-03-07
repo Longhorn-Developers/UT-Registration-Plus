@@ -42,7 +42,7 @@ export default function AutoLoad({ addRows }: Props) {
         }
         // scrape the courses from the page
         const ccs = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_LIST);
-        const scrapedRows = ccs.scrape(nextRows, true);
+        const scrapedRows = await ccs.scrape(nextRows, true);
 
         // add the scraped courses to the current page
         addRows(scrapedRows);

@@ -3,11 +3,22 @@
  * @input The string to capitalize.
  */
 export function capitalize(input: string): string {
-    try {
-        return input.charAt(0).toUpperCase() + input.substring(1).toLowerCase();
-    } catch (err) {
-        return input;
+    let capitalized = '';
+
+    const words = input.split(' ');
+    for (const word of words) {
+        if (word.includes('-')) {
+            const hyphenatedWords = word.split('-');
+            for (const hyphenatedWord of hyphenatedWords) {
+                capitalized += `${capitalizeFirstLetter(hyphenatedWord)}-`;
+            }
+            capitalized = capitalized.substring(0, capitalized.length - 1);
+        } else {
+            capitalized += capitalizeFirstLetter(word);
+        }
+        capitalized += ' ';
     }
+    return capitalized;
 }
 
 /**
@@ -16,7 +27,7 @@ export function capitalize(input: string): string {
  * @returns the string with the first letter capitalized
  */
 export function capitalizeFirstLetter(input: string): string {
-    return input.charAt(0).toUpperCase() + input.slice(1);
+    return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
 }
 
 /**

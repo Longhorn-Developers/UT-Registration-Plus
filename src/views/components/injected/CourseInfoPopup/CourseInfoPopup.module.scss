@@ -1,11 +1,7 @@
 .popup {
     border-radius: 12px;
     position: relative;
-
-    .close {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        cursor: pointer;
-    }
+    max-width: 50%;
+    overflow-y: auto;
+    max-height: 80%;
 }

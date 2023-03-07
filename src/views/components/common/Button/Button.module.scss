@@ -4,12 +4,14 @@
     background-color: #000;
     color: #fff;
     padding: 10px;
-    border-radius: 5px;
+    margin: 10px;
+    border-radius: 8px;
     border: none;
+    box-shadow: rgba(0, 0, 0, 0.4) 2px 2px 4px;
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease-in-out;
     font-family: 'Inter';
 
     display: flex;
@@ -21,6 +23,10 @@
         color: #000;
     }
 
+    &:active {
+        animation: click_animation 0.2s ease-in-out;
+    }
+
     &.disabled {
         cursor: not-allowed !important;
         opacity: 0.5 !important;
@@ -28,10 +34,6 @@
         &:active {
             animation: none !important;
         }
-    }
-
-    &:active {
-        animation: click_animation 0.5s ease-in-out;
     }
 
     @each $color,

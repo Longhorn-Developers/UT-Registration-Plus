@@ -1,13 +1,15 @@
 import { MessageHandler } from 'chrome-extension-toolkit';
 import TabManagementMessages from 'src/shared/messages/TabManagementMessages';
+import openNewTab from '../util/openNewTab';
 
 const tabManagementHandler: MessageHandler<TabManagementMessages> = {
     getTabId({ sendResponse, sender }) {
         sendResponse(sender.tab?.id ?? -1);
     },
-    openNewTab({ data, sendResponse }) {
+    openNewTab({ data, sender, sendResponse }) {
         const { url } = data;
-        chrome.tabs.create({ url }).then(sendResponse);
+        const nextIndex = sender.tab?.index ? sender.tab.index + 1 : undefined;
+        openNewTab(url, nextIndex).then(sendResponse);
     },
     removeTab({ data, sendResponse }) {
         const { tabId } = data;

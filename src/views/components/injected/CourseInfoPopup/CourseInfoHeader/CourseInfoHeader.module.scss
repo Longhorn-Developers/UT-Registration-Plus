@@ -3,14 +3,21 @@
     height: auto;
     color: white;
     padding: 12px;
-    margin: 50px 20px;
+    margin: 20px;
     align-items: center;
+    position: relative;
     justify-content: center;
+
+    .close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        cursor: pointer;
+    }
 
     .title {
         display: flex;
         align-items: center;
-        justify-content: center;
 
         .uniqueId {
             margin-left: 8px;
@@ -19,5 +26,20 @@
 
     .instructors {
         margin-top: 8px;
+    }
+
+    .buttonContainer {
+        margin: 12px 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .button {
+            flex: 1;
+        }
+
+        .icon {
+            margin: 4px;
+        }
     }
 }

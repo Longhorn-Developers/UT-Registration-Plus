@@ -40,7 +40,7 @@ export default function TableRow({ row, isSelected, onClick }: Props): JSX.Eleme
     }
 
     return ReactDOM.createPortal(
-        <Button onClick={onClick} type='secondary'>
+        <Button className={styles.rowButton} onClick={onClick} type='secondary'>
             <Icon name='bar_chart' color='white' size='medium' />
         </Button>,
         container

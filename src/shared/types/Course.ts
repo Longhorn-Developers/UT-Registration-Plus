@@ -1,4 +1,5 @@
 import { Serialized } from 'chrome-extension-toolkit';
+import { capitalize } from '../util/string';
 import { CourseSchedule } from './CourseSchedule';
 
 /**
@@ -7,8 +8,8 @@ import { CourseSchedule } from './CourseSchedule';
  */
 export type Instructor = {
     fullName: string;
-    firstName?: string;
-    lastName?: string;
+    firstName: string;
+    lastName: string;
     middleInitial?: string;
 };
 
@@ -77,6 +78,8 @@ export class Course {
         this.schedule = new CourseSchedule(course.schedule);
     }
 
+
+
     /**
      * Get a string representation of the instructors for this course
      * @param options - the options for how to format the instructor string
@@ -85,35 +88,25 @@ export class Course {
     getInstructorString(options: InstructorFormatOptions): string {
         const { max = 3, format, prefix = '' } = options;
         if (!this.instructors.length) {
-            return `${prefix} Undecided`;
+            return `${prefix} TBA`;
         }
 
         const instructors = this.instructors.slice(0, max);
-        switch (format) {
-            case 'abbr':
-                return (
-                    prefix +
-                    instructors
-                        .map(instructor => {
-                            let firstInitial = instructor.firstName?.[0];
-                            if (firstInitial) {
-                                firstInitial += '. ';
-                            }
-                            return `${firstInitial}${instructor.lastName}`;
-                        })
-                        .join(', ')
-                );
-            case 'full_name':
-                return prefix + instructors.map(instructor => instructor.fullName).join(', ');
-            case 'first_last':
-                return (
-                    prefix + instructors.map(instructor => `${instructor.firstName} ${instructor.lastName}`).join(', ')
-                );
-            case 'last':
-                return prefix + instructors.map(instructor => instructor.lastName).join(', ');
-            default:
-                throw new Error(`Invalid Instructor String format: ${format}`);
+
+        if (format === 'abbr') {
+            return prefix + instructors.map(i => `${capitalize(i.firstName[0])}. ${capitalize(i.lastName)}`).join(', ');
         }
+        if (format === 'full_name') {
+            return prefix + instructors.map(i => capitalize(i.fullName)).join(', ');
+        }
+        if (format === 'first_last') {
+            return prefix + instructors.map(i => `${capitalize(i.firstName)} ${capitalize(i.lastName)}`).join(', ');
+        }
+        if (format === 'last') {
+            return prefix + instructors.map(i => i.lastName).join(', ');
+        }
+
+        throw new Error(`Invalid Instructor String format: ${format}`);
     }
 }
 

@@ -1,5 +1,9 @@
 @import 'src/views/styles/base.module.scss';
 
+.rowButton {
+    margin: 2px;
+}
+
 .selectedRow {
     * {
         background: $burnt_orange !important;
