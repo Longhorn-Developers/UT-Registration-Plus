@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Course, ScrapedRow } from 'src/shared/types/Course';
-import {} from 'src/views/lib/getSiteSupport';
 import { Button } from '../../common/Button/Button';
 import Icon from '../../common/Icon/Icon';
 import styles from './TableRow.module.scss';
