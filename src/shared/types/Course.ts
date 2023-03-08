@@ -33,7 +33,6 @@ export type Semester = {
 /**
  * The internal representation of a course for the extension
  */
-
 export class Course {
     /** Every course has a uniqueId within UT's registrar system corresponding to each course section */
     uniqueId: number;

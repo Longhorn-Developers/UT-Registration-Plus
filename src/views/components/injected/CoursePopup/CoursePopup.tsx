@@ -1,9 +1,11 @@
 import React from 'react';
 import { Course } from 'src/shared/types/Course';
+import Card from '../../common/Card/Card';
 import Popup from '../../common/Popup/Popup';
 import CourseDescription from './CourseDescription/CourseDescription';
 import CourseHeader from './CourseHeader/CourseHeader';
 import styles from './CoursePopup.module.scss';
+import GradeDistribution from './GradeDistribution/GradeDistribution';
 
 interface Props {
     course: Course;
@@ -19,6 +21,7 @@ export default function CoursePopup({ course, onClose }: Props) {
         <Popup className={styles.popup} overlay onClose={onClose}>
             <CourseHeader course={course} onClose={onClose} />
             <CourseDescription course={course} />
+            <GradeDistribution course={course} />
         </Popup>
     );
 }

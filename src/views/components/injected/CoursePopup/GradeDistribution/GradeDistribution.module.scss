@@ -1,0 +1,14 @@
+.container {
+    max-width: 100%;
+    height: 250px;
+    margin: 20px;
+    padding: 12px;
+
+    > div {
+        overflow: hidden;
+        min-width: auto;
+        max-width: 100%;
+        height: 250px;
+        margin: 0 auto;
+    }
+}
