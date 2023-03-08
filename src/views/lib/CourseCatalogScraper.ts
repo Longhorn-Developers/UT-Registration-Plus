@@ -1,5 +1,5 @@
 import { Serialized } from 'chrome-extension-toolkit';
-import { Course, Status, InstructionMode, ScrapedRow } from 'src/shared/types/Course';
+import { Course, Status, InstructionMode, ScrapedRow, Semester } from 'src/shared/types/Course';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';
 import Instructor from 'src/shared/types/Instructor';
 import { SiteSupport } from 'src/views/lib/getSiteSupport';
@@ -71,16 +71,6 @@ export class CourseCatalogScraper {
             const [courseName, department, number] = this.separateCourseName(fullName);
             const [status, isReserved] = this.getStatus(row);
 
-            // TODO: get semester from somewhere
-            const year = new Date().getFullYear();
-            const month = new Date().getMonth();
-            let season = 'Fall';
-            if (month >= 0 && month < 5) {
-                season = 'Spring';
-            } else if (month >= 5 && month < 8) {
-                season = 'Summer';
-            }
-
             const newCourse = new Course({
                 fullName,
                 courseName,
@@ -96,11 +86,7 @@ export class CourseCatalogScraper {
                 instructionMode: this.getInstructionMode(row),
                 instructors: this.getInstructors(row) as Instructor[],
                 description: this.getDescription(document),
-                // TODO: get semester from somewhere
-                semester: {
-                    year,
-                    season,
-                },
+                semester: this.getSemester(),
             });
             courses.push({
                 element: row,
@@ -211,6 +197,43 @@ export class CourseCatalogScraper {
             .map(line => line.textContent || '')
             .map(line => line.replace(/\s\s+/g, ' ').trim())
             .filter(Boolean);
+    }
+
+    getSemester(): Semester {
+        const { pathname } = new URL(window.location.href);
+
+        const code = pathname.split('/')[4];
+        if (!code) {
+            throw new Error('Semester not found in URL');
+        }
+
+        let year = Number(code.substring(0, 4));
+        let seasonCode = Number(code.substring(4, 6));
+
+        if (!year || !seasonCode) {
+            throw new Error('Invalid semester found in URL');
+        }
+
+        let season: Semester['season'];
+        switch (seasonCode) {
+            case 2:
+                season = 'Spring';
+                break;
+            case 6:
+                season = 'Summer';
+                break;
+            case 9:
+                season = 'Fall';
+                break;
+            default:
+                throw new Error('Invalid season code');
+        }
+
+        return {
+            year,
+            season,
+            code,
+        };
     }
 
     /**

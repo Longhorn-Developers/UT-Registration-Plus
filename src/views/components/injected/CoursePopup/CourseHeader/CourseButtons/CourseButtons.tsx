@@ -53,6 +53,14 @@ export default function CourseButtons({ course }: Props) {
         openNewTab({ url: url.toString() });
     };
 
+    const openTextbookURL = () => {
+        const { department, number, semester, uniqueId } = course;
+        const url = new URL('https://www.universitycoop.com/adoption-search-results');
+        url.searchParams.append('sn', `${semester.code}__${department}__${number}__${uniqueId}`);
+
+        openNewTab({ url: url.toString() });
+    };
+
     return (
         <Card className={styles.container}>
             <Button
@@ -72,7 +80,7 @@ export default function CourseButtons({ course }: Props) {
                 </Text>
                 <Icon className={styles.icon} color='white' name='grading' size='medium' />
             </Button>
-            <Button type='tertiary' className={styles.button}>
+            <Button onClick={openTextbookURL} type='tertiary' className={styles.button}>
                 <Text size='medium' weight='regular' color='white'>
                     Textbook
                 </Text>

@@ -25,7 +25,9 @@ export type Semester = {
     /** The year that the semester is in */
     year: number;
     /** The season that the semester is in (Fall, Spring, Summer) */
-    season: string;
+    season: 'Fall' | 'Spring' | 'Summer';
+    /** UT's code for the semester */
+    code: string;
 };
 
 /**

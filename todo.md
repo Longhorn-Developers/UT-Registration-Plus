@@ -8,7 +8,7 @@ Last Updated: 03/4/2023
 -   [x] injecting plus header and buttons
 -   [x] auto loading next pages
 -   [x] showing course popup
--   [ ] RMP, eCis, Textbook, and Syllabus buttons
+-   [x] RMP, Textbook, and Syllabus buttons
 -   [x] displaying professor information on popup
 -   [ ] saving courses
 -   [ ] Multiple schedule support
@@ -17,15 +17,15 @@ Last Updated: 03/4/2023
 -   [ ] Updated Easter Egg Messages
 -   [ ] links to RIS, Registrar, Degree Audit in browser action
 -   [ ] copy unique id quickly from browser action
--   [ ] Clickable links to buildings
+-   [x] Clickable links to buildings
 -   [ ] Count how many hours and # of classes in schedule
 -   [ ] Conflict highlighting
 -   [ ] Tooltip that says which classes conflict, maybe suggest a different section or time that doesn't conflict
 -   [ ] import / export schedules from JSON file
 -   [ ] Search for classes from within extension
 -   [ ] Grade distribution
--   [ ] Course description
--   [ ] Highlight and use rich text to make course description more readable
+-   [x] Course description
+-   [x] Highlight and use rich text to make course description more readable
 -   [ ] calendar
 -   [ ] calendar file export
 -   [ ] save as png
