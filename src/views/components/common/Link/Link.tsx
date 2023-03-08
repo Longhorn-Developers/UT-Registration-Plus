@@ -21,6 +21,7 @@ export default function Link(props: PropsWithChildren<Props>) {
     if (url && !props.onClick) {
         passedProps.onClick = () => bMessenger.openNewTab({ url });
     }
+    const isDisabled = props.disabled || (!url && !props.onClick);
 
     return (
         <Text
@@ -28,7 +29,7 @@ export default function Link(props: PropsWithChildren<Props>) {
             className={classNames(
                 styles.link,
                 {
-                    [styles.disabled]: props.disabled,
+                    [styles.disabled]: isDisabled,
                 },
                 props.className
             )}

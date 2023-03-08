@@ -1,0 +1,27 @@
+@import 'src/views/styles/base.module.scss';
+
+.container {
+    margin: 20px;
+    padding: 12px;
+
+    .description {
+        list-style-type: disc;
+        margin: 0px;
+        padding-left: 20px;
+
+        li {
+            padding: 0px 4px 4px;
+            .prerequisite {
+                font-weight: bold;
+            }
+
+            .onlyOne {
+                font-style: italic;
+            }
+
+            .restriction {
+                color: $speedway_brick;
+            }
+        }
+    }
+}

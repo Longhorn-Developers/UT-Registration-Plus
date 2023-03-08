@@ -1,17 +1,7 @@
 import { Serialized } from 'chrome-extension-toolkit';
 import { capitalize } from '../util/string';
 import { CourseSchedule } from './CourseSchedule';
-
-/**
- * A professor's name, first name, and initial (if applicable)
- * Also includes a link to their RateMyProfessor page
- */
-export type Instructor = {
-    fullName: string;
-    firstName: string;
-    lastName: string;
-    middleInitial?: string;
-};
+import Instructor from './Instructor';
 
 /**
  * Whether the class is taught online, in person, or a hybrid of the two
@@ -41,6 +31,7 @@ export type Semester = {
 /**
  * The internal representation of a course for the extension
  */
+
 export class Course {
     /** Every course has a uniqueId within UT's registrar system corresponding to each course section */
     uniqueId: number;
@@ -73,40 +64,10 @@ export class Course {
     /** Which semester is the course from */
     semester: Semester;
 
-    constructor(course: Serialized<Course>) {
+    constructor(course: Serialized<Course> | Course) {
         Object.assign(this, course);
         this.schedule = new CourseSchedule(course.schedule);
-    }
-
-
-
-    /**
-     * Get a string representation of the instructors for this course
-     * @param options - the options for how to format the instructor string
-     * @returns
-     */
-    getInstructorString(options: InstructorFormatOptions): string {
-        const { max = 3, format, prefix = '' } = options;
-        if (!this.instructors.length) {
-            return `${prefix} TBA`;
-        }
-
-        const instructors = this.instructors.slice(0, max);
-
-        if (format === 'abbr') {
-            return prefix + instructors.map(i => `${capitalize(i.firstName[0])}. ${capitalize(i.lastName)}`).join(', ');
-        }
-        if (format === 'full_name') {
-            return prefix + instructors.map(i => capitalize(i.fullName)).join(', ');
-        }
-        if (format === 'first_last') {
-            return prefix + instructors.map(i => `${capitalize(i.firstName)} ${capitalize(i.lastName)}`).join(', ');
-        }
-        if (format === 'last') {
-            return prefix + instructors.map(i => i.lastName).join(', ');
-        }
-
-        throw new Error(`Invalid Instructor String format: ${format}`);
+        this.instructors = course.instructors.map(i => new Instructor(i));
     }
 }
 
@@ -116,16 +77,4 @@ export class Course {
 export type ScrapedRow = {
     element: HTMLTableRowElement;
     course: Course | null;
-};
-
-/**
- * Options for how to format the instructor string
- */
-type InstructorFormatOptions = {
-    /** a prefix to add to the string, ex: "with" Mike Scott */
-    prefix?: string;
-    /** The maximum number of instructors to show */
-    max?: number;
-    /** How do you want the names of the professors formatted */
-    format: 'abbr' | 'first_last' | 'last' | 'full_name';
 };

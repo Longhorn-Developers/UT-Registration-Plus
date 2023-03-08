@@ -7,7 +7,7 @@ import { CourseMeeting, Day, DAY_MAP } from './CourseMeeting';
 export class CourseSchedule {
     meetings: CourseMeeting[] = [];
 
-    constructor(courseSchedule?: Serialized<CourseSchedule>) {
+    constructor(courseSchedule?: Serialized<CourseSchedule> | CourseSchedule) {
         if (!courseSchedule) {
             return;
         }

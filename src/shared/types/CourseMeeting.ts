@@ -37,7 +37,7 @@ export class CourseMeeting {
     /** The location that the course is taught */
     location?: Location;
 
-    constructor(meeting: Serialized<CourseMeeting>) {
+    constructor(meeting: Serialized<CourseMeeting> | CourseMeeting) {
         Object.assign(this, meeting);
     }
 

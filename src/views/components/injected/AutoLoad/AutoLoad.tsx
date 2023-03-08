@@ -4,7 +4,11 @@ import { ScrapedRow } from 'src/shared/types/Course';
 import useInfiniteScroll from 'src/views/hooks/useInfiniteScroll';
 import { CourseCatalogScraper } from 'src/views/lib/CourseCatalogScraper';
 import { SiteSupport } from 'src/views/lib/getSiteSupport';
-import { loadNextCourseCatalogPage, AutoLoadStatus } from 'src/views/lib/loadNextCourseCatalogPage';
+import {
+    loadNextCourseCatalogPage,
+    AutoLoadStatus,
+    removePaginationButtons,
+} from 'src/views/lib/loadNextCourseCatalogPage';
 import Spinner from '../../common/Spinner/Spinner';
 import styles from './AutoLoad.module.scss';
 
@@ -27,9 +31,10 @@ export default function AutoLoad({ addRows }: Props) {
         setContainer(portalContainer);
     }, []);
 
-    // FOR DEBUGGING
     useEffect(() => {
+        removePaginationButtons(document);
         console.log(`AutoLoad is now ${status}`);
+        // FOR DEBUGGING
     }, [status]);
 
     // This hook will call the callback when the user scrolls to the bottom of the page.

@@ -9,7 +9,7 @@ import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
 import Icon from './common/Icon/Icon';
 import Text from './common/Text/Text';
 import AutoLoad from './injected/AutoLoad/AutoLoad';
-import CourseInfoPopup from './injected/CourseInfoPopup/CourseInfoPopup';
+import CoursePopup from './injected/CoursePopup/CoursePopup';
 import TableHead from './injected/TableHead';
 import TableRow from './injected/TableRow/TableRow';
 
@@ -69,7 +69,7 @@ export default function CourseCatalogMain({ support }: Props) {
                     />
                 );
             })}
-            {selectedCourse && <CourseInfoPopup course={selectedCourse} onClose={handleClearSelectedCourse} />}
+            {selectedCourse && <CoursePopup course={selectedCourse} onClose={handleClearSelectedCourse} />}
             <AutoLoad addRows={addRows} />
         </ExtensionRoot>
     );

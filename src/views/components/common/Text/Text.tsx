@@ -19,24 +19,35 @@ export type TextProps = {
  * A reusable Text component with props that build on top of the design system for the extension
  */
 export default function Text(props: PropsWithChildren<TextProps>) {
-    const style = props.style || {};
+    const style: React.CSSProperties = {
+        ...props.style,
+        textAlign: props.align,
+        color: props.color ? colors[props.color] : undefined,
+    };
 
-    style.textAlign ??= props.align;
-    style.color ??= colors?.[props.color ?? 'charcoal'];
-    style.fontSize ??= fonts?.[`${props.size ?? 'medium'}_size`];
-    style.fontWeight ??= fonts?.[`${props.weight ?? 'regular'}_weight`];
-    style.lineHeight ??= fonts?.[`${props.size ?? 'medium'}_line_height`];
+    const weightClass = `${props.weight ?? 'regular'}_weight`;
+    const fontSizeClass = `${props.size ?? 'medium'}_size`;
+    const lineHightClass = `${props.size ?? 'medium'}_line_height`;
+
+    const className = classNames(
+        styles.text,
+        props.className,
+
+        styles[weightClass],
+        styles[fontSizeClass],
+        styles[lineHightClass]
+    );
 
     if (props.span) {
         return (
-            <span className={classNames(styles.text, props.className)} style={style} onClick={props.onClick}>
+            <span className={className} style={style} onClick={props.onClick}>
                 {props.children}
             </span>
         );
     }
 
     return (
-        <div className={classNames(styles.text, props.className)} style={style} onClick={props.onClick}>
+        <div className={className} style={style} onClick={props.onClick}>
             {props.children}
         </div>
     );

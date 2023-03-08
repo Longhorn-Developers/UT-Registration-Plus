@@ -1,0 +1,17 @@
+@import 'src/views/styles/base.module.scss';
+
+.container {
+    margin: 12px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+
+    .button {
+        flex: 1;
+    }
+
+    .icon {
+        margin: 4px;
+    }
+}

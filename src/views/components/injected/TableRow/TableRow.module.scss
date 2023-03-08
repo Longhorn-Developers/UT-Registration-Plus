@@ -1,12 +1,13 @@
 @import 'src/views/styles/base.module.scss';
 
 .rowButton {
-    margin: 2px;
+    margin: 0px;
 }
 
 .selectedRow {
     * {
         background: $burnt_orange !important;
         color: white !important;
+        box-shadow: none !important;
     }
 }

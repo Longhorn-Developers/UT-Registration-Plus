@@ -1,5 +1,7 @@
-import { Course, Instructor, Status, InstructionMode, ScrapedRow } from 'src/shared/types/Course';
+import { Serialized } from 'chrome-extension-toolkit';
+import { Course, Status, InstructionMode, ScrapedRow } from 'src/shared/types/Course';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';
+import Instructor from 'src/shared/types/Instructor';
 import { SiteSupport } from 'src/views/lib/getSiteSupport';
 
 /**
@@ -92,7 +94,7 @@ export class CourseCatalogScraper {
                 flags: this.getFlags(row),
                 uniqueId: this.getUniqueId(row),
                 instructionMode: this.getInstructionMode(row),
-                instructors: this.getInstructors(row),
+                instructors: this.getInstructors(row) as Instructor[],
                 description: this.getDescription(document),
                 // TODO: get semester from somewhere
                 semester: {
@@ -163,12 +165,12 @@ export class CourseCatalogScraper {
             const [lastName, rest] = fullName.split(',').map(s => s.trim());
             const [firstName, middleInitial] = rest.split(' ');
 
-            return {
+            return new Instructor({
                 fullName,
                 firstName,
                 lastName,
                 middleInitial,
-            };
+            });
         });
     }
 

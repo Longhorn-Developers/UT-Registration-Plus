@@ -1,0 +1,21 @@
+.popup {
+    border-radius: 12px;
+    position: relative;
+    max-width: 50%;
+    overflow-y: auto;
+    max-height: 80%;
+
+    // fade in animation
+    animation: fadeIn 0.2s ease-out;
+}
+
+// fade in animation
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

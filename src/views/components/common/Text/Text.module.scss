@@ -1,3 +1,80 @@
+@import "src/views/styles/base.module.scss";
+
 .text {
     font-family: 'Inter', sans-serif;
+    color: $charcoal;
 }
+
+
+.light_weight {
+    font-weight: $light_weight;
+}
+
+.regular_weight {
+    font-weight: $regular_weight;
+}
+
+.normal_weight {
+    font-weight: $normal_weight;
+}
+
+.semi_bold_weight {
+    font-weight: $semi_bold_weight;
+}
+
+.bold_weight {
+    font-weight: $bold_weight;
+}
+
+.black_weight {
+    font-weight: $black_weight;
+}
+
+.x_small_size {
+    font-size: $x_small_size;
+}
+
+.small_size {
+    font-size: $small_size;
+}
+
+.medium_size {
+    font-size: $medium_size;
+}
+
+.large_size {
+    font-size: $large_size;
+}
+
+.x_large_size {
+    font-size: $x_large_size;
+}
+
+.xx_large_size {
+    font-size: $xx_large_size;
+}
+
+.x_small_line_height {
+    line-height: $x_small_line_height;
+}
+
+.small_line_height {
+    line-height: $small_line_height;
+}
+
+.medium_line_height {
+    line-height: $medium_line_height;
+}
+
+.large_line_height {
+    line-height: $large_line_height;
+}
+
+.x_large_line_height {
+    line-height: $x_large_line_height;
+}
+
+.xx_large_line_height {
+    line-height: $xx_large_line_height;
+}
+
