@@ -52,7 +52,7 @@ export default function CourseHeader({ course, onClose }: Props) {
                     return (
                         <>
                             {numInstructors > 1 && index === course.instructors.length - 1 ? '& ' : ''}
-                            <Link key={name} span size='medium' weight='semi_bold' color='bluebonnet' url={url}>
+                            <Link key={name} span size='medium' weight='normal' url={url}>
                                 {name}
                             </Link>
                             {numInstructors > 2 && !isLast ? ', ' : ''}
@@ -81,7 +81,6 @@ export default function CourseHeader({ course, onClose }: Props) {
                         span
                         size='medium'
                         weight='normal'
-                        color='bluebonnet'
                         url={getBuildingUrl(meeting.location?.building)}
                         disabled={!meeting.location?.building}
                     >

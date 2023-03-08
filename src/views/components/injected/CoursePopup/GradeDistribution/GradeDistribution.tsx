@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
@@ -73,7 +74,7 @@ export default function GradeDistribution({ course }: Props) {
             {
                 type: 'column',
                 name: 'Grades',
-                data: [],
+                data: Array.from({ length: 12 }, () => 0),
             },
         ],
     });
@@ -96,7 +97,16 @@ export default function GradeDistribution({ course }: Props) {
                             // eslint-disable-next-line no-nested-ternary
                             // color: i < 8 ? '#2ECC71' : i < 10 ? '#F1C40F' : '#E74C3C',
                             // eslint-disable-next-line no-nested-ternary
-                            color: i < 8 ? colors.cactus : i < 10 ? colors.sunshine : colors.speedway_brick,
+                            color:
+                                i < 3
+                                    ? colors.turtle_pond
+                                    : i < 5
+                                    ? colors.cactus
+                                    : i < 7
+                                    ? colors.sunshine
+                                    : i < 10
+                                    ? colors.tangerine
+                                    : colors.speedway_brick,
                         })),
                     },
                 ],

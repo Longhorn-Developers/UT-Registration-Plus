@@ -25,6 +25,7 @@ export default function Link(props: PropsWithChildren<Props>) {
 
     return (
         <Text
+            color='bluebonnet'
             {...passedProps}
             className={classNames(
                 styles.link,

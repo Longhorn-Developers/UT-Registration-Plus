@@ -5,7 +5,7 @@ const courseDataHandler: MessageHandler<CourseDataMessages> = {
     getDistribution({ data, sendResponse }) {
         const { course } = data;
 
-        const dummyData = Array.from({ length: 18 }, () => Math.floor(Math.random() * 100));
+        const dummyData = Array.from({ length: 12 }, () => Math.floor(Math.random() * 100));
 
         sendResponse(dummyData);
     },

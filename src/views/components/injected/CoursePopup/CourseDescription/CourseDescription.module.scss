@@ -8,6 +8,8 @@
         list-style-type: disc;
         margin: 0px;
         padding-left: 20px;
+        max-height: 200px;
+        overflow-y: auto;
 
         li {
             padding: 0px 4px 4px;
