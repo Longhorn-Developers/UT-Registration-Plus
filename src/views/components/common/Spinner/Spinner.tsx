@@ -12,5 +12,5 @@ type Props = {
  * A simple spinner component that can be used to indicate loading.
  */
 export default function Spinner({ className, testId, style }: Props) {
-    return <div data-testId={testId} style={style} className={classNames(styles.spinner, className)} />;
+    return <div data-testid={testId} style={style} className={classNames(styles.spinner, className)} />;
 }

@@ -13,6 +13,7 @@
         "lint": "eslint ./ --ext .ts,.tsx"
     },
     "dependencies": {
+        "@types/sql.js": "^1.4.4",
         "chrome-extension-toolkit": "^0.0.23",
         "classnames": "^2.3.2",
         "clean-webpack-plugin": "^4.0.0",
@@ -21,6 +22,7 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "sass": "^1.57.1",
+        "sql.js": "1.8.0",
         "uuid": "^9.0.0"
     },
     "devDependencies": {
@@ -40,6 +42,7 @@
         "conventional-changelog-conventionalcommits": "^5.0.0",
         "copy-webpack-plugin": "^11.0.0",
         "create-file-webpack": "^1.0.2",
+        "crypto-browserify": "^3.12.0",
         "css-loader": "^6.7.3",
         "dotenv": "^16.0.3",
         "esbuild-loader": "^2.20.0",
@@ -69,6 +72,7 @@
         "simple-git": "^3.15.1",
         "socket.io": "^4.5.4",
         "socket.io-client": "^4.5.4",
+        "stream-browserify": "^3.0.0",
         "terser-webpack-plugin": "^5.3.6",
         "ts-node": "^10.9.1",
         "tsconfig-paths-webpack-plugin": "^4.0.0",

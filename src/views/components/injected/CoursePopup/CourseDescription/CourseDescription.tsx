@@ -44,8 +44,8 @@ export default function CourseDescription({ course }: Props) {
             {status === LoadStatus.DONE && (
                 <ul className={styles.description}>
                     {description.map(paragraph => (
-                        <li>
-                            <DescriptionLine key={paragraph} line={paragraph} />
+                        <li key={paragraph}>
+                            <DescriptionLine line={paragraph} />
                         </li>
                     ))}
                 </ul>
@@ -64,9 +64,7 @@ function DescriptionLine({ line }: LineProps) {
     const className = classNames({
         [styles.prerequisite]: lowerCaseLine.includes('prerequisite'),
         [styles.onlyOne]:
-            lowerCaseLine.includes('may be') ||
-            lowerCaseLine.includes('only one') ||
-            lowerCaseLine.includes('may not be'),
+            lowerCaseLine.includes('may be') || lowerCaseLine.includes('only one') || lowerCaseLine.includes('may not'),
         [styles.restriction]: lowerCaseLine.includes('restrict'),
     });
 

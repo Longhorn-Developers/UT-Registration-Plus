@@ -27,7 +27,7 @@ export function Button({
     return (
         <button
             style={style}
-            data-testId={testId}
+            data-testid={testId}
             className={classNames(styles.button, className, styles[type ?? 'primary'], {
                 [styles.disabled]: disabled,
             })}

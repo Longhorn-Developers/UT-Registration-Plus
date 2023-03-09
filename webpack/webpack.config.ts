@@ -60,6 +60,7 @@ export default function config(mode: Environment, manifest: chrome.runtime.Manif
                 crypto: 'crypto-browserify',
                 stream: 'stream-browserify',
                 buffer: 'buffer',
+                fs: false,
             },
         },
         // this is where we define the loaders for different file types

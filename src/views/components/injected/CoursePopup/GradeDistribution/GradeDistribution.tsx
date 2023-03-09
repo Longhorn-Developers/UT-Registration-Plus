@@ -3,12 +3,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import Card from 'src/views/components/common/Card/Card';
-import { bMessenger } from 'src/shared/messages';
-import { Course } from 'src/shared/types/Course';
+import { Course, Semester } from 'src/shared/types/Course';
 import colors from 'src/views/styles/colors.module.scss';
 import Spinner from 'src/views/components/common/Spinner/Spinner';
 import Text from 'src/views/components/common/Text/Text';
 import Icon from 'src/views/components/common/Icon/Icon';
+import { Distribution, LetterGrade } from 'src/shared/types/Distribution';
+import {
+    NoDataError,
+    queryAggregateDistribution,
+    querySemesterDistribution,
+} from 'src/views/lib/database/queryDistribution';
 import styles from './GradeDistribution.module.scss';
 
 enum DataStatus {
@@ -22,12 +27,32 @@ interface Props {
     course: Course;
 }
 
+const GRADE_COLORS: Record<LetterGrade, string> = {
+    A: colors.turtle_pond,
+    'A-': colors.turtle_pond,
+    'B+': colors.cactus,
+    B: colors.cactus,
+    'B-': colors.cactus,
+    'C+': colors.sunshine,
+    C: colors.sunshine,
+    'C-': colors.sunshine,
+    'D+': colors.tangerine,
+    D: colors.tangerine,
+    'D-': colors.tangerine,
+    F: colors.speedway_brick,
+};
+
 /**
  * A chart to fetch and display the grade distribution for a course
  * @returns
  */
 export default function GradeDistribution({ course }: Props) {
     const ref = useRef<HighchartsReact.RefObject>(null);
+    const [semesters, setSemesters] = useState<Semester[]>([]);
+    const [selectedSemester, setSelectedSemester] = useState<Semester | null>(null);
+    const [distribution, setDistribution] = useState<Distribution | null>(null);
+    const [status, setStatus] = useState<DataStatus>(DataStatus.LOADING);
+
     const [chartOptions, setChartOptions] = useState<Highcharts.Options>({
         title: {
             text: undefined,
@@ -89,48 +114,79 @@ export default function GradeDistribution({ course }: Props) {
             },
         ],
     });
-    const [status, setStatus] = useState<DataStatus>(DataStatus.LOADING);
+
+    const updateChart = (distribution: Distribution) => {
+        setChartOptions(options => ({
+            ...options,
+            series: [
+                {
+                    type: 'column',
+                    name: 'Grades',
+                    data: Object.entries(distribution).map(([grade, count]) => ({
+                        y: count,
+                        color: GRADE_COLORS[grade as LetterGrade],
+                    })),
+                },
+            ],
+        }));
+        window.dispatchEvent(new Event('resize'));
+    };
 
     useEffect(() => {
-        bMessenger.getDistribution({ course }).then(distribution => {
-            if (!distribution) {
+        queryAggregateDistribution(course)
+            .then(([distribution, semesters]) => {
+                setSemesters(semesters);
+                updateChart(distribution);
+                setStatus(DataStatus.FOUND);
+            })
+            .catch(err => {
+                if (err instanceof NoDataError) {
+                    return setStatus(DataStatus.NOT_FOUND);
+                }
                 return setStatus(DataStatus.ERROR);
+            });
+    }, [course]);
+
+    useEffect(() => {
+        (async () => {
+            let distribution: Distribution;
+            if (selectedSemester) {
+                distribution = await querySemesterDistribution(course, selectedSemester);
+            } else {
+                [distribution] = await queryAggregateDistribution(course);
             }
-            if (!distribution.length) {
+            updateChart(distribution);
+            setStatus(DataStatus.FOUND);
+        })().catch(err => {
+            if (err instanceof NoDataError) {
                 return setStatus(DataStatus.NOT_FOUND);
             }
-            setChartOptions(options => ({
-                ...options,
-                series: [
-                    {
-                        type: 'column',
-                        name: 'Grades',
-                        data: distribution.map((y, i) => ({
-                            y,
-                            color:
-                                i < 3
-                                    ? colors.turtle_pond
-                                    : i < 5
-                                    ? colors.cactus
-                                    : i < 7
-                                    ? colors.sunshine
-                                    : i < 10
-                                    ? colors.tangerine
-                                    : colors.speedway_brick,
-                        })),
-                    },
-                ],
-            }));
-            setStatus(DataStatus.FOUND);
-            // the highcharts library kinda sucks and doesn't resize the chart when the window resizes,
-            // so we have to manually trigger a resize event when the chart is rendered 🙃
-            window.dispatchEvent(new Event('resize'));
+            return setStatus(DataStatus.ERROR);
         });
-    }, [course]);
+    }, [selectedSemester, course]);
+
+    const handleSelectSemester = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const index = parseInt(event.target.value, 10);
+        if (index === 0) {
+            setSelectedSemester(null);
+        } else {
+            setSelectedSemester(semesters[index - 1]);
+        }
+    };
 
     if (status === DataStatus.FOUND) {
         return (
             <Card className={styles.chartContainer}>
+                {semesters.length > 0 && (
+                    <select onChange={handleSelectSemester}>
+                        <option value={0}>Aggregate</option>
+                        {semesters.map((semester, index) => (
+                            <option key={semester.season + semester.year} value={index + 1}>
+                                {semester.season} {semester.year}
+                            </option>
+                        ))}
+                    </select>
+                )}
                 <HighchartsReact ref={ref} highcharts={Highcharts} options={chartOptions} />
             </Card>
         );

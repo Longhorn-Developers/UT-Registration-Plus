@@ -1,6 +1,5 @@
 import React from 'react';
 import { Course } from 'src/shared/types/Course';
-import Card from '../../common/Card/Card';
 import Popup from '../../common/Popup/Popup';
 import CourseDescription from './CourseDescription/CourseDescription';
 import CourseHeader from './CourseHeader/CourseHeader';
