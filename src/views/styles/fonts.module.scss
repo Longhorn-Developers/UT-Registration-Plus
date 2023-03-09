@@ -26,16 +26,9 @@ $black_weight: 900;
 $x_small_size: 8px;
 $small_size: 12px;
 $medium_size: 16px;
-$large_size: 24px;
+$large_size: 20px;
 $x_large_size: 32px;
 $xx_large_size: 48px;
-
-$x_small_line_height: 12px;
-$small_line_height: 16px;
-$medium_line_height: 20px;
-$large_line_height: 28px;
-$x_large_line_height: 36px;
-$xx_large_line_height: 52px;
 
 :export {
     light_weight: $light_weight;
@@ -51,11 +44,4 @@ $xx_large_line_height: 52px;
     large_size: $large_size;
     x_large_size: $x_large_size;
     xx_large_size: $xx_large_size;
-
-    x_small_line_height: $x_small_line_height;
-    small_line_height: $small_line_height;
-    medium_line_height: $medium_line_height;
-    large_line_height: $large_line_height;
-    x_large_line_height: $x_large_line_height;
-    xx_large_line_height: $xx_large_line_height;
 }

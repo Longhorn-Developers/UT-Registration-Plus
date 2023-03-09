@@ -1,6 +1,7 @@
 import React from 'react';
 import { Course } from 'src/shared/types/Course';
 import Card from 'src/views/components/common/Card/Card';
+import Divider from 'src/views/components/common/Divider/Divider';
 import Icon from 'src/views/components/common/Icon/Icon';
 import Link from 'src/views/components/common/Link/Link';
 import Text from 'src/views/components/common/Text/Text';
@@ -25,8 +26,10 @@ export default function CourseHeader({ course, onClose }: Props) {
     return (
         <Card className={styles.header}>
             <Icon className={styles.close} size='large' name='close' onClick={onClose} />
-            <Text className={styles.title} size='medium' weight='bold' color='black'>
-                {course.courseName} ({course.department} {course.number})
+            <div className={styles.title}>
+                <Text className={styles.courseName} size='large' weight='bold' color='black'>
+                    {course.courseName} ({course.department} {course.number})
+                </Text>
                 <Link
                     span
                     url={course.url}
@@ -37,7 +40,7 @@ export default function CourseHeader({ course, onClose }: Props) {
                 >
                     #{course.uniqueId}
                 </Link>
-            </Text>
+            </div>
             <Text size='medium' className={styles.instructors}>
                 {`with ${!course.instructors.length ? 'TBA' : ''}`}
                 {course.instructors.map((instructor, index) => {
@@ -60,9 +63,8 @@ export default function CourseHeader({ course, onClose }: Props) {
                     );
                 })}
             </Text>
-
             {course.schedule.meetings.map(meeting => (
-                <Text size='medium'>
+                <Text size='medium' className={styles.meeting}>
                     <Text span size='medium' weight='bold' color='black'>
                         {meeting.getDaysString({
                             format: 'long',

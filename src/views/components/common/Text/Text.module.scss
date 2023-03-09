@@ -1,10 +1,10 @@
-@import "src/views/styles/base.module.scss";
+@import 'src/views/styles/base.module.scss';
 
 .text {
     font-family: 'Inter', sans-serif;
     color: $charcoal;
+    line-height: initial;
 }
-
 
 .light_weight {
     font-weight: $light_weight;
@@ -53,28 +53,3 @@
 .xx_large_size {
     font-size: $xx_large_size;
 }
-
-.x_small_line_height {
-    line-height: $x_small_line_height;
-}
-
-.small_line_height {
-    line-height: $small_line_height;
-}
-
-.medium_line_height {
-    line-height: $medium_line_height;
-}
-
-.large_line_height {
-    line-height: $large_line_height;
-}
-
-.x_large_line_height {
-    line-height: $x_large_line_height;
-}
-
-.xx_large_line_height {
-    line-height: $xx_large_line_height;
-}
-

@@ -27,15 +27,8 @@ export default function Text(props: PropsWithChildren<TextProps>) {
 
     const weightClass = `${props.weight ?? 'regular'}_weight`;
     const fontSizeClass = `${props.size ?? 'medium'}_size`;
-    const lineHightClass = `${props.size ?? 'medium'}_line_height`;
 
-    const className = classNames(
-        styles.text,
-        styles[weightClass],
-        styles[fontSizeClass],
-        styles[lineHightClass],
-        props.className
-    );
+    const className = classNames(styles.text, styles[weightClass], styles[fontSizeClass], props.className);
 
     if (props.span) {
         return (
