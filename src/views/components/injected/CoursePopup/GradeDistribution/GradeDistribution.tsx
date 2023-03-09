@@ -1,16 +1,20 @@
 /* eslint-disable no-nested-ternary */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import Card from 'src/views/components/common/Card/Card';
 import { bMessenger } from 'src/shared/messages';
 import { Course } from 'src/shared/types/Course';
-import styles from './GradeDistribution.module.scss';
 import colors from 'src/views/styles/colors.module.scss';
+import Spinner from 'src/views/components/common/Spinner/Spinner';
+import Text from 'src/views/components/common/Text/Text';
+import Icon from 'src/views/components/common/Icon/Icon';
+import styles from './GradeDistribution.module.scss';
 
 enum DataStatus {
     LOADING = 'LOADING',
-    DONE = 'DONE',
+    FOUND = 'FOUND',
+    NOT_FOUND = 'NOT_FOUND',
     ERROR = 'ERROR',
 }
 
@@ -18,7 +22,12 @@ interface Props {
     course: Course;
 }
 
+/**
+ * A chart to fetch and display the grade distribution for a course
+ * @returns
+ */
 export default function GradeDistribution({ course }: Props) {
+    const ref = useRef<HighchartsReact.RefObject>(null);
     const [chartOptions, setChartOptions] = useState<Highcharts.Options>({
         title: {
             text: undefined,
@@ -47,6 +56,8 @@ export default function GradeDistribution({ course }: Props) {
                 fontFamily: 'Inter',
                 fontWeight: '600',
             },
+            spacingBottom: 25,
+            height: 250,
         },
         credits: {
             enabled: false,
@@ -85,7 +96,9 @@ export default function GradeDistribution({ course }: Props) {
             if (!distribution) {
                 return setStatus(DataStatus.ERROR);
             }
-
+            if (!distribution.length) {
+                return setStatus(DataStatus.NOT_FOUND);
+            }
             setChartOptions(options => ({
                 ...options,
                 series: [
@@ -94,9 +107,6 @@ export default function GradeDistribution({ course }: Props) {
                         name: 'Grades',
                         data: distribution.map((y, i) => ({
                             y,
-                            // eslint-disable-next-line no-nested-ternary
-                            // color: i < 8 ? '#2ECC71' : i < 10 ? '#F1C40F' : '#E74C3C',
-                            // eslint-disable-next-line no-nested-ternary
                             color:
                                 i < 3
                                     ? colors.turtle_pond
@@ -111,16 +121,40 @@ export default function GradeDistribution({ course }: Props) {
                     },
                 ],
             }));
+            setStatus(DataStatus.FOUND);
+            // the highcharts library kinda sucks and doesn't resize the chart when the window resizes,
+            // so we have to manually trigger a resize event when the chart is rendered 🙃
+            window.dispatchEvent(new Event('resize'));
         });
     }, [course]);
 
-    if (!chartOptions.series?.length) {
-        return null;
+    if (status === DataStatus.FOUND) {
+        return (
+            <Card className={styles.chartContainer}>
+                <HighchartsReact ref={ref} highcharts={Highcharts} options={chartOptions} />
+            </Card>
+        );
     }
 
     return (
-        <Card className={styles.container}>
-            <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+        <Card className={styles.textContainer}>
+            {status === DataStatus.LOADING && <Spinner />}
+            {status === DataStatus.ERROR && (
+                <Card className={styles.text}>
+                    <Text color='speedway_brick' size='medium' weight='semi_bold'>
+                        There was an error fetching the grade distribution data
+                    </Text>
+                    <Icon color='speedway_brick' size='large' name='sentiment_dissatisfied' />
+                </Card>
+            )}
+            {status === DataStatus.NOT_FOUND && (
+                <Card className={styles.text}>
+                    <Text color='charcoal' size='medium' weight='semi_bold'>
+                        No grade distribution data was found for this course
+                    </Text>
+                    <Icon color='charcoal' size='x_large' name='search_off' />
+                </Card>
+            )}
         </Card>
     );
 }

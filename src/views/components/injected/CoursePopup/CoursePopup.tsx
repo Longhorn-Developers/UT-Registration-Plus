@@ -16,7 +16,6 @@ interface Props {
  * The popup that appears when the user clicks on a course for more details.
  */
 export default function CoursePopup({ course, onClose }: Props) {
-    console.log(course);
     return (
         <Popup className={styles.popup} overlay onClose={onClose}>
             <CourseHeader course={course} onClose={onClose} />

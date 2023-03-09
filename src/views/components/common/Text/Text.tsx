@@ -7,7 +7,7 @@ import styles from './Text.module.scss';
 export type TextProps = {
     color?: Color;
     weight?: Weight;
-    size: Size;
+    size?: Size;
     span?: boolean;
     className?: string;
     onClick?: () => void;
@@ -31,11 +31,10 @@ export default function Text(props: PropsWithChildren<TextProps>) {
 
     const className = classNames(
         styles.text,
-        props.className,
-
         styles[weightClass],
         styles[fontSizeClass],
-        styles[lineHightClass]
+        styles[lineHightClass],
+        props.className
     );
 
     if (props.span) {
