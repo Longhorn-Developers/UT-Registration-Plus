@@ -4,6 +4,22 @@
     height: 250px;
     margin: 20px;
     padding: 12px;
+    position: relative;
+
+    .selectContainer {
+        display: flex;
+        position: absolute;
+        width: 100%;
+        margin-top: -8px;
+        justify-content: center;
+
+        select {
+            z-index: $MAX_Z_INDEX;
+            padding: 4px;
+            border-radius: 12px;
+            border-color: $charcoal;
+        }
+    }
 
     :global(.highcharts-background) {
         fill: transparent;
@@ -11,7 +27,6 @@
 }
 
 .textContainer {
-    height: 250px;
     margin: 20px;
     padding: 12px;
     display: flex;

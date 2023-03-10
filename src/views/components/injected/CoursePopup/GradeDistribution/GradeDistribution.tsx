@@ -82,6 +82,7 @@ export default function GradeDistribution({ course }: Props) {
                 fontWeight: '600',
             },
             spacingBottom: 25,
+            spacingTop: 25,
             height: 250,
         },
         credits: {
@@ -178,14 +179,16 @@ export default function GradeDistribution({ course }: Props) {
         return (
             <Card className={styles.chartContainer}>
                 {semesters.length > 0 && (
-                    <select onChange={handleSelectSemester}>
-                        <option value={0}>Aggregate</option>
-                        {semesters.map((semester, index) => (
-                            <option key={semester.season + semester.year} value={index + 1}>
-                                {semester.season} {semester.year}
-                            </option>
-                        ))}
-                    </select>
+                    <div className={styles.selectContainer}>
+                        <select onChange={handleSelectSemester}>
+                            <option value={0}>Aggregate</option>
+                            {semesters.map((semester, index) => (
+                                <option key={semester.season + semester.year} value={index + 1}>
+                                    {semester.season} {semester.year}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 )}
                 <HighchartsReact ref={ref} highcharts={Highcharts} options={chartOptions} />
             </Card>
