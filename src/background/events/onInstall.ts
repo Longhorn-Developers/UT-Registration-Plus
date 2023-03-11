@@ -1,5 +1,5 @@
 import { SECOND } from 'src/shared/util/time';
-import { ExtensionStore } from '../storage/ExtensionStore';
+import { ExtensionStore } from '../../shared/storage/ExtensionStore';
 
 /**
  * Called when the extension is first installed or synced onto a new machine

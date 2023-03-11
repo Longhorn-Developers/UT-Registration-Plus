@@ -5,7 +5,7 @@ import onInstall from './events/onInstall';
 import onNewChromeSession from './events/onNewChromeSession';
 import onServiceWorkerAlive from './events/onServiceWorkerAlive';
 import onUpdate from './events/onUpdate';
-import { SessionStore } from './storage/SessionStore';
+import { SessionStore } from '../shared/storage/SessionStore';
 import browserActionHandler from './handler/browserActionHandler';
 import hotReloadingHandler from './handler/hotReloadingHandler';
 import tabManagementHandler from './handler/tabManagementHandler';

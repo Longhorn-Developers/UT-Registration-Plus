@@ -1,6 +1,6 @@
 import HotReloadingMessages from 'src/shared/messages/HotReloadingMessages';
 import { MessageHandler } from 'chrome-extension-toolkit';
-import { DevStore } from 'src/background/storage/DevStore';
+import { DevStore } from 'src/shared/storage/DevStore';
 
 const hotReloadingHandler: MessageHandler<HotReloadingMessages> = {
     async reloadExtension({ sendResponse }) {
