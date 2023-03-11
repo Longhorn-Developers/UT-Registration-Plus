@@ -16,7 +16,8 @@
         select {
             z-index: $MAX_Z_INDEX;
             padding: 4px;
-            border-radius: 12px;
+            font-family: 'Inter';
+            border-radius: 8px;
             border-color: $charcoal;
         }
     }

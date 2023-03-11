@@ -1,4 +1,4 @@
-import { createStore } from 'chrome-extension-toolkit';
+import { createSyncStore, debugStore } from 'chrome-extension-toolkit';
 
 /**
  * A store that is used for storing user options
@@ -10,7 +10,9 @@ interface IOptionsStore {
     shouldScrollToLoad: boolean;
 }
 
-export const OptionsStore = createStore<IOptionsStore>('OPTIONS_STORE', {
+export const OptionsStore = createSyncStore<IOptionsStore>({
     shouldHighlightConflicts: true,
     shouldScrollToLoad: true,
 });
+
+debugStore({ OptionsStore });

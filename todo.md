@@ -23,7 +23,7 @@ Last Updated: 03/4/2023
 -   [ ] Tooltip that says which classes conflict, maybe suggest a different section or time that doesn't conflict
 -   [ ] import / export schedules from JSON file
 -   [ ] Search for classes from within extension
--   [ ] Grade distribution
+-   [x] Grade distribution
 -   [x] Course description
 -   [x] Highlight and use rich text to make course description more readable
 -   [ ] calendar
@@ -71,7 +71,7 @@ Last Updated: 03/4/2023
 -   [ ] polish
 -   [ ] more 'at a glance info'
 -   [ ] Rearrange Courses
--   [ ] Firefo Support
+-   [ ] Firefox Support
 -   [ ] RMP (cumulative score for class based off CIS, RMP, grade dist., etc.)
 -   [ ] Conflict indicator ( Possible different section? )
 -   [ ] Compare classes mode

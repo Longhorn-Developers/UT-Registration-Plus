@@ -1,4 +1,4 @@
-import { createStore } from 'chrome-extension-toolkit';
+import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 /**
  * A store that is used to store data that is only relevant during development
@@ -16,10 +16,12 @@ interface IDevStore {
     reloadTabId?: number;
 }
 
-export const DevStore = createStore<IDevStore>('DEV_STORE', {
+export const DevStore = createLocalStore<IDevStore>({
     debugTabId: undefined,
     isTabReloading: true,
     wasDebugTabVisible: false,
     isExtensionReloading: true,
     reloadTabId: undefined,
 });
+
+debugStore({ DevStore });

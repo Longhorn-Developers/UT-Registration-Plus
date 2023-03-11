@@ -1,15 +1,11 @@
-import { createStore, Store } from 'chrome-extension-toolkit';
+import { createSessionStore, debugStore } from 'chrome-extension-toolkit';
 
 interface ISessionStore {
     chromeSessionId?: string;
 }
 
-export const SessionStore = createStore<ISessionStore>(
-    'SESSION_STORE',
-    {
-        chromeSessionId: undefined,
-    },
-    {
-        area: 'session',
-    }
-);
+export const SessionStore = createSessionStore<ISessionStore>({
+    chromeSessionId: undefined,
+});
+
+debugStore({ SessionStore });

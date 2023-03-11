@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { Serialized } from 'chrome-extension-toolkit';
 import { capitalize } from '../util/string';
 import { CourseSchedule } from './CourseSchedule';

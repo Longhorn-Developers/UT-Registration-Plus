@@ -14,6 +14,7 @@ import {
     queryAggregateDistribution,
     querySemesterDistribution,
 } from 'src/views/lib/database/queryDistribution';
+import { bMessenger } from 'src/shared/messages';
 import styles from './GradeDistribution.module.scss';
 
 enum DataStatus {

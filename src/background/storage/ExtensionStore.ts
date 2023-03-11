@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { createStore } from 'chrome-extension-toolkit';
+import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 /**
  * A store that is used for storing user options
@@ -13,19 +13,27 @@ interface IExtensionStore {
     deviceId: string;
 }
 
-const base = createStore<IExtensionStore>('EXTENSION_STORE', {
-    version: chrome.runtime.getManifest().version,
-    lastUpdate: Date.now(),
-    deviceId: '',
-});
+interface Actions {
+    getDeviceId(): Promise<string>;
+}
 
-export const ExtensionStore = base.modify({
-    async getDeviceId() {
-        const deviceId = await base.getDeviceId();
-        if (deviceId) {
-            return deviceId;
-        }
-        const newDeviceId = uuidv4();
-        return newDeviceId;
+const ExtensionStore = createLocalStore<IExtensionStore, Actions>(
+    {
+        version: chrome.runtime.getManifest().version,
+        lastUpdate: Date.now(),
+        deviceId: '',
     },
-});
+    store => ({
+        getDeviceId: async () => {
+            const deviceId = await store.getDeviceId();
+            if (deviceId) {
+                return deviceId;
+            }
+            const newDeviceId = uuidv4();
+            await store.setDeviceId(newDeviceId);
+            return newDeviceId;
+        },
+    })
+);
+
+debugStore({ ExtensionStore });
