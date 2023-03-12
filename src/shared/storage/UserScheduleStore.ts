@@ -1,4 +1,4 @@
-import { createLocalStore, debugStore, Serialized } from 'chrome-extension-toolkit';
+import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 import { Course } from 'src/shared/types/Course';
 /**
  * A store that is used for storing user options
@@ -44,7 +44,7 @@ const UserScheduleStore = createLocalStore<IUserScheduleStore, Actions>(
             const schedules = await store.getSchedules();
             const scheduleToEdit = schedules[name];
             if (scheduleToEdit) {
-                scheduleToEdit.push(course as Serialized<Course>);
+                scheduleToEdit.push(course);
                 await store.setSchedules(schedules);
             }
         },

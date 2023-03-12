@@ -17,7 +17,7 @@ interface Actions {
     getDeviceId(): Promise<string>;
 }
 
-const ExtensionStore = createLocalStore<IExtensionStore, Actions>(
+export const ExtensionStore = createLocalStore<IExtensionStore, Actions>(
     {
         version: chrome.runtime.getManifest().version,
         lastUpdate: Date.now(),
