@@ -37,9 +37,6 @@ export default function CourseCatalogMain({ support }: Props) {
         if(element == null) {
             return false;
         }
-        // if (element[12].value == "C S" || element[16].value == "C S") {
-        //     return true;
-        // }
         if (validCourseTypes.includes(element[12].value) || validCourseTypes.includes(element[16].value)) {
             return true;
         }
@@ -53,11 +50,7 @@ export default function CourseCatalogMain({ support }: Props) {
         const scrapedRows = ccs.scrape(tableRows);
         setRows(scrapedRows);
     }, [support]);
-
-    //create a useEffect that adds a HTML element to the page that says "Computer Science is selected"
-    //use the isComputerScience function to determine if the user has selected Computer Science
-    //if the user has selected Computer Science, add the HTML element to the page
-    //it should go immediately above the "rwd-table results" class
+    
 
     useEffect(() => {
         if (isComputerScience()) {
