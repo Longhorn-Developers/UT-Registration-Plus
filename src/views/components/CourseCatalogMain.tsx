@@ -5,11 +5,13 @@ import { CourseCatalogScraper } from '../lib/CourseCatalogScraper';
 import getCourseTableRows from '../lib/getCourseTableRows';
 import { SiteSupport } from '../lib/getSiteSupport';
 import { populateSearchInputs } from '../lib/populateSearchInputs';
+import colors from '../styles/colors.module.scss';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
 import Icon from './common/Icon/Icon';
 import Text from './common/Text/Text';
 import AutoLoad from './injected/AutoLoad/AutoLoad';
 import CoursePopup from './injected/CoursePopup/CoursePopup';
+import Link from 'src/views/components/common/Link/Link';
 import TableHead from './injected/TableHead';
 import TableRow from './injected/TableRow/TableRow';
 
@@ -23,10 +25,27 @@ interface Props {
 export default function CourseCatalogMain({ support }: Props) {
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+    const validCourseTypes = ["C S", "ECE", "MIS"]
 
     useEffect(() => {
         populateSearchInputs();
     }, []);
+
+
+    const isComputerScience = () => {
+        const element = document.getElementById("filter_form");
+        if(element == null) {
+            return false;
+        }
+        // if (element[12].value == "C S" || element[16].value == "C S") {
+        //     return true;
+        // }
+        if (validCourseTypes.includes(element[12].value) || validCourseTypes.includes(element[16].value)) {
+            return true;
+        }
+        return false;
+    }
+
 
     useEffect(() => {
         const tableRows = getCourseTableRows(document);
@@ -34,6 +53,27 @@ export default function CourseCatalogMain({ support }: Props) {
         const scrapedRows = ccs.scrape(tableRows);
         setRows(scrapedRows);
     }, [support]);
+
+    //create a useEffect that adds a HTML element to the page that says "Computer Science is selected"
+    //use the isComputerScience function to determine if the user has selected Computer Science
+    //if the user has selected Computer Science, add the HTML element to the page
+    //it should go immediately above the "rwd-table results" class
+
+    useEffect(() => {
+        if (isComputerScience()) {
+            const banner = document.createElement("div");
+            banner.innerHTML = "Interested in helping develop UT Registration Plus? Join our <a style='color:#FFFFFF' href='https://discord.gg/qjcvgyVJbT'>Discord Server</a> and check out our <a style='color:#FFFFFF' href='https://github.com/sghsri/UT-Registration-Plus'>Github Page!</a>";
+            banner.style.backgroundColor = colors.burnt_orange;
+            banner.style.color = "white";
+            banner.style.textAlign = "center";
+            banner.style.padding = "10px";
+            banner.style.marginBottom = "10px";
+            const table = document.getElementsByClassName("rwd-table results");
+            table[0].parentNode!.insertBefore(banner, table[0]);
+        }
+    }, []);
+
+
 
     const addRows = (newRows: ScrapedRow[]) => {
         newRows.forEach(row => {
