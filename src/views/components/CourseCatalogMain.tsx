@@ -10,6 +10,7 @@ import Icon from './common/Icon/Icon';
 import Text from './common/Text/Text';
 import AutoLoad from './injected/AutoLoad/AutoLoad';
 import CoursePopup from './injected/CoursePopup/CoursePopup';
+import RecruitmentBanner from './injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from './injected/TableHead';
 import TableRow from './injected/TableRow/TableRow';
 
@@ -54,6 +55,7 @@ export default function CourseCatalogMain({ support }: Props) {
 
     return (
         <ExtensionRoot>
+            <RecruitmentBanner />
             <TableHead>Plus</TableHead>
             {rows.map(row => {
                 if (!row.course) {

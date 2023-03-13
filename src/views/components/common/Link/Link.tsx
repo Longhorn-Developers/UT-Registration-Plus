@@ -4,7 +4,7 @@ import { bMessenger } from 'src/shared/messages';
 import Text, { TextProps } from '../Text/Text';
 import styles from './Link.module.scss';
 
-type Props = TextProps & {
+type Props = Omit<TextProps, 'span'> & {
     url?: string;
     disabled?: boolean;
 };
@@ -27,6 +27,7 @@ export default function Link(props: PropsWithChildren<Props>) {
         <Text
             color='bluebonnet'
             {...passedProps}
+            span
             className={classNames(
                 styles.link,
                 {

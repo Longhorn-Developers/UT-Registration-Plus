@@ -31,7 +31,6 @@ export default function CourseHeader({ course, onClose }: Props) {
                     {course.courseName} ({course.department} {course.number})
                 </Text>
                 <Link
-                    span
                     url={course.url}
                     className={styles.uniqueId}
                     size='medium'
@@ -55,7 +54,7 @@ export default function CourseHeader({ course, onClose }: Props) {
                     return (
                         <>
                             {numInstructors > 1 && index === course.instructors.length - 1 ? '& ' : ''}
-                            <Link key={name} span size='medium' weight='normal' url={url}>
+                            <Link key={name} size='medium' weight='normal' url={url}>
                                 {name}
                             </Link>
                             {numInstructors > 2 && !isLast ? ', ' : ''}
@@ -80,7 +79,6 @@ export default function CourseHeader({ course, onClose }: Props) {
                     </Text>
                     {' in '}
                     <Link
-                        span
                         size='medium'
                         weight='normal'
                         url={getBuildingUrl(meeting.location?.building)}
