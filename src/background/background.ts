@@ -9,6 +9,7 @@ import { sessionStore } from '../shared/storage/sessionStore';
 import browserActionHandler from './handler/browserActionHandler';
 import hotReloadingHandler from './handler/hotReloadingHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
+import userScheduleHandler from './handler/userScheduleHandler';
 
 onServiceWorkerAlive();
 
@@ -34,6 +35,7 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...browserActionHandler,
     ...hotReloadingHandler,
     ...tabManagementHandler,
+    ...userScheduleHandler,
 });
 
 messageListener.listen();

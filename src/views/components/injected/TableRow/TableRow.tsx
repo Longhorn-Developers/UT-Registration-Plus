@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Course, ScrapedRow } from 'src/shared/types/Course';
+import { UserSchedule } from 'src/shared/types/UserSchedule';
 import { Button } from '../../common/Button/Button';
 import Icon from '../../common/Icon/Icon';
 import styles from './TableRow.module.scss';
@@ -9,17 +10,14 @@ interface Props {
     isSelected: boolean;
     row: ScrapedRow;
     onClick: (...args: any[]) => any;
-    /**
-     * Whether the course is in the user' active schedule.
-     */
-    isInActiveSchedule: boolean;
+    activeSchedule?: UserSchedule;
 }
 
 /**
  * This component is injected into each row of the course catalog table.
  * @returns a react portal to the new td in the column or null if the column has not been created yet.
  */
-export default function TableRow({ row, isSelected, isInActiveSchedule, onClick }: Props): JSX.Element | null {
+export default function TableRow({ row, isSelected, activeSchedule, onClick }: Props): JSX.Element | null {
     const [container, setContainer] = useState<HTMLTableCellElement | null>(null);
 
     const { element, course } = row;
@@ -40,8 +38,21 @@ export default function TableRow({ row, isSelected, isInActiveSchedule, onClick 
     }, [isSelected, element.classList]);
 
     useEffect(() => {
-        element.classList[isInActiveSchedule ? 'add' : 'remove'](styles.inActiveSchedule);
-    }, [isInActiveSchedule, element.classList]);
+        if (!activeSchedule || !course) return;
+
+        const isInSchedule = activeSchedule.containsCourse(course);
+
+        element.classList[isInSchedule ? 'add' : 'remove'](styles.inActiveSchedule);
+
+        return () => {
+            element.classList.remove(styles.inActiveSchedule);
+        };
+    }, [activeSchedule, element.classList]);
+
+    useEffect(() => {
+        // if (!activeSchedule || !course) return;
+        // TODO: handle conflicts here
+    }, []);
 
     if (!container) {
         return null;

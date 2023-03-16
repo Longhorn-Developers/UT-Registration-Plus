@@ -91,7 +91,7 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
                 </Text>
             ))}
 
-            <CourseButtons course={course} />
+            <CourseButtons course={course} activeSchedule={activeSchedule} />
         </Card>
     );
 }

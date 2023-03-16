@@ -1,6 +1,5 @@
 import React from 'react';
 import { bMessenger } from 'src/shared/messages';
-import { userScheduleStore } from 'src/shared/storage/userScheduleStore';
 import { Course } from 'src/shared/types/Course';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
 import { Button } from 'src/views/components/common/Button/Button';
@@ -14,7 +13,7 @@ type Props = {
     course: Course;
 };
 
-const { openNewTab } = bMessenger;
+const { openNewTab, addCourse, removeCourse } = bMessenger;
 
 /**
  * This component displays the buttons for the course info popup, that allow the user to either
@@ -64,16 +63,20 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
         openNewTab({ url: url.toString() });
     };
 
-    const saveCourse = async () => {
-        const schedules = await userScheduleStore.get('schedules');
-        const active = schedules.find(schedule => schedule.id === activeSchedule?.id);
-
-        if (!active) return;
-
-        active.addCourse(course);
-
-        await userScheduleStore.set('schedules', schedules);
+    const handleSaveCourse = async () => {
+        if (!activeSchedule) return;
+        addCourse({ course, scheduleId: activeSchedule.id });
     };
+
+    const handleRemoveCourse = async () => {
+        if (!activeSchedule) return;
+        removeCourse({ course, scheduleId: activeSchedule.id });
+    };
+
+    const isCourseSaved = (() => {
+        if (!activeSchedule) return false;
+        return Boolean(activeSchedule.containsCourse(course));
+    })();
 
     return (
         <Card className={styles.container}>
@@ -100,11 +103,16 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
                 </Text>
                 <Icon className={styles.icon} color='white' name='collections_bookmark' size='medium' />
             </Button>
-            <Button disabled={!activeSchedule} onClick={saveCourse} type='success' className={styles.button}>
+            <Button
+                disabled={!activeSchedule}
+                onClick={isCourseSaved ? handleRemoveCourse : handleSaveCourse}
+                type={isCourseSaved ? 'danger' : 'success'}
+                className={styles.button}
+            >
                 <Text size='medium' weight='regular' color='white'>
-                    Save
+                    {isCourseSaved ? 'Remove' : 'Add'}
                 </Text>
-                <Icon className={styles.icon} color='white' name='add' size='medium' />
+                <Icon className={styles.icon} color='white' name={isCourseSaved ? 'remove' : 'add'} size='medium' />
             </Button>
         </Card>
     );

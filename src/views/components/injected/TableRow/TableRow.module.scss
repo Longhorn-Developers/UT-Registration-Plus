@@ -18,3 +18,10 @@
         font-weight: bold !important;
     }
 }
+
+.isConflict {
+    * {
+        color: $speedway_brick !important;
+        text-decoration: line-through !important;
+    }
+}
