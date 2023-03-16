@@ -87,6 +87,7 @@ export function getBuildPlugins(mode: Environment, htmlEntries: EntryId[], manif
                 title: `${manifest.short_name} v${manifest.version} ${mode}`,
                 logo: path.resolve('public', 'icons', 'icon_production_128.png'),
                 failureSound: 'Ping',
+                successSound: false,
                 showDuration: true,
                 suppressWarning: true,
             })

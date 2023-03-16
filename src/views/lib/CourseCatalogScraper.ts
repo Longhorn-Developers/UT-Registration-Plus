@@ -78,6 +78,7 @@ export class CourseCatalogScraper {
                 number,
                 status,
                 isReserved,
+                creditHours: this.getCreditHours(number),
                 schedule: this.getSchedule(row),
                 registerURL: this.getRegisterURL(row),
                 url: this.getURL(row),
@@ -110,6 +111,15 @@ export class CourseCatalogScraper {
         let courseName = courseFullName.substring(courseFullName.indexOf(' ', courseNumberIndex)).trim();
 
         return [courseName, department, number];
+    }
+
+    /**
+     * Gets how many credit hours the course is worth
+     * @param number the course number, CS 314H
+     * @return the number of credit hours the course is worth
+     */
+    getCreditHours(number: string): number {
+        return Number(number.split('')[0]);
     }
 
     /**

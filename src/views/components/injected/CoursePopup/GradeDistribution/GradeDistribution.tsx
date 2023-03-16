@@ -137,6 +137,7 @@ export default function GradeDistribution({ course }: Props) {
     useEffect(() => {
         queryAggregateDistribution(course)
             .then(([distribution, semesters]) => {
+                console.log('.then -> distribution, semesters:', distribution, semesters);
                 setSemesters(semesters);
                 updateChart(distribution);
                 setStatus(DataStatus.FOUND);

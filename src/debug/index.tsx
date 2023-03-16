@@ -1,7 +1,7 @@
 import './hotReload';
 import React, { useEffect } from 'react';
 import { render } from 'react-dom';
-import { DevStore } from 'src/shared/storage/DevStore';
+import { devStore } from 'src/shared/storage/devStore';
 
 const manifest = chrome.runtime.getManifest();
 
@@ -69,11 +69,7 @@ function DevDashboard() {
 
     useEffect(() => {
         const onVisibilityChange = () => {
-            if (document.visibilityState === 'visible') {
-                DevStore.setWasDebugTabVisible(true);
-            } else {
-                DevStore.setWasDebugTabVisible(false);
-            }
+            devStore.set('wasDebugTabVisible', document.visibilityState === 'visible');
         };
         document.addEventListener('visibilitychange', onVisibilityChange);
         return () => {

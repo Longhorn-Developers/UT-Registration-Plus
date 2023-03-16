@@ -9,13 +9,17 @@ interface Props {
     isSelected: boolean;
     row: ScrapedRow;
     onClick: (...args: any[]) => any;
+    /**
+     * Whether the course is in the user' active schedule.
+     */
+    isInActiveSchedule: boolean;
 }
 
 /**
  * This component is injected into each row of the course catalog table.
  * @returns a react portal to the new td in the column or null if the column has not been created yet.
  */
-export default function TableRow({ row, isSelected, onClick }: Props): JSX.Element | null {
+export default function TableRow({ row, isSelected, isInActiveSchedule, onClick }: Props): JSX.Element | null {
     const [container, setContainer] = useState<HTMLTableCellElement | null>(null);
 
     const { element, course } = row;
@@ -34,6 +38,10 @@ export default function TableRow({ row, isSelected, onClick }: Props): JSX.Eleme
     useEffect(() => {
         element.classList[isSelected ? 'add' : 'remove'](styles.selectedRow);
     }, [isSelected, element.classList]);
+
+    useEffect(() => {
+        element.classList[isInActiveSchedule ? 'add' : 'remove'](styles.inActiveSchedule);
+    }, [isInActiveSchedule, element.classList]);
 
     if (!container) {
         return null;

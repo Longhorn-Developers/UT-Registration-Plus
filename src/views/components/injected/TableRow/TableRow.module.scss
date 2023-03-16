@@ -11,3 +11,10 @@
         box-shadow: none !important;
     }
 }
+
+.inActiveSchedule {
+    * {
+        color: $turtle_pond !important;
+        font-weight: bold !important;
+    }
+}

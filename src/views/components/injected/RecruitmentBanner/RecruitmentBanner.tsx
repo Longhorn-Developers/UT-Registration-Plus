@@ -16,23 +16,8 @@ const RECRUIT_FROM_DEPARTMENTS = ['C S', 'ECE', 'MIS', 'CSE', 'EE', 'ITD'];
 export default function RecruitmentBanner() {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
-    const shouldShowBanner = (): boolean => {
-        const params = ['fos_fl', 'fos_cn'];
-        let department = '';
-        params.forEach(p => {
-            const param = new URLSearchParams(window.location.search).get(p);
-            if (param) {
-                department = param;
-            }
-        });
-        if (!department) {
-            return false;
-        }
-        return RECRUIT_FROM_DEPARTMENTS.includes(department);
-    };
-
     useEffect(() => {
-        if (!shouldShowBanner()) {
+        if (!canRecruitFrom()) {
             return;
         }
         const container = document.createElement('div');
@@ -63,4 +48,19 @@ export default function RecruitmentBanner() {
         </div>,
         container
     );
+}
+
+export function canRecruitFrom(): boolean {
+    const params = ['fos_fl', 'fos_cn'];
+    let department = '';
+    params.forEach(p => {
+        const param = new URLSearchParams(window.location.search).get(p);
+        if (param) {
+            department = param;
+        }
+    });
+    if (!department) {
+        return false;
+    }
+    return RECRUIT_FROM_DEPARTMENTS.includes(department);
 }

@@ -4,8 +4,8 @@ interface ISessionStore {
     chromeSessionId?: string;
 }
 
-export const SessionStore = createSessionStore<ISessionStore>({
+export const sessionStore = createSessionStore<ISessionStore>({
     chromeSessionId: undefined,
 });
 
-debugStore({ SessionStore });
+debugStore({ sessionStore });

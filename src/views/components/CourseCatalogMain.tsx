@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Course, ScrapedRow } from 'src/shared/types/Course';
 import { useKeyPress } from '../hooks/useKeyPress';
+import useUserSchedules from '../hooks/useUserSchedules';
 import { CourseCatalogScraper } from '../lib/CourseCatalogScraper';
 import getCourseTableRows from '../lib/getCourseTableRows';
 import { SiteSupport } from '../lib/getSiteSupport';
@@ -43,6 +44,9 @@ export default function CourseCatalogMain({ support }: Props) {
         setRows([...rows, ...newRows]);
     };
 
+    const schedules = useUserSchedules();
+    const [activeSchedule] = schedules;
+
     const handleRowButtonClick = (course: Course) => () => {
         setSelectedCourse(course);
     };
@@ -67,11 +71,18 @@ export default function CourseCatalogMain({ support }: Props) {
                         key={row.course.uniqueId}
                         row={row}
                         isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
+                        isInActiveSchedule={Boolean(activeSchedule?.containsCourse(row.course))}
                         onClick={handleRowButtonClick(row.course)}
                     />
                 );
             })}
-            {selectedCourse && <CoursePopup course={selectedCourse} onClose={handleClearSelectedCourse} />}
+            {selectedCourse && (
+                <CoursePopup
+                    course={selectedCourse}
+                    activeSchedule={activeSchedule}
+                    onClose={handleClearSelectedCourse}
+                />
+            )}
             <AutoLoad addRows={addRows} />
         </ExtensionRoot>
     );

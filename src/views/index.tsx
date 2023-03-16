@@ -11,7 +11,7 @@ if (!support) {
     throw new Error('UT Registration Plus does not support this page, even though it should...');
 }
 
-if (isExtensionPopup()) {
+if (support === SiteSupport.EXTENSION_POPUP) {
     render(<PopupMain />, document.getElementById('root'));
 }
 

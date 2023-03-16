@@ -1,3 +1,5 @@
+import { isExtensionPopup } from 'chrome-extension-toolkit';
+
 /**
  * An enum that represents the different types of pages that we support
  * a given url/page can correspond to many of these enum values
@@ -7,6 +9,7 @@ export enum SiteSupport {
     COURSE_CATALOG_DETAILS = 'COURSE_CATALOG_DETAILS',
     UT_PLANNER = 'UT_PLANNER',
     WAITLIST = 'WAITLIST',
+    EXTENSION_POPUP = 'EXTENSION_POPUP',
 }
 
 /**
@@ -15,6 +18,9 @@ export enum SiteSupport {
  * @returns a list of page types that the current page is
  */
 export default function getSiteSupport(url: string): SiteSupport | null {
+    if (isExtensionPopup()) {
+        return SiteSupport.EXTENSION_POPUP;
+    }
     if (url.includes('utexas.collegescheduler.com')) {
         return SiteSupport.UT_PLANNER;
     }

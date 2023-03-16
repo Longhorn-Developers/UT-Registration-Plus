@@ -1,5 +1,6 @@
 import React from 'react';
 import { Course } from 'src/shared/types/Course';
+import { UserSchedule } from 'src/shared/types/UserSchedule';
 import Card from 'src/views/components/common/Card/Card';
 import Divider from 'src/views/components/common/Divider/Divider';
 import Icon from 'src/views/components/common/Icon/Icon';
@@ -10,6 +11,7 @@ import styles from './CourseHeader.module.scss';
 
 type Props = {
     course: Course;
+    activeSchedule?: UserSchedule;
     onClose: () => void;
 };
 
@@ -17,7 +19,7 @@ type Props = {
  * This component displays the header of the course info popup.
  * It displays the course name, unique id, instructors, and schedule, all formatted nicely.
  */
-export default function CourseHeader({ course, onClose }: Props) {
+export default function CourseHeader({ course, activeSchedule, onClose }: Props) {
     const getBuildingUrl = (building?: string): string | undefined => {
         if (!building) return undefined;
         return `https://utdirect.utexas.edu/apps/campus/buildings/nlogon/maps/UTM/${building}/`;

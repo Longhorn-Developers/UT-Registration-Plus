@@ -1,6 +1,8 @@
 import React from 'react';
 import { bMessenger } from 'src/shared/messages';
+import { userScheduleStore } from 'src/shared/storage/userScheduleStore';
 import { Course } from 'src/shared/types/Course';
+import { UserSchedule } from 'src/shared/types/UserSchedule';
 import { Button } from 'src/views/components/common/Button/Button';
 import Card from 'src/views/components/common/Card/Card';
 import Icon from 'src/views/components/common/Icon/Icon';
@@ -8,6 +10,7 @@ import Text from 'src/views/components/common/Text/Text';
 import styles from './CourseButtons.module.scss';
 
 type Props = {
+    activeSchedule?: UserSchedule;
     course: Course;
 };
 
@@ -17,7 +20,7 @@ const { openNewTab } = bMessenger;
  * This component displays the buttons for the course info popup, that allow the user to either
  * navigate to other pages that are useful for the course, or to do actions on the current course.
  */
-export default function CourseButtons({ course }: Props) {
+export default function CourseButtons({ course, activeSchedule }: Props) {
     const openRateMyProfessorURL = () => {
         const primaryInstructor = course.instructors?.[0];
         if (!primaryInstructor) return;
@@ -61,6 +64,17 @@ export default function CourseButtons({ course }: Props) {
         openNewTab({ url: url.toString() });
     };
 
+    const saveCourse = async () => {
+        const schedules = await userScheduleStore.get('schedules');
+        const active = schedules.find(schedule => schedule.id === activeSchedule?.id);
+
+        if (!active) return;
+
+        active.addCourse(course);
+
+        await userScheduleStore.set('schedules', schedules);
+    };
+
     return (
         <Card className={styles.container}>
             <Button
@@ -86,7 +100,7 @@ export default function CourseButtons({ course }: Props) {
                 </Text>
                 <Icon className={styles.icon} color='white' name='collections_bookmark' size='medium' />
             </Button>
-            <Button type='success' className={styles.button}>
+            <Button disabled={!activeSchedule} onClick={saveCourse} type='success' className={styles.button}>
                 <Text size='medium' weight='regular' color='white'>
                     Save
                 </Text>

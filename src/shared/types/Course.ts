@@ -45,6 +45,9 @@ export class Course {
     courseName: string;
     /** The unique identifier for which department that a course belongs to, i.e. CS, MAL, etc. */
     department: string;
+
+    /** The number of credits that a course is worth */
+    creditHours: number;
     /** Is the course open, closed, waitlisted, or cancelled? */
     status: Status;
     /** all the people that are teaching this course, and some metadata about their names */

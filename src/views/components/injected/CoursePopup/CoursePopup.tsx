@@ -1,5 +1,6 @@
 import React from 'react';
 import { Course } from 'src/shared/types/Course';
+import { UserSchedule } from 'src/shared/types/UserSchedule';
 import Popup from '../../common/Popup/Popup';
 import CourseDescription from './CourseDescription/CourseDescription';
 import CourseHeader from './CourseHeader/CourseHeader';
@@ -8,16 +9,17 @@ import GradeDistribution from './GradeDistribution/GradeDistribution';
 
 interface Props {
     course: Course;
+    activeSchedule?: UserSchedule;
     onClose: () => void;
 }
 
 /**
  * The popup that appears when the user clicks on a course for more details.
  */
-export default function CoursePopup({ course, onClose }: Props) {
+export default function CoursePopup({ course, activeSchedule, onClose }: Props) {
     return (
         <Popup className={styles.popup} overlay onClose={onClose}>
-            <CourseHeader course={course} onClose={onClose} />
+            <CourseHeader course={course} activeSchedule={activeSchedule} onClose={onClose} />
             <CourseDescription course={course} />
             <GradeDistribution course={course} />
         </Popup>

@@ -37,9 +37,17 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
         F: row.f,
     };
 
-    const semesters: Semester[] = row.semesters.split(',').map((sem: string) => {
+    // the db file for some reason has duplicate semesters, so we use a set to remove duplicates
+    const rawSemesters = new Set<string>();
+    row.semesters.split(',').forEach((sem: string) => {
+        rawSemesters.add(sem);
+    });
+
+    const semesters: Semester[] = [];
+
+    rawSemesters.forEach((sem: string) => {
         const [season, year] = sem.split(' ');
-        return { year: parseInt(year, 10), season: season as Semester['season'] };
+        semesters.push({ year: parseInt(year, 10), season: season as Semester['season'] });
     });
 
     return [distribution, semesters];
