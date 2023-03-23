@@ -14,6 +14,7 @@ export interface IWeights {
  * the type for all the size scss variables exported from fonts.module.scss
  */
 export interface ISizes {
+    xx_small_size: number;
     x_small_size: number;
     small_size: number;
     medium_size: number;

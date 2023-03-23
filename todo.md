@@ -19,7 +19,7 @@ Last Updated: 03/4/2023
 -   [ ] copy unique id quickly from browser action
 -   [x] Clickable links to buildings
 -   [ ] Count how many hours and # of classes in schedule
--   [ ] Conflict highlighting
+-   [x] Conflict highlighting
 -   [ ] Tooltip that says which classes conflict, maybe suggest a different section or time that doesn't conflict
 -   [ ] import / export schedules from JSON file
 -   [ ] Search for classes from within extension

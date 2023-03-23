@@ -4,6 +4,7 @@ import { Course, ScrapedRow } from 'src/shared/types/Course';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
 import { Button } from '../../common/Button/Button';
 import Icon from '../../common/Icon/Icon';
+import Text from '../../common/Text/Text';
 import styles from './TableRow.module.scss';
 
 interface Props {
@@ -20,9 +21,13 @@ interface Props {
 export default function TableRow({ row, isSelected, activeSchedule, onClick }: Props): JSX.Element | null {
     const [container, setContainer] = useState<HTMLTableCellElement | null>(null);
 
+    // the courses in the active schedule that conflict with the course for this row
+    const [conflicts, setConflicts] = useState<Course[]>([]);
+
     const { element, course } = row;
 
     useEffect(() => {
+        element.classList.add(styles.row);
         const portalContainer = document.createElement('td');
         const lastTableCell = element.querySelector('td:last-child');
         lastTableCell!.after(portalContainer);
@@ -30,6 +35,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
         return () => {
             portalContainer.remove();
+            element.classList.remove(styles.row);
         };
     }, [element]);
 
@@ -54,15 +60,20 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             return;
         }
 
-        let hasConflicts = activeSchedule.courses.find(c => {
-            let conflicts = course.getConflicts(c);
-            return conflicts.length > 0;
-        });
+        let conflicts: Course[] = [];
 
-        element.classList[hasConflicts ? 'add' : 'remove'](styles.isConflict);
+        for (const c of activeSchedule.courses) {
+            if (c.uniqueId !== course.uniqueId && course.getConflicts(c).length > 0) {
+                conflicts.push(c);
+            }
+        }
+
+        element.classList[conflicts.length ? 'add' : 'remove'](styles.isConflict);
+        setConflicts(conflicts);
 
         return () => {
             element.classList.remove(styles.isConflict);
+            setConflicts([]);
         };
     }, [activeSchedule, course]);
 
@@ -71,9 +82,22 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     }
 
     return ReactDOM.createPortal(
-        <Button className={styles.rowButton} onClick={onClick} type='secondary'>
-            <Icon name='bar_chart' color='white' size='medium' />
-        </Button>,
+        <>
+            <Button className={styles.rowButton} onClick={onClick} type='secondary'>
+                <Icon name='bar_chart' color='white' size='medium' />
+            </Button>
+            {conflicts.length > 0 && (
+                <div className={styles.conflictTooltip}>
+                    <div className={styles.body}>
+                        {conflicts.map(c => (
+                            <Text size='small' key={c.uniqueId}>
+                                {c.department} {c.number} ({c.uniqueId})
+                            </Text>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </>,
         container
     );
 }

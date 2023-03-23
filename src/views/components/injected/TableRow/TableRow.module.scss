@@ -21,8 +21,37 @@
 
 .isConflict {
     * {
-        color: $speedway_brick;
-        text-decoration: line-through !important;
+        color: $speedway_brick !important;
         font-weight: normal !important;
+        text-decoration: line-through !important;
+    }
+}
+
+.row {
+    .conflictTooltip {
+        position: relative;
+        display: none;
+
+        .body {
+            position: absolute;
+            left: 40px;
+            display: flex;
+            flex-direction: column;
+            background: black;
+            padding: 8px;
+            width: 120px;
+            border-radius: 0px 5px 5px 0px;
+            opacity: 0.5;
+            div {
+                color: white !important;
+                text-decoration: none !important;
+                font-weight: normal !important;
+            }
+        }
+    }
+    &:hover {
+        .conflictTooltip {
+            display: initial;
+        }
     }
 }
