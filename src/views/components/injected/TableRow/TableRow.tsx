@@ -50,9 +50,21 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     }, [activeSchedule, element.classList]);
 
     useEffect(() => {
-        // if (!activeSchedule || !course) return;
-        // TODO: handle conflicts here
-    }, []);
+        if (!activeSchedule || !course) {
+            return;
+        }
+
+        let hasConflicts = activeSchedule.courses.find(c => {
+            let conflicts = course.getConflicts(c);
+            return conflicts.length > 0;
+        });
+
+        element.classList[hasConflicts ? 'add' : 'remove'](styles.isConflict);
+
+        return () => {
+            element.classList.remove(styles.isConflict);
+        };
+    }, [activeSchedule, course]);
 
     if (!container) {
         return null;

@@ -71,7 +71,7 @@ export default function CourseCatalogMain({ support }: Props) {
                         key={row.course.uniqueId}
                         row={row}
                         isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
-                        isInActiveSchedule={Boolean(activeSchedule?.containsCourse(row.course))}
+                        activeSchedule={activeSchedule}
                         onClick={handleRowButtonClick(row.course)}
                     />
                 );

@@ -21,7 +21,8 @@
 
 .isConflict {
     * {
-        color: $speedway_brick !important;
+        color: $speedway_brick;
         text-decoration: line-through !important;
+        font-weight: normal !important;
     }
 }

@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import { Serialized } from 'chrome-extension-toolkit';
-import { capitalize } from '../util/string';
+import { CourseMeeting } from './CourseMeeting';
 import { CourseSchedule } from './CourseSchedule';
 import Instructor from './Instructor';
 
@@ -73,6 +73,24 @@ export class Course {
         Object.assign(this, course);
         this.schedule = new CourseSchedule(course.schedule);
         this.instructors = course.instructors.map(i => new Instructor(i));
+    }
+
+    /**
+     * Gets a list of all the conflicts between this course and another course (i.e. if they have a meeting at the same time)
+     * @param other another course to compare this course to
+     * @returns a list of all the conflicts between this course and the other course as a tuple of the two conflicting meetings
+     */
+    getConflicts(other: Course): [CourseMeeting, CourseMeeting][] {
+        const conflicts: [CourseMeeting, CourseMeeting][] = [];
+        for (const meeting of this.schedule.meetings) {
+            for (const otherMeeting of other.schedule.meetings) {
+                if (meeting.isConflicting(otherMeeting)) {
+                    conflicts.push([meeting, otherMeeting]);
+                }
+            }
+        }
+
+        return conflicts;
     }
 }
 
