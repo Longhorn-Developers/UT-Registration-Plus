@@ -20,5 +20,4 @@ export const userScheduleStore = createLocalStore<IUserScheduleStore>({
     ],
 });
 
-
 debugStore({ userScheduleStore });
