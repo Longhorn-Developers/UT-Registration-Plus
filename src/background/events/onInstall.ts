@@ -1,4 +1,4 @@
-import { extensionStore } from '../../shared/storage/extensionStore';
+import { extensionStore } from '../../shared/storage/ExtensionStore';
 
 /**
  * Called when the extension is first installed or synced onto a new machine

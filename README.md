@@ -3,12 +3,12 @@
 ## Built Using:
 
 -   React 18
--   Typescript
+-   TypeScript
 -   Webpack 5 (esbuild-loader)
--   Eslint
+-   ESLint
 -   Prettier
 -   Semantic-Release
--   Custom Messaging & Storage wrappers
+-   Custom Messaging & Storage Wrappers
 
 ## Getting Started
 
