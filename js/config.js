@@ -82,7 +82,7 @@ Text.emptyText = function () {
         "Bevo Bucks are the new Bitcoin",
          "Every day, another brick disappears from Speedway",
         "The GDC will annex the EER one day",
-        "Is the 10 minute hike to Kins worth it?",
+        "To hike to Kins, or not to hike to Kins...",
     ];
     let index = Math.floor(Math.random() * arr.length);
 
