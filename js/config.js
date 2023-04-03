@@ -49,6 +49,9 @@ Export.png_options = {
 class Popup {}
 Popup.num_semesters = 2;
 
+/*
+* Funny comments that popup when no classes have been chosen
+*/
 class Text {}
 Text.emptyText = function () {
     let arr = [
@@ -77,6 +80,9 @@ Text.emptyText = function () {
         "Midterm 1 has been Unmuted",
         "Omae Wa Mou Shindeiru...",
         "Bevo Bucks are the new Bitcoin",
+         "Every day, another brick disappears from Speedway",
+        "The GDC will annex the EER one day",
+        "Is the 10 minute hike to Kins worth it?",
     ];
     let index = Math.floor(Math.random() * arr.length);
 
