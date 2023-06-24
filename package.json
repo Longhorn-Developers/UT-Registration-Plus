@@ -11,7 +11,8 @@
         "build": "tsc && vite build",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview",
-        "devtools": "react-devtools"
+        "devtools": "react-devtools",
+        "preinstall": "npx only-allow pnpm"
     },
     "dependencies": {
         "@types/sql.js": "^1.4.4",
@@ -37,6 +38,8 @@
         "@typescript-eslint/eslint-plugin": "^5.47.0",
         "@typescript-eslint/parser": "^5.47.0",
         "@vitejs/plugin-react-swc": "^3.3.2",
+        "cssnano": "^6.0.1",
+        "cssnano-preset-advanced": "^6.0.1",
         "dotenv": "^16.0.3",
         "eslint": "^8.30.0",
         "eslint-config-airbnb": "^19.0.4",
@@ -51,11 +54,17 @@
         "eslint-plugin-react-prefer-function-component": "^3.1.0",
         "eslint-plugin-react-refresh": "^0.4.1",
         "path": "^0.12.7",
+        "postcss": "^8.4.24",
         "prettier": "^2.8.1",
         "react-dev-utils": "^12.0.1",
         "react-devtools": "^4.27.1",
         "typescript": "^4.9.5",
         "vite": "^4.3.9",
         "vite-plugin-inspect": "^0.7.28"
+    },
+    "pnpm": {
+        "patchedDependencies": {
+            "chrome-extension-toolkit@0.0.48": "patches/chrome-extension-toolkit@0.0.48.patch"
+        }
     }
 }

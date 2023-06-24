@@ -39,6 +39,7 @@
         "node_modules/@types",
         "src/manifest.ts",
         "package.json",
-        ".eslintrc"
+        ".eslintrc",
+        "postcss.config.cjs"
     ]
 }

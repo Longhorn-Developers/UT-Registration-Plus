@@ -7,7 +7,7 @@ import React from 'react';
 export default function App() {
     return (
         <ExtensionRoot>
-            <div>hello how are you doing today. I'm doing well</div>
+            <div>hello how are you doing today.</div>
         </ExtensionRoot>
     );
 }

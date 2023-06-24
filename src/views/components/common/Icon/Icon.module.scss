@@ -1,10 +1,10 @@
-@import '@src/views/styles/fonts.module.scss';
+@use 'src/views/styles/fonts.module.scss';
 
 .icon {
     font-family: 'Material Icons Round';
-    font-weight: $normal_weight;
+    font-weight: fonts.$normal_weight;
     font-style: normal;
-    font-size: $medium_size;
+    font-size: fonts.$medium_size;
     line-height: 1;
     letter-spacing: normal;
     text-transform: none;

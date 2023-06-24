@@ -24,7 +24,7 @@ const manifest = defineManifest(async () => ({
     version: `${major}.${minor}.${patch}.${label}`,
     description: packageJson.description,
     options_page: 'src/pages/options/index.html',
-    background: { service_worker: 'src/pages/background/index.ts' },
+    background: { service_worker: 'src/pages/background/background.ts' },
     permissions: ['storage', 'unlimitedStorage', 'background'],
     host_permissions: [...HOST_PERMISSIONS, '<all_urls>'],
     action: {

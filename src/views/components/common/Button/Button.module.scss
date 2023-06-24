@@ -1,4 +1,5 @@
-@import 'src/views/styles/base.module.scss';
+@use 'sass:color';
+@use 'src/views/styles/colors.module.scss';
 
 .button {
     background-color: #000;
@@ -37,13 +38,13 @@
     @each $color,
         $value
             in (
-                primary: $burnt_orange,
-                secondary: $charcoal,
-                tertiary: $bluebonnet,
-                danger: $speedway_brick,
-                warning: $tangerine,
-                success: $turtle_pond,
-                info: $turquoise
+                primary: colors.$burnt_orange,
+                secondary: colors.$charcoal,
+                tertiary: colors.$bluebonnet,
+                danger: colors.$speedway_brick,
+                warning: colors.$tangerine,
+                success: colors.$turtle_pond,
+                info: colors.$turquoise
             )
     {
         &.#{$color} {
@@ -51,12 +52,12 @@
             color: #fff;
 
             &:hover {
-                background-color: lighten($value, 10%);
+                background-color: color.adjust($value, $lightness: 10%);
             }
 
             &:focus,
             &:active {
-                background-color: darken($value, 10%);
+                background-color: color.adjust($value, $lightness: -10%);
             }
 
             &.disabled {

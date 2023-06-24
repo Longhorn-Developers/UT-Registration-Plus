@@ -1,11 +1,11 @@
-@import 'src/views/styles/base.module.scss';
+@use 'src/views/styles/colors.module.scss';
 
 $spinner-border-width: 10px;
 
 .spinner {
-    border: 1px solid $charcoal;
+    border: 1px solid colors.$charcoal;
     border-width: $spinner-border-width;
-    border-top: $spinner-border-width solid $tangerine;
+    border-top: $spinner-border-width solid colors.$tangerine;
     margin: 0 auto 15px auto;
     border-radius: 50%;
     width: 60px;
