@@ -1,6 +1,6 @@
+import { UserScheduleMessages } from '@src/shared/messages/UserScheduleMessages';
+import { Course } from '@src/shared/types/Course';
 import { MessageHandler } from 'chrome-extension-toolkit';
-import { UserScheduleMessages } from 'src/shared/messages/UserScheduleMessages';
-import { Course } from 'src/shared/types/Course';
 import addCourse from '../lib/addCourse';
 import removeCourse from '../lib/removeCourse';
 

@@ -1,5 +1,5 @@
-import { userScheduleStore } from 'src/shared/storage/UserScheduleStore';
-import { Course } from 'src/shared/types/Course';
+import { userScheduleStore } from '@src/shared/storage/UserScheduleStore';
+import { Course } from '@src/shared/types/Course';
 
 /**
  *

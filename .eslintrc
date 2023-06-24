@@ -6,6 +6,10 @@
         "node": true,
         "webextensions": true
     },
+    "ignorePatterns": [
+        "*.html",
+        "tsconfig.json"
+    ],
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",

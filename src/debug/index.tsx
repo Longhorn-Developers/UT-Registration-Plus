@@ -1,7 +1,7 @@
-import './hotReload';
+import { devStore } from '@src/shared/storage/DevStore';
 import React, { useEffect } from 'react';
 import { render } from 'react-dom';
-import { devStore } from 'src/shared/storage/DevStore';
+import './hotReload';
 
 const manifest = chrome.runtime.getManifest();
 

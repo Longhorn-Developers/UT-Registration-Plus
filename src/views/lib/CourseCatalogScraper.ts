@@ -1,8 +1,7 @@
-import { Serialized } from 'chrome-extension-toolkit';
-import { Course, Status, InstructionMode, ScrapedRow, Semester } from 'src/shared/types/Course';
-import { CourseSchedule } from 'src/shared/types/CourseSchedule';
-import Instructor from 'src/shared/types/Instructor';
-import { SiteSupport } from 'src/views/lib/getSiteSupport';
+import { Course, InstructionMode, ScrapedRow, Semester, Status } from '@src/shared/types/Course';
+import { CourseSchedule } from '@src/shared/types/CourseSchedule';
+import Instructor from '@src/shared/types/Instructor';
+import { SiteSupport } from '@src/views/lib/getSiteSupport';
 
 /**
  * The selectors that we use to scrape the course catalog list table (https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/results/?fos_fl=C+S&level=U&search_type_main=FIELD)

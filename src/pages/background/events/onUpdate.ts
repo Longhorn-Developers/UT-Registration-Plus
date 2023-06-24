@@ -1,5 +1,4 @@
-import { hotReloadTab } from 'src/background/util/hotReloadTab';
-import { extensionStore } from '../../shared/storage/ExtensionStore';
+import { extensionStore } from '../../../shared/storage/ExtensionStore';
 
 /**
  * Called when the extension is updated (or when the extension is reloaded in development mode)
@@ -10,7 +9,7 @@ export default async function onUpdate() {
         lastUpdate: Date.now(),
     });
 
-    if (process.env.NODE_ENV === 'development') {
-        hotReloadTab();
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //     hotReloadTab();
+    // }
 }

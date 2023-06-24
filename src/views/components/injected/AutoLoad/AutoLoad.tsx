@@ -1,14 +1,14 @@
+import { ScrapedRow } from '@src/shared/types/Course';
+import useInfiniteScroll from '@src/views/hooks/useInfiniteScroll';
+import { CourseCatalogScraper } from '@src/views/lib/CourseCatalogScraper';
+import { SiteSupport } from '@src/views/lib/getSiteSupport';
+import {
+    AutoLoadStatus,
+    loadNextCourseCatalogPage,
+    removePaginationButtons,
+} from '@src/views/lib/loadNextCourseCatalogPage';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ScrapedRow } from 'src/shared/types/Course';
-import useInfiniteScroll from 'src/views/hooks/useInfiniteScroll';
-import { CourseCatalogScraper } from 'src/views/lib/CourseCatalogScraper';
-import { SiteSupport } from 'src/views/lib/getSiteSupport';
-import {
-    loadNextCourseCatalogPage,
-    AutoLoadStatus,
-    removePaginationButtons,
-} from 'src/views/lib/loadNextCourseCatalogPage';
 import Spinner from '../../common/Spinner/Spinner';
 import styles from './AutoLoad.module.scss';
 

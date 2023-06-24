@@ -1,5 +1,5 @@
+import BrowserActionMessages from '@src/shared/messages/BrowserActionMessages';
 import { MessageHandler } from 'chrome-extension-toolkit';
-import BrowserActionMessages from 'src/shared/messages/BrowserActionMessages';
 
 const browserActionHandler: MessageHandler<BrowserActionMessages> = {
     disableBrowserAction({ sender, sendResponse }) {

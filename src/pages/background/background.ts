@@ -1,13 +1,12 @@
+import { BACKGROUND_MESSAGES } from '@src/shared/messages';
+import { sessionStore } from '@src/shared/storage/SessionStore';
+import { generateRandomId } from '@src/shared/util/random';
 import { MessageListener } from 'chrome-extension-toolkit';
-import { BACKGROUND_MESSAGES } from 'src/shared/messages';
-import { generateRandomId } from 'src/shared/util/random';
 import onInstall from './events/onInstall';
 import onNewChromeSession from './events/onNewChromeSession';
 import onServiceWorkerAlive from './events/onServiceWorkerAlive';
 import onUpdate from './events/onUpdate';
-import { sessionStore } from '../shared/storage/SessionStore';
 import browserActionHandler from './handler/browserActionHandler';
-import hotReloadingHandler from './handler/hotReloadingHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
 import userScheduleHandler from './handler/userScheduleHandler';
 
@@ -33,7 +32,6 @@ chrome.runtime.onInstalled.addListener(details => {
 // initialize the message listener that will listen for messages from the content script
 const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...browserActionHandler,
-    ...hotReloadingHandler,
     ...tabManagementHandler,
     ...userScheduleHandler,
 });
@@ -46,3 +44,5 @@ sessionStore.get('chromeSessionId').then(async chromeSessionId => {
         onNewChromeSession();
     }
 });
+
+console.log('background script loaded');

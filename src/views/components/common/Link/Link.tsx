@@ -1,6 +1,6 @@
+import { bMessenger } from '@src/shared/messages';
 import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
-import { bMessenger } from 'src/shared/messages';
 import Text, { TextProps } from '../Text/Text';
 import styles from './Link.module.scss';
 
