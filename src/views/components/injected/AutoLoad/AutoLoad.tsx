@@ -9,7 +9,6 @@ import {
 } from '@src/views/lib/loadNextCourseCatalogPage';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import Spinner from '../../common/Spinner/Spinner';
 import styles from './AutoLoad.module.scss';
 
 type Props = {
@@ -53,16 +52,21 @@ export default function AutoLoad({ addRows }: Props) {
         addRows(scrapedRows);
     }, [addRows]);
 
-    if (!container || status === AutoLoadStatus.IDLE) {
+    if (!container || status === AutoLoadStatus.DONE) {
         return null;
     }
 
     return createPortal(
         <div>
-            {status === AutoLoadStatus.LOADING && (
-                <div>
-                    <Spinner />
-                    <h2>Loading Next Page...</h2>
+            {status !== AutoLoadStatus.ERROR && (
+                <div
+                    style={{
+                        height: '500px',
+                        backgroundColor: '#f4f4f4',
+                    }}
+                >
+                    {/* <Spinner />
+                    <h2>Loading Next Page...</h2> */}
                 </div>
             )}
             {status === AutoLoadStatus.ERROR && (

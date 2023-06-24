@@ -29,6 +29,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     useEffect(() => {
         element.classList.add(styles.row);
         const portalContainer = document.createElement('td');
+        portalContainer.style.textAlign = 'right';
         const lastTableCell = element.querySelector('td:last-child');
         lastTableCell!.after(portalContainer);
         setContainer(portalContainer);

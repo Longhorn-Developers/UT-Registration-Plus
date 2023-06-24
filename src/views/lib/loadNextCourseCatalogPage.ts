@@ -9,6 +9,7 @@ export enum AutoLoadStatus {
     LOADING = 'LOADING',
     IDLE = 'IDLE',
     ERROR = 'ERROR',
+    DONE = 'DONE',
 }
 
 let isLoading = false;
@@ -24,7 +25,7 @@ let nextPageURL = getNextButton(document)?.href;
 export async function loadNextCourseCatalogPage(): Promise<[AutoLoadStatus, HTMLTableRowElement[]]> {
     // if there is no more nextPageURL, then we have reached the end of the course catalog, so we can stop
     if (!nextPageURL) {
-        return [AutoLoadStatus.IDLE, []];
+        return [AutoLoadStatus.DONE, []];
     }
     // remove the next button so that we don't load the same page twice
     removePaginationButtons(document);

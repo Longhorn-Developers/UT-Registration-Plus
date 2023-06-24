@@ -6,6 +6,9 @@ import { useEffect } from 'react';
  * @returns isLoading boolean to indicate if the callback is currently being executed
  */
 
+/**
+ *
+ */
 export default function useInfiniteScroll(
     callback: () => Promise<void> | void,
     deps?: React.DependencyList | undefined
@@ -13,13 +16,15 @@ export default function useInfiniteScroll(
     const isScrolling = () => {
         const { innerHeight } = window;
         const { scrollTop, offsetHeight } = document.documentElement;
-        if (innerHeight + scrollTop >= offsetHeight - 100) {
+        if (innerHeight + scrollTop >= offsetHeight - 650) {
             callback();
         }
     };
 
     useEffect(() => {
-        window.addEventListener('scroll', isScrolling);
+        window.addEventListener('scroll', isScrolling, {
+            passive: true,
+        });
         return () => window.removeEventListener('scroll', isScrolling);
     }, deps);
 }
