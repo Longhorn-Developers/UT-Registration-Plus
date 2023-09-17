@@ -46,7 +46,7 @@ export function getBuildPlugins(mode: Environment, htmlEntries: EntryId[], manif
                 hash: false,
                 filename: `${entryId}.html`,
                 chunks: [entryId],
-                title: `${manifest.short_name} ${entryId} `,
+                title: `${entryId} `,
                 template: path.resolve('webpack', 'plugins', 'template.html'),
             })
         );

@@ -7,12 +7,17 @@ import getSiteSupport, { SiteSupport } from './lib/getSiteSupport';
 import PopupMain from './components/PopupMain';
 
 const support = getSiteSupport(window.location.href);
+
 if (!support) {
     throw new Error('UT Registration Plus does not support this page, even though it should...');
 }
 
 if (support === SiteSupport.EXTENSION_POPUP) {
     render(<PopupMain />, document.getElementById('root'));
+}
+
+if (support === SiteSupport.MY_CALENDAR) {
+    render(<div>My Calendar</div>, document.getElementById('root'));
 }
 
 if (support === SiteSupport.COURSE_CATALOG_DETAILS || support === SiteSupport.COURSE_CATALOG_LIST) {

@@ -9,6 +9,7 @@ export interface Entries {
     content: string[];
     background: string[];
     popup: string[];
+    myCalendar: string[];
     // only used in development
     debug?: string[];
 }
@@ -28,19 +29,23 @@ export default function config(mode: Environment, manifest: chrome.runtime.Manif
     const entry: Entries = {
         content: [path.resolve('src', 'views')],
         popup: [path.resolve('src', 'views')],
+        myCalendar: [path.resolve('src', 'views')],
         background: [path.resolve('src', 'background', 'background')],
     };
 
     // the entries that need an html file to be generated
-    const htmlEntries: EntryId[] = mode === 'development' ? ['popup', 'debug'] : ['popup'];
+    const htmlEntries: EntryId[] = ['popup', 'myCalendar'];
 
     if (mode === 'development') {
+        // create an html file for the debug entry
+        htmlEntries.push('debug');
         // TODO: add hot reloading script to the debug entry
         entry.debug = [path.resolve('src', 'debug')];
 
-        // we need to import react-devtools before the react code in development
+        // we need to import react-devtools before the react code in development so that it can hook into react
         entry.content = [path.resolve('src', 'debug', 'reactDevtools'), ...entry.content];
         entry.popup = [path.resolve('src', 'debug', 'reactDevtools'), ...entry.popup];
+        entry.myCalendar = [path.resolve('src', 'debug', 'reactDevtools'), ...entry.myCalendar];
     }
 
     /** @see https://webpack.js.org/configuration for documentation */
