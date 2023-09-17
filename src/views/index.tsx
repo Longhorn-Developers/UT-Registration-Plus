@@ -7,6 +7,7 @@ import getSiteSupport, { SiteSupport } from './lib/getSiteSupport';
 import PopupMain from './components/PopupMain';
 
 const support = getSiteSupport(window.location.href);
+console.log('support:', support);
 
 if (!support) {
     throw new Error('UT Registration Plus does not support this page, even though it should...');

@@ -22,7 +22,7 @@ export default function getSiteSupport(url: string): SiteSupport | null {
     if (isExtensionPopup()) {
         return SiteSupport.EXTENSION_POPUP;
     }
-    if (isExtensionPage('MyCalendar.html')) {
+    if (isExtensionPage('my_calendar.html')) {
         return SiteSupport.MY_CALENDAR;
     }
     if (url.includes('utexas.collegescheduler.com')) {
