@@ -24,11 +24,14 @@ export async function initializeDB(): Promise<Database> {
     if (db) {
         return db;
     }
-    const { Database } = await initSqlJs({
-        locateFile: file => WASM_FILE_URL,
-    });
 
-    const dbBuffer = await fetch(DB_FILE_URL).then(res => res.arrayBuffer());
+    const [{ Database }, dbBuffer] = await Promise.all([
+        initSqlJs({
+            locateFile: file => WASM_FILE_URL,
+        }),
+        fetch(DB_FILE_URL).then(res => res.arrayBuffer()),
+    ]);
+
     db = new Database(new Uint8Array(dbBuffer));
 
     return db;
