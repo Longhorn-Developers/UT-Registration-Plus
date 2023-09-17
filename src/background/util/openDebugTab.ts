@@ -1,11 +1,11 @@
-import { devStore } from 'src/shared/storage/DevStore';
+import { DevStore } from 'src/shared/storage/DevStore';
 
 /**
  * Open the debug tab as the first tab
  */
 export async function openDebugTab() {
     if (process.env.NODE_ENV === 'development') {
-        const { debugTabId, wasDebugTabVisible } = await devStore.get(['debugTabId', 'wasDebugTabVisible']);
+        const { debugTabId, wasDebugTabVisible } = await DevStore.get(['debugTabId', 'wasDebugTabVisible']);
 
         const isAlreadyOpen = await (await chrome.tabs.query({})).some(tab => tab.id === debugTabId);
         if (isAlreadyOpen) return;
@@ -17,6 +17,6 @@ export async function openDebugTab() {
             index: 0,
         });
 
-        await devStore.set('debugTabId', tab.id);
+        await DevStore.set('debugTabId', tab.id);
     }
 }
