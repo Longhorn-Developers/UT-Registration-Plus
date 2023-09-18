@@ -15,7 +15,7 @@ if (!support) {
 }
 
 if (support === SiteSupport.EXTENSION_POPUP) {
-    render(<PopupMain />, document.body);
+    render(<PopupMain />, document.getElementById('root'));
 }
 
 if (support === SiteSupport.MY_CALENDAR) {

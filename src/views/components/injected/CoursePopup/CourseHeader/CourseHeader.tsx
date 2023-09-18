@@ -54,7 +54,7 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
                     const numInstructors = course.instructors.length;
                     const isLast = course.instructors.length > 1 && index === course.instructors.length - 1;
                     return (
-                        <>
+                        <span key={name}>
                             {numInstructors > 1 && index === course.instructors.length - 1 ? '& ' : ''}
                             <Link
                                 key={name}
@@ -66,12 +66,12 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
                                 {name}
                             </Link>
                             {numInstructors > 2 && !isLast ? ', ' : ''}
-                        </>
+                        </span>
                     );
                 })}
             </Text>
             {course.schedule.meetings.map(meeting => (
-                <Text size='medium' className={styles.meeting}>
+                <Text size='medium' className={styles.meeting} key={meeting.startTime}>
                     <Text span size='medium' weight='bold' color='black'>
                         {meeting.getDaysString({
                             format: 'long',

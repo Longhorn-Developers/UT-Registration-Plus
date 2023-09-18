@@ -88,6 +88,9 @@ export default function GradeDistribution({ course }: Props) {
         credits: {
             enabled: false,
         },
+        accessibility: {
+            enabled: false,
+        },
         tooltip: {
             headerFormat: '<span style="font-size:small; font-weight:bold">{point.key}</span><table>',
             pointFormat:
