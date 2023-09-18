@@ -14,7 +14,7 @@
     },
     "dependencies": {
         "@types/sql.js": "^1.4.4",
-        "chrome-extension-toolkit": "^0.0.50",
+        "chrome-extension-toolkit": "^0.0.51",
         "classnames": "^2.3.2",
         "clean-webpack-plugin": "^4.0.0",
         "highcharts": "^10.3.3",

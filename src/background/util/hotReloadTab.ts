@@ -24,7 +24,10 @@ const HOT_RELOADING_WHITELIST = [
  * @returns a promise that resolves when the tab is reloaded
  */
 export async function hotReloadTab(): Promise<void> {
-    const { isTabReloading, reloadTabId } = await DevStore.get(['isTabReloading', 'reloadTabId']);
+    const [isTabReloading, reloadTabId] = await Promise.all([
+        DevStore.get('isTabReloading'),
+        DevStore.get('reloadTabId'),
+    ]);
 
     if (!isTabReloading || !reloadTabId) return;
 

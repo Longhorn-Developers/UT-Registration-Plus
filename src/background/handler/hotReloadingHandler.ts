@@ -4,7 +4,11 @@ import { DevStore } from 'src/shared/storage/DevStore';
 
 const hotReloadingHandler: MessageHandler<HotReloadingMessages> = {
     async reloadExtension({ sendResponse }) {
-        const { isExtensionReloading, isTabReloading } = await DevStore.get(['isExtensionReloading', 'isTabReloading']);
+        const [isExtensionReloading, isTabReloading] = await Promise.all([
+            DevStore.get('isExtensionReloading'),
+            DevStore.get('isTabReloading'),
+        ]);
+
         if (!isExtensionReloading) return sendResponse();
 
         if (isTabReloading) {
