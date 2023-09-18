@@ -11,7 +11,6 @@ export default async function addCourse(scheduleName: string, course: Course): P
         throw new Error('Schedule not found');
     }
 
-    activeSchedule.creditHours += course.creditHours;
     activeSchedule.courses.push(course);
 
     await UserScheduleStore.set('schedules', schedules);

@@ -11,7 +11,6 @@ export default async function removeCourse(scheduleName: string, course: Course)
         throw new Error('Schedule not found');
     }
 
-    activeSchedule.creditHours -= course.creditHours;
     activeSchedule.courses = activeSchedule.courses.filter(c => c.uniqueId !== course.uniqueId);
 
     await UserScheduleStore.set('schedules', schedules);
