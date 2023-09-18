@@ -7,6 +7,7 @@ import styles from './Link.module.scss';
 type Props = Omit<TextProps, 'span'> & {
     url?: string;
     disabled?: boolean;
+    title?: string;
 };
 
 /**

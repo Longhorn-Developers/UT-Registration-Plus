@@ -11,6 +11,7 @@ export type TextProps = {
     span?: boolean;
     className?: string;
     onClick?: () => void;
+    title?: string;
     align?: React.CSSProperties['textAlign'];
     style?: React.CSSProperties;
 };
@@ -32,14 +33,14 @@ export default function Text(props: PropsWithChildren<TextProps>) {
 
     if (props.span) {
         return (
-            <span className={className} style={style} onClick={props.onClick}>
+            <span title={props.title} className={className} style={style} onClick={props.onClick}>
                 {props.children}
             </span>
         );
     }
 
     return (
-        <div className={className} style={style} onClick={props.onClick}>
+        <div title={props.title} className={className} style={style} onClick={props.onClick}>
             {props.children}
         </div>
     );

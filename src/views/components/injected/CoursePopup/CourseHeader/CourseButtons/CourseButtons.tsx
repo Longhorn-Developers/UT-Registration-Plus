@@ -85,19 +85,30 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
                 disabled={!course.instructors.length}
                 type='primary'
                 className={styles.button}
+                title='Search for this professor on RateMyProfessor'
             >
                 <Text size='medium' weight='regular' color='white'>
                     RateMyProf
                 </Text>
                 <Icon className={styles.icon} color='white' name='school' size='medium' />
             </Button>
-            <Button onClick={openSyllabiURL} type='secondary' className={styles.button}>
+            <Button
+                onClick={openSyllabiURL}
+                type='secondary'
+                className={styles.button}
+                title='Search for syllabi for this course'
+            >
                 <Text size='medium' weight='regular' color='white'>
                     Syllabi
                 </Text>
                 <Icon className={styles.icon} color='white' name='grading' size='medium' />
             </Button>
-            <Button onClick={openTextbookURL} type='tertiary' className={styles.button}>
+            <Button
+                onClick={openTextbookURL}
+                type='tertiary'
+                className={styles.button}
+                title='Search for textbooks for this course'
+            >
                 <Text size='medium' weight='regular' color='white'>
                     Textbook
                 </Text>
@@ -106,6 +117,7 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
             <Button
                 disabled={!activeSchedule}
                 onClick={isCourseSaved ? handleRemoveCourse : handleSaveCourse}
+                title={isCourseSaved ? 'Remove this course from your schedule' : 'Add this course to your schedule'}
                 type={isCourseSaved ? 'danger' : 'success'}
                 className={styles.button}
             >
