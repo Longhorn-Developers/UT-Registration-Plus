@@ -10,9 +10,9 @@ interface IOptionsStore {
     shouldScrollToLoad: boolean;
 }
 
-export const optionsStore = createSyncStore<IOptionsStore>({
+export const OptionsStore = createSyncStore<IOptionsStore>({
     shouldHighlightConflicts: true,
     shouldScrollToLoad: true,
 });
 
-debugStore({ optionsStore });
+debugStore({ OptionsStore });

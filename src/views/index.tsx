@@ -1,5 +1,6 @@
 import React from 'react';
-import { render } from 'react-dom';
+import render from './lib/react';
+
 import { ContextInvalidated, createShadowDOM, isExtensionPopup, onContextInvalidated } from 'chrome-extension-toolkit';
 import CourseCatalogMain from './components/CourseCatalogMain';
 import colors from './styles/colors.module.scss';
@@ -14,7 +15,7 @@ if (!support) {
 }
 
 if (support === SiteSupport.EXTENSION_POPUP) {
-    render(<PopupMain />, document.getElementById('root'));
+    render(<PopupMain />, document.body);
 }
 
 if (support === SiteSupport.MY_CALENDAR) {
@@ -39,6 +40,7 @@ onContextInvalidated(() => {
     const div = document.createElement('div');
     div.id = 'context-invalidated-container';
     document.body.appendChild(div);
+
     render(
         <ContextInvalidated fontFamily='monospace' color={colors.white} backgroundColor={colors.burnt_orange} />,
         div

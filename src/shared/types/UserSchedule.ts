@@ -6,14 +6,12 @@ import { Course } from './Course';
  */
 export class UserSchedule {
     courses: Course[];
-    id: string;
     name: string;
     creditHours: number;
 
     constructor(schedule: Serialized<UserSchedule>) {
         this.courses = schedule.courses.map(c => new Course(c));
         this.creditHours = this.courses.reduce((acc, course) => acc + course.creditHours, 0);
-        this.id = schedule.id;
         this.name = schedule.name;
     }
 

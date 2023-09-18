@@ -6,10 +6,10 @@ import removeCourse from '../lib/removeCourse';
 
 const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
     addCourse({ data, sendResponse }) {
-        addCourse(data.scheduleId, new Course(data.course)).then(sendResponse);
+        addCourse(data.scheduleName, new Course(data.course)).then(sendResponse);
     },
     removeCourse({ data, sendResponse }) {
-        removeCourse(data.scheduleId, new Course(data.course)).then(sendResponse);
+        removeCourse(data.scheduleName, new Course(data.course)).then(sendResponse);
     },
 };
 

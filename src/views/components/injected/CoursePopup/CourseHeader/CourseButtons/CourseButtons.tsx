@@ -65,12 +65,12 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
 
     const handleSaveCourse = async () => {
         if (!activeSchedule) return;
-        addCourse({ course, scheduleId: activeSchedule.id });
+        addCourse({ course, scheduleName: activeSchedule.name });
     };
 
     const handleRemoveCourse = async () => {
         if (!activeSchedule) return;
-        removeCourse({ course, scheduleId: activeSchedule.id });
+        removeCourse({ course, scheduleName: activeSchedule.name });
     };
 
     const isCourseSaved = (() => {
