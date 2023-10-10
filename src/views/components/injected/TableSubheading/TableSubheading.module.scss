@@ -1,0 +1,9 @@
+@use 'src/views/styles/fonts.module.scss';
+
+.subheader {
+    h2 {
+        font-size: fonts.$medium_size;
+        margin-top: 1.25rem;
+        margin-bottom: 0.25rem;
+    }
+}

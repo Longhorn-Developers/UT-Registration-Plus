@@ -15,6 +15,9 @@ export default function TableHead({ children }: PropsWithChildren) {
         const lastTableHeadCell = document.querySelector('table thead th:last-child');
         lastTableHeadCell!.after(container);
         setContainer(container);
+        return () => {
+            container.remove();
+        };
     }, []);
 
     if (!container) {
