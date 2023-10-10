@@ -1,4 +1,4 @@
-import { crx } from '@crxjs/vite-plugin';
+import { CrxPlugin, crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
@@ -20,6 +20,22 @@ window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 `;
+
+const renameFile = (source: string, destination: string): CrxPlugin => {
+    if (typeof source !== 'string' || typeof destination !== 'string') {
+        return;
+    }
+
+    return {
+        name: 'crx:rename-file',
+        enforce: 'post',
+        generateBundle(options, bundle) {
+            console.log(Object.keys(bundle));
+            if (!bundle[source]) return;
+            bundle[source].fileName = destination;
+        },
+    };
+};
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -81,6 +97,7 @@ export default defineConfig({
                 return code;
             },
         },
+        renameFile(resolve(pagesDir, 'debug/index.html'), 'debug.html'),
     ],
     resolve: {
         alias: {
@@ -97,6 +114,9 @@ export default defineConfig({
     },
     build: {
         rollupOptions: {
+            input: {
+                debug: 'src/pages/debug/index.html',
+            },
             external: ['/@react-refresh'],
         },
     },

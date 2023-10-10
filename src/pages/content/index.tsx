@@ -26,7 +26,11 @@ if (support === SiteSupport.COURSE_CATALOG_DETAILS || support === SiteSupport.CO
 
     // const CourseCatalogMain = (await import('@src/views/components/CourseCatalogMain')).default;
 
-    createRoot(container).render(<CourseCatalogMain support={support} />);
+    createRoot(container).render(
+        <React.StrictMode>
+            <CourseCatalogMain support={support} />
+        </React.StrictMode>
+    );
 }
 // }
 

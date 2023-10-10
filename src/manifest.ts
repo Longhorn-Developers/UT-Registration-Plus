@@ -26,7 +26,7 @@ const manifest = defineManifest(async () => ({
     options_page: 'src/pages/options/index.html',
     background: { service_worker: 'src/pages/background/background.ts' },
     permissions: ['storage', 'unlimitedStorage', 'background'],
-    host_permissions: [...HOST_PERMISSIONS, '<all_urls>'],
+    host_permissions: process.env.MODE === 'development' ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
     action: {
         default_popup: 'src/pages/popup/index.html',
         default_icon: `icons/icon_${mode}_32.png`,
