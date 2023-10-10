@@ -8,9 +8,8 @@
     margin: 10px;
     border-radius: 8px;
     border: none;
-    box-shadow: rgba(0, 0, 0, 0.4) 2px 2px 4px;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.1s ease-in-out;
     font-family: 'Inter';
 
     display: flex;
@@ -23,7 +22,7 @@
     }
 
     &:active {
-        animation: click_animation 0.2s ease-in-out;
+        transform: scale(0.96);
     }
 
     &.disabled {
@@ -31,7 +30,7 @@
         opacity: 0.5 !important;
 
         &:active {
-            animation: none !important;
+            transform: unset;
         }
     }
 
@@ -55,7 +54,7 @@
                 background-color: color.adjust($value, $lightness: 10%);
             }
 
-            &:focus,
+            &:focus-visible,
             &:active {
                 background-color: color.adjust($value, $lightness: -10%);
             }
@@ -64,17 +63,5 @@
                 background-color: $value !important;
             }
         }
-    }
-}
-
-@keyframes click_animation {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(0.9);
-    }
-    100% {
-        transform: scale(1);
     }
 }
