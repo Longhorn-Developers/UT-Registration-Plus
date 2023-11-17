@@ -1,10 +1,9 @@
 import React from 'react';
-import { bMessenger } from 'src/shared/messages';
+import { background } from 'src/shared/messages';
 import useSchedules from '../hooks/useSchedules';
 import { Button } from './common/Button/Button';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
 
-const { clearCourses } = bMessenger;
 export default function PopupMain() {
     const [activeSchedule, schedules] = useSchedules();
 
@@ -15,7 +14,7 @@ export default function PopupMain() {
             <Button
                 onClick={() => {
                     if (!activeSchedule) return;
-                    clearCourses({ scheduleName: activeSchedule?.name });
+                    background.clearCourses({ scheduleName: activeSchedule?.name });
                 }}
             >
                 Clear Courses

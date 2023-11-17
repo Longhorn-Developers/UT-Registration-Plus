@@ -1,4 +1,5 @@
 import React from 'react';
+import { background } from 'src/shared/messages';
 import render from './lib/react';
 
 import { ContextInvalidated, createShadowDOM, isExtensionPopup, onContextInvalidated } from 'chrome-extension-toolkit';
@@ -12,6 +13,11 @@ console.log('support:', support);
 
 if (!support) {
     throw new Error('UT Registration Plus does not support this page, even though it should...');
+}
+
+// if we are in an iframe, throw an error
+if (window.self !== window.top) {
+    throw new Error('inside an iframe');
 }
 
 if (support === SiteSupport.EXTENSION_POPUP) {

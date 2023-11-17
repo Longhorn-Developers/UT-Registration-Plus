@@ -1,5 +1,5 @@
 import React from 'react';
-import { bMessenger } from 'src/shared/messages';
+import { background } from 'src/shared/messages';
 import { Course } from 'src/shared/types/Course';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
 import { Button } from 'src/views/components/common/Button/Button';
@@ -13,7 +13,7 @@ type Props = {
     course: Course;
 };
 
-const { openNewTab, addCourse, removeCourse } = bMessenger;
+const { openNewTab, addCourse, removeCourse } = background;
 
 /**
  * This component displays the buttons for the course info popup, that allow the user to either

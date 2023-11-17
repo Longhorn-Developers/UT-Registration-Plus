@@ -17,6 +17,7 @@ const HOT_RELOADING_WHITELIST = [
     'reddit.com',
     'gmail.com',
     'photopea.com',
+    'chat.openai.com',
 ];
 
 /**
@@ -39,3 +40,5 @@ export async function hotReloadTab(): Promise<void> {
         }
     });
 }
+
+

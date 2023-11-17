@@ -15,4 +15,6 @@ export const ExtensionStore = createLocalStore<IExtensionStore>({
     lastUpdate: Date.now(),
 });
 
+
+
 debugStore({ ExtensionStore });

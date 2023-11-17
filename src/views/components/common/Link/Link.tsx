@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
-import { bMessenger } from 'src/shared/messages';
+import { background } from 'src/shared/messages';
 import Text, { TextProps } from '../Text/Text';
 import styles from './Link.module.scss';
 
@@ -20,7 +20,7 @@ export default function Link(props: PropsWithChildren<Props>) {
     const { url } = props;
 
     if (url && !props.onClick) {
-        passedProps.onClick = () => bMessenger.openNewTab({ url });
+        passedProps.onClick = () => background.openNewTab({ url });
     }
     const isDisabled = props.disabled || (!url && !props.onClick);
 
