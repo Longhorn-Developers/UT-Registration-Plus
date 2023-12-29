@@ -1,7 +1,7 @@
-import { CrxPlugin, crx } from '@crxjs/vite-plugin';
+import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
 import { resolve } from 'path';
-import { defineConfig } from 'vite';
+import { Plugin, ResolvedConfig, ViteDevServer, defineConfig } from 'vite';
 import inspect from 'vite-plugin-inspect';
 import manifest from './src/manifest';
 
@@ -21,27 +21,31 @@ window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 `;
 
-const renameFile = (source: string, destination: string): CrxPlugin => {
+const renameFile = (source: string, destination: string): Plugin => {
     if (typeof source !== 'string' || typeof destination !== 'string') {
         return;
     }
 
     return {
         name: 'crx:rename-file',
+        apply: 'build',
         enforce: 'post',
         generateBundle(options, bundle) {
-            console.log(Object.keys(bundle));
             if (!bundle[source]) return;
             bundle[source].fileName = destination;
         },
     };
 };
 
+let config: ResolvedConfig;
+let server: ViteDevServer;
+
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
         react(),
-        crx({ manifest, contentScripts: { preambleCode } }),
+        // crx({ manifest, contentScripts: { preambleCode } }),
+        crx({ manifest }),
         inspect(),
         {
             name: 'public-transform',
@@ -97,7 +101,8 @@ export default defineConfig({
                 return code;
             },
         },
-        renameFile(resolve(pagesDir, 'debug/index.html'), 'debug.html'),
+        // renameFile('src/pages/debug/index.html', 'debug.html'),
+        renameFile('src/pages/calendar/index.html', 'calendar.html'),
     ],
     resolve: {
         alias: {
@@ -108,16 +113,33 @@ export default defineConfig({
         },
     },
     server: {
+        strictPort: true,
+        port: 5173,
         hmr: {
-            port: 5174,
+            clientPort: 5173,
+        },
+        proxy: {
+            '/debug.html': {
+                target: 'http://localhost:5173',
+                rewrite: path => path.replace('debug', 'src/pages/debug/index'),
+            },
+            '/calendar.html': {
+                target: 'http://localhost:5173',
+                rewrite: path => path.replace('calendar', 'src/pages/calendar/index'),
+            },
         },
     },
     build: {
         rollupOptions: {
             input: {
                 debug: 'src/pages/debug/index.html',
+                calendar: 'src/pages/calendar/index.html',
             },
-            external: ['/@react-refresh'],
+            // output: {
+            //     entryFileNames: `[name].js`, // otherwise it will add the hash
+            //     chunkFileNames: `[name].js`,
+            // },
+            // external: ['/@react-refresh'],
         },
     },
 });

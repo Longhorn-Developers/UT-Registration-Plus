@@ -1,0 +1,65 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 5c3f6291168987c56b816428080e6f1fe9de7107..05e788ef60f51047ee66e89335ccdf98c1b78ed4 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -7,10 +7,10 @@ import { Subject, filter, ReplaySubject, switchMap, of, startWith, map, Behavior
+ import fsx from 'fs-extra';
+ import { performance } from 'perf_hooks';
+ import { rollup } from 'rollup';
++import convertSourceMap from 'convert-source-map';
+ import * as lexer from 'es-module-lexer';
+ import { readFile as readFile$1 } from 'fs/promises';
+ import MagicString from 'magic-string';
+-import convertSourceMap from 'convert-source-map';
+ import { createLogger } from 'vite';
+ import { readFileSync, existsSync, promises } from 'fs';
+ import { createRequire } from 'module';
+@@ -507,7 +507,15 @@ ${sourceMap}
+           depSet.add(i.n);
+           const fileName2 = getFileName({ type: "module", id: i.n });
+           const fullImport = code.substring(i.s, i.e);
+-          magic.overwrite(i.s, i.e, fullImport.replace(i.n, `/${fileName2}`));
++          const hmrTimestamp = fullImport.match(/\bt=\d{13}&?\b/);
++          magic.overwrite(
++            i.s,
++            i.e,
++            fullImport.replace(
++              i.n,
++              `/${fileName2}${hmrTimestamp ? `?${hmrTimestamp[0]}` : ""}`
++            )
++          );
+         }
+       return { target, source: magic.toString(), deps: [...depSet] };
+     })
+@@ -1229,10 +1237,14 @@ const pluginHMR = () => {
+       handleHotUpdate({ modules, server }) {
+         const { root } = server.config;
+         const relFiles = /* @__PURE__ */ new Set();
+-        for (const m of modules)
++        function getRelFile(file) {
++          return file.startsWith(root) ? file.slice(server.config.root.length) : file;
++        }
++        for (const m of modules) {
+           if (m.id?.startsWith(root)) {
+             relFiles.add(m.id.slice(server.config.root.length));
+           }
++        }
+         if (inputManifestFiles.background.length) {
+           const background = prefix$1("/", inputManifestFiles.background[0]);
+           if (relFiles.has(background) || modules.some(isImporter(join(server.config.root, background)))) {
+@@ -1244,7 +1256,14 @@ const pluginHMR = () => {
+         for (const [key, script] of contentScripts)
+           if (key === script.id) {
+             if (relFiles.has(script.id) || modules.some(isImporter(join(server.config.root, script.id)))) {
+-              relFiles.forEach((relFile) => update(relFile));
++              modules.filter((mod) => mod.id?.startsWith(root)).forEach((mod) => {
++                update(getRelFile(mod.id));
++                if (mod.file?.endsWith(".scss")) {
++                  mod.importers.forEach((imp) => {
++                    update(getRelFile(imp.id));
++                  });
++                }
++              });
+             }
+           }
+       }

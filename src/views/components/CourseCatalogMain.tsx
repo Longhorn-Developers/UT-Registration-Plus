@@ -60,10 +60,10 @@ export default function CourseCatalogMain({ support }: Props) {
         <ExtensionRoot>
             <RecruitmentBanner />
             <TableHead>Plus</TableHead>
-            {rows.map(row => {
+            {rows.map((row, i) => {
                 if (!row.course) {
                     // TODO: handle the course section headers
-                    return <TableSubheading key={row.element.innerText} row={row} />;
+                    return <TableSubheading key={row.element.innerText + i.toString()} row={row} />;
                 }
                 return (
                     <TableRow

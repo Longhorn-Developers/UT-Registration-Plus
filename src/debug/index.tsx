@@ -1,6 +1,6 @@
 import { devStore } from '@src/shared/storage/DevStore';
 import React, { useEffect } from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 const manifest = chrome.runtime.getManifest();
 
@@ -145,4 +145,4 @@ function DevDashboard() {
     );
 }
 
-render(<DevDashboard />, document.getElementById('root'));
+createRoot(document.getElementById('root')).render(<DevDashboard />);
