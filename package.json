@@ -62,13 +62,16 @@
         "react-dev-utils": "^12.0.1",
         "react-devtools": "^4.27.1",
         "typescript": "^5.3.3",
-        "vite": "^4.5.1",
+        "vite": "^5.0.10",
         "vite-plugin-inspect": "^0.8.1"
     },
     "pnpm": {
         "patchedDependencies": {
             "chrome-extension-toolkit@0.0.48": "patches/chrome-extension-toolkit@0.0.48.patch",
             "@crxjs/vite-plugin@2.0.0-beta.21": "patches/@crxjs__vite-plugin@2.0.0-beta.21.patch"
+        },
+        "overrides": {
+            "es-module-lexer": "^1.4.1"
         }
     }
 }

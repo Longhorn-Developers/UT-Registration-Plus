@@ -1,7 +1,8 @@
 import initSqlJs from 'sql.js/dist/sql-wasm';
 
-import DB_FILE_URL from '../../../../public/database/grades.db?url';
-import WASM_FILE_URL from '../../../../public/database/sql-wasm.wasm?url';
+import DB_FILE_URL from '@public/database/grades.db?url';
+import WASM_FILE_URL from 'sql.js/dist/sql-wasm.wasm?url';
+// import WASM_FILE_URL from '../../../../public/database/sql-wasm.wasm?url';
 
 /**
  * A utility type for the SQL.js Database type

@@ -1,20 +1,18 @@
 diff --git a/dist/index.mjs b/dist/index.mjs
-index 5c3f6291168987c56b816428080e6f1fe9de7107..05e788ef60f51047ee66e89335ccdf98c1b78ed4 100644
+index 5c3f6291168987c56b816428080e6f1fe9de7107..abaf6290fe9454ae036a81eacbe7dc3be2fdfbc3 100644
 --- a/dist/index.mjs
 +++ b/dist/index.mjs
-@@ -7,10 +7,10 @@ import { Subject, filter, ReplaySubject, switchMap, of, startWith, map, Behavior
- import fsx from 'fs-extra';
- import { performance } from 'perf_hooks';
- import { rollup } from 'rollup';
-+import convertSourceMap from 'convert-source-map';
- import * as lexer from 'es-module-lexer';
- import { readFile as readFile$1 } from 'fs/promises';
- import MagicString from 'magic-string';
--import convertSourceMap from 'convert-source-map';
- import { createLogger } from 'vite';
- import { readFileSync, existsSync, promises } from 'fs';
- import { createRequire } from 'module';
-@@ -507,7 +507,15 @@ ${sourceMap}
+@@ -499,16 +499,43 @@ ${sourceMap}
+     }),
+     mergeMap(async ({ target, code, deps }) => {
+       await lexer.init;
+-      const [imports] = lexer.parse(code, fileName);
++      const [imports, exports] = lexer.parse(code, fileName);
+       const depSet = new Set(deps);
+       const magic = new MagicString(code);
+-      for (const i of imports)
++      for (const i of imports) {
+         if (i.n) {
            depSet.add(i.n);
            const fileName2 = getFileName({ type: "module", id: i.n });
            const fullImport = code.substring(i.s, i.e);
@@ -28,10 +26,30 @@ index 5c3f6291168987c56b816428080e6f1fe9de7107..05e788ef60f51047ee66e89335ccdf98
 +              `/${fileName2}${hmrTimestamp ? `?${hmrTimestamp[0]}` : ""}`
 +            )
 +          );
++        }
++      }
++      for (const e of exports) {
++        if (e.n === "default") {
++          const regex = /\s+['"](.*)['"]/y;
++          regex.lastIndex = e.e;
++          const fullExport = regex.exec(code)?.[1];
++          if (!fullExport)
++            continue;
++          const start = regex.lastIndex - fullExport.length - 1;
++          const end = regex.lastIndex - 1;
++          if (fullExport.startsWith("/node_modules")) {
++            magic.overwrite(
++              start,
++              end,
++              getFileName({ type: "module", id: fullExport })
++            );
++          }
          }
++      }
        return { target, source: magic.toString(), deps: [...depSet] };
      })
-@@ -1229,10 +1237,14 @@ const pluginHMR = () => {
+   );
+@@ -1229,10 +1256,14 @@ const pluginHMR = () => {
        handleHotUpdate({ modules, server }) {
          const { root } = server.config;
          const relFiles = /* @__PURE__ */ new Set();
@@ -47,7 +65,7 @@ index 5c3f6291168987c56b816428080e6f1fe9de7107..05e788ef60f51047ee66e89335ccdf98
          if (inputManifestFiles.background.length) {
            const background = prefix$1("/", inputManifestFiles.background[0]);
            if (relFiles.has(background) || modules.some(isImporter(join(server.config.root, background)))) {
-@@ -1244,7 +1256,14 @@ const pluginHMR = () => {
+@@ -1244,7 +1275,14 @@ const pluginHMR = () => {
          for (const [key, script] of contentScripts)
            if (key === script.id) {
              if (relFiles.has(script.id) || modules.some(isImporter(join(server.config.root, script.id)))) {
@@ -63,3 +81,25 @@ index 5c3f6291168987c56b816428080e6f1fe9de7107..05e788ef60f51047ee66e89335ccdf98
              }
            }
        }
+@@ -1882,7 +1920,7 @@ const pluginWebAccessibleResources = () => {
+         if (contentScripts.size > 0) {
+           const viteManifest = parseJsonAsset(
+             bundle,
+-            "manifest.json"
++            ".vite/manifest.json"
+           );
+           const viteFiles = /* @__PURE__ */ new Map();
+           for (const [, file] of Object.entries(viteManifest))
+diff --git a/package.json b/package.json
+index e0c47ae66ff399ad3a78abf38d8d93d1f038c55d..f84eb09ffbb5c41094935dd06e04ffe831e2d05a 100644
+--- a/package.json
++++ b/package.json
+@@ -70,7 +70,7 @@
+     "connect-injector": "^0.4.4",
+     "convert-source-map": "^1.7.0",
+     "debug": "^4.3.3",
+-    "es-module-lexer": "^0.10.0",
++    "es-module-lexer": "^1.4.1",
+     "fast-glob": "^3.2.11",
+     "fs-extra": "^10.0.1",
+     "jsesc": "^3.0.2",
