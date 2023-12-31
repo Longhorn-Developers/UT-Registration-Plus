@@ -11,7 +11,4 @@
             "node"
         ],
     },
-    "exclude": [
-        "../webpack"
-    ]
 }

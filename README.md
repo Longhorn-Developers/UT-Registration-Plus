@@ -1,19 +1,18 @@
 # UT Registration Plus
 
-## Built Using:
+## Built Using
 
--   React 18
--   TypeScript
--   Webpack 5 (esbuild-loader)
--   ESLint
--   Prettier
--   Semantic-Release
--   Custom Messaging & Storage Wrappers
+- React 18
+- TypeScript
+- Vite 5
+- ESLint
+- Prettier
+- Semantic-Release
+- Custom Messaging & Storage Wrappers
 
 ## Getting Started
 
 1. Clone this repo
-2. Run `npm install`
-3. Run `npm start` to start the development server
-4. Run `npm run build` to build the extension for production
-5. Run `npm run release` to release a new version of the extension in CI (either preview or production)
+2. Run `pnpm install` to install and patch all the required dependencies
+3. Run `pnpm run dev` to start the development server
+4. Run `pnpm build` to build the extension for production
