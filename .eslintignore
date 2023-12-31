@@ -93,3 +93,4 @@ typings/
 
 config
 .eslintrc.js
+!.storybook
