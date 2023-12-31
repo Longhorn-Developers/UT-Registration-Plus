@@ -65,6 +65,12 @@ const meta = {
             },
         },
     },
+    parameters: {
+        design: {
+            type: 'figma',
+            url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=602-1879&mode=design&t=BoS5xBrpSsjgQXqv-11',
+        },
+    },
 } satisfies Meta<typeof CoursePopup>;
 
 export default meta;

@@ -59,3 +59,39 @@ export const Grid: Story = {
         </div>
     ),
 };
+
+
+// TODO: Actually show the buttons as they appear in the design
+export const CourseButtons: Story = {
+    args: {
+        children: 'Add Course',
+    },
+    render: props => (
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex' }}>
+                <Button {...props} type='primary' />
+                <Button {...props} type='secondary' />
+                <Button {...props} type='tertiary' />
+                <Button {...props} type='danger' />
+                <Button {...props} type='warning' />
+                <Button {...props} type='success' />
+                <Button {...props} type='info' />
+            </div>
+            <div style={{ display: 'flex' }}>
+                <Button {...props} type='primary' disabled />
+                <Button {...props} type='secondary' disabled />
+                <Button {...props} type='tertiary' disabled />
+                <Button {...props} type='danger' disabled />
+                <Button {...props} type='warning' disabled />
+                <Button {...props} type='success' disabled />
+                <Button {...props} type='info' disabled />
+            </div>
+        </div>
+    ),
+    parameters: {
+        design: {
+            type: 'figma',
+            url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=324-389&mode=design&t=BoS5xBrpSsjgQXqv-4',
+        },
+    },
+};

@@ -32,6 +32,7 @@
     },
     "devDependencies": {
         "@crxjs/vite-plugin": "2.0.0-beta.21",
+        "@storybook/addon-designs": "^7.0.7",
         "@storybook/addon-essentials": "^7.6.6",
         "@storybook/addon-links": "^7.6.6",
         "@storybook/blocks": "^7.6.6",
