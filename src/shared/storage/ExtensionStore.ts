@@ -10,9 +10,11 @@ interface IExtensionStore {
     lastUpdate: number;
 }
 
-export const extensionStore = createLocalStore<IExtensionStore>({
+export const ExtensionStore = createLocalStore<IExtensionStore>({
     version: chrome.runtime.getManifest().version,
     lastUpdate: Date.now(),
 });
 
-debugStore({ extensionStore });
+
+
+debugStore({ ExtensionStore });

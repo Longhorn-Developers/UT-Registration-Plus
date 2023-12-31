@@ -1,4 +1,4 @@
-import { bMessenger } from '@src/shared/messages';
+import { background } from '@src/shared/messages';
 import { Course } from '@src/shared/types/Course';
 import { UserSchedule } from '@src/shared/types/UserSchedule';
 import { Button } from '@src/views/components/common/Button/Button';
@@ -13,7 +13,7 @@ type Props = {
     course: Course;
 };
 
-const { openNewTab, addCourse, removeCourse } = bMessenger;
+const { openNewTab, addCourse, removeCourse } = background;
 
 /**
  * This component displays the buttons for the course info popup, that allow the user to either
@@ -65,12 +65,12 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
 
     const handleSaveCourse = async () => {
         if (!activeSchedule) return;
-        addCourse({ course, scheduleId: activeSchedule.id });
+        addCourse({ course, scheduleName: activeSchedule.name });
     };
 
     const handleRemoveCourse = async () => {
         if (!activeSchedule) return;
-        removeCourse({ course, scheduleId: activeSchedule.id });
+        removeCourse({ course, scheduleName: activeSchedule.name });
     };
 
     const isCourseSaved = (() => {
@@ -85,19 +85,30 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
                 disabled={!course.instructors.length}
                 type='primary'
                 className={styles.button}
+                title='Search for this professor on RateMyProfessor'
             >
                 <Text size='medium' weight='regular' color='white'>
                     RateMyProf
                 </Text>
                 <Icon className={styles.icon} color='white' name='school' size='medium' />
             </Button>
-            <Button onClick={openSyllabiURL} type='secondary' className={styles.button}>
+            <Button
+                onClick={openSyllabiURL}
+                type='secondary'
+                className={styles.button}
+                title='Search for syllabi for this course'
+            >
                 <Text size='medium' weight='regular' color='white'>
                     Syllabi
                 </Text>
                 <Icon className={styles.icon} color='white' name='grading' size='medium' />
             </Button>
-            <Button onClick={openTextbookURL} type='tertiary' className={styles.button}>
+            <Button
+                onClick={openTextbookURL}
+                type='tertiary'
+                className={styles.button}
+                title='Search for textbooks for this course'
+            >
                 <Text size='medium' weight='regular' color='white'>
                     Textbook
                 </Text>
@@ -106,6 +117,7 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
             <Button
                 disabled={!activeSchedule}
                 onClick={isCourseSaved ? handleRemoveCourse : handleSaveCourse}
+                title={isCourseSaved ? 'Remove this course from your schedule' : 'Add this course to your schedule'}
                 type={isCourseSaved ? 'danger' : 'success'}
                 className={styles.button}
             >

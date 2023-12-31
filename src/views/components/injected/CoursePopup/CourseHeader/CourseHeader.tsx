@@ -37,6 +37,7 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
                     size='medium'
                     weight='semi_bold'
                     color='burnt_orange'
+                    title='View course details on UT Course Schedule'
                 >
                     #{course.uniqueId}
                 </Link>
@@ -55,7 +56,13 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
                     return (
                         <span key={name}>
                             {numInstructors > 1 && index === course.instructors.length - 1 ? '& ' : ''}
-                            <Link key={name} size='medium' weight='normal' url={url}>
+                            <Link
+                                key={name}
+                                size='medium'
+                                weight='normal'
+                                url={url}
+                                title="View instructor's directory page"
+                            >
                                 {name}
                             </Link>
                             {numInstructors > 2 && !isLast ? ', ' : ''}
@@ -82,6 +89,7 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
                     <Link
                         size='medium'
                         weight='normal'
+                        title='View building on UT Map'
                         url={getBuildingUrl(meeting.location?.building)}
                         disabled={!meeting.location?.building}
                     >

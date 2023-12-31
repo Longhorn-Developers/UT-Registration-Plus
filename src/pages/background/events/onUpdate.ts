@@ -1,15 +1,11 @@
-import { extensionStore } from '../../../shared/storage/ExtensionStore';
+import { ExtensionStore } from '@src/shared/storage/ExtensionStore';
 
 /**
  * Called when the extension is updated (or when the extension is reloaded in development mode)
  */
 export default async function onUpdate() {
-    await extensionStore.set({
+    await ExtensionStore.set({
         version: chrome.runtime.getManifest().version,
         lastUpdate: Date.now(),
     });
-
-    // if (process.env.NODE_ENV === 'development') {
-    //     hotReloadTab();
-    // }
 }

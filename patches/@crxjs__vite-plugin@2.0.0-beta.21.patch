@@ -41,7 +41,7 @@ index 5c3f6291168987c56b816428080e6f1fe9de7107..abaf6290fe9454ae036a81eacbe7dc3b
 +            magic.overwrite(
 +              start,
 +              end,
-+              getFileName({ type: "module", id: fullExport })
++              `http://localhost:5173${fullExport}`
 +            );
 +          }
          }

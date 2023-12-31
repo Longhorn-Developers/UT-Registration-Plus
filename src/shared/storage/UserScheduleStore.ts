@@ -1,23 +1,22 @@
 import { UserSchedule } from '@src/shared/types/UserSchedule';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
-import { v4 as uuidv4 } from 'uuid';
 
 interface IUserScheduleStore {
     schedules: UserSchedule[];
+    activeIndex: number;
 }
 
 /**
  * A store that is used for storing user schedules (and the active schedule)
  */
-export const userScheduleStore = createLocalStore<IUserScheduleStore>({
+export const UserScheduleStore = createLocalStore<IUserScheduleStore>({
     schedules: [
         new UserSchedule({
             courses: [],
-            id: uuidv4(),
             name: 'Schedule 1',
-            creditHours: 0,
         }),
     ],
+    activeIndex: 0,
 });
 
-debugStore({ userScheduleStore });
+debugStore({ userScheduleStore: UserScheduleStore });

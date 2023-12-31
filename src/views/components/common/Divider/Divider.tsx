@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { Color } from 'src/views/styles/colors.module.scss';
+import { Color } from '@src/views/styles/colors.module.scss';
 import styles from './Divider.module.scss';
 
 export type Props = {

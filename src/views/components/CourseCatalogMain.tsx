@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Course, ScrapedRow } from 'src/shared/types/Course';
+import { Course, ScrapedRow } from '@src/shared/types/Course';
 import { useKeyPress } from '../hooks/useKeyPress';
-import useUserSchedules from '../hooks/useUserSchedules';
+import useSchedules from '../hooks/useSchedules';
 import { CourseCatalogScraper } from '../lib/CourseCatalogScraper';
 import getCourseTableRows from '../lib/getCourseTableRows';
 import { SiteSupport } from '../lib/getSiteSupport';
@@ -43,9 +43,6 @@ export default function CourseCatalogMain({ support }: Props) {
         setRows([...rows, ...newRows]);
     };
 
-    const schedules = useUserSchedules();
-    const [activeSchedule] = schedules;
-
     const handleRowButtonClick = (course: Course) => () => {
         setSelectedCourse(course);
     };
@@ -55,6 +52,12 @@ export default function CourseCatalogMain({ support }: Props) {
     };
 
     useKeyPress('Escape', handleClearSelectedCourse);
+
+    const [activeSchedule] = useSchedules();
+
+    if (!activeSchedule) {
+        return null;
+    }
 
     return (
         <ExtensionRoot>

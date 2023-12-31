@@ -8,11 +8,15 @@ interface IOptionsStore {
     shouldHighlightConflicts: boolean;
     /** whether we should automatically scroll to load more courses on the course schedule page (without having to click next) */
     shouldScrollToLoad: boolean;
+
+    // url: URL;
 }
 
-export const optionsStore = createSyncStore<IOptionsStore>({
+export const OptionsStore = createSyncStore<IOptionsStore>({
     shouldHighlightConflicts: true,
     shouldScrollToLoad: true,
 });
 
-debugStore({ optionsStore });
+// Clothing retailer right
+
+debugStore({ OptionsStore });

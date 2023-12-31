@@ -9,11 +9,8 @@ overrides:
 
 patchedDependencies:
   '@crxjs/vite-plugin@2.0.0-beta.21':
-    hash: epixpzl276q3iq3nagvfm3igay
+    hash: xq4uab3o3kbvv4gixvawl2aj5q
     path: patches/@crxjs__vite-plugin@2.0.0-beta.21.patch
-  chrome-extension-toolkit@0.0.48:
-    hash: ugsnck533d5qx6n7grmlwneogq
-    path: patches/chrome-extension-toolkit@0.0.48.patch
 
 dependencies:
   '@types/sql.js':
@@ -23,8 +20,8 @@ dependencies:
     specifier: ^4.2.1
     version: 4.2.1(vite@5.0.10)
   chrome-extension-toolkit:
-    specifier: ^0.0.48
-    version: 0.0.48(patch_hash=ugsnck533d5qx6n7grmlwneogq)
+    specifier: ^0.0.51
+    version: 0.0.51
   classnames:
     specifier: ^2.3.2
     version: 2.3.2
@@ -56,7 +53,7 @@ dependencies:
 devDependencies:
   '@crxjs/vite-plugin':
     specifier: 2.0.0-beta.21
-    version: 2.0.0-beta.21(patch_hash=epixpzl276q3iq3nagvfm3igay)
+    version: 2.0.0-beta.21(patch_hash=xq4uab3o3kbvv4gixvawl2aj5q)
   '@types/chrome':
     specifier: ^0.0.254
     version: 0.0.254
@@ -423,7 +420,7 @@ packages:
       to-fast-properties: 2.0.0
     dev: false
 
-  /@crxjs/vite-plugin@2.0.0-beta.21(patch_hash=epixpzl276q3iq3nagvfm3igay):
+  /@crxjs/vite-plugin@2.0.0-beta.21(patch_hash=xq4uab3o3kbvv4gixvawl2aj5q):
     resolution: {integrity: sha512-kSXgHHqCXASqJ8NmY94+KLGVwdtkJ0E7KsRQ+vbMpRliJ5ze0xnSk0l41p4txlUysmEoqaeo4Xb7rEFdcU2zjQ==}
     dependencies:
       '@rollup/pluginutils': 4.2.1
@@ -1939,13 +1936,12 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
 
-  /chrome-extension-toolkit@0.0.48(patch_hash=ugsnck533d5qx6n7grmlwneogq):
-    resolution: {integrity: sha512-maShnkzOxMOWcsKaG2dFzpRwabDGBoUrkjHGwEEjYbgnPPmqTYKQAywibUAdGC4gpJL1iJyOJN+sUuha3DsloQ==}
+  /chrome-extension-toolkit@0.0.51:
+    resolution: {integrity: sha512-XzOOE2+/aYG43bJOwuJT4oWcn80jBJr5mwGyrSzKKFoqALixT15AsPcfZId/UOoc4pIavu2XcHeJga6ng0m1jQ==}
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
-    patched: true
 
   /chrome-trace-event@1.0.3:
     resolution: {integrity: sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==}

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ScrapedRow } from 'src/shared/types/Course';
+import { ScrapedRow } from '@src/shared/types/Course';
 import styles from './TableSubheading.module.scss';
 
 interface Props {

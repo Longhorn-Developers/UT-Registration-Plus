@@ -1,4 +1,4 @@
-import { devStore } from '@src/shared/storage/DevStore';
+import { DevStore } from '@src/shared/storage/DevStore';
 import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -68,7 +68,7 @@ function DevDashboard() {
 
     useEffect(() => {
         const onVisibilityChange = () => {
-            devStore.set('wasDebugTabVisible', document.visibilityState === 'visible');
+            DevStore.set('wasDebugTabVisible', document.visibilityState === 'visible');
         };
         document.addEventListener('visibilitychange', onVisibilityChange);
         return () => {

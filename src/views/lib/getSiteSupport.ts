@@ -1,4 +1,4 @@
-import { isExtensionPopup } from 'chrome-extension-toolkit';
+import { isExtensionPage, isExtensionPopup } from 'chrome-extension-toolkit';
 
 /**
  * An enum that represents the different types of pages that we support
@@ -10,6 +10,7 @@ export enum SiteSupport {
     UT_PLANNER = 'UT_PLANNER',
     WAITLIST = 'WAITLIST',
     EXTENSION_POPUP = 'EXTENSION_POPUP',
+    MY_CALENDAR = 'MY_CALENDAR',
 }
 
 /**
@@ -20,6 +21,9 @@ export enum SiteSupport {
 export default function getSiteSupport(url: string): SiteSupport | null {
     if (isExtensionPopup()) {
         return SiteSupport.EXTENSION_POPUP;
+    }
+    if (isExtensionPage('my_calendar.html')) {
+        return SiteSupport.MY_CALENDAR;
     }
     if (url.includes('utexas.collegescheduler.com')) {
         return SiteSupport.UT_PLANNER;

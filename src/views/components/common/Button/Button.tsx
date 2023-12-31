@@ -8,6 +8,7 @@ interface Props {
     onClick?: () => void;
     type?: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'warning' | 'success' | 'info';
     disabled?: boolean;
+    title?: string;
     testId?: string;
 }
 
@@ -22,6 +23,7 @@ export function Button({
     testId,
     children,
     disabled,
+    title,
     onClick,
 }: React.PropsWithChildren<Props>): JSX.Element {
     return (
@@ -31,6 +33,7 @@ export function Button({
             className={classNames(styles.button, className, styles[type ?? 'primary'], {
                 [styles.disabled]: disabled,
             })}
+            title={title}
             onClick={disabled ? undefined : onClick}
         >
             {children}

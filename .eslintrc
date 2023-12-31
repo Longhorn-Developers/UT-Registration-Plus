@@ -144,7 +144,7 @@
         "jsdoc/require-jsdoc": [
             "warn",
             {
-                "enableFixer": true,
+                "enableFixer": false,
                 "publicOnly": true,
                 "checkConstructors": false,
                 "require": {

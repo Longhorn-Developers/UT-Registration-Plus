@@ -1,5 +1,5 @@
-import { Course, Semester } from 'src/shared/types/Course';
-import { CourseSQLRow, Distribution } from 'src/shared/types/Distribution';
+import { Course, Semester } from '@src/shared/types/Course';
+import { CourseSQLRow, Distribution } from '@src/shared/types/Distribution';
 import { initializeDB } from './initializeDB';
 
 /**

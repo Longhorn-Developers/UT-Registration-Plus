@@ -12,9 +12,9 @@ export type BACKGROUND_MESSAGES = BrowserActionMessages & TabManagementMessages 
 /**
  * A utility object that can be used to send type-safe messages to the background script
  */
-export const bMessenger = createMessenger<BACKGROUND_MESSAGES>('background');
+export const background = createMessenger<BACKGROUND_MESSAGES>('background');
 
 /**
  * A utility object that can be used to send type-safe messages to specific tabs
  */
-export const tabMessenger = createMessenger<TAB_MESSAGES>('tab');
+export const tabs = createMessenger<TAB_MESSAGES>('tab');

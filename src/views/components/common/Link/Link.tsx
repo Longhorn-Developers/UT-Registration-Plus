@@ -1,12 +1,13 @@
-import { bMessenger } from '@src/shared/messages';
 import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
+import { background } from '@src/shared/messages';
 import Text, { TextProps } from '../Text/Text';
 import styles from './Link.module.scss';
 
 type Props = Omit<TextProps, 'span'> & {
     url?: string;
     disabled?: boolean;
+    title?: string;
 };
 
 /**
@@ -19,7 +20,7 @@ export default function Link(props: PropsWithChildren<Props>) {
     const { url } = props;
 
     if (url && !props.onClick) {
-        passedProps.onClick = () => bMessenger.openNewTab({ url });
+        passedProps.onClick = () => background.openNewTab({ url });
     }
     const isDisabled = props.disabled || (!url && !props.onClick);
 

@@ -17,7 +17,7 @@
     "dependencies": {
         "@types/sql.js": "^1.4.9",
         "@vitejs/plugin-react": "^4.2.1",
-        "chrome-extension-toolkit": "^0.0.48",
+        "chrome-extension-toolkit": "^0.0.51",
         "classnames": "^2.3.2",
         "highcharts": "^11.2.0",
         "highcharts-react-official": "^3.2.1",
@@ -67,7 +67,6 @@
     },
     "pnpm": {
         "patchedDependencies": {
-            "chrome-extension-toolkit@0.0.48": "patches/chrome-extension-toolkit@0.0.48.patch",
             "@crxjs/vite-plugin@2.0.0-beta.21": "patches/@crxjs__vite-plugin@2.0.0-beta.21.patch"
         },
         "overrides": {
