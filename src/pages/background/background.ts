@@ -1,4 +1,4 @@
-import { BACKGROUND_MESSAGES } from '@src/shared/messages';
+import { BACKGROUND_MESSAGES } from '@shared/messages';
 import { MessageListener } from 'chrome-extension-toolkit';
 import onInstall from './events/onInstall';
 import onServiceWorkerAlive from './events/onServiceWorkerAlive';

@@ -1,5 +1,5 @@
-import HotReloadingMessages from '@src/shared/messages/HotReloadingMessages';
-import { DevStore } from '@src/shared/storage/DevStore';
+import HotReloadingMessages from '@shared/messages/HotReloadingMessages';
+import { DevStore } from '@shared/storage/DevStore';
 import { MessageHandler } from 'chrome-extension-toolkit';
 
 const hotReloadingHandler: MessageHandler<HotReloadingMessages> = {

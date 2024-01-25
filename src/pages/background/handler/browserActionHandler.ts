@@ -1,4 +1,4 @@
-import BrowserActionMessages from '@src/shared/messages/BrowserActionMessages';
+import BrowserActionMessages from '@shared/messages/BrowserActionMessages';
 import { MessageHandler } from 'chrome-extension-toolkit';
 
 const browserActionHandler: MessageHandler<BrowserActionMessages> = {

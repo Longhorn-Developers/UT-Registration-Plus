@@ -1,7 +1,7 @@
-import colors, { Color } from '@src/views/styles/colors.module.scss';
-import fonts, { Size } from '@src/views/styles/fonts.module.scss';
 import classNames from 'classnames';
 import React from 'react';
+import colors, { Color } from '@views/styles/colors.module.scss';
+import fonts, { Size } from '@views/styles/fonts.module.scss';
 import styles from './Icon.module.scss';
 import { MaterialIconCode } from './MaterialIcons';
 

@@ -1,6 +1,5 @@
-import { Serialized } from 'chrome-extension-toolkit';
+import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import { useEffect, useState } from 'react';
-import { ExtensionStore } from '@src/shared/storage/ExtensionStore';
 
 export default function useVersion(): string {
     const [version, setVersion] = useState<string>('');
@@ -17,4 +16,3 @@ export default function useVersion(): string {
 
     return version;
 }
-    

@@ -1,4 +1,4 @@
-import { UserScheduleStore } from '@src/shared/storage/UserScheduleStore';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 
 export default async function deleteSchedule(scheduleName: string): Promise<string | undefined> {
     const [schedules, activeIndex] = await Promise.all([

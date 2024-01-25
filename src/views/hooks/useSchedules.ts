@@ -1,5 +1,5 @@
-import { UserScheduleStore } from '@src/shared/storage/UserScheduleStore';
-import { UserSchedule } from '@src/shared/types/UserSchedule';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { UserSchedule } from '@shared/types/UserSchedule';
 import { useEffect, useState } from 'react';
 
 export default function useSchedules(): [active: UserSchedule | null, schedules: UserSchedule[]] {
