@@ -1,7 +1,7 @@
-import colors, { Color } from '@src/views/styles/colors.module.scss';
-import { Size, Weight } from '@src/views/styles/fonts.module.scss';
 import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
+import colors, { Color } from '@views/styles/colors.module.scss';
+import { Size, Weight } from '@views/styles/fonts.module.scss';
 import styles from './Text.module.scss';
 
 /**

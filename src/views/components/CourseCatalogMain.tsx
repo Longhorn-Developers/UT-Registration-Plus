@@ -1,5 +1,5 @@
+import { Course, ScrapedRow } from '@shared/types/Course';
 import React, { useEffect, useState } from 'react';
-import { Course, ScrapedRow } from '@src/shared/types/Course';
 import { useKeyPress } from '../hooks/useKeyPress';
 import useSchedules from '../hooks/useSchedules';
 import { CourseCatalogScraper } from '../lib/CourseCatalogScraper';

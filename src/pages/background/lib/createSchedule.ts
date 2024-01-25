@@ -1,4 +1,4 @@
-import { UserScheduleStore } from '@src/shared/storage/UserScheduleStore';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 
 /**
  * Creates a new schedule with the given name

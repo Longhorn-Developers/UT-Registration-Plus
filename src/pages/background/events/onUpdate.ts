@@ -1,4 +1,4 @@
-import { ExtensionStore } from '@src/shared/storage/ExtensionStore';
+import { ExtensionStore } from '@shared/storage/ExtensionStore';
 
 /**
  * Called when the extension is updated (or when the extension is reloaded in development mode)

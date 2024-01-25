@@ -1,4 +1,4 @@
-import { DevStore } from '@src/shared/storage/DevStore';
+import { DevStore } from '@shared/storage/DevStore';
 
 /**
  * Open the debug tab as the first tab

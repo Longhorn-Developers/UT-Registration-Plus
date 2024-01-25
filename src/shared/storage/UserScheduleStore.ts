@@ -1,4 +1,4 @@
-import { UserSchedule } from '@src/shared/types/UserSchedule';
+import { UserSchedule } from '@shared/types/UserSchedule';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 interface IUserScheduleStore {

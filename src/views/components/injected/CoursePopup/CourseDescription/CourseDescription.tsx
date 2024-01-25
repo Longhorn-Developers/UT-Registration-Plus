@@ -1,10 +1,10 @@
-import { Course } from '@src/shared/types/Course';
-import Spinner from '@src/views/components/common/Spinner/Spinner';
-import Text from '@src/views/components/common/Text/Text';
-import { CourseCatalogScraper } from '@src/views/lib/CourseCatalogScraper';
-import { SiteSupport } from '@src/views/lib/getSiteSupport';
+import { Course } from '@shared/types/Course';
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
+import Spinner from '@views/components/common/Spinner/Spinner';
+import Text from '@views/components/common/Text/Text';
+import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
+import { SiteSupport } from '@views/lib/getSiteSupport';
 import Card from '../../../common/Card/Card';
 import styles from './CourseDescription.module.scss';
 

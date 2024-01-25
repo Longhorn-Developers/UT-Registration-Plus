@@ -1,4 +1,4 @@
-import { DevStore } from '@src/shared/storage/DevStore';
+import { DevStore } from '@shared/storage/DevStore';
 import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 

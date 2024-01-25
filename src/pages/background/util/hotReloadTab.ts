@@ -1,4 +1,4 @@
-import { DevStore } from '@src/shared/storage/DevStore';
+import { DevStore } from '@shared/storage/DevStore';
 
 /**
  * A list of websites that we don't want to reload when the extension reloads (becuase it'd be hella annoying lmao)

@@ -1,10 +1,10 @@
-import { Course } from '@src/shared/types/Course';
-import { UserSchedule } from '@src/shared/types/UserSchedule';
-import Card from '@src/views/components/common/Card/Card';
-import Icon from '@src/views/components/common/Icon/Icon';
-import Link from '@src/views/components/common/Link/Link';
-import Text from '@src/views/components/common/Text/Text';
+import { Course } from '@shared/types/Course';
+import { UserSchedule } from '@shared/types/UserSchedule';
 import React from 'react';
+import Card from '@views/components/common/Card/Card';
+import Icon from '@views/components/common/Icon/Icon';
+import Link from '@views/components/common/Link/Link';
+import Text from '@views/components/common/Text/Text';
 import CourseButtons from './CourseButtons/CourseButtons';
 import styles from './CourseHeader.module.scss';
 

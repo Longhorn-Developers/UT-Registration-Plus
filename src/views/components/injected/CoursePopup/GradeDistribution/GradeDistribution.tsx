@@ -1,19 +1,19 @@
 /* eslint-disable no-nested-ternary */
-import { Course, Semester } from '@src/shared/types/Course';
-import { Distribution, LetterGrade } from '@src/shared/types/Distribution';
-import Card from '@src/views/components/common/Card/Card';
-import Icon from '@src/views/components/common/Icon/Icon';
-import Spinner from '@src/views/components/common/Spinner/Spinner';
-import Text from '@src/views/components/common/Text/Text';
+import { Course, Semester } from '@shared/types/Course';
+import { Distribution, LetterGrade } from '@shared/types/Distribution';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import React, { useEffect, useRef, useState } from 'react';
+import Card from '@views/components/common/Card/Card';
+import Icon from '@views/components/common/Icon/Icon';
+import Spinner from '@views/components/common/Spinner/Spinner';
+import Text from '@views/components/common/Text/Text';
 import {
     NoDataError,
     queryAggregateDistribution,
     querySemesterDistribution,
-} from '@src/views/lib/database/queryDistribution';
-import colors from '@src/views/styles/colors.module.scss';
-import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
-import React, { useEffect, useRef, useState } from 'react';
+} from '@views/lib/database/queryDistribution';
+import colors from '@views/styles/colors.module.scss';
 import styles from './GradeDistribution.module.scss';
 
 enum DataStatus {

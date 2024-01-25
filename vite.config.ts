@@ -106,10 +106,13 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            '@src': root,
+            src: root,
             '@assets': assetsDir,
             '@pages': pagesDir,
             '@public': publicDir,
+            '@shared': resolve(root, 'shared'),
+            '@background': resolve(pagesDir, 'background'),
+            '@views': resolve(root, 'views'),
         },
     },
     server: {

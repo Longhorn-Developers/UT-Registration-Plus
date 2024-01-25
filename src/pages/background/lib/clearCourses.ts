@@ -1,4 +1,4 @@
-import { UserScheduleStore } from '@src/shared/storage/UserScheduleStore';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 
 export default async function clearCourses(scheduleName: string): Promise<void> {
     const schedules = await UserScheduleStore.get('schedules');

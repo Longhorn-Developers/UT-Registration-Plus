@@ -21,7 +21,7 @@
         "noFallthroughCasesInSwitch": true,
         "allowSyntheticDefaultImports": true,
         "paths": {
-            "@src/*": [
+            "src/*": [
                 "src/*"
             ],
             "@assets/*": [
@@ -32,7 +32,16 @@
             ],
             "@public/*": [
                 "public/*"
-            ]
+            ],
+            "@shared/*": [
+                "src/shared/*"
+            ],
+            "@background/*": [
+                "src/pages/background/*"
+            ],
+            "@views/*": [
+                "src/views/*"
+            ],
         }
     },
     "include": [
