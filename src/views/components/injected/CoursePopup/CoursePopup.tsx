@@ -1,6 +1,6 @@
+import { Course } from '@shared/types/Course';
+import { UserSchedule } from '@shared/types/UserSchedule';
 import React from 'react';
-import { Course } from 'src/shared/types/Course';
-import { UserSchedule } from 'src/shared/types/UserSchedule';
 import Popup from '../../common/Popup/Popup';
 import CourseDescription from './CourseDescription/CourseDescription';
 import CourseHeader from './CourseHeader/CourseHeader';

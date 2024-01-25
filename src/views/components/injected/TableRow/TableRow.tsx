@@ -1,7 +1,7 @@
+import { Course, ScrapedRow } from '@shared/types/Course';
+import { UserSchedule } from '@shared/types/UserSchedule';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Course, ScrapedRow } from 'src/shared/types/Course';
-import { UserSchedule } from 'src/shared/types/UserSchedule';
 import { Button } from '../../common/Button/Button';
 import Icon from '../../common/Icon/Icon';
 import Text from '../../common/Text/Text';
@@ -29,6 +29,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     useEffect(() => {
         element.classList.add(styles.row);
         const portalContainer = document.createElement('td');
+        portalContainer.style.textAlign = 'right';
         const lastTableCell = element.querySelector('td:last-child');
         lastTableCell!.after(portalContainer);
         setContainer(portalContainer);

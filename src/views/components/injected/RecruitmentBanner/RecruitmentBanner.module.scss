@@ -1,7 +1,7 @@
-@import 'src/views/styles/base.module.scss';
+@use 'src/views/styles/colors.module.scss';
 
 .container {
-    background-color: $burnt_orange;
+    background-color: colors.$burnt_orange;
     color: white;
     text-align: center;
     padding: 12px;

@@ -1,15 +1,14 @@
+import { ScrapedRow } from '@shared/types/Course';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ScrapedRow } from 'src/shared/types/Course';
-import useInfiniteScroll from 'src/views/hooks/useInfiniteScroll';
-import { CourseCatalogScraper } from 'src/views/lib/CourseCatalogScraper';
-import { SiteSupport } from 'src/views/lib/getSiteSupport';
+import useInfiniteScroll from '@views/hooks/useInfiniteScroll';
+import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
+import { SiteSupport } from '@views/lib/getSiteSupport';
 import {
-    loadNextCourseCatalogPage,
     AutoLoadStatus,
+    loadNextCourseCatalogPage,
     removePaginationButtons,
-} from 'src/views/lib/loadNextCourseCatalogPage';
-import Spinner from '../../common/Spinner/Spinner';
+} from '@views/lib/loadNextCourseCatalogPage';
 import styles from './AutoLoad.module.scss';
 
 type Props = {
@@ -53,16 +52,21 @@ export default function AutoLoad({ addRows }: Props) {
         addRows(scrapedRows);
     }, [addRows]);
 
-    if (!container || status === AutoLoadStatus.IDLE) {
+    if (!container || status === AutoLoadStatus.DONE) {
         return null;
     }
 
     return createPortal(
         <div>
-            {status === AutoLoadStatus.LOADING && (
-                <div>
-                    <Spinner />
-                    <h2>Loading Next Page...</h2>
+            {status !== AutoLoadStatus.ERROR && (
+                <div
+                    style={{
+                        height: '500px',
+                        backgroundColor: '#f4f4f4',
+                    }}
+                >
+                    {/* <Spinner />
+                    <h2>Loading Next Page...</h2> */}
                 </div>
             )}
             {status === AutoLoadStatus.ERROR && (

@@ -1,5 +1,5 @@
+import { Course, ScrapedRow } from '@shared/types/Course';
 import React, { useEffect, useState } from 'react';
-import { Course, ScrapedRow } from 'src/shared/types/Course';
 import { useKeyPress } from '../hooks/useKeyPress';
 import useSchedules from '../hooks/useSchedules';
 import { CourseCatalogScraper } from '../lib/CourseCatalogScraper';
@@ -7,13 +7,12 @@ import getCourseTableRows from '../lib/getCourseTableRows';
 import { SiteSupport } from '../lib/getSiteSupport';
 import { populateSearchInputs } from '../lib/populateSearchInputs';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
-import Icon from './common/Icon/Icon';
-import Text from './common/Text/Text';
 import AutoLoad from './injected/AutoLoad/AutoLoad';
 import CoursePopup from './injected/CoursePopup/CoursePopup';
 import RecruitmentBanner from './injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from './injected/TableHead';
 import TableRow from './injected/TableRow/TableRow';
+import TableSubheading from './injected/TableSubheading/TableSubheading';
 
 interface Props {
     support: SiteSupport.COURSE_CATALOG_DETAILS | SiteSupport.COURSE_CATALOG_LIST;
@@ -33,7 +32,7 @@ export default function CourseCatalogMain({ support }: Props) {
     useEffect(() => {
         const tableRows = getCourseTableRows(document);
         const ccs = new CourseCatalogScraper(support);
-        const scrapedRows = ccs.scrape(tableRows);
+        const scrapedRows = ccs.scrape(tableRows, true);
         setRows(scrapedRows);
     }, [support]);
 
@@ -64,10 +63,10 @@ export default function CourseCatalogMain({ support }: Props) {
         <ExtensionRoot>
             <RecruitmentBanner />
             <TableHead>Plus</TableHead>
-            {rows.map(row => {
+            {rows.map((row, i) => {
                 if (!row.course) {
                     // TODO: handle the course section headers
-                    return null;
+                    return <TableSubheading key={row.element.innerText + i.toString()} row={row} />;
                 }
                 return (
                     <TableRow

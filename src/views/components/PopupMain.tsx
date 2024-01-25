@@ -1,5 +1,5 @@
+import { background } from '@shared/messages';
 import React from 'react';
-import { background } from 'src/shared/messages';
 import useSchedules from '../hooks/useSchedules';
 import { Button } from './common/Button/Button';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';

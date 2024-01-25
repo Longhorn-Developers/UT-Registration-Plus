@@ -1,4 +1,5 @@
-@import 'src/views/styles/base.module.scss';
+@use 'sass:color';
+@use 'src/views/styles/colors.module.scss';
 
 .button {
     background-color: #000;
@@ -7,9 +8,8 @@
     margin: 10px;
     border-radius: 8px;
     border: none;
-    box-shadow: rgba(0, 0, 0, 0.4) 2px 2px 4px;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.1s ease-in-out;
     font-family: 'Inter';
 
     display: flex;
@@ -22,7 +22,7 @@
     }
 
     &:active {
-        animation: click_animation 0.2s ease-in-out;
+        transform: scale(0.96);
     }
 
     &.disabled {
@@ -30,20 +30,20 @@
         opacity: 0.5 !important;
 
         &:active {
-            animation: none !important;
+            transform: unset;
         }
     }
 
     @each $color,
         $value
             in (
-                primary: $burnt_orange,
-                secondary: $charcoal,
-                tertiary: $bluebonnet,
-                danger: $speedway_brick,
-                warning: $tangerine,
-                success: $turtle_pond,
-                info: $turquoise
+                primary: colors.$burnt_orange,
+                secondary: colors.$charcoal,
+                tertiary: colors.$bluebonnet,
+                danger: colors.$speedway_brick,
+                warning: colors.$tangerine,
+                success: colors.$turtle_pond,
+                info: colors.$turquoise
             )
     {
         &.#{$color} {
@@ -51,29 +51,17 @@
             color: #fff;
 
             &:hover {
-                background-color: lighten($value, 10%);
+                background-color: color.adjust($value, $lightness: 10%);
             }
 
-            &:focus,
+            &:focus-visible,
             &:active {
-                background-color: darken($value, 10%);
+                background-color: color.adjust($value, $lightness: -10%);
             }
 
             &.disabled {
                 background-color: $value !important;
             }
         }
-    }
-}
-
-@keyframes click_animation {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(0.9);
-    }
-    100% {
-        transform: scale(1);
     }
 }

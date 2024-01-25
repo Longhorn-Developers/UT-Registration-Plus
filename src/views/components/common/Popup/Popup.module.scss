@@ -1,4 +1,4 @@
-@import 'src/views/styles/base.module.scss';
+@use 'src/views/styles/colors.module.scss';
 
 .container {
     width: 100%;
@@ -18,7 +18,7 @@
 .body {
     overflow-y: auto;
     z-index: 2147483647;
-    background-color: $white;
+    background-color: colors.$white;
     box-shadow: 0px 12px 30px 0px #323e5f29;
     transition: box-shadow 0.15s;
 }

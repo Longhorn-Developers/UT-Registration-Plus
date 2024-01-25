@@ -6,6 +6,10 @@
         "node": true,
         "webextensions": true
     },
+    "ignorePatterns": [
+        "*.html",
+        "tsconfig.json"
+    ],
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
@@ -140,7 +144,7 @@
         "jsdoc/require-jsdoc": [
             "warn",
             {
-                "enableFixer": true,
+                "enableFixer": false,
                 "publicOnly": true,
                 "checkConstructors": false,
                 "require": {

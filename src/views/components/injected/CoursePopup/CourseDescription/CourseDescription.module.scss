@@ -1,4 +1,4 @@
-@import 'src/views/styles/base.module.scss';
+@use 'src/views/styles/colors.module.scss';
 
 .container {
     margin: 20px;
@@ -22,7 +22,7 @@
             }
 
             .restriction {
-                color: $speedway_brick;
+                color: colors.$speedway_brick;
             }
         }
     }

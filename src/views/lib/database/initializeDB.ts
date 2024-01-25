@@ -1,7 +1,8 @@
 import initSqlJs from 'sql.js/dist/sql-wasm';
 
-const WASM_FILE_URL = chrome.runtime.getURL('database/sql-wasm.wasm');
-const DB_FILE_URL = chrome.runtime.getURL('database/grades.db');
+import DB_FILE_URL from '@public/database/grades.db?url';
+import WASM_FILE_URL from 'sql.js/dist/sql-wasm.wasm?url';
+// import WASM_FILE_URL from '../../../../public/database/sql-wasm.wasm?url';
 
 /**
  * A utility type for the SQL.js Database type

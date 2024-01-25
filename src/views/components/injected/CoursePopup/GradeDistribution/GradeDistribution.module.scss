@@ -1,4 +1,5 @@
-@import 'src/views/styles/base.module.scss';
+@use 'src/views/styles/colors.module.scss';
+@use 'src/views/styles/elevation.module.scss';
 
 .chartContainer {
     height: 250px;
@@ -14,11 +15,11 @@
         justify-content: center;
 
         select {
-            z-index: $MAX_Z_INDEX;
+            z-index: elevation.$MAX_Z_INDEX;
             padding: 4px;
             font-family: 'Inter';
             border-radius: 8px;
-            border-color: $charcoal;
+            border-color: colors.$charcoal;
         }
     }
 

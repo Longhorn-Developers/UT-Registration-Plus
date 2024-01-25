@@ -1,7 +1,7 @@
 @each $weights in '100' '200' '300' '400' '500' '600' '700' '800' '900' {
     @font-face {
         font-family: 'Inter';
-        src: url('chrome-extension://__MSG_@@extension_id__/fonts/inter-#{$weights}.woff2') format('woff2');
+        src: url('@public/fonts/inter-#{$weights}.woff2') format('woff2');
         font-display: auto;
         font-style: normal;
         font-weight: #{$weights};
@@ -13,7 +13,7 @@
     font-style: normal;
     font-display: block;
     font-weight: 400;
-    src: url('chrome-extension://__MSG_@@extension_id__/fonts/material-icons.woff2') format('woff2');
+    src: url('@public/fonts/material-icons.woff2') format('woff2');
 }
 
 $light_weight: 300;

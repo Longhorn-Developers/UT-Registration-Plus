@@ -1,12 +1,11 @@
+import { ContextInvalidated, createShadowDOM, onContextInvalidated } from 'chrome-extension-toolkit';
 import React from 'react';
-import { background } from 'src/shared/messages';
 import render from './lib/react';
 
-import { ContextInvalidated, createShadowDOM, isExtensionPopup, onContextInvalidated } from 'chrome-extension-toolkit';
 import CourseCatalogMain from './components/CourseCatalogMain';
-import colors from './styles/colors.module.scss';
-import getSiteSupport, { SiteSupport } from './lib/getSiteSupport';
 import PopupMain from './components/PopupMain';
+import getSiteSupport, { SiteSupport } from './lib/getSiteSupport';
+import colors from './styles/colors.module.scss';
 
 const support = getSiteSupport(window.location.href);
 console.log('support:', support);

@@ -1,17 +1,13 @@
 import { createMessenger } from 'chrome-extension-toolkit';
-import TAB_MESSAGES from './TabMessages';
 import BrowserActionMessages from './BrowserActionMessages';
-import HotReloadingMessages from './HotReloadingMessages';
 import TabManagementMessages from './TabManagementMessages';
+import TAB_MESSAGES from './TabMessages';
 import { UserScheduleMessages } from './UserScheduleMessages';
 
 /**
  * This is a type with all the message definitions that can be sent TO the background script
  */
-export type BACKGROUND_MESSAGES = BrowserActionMessages &
-    TabManagementMessages &
-    HotReloadingMessages &
-    UserScheduleMessages;
+export type BACKGROUND_MESSAGES = BrowserActionMessages & TabManagementMessages & UserScheduleMessages;
 
 /**
  * A utility object that can be used to send type-safe messages to the background script

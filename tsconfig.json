@@ -1,55 +1,57 @@
 {
     "compilerOptions": {
-        "target": "es2021",
-        "outDir": "./",
+        "baseUrl": ".",
+        "rootDir": ".",
+        "target": "esnext",
+        "module": "esnext",
         "noEmit": true,
+        "jsx": "react",
         "typeRoots": [
             "./node_modules/@types",
             "./@types/"
         ],
-        "rootDir": "./",
-        "allowSyntheticDefaultImports": true,
-        "esModuleInterop": true,
-        "module": "ES2022",
-        "moduleResolution": "node",
-        "allowJs": true,
-        "sourceMap": true,
-        "resolveJsonModule": true,
-        "incremental": true,
-        "lib": [
-            "DOM",
-            "es2021"
-        ],
-        "jsx": "react",
         "skipLibCheck": true,
-        "strictBindCallApply": true,
-        "pretty": true,
-        "noImplicitReturns": false,
-        "baseUrl": "./",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "moduleResolution": "node",
+        "types": [
+            "vite/client",
+            "node"
+        ],
+        "noFallthroughCasesInSwitch": true,
+        "allowSyntheticDefaultImports": true,
         "paths": {
             "src/*": [
-                "./src/*"
+                "src/*"
             ],
-            "webpack/*": [
-                "./webpack/*"
+            "@assets/*": [
+                "src/assets/*"
             ],
-        },
-        "noImplicitThis": true,
-        "noImplicitAny": false,
-        "strictNullChecks": true,
-        "forceConsistentCasingInFileNames": true,
+            "@pages/*": [
+                "src/pages/*"
+            ],
+            "@public/*": [
+                "public/*"
+            ],
+            "@shared/*": [
+                "src/shared/*"
+            ],
+            "@background/*": [
+                "src/pages/background/*"
+            ],
+            "@views/*": [
+                "src/views/*"
+            ],
+        }
     },
     "include": [
-        "src/**/*",
-        "webpack/**/*",
-        "@types/**/*",
-        "./package.json",
-        "./release.config.js",
-        "webpack/plugins/custom/.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        "**/.*/",
-        "build",
-    ],
+        "src",
+        "utils",
+        "vite.config.ts",
+        "node_modules/@types",
+        "src/manifest.ts",
+        "package.json",
+        ".eslintrc",
+        "postcss.config.cjs"
+    ]
 }

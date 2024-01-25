@@ -1,59 +1,60 @@
-@import 'src/views/styles/base.module.scss';
+@use 'src/views/styles/colors.module.scss';
+@use 'src/views/styles/fonts.module.scss';
 
 .text {
     font-family: 'Inter', sans-serif;
-    color: $charcoal;
+    color: colors.$charcoal;
     line-height: initial;
 }
 
 .light_weight {
-    font-weight: $light_weight;
+    font-weight: fonts.$light_weight;
 }
 
 .regular_weight {
-    font-weight: $regular_weight;
+    font-weight: fonts.$regular_weight;
 }
 
 .normal_weight {
-    font-weight: $normal_weight;
+    font-weight: fonts.$normal_weight;
 }
 
 .semi_bold_weight {
-    font-weight: $semi_bold_weight;
+    font-weight: fonts.$semi_bold_weight;
 }
 
 .bold_weight {
-    font-weight: $bold_weight;
+    font-weight: fonts.$bold_weight;
 }
 
 .black_weight {
-    font-weight: $black_weight;
+    font-weight: fonts.$black_weight;
 }
 
 .x_small_size {
-    font-size: $x_small_size;
+    font-size: fonts.$x_small_size;
 }
 
 .xx_small_size {
-    font-size: $xx_small_size;
+    font-size: fonts.$xx_small_size;
 }
 
 .small_size {
-    font-size: $small_size;
+    font-size: fonts.$small_size;
 }
 
 .medium_size {
-    font-size: $medium_size;
+    font-size: fonts.$medium_size;
 }
 
 .large_size {
-    font-size: $large_size;
+    font-size: fonts.$large_size;
 }
 
 .x_large_size {
-    font-size: $x_large_size;
+    font-size: fonts.$x_large_size;
 }
 
 .xx_large_size {
-    font-size: $xx_large_size;
+    font-size: fonts.$xx_large_size;
 }

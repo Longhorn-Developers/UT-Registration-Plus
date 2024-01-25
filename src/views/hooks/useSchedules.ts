@@ -1,7 +1,6 @@
-import { Serialized } from 'chrome-extension-toolkit';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { UserSchedule } from '@shared/types/UserSchedule';
 import { useEffect, useState } from 'react';
-import { UserScheduleStore } from 'src/shared/storage/UserScheduleStore';
-import { UserSchedule } from 'src/shared/types/UserSchedule';
 
 export default function useSchedules(): [active: UserSchedule | null, schedules: UserSchedule[]] {
     const [schedules, setSchedules] = useState<UserSchedule[]>([]);

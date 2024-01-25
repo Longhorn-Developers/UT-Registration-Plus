@@ -1,7 +1,7 @@
-@import 'src/views/styles/base.module.scss';
+@use 'src/views/styles/colors.module.scss';
 
 .card {
-    background: $white;
+    background: colors.$white;
     border: 0.5px dotted #c3cee0;
     box-sizing: border-box;
 

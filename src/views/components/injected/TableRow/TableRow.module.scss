@@ -1,33 +1,21 @@
-@import 'src/views/styles/base.module.scss';
-
-.rowButton {
-    margin: 0px;
-}
-
-.selectedRow {
-    * {
-        background: $burnt_orange !important;
-        color: white !important;
-        box-shadow: none !important;
-    }
-}
-
-.inActiveSchedule {
-    * {
-        color: $turtle_pond !important;
-        font-weight: bold !important;
-    }
-}
-
-.isConflict {
-    * {
-        color: $speedway_brick !important;
-        font-weight: normal !important;
-        text-decoration: line-through !important;
-    }
-}
+@use 'src/views/styles/colors.module.scss';
 
 .row {
+    > td:first-child {
+        padding-left: 12px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    > td:last-child {
+        padding-right: 12px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    > * {
+        transition: background-color 0.1s ease-in-out;
+    }
     .conflictTooltip {
         position: relative;
         display: none;
@@ -53,5 +41,47 @@
         .conflictTooltip {
             display: initial;
         }
+    }
+
+    // :global(ul.flag) li {
+    //     transform: scale(1.5); // omg the flags are on ONE LONG GIF FILE AND SHIFTED BY Y COORDINATES
+    // }
+}
+
+.rowButton {
+    margin: 0.25rem 0;
+    &:active {
+        transform: scale(0.92);
+    }
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    display: inline-flex;
+}
+
+.selectedRow {
+    > * {
+        background: colors.$burnt_orange !important;
+        color: white !important;
+        box-shadow: none !important;
+    }
+    .rowButton {
+        background: colors.$burnt_orange !important;
+        box-shadow: none !important;
+    }
+}
+
+.inActiveSchedule {
+    * {
+        color: colors.$turtle_pond !important;
+        font-weight: bold !important;
+    }
+}
+
+.isConflict {
+    * {
+        color: colors.$speedway_brick !important;
+        font-weight: normal !important;
+        text-decoration: line-through !important;
     }
 }
