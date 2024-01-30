@@ -11,13 +11,16 @@ console.log(root);
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [react()],
-    resolve: {
-        alias: {
-            '@src': root,
-            '@assets': assetsDir,
-            '@pages': pagesDir,
-            '@public': publicDir,
-        },
+  plugins: [react()],
+  resolve: {
+    alias: {
+      src: root,
+      '@assets': assetsDir,
+      '@pages': pagesDir,
+      '@public': publicDir,
+      '@shared': resolve(root, 'shared'),
+      '@background': resolve(pagesDir, 'background'),
+      '@views': resolve(root, 'views'),
     },
+  },
 });
