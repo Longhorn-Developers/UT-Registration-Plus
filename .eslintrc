@@ -14,10 +14,11 @@
         "eslint:recommended",
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
+        "plugin:storybook/recommended",
         "airbnb-base",
         "airbnb/rules/react",
         "airbnb-typescript",
-        "prettier"
+        "prettier",
     ],
     "plugins": [
         "import",

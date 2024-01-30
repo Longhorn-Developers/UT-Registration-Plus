@@ -52,6 +52,7 @@
         "src/manifest.ts",
         "package.json",
         ".eslintrc",
-        "postcss.config.cjs"
+        "postcss.config.cjs",
+        ".storybook"
     ]
 }
