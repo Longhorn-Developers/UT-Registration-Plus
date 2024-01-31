@@ -53,6 +53,7 @@
         "package.json",
         ".eslintrc",
         "postcss.config.cjs",
-        ".storybook"
+        ".storybook",
+        "unocss.config.ts",
     ]
 }
