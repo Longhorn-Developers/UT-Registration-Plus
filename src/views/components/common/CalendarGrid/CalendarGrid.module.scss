@@ -1,0 +1,61 @@
+:root {
+    --Primary-Colors-Burnt-Orange: #BF5700;
+}
+
+.day-label-container {
+    display: flex;
+    height: 13px;
+    min-width: 40px;
+    min-height: 13px;
+    padding-bottom: 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex: 1 0 0;
+}
+
+.day-label {
+    color: var(--Primary-Colors-Burnt-Orange);
+    text-align: center;
+    font-family: Roboto;
+    font-size: 14.22px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: auto repeat(5, 1fr);
+    gap: 10px;
+}
+
+.day {
+    display: grid;
+    grid-template-columns: auto repeat(14, 1fr);
+    gap: 5px;
+}
+
+.time-block {
+    display: flex;
+    width: 50px;
+    height: 40.279px;
+    min-width: 50px;
+    max-width: 50px;
+    min-height: 40px;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.time-label-container {
+    display: flex;
+    max-height: 20px;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 17px;
+    flex: 1 0 0;
+    align-self: stretch;
+    border-radius: var(--border-radius-none, 0px);
+}
