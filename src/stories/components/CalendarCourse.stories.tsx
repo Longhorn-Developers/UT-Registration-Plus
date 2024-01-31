@@ -27,9 +27,9 @@ export const Default: Story = {
     args: {
         course: new Course({
             uniqueId: 123,
-            number: '101',
-            fullName: 'Course 101',
-            courseName: 'Course',
+            number: '311C',
+            fullName: "311C - Bevo's Default Course",
+            courseName: "Bevo's Default Course",
             department: 'BVO',
             creditHours: 3,
             status: Status.OPEN,
