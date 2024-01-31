@@ -5,11 +5,16 @@ import styles from './Button.module.scss';
 interface Props {
     className?: string;
     style?: React.CSSProperties;
+    type?: 'filled' | 'outline' | 'single';
     onClick?: () => void;
-    type?: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'warning' | 'success' | 'info';
+    iconOnly?: boolean;
+    showSymbol?: boolean;
+    symbol?: React.ReactNode;
     disabled?: boolean;
     title?: string;
     testId?: string;
+    primaryColor?: string;
+    secondaryColor?: string;
 }
 
 /**
@@ -17,26 +22,37 @@ interface Props {
  * @returns
  */
 export function Button({
-    style,
     className,
+    style,
     type,
-    testId,
-    children,
+    onClick,
+    iconOnly,
+    showSymbol,
+    symbol,
     disabled,
     title,
-    onClick,
+    testId,
+    primaryColor,
+    secondaryColor,
+    children,
 }: React.PropsWithChildren<Props>): JSX.Element {
     return (
         <button
-            style={style}
+            style={
+                {
+                    ...style,
+                    '--color-primary': primaryColor ?? '#333F48',
+                    '--color-secondary': secondaryColor ?? '#FFFFFF',
+                } as React.CSSProperties
+            }
             data-testid={testId}
-            className={classNames(styles.button, className, styles[type ?? 'primary'], {
+            className={classNames(styles.button, className, styles[type ?? 'filled'], {
                 [styles.disabled]: disabled,
             })}
             title={title}
             onClick={disabled ? undefined : onClick}
         >
-            {children}
+            {!iconOnly && children}
         </button>
     );
 }
