@@ -1,0 +1,15 @@
+@use 'src/views/styles/colors.module.scss';
+
+.dropdown {
+    position: relative;
+}
+
+.menu {
+    position: absolute;
+    list-style-type: none;
+    border: none;
+}
+
+.item {
+
+}
