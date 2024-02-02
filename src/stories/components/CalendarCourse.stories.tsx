@@ -3,7 +3,7 @@ import { Course, Status } from 'src/shared/types/Course';
 import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';
 import Instructor from 'src/shared/types/Instructor';
-import CalendarCourse from 'src/views/components/common/CalendarCourseMeeting/CalendarCourseMeeting';
+import CalendarCourse from 'src/views/components/common/CalendarCourseBlock/CalendarCourseMeeting';
 
 const meta = {
     title: 'Components/Common/CalendarCourseMeeting',
