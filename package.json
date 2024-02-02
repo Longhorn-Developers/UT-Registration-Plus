@@ -39,6 +39,7 @@
         "@storybook/react": "^7.6.11",
         "@storybook/react-vite": "^7.6.11",
         "@storybook/test": "^7.6.11",
+        "@iconify-json/ic": "^1.1.17",
         "@types/chrome": "^0.0.254",
         "@types/node": "^20.10.5",
         "@types/prompts": "^2.4.9",
@@ -74,6 +75,7 @@
         "react-devtools": "^4.27.1",
         "storybook": "^7.6.11",
         "typescript": "^5.3.3",
+        "unplugin-icons": "^0.18.3",
         "vite": "^5.0.10",
         "vite-plugin-inspect": "^0.8.1"
     },
