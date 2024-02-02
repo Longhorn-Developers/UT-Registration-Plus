@@ -29,17 +29,19 @@ const CalendarCourseMeeting: React.FC<CalendarCourseMeetingProps> = ({
 }: CalendarCourseMeetingProps) => {
     let meeting: CourseMeeting | null = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : null;
     return (
-        <div className={styles['calendar-course']}>
-            <div>
-                {course.department} {course.number} - {course.instructors[0].lastName}
-            </div>
-            {meeting && (
-                <div>
-                    {`${meeting.getTimeString({ separator: '-', capitalize: true })}${
-                        meeting.location ? ` - ${meeting.location.building}` : ''
-                    }`}
+        <div className={styles.component}>
+            <div className={styles.content}>
+                <div className={styles['course-detail']}>
+                    <div className={styles.course}>
+                        {course.department} {course.number} - {course.instructors[0].lastName}
+                    </div>
+                    <div className={styles['time-and-location']}>
+                        {`${meeting.getTimeString({ separator: '-', capitalize: true })}${
+                            meeting.location ? ` - ${meeting.location.building}` : ''
+                        }`}
+                    </div>
                 </div>
-            )}
+            </div>
         </div>
     );
 };
