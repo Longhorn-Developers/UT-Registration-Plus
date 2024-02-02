@@ -133,7 +133,7 @@ function DevDashboard() {
             <h1>
                 {manifest.name} {manifest.version} - {process.env.NODE_ENV}
             </h1>
-            <p>This tab is used for hot reloading and debugging. We will update this tab further in the future.</p>
+            <p>Haha 69 lol</p>
             <h2>Local Storage</h2>
             <JSONEditor data={localStorage} onChange={handleEditStorage('local')} />
             <h2>Sync Storage</h2>
