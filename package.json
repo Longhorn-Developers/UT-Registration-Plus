@@ -76,7 +76,7 @@
         "storybook": "^7.6.11",
         "typescript": "^5.3.3",
         "unplugin-icons": "^0.18.3",
-        "vite": "^5.0.10",
+        "vite": "^5.0.12",
         "vite-plugin-inspect": "^0.8.1"
     },
     "pnpm": {
