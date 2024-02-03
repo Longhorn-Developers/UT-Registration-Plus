@@ -5,7 +5,7 @@ import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
 import Text from '../Text/Text';
-import styles from './CalendarCourseBlock.module.scss';
+import styles from './CalendarCourseCell.module.scss';
 
 export interface CalendarCourseBlockProps {
     /** The Course that the meeting is for. */
@@ -30,8 +30,8 @@ const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({ course, meeti
     return (
         <div className={styles.component}>
             <div className={styles.content}>
-                <div className={styles['course-detail']}>
-                    <Text variant='h1-course' className={styles['course-title']}>
+                <div className={styles.courseDetail}>
+                    <Text variant='h1-course' className={styles.courseTitle}>
                         {course.department} {course.number} - {course.instructors[0].lastName}
                     </Text>
                     <Text variant='h3-course'>
@@ -40,7 +40,7 @@ const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({ course, meeti
                         }`}
                     </Text>
                 </div>
-                {rightIcon && <div className={styles['course-status']}>{rightIcon}</div>}
+                {rightIcon && <div className={styles.courseStatus}>{rightIcon}</div>}
             </div>
         </div>
     );

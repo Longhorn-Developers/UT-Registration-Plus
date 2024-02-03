@@ -13,7 +13,7 @@
         gap: 5px 7px;
         align-self: stretch;
         flex-wrap: wrap;
-        .course-detail {
+        .courseDetail {
             display: flex;
             min-width: 26px;
             flex-direction: column;
@@ -22,7 +22,7 @@
             flex: 1 0 0;
             line-height: 100%;
         }
-        .course-status {
+        .courseStatus {
             display: flex;
             align-items: center;
             justify-content: center;
