@@ -1,6 +1,8 @@
 import React from 'react';
 import styles from './ExtensionRoot.module.scss';
 
+import 'uno.css';
+
 interface Props {
     testId?: string;
 }
