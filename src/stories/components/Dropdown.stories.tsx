@@ -22,10 +22,9 @@ export default meta;
 type Story = StoryObj<typeof Dropdown>;
 
 export const Hidden: Story = {
-    name: 'Hidden',
     render: () => <Dropdown />
 };
 
 export const Show: Story = {
-    name: 'Show',
+    render: () => <Dropdown />
 };

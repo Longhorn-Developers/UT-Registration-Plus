@@ -1,15 +1,60 @@
 @use 'src/views/styles/colors.module.scss';
 
 .dropdown {
-    position: relative;
-}
+    display: list-item;
+    padding: 10px 15px;
+    align-items: left;
+    gap: 2px;
+    flex: 1 0 0;
+    border: 1px solid var(--Secondary-Colors-Off-white, #D6D2C4);
+    border-radius: 4px;
+    background: var(--Primary-Colors-White, #FFF);
 
-.menu {
-    position: absolute;
-    list-style-type: none;
-    border: none;
-}
+    .title {
+        text-align: left;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        align-self: stretch;
 
-.item {
+        overflow: hidden;
+        color: var(--Primary-Colors-Burnt-Orange, var(--Primary-Colors-Burnt-Orange, #BF5700));
+        text-overflow: ellipsis;
+        /* Type scale/h4 */
+        font-family: Roboto;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+    }
 
+    .info {
+        text-align: left;
+        display: flex;
+        align-items: center;
+        align-content: center;
+        gap: 0px 10px;
+        align-self: stretch;
+        flex-wrap: wrap;
+
+        color: var(--Other-Colors-UTRP-Black, var(--Other-Colors-UTRP-Black, #1A2024));
+        /* Type scale/h3 */
+        font-family: Roboto;
+        font-size: 20.25px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        text-transform: uppercase;
+    }
+
+    p {
+
+    }
+    ul {
+        li {
+            button {
+                
+            }
+        }
+    }
 }
