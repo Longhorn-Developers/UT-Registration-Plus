@@ -1,6 +1,6 @@
-import ExtensionRoot from 'src/views/components/common/ExtensionRoot/ExtensionRoot';
 import type { Preview } from '@storybook/react';
 import React from 'react';
+import ExtensionRoot from 'src/views/components/common/ExtensionRoot/ExtensionRoot';
 
 const preview: Preview = {
   parameters: {
