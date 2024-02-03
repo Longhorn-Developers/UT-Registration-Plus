@@ -3,7 +3,6 @@ import presetWebFonts from '@unocss/preset-web-fonts';
 import transformerDirectives from '@unocss/transformer-directives';
 import transformerVariantGroup from '@unocss/transformer-variant-group';
 import { defineConfig } from 'unocss';
-import { theme } from 'unocss/preset-mini';
 
 export default defineConfig({
     rules: [
@@ -16,11 +15,6 @@ export default defineConfig({
         ],
     ],
     shortcuts: {
-        btn: `
-      btn-transition inline-flex h-10 items-center justify-center gap-1 rounded-lg border-2 border-transparent px-3 font-medium disabled:cursor-not-allowed disabled:opacity-70
-      outline-none ring-blue-500/50 dark:ring-blue-400/60 ring-0 focus-visible:ring-4
-      active:scale-[0.96] disabled:active:scale-100
-      `,
         focusable: 'outline-none ring-blue-500/50 dark:ring-blue-400/60 ring-0 focus-visible:ring-4',
     },
     theme: {
@@ -47,10 +41,6 @@ export default defineConfig({
                 black: '#1a2024',
             },
         },
-        breakpoints: {
-            xs: '410px',
-            ...theme.breakpoints,
-        },
     },
 
     presets: [
@@ -59,13 +49,8 @@ export default defineConfig({
             provider: 'google',
             fonts: {
                 sans: {
-                    name: 'Roboto',
-                    weights: ['300', '400', '600', '700'],
-                    italic: true,
-                },
-                mono: {
-                    name: 'Azeret Mono',
-                    weights: ['500'],
+                    name: 'Roboto Flex',
+                    provider: 'none',
                 },
             },
         }),

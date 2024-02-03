@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react-swc';
 import { resolve } from 'path';
+import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'vite';
 
@@ -12,7 +13,7 @@ console.log(root);
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [react(), Icons({ compiler: 'jsx', jsx: 'react' })],
+    plugins: [react(), UnoCSS(), Icons({ compiler: 'jsx', jsx: 'react' })],
     resolve: {
         alias: {
             src: root,
