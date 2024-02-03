@@ -1,19 +1,8 @@
 import React from 'react';
 import styles from './CalendarGrid.module.scss';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
+import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 
-/**
- * a map of the days of the week that a class is taught, and the corresponding abbreviation
- */
-export const DAY_MAP = {
-  M: 'Monday',
-  T: 'Tuesday',
-  W: 'Wednesday',
-  TH: 'Thursday',
-  F: 'Friday',
-  S: 'Saturday',
-  SU: 'Sunday',
-} as const;
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 
