@@ -18,6 +18,7 @@
         "airbnb-base",
         "airbnb/rules/react",
         "airbnb-typescript",
+        "@unocss",
         "prettier",
     ],
     "plugins": [
