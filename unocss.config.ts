@@ -46,11 +46,10 @@ export default defineConfig({
     presets: [
         presetUno(),
         presetWebFonts({
-            provider: 'google',
+            provider: 'none',
             fonts: {
                 sans: {
                     name: 'Roboto Flex',
-                    provider: 'none',
                 },
             },
         }),
