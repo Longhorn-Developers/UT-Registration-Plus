@@ -45,7 +45,7 @@ let server: ViteDevServer;
 export default defineConfig({
     plugins: [
         react(),
-        Icons({ compiler: 'jsx' }),
+        Icons({ compiler: 'jsx', jsx: 'react' }),
         crx({ manifest }),
         inspect(),
         {
