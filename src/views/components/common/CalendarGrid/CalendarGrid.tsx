@@ -3,7 +3,7 @@ import styles from './CalendarGrid.module.scss';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 
-const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const daysOfWeek = Object.values(DAY_MAP);
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 
 /**
@@ -16,7 +16,7 @@ const Calendar: React.FC = (props) => {
       <div className={styles.calendar}>
         <div className={styles.dayLabelContainer}></div>
         {daysOfWeek.map((day, dayIndex) => (
-          <div key={dayIndex} className={styles.dayy}>
+          <div key={dayIndex} className={styles.day}>
             <div className={styles.dayLabelContainer}>
               <div className={styles.dayLabel}>{day}</div>
             </div>
