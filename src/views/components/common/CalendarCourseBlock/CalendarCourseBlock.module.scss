@@ -1,21 +1,36 @@
 .component {
+    background: #cbd5e1;
+    border-radius: 4px;
     display: flex;
     padding: 7px 7px 9px 7px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 5px;
-    flex: 1 0 0;
-    align-self: stretch;
-    border-radius: 4px;
-    background: #cbd5e1;
     .content {
+        width: 184px;
         display: flex;
-        gap: 7px;
+        align-items: flex-start;
+        align-content: flex-start;
+        gap: 5px 7px;
+        align-self: stretch;
+        flex-wrap: wrap;
         .course-detail {
             display: flex;
+            min-width: 26px;
             flex-direction: column;
+            align-items: flex-start;
             gap: 5px;
-            width: 154px;
+            flex: 1 0 0;
+        }
+        .course-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            background: #334155;
+            color: #ffffff;
+            height: 23px;
+            width: 23px;
+            border-radius: 4px;
         }
     }
 }
