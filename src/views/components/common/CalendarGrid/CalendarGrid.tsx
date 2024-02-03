@@ -2,21 +2,27 @@ import React from 'react';
 import styles from './CalendarGrid.module.scss';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 
+
+const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
+
+/**
+ * Grid of CalendarGridCell components forming the user's course schedule calendar view
+ * @param props 
+ */
 const Calendar: React.FC = (props) => {
-    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-    const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
   
     return (
-      <div className="calendar">
-        <div className="day-label-container"></div>
+      <div className={styles.calendar}>
+        <div className={styles.dayLabelContainer}></div>
         {daysOfWeek.map((day, dayIndex) => (
-          <div key={dayIndex} className="day">
-            <div className="day-label-container">
-              <div className="day-label">{day}</div>
+          <div key={dayIndex} className={styles.dayy}>
+            <div className={styles.dayLabelContainer}>
+              <div className={styles.dayLabel}>{day}</div>
             </div>
             {hoursOfDay.map((hour) => (
-              <div key={`${day}-${hour}`} className="time-block">
-                <div className="time-label-container">
+              <div key={`${day}-${hour}`} className={styles.timeBlock}>
+                <div className={styles.timeLabelContainer}>
                   <span>{hour}:00</span>
                 </div>
                 <CalendarCell />
