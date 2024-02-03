@@ -2,25 +2,14 @@
  * the type for all the weight scss variables exported from fonts.module.scss
  */
 export interface IWeights {
-    light_weight: number;
-    regular_weight: number;
     normal_weight: number;
-    bold_weight: number;
-    semi_bold_weight: number;
-    black_weight: number;
 }
 
 /**
  * the type for all the size scss variables exported from fonts.module.scss
  */
 export interface ISizes {
-    xx_small_size: number;
-    x_small_size: number;
-    small_size: number;
     medium_size: number;
-    large_size: number;
-    x_large_size: number;
-    xx_large_size: number;
 }
 
 /** A utility type that removes the _weight postfix from the variable names for weights */
