@@ -1,6 +1,6 @@
 // Calendar.stories.tsx
 import React from 'react';
-import Calendar from 'src/views/components/common/CalendarGrid/CalendarGrid';
+import Calendar from '@views/components/common/CalendarGrid/CalendarGrid';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta = {
