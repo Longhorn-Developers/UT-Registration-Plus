@@ -20,6 +20,7 @@
             align-items: flex-start;
             gap: 5px;
             flex: 1 0 0;
+            line-height: 100%;
         }
         .course-status {
             display: flex;
@@ -31,6 +32,7 @@
             height: 23px;
             width: 23px;
             border-radius: 4px;
+            line-height: 100%;
         }
     }
 }
