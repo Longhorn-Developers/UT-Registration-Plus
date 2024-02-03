@@ -1,7 +1,5 @@
-import classNames from 'classnames';
 import React from 'react';
 import Text from '../Text/Text';
-import styles from './Chip.module.scss';
 
 
 export const flags = ["WR", "QR", "GC", "CD", "E", "II"]
