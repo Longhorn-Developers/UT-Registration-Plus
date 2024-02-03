@@ -109,16 +109,34 @@ const List: React.FC<ListProps> = ({
                 <Droppable 
                     droppableId="droppable"
                     mode="virtual"
-                    renderClone={(provided, snapshot, rubric) => (
-                    <Item
-                        provided={provided}
-                        isDragging={snapshot.isDragging}
-                        item={items[rubric.source.index]}
-                        style = {{
+                    direction="vertical"
+                    renderClone={(provided, snapshot, rubric) => {
+                    let { style } = provided.draggableProps;
+                    const transform = style?.transform;
+                
+                    if (snapshot.isDragging && transform) {
+                        let [x, y] = transform
+                            .replace('translate(', '')
+                            .replace(')', '')
+                            .split(',')
+                            .map((v) => parseInt(v, 10));
+                        
+                        style.transform = `translate(0px, ${y}px)`;     
+                    }
 
-                        }}
-                    />
+                    style.fontFamily = "Inter";
+
+                    return (
+                        <Item
+                            provided={provided}
+                            isDragging={snapshot.isDragging}
+                            item={items[rubric.source.index]}
+                            style = {{
+                                style
+                            }}
+                        />
                     )}
+                }
                 >
                     {provided => (
                         <FixedSizeList
