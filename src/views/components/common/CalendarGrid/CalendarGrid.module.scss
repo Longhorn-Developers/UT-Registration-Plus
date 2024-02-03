@@ -1,6 +1,5 @@
-:root {
-    --Primary-Colors-Burnt-Orange: #BF5700;
-}
+@use 'sass:color';
+@use 'src/views/styles/colors.module.scss';
 
 .dayLabelContainer {
     display: flex;
@@ -15,7 +14,7 @@
 }
 
 .dayLabel {
-    color: var(--Primary-Colors-Burnt-Orange);
+    color: colors.$burnt_orange;
     text-align: center;
     font-family: Roboto;
     font-size: 14.22px;
