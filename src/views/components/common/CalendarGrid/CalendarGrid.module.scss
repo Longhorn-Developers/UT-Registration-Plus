@@ -2,7 +2,7 @@
     --Primary-Colors-Burnt-Orange: #BF5700;
 }
 
-.day-label-container {
+.dayLabelContainer {
     display: flex;
     height: 13px;
     min-width: 40px;
@@ -14,7 +14,7 @@
     flex: 1 0 0;
 }
 
-.day-label {
+.dayLabel {
     color: var(--Primary-Colors-Burnt-Orange);
     text-align: center;
     font-family: Roboto;
@@ -30,13 +30,13 @@
     gap: 10px;
 }
 
-.day {
+.dayy {
     display: grid;
     grid-template-columns: auto repeat(14, 1fr);
     gap: 5px;
 }
 
-.time-block {
+.timeBlock {
     display: flex;
     width: 50px;
     height: 40.279px;
@@ -48,7 +48,7 @@
     align-items: flex-end;
 }
 
-.time-label-container {
+.timeLabelContainer {
     display: flex;
     max-height: 20px;
     flex-direction: column;

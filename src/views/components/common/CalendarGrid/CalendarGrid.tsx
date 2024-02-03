@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './CalendarGrid.module.scss';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 
-const Calendar: React.FC = () => {
+const Calendar: React.FC = (props) => {
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
   
