@@ -8,14 +8,11 @@
     }
 }
 
-@each $weight in '100' '300' '400' '500' '700' '900' {
-    @font-face {
-        font-family: 'Roboto';
-        src: url('@public/fonts/roboto-#{$weight}.woff2') format('woff2');
-        font-display: auto;
-        font-style: normal;
-        font-weight: #{$weight};
-    }
+@font-face {
+    font-family: 'Roboto Flex';
+    src: url('@public/fonts/roboto-flex.woff2') format('woff2');
+    font-display: swap;
+    font-style: normal;
 }
 
 @font-face {
@@ -26,34 +23,12 @@
     src: url('@public/fonts/material-icons.woff2') format('woff2');
 }
 
-$light_weight: 300;
-$regular_weight: 400;
-$normal_weight: 500;
-$semi_bold_weight: 600;
-$bold_weight: 700;
-$black_weight: 900;
+$normal_weight: 500; // Used by <Icon>, will be removed later
 
-$xx_small_size: 4px;
-$x_small_size: 8px;
-$small_size: 12px;
 $medium_size: 16px;
-$large_size: 20px;
-$x_large_size: 32px;
-$xx_large_size: 48px;
 
 :export {
-    light_weight: $light_weight;
-    regular_weight: $regular_weight;
     normal_weight: $normal_weight;
-    semi_bold_weight: $semi_bold_weight;
-    bold_weight: $bold_weight;
-    black_weight: $black_weight;
 
-    xx_small_size: $xx_small_size;
-    x_small_size: $x_small_size;
-    small_size: $small_size;
     medium_size: $medium_size;
-    large_size: $large_size;
-    x_large_size: $x_large_size;
-    xx_large_size: $xx_large_size;
 }
