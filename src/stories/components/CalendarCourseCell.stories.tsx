@@ -3,11 +3,11 @@ import { Course, Status } from 'src/shared/types/Course';
 import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';
 import Instructor from 'src/shared/types/Instructor';
-import CalendarCourseBlock from 'src/views/components/common/CalendarCourseCell/CalendarCourseCell';
+import CalendarCourseCell from 'src/views/components/common/CalendarCourseCell/CalendarCourseCell';
 
 const meta = {
-    title: 'Components/Common/CalendarCourseBlock',
-    component: CalendarCourseBlock,
+    title: 'Components/Common/CalendarCourseCell',
+    component: CalendarCourseCell,
     parameters: {
         layout: 'centered',
     },
@@ -17,7 +17,7 @@ const meta = {
         meetingIdx: { control: 'number' },
         color: { control: 'color' },
     },
-} satisfies Meta<typeof CalendarCourseBlock>;
+} satisfies Meta<typeof CalendarCourseCell>;
 export default meta;
 
 type Story = StoryObj<typeof meta>;
