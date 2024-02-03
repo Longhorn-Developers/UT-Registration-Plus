@@ -54,9 +54,9 @@ devDependencies:
   '@crxjs/vite-plugin':
     specifier: 2.0.0-beta.21
     version: 2.0.0-beta.21(patch_hash=xq4uab3o3kbvv4gixvawl2aj5q)
-  '@iconify-json/ic':
-    specifier: ^1.1.17
-    version: 1.1.17
+  '@iconify-json/material-symbols':
+    specifier: ^1.1.72
+    version: 1.1.72
   '@storybook/addon-designs':
     specifier: ^7.0.9
     version: 7.0.9(@storybook/addon-docs@7.6.12)(@storybook/addons@7.6.11)(@storybook/components@7.6.12)(@storybook/manager-api@7.6.12)(@storybook/preview-api@7.6.12)(@storybook/theming@7.6.12)(react-dom@18.2.0)(react@18.2.0)
@@ -2190,8 +2190,8 @@ packages:
     resolution: {integrity: sha512-dvuCeX5fC9dXgJn9t+X5atfmgQAzUOWqS1254Gh0m6i8wKd10ebXkfNKiRK+1GWi/yTvvLDHpoxLr0xxxeslWw==}
     dev: true
 
-  /@iconify-json/ic@1.1.17:
-    resolution: {integrity: sha512-EvAjZzVESmN36zlyefylePUNaU2BQ3eRKVZ6KQSQ2bG01ppoZaiFZRri74VTyvp5Mlv2yn68ux1fgCoT+etGmA==}
+  /@iconify-json/material-symbols@1.1.72:
+    resolution: {integrity: sha512-5IRqdI4HSbdatHBn6NZG+O9M1pJA39IrUhoBD824dXkKKE/3OmS2aU16w1hAhnr7n/euBqclkXAeUG3rDs0l1A==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
