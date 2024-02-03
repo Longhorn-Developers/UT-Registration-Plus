@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
 import { Course, Status } from 'src/shared/types/Course';
 import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';
@@ -17,6 +18,11 @@ const meta = {
         meetingIdx: { control: 'number' },
         color: { control: 'color' },
     },
+    render: (args: any) => (
+        <div className="w-45">
+            <CalendarCourseCell {...args} />
+        </div>
+    ),
 } satisfies Meta<typeof CalendarCourseCell>;
 export default meta;
 
