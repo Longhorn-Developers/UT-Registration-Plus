@@ -1,6 +1,7 @@
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
 import { resolve } from 'path';
+import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
 import { Plugin, ResolvedConfig, ViteDevServer, defineConfig } from 'vite';
 import inspect from 'vite-plugin-inspect';
@@ -45,7 +46,8 @@ let server: ViteDevServer;
 export default defineConfig({
     plugins: [
         react(),
-        Icons({ compiler: 'jsx' }),
+        UnoCSS(),
+        Icons({ compiler: 'jsx', jsx: 'react' }),
         crx({ manifest }),
         inspect(),
         {
