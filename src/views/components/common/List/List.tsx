@@ -27,7 +27,7 @@ function reorder(list, startIndex: number, endIndex: number) {
 }
 
 function getStyle({ provided, style, isDragging }) {
-    /*const combined = {
+    const combined = {
         ...style,
         ...provided.draggableProps.style
     };
@@ -38,8 +38,8 @@ function getStyle({ provided, style, isDragging }) {
         height: isDragging ? combined.height : combined.height - marginBottom,
         marginBottom
     };
-    return withSpacing;*/
-    return style;
+    return withSpacing;
+    //return style;
 }
 
 function Item({ provided, item, style, isDragging }) {
