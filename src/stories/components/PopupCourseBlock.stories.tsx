@@ -74,7 +74,7 @@ export const AllVariants: Story = {
         children: 'The quick brown fox jumps over the lazy dog.',
     },
     render: props => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className='h-10 w-2xl flex flex-col gap-4'>
             <PopupCourseBlock {...props} course={exampleCourse} />
         </div>
     ),
