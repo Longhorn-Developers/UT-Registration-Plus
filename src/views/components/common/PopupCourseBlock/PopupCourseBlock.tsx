@@ -4,7 +4,10 @@ import classNames from 'classnames';
 import Text from '../Text/Text';
 import Icon from '../Icon/Icon';
 
-type PopupCourseBlockProps = {
+/**
+ * Props for PopupCourseBlock
+ */
+export interface PopupCourseBlockProps {
     className?: string;
     course: Course;
     primaryColor: string;
