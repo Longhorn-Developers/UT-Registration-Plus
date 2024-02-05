@@ -137,15 +137,6 @@ export const AllVariants: Story = {
                     whiteText
                 />
             </div>
-            <div className='h-10 w-2xl flex gap-4'>
-                <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: 'CONFLICT' as any })} />
-                <PopupCourseBlock
-                    course={new Course({ ...exampleCourse, status: 'CONFLICT' as any })}
-                    primaryColor='bg-emerald-600'
-                    secondaryColor='bg-emerald-800'
-                    whiteText
-                />
-            </div>
         </div>
     ),
     parameters: {
