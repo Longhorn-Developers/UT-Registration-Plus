@@ -1,8 +1,15 @@
 import React from 'react';
-import { Course } from 'src/shared/types/Course';
+import { Course, Status } from 'src/shared/types/Course';
 import classNames from 'classnames';
 import Text from '../Text/Text';
 import Icon from '../Icon/Icon';
+
+const conversion = {
+    WAITLISTED: 'timelapse',
+    CLOSED: 'lock',
+    CANCELLED: 'warning',
+    CONFLICT: 'error',
+};
 
 /**
  * Props for PopupCourseBlock
@@ -41,11 +48,13 @@ export default function PopupCourseBlock({
             <Text className={classNames(whiteText ? 'text-white' : 'text-black', 'flex-grow p3')} variant='h1-course'>
                 {`${course.uniqueId} ${course.department} ${course.number} - ${course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}`}
             </Text>
-            <Icon
-                className={classNames(secondaryColor, 'justify-self-end rounded p-1px')}
-                name='timelapse'
-                color='white'
-            />
+            {course.status !== Status.OPEN && (
+                <Icon
+                    className={classNames(secondaryColor, 'justify-self-end rounded p-1px')}
+                    name={conversion[course.status] as any}
+                    color='white'
+                />
+            )}
         </div>
     );
 }
