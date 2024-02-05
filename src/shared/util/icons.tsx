@@ -1,24 +1,24 @@
-import classNames from 'classnames';
-import React from 'react';
-import { Status } from '../types/Course';
-import WaitlistIcon from '~icons/material-symbols/timelapse';
+import React, { SVGProps } from 'react';
 import ClosedIcon from '~icons/material-symbols/lock';
+import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
+import { Status } from '../types/Course';
 
 /**
  * Get Icon component based on status
- * @param status status
- * @param className className string
+ * @param props.status status
  * @returns React.ReactElement - the icon component
  */
-export function getStatusIcon(status: Status, className = ''): React.ReactElement {
-    switch (status) {
+export function StatusIcon(props: SVGProps<SVGSVGElement> & { status: Status }): React.ReactElement {
+    const { status, ...rest } = props;
+
+    switch (props.status) {
         case Status.WAITLISTED:
-            return <WaitlistIcon className={classNames('h-5 w-5', className)} />;
+            return <WaitlistIcon {...rest} />;
         case Status.CLOSED:
-            return <ClosedIcon className={classNames('h-5 w-5', className)} />;
+            return <ClosedIcon {...rest} />;
         case Status.CANCELLED:
-            return <CancelledIcon className={classNames('h-5 w-5', className)} />;
+            return <CancelledIcon {...rest} />;
         default:
     }
 }
