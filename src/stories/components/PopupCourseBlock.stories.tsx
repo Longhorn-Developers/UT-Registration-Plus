@@ -92,15 +92,17 @@ export const Default: Story = {
 
 export const AllVariants: Story = {
     args: {
-        // children: 'The quick brown fox jumps over the lazy dog.',
+        course: exampleCourse,
+        primaryColor: 'bg-emerald-300',
+        secondaryColor: 'bg-emerald-500',
+        whiteText: false,
     },
     render: props => (
         <div className='h-10 w-2xl flex flex-col gap-4'>
-            {props.className} <br />
-            {props.primaryColor} <br />
-            {props.secondaryColor} <br />
-            {props.whiteText} <br />
-            <PopupCourseBlock course={exampleCourse} primaryColor='bg-emerald-300' secondaryColor='bg-emerald-500' />
+            <PopupCourseBlock
+                {...props}
+                // course={exampleCourse} primaryColor='bg-emerald-300' secondaryColor='bg-emerald-500'
+            />
             <PopupCourseBlock
                 course={exampleCourse}
                 primaryColor='bg-emerald-600'
