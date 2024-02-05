@@ -7,6 +7,9 @@ import Icon from '../Icon/Icon';
 type PopupCourseBlockProps = {
     className?: string;
     course: Course;
+    primaryColor: string;
+    secondaryColor: string;
+    whiteText?: boolean;
 };
 
 /**
@@ -14,22 +17,32 @@ type PopupCourseBlockProps = {
  *
  * @param props PopupCourseBlockProps
  */
-export default function PopupCourseBlock({ className, course }: PopupCourseBlockProps): JSX.Element {
+export default function PopupCourseBlock({
+    className,
+    course,
+    primaryColor,
+    secondaryColor,
+    whiteText,
+}: PopupCourseBlockProps): JSX.Element {
     return (
-        // <div className={classNames(className, 'w-full bg-emerald-300')} style={style}>
         <div
             className={classNames(
                 className,
-                'h-full w-full inline-flex items-center justify-center gap-1 rounded bg-emerald-300 pr-2'
+                primaryColor,
+                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3'
             )}
         >
-            <div className='h-full flex items-center rounded rounded-r-0 bg-emerald-800'>
+            <div className={classNames(secondaryColor, 'h-full flex items-center rounded rounded-r-0')}>
                 <Icon className='' name='drag_indicator' color='white' />
             </div>
-            <Text className='flex-grow p2' variant='h1-course'>
+            <Text className={classNames(whiteText ? 'text-white' : 'text-black', 'flex-grow p3')} variant='h1-course'>
                 {`${course.uniqueId} ${course.department} ${course.number} - ${course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}`}
             </Text>
-            <Icon className='justify-self-end rounded bg-emerald-800 p-1px' name='timelapse' color='white' />
+            <Icon
+                className={classNames(secondaryColor, 'justify-self-end rounded p-1px')}
+                name='timelapse'
+                color='white'
+            />
         </div>
     );
 }

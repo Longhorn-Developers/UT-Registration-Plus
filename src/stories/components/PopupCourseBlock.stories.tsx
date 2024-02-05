@@ -18,7 +18,7 @@ const exampleCourse: Course = new Course({
     flags: ['Quantitative Reasoning'],
     fullName: 'C S 303E ELEMS OF COMPTRS/PROGRAMMNG-WB',
     instructionMode: 'Online',
-    instructors: [],
+    instructors: [{ firstName: 'Bevo', lastName: 'Bevo', fullName: 'Bevo Bevo' }],
     isReserved: false,
     number: '303E',
     schedule: {
@@ -52,12 +52,16 @@ const meta = {
     tags: ['autodocs'],
     // More on argTypes: https://storybook.js.org/docs/api/argtypes
     args: {
+        primaryColor: 'bg-emerald-300',
+        secondaryColor: 'bg-emerald-800',
+        whiteText: false,
         course: exampleCourse,
-        // children: 'The quick brown fox jumps over the lazy dog.',
     },
     argTypes: {
-        Course: { control: 'none' },
-        // children: { control: 'text' },
+        primaryColor: { control: 'text' },
+        secondaryColor: { control: 'text' },
+        whiteText: { control: 'boolean' },
+        course: { control: 'object' },
     },
 } satisfies Meta<typeof Text>;
 
@@ -66,22 +70,33 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Default: Story = {
-    args: {},
+    args: {
+        course: exampleCourse,
+        primaryColor: 'bg-emerald-300',
+        secondaryColor: 'bg-emerald-500',
+        whiteText: false,
+    },
 };
 
 export const AllVariants: Story = {
     args: {
-        children: 'The quick brown fox jumps over the lazy dog.',
+        // children: 'The quick brown fox jumps over the lazy dog.',
     },
     render: props => (
         <div className='h-10 w-2xl flex flex-col gap-4'>
-            <PopupCourseBlock {...props} course={exampleCourse} />
+            <PopupCourseBlock course={exampleCourse} primaryColor='bg-emerald-300' secondaryColor='bg-emerald-500' />
+            <PopupCourseBlock
+                course={exampleCourse}
+                primaryColor='bg-emerald-600'
+                secondaryColor='bg-emerald-800'
+                whiteText
+            />
         </div>
     ),
     parameters: {
         design: {
             type: 'figma',
-            url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=324-389&mode=design&t=BoS5xBrpSsjgQXqv-4',
+            url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=1046-6714&mode=design&t=5Bjr7qGHNXmjfMTc-0',
         },
     },
 };
