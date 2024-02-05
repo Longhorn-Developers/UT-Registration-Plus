@@ -3,9 +3,6 @@ import { Course, Status } from 'src/shared/types/Course';
 import classNames from 'classnames';
 import Text from '../Text/Text';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
-import WaitlistIcon from '~icons/material-symbols/timelapse';
-import ClosedIcon from '~icons/material-symbols/lock';
-import CancelledIcon from '~icons/material-symbols/warning';
 
 /**
  * Props for PopupCourseBlock
@@ -16,18 +13,6 @@ export interface PopupCourseBlockProps {
     primaryColor: string;
     secondaryColor: string;
     whiteText?: boolean;
-}
-
-function getStatusIcon(status: Status, classList = ''): React.ReactElement {
-    switch (status) {
-        case Status.WAITLISTED:
-            return <WaitlistIcon className={classNames('h-5 w-5', classList)} />;
-        case Status.CLOSED:
-            return <ClosedIcon className={classNames('h-5 w-5', classList)} />;
-        case Status.CANCELLED:
-            return <CancelledIcon className={classNames('h-5 w-5', classList)} />;
-        default:
-    }
 }
 
 /**
