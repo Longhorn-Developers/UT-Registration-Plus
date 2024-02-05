@@ -1,6 +1,7 @@
 import React from 'react';
 import { Course, Status } from 'src/shared/types/Course';
 import classNames from 'classnames';
+import { getStatusIcon } from 'src/shared/util/icons';
 import Text from '../Text/Text';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
