@@ -42,7 +42,7 @@ export default function PopupCourseBlock({
                 'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3'
             )}
         >
-            <div className={classNames(secondaryColor, 'h-full pl-2px pr-2px flex items-center rounded rounded-r-0')}>
+            <div className={classNames(secondaryColor, 'h-full px-2px flex items-center rounded rounded-r-0')}>
                 <Icon className='' name='drag_indicator' color='white' />
             </div>
             <Text className={classNames(whiteText ? 'text-white' : 'text-black', 'flex-grow p3')} variant='h1-course'>
@@ -51,7 +51,7 @@ export default function PopupCourseBlock({
             {course.status !== Status.OPEN && (
                 <Icon
                     className={classNames(secondaryColor, 'justify-self-end rounded p-1px')}
-                    name={conversion[course.status] as any}
+                    name={conversion[course.status] as any} // should probably fix this "as any" later on
                     color='white'
                 />
             )}

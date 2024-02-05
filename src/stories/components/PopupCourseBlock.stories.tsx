@@ -60,7 +60,7 @@ const meta = {
     // More on argTypes: https://storybook.js.org/docs/api/argtypes
     args: {
         primaryColor: 'bg-emerald-300',
-        secondaryColor: 'bg-emerald-800',
+        secondaryColor: 'bg-emerald-500',
         whiteText: false,
         course: exampleCourse,
     },
@@ -89,12 +89,7 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Default: Story = {
-    args: {
-        course: exampleCourse,
-        primaryColor: 'bg-emerald-300',
-        secondaryColor: 'bg-emerald-500',
-        whiteText: false,
-    },
+    args: {},
 };
 
 export const AllVariants: Story = {
