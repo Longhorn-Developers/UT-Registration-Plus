@@ -13,7 +13,7 @@ export interface PopupCourseBlockProps {
     primaryColor: string;
     secondaryColor: string;
     whiteText?: boolean;
-};
+}
 
 /**
  * The "course block" to be used in the extension popup.
@@ -35,7 +35,7 @@ export default function PopupCourseBlock({
                 'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3'
             )}
         >
-            <div className={classNames(secondaryColor, 'h-full flex items-center rounded rounded-r-0')}>
+            <div className={classNames(secondaryColor, 'h-full pl-2px pr-2px flex items-center rounded rounded-r-0')}>
                 <Icon className='' name='drag_indicator' color='white' />
             </div>
             <Text className={classNames(whiteText ? 'text-white' : 'text-black', 'flex-grow p3')} variant='h1-course'>
