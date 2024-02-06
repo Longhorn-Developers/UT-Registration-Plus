@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import clsx from 'clsx';
 import React from 'react';
 import { Color } from '@views/styles/colors.module.scss';
 import styles from './Divider.module.scss';
@@ -21,5 +21,5 @@ export default function Divider(props: Props) {
         borderStyle: props.type,
     };
 
-    return <hr data-testid={props.testId} style={style} className={classnames(styles.divider, props.className)} />;
+    return <hr data-testid={props.testId} style={style} className={clsx(styles.divider, props.className)} />;
 }
