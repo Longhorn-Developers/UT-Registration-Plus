@@ -1,7 +1,14 @@
 @use 'sass:color';
 @use 'src/views/styles/colors.module.scss';
 
-.dayLabelContainer {
+.calendar {
+    display: grid;
+    grid-template-columns: auto repeat(5, 1fr);
+    gap: 10px;
+}
+
+.day {
+    gap: 5px;
     display: flex;
     height: 13px;
     min-width: 40px;
@@ -11,26 +18,12 @@
     align-items: center;
     gap: 10px;
     flex: 1 0 0;
-}
-
-.dayLabel {
     color: colors.$burnt_orange;
     text-align: center;
-    font-family: Roboto;
     font-size: 14.22px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-}
-
-.calendar {
-    display: grid;
-    grid-template-columns: auto repeat(5, 1fr);
-    gap: 10px;
-}
-
-.day {
-    gap: 5px;
 }
 
 .timeBlock {
