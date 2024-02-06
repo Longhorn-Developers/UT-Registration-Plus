@@ -18,6 +18,7 @@
         "airbnb-base",
         "airbnb/rules/react",
         "airbnb-typescript",
+        "@unocss",
         "prettier",
     ],
     "plugins": [
@@ -203,6 +204,7 @@
                 ]
             }
         ],
+        "import/extensions": "off",
         "no-restricted-syntax": [
             "error",
             "ForInStatement",
