@@ -1,6 +1,6 @@
 import React from 'react';
 import { Course, Status } from 'src/shared/types/Course';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { StatusIcon } from 'src/shared/util/icons';
 import Text from '../Text/Text';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
@@ -30,14 +30,14 @@ export default function PopupCourseBlock({
 }: PopupCourseBlockProps): JSX.Element {
     return (
         <div
-            className={classNames(
+            className={clsx(
                 className,
                 primaryColor,
                 'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3'
             )}
         >
             <div
-                className={classNames(
+                className={clsx(
                     secondaryColor,
                     'cursor-move self-stretch px-0.5 flex items-center rounded rounded-r-0'
                 )}
@@ -45,7 +45,7 @@ export default function PopupCourseBlock({
                 <DragIndicatorIcon className='h-5 w-5 text-white' />
             </div>
             <Text
-                className={classNames('flex-grow p3', {
+                className={clsx('flex-grow p3', {
                     'text-white': whiteText,
                     'text-black': !whiteText,
                 })}
