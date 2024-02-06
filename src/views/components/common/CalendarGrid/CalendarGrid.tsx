@@ -31,6 +31,13 @@ const Calendar: React.FC = (props) => {
         ))}
       </div>
       {/* Displaying the rest of the calendar */}
+      <div className={styles.timeColumn}>
+        {hoursOfDay.map((hour) => (
+          <div key={hour} className={styles.timeLabelContainer}>
+            <span>{hour % 12 === 0 ? 12 : hour % 12}:00 {hour < 12 ? 'AM' : 'PM'}</span>
+          </div>
+        ))}
+      </div>
       <div className={styles.calendarGrid}>
         {grid.map((row, rowIndex) => (
           row
