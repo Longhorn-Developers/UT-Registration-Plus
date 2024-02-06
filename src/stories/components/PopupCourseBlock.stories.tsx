@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { Course, Status } from 'src/shared/types/Course';
 import { CourseMeeting } from 'src/shared/types/CourseMeeting';
+import Instructor from 'src/shared/types/Instructor';
 import PopupCourseBlock from '../../views/components/common/PopupCourseBlock/PopupCourseBlock';
 
 const exampleCourse: Course = new Course({
@@ -18,7 +19,13 @@ const exampleCourse: Course = new Course({
     flags: ['Quantitative Reasoning'],
     fullName: 'C S 303E ELEMS OF COMPTRS/PROGRAMMNG-WB',
     instructionMode: 'Online',
-    instructors: [],
+    instructors: [
+        new Instructor({
+            firstName: 'Bevo',
+            lastName: 'Bevo',
+            fullName: 'Bevo Bevo',
+        }),
+    ],
     isReserved: false,
     number: '303E',
     schedule: {
@@ -35,7 +42,7 @@ const exampleCourse: Course = new Course({
         season: 'Spring',
         year: 2024,
     },
-    status: Status.CANCELLED,
+    status: Status.WAITLISTED,
     uniqueId: 12345,
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
 });
@@ -52,12 +59,28 @@ const meta = {
     tags: ['autodocs'],
     // More on argTypes: https://storybook.js.org/docs/api/argtypes
     args: {
+        primaryColor: 'bg-emerald-300',
+        secondaryColor: 'bg-emerald-500',
+        whiteText: false,
         course: exampleCourse,
-        // children: 'The quick brown fox jumps over the lazy dog.',
     },
     argTypes: {
-        Course: { control: 'none' },
-        // children: { control: 'text' },
+        primaryColor: {
+            description: 'background tailwind color',
+            control: 'text',
+        },
+        secondaryColor: {
+            description: 'background tailwind for drag handle and icon',
+            control: 'text',
+        },
+        whiteText: {
+            description: 'control text color',
+            control: 'boolean',
+        },
+        course: {
+            description: 'the course to show data for',
+            control: 'object',
+        },
     },
 } satisfies Meta<typeof Text>;
 
@@ -71,17 +94,55 @@ export const Default: Story = {
 
 export const AllVariants: Story = {
     args: {
-        children: 'The quick brown fox jumps over the lazy dog.',
+        course: exampleCourse,
+        primaryColor: 'bg-emerald-300',
+        secondaryColor: 'bg-emerald-500',
+        whiteText: false,
     },
     render: props => (
-        <div className='h-10 w-2xl flex flex-col gap-4'>
-            <PopupCourseBlock {...props} course={exampleCourse} />
+        <div className='flex flex-col gap-4'>
+            <div className='h-10 w-2xl flex gap-4'>
+                <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.OPEN })} />
+                <PopupCourseBlock
+                    course={new Course({ ...exampleCourse, status: Status.OPEN })}
+                    primaryColor='bg-emerald-600'
+                    secondaryColor='bg-emerald-800'
+                    whiteText
+                />
+            </div>
+            <div className='h-10 w-2xl flex gap-4'>
+                <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.CLOSED })} />
+                <PopupCourseBlock
+                    course={new Course({ ...exampleCourse, status: Status.CLOSED })}
+                    primaryColor='bg-emerald-600'
+                    secondaryColor='bg-emerald-800'
+                    whiteText
+                />
+            </div>
+            <div className='h-10 w-2xl flex gap-4'>
+                <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.WAITLISTED })} />
+                <PopupCourseBlock
+                    course={new Course({ ...exampleCourse, status: Status.WAITLISTED })}
+                    primaryColor='bg-emerald-600'
+                    secondaryColor='bg-emerald-800'
+                    whiteText
+                />
+            </div>
+            <div className='h-10 w-2xl flex gap-4'>
+                <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.CANCELLED })} />
+                <PopupCourseBlock
+                    course={new Course({ ...exampleCourse, status: Status.CANCELLED })}
+                    primaryColor='bg-emerald-600'
+                    secondaryColor='bg-emerald-800'
+                    whiteText
+                />
+            </div>
         </div>
     ),
     parameters: {
         design: {
             type: 'figma',
-            url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=324-389&mode=design&t=BoS5xBrpSsjgQXqv-4',
+            url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=1046-6714&mode=design&t=5Bjr7qGHNXmjfMTc-0',
         },
     },
 };

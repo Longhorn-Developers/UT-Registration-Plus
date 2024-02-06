@@ -1,35 +1,64 @@
 import React from 'react';
-import { Course } from 'src/shared/types/Course';
+import { Course, Status } from 'src/shared/types/Course';
 import classNames from 'classnames';
+import { StatusIcon } from 'src/shared/util/icons';
 import Text from '../Text/Text';
-import Icon from '../Icon/Icon';
+import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
-type PopupCourseBlockProps = {
+/**
+ * Props for PopupCourseBlock
+ */
+export interface PopupCourseBlockProps {
     className?: string;
     course: Course;
-};
+    primaryColor: string;
+    secondaryColor: string;
+    whiteText?: boolean;
+}
 
 /**
  * The "course block" to be used in the extension popup.
  *
  * @param props PopupCourseBlockProps
  */
-export default function PopupCourseBlock({ className, course }: PopupCourseBlockProps): JSX.Element {
+export default function PopupCourseBlock({
+    className,
+    course,
+    primaryColor,
+    secondaryColor,
+    whiteText,
+}: PopupCourseBlockProps): JSX.Element {
     return (
-        // <div className={classNames(className, 'w-full bg-emerald-300')} style={style}>
         <div
             className={classNames(
                 className,
-                'h-full w-full inline-flex items-center justify-center gap-1 rounded bg-emerald-300 pr-2'
+                primaryColor,
+                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3'
             )}
         >
-            <div className='h-full flex items-center rounded rounded-r-0 bg-emerald-800'>
-                <Icon className='' name='drag_indicator' color='white' />
+            <div
+                className={classNames(
+                    secondaryColor,
+                    'cursor-move self-stretch px-0.5 flex items-center rounded rounded-r-0'
+                )}
+            >
+                <DragIndicatorIcon className='h-5 w-5 text-white' />
             </div>
-            <Text className='flex-grow p2' variant='h1-course'>
+            <Text
+                className={classNames('flex-grow p3', {
+                    'text-white': whiteText,
+                    'text-black': !whiteText,
+                })}
+                variant='h1-course'
+            >
                 {`${course.uniqueId} ${course.department} ${course.number} - ${course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}`}
             </Text>
-            <Icon className='justify-self-end rounded bg-emerald-800 p-1px' name='timelapse' color='white' />
+            {course.status !== Status.OPEN && (
+                <StatusIcon
+                    status={course.status}
+                    className={`text-white justify-self-end rounded p-1px w-5 h-5 ${secondaryColor}`}
+                />
+            )}
         </div>
     );
 }
