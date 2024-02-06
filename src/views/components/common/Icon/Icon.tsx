@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React from 'react';
 import colors, { Color } from '@views/styles/colors.module.scss';
 import fonts, { Size } from '@views/styles/fonts.module.scss';
@@ -36,7 +36,7 @@ export default function Icon(props: Props) {
         <span
             data-testid={props.testId}
             style={style}
-            className={classNames(styles.icon, props.className)}
+            className={clsx(styles.icon, props.className)}
             onClick={props.onClick}
         >
             {props.name}

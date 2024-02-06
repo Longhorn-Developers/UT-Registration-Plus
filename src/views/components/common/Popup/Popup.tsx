@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React, { PropsWithChildren, useCallback } from 'react';
 import styles from './Popup.module.scss';
 
@@ -46,12 +46,12 @@ export default function Popup({ onClose, children, className, style, testId, ove
         <div
             style={style}
             ref={containerRef}
-            className={classNames(styles.container, {
+            className={clsx(styles.container, {
                 [styles.overlay]: overlay,
             })}
             data-testid={testId}
         >
-            <div ref={bodyRef} className={classNames(styles.body, className)}>
+            <div ref={bodyRef} className={clsx(styles.body, className)}>
                 {children}
             </div>
         </div>
