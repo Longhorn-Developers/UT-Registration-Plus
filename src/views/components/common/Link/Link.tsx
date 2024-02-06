@@ -1,5 +1,5 @@
 import { background } from '@shared/messages';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React, { PropsWithChildren } from 'react';
 import Text, { TextProps } from '../Text/Text';
 import styles from './Link.module.scss';
@@ -29,7 +29,7 @@ export default function Link(props: PropsWithChildren<Props>) {
             color='bluebonnet'
             {...passedProps}
             span
-            className={classNames(
+            className={clsx(
                 styles.link,
                 {
                     [styles.disabled]: isDisabled,
