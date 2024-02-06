@@ -27,22 +27,17 @@ const Calendar: React.FC = (props) => {
       </div>
 
       {/* Displaying the rest of the calendar */}
-      {hoursOfDay.map((hour) => (
-        <div key={hour} className={styles.row}>
-          {/* Hour column */}
-          <div className={styles.timeLabelContainer}>
-            <span>{hour}:00</span>
+      <div className={styles.calendarGrid}>
+        {hoursOfDay.map(hour => (
+          <div key={hour} className={styles.calendarRow}>
+            {daysOfWeek.map(day => (
+              <CalendarCell key={`${day}-${hour}`} />
+            ))}
           </div>
-          {/* Calendar cells for each day */}
-          {daysOfWeek.map((day, dayIndex) => (
-            <div key={`${day}-${hour}`} className={styles.timeBlock}>
-              <CalendarCell />
-            </div>
-          ))}
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
-  );
+  )
 };
 
 export default Calendar;

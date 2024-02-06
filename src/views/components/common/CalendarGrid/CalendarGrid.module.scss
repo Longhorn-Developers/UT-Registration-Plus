@@ -13,6 +13,15 @@
     flex: 1 0 0;
 }
 
+.calendarGrid {
+    display: flex;
+    flex-direction: column;
+}
+
+.calendarRow {
+    display: flex;
+}
+
 .calendar {
     display: grid;
     grid-template-columns: auto repeat(5, 1fr);
