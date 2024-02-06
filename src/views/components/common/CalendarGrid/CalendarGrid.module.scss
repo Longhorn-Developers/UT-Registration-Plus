@@ -1,14 +1,7 @@
 @use 'sass:color';
 @use 'src/views/styles/colors.module.scss';
 
-.calendar {
-    display: grid;
-    grid-template-columns: auto repeat(5, 1fr);
-    gap: 10px;
-}
-
-.day {
-    gap: 5px;
+.dayLabelContainer {
     display: flex;
     height: 13px;
     min-width: 40px;
@@ -18,6 +11,16 @@
     align-items: center;
     gap: 10px;
     flex: 1 0 0;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: auto repeat(5, 1fr);
+    gap: 10px;
+}
+
+.day {
+    gap: 5px;
     color: colors.$burnt_orange;
     text-align: center;
     font-size: 14.22px;
