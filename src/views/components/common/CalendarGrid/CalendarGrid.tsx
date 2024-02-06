@@ -41,6 +41,11 @@ const Calendar: React.FC = (props) => {
         ))}
       </div> */}
 
+      {grid.map((row, rowIndex) => (
+        <div className={styles.row} key={rowIndex}>
+          {row}
+        </div>
+      ))}
     </div>
   )
 };
