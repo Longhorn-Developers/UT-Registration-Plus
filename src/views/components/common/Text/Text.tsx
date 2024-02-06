@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React, { PropsWithChildren } from 'react';
 import styles from './Text.module.scss';
 
@@ -20,7 +20,7 @@ type Variant = (typeof variants)[number];
  * A reusable Text component with props that build on top of the design system for the extension
  */
 export default function Text({ variant, as, className, ...props }: PropsWithChildren<TextProps>) {
-    const mergedClassName = classNames(styles.text, styles[variant], className);
+    const mergedClassName = clsx(styles.text, styles[variant], className);
 
     if (as === 'div') return <div className={mergedClassName} {...props} />;
 
