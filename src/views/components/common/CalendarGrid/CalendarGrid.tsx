@@ -7,6 +7,11 @@ const daysOfWeek = Object.values(DAY_MAP);
 daysOfWeek.pop();
 daysOfWeek.pop();
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
+const grid = Array.from({ length: 13 }, () =>
+  Array.from({ length: 5 }, (_, columnIndex) => (
+    <CalendarCell key={columnIndex} />
+  ))
+);
 
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
@@ -25,9 +30,8 @@ const Calendar: React.FC = (props) => {
           </div>
         ))}
       </div>
-
       {/* Displaying the rest of the calendar */}
-      <div className={styles.calendarGrid}>
+      {/* <div className={styles.calendarGrid}>
         {hoursOfDay.map(hour => (
           <div key={hour} className={styles.calendarRow}>
             {daysOfWeek.map(day => (
@@ -35,7 +39,8 @@ const Calendar: React.FC = (props) => {
             ))}
           </div>
         ))}
-      </div>
+      </div> */}
+
     </div>
   )
 };
