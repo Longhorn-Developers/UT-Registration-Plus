@@ -1,7 +1,7 @@
 import React from 'react';
 import { Course, Status } from 'src/shared/types/Course';
 import classNames from 'classnames';
-import { getStatusIcon } from 'src/shared/util/icons';
+import { StatusIcon } from 'src/shared/util/icons';
 import Text from '../Text/Text';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
@@ -53,8 +53,12 @@ export default function PopupCourseBlock({
             >
                 {`${course.uniqueId} ${course.department} ${course.number} - ${course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}`}
             </Text>
-            {course.status !== Status.OPEN &&
-                getStatusIcon(course.status, `text-white justify-self-end rounded p-1px w-5 h-5 ${secondaryColor}`)}
+            {course.status !== Status.OPEN && (
+                <StatusIcon
+                    status={course.status}
+                    className={`text-white justify-self-end rounded p-1px w-5 h-5 ${secondaryColor}`}
+                />
+            )}
         </div>
     );
 }
