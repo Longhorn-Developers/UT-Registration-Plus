@@ -11,27 +11,26 @@ const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
  * @param props 
  */
 const Calendar: React.FC = (props) => {
-  
-    return (
-      <div className={styles.calendar}>
-        <div className={styles.dayLabelContainer}></div>
-        {daysOfWeek.map((day, dayIndex) => (
-          <div key={dayIndex} className={styles.day}>
-            <div className={styles.dayLabelContainer}>
-              <div className={styles.dayLabel}>{day}</div>
-            </div>
-            {hoursOfDay.map((hour) => (
-              <div key={`${day}-${hour}`} className={styles.timeBlock}>
-                <div className={styles.timeLabelContainer}>
-                  <span>{hour}:00</span>
-                </div>
-                <CalendarCell />
-              </div>
-            ))}
+  return (
+    <div className={styles.calendar}>
+      <div className={styles.dayLabelContainer}></div>
+      {daysOfWeek.map((day, dayIndex) => (
+        <div key={dayIndex} className={styles.day}>
+          <div className={styles.dayLabelContainer}>
+            <div className={styles.dayLabel}>{day}</div>
           </div>
-        ))}
-      </div>
-    );
-  };
-  
-  export default Calendar;
+          {hoursOfDay.map((hour) => (
+            <div key={`${day}-${hour}`} className={styles.timeBlock}>
+              <div className={styles.timeLabelContainer}>
+                <span>{hour}:00</span>
+              </div>
+              <CalendarCell />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Calendar;
