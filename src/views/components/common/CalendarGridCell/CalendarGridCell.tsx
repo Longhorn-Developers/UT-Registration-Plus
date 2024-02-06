@@ -9,7 +9,7 @@ const CalendarCell: React.FC = (props) => {
   return (
     <div className={styles.calendarCell}>
       <div className={styles.hourLine}>
-        TEMP
+
       </div>
     </div>
   );
