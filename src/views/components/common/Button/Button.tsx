@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React from 'react';
 import styles from './Button.module.scss';
 
@@ -43,7 +43,7 @@ export function Button({
                 } as React.CSSProperties
             }
             data-testid={testId}
-            className={classNames(useScss ? styles.button : BUTTON_BASE_CLASS, className, {
+            className={clsx(useScss ? styles.button : BUTTON_BASE_CLASS, className, {
                 [styles[variant]]: useScss,
                 [styles.disabled]: disabled && useScss,
                 'disabled:(cursor-not-allowed opacity-50)': disabled && !useScss,

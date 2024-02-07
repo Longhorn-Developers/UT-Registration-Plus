@@ -21,7 +21,7 @@
         "@unocss/reset": "^0.58.5",
         "@vitejs/plugin-react": "^4.2.1",
         "chrome-extension-toolkit": "^0.0.51",
-        "classnames": "^2.5.1",
+        "clsx": "^2.1.0",
         "highcharts": "^11.3.0",
         "highcharts-react-official": "^3.2.1",
         "react": "^18.2.0",
