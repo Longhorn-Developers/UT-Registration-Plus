@@ -3,35 +3,50 @@ import styles from './CalendarGrid.module.scss';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 
-const daysOfWeek = Object.values(DAY_MAP);
+const daysOfWeek = Object.values(DAY_MAP).filter(d => d != "Saturday" && d != "Sunday")
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
+const grid = Array.from({ length: 5 }, () =>
+  Array.from({ length: 13 }, (_, columnIndex) => (
+    <CalendarCell key={columnIndex} />
+  ))
+);
 
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  * @param props 
  */
 const Calendar: React.FC = (props) => {
-  
-    return (
-      <div className={styles.calendar}>
-        <div className={styles.dayLabelContainer}></div>
-        {daysOfWeek.map((day, dayIndex) => (
-          <div key={dayIndex} className={styles.day}>
-            <div className={styles.dayLabelContainer}>
-              <div className={styles.dayLabel}>{day}</div>
-            </div>
-            {hoursOfDay.map((hour) => (
-              <div key={`${day}-${hour}`} className={styles.timeBlock}>
-                <div className={styles.timeLabelContainer}>
-                  <span>{hour}:00</span>
-                </div>
-                <CalendarCell />
-              </div>
-            ))}
+  return (
+    <div className={styles.calendar}>
+      <div className={styles.dayLabelContainer}>
+        {/* Empty cell in the top-left corner */}
+        <div className={styles.day} />
+        {/* Displaying day labels */}
+        {daysOfWeek.map(day => (
+          <div key={day} className={styles.day}>
+            {day}
           </div>
         ))}
       </div>
-    );
-  };
-  
-  export default Calendar;
+      {/* Displaying the rest of the calendar */}
+      <div className={styles.timeAndGrid}>
+        <div className={styles.timeColumn}>
+          {hoursOfDay.map((hour) => (
+            <div key={hour} className={styles.timeBlock}>
+              <div className={styles.timeLabelContainer}>
+                <p>{hour % 12 === 0 ? 12 : hour % 12}:00 {hour < 12 ? 'AM' : 'PM'}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className={styles.calendarGrid}>
+          {grid.map((row, rowIndex) => (
+            row
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+};
+
+export default Calendar;

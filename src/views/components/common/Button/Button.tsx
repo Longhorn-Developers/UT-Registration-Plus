@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React from 'react';
 import styles from './Button.module.scss';
 
@@ -30,7 +30,7 @@ export function Button({
         <button
             style={style}
             data-testid={testId}
-            className={classNames(styles.button, className, styles[type ?? 'primary'], {
+            className={clsx(styles.button, className, styles[type ?? 'primary'], {
                 [styles.disabled]: disabled,
             })}
             title={title}
