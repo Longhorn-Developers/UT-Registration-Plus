@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './ExtensionRoot.module.scss';
 
 import 'uno.css';
+import '@unocss/reset/tailwind-compat.css';
 
 interface Props {
     testId?: string;
