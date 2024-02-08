@@ -3,7 +3,9 @@ import React from 'react';
 import { Course, Status } from 'src/shared/types/Course';
 import { CourseMeeting } from 'src/shared/types/CourseMeeting';
 import Instructor from 'src/shared/types/Instructor';
-import PopupCourseBlock from '../../views/components/common/PopupCourseBlock/PopupCourseBlock';
+import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
+import { getCourseColors } from 'src/shared/util/colors';
+import { theme } from 'unocss/preset-mini';
 
 const exampleCourse: Course = new Course({
     courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',
@@ -59,30 +61,20 @@ const meta = {
     tags: ['autodocs'],
     // More on argTypes: https://storybook.js.org/docs/api/argtypes
     args: {
-        primaryColor: 'bg-emerald-300',
-        secondaryColor: 'bg-emerald-500',
-        whiteText: false,
+        colors: getCourseColors('emerald'),
         course: exampleCourse,
     },
     argTypes: {
-        primaryColor: {
-            description: 'background tailwind color',
-            control: 'text',
-        },
-        secondaryColor: {
-            description: 'background tailwind for drag handle and icon',
-            control: 'text',
-        },
-        whiteText: {
-            description: 'control text color',
-            control: 'boolean',
+        colors: {
+            description: 'the colors to use for the course block',
+            control: 'object',
         },
         course: {
             description: 'the course to show data for',
             control: 'object',
         },
     },
-} satisfies Meta<typeof Text>;
+} satisfies Meta<typeof PopupCourseBlock>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -92,51 +84,29 @@ export const Default: Story = {
     args: {},
 };
 
-export const AllVariants: Story = {
-    args: {
-        course: exampleCourse,
-        primaryColor: 'bg-emerald-300',
-        secondaryColor: 'bg-emerald-500',
-        whiteText: false,
-    },
+export const Variants: Story = {
     render: props => (
-        <div className='flex flex-col gap-4'>
-            <div className='h-10 w-2xl flex gap-4'>
-                <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.OPEN })} />
-                <PopupCourseBlock
-                    course={new Course({ ...exampleCourse, status: Status.OPEN })}
-                    primaryColor='bg-emerald-600'
-                    secondaryColor='bg-emerald-800'
-                    whiteText
-                />
-            </div>
-            <div className='h-10 w-2xl flex gap-4'>
-                <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.CLOSED })} />
-                <PopupCourseBlock
-                    course={new Course({ ...exampleCourse, status: Status.CLOSED })}
-                    primaryColor='bg-emerald-600'
-                    secondaryColor='bg-emerald-800'
-                    whiteText
-                />
-            </div>
-            <div className='h-10 w-2xl flex gap-4'>
-                <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.WAITLISTED })} />
-                <PopupCourseBlock
-                    course={new Course({ ...exampleCourse, status: Status.WAITLISTED })}
-                    primaryColor='bg-emerald-600'
-                    secondaryColor='bg-emerald-800'
-                    whiteText
-                />
-            </div>
-            <div className='h-10 w-2xl flex gap-4'>
-                <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.CANCELLED })} />
-                <PopupCourseBlock
-                    course={new Course({ ...exampleCourse, status: Status.CANCELLED })}
-                    primaryColor='bg-emerald-600'
-                    secondaryColor='bg-emerald-800'
-                    whiteText
-                />
-            </div>
+        <div className='grid grid-cols-2 max-w-2xl w-90vw gap-x-4 gap-y-2'>
+            <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.OPEN })} />
+            <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.CLOSED })} />
+            <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.WAITLISTED })} />
+            <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.CANCELLED })} />
+        </div>
+    ),
+};
+
+const colors = Object.keys(theme.colors)
+    // check that the color is a colorway (is an object)
+    .filter(color => typeof theme.colors[color] === 'object')
+    .slice(0, 17)
+    .map(color => getCourseColors(color as keyof typeof theme.colors));
+
+export const AllColors: Story = {
+    render: props => (
+        <div className='grid grid-rows-9 grid-cols-2 grid-flow-col max-w-2xl w-90vw gap-x-4 gap-y-2'>
+            {colors.map((color, i) => (
+                <PopupCourseBlock key={color.primaryColor} course={exampleCourse} colors={color} />
+            ))}
         </div>
     ),
     parameters: {

@@ -1,9 +1,10 @@
-import React from 'react';
-import { Course, Status } from 'src/shared/types/Course';
 import clsx from 'clsx';
-import { StatusIcon } from 'src/shared/util/icons';
-import Text from '../Text/Text';
+import React, { useState } from 'react';
+import { Course, Status } from '@shared/types/Course';
+import { StatusIcon } from '@shared/util/icons';
+import { CourseColors, getCourseColors, pickFontColor } from '@shared/util/colors';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
+import Text from '../Text/Text';
 
 /**
  * Props for PopupCourseBlock
@@ -11,9 +12,7 @@ import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 export interface PopupCourseBlockProps {
     className?: string;
     course: Course;
-    primaryColor: string;
-    secondaryColor: string;
-    whiteText?: boolean;
+    colors: CourseColors;
 }
 
 /**
@@ -21,43 +20,41 @@ export interface PopupCourseBlockProps {
  *
  * @param props PopupCourseBlockProps
  */
-export default function PopupCourseBlock({
-    className,
-    course,
-    primaryColor,
-    secondaryColor,
-    whiteText,
-}: PopupCourseBlockProps): JSX.Element {
+export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): JSX.Element {
+    // whiteText based on secondaryColor
+    const fontColor = pickFontColor(colors.primaryColor);
+
     return (
         <div
-            className={clsx(
-                className,
-                primaryColor,
-                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3'
-            )}
+            style={{
+                backgroundColor: colors.primaryColor,
+            }}
+            className={clsx('h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3', className)}
         >
             <div
-                className={clsx(
-                    secondaryColor,
-                    'cursor-move self-stretch px-0.5 flex items-center rounded rounded-r-0'
-                )}
+                style={{
+                    backgroundColor: colors.secondaryColor,
+                }}
+                className='flex cursor-move items-center self-stretch rounded rounded-r-0'
             >
-                <DragIndicatorIcon className='h-5 w-5 text-white' />
+                <DragIndicatorIcon className='h-6 w-6 text-white' />
             </div>
             <Text
-                className={clsx('flex-grow p3', {
-                    'text-white': whiteText,
-                    'text-black': !whiteText,
-                })}
+                className={clsx('flex-1 py-3.5 text-ellipsis whitespace-nowrap overflow-hidden', fontColor)}
                 variant='h1-course'
             >
-                {`${course.uniqueId} ${course.department} ${course.number} - ${course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}`}
+                <span className='px-0.5 font-450'>{course.uniqueId}</span> {course.department} {course.number} &ndash;{' '}
+                {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
             </Text>
             {course.status !== Status.OPEN && (
-                <StatusIcon
-                    status={course.status}
-                    className={`text-white justify-self-end rounded p-1px w-5 h-5 ${secondaryColor}`}
-                />
+                <div
+                    style={{
+                        backgroundColor: colors.secondaryColor,
+                    }}
+                    className='ml-1 flex items-center justify-center justify-self-end rounded p-1px text-white'
+                >
+                    <StatusIcon status={course.status} className='h-5 w-5' />
+                </div>
             )}
         </div>
     );
