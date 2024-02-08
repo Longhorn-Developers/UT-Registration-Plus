@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './ExtensionRoot.module.scss';
 
+import '@unocss/reset/tailwind-compat.css';
 import 'uno.css';
 import '@unocss/reset/tailwind-compat.css';
 
