@@ -55,6 +55,7 @@
         "@unocss/postcss": "^0.58.4",
         "@unocss/preset-uno": "^0.58.4",
         "@unocss/preset-web-fonts": "^0.58.4",
+        "@unocss/reset": "^0.58.5",
         "@unocss/transformer-directives": "^0.58.4",
         "@unocss/transformer-variant-group": "^0.58.4",
         "@vitejs/plugin-react-swc": "^3.6.0",
