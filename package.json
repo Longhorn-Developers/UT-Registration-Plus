@@ -59,6 +59,7 @@
         "@unocss/transformer-directives": "^0.58.4",
         "@unocss/transformer-variant-group": "^0.58.4",
         "@vitejs/plugin-react-swc": "^3.6.0",
+        "chromatic": "^10.9.1",
         "cssnano": "^6.0.3",
         "cssnano-preset-advanced": "^6.0.3",
         "dotenv": "^16.4.1",
