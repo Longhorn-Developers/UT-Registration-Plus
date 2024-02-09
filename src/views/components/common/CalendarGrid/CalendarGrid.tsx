@@ -25,7 +25,7 @@ const Calendar: React.FC = (props) => {
       </div>
       {/* Displaying the rest of the calendar */}
       <div className={styles.timeAndGrid}>
-        <div className={styles.timeColumn}>
+        {/* <div className={styles.timeColumn}>
           <div className={styles.timeBlock}></div>
           {hoursOfDay.map((hour) => (
             <div key={hour} className={styles.timeBlock}>
@@ -34,9 +34,10 @@ const Calendar: React.FC = (props) => {
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
         <div className={styles.calendarGrid}>
           {/* Displaying day labels */}
+          <div className={styles.timeBlock}></div>
           {daysOfWeek.map(day => (
             <div key={day} className={styles.day}>
               {day}
