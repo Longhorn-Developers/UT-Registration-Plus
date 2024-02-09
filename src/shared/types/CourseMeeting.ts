@@ -2,6 +2,7 @@ import { Serialized } from 'chrome-extension-toolkit';
 
 /**
  * a map of the days of the week that a class is taught, and the corresponding abbreviation
+ * Don't modify the keys
  */
 export const DAY_MAP = {
     M: 'Monday',
