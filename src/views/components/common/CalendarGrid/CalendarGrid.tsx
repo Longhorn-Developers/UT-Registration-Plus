@@ -5,23 +5,13 @@ import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 
 const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['SAT', 'SUN'].includes(key));
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
-const grid = Array.from({ length: 6 }, (_, rowIndex) => {
-  let index = 0;
-  return Array.from({ length: 13 }, (_, columnIndex) => {
-    if (columnIndex == 0) {
-      index += 1;
-      return (
-        <div key={columnIndex} className={styles.timeBlock}>
-          <div className={styles.timeLabelContainer}>
-            <p>{hoursOfDay[index - 1]}</p>
-          </div>
-        </div>
-      );
-    } else {
-      return <CalendarCell key={columnIndex} />;
-    }
-  })
-});
+const grid = [];
+for (let i = 0; i < 13; i++) {
+  const row = [];
+  row.push(hoursOfDay[i]);
+  const row = Array.from({ length: 5 }, (_, j) => <CalendarCell key={j} />);
+  grid.push(row);
+}
 
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
