@@ -9,7 +9,7 @@ const grid = [];
 for (let i = 0; i < 13; i++) {
   const row = [];
   row.push(hoursOfDay[i]);
-  const row = Array.from({ length: 5 }, (_, j) => <CalendarCell key={j} />);
+  row.push(Array.from({ length: 5 }, (_, j) => <CalendarCell key={j} />));
   grid.push(row);
 }
 
