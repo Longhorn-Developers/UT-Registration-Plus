@@ -1,9 +1,4 @@
-import clsx from 'clsx';
-import React, { useState } from 'react';
-import { Course, Status } from '@shared/types/Course';
-import { StatusIcon } from '@shared/util/icons';
-import { CourseColors, getCourseColors, pickFontColor } from '@shared/util/colors';
-import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
+import React from 'react';
 import Text from '../Text/Text';
 
 /**
@@ -22,20 +17,9 @@ export interface ScheduleTotalHoursAndCoursesProps {
  */
 export default function ScheduleTotalHoursAndCoursess({ scheduleName, totalHours, totalCourses }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div
-            style={{
-                display: 'flex',
-                minWidth: '245px',
-                alignItems: 'center',
-                alignContent: 'center',
-                gap: '5px 10px',
-                flexWrap: 'wrap',
-            }}
-        >
+        <div className="flex min-w-64 items-center content-center gap-2 flex-wrap uppercase">
             <Text
-                style={{
-                    color: '#BF5700',
-                }}
+                className="text-[#BF5700]"
                 variant='h1'
                 as='span'
             >
@@ -44,18 +28,14 @@ export default function ScheduleTotalHoursAndCoursess({ scheduleName, totalHours
             <Text
                 variant='h3'
                 as='span'
-                style={{
-                    color: '#1A2024'
-                }}
+                className="text-[#1A2024]"
             >
                 {`${totalHours} HOURS`}
             </Text>
             <Text
                 variant='h4'
                 as='span'
-                style={{
-                    color: '#333F48'
-                }}
+                className="text-[#333F48]"
             >
                 {`${totalCourses} courses`}
             </Text>

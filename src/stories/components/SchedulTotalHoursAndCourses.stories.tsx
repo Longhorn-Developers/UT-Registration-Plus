@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        scheduleName: 'text',
+        scheduleName: 'SCHEDULE',
         totalHours: 22,
         totalCourses: 8
     },
