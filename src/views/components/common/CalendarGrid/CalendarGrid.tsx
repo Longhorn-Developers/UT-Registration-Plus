@@ -48,9 +48,7 @@ const Calendar: React.FC = (props) => {
               {day}
             </div>
           ))}
-          {grid.map((row, rowIndex) => (
-            row
-          ))}
+          {grid.map((row, rowIndex) => (row))}
         </div>
       </div>
     </div>
