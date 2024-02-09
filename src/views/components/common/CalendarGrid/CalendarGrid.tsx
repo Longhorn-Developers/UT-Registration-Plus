@@ -27,9 +27,6 @@ const Calendar: React.FC = (props) => {
   return (
     <div className={styles.calendar}>
       <div className={styles.dayLabelContainer}>
-        {/* Empty cell in the top-left corner */}
-        <div className={styles.day} />
-        
       </div>
       {/* Displaying the rest of the calendar */}
       <div className={styles.timeAndGrid}>
