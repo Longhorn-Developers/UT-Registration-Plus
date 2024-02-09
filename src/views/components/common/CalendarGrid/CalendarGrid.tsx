@@ -8,7 +8,13 @@ const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 const grid = [];
 for (let i = 0; i < 13; i++) {
   const row = [];
-  row.push(hoursOfDay[i]);
+  let hour = hoursOfDay[i];
+  row.push(<>
+    <div key={hour} className={styles.timeBlock}>
+      <div className={styles.timeLabelContainer}><p>{(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}</p></div>
+    </div>
+  </>
+  );
   row.push(Array.from({ length: 5 }, (_, j) => <CalendarCell key={j} />));
   grid.push(row);
 }
