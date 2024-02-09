@@ -2,7 +2,7 @@ import React from 'react';
 import Text from '../Text/Text';
 
 /**
- * Props for PopupCourseBlock
+ * Props for ConflictWithWarningProps
  */
 export interface ConflictsWithWarningProps {
     ConflictingCourse: string;
@@ -10,7 +10,8 @@ export interface ConflictsWithWarningProps {
 }
 
 /**
- * The "course block" to be used in the extension popup.
+ * The ConflictsWithWarning component is used to display a warning message when a course conflicts 
+ * with another course as part of the labels and details section
  *
  * @param props ConflictsWithWarningProps
  */
