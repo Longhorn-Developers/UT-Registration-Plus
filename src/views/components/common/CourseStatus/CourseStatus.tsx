@@ -29,13 +29,7 @@ export default function CourseStatus({ status, size }: CourseStatusProps): JSX.E
     });
 
     return (
-        <div
-            style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-            }}
-        >
+        <div className="inline-flex items-center gap-1">
             <StatusIcon status={status} className={statusIconSizeClass} />
             <Text
                 variant={size}
