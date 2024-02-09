@@ -18,7 +18,7 @@ export interface CourseStatusProps {
 }
 
 /**
- * The CourseStatus component as part of the Labels and Details Figma section
+ * The CourseStatus component as per the Labels and Details Figma section
  *
  * @param props CourseStatusProps
  */
