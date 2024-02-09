@@ -1,60 +1,67 @@
 @use 'src/views/styles/colors.module.scss';
 @use 'src/views/styles/fonts.module.scss';
 
-.text {
-    font-family: 'Inter', sans-serif;
-    color: colors.$charcoal;
-    line-height: initial;
-}
+@layer theme {
+    .text {
+        font-family: 'Roboto Flex', sans-serif;
+        line-height: normal;
+        font-style: normal;
+    }
 
-.light_weight {
-    font-weight: fonts.$light_weight;
-}
+    .mini {
+        font-size: 0.79rem;
+        font-weight: 500;
+    }
 
-.regular_weight {
-    font-weight: fonts.$regular_weight;
-}
+    .small {
+        font-size: 0.88875rem;
+        font-weight: 500;
+    }
 
-.normal_weight {
-    font-weight: fonts.$normal_weight;
-}
+    .p {
+        font-size: 1rem;
+        font-weight: 400;
+        letter-spacing: 0.025rem;
+    }
 
-.semi_bold_weight {
-    font-weight: fonts.$semi_bold_weight;
-}
+    .h4 {
+        font-size: 1.125rem;
+        font-weight: 500;
+    }
 
-.bold_weight {
-    font-weight: fonts.$bold_weight;
-}
+    .h3-course {
+        font-size: 0.6875rem;
+        font-weight: 400;
+        line-height: 100%; /* 0.6875rem */
+    }
 
-.black_weight {
-    font-weight: fonts.$black_weight;
-}
+    .h3 {
+        font-size: 1.26563rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
 
-.x_small_size {
-    font-size: fonts.$x_small_size;
-}
+    .h2-course {
+        font-size: 1rem;
+        font-weight: 500;
+        letter-spacing: 0.03125rem;
+        text-transform: capitalize;
+    }
 
-.xx_small_size {
-    font-size: fonts.$xx_small_size;
-}
+    .h2 {
+        font-size: 1.42375rem;
+        font-weight: 500;
+    }
 
-.small_size {
-    font-size: fonts.$small_size;
-}
+    .h1-course {
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
 
-.medium_size {
-    font-size: fonts.$medium_size;
-}
-
-.large_size {
-    font-size: fonts.$large_size;
-}
-
-.x_large_size {
-    font-size: fonts.$x_large_size;
-}
-
-.xx_large_size {
-    font-size: fonts.$xx_large_size;
+    .h1 {
+        font-size: 1.60188rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
 }
