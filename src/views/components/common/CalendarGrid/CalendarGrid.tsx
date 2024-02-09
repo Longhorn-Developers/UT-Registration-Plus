@@ -3,7 +3,7 @@ import styles from './CalendarGrid.module.scss';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 
-const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['SAT', 'SUN'].includes(key));
+const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 const grid = [];
 for (let i = 0; i < 13; i++) {
