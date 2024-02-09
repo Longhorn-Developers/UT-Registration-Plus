@@ -18,7 +18,7 @@ export interface CourseStatusProps {
 }
 
 /**
- * The "course block" to be used in the extension popup.
+ * The CourseStatus component as part of the Labels and Details Figma section
  *
  * @param props CourseStatusProps
  */
