@@ -7,10 +7,15 @@ import { Course } from './Course';
 export class UserSchedule {
     courses: Course[];
     name: string;
+    hours: number;
 
     constructor(schedule: Serialized<UserSchedule>) {
         this.courses = schedule.courses.map(c => new Course(c));
         this.name = schedule.name;
+        this.hours = 0;
+        for (const course of this.courses) {
+            this.hours += course.creditHours;
+        }
     }
 
     containsCourse(course: Course): boolean {
