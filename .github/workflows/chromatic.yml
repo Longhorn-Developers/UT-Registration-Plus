@@ -1,6 +1,6 @@
 name: "Chromatic"
 
-on: [push, pull_request]
+on: [push, pull_request_target]
 
 jobs:
   chromatic:
@@ -11,9 +11,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
-          version: 8.15.1
+          version: 8
 
       - name: Install dependencies
         run: pnpm install
