@@ -123,6 +123,9 @@ devDependencies:
   '@unocss/preset-web-fonts':
     specifier: ^0.58.4
     version: 0.58.4
+  '@unocss/reset':
+    specifier: ^0.58.5
+    version: 0.58.5
   '@unocss/transformer-directives':
     specifier: ^0.58.4
     version: 0.58.4
@@ -132,6 +135,9 @@ devDependencies:
   '@vitejs/plugin-react-swc':
     specifier: ^3.6.0
     version: 3.6.0(vite@5.0.12)
+  chromatic:
+    specifier: ^10.9.1
+    version: 10.9.1
   cssnano:
     specifier: ^6.0.3
     version: 6.0.3(postcss@8.4.33)
@@ -5046,6 +5052,10 @@ packages:
     resolution: {integrity: sha512-ZZTrAdl4WWmMjQdOqcOSWdgFH6kdFKZjPu4c6Ijxk7KvY2BW3nttTTBa7IYeuXFHVfcExUFqlOgRurt+NeWYyQ==}
     dev: true
 
+  /@unocss/reset@0.58.5:
+    resolution: {integrity: sha512-2wMrkCj3SSb5hrx9TKs5jZa34QIRkHv9FotbJutAPo7o8hx+XXn56ogzdoUrcFPJZJUx2R2nyOVbSlGMIjtFtw==}
+    dev: true
+
   /@unocss/rule-utils@0.58.4:
     resolution: {integrity: sha512-52Jp4I+joGTaDm7ehB/7uZ2kJL+9BZcYRDUVk4IDacDH5W9yxf1F75LzYT8jJVWXD/HIhiS0r9V6qhcBq2OWZw==}
     engines: {node: '>=14'}
@@ -6075,6 +6085,19 @@ packages:
   /chownr@2.0.0:
     resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
     engines: {node: '>=10'}
+    dev: true
+
+  /chromatic@10.9.1:
+    resolution: {integrity: sha512-6Ypho74fQu45ns48KaBuIMKqlzik0fJo//dLB3lkiphz8vCiMm75uU3xhkfZh4NbOS51MbWZKjPfefM53bIHpg==}
+    hasBin: true
+    peerDependencies:
+      '@chromatic-com/cypress': ^0.5.2 || ^1.0.0
+      '@chromatic-com/playwright': ^0.5.2 || ^1.0.0
+    peerDependenciesMeta:
+      '@chromatic-com/cypress':
+        optional: true
+      '@chromatic-com/playwright':
+        optional: true
     dev: true
 
   /chrome-extension-toolkit@0.0.51:
