@@ -28,6 +28,7 @@
         "react-beautiful-dnd": "^13.1.1",
         "react-devtools-core": "^5.0.0",
         "react-dom": "^18.2.0",
+        "react-window": "^1.8.10",
         "sass": "^1.70.0",
         "sql.js": "1.10.2",
         "uuid": "^9.0.1"
