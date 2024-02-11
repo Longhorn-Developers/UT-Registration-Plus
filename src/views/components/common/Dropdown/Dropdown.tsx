@@ -53,56 +53,55 @@ export default function Dropdown(props: Props) {
 
     return (
         <div
-            style={{ ...props.style, height: expanded && schedules ? `${40 * schedules.length + 54}px` : '64px' }}
+            style={{ ...props.style, height: expanded && schedules ? `${40 * schedules.length + 54}px` : '72px' }}
             data-testid={props.testId}
-            className='w-[290px] items-center gap-2 border border-ut-offwhite rounded border-solid p-[10px] py-[px] transition-height duration-300 ease-in-out'
+            className='contain-paint items-center gap-2 border border-ut-offwhite rounded border-solid px-3.5 py-3 transition-height duration-300 ease-in-out'
         >
-            <button className='flex border-none bg-white' onClick={toggleSwitch}>
-                <div className='flex flex-wrap gap-x-[10px]'>
-                    <Text variant='h4' className='w-100% text-left text-ut-burntorange'>
+            <button className='mb-2 w-full flex items-center border-none bg-white text-left' onClick={toggleSwitch}>
+                <div className='flex-1'>
+                    <Text as='div' variant='h4' className='mb-1 w-100% text-ut-burntorange'>
                         MAIN SCHEDULE:
                     </Text>
-                    <Text variant='h3' className='text-theme-black'>
-                        {activeSchedule ? activeSchedule.hours : 0} HOURS
-                    </Text>
-                    <Text variant='h4' className='m-t-auto text-ut-black'>
-                        {activeSchedule ? activeSchedule.courses.length : 0} Courses
-                    </Text>
+                    <div>
+                        <Text variant='h3' className='text-theme-black leading-[75%]!'>
+                            {activeSchedule ? activeSchedule.hours : 0} HOURS
+                        </Text>
+                        <Text variant='h4' className='ml-2.5 text-ut-black leading-[75%]!'>
+                            {activeSchedule ? activeSchedule.courses.length : 0} Courses
+                        </Text>
+                    </div>
                 </div>
-                <Text className='m-t-1 items-center items-center text-2xl text-ut-burntorange font-normal'>
+                <Text className='text-2xl text-ut-burntorange font-normal'>
                     {expanded ? <DropdownArrowDown /> : <DropdownArrowUp />}
                 </Text>
             </button>
-            {expanded ? (
-                <ul className='m0 flex flex-col list-none self-stretch gap-[10px] px-0 py-1'>
-                    {schedules.map((schedule, index) => (
-                        <li
-                            onClick={() => switchSchedule(index)}
-                            className='w-100% flex items-center self-stretch justify-left text-ut-burntorange'
-                        >
-                            <div className='flex items-center justify-center gap-[7px]'>
-                                <Text className='m-r-[-5.5px] m-t-1 self-center text-lg color-ut-gray'>
-                                    <DropdownDrag />
-                                </Text>
-                                <div>
-                                    <div className='h-[19px] w-[19px] inline-flex items-center justify-center gap-[7px] border-[2.5px] border-ut-burntorange rounded-full border-solid'>
-                                        <div
-                                            className={clsx(
-                                                'bg-ut-burntorange h-2.5 w-2.5 rounded-full transform transition ease-out-expo duration-250',
-                                                {
-                                                    'scale-0 opacity-0 ease-in-out! duration-200!':
-                                                        index !== activeScheduleIndex,
-                                                }
-                                            )}
-                                        />
-                                    </div>
+
+            <ul className='space-y-2'>
+                {schedules.map((schedule, index) => (
+                    <li
+                        onClick={() => switchSchedule(index)}
+                        className='w-100% flex cursor-pointer items-center self-stretch justify-left text-ut-burntorange'
+                    >
+                        <div className='group flex justify-center'>
+                            <DropdownDrag className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
+                            <div className='inline-flex items-center justify-center gap-1.5'>
+                                <div className='h-5.5 w-5.5 flex items-center justify-center border-2px border-current rounded-full btn-transition group-active:scale-95'>
+                                    <div
+                                        className={clsx(
+                                            'bg-current h-3 w-3 rounded-full transition tansform scale-100 ease-out-expo duration-250',
+                                            {
+                                                'scale-0! opacity-0 ease-in-out! duration-200!':
+                                                    index !== activeScheduleIndex,
+                                            }
+                                        )}
+                                    />
                                 </div>
                                 <Text variant='p'>{schedule.name}</Text>
                             </div>
-                        </li>
-                    ))}
-                </ul>
-            ) : null}
+                        </div>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }

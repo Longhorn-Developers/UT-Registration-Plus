@@ -2,25 +2,27 @@ import { Course, Status } from '@shared/types/Course';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
+import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';
 import Instructor from 'src/shared/types/Instructor';
 import Dropdown from 'src/views/components/common/Dropdown/Dropdown';
-import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
 
 const meta: Meta<typeof Dropdown> = {
     title: 'Components/Common/Dropdown',
     component: Dropdown,
     parameters: {
         layout: 'centered',
-      },
-      tags: ['autodocs'],
-      argTypes: {
+    },
+    tags: ['autodocs'],
+    argTypes: {
         beginningState: { control: 'boolean' },
-        dummySchedules: {control: 'object'},
-        dummyActiveIndex: {control: 'number'},
+        dummySchedules: { control: 'object' },
+        dummyActiveIndex: { control: 'number' },
     },
     render: (args: any) => (
-        <Dropdown {...args} />
+        <div className='w-80'>
+            <Dropdown {...args} />
+        </div>
     ),
 } satisfies Meta<typeof Dropdown>;
 export default meta;
@@ -60,7 +62,7 @@ const schedules = [
                     year: 2024,
                     term: 'Spring',
                 },
-            })
+            }),
         ],
         name: 'Main Schedule',
     }),
@@ -128,7 +130,6 @@ const schedules = [
                     term: 'Spring',
                 },
             }),
-
         ],
         name: 'Backup #3',
     }),
@@ -138,10 +139,10 @@ export const Hidden: Story = {
     parameters: {
         design: {
             type: 'figma',
-            url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=1579-5083&mode=dev'
-        }
+            url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=1579-5083&mode=dev',
+        },
     },
-    
+
     args: {
         beginningState: false,
         dummySchedules: schedules,
@@ -154,8 +155,8 @@ export const Show: Story = {
     parameters: {
         design: {
             type: 'figma',
-            url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=1579-5169&mode=dev'
-        }
+            url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=1579-5169&mode=dev',
+        },
     },
     args: {
         beginningState: true,
