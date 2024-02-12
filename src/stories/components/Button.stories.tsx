@@ -49,6 +49,7 @@ export const Disabled: Story = {
     },
 };
 
+// @ts-ignore
 export const Grid: Story = {
     render: props => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -70,6 +71,7 @@ export const Grid: Story = {
 };
 
 export const PrettyColors: Story = {
+    // @ts-ignore
     args: {
         children: '',
     },
@@ -99,6 +101,7 @@ export const PrettyColors: Story = {
     },
 };
 
+// @ts-ignore
 export const CourseButtons: Story = {
     render: props => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
@@ -119,6 +122,7 @@ export const CourseButtons: Story = {
 };
 
 export const CourseCatalogActionButtons: Story = {
+    // @ts-ignore
     args: {
         children: '',
     },
