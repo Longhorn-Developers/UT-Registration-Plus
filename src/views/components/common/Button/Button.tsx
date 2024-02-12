@@ -50,10 +50,11 @@ export function Button({
                 'btn',
                 {
                     'disabled:(cursor-not-allowed opacity-50)': disabled,
-                    'color-white bg-[var(--color)] border-[var(--color)] hover:btn-shadow': variant === 'filled',
-                    'color-[var(--color)] bg-white border-current hover:btn-shade border border-solid':
+                    'color-white bg-[var(--color)] border-[var(--color)] hover:enabled:btn-shadow':
+                        variant === 'filled',
+                    'color-[var(--color)] bg-white border-current hover:enabled:btn-shade border border-solid':
                         variant === 'outline',
-                    'color-[var(--color)] bg-white border-white hover:btn-shade': variant === 'single', // settings is the only "single"
+                    'color-[var(--color)] bg-white border-white hover:enabled:btn-shade': variant === 'single', // settings is the only "single"
                     'px-2 py-1.25': isIconOnly && variant !== 'outline',
                     'px-1.75 py-1.25': isIconOnly && variant === 'outline',
                     'px-3.75': variant === 'outline' && !isIconOnly,
