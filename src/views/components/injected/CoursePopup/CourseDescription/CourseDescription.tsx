@@ -1,5 +1,5 @@
 import { Course } from '@shared/types/Course';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import Spinner from '@views/components/common/Spinner/Spinner';
 import Text from '@views/components/common/Text/Text';
@@ -64,7 +64,7 @@ interface LineProps {
 function DescriptionLine({ line }: LineProps) {
     const lowerCaseLine = line.toLowerCase();
 
-    const className = classNames({
+    const className = clsx({
         [styles.prerequisite]: lowerCaseLine.includes('prerequisite'),
         [styles.onlyOne]:
             lowerCaseLine.includes('may be') || lowerCaseLine.includes('only one') || lowerCaseLine.includes('may not'),
