@@ -1,4 +1,4 @@
-import React, { useState, useCallback, ReactElement } from 'react';
+import React, { useState, ReactElement, useCallback } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { FixedSizeList, areEqual } from 'react-window';
 
@@ -12,8 +12,8 @@ import { FixedSizeList, areEqual } from 'react-window';
  * Props for the List component. 
  */
 export interface ListProps {
-    draggableElements: any[]; //    Will later define draggableElements based on what types 
-                              //    of components are draggable.
+    draggableElements: any[]; // Will later define draggableElements based on what types 
+                              // of components are draggable.
     itemHeight: number; 
     listHeight: number;
     listWidth: number;
@@ -35,7 +35,7 @@ function reorder(list: { id: string, content: ReactElement }[], startIndex: numb
     return result;
 }
 
-function getStyle({ provided, style, isDragging, gap }) {
+function getStyle({ provided, style /*  , isDragging, gap   */ }) {
     const combined = {
         ...style,
         ...provided.draggableProps.style
@@ -44,12 +44,12 @@ function getStyle({ provided, style, isDragging, gap }) {
     return combined;
 }
 
-function Item({ provided, item, style, isDragging, gap }) {
+function Item({ provided, item, style, isDragging/* , gap */ }) {
     return (
         <div
             {...provided.draggableProps}
             ref={provided.innerRef}
-            style={getStyle({ provided, style, isDragging, gap })}
+            style={getStyle({ provided, style/* , isDragging, gap   */ })}
             className={`item ${isDragging ? "is-dragging" : ""}`}
         >
             {React.cloneElement(item.content, {dragHandleProps: provided.dragHandleProps})}
@@ -103,10 +103,10 @@ const List: React.FC<ListProps> = ( { draggableElements, itemHeight, listHeight,
         );
     
         setItems(newItems as { id: string, content: React.ReactElement }[]);
-    }, [items]);
+      }, [items]); 
 
     return (
-        <div style={{ overflow: 'hidden', width: listWidth, height: listHeight }}>
+        <div style={{ overflow: 'hidden', width: listWidth }}>
         <DragDropContext onDragEnd = {onDragEnd}>
             <div style = {{
                 display: "flex",
@@ -115,7 +115,7 @@ const List: React.FC<ListProps> = ( { draggableElements, itemHeight, listHeight,
              }}>
                 <Droppable 
                     droppableId="droppable"
-                    mode="virtual"
+                    /*  mode="virtual"  */
                     direction="vertical"
                     renderClone={(provided, snapshot, rubric) => {
                     let { style } = provided.draggableProps;
@@ -128,17 +128,20 @@ const List: React.FC<ListProps> = ( { draggableElements, itemHeight, listHeight,
                             .split(',')
                             .map((v) => parseInt(v, 10));
                         
-                        // const minTranslateY = -1 * rubric.source.index * itemHeight;
-                        // const maxTranslateY = (items.length - rubric.source.index - 1) * itemHeight;
-                        // if (y < minTranslateY) {
+                        /*
+                        const minTranslateY = -1 * rubric.source.index * itemHeight;
+                        const maxTranslateY = (items.length - rubric.source.index - 1) * itemHeight;
+                        
+                        if (y < minTranslateY) {
                             
-                        // }  
-                        // else if (y > maxTranslateY) {
+                        }  
+                        else if (y > maxTranslateY) {
                             
-                        // }
-                        // else {
+                        }
+                        else {
                             
-                        // }
+                        }
+                        */
 
                         style.transform = `translate(0px, ${y}px)`; // Apply constrained y value  
                     }
@@ -151,22 +154,40 @@ const List: React.FC<ListProps> = ( { draggableElements, itemHeight, listHeight,
                             style = {{
                                 style
                             }}
-                            gap = {gap}
+                            /*  gap = {gap} */
                         />
                     )}
                 }
                 >
-                    {provided => (
-                        <FixedSizeList
-                            height={listHeight}
-                            itemCount={items.length}
-                            itemSize={itemHeight}
-                            width={listWidth}
-                            outerRef={provided.innerRef}
-                            itemData={{ items, gap }}
-                        >
-                            {Row}
-                        </FixedSizeList>
+                    {(provided) => (
+                        <div
+                            {...provided.droppableProps}
+                                ref={provided.innerRef}
+                                style={{ width: `${listWidth}px` }} 
+                                className="space-y-2" 
+                                >
+                                {items.map((item, index) => (
+                                    <Draggable key={item.id} draggableId={item.id} index={index}>
+                                        {(provided, snapshot) => (
+                                            <div
+                                                ref={provided.innerRef}
+                                                key={item.id}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                                style={{
+                                                    ...provided.draggableProps.style,
+                                                    marginBottom: '8px', 
+                                                    background: snapshot.isDragging ? '#f4f4f4' : 'transparent', 
+                                                }}
+                                                className="p-2"
+                                                >
+                                                {item.content}
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                ))}
+                            {provided.placeholder}
+                        </div>
                     )}
                 </Droppable>
             </div>
