@@ -1,10 +1,10 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState, useCallback, ReactElement } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { FixedSizeList, areEqual } from 'react-window';
-import { ReactElement } from 'react';
 
-/*Ctrl + f dragHandleProps on PopupCourseBlock.tsx for example implementation of drag handle (two lines of code)
+
+/*
+ * Ctrl + f dragHandleProps on PopupCourseBlock.tsx for example implementation of drag handle (two lines of code)
  *
  */
 
@@ -12,12 +12,12 @@ import { ReactElement } from 'react';
  * Props for the List component. 
  */
 export interface ListProps {
-    draggableElements: any[]; //Will later define draggableElements based on what types 
-                              //of components are draggable.
+    draggableElements: any[]; //    Will later define draggableElements based on what types 
+                              //    of components are draggable.
     itemHeight: number; 
     listHeight: number;
     listWidth: number;
-    gap: number; //Impacts the spacing between items in the list
+    gap: number; // Impacts the spacing between items in the list
                  
 }
 
@@ -58,7 +58,7 @@ function Item({ provided, item, style, isDragging, gap }) {
 }
 
 interface RowProps  {
-    data: any, //DraggableElements[]; Need to define DraggableElements interface once those components are ready
+    data: any, //   DraggableElements[]; Need to define DraggableElements interface once those components are ready
     index: number,
     style: React.CSSProperties,
 }
@@ -72,7 +72,7 @@ const Row: React.FC<RowProps> = React.memo(({ data: { items, gap }, index, style
       };
     return (
         <Draggable draggableId={item.id} index={index} key={item.id}>
-        {/*@ts-ignore*/}
+        {/* @ts-ignore  */}
         {provided => <Item provided={provided} item={item} style={adjustedStyle} gap={gap}/>}
         </Draggable>
     );
@@ -87,11 +87,11 @@ const Row: React.FC<RowProps> = React.memo(({ data: { items, gap }, index, style
 const List: React.FC<ListProps> = ( { draggableElements, itemHeight, listHeight, listWidth, gap=8 }: ListProps) => {
     const [items, setItems] = useState(() => initial(draggableElements));
 
-    function onDragEnd(result) {
+    const onDragEnd = useCallback((result) => {
         if (!result.destination) {
           return;
         }
-
+    
         if (result.source.index === result.destination.index) {
           return;
         }
@@ -101,8 +101,9 @@ const List: React.FC<ListProps> = ( { draggableElements, itemHeight, listHeight,
           result.source.index,
           result.destination.index
         );
-        setItems(newItems as {id: string, content: ReactElement}[]);
-      }
+    
+        setItems(newItems as { id: string, content: React.ReactElement }[]);
+    }, [items]);
 
     return (
         <div style={{ overflow: 'hidden', width: listWidth, height: listHeight }}>
@@ -121,23 +122,23 @@ const List: React.FC<ListProps> = ( { draggableElements, itemHeight, listHeight,
                     const transform = style?.transform;
                 
                     if (snapshot.isDragging && transform) {
-                        let [x, y] = transform
+                        let [, y] = transform
                             .replace('translate(', '')
                             .replace(')', '')
                             .split(',')
                             .map((v) => parseInt(v, 10));
                         
-                        const minTranslateY = -1 * rubric.source.index * itemHeight;
-                        const maxTranslateY = (items.length - rubric.source.index - 1) * itemHeight;
-                        if (y < minTranslateY) {
+                        // const minTranslateY = -1 * rubric.source.index * itemHeight;
+                        // const maxTranslateY = (items.length - rubric.source.index - 1) * itemHeight;
+                        // if (y < minTranslateY) {
                             
-                        }  
-                        else if (y > maxTranslateY) {
+                        // }  
+                        // else if (y > maxTranslateY) {
                             
-                        }
-                        else {
+                        // }
+                        // else {
                             
-                        }
+                        // }
 
                         style.transform = `translate(0px, ${y}px)`; // Apply constrained y value  
                     }
