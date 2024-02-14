@@ -140,7 +140,10 @@ devDependencies:
     version: 0.58.5
   '@vitejs/plugin-react-swc':
     specifier: ^3.6.0
-    version: 3.6.0(vite@5.1.1)
+    version: 3.6.0(vite@5.0.12)
+  chromatic:
+    specifier: ^10.9.1
+    version: 10.9.1
   cssnano:
     specifier: ^6.0.3
     version: 6.0.3(postcss@8.4.35)
@@ -339,7 +342,6 @@ packages:
 
   /@babel/helper-create-class-features-plugin@7.23.10(@babel/core@7.23.9):
     resolution: {integrity: sha512-2XpP2XhkXzgxecPNEEK8Vz8Asj9aRxt08oKOqtiZoqV2UGZ5T+EkyP9sXQ9nwMxBIG34a7jmasVqoMop7VdPUw==}
-    engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0
     dependencies:
@@ -1771,7 +1773,6 @@ packages:
 
   /@esbuild/linux-ia32@0.19.12:
     resolution: {integrity: sha512-Thsa42rrP1+UIGaWz47uydHSBOgTUnwBwNq59khgIwktK6x60Hivfbux9iNR0eHCHzOLjLMLfUMLCypBkZXMHA==}
-    engines: {node: '>=12'}
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
@@ -2938,7 +2939,6 @@ packages:
 
   /@rollup/rollup-linux-arm-gnueabihf@4.9.6:
     resolution: {integrity: sha512-oNk8YXDDnNyG4qlNb6is1ojTOGL/tRhbbKeE/YuccItzerEZT68Z9gHrY3ROh7axDc974+zYAPxK5SH0j/G+QQ==}
-    cpu: [arm]
     os: [linux]
     requiresBuild: true
     optional: true
@@ -3169,7 +3169,6 @@ packages:
 
   /@storybook/addon-toolbars@7.6.13:
     resolution: {integrity: sha512-wt5pfbWMzljbZAFcQPxIztREDVaH8rMogesjddCe9JGMx0SY0tykmmyBG6ppAf+2NlAK4pGzhY0fDFPBcDvYPg==}
-    dev: true
 
   /@storybook/addon-viewport@7.6.13:
     resolution: {integrity: sha512-yqUCWzp3IY/tlS488k9iAXMgOWW/rTswbVgGEh8alUg38QjbUnh4lKFLtd9Va8Fd1zNeVd9nkpCMTSsGy85uMg==}
@@ -3190,7 +3189,6 @@ packages:
 
   /@storybook/blocks@7.6.13(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-wjiwGHLIDfzgonxQaEOlQBR8H7U4hjOEkvkT6leaA3SXJaBgoZBD8zTqWqMX1Gl6vUmmRqMzq/nTSVai8Y1vVQ==}
-    peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
@@ -3440,7 +3438,6 @@ packages:
 
   /@storybook/core-events@7.6.13:
     resolution: {integrity: sha512-hsL6JT273b1RcJBGHpNNLJ1ilzFMT4UCJwwtOpNNQVPBJt0Hn22vxC69/hpqSINrhHRLj3ak8CTtA0ynVjngaQ==}
-    dependencies:
       ts-dedent: 2.2.0
     dev: true
 
@@ -4657,7 +4654,6 @@ packages:
 
   /@unocss/astro@0.58.5(vite@5.1.1):
     resolution: {integrity: sha512-LtuVnj8oFAK9663OVhQO8KpdJFiOyyPsYfnOZlDCOFK3gHb/2WMrzdBwr1w8LoQF3bDedkFMKirVF7gWjyZiaw==}
-    peerDependencies:
       vite: ^2.9.0 || ^3.0.0-0 || ^4.0.0 || ^5.0.0-0
     peerDependenciesMeta:
       vite:
@@ -5837,6 +5833,19 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
+  /chromatic@10.9.1:
+    resolution: {integrity: sha512-6Ypho74fQu45ns48KaBuIMKqlzik0fJo//dLB3lkiphz8vCiMm75uU3xhkfZh4NbOS51MbWZKjPfefM53bIHpg==}
+    hasBin: true
+    peerDependencies:
+      '@chromatic-com/cypress': ^0.5.2 || ^1.0.0
+      '@chromatic-com/playwright': ^0.5.2 || ^1.0.0
+    peerDependenciesMeta:
+      '@chromatic-com/cypress':
+        optional: true
+      '@chromatic-com/playwright':
+        optional: true
+    dev: true
+
   /chrome-extension-toolkit@0.0.51:
     resolution: {integrity: sha512-XzOOE2+/aYG43bJOwuJT4oWcn80jBJr5mwGyrSzKKFoqALixT15AsPcfZId/UOoc4pIavu2XcHeJga6ng0m1jQ==}
     dependencies:
@@ -6642,7 +6651,6 @@ packages:
 
   /electron@23.3.13:
     resolution: {integrity: sha512-BaXtHEb+KYKLouUXlUVDa/lj9pj4F5kiE0kwFdJV84Y2EU7euIDgPthfKtchhr5MVHmjtavRMIV/zAwEiSQ9rQ==}
-    engines: {node: '>= 12.20.55'}
     hasBin: true
     requiresBuild: true
     dependencies:
@@ -9399,7 +9407,6 @@ packages:
 
   /node-fetch-native@1.6.2:
     resolution: {integrity: sha512-69mtXOFZ6hSkYiXAVB5SqaRvrbITC/NPyqv7yuu/qw0nmgPyYbIMYYNIDhNtwPrzk0ptrimrLz/hhjvm4w5Z+w==}
-    dev: true
 
   /node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
