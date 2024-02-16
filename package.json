@@ -17,6 +17,9 @@
         "build-storybook": "storybook build"
     },
     "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^6.5.1",
+        "@fortawesome/free-solid-svg-icons": "^6.5.1",
+        "@fortawesome/react-fontawesome": "^0.2.0",
         "@types/sql.js": "^1.4.9",
         "@vitejs/plugin-react": "^4.2.1",
         "chrome-extension-toolkit": "^0.0.51",
@@ -26,6 +29,7 @@
         "react": "^18.2.0",
         "react-devtools-core": "^5.0.0",
         "react-dom": "^18.2.0",
+        "react-icons": "^5.0.1",
         "sass": "^1.70.0",
         "sql.js": "1.10.2",
         "styled-components": "^6.1.8",
