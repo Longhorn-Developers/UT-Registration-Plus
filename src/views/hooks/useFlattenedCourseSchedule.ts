@@ -1,7 +1,7 @@
 import { CalendarCourseCellProps } from 'src/views/components/common/CalendarCourseCell/CalendarCourseCell';
 import useSchedules from './useSchedules';
 
-const dayToNumber = {
+const dayToNumber: { [day: string]: number } = {
     Monday: 0,
     Tuesday: 1,
     Wednesday: 2,
@@ -15,71 +15,88 @@ interface CalendarGridPoint {
     endIndex: number;
 }
 
+/**
+ * Return type of useFlattenedCourseSchedule
+ */
 export interface CalendarGridCourse {
-    calendarGridPoint?: CalendarGridPoint;
+    calendarGridPoint: CalendarGridPoint;
     componentProps: CalendarCourseCellProps;
 }
 
 const convertMinutesToIndex = (minutes: number): number => Math.floor(minutes - 420 / 30);
 
-export function useFlattenedCourseSchedule() {
+/**
+ * Get the active schedule, and convert it to be render-able into a calendar.
+ * @returns CalendarGridCourse
+ */
+export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
     const [activeSchedule] = useSchedules();
     const { courses } = activeSchedule;
 
-    const out = courses.flatMap(course => {
-        const {
-            status,
-            department,
-            instructors,
-            schedule: { meetings },
-        } = course;
-        const courseDeptAndInstr = `${department} ${instructors[0].lastName}`;
+    return courses
+        .flatMap(course => {
+            const {
+                status,
+                department,
+                instructors,
+                schedule: { meetings },
+            } = course;
+            const courseDeptAndInstr = `${department} ${instructors[0].lastName}`;
 
-        if (meetings.length === 0) {
-            // asynch, online course
-            return [
-                {
-                    componentProps: {
-                        courseDeptAndInstr,
-                        status,
-                        colors: {
-                            primaryColor: 'ut-gray',
-                            secondaryColor: 'ut-gray',
+            if (meetings.length === 0) {
+                // asynch, online course
+                return [
+                    {
+                        calendarGridPoint: {
+                            dayIndex: 0,
+                            startIndex: 0,
+                            endIndex: 0,
+                        },
+                        componentProps: {
+                            courseDeptAndInstr,
+                            status,
+                            colors: {
+                                // TODO: figure out colors - these are defaults
+                                primaryColor: 'ut-gray',
+                                secondaryColor: 'ut-gray',
+                            },
                         },
                     },
-                },
-            ];
-        }
-        return meetings.flatMap(meeting => {
-            const { days, startTime, endTime, location } = meeting;
-            const time = meeting.getTimeString({ separator: ' - ', capitalize: true });
-            const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
+                ];
+            }
 
-            return days.map(d => {
-                const dayIndex = dayToNumber[d];
-                const startIndex = convertMinutesToIndex(startTime);
-                const endIndex = convertMinutesToIndex(endTime);
-                const calendarGridPoint: CalendarGridPoint = {
-                    dayIndex,
-                    startIndex,
-                    endIndex,
-                };
+            // in-person
+            return meetings.flatMap(meeting => {
+                const { days, startTime, endTime, location } = meeting;
+                const time = meeting.getTimeString({ separator: '-', capitalize: true });
+                const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
 
-                return {
-                    calendarGridPoint,
+                return days.map(d => ({
+                    calendarGridPoint: {
+                        dayIndex: dayToNumber[d],
+                        startIndex: convertMinutesToIndex(startTime),
+                        endIndex: convertMinutesToIndex(endTime),
+                    },
                     componentProps: {
                         courseDeptAndInstr,
                         timeAndLocation,
                         status,
                         colors: {
+                            // TODO: figure out colors - these are defaults
                             primaryColor: 'ut-orange',
                             secondaryColor: 'ut-orange',
                         },
                     },
-                };
+                }));
             });
+        })
+        .sort((a: CalendarGridCourse, b: CalendarGridCourse) => {
+            if (a.calendarGridPoint.dayIndex !== b.calendarGridPoint.dayIndex) {
+                return a.calendarGridPoint.dayIndex - b.calendarGridPoint.dayIndex;
+            }
+            if (a.calendarGridPoint.startIndex !== b.calendarGridPoint.startIndex) {
+                return a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex;
+            }
+            return a.calendarGridPoint.endIndex - b.calendarGridPoint.endIndex;
         });
-    });
-
-    return out;
 }

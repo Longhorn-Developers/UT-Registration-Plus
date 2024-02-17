@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import html2canvas from 'html2canvas';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
+import calIcon from 'src/assets/icons/cal.svg';
+import pngIcon from 'src/assets/icons/png.svg';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import styles from './CalendarGrid.module.scss';
-
-//  import calIcon from 'src/assets/icons/cal.svg';
-//  import pngIcon from 'src/assets/icons/png.svg';
+import calIcon from 'src/assets/icons/cal.svg';
+import pngIcon from 'src/assets/icons/png.svg';
 
 const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
@@ -34,13 +36,27 @@ interface Props {
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  * @param props
  */
-function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Props> ): JSX.Element {
+function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Props>): JSX.Element {
     const [iterator, setIterator] = useState<number>(0);
+    const calendarRef = useRef(null); // Create a ref for the calendar grid
+
+    const saveAsPNG = () => {
+        if (calendarRef.current) {
+            html2canvas(calendarRef.current).then(canvas => {
+                // Create an a element to trigger download
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/png');
+                a.download = 'calendar.png';
+                a.click();
+            });
+        }
+    };
+
     return (
         <div className={styles.calendar}>
             <div className={styles.dayLabelContainer} />
                 {/* Displaying the rest of the calendar */}
-                <div className={styles.timeAndGrid}>
+                <div ref={calendarRef} className={styles.timeAndGrid}>
                     {/* <div className={styles.timeColumn}>
                 <div className={styles.timeBlock}></div>
                 {hoursOfDay.map((hour) => (
@@ -81,18 +97,18 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                 </div>
             </div>
             
-            {/* <div className={styles.buttonContainer}>
-                <div className={styles.divider}></div> 
+            <div className={styles.buttonContainer}>
+                <div className={styles.divider} /> {/* First divider */}
                 <button className={styles.calendarButton}>
-                    <img src={calIcon} className={styles.buttonIcon} alt="CAL" />
+                    <img src={calIcon} className={styles.buttonIcon} alt='CAL' />
                     Save as .CAL
                 </button>
-                <div className={styles.divider}></div> 
-                <button className={styles.calendarButton}>
-                    <img src={pngIcon} className={styles.buttonIcon} alt="PNG" />
+                <div className={styles.divider} /> {/* Second divider */}
+                <button onClick={saveAsPNG} className={styles.calendarButton}>
+                    <img src={pngIcon} className={styles.buttonIcon} alt='PNG' />
                     Save as .PNG
                 </button>
-            </div>  */}
+            </div>
         </div>
     );
 }
