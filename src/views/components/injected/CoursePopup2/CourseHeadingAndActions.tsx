@@ -1,6 +1,7 @@
 import React from 'react';
 import { Course } from 'src/shared/types/Course';
 import { Button } from '../../common/Button/Button';
+import { Chip, flagMap } from '../../common/Chip/Chip';
 import Icon from '../../common/Icon/Icon';
 import Text from '../../common/Text/Text';
 
@@ -31,20 +32,12 @@ const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsPro
                     </Button>
                 </div>
                 <div className='flex gap-2.5 flex-content-center'>
-                    <Text variant='h4'>
+                    <Text variant='h4' className='text-'>
                         with <span className='text-ut-burntorange underline'>{instructorString}</span>
                     </Text>
                     <div className='flex gap-1 flex-content-center'>
                         {flags.map(flag => (
-                            <div className='p flex justify-center flex-content-center rounded-lg bg-ut-yellow px-1 py-px'>
-                                {/* get the first letter of each word in flag */}
-                                <Text variant='h4' className='text-ut-black'>
-                                    {flag
-                                        .split(' ')
-                                        .map(word => word.charAt(0))
-                                        .join('')}
-                                </Text>
-                            </div>
+                            <Chip label={flagMap[flag]} />
                         ))}
                     </div>
                 </div>
