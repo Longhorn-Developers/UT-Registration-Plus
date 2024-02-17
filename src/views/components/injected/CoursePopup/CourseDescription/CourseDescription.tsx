@@ -39,7 +39,7 @@ export default function CourseDescription({ course }: Props) {
     return (
         <Card className={styles.container}>
             {status === LoadStatus.ERROR && (
-                <Text color='speedway_brick' size='medium' weight='bold' align='center'>
+                <Text color='speedway_brick' /* size='medium' weight='bold' align='center'  */>
                     Please refresh the page and log back in using your UT EID and password
                 </Text>
             )}
@@ -72,7 +72,7 @@ function DescriptionLine({ line }: LineProps) {
     });
 
     return (
-        <Text className={className} size='medium'>
+        <Text className={className} /*  size='medium'   */>
             {line}
         </Text>
     );
