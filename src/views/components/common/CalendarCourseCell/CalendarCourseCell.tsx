@@ -1,6 +1,8 @@
+import { Course, Status } from '@shared/types/Course';
+import { CourseMeeting } from '@shared/types/CourseMeeting';
+import clsx from 'clsx';
 import React from 'react';
-import { Course, Status } from 'src/shared/types/Course';
-import { CourseMeeting } from 'src/shared/types/CourseMeeting';
+import { CourseColors, pickFontColor } from 'src/shared/util/colors';
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
@@ -11,11 +13,14 @@ export interface CalendarCourseBlockProps {
     course: Course;
     /* index into course meeting array to display */
     meetingIdx?: number;
-    /** The background color for the course. */
-    color: string;
+    colors: CourseColors;
 }
 
-const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({ course, meetingIdx }: CalendarCourseBlockProps) => {
+const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({
+    course,
+    meetingIdx,
+    colors,
+}: CalendarCourseBlockProps) => {
     let meeting: CourseMeeting | null = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : null;
     let rightIcon: React.ReactNode | null = null;
     if (course.status === Status.WAITLISTED) {
@@ -26,20 +31,40 @@ const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({ course, meeti
         rightIcon = <CancelledIcon className='h-5 w-5' />;
     }
 
+    // whiteText based on secondaryColor
+    const fontColor = pickFontColor(colors.primaryColor);
+
     return (
-        <div className='w-full flex justify-center rounded bg-slate-300 p-2 text-ut-black'>
-            <div className='flex flex-1 flex-col gap-1'>
-                <Text variant='h1-course' className='leading-[75%]!'>
+        <div
+            className={`w-full flex justify-center rounded p-2 ${fontColor}`}
+            style={{
+                backgroundColor: colors.primaryColor,
+            }}
+        >
+            <div className='flex flex-1 flex-col gap-1 overflow-x-hidden'>
+                <Text
+                    variant='h1-course'
+                    className={clsx('-my-0.8 leading-tight', {
+                        truncate: meeting,
+                    })}
+                >
                     {course.department} {course.number} - {course.instructors[0].lastName}
                 </Text>
-                <Text variant='h3-course' className='leading-[75%]!'>
-                    {`${meeting.getTimeString({ separator: '–', capitalize: true })}${
-                        meeting.location ? ` – ${meeting.location.building}` : ''
-                    }`}
-                </Text>
+                {meeting && (
+                    <Text variant='h3-course' className='-mb-0.5'>
+                        {`${meeting.getTimeString({ separator: '–', capitalize: true })}${
+                            meeting.location ? ` – ${meeting.location.building}` : ''
+                        }`}
+                    </Text>
+                )}
             </div>
             {rightIcon && (
-                <div className='h-fit flex items-center justify-center justify-self-start rounded bg-slate-700 p-0.5 text-white'>
+                <div
+                    className='h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white'
+                    style={{
+                        backgroundColor: colors.secondaryColor,
+                    }}
+                >
                     {rightIcon}
                 </div>
             )}

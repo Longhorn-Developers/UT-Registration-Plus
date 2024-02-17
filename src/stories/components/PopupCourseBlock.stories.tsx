@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import React from 'react';
 import { Course, Status } from 'src/shared/types/Course';
 import { CourseMeeting } from 'src/shared/types/CourseMeeting';
 import Instructor from 'src/shared/types/Instructor';
-import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import { getCourseColors } from 'src/shared/util/colors';
 import { theme } from 'unocss/preset-mini';
 
-const exampleCourse: Course = new Course({
+export const exampleCourse: Course = new Course({
     courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',
     creditHours: 3,
     department: 'C S',
@@ -103,7 +103,7 @@ export const test_colors = Object.keys(theme.colors)
 
 export const AllColors: Story = {
     render: props => (
-        <div className='grid grid-rows-9 grid-cols-2 grid-flow-col max-w-2xl w-90vw gap-x-4 gap-y-2'>
+        <div className='grid grid-flow-col grid-cols-2 grid-rows-9 max-w-2xl w-90vw gap-x-4 gap-y-2'>
             {test_colors.map((color, i) => (
                 <PopupCourseBlock key={color.primaryColor} course={exampleCourse} colors={color} />
             ))}
