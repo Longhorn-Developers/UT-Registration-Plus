@@ -1,6 +1,3 @@
-@use 'sass:color';
-@use 'src/views/styles/colors.module.scss';
-
 .dayLabelContainer {
     display: flex;
     flex-direction: row;
@@ -32,16 +29,16 @@
 
 .day {
     gap: 5px;
-    color: colors.$burnt_orange;
+    color: #bf5700;
     text-align: center;
     font-size: 14.22px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
     margin-top: 20px;
-    border-right: 1px solid #DADCE0;
-    border-bottom: 1px solid #DADCE0;
-    border-left: 1px solid #DADCE0;
+    border-right: 1px solid #dadce0;
+    border-bottom: 1px solid #dadce0;
+    border-left: 1px solid #dadce0;
 }
 
 .timeAndGrid {
@@ -64,7 +61,7 @@
     height: auto;
     flex-direction: column;
     align-items: flex-end;
-    
+
     .timeLabelContainer {
         display: flex;
         max-height: 20px;
@@ -76,7 +73,7 @@
     }
 
     p {
-        color: #1A2024;
+        color: #1a2024;
         text-align: left;
         height: 6.6px;
         align-self: stretch;
@@ -85,11 +82,10 @@
         margin-bottom: 0;
 
         /* Type scale/small */
-        font-family: "Roboto Flex";
+        font-family: 'Roboto Flex';
         font-size: 14.22px;
         font-style: normal;
         font-weight: 500;
         line-height: normal;
-    } 
+    }
 }
-
