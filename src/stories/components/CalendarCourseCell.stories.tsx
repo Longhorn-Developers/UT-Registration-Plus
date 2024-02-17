@@ -56,7 +56,7 @@ export const Default: Story = {
             schedule: new CourseSchedule({
                 meetings: [
                     new CourseMeeting({
-                        days: [DAY_MAP.M, DAY_MAP.W, DAY_MAP.F],
+                        days: [DAY_MAP.MON, DAY_MAP.WED, DAY_MAP.FRI],
                         startTime: 480,
                         endTime: 570,
                         location: {
