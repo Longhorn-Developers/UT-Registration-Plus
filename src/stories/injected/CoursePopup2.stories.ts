@@ -7,22 +7,21 @@ import Instructor from 'src/shared/types/Instructor';
 import CoursePopup2 from 'src/views/components/injected/CoursePopup2/CoursePopup2';
 
 const exampleCourse: Course = new Course({
-    uniqueId: 47280,
-    number: '331C',
-    fullName: "BVO 331C Bevo's Seminar Longhorn Care",
-    courseName: "Bevo's Seminar Longhorn Care",
-    department: 'BVO',
+    uniqueId: 50805,
+    number: '314',
+    fullName: 'CS314 Data Structures',
+    courseName: 'Data Structures',
+    department: 'CS',
     creditHours: 3,
     status: Status.OPEN,
-    instructors: [new Instructor({ fullName: "Hook'em", firstName: '', lastName: "Hook'em" })],
+    instructors: [new Instructor({ fullName: 'Michael Scott', firstName: 'Michael', lastName: 'Scott' })],
     isReserved: true,
     description: [
-        'Restricted to Students in the School of Longhorn Enthusiasts',
-        'Immerse yourself in the daily routine of a longhorn—sunrise pasture walks and the best shady spots for a midday siesta. Understand the behavioral science behind our mascot’s stoic demeanor during games.',
+        'Second part of a two-part sequence in programming. Introduction to specifications, simple unit testing, and debugging; building and using canonical data structures; algorithm analysis and reasoning techniques such as assertions and invariants.',
+        'Computer Science 314 and 314H may not both be counted.',
         'BVO 311C and 312H may not both be counted.',
-        'Prerequisite: Grazing 311 or 311H.',
-        'May be counted toward the Independent Inquiry flag requirement. May be counted toward the Writing flag requirement.',
-        'Offered on the letter-grade basis only.',
+        'Prerequisite: Computer Science 312 or 312H with a grade of at least C-.',
+        'May be counted toward the Quantitative Reasoning flag requirement.',
     ],
     schedule: new CourseSchedule({
         meetings: [
