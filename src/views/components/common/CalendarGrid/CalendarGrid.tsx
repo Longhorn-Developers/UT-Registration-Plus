@@ -29,7 +29,7 @@ interface Props {
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  * @param props
  */
-export function Calendar({ CourseMeetingBlocks }: React.PropsWithChildren<Props>): JSX.Element {
+export function Calendar({ courseMeetingBlocks }: React.PropsWithChildren<Props>): JSX.Element {
 
     return (
         <div className={styles.calendar}>
@@ -57,8 +57,13 @@ export function Calendar({ CourseMeetingBlocks }: React.PropsWithChildren<Props>
                     {grid.map((row, rowIndex) => row)}
                 </div>
             </div>
+            {courseMeetingBlocks.map((block: CourseMeeting, index: number) => (
+                <div key={index}>
+                    {block}
+                </div>
+            ))}
         </div>
     );
-);
+};
 
 export default Calendar;
