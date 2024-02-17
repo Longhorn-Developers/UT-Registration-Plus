@@ -1,4 +1,6 @@
-import { Status } from '@shared/types/Course';
+import { Course, Status } from '@shared/types/Course';
+import { CourseMeeting } from '@shared/types/CourseMeeting';
+import clsx from 'clsx';
 import React from 'react';
 import { CourseColors, pickFontColor } from 'src/shared/util/colors';
 import ClosedIcon from '~icons/material-symbols/lock';
@@ -38,12 +40,17 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
                 backgroundColor: colors.primaryColor,
             }}
         >
-            <div className='flex flex-1 flex-col gap-1'>
-                <Text variant='h1-course' className='leading-[75%]!'>
-                    {courseDeptAndInstr}
+            <div className='flex flex-1 flex-col gap-1 overflow-x-hidden'>
+                <Text
+                    variant='h1-course'
+                    className={clsx('-my-0.8 leading-tight', {
+                        truncate: meeting,
+                    })}
+                >
+                    {course.department} {course.number} - {course.instructors[0].lastName}
                 </Text>
                 {timeAndLocation && (
-                    <Text variant='h3-course' className='leading-[75%]!'>
+                    <Text variant='h3-course' className='-mb-0.5'>
                         {timeAndLocation}
                     </Text>
                 )}
