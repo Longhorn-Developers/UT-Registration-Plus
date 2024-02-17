@@ -13,7 +13,7 @@ interface CoursePopup2Props {
 const CoursePopup2 = ({ course, activeSchedule, onClose }: CoursePopup2Props) => (
     <Popup overlay className='px-6' onClose={onClose}>
         <div className='flex flex-col'>
-            <CourseHeadingAndActions course={course} onClose={onClose} />
+            <CourseHeadingAndActions course={course} onClose={onClose} activeSchedule={activeSchedule} />
         </div>
     </Popup>
 );

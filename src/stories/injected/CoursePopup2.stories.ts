@@ -11,7 +11,7 @@ const exampleCourse: Course = new Course({
     number: '314',
     fullName: 'CS314 Data Structures',
     courseName: 'Data Structures',
-    department: 'CS',
+    department: 'C S',
     creditHours: 3,
     status: Status.OPEN,
     instructors: [new Instructor({ fullName: 'Michael Scott', firstName: 'Michael', lastName: 'Scott' })],

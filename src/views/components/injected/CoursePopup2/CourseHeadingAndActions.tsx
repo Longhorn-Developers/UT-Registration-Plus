@@ -1,5 +1,8 @@
 import React from 'react';
+import addCourse from 'src/pages/background/lib/addCourse';
+import openNewTab from 'src/pages/background/util/openNewTab';
 import { Course } from 'src/shared/types/Course';
+import { UserSchedule } from 'src/shared/types/UserSchedule';
 import Add from '~icons/material-symbols/add';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
 import CloseIcon from '~icons/material-symbols/close';
@@ -15,6 +18,8 @@ import Text from '../../common/Text/Text';
 interface CourseHeadingAndActionsProps {
     /* The course to display */
     course: Course;
+    /* The active schedule */
+    activeSchedule: UserSchedule;
     /* The function to call when the popup should be closed */
     onClose: () => void;
 }
@@ -25,8 +30,8 @@ interface CourseHeadingAndActionsProps {
  * @param {CourseHeadingAndActionsProps} props - The component props.
  * @returns {JSX.Element} The rendered component.
  */
-const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsProps) => {
-    const { courseName, department, number, uniqueId, instructors, flags, schedule } = course;
+const CourseHeadingAndActions = ({ course, onClose, activeSchedule }: CourseHeadingAndActionsProps) => {
+    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule, semester } = course;
     const instructorString = instructors
         .map(instructor => {
             const { firstName, lastName } = instructor;
@@ -39,12 +44,28 @@ const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsPro
         navigator.clipboard.writeText(uniqueId.toString());
     };
 
-    const handleOpenRateMyProf = () => {
-        instructors.forEach(instructor => {
+    const handleOpenRateMyProf = async () => {
+        const openTabs = instructors.map(instructor => {
             const { fullName } = instructor;
             const url = `https://www.ratemyprofessors.com/search/professors/1255?q=${fullName}`;
-            window.open(url, '_blank')?.focus();
+            return openNewTab(url);
         });
+
+        await Promise.all(openTabs);
+    };
+
+    const handleOpenCES = () => {
+        // TODO: not implemented
+    };
+
+    const handleOpenPastSyllabi = async () => {
+        const firstInstructor = instructors[0];
+        const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=${semester}&department=${department}&course_number=${courseNumber}&course_title=${courseName}&unique=${uniqueId}&instructor_first=${firstInstructor.firstName}&instructor_last=${firstInstructor.lastName}&course_type=In+Residence&search=Search`;
+        await openNewTab(url);
+    };
+
+    const handleAddCourse = async () => {
+        await addCourse(activeSchedule.name, course);
     };
 
     return (
@@ -56,12 +77,12 @@ const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsPro
                     </Text>
                     <Text variant='h1' className='flex-1 whitespace-nowrap'>
                         {' '}
-                        ({department} {number})
+                        ({department} {courseNumber})
                     </Text>
                     <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
                         {uniqueId}
                     </Button>
-                    <button className='btn bg-transparent p-0'>
+                    <button className='btn bg-transparent p-0' onClick={onClose}>
                         <CloseIcon className='h-7 w-7' />
                     </button>
                 </div>
@@ -98,13 +119,13 @@ const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsPro
                 <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
                     RateMyProf
                 </Button>
-                <Button variant='outline' color='ut-teal' icon={Mood}>
+                <Button variant='outline' color='ut-teal' icon={Mood} onClick={handleOpenCES}>
                     CES
                 </Button>
-                <Button variant='outline' color='ut-orange' icon={Description}>
+                <Button variant='outline' color='ut-orange' icon={Description} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
                 </Button>
-                <Button variant='filled' color='ut-green' icon={Add}>
+                <Button variant='filled' color='ut-green' icon={Add} onClick={handleAddCourse}>
                     Add Course
                 </Button>
             </div>
