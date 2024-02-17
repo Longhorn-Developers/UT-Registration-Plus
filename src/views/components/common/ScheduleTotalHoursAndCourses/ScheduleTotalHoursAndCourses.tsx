@@ -21,7 +21,7 @@ export default function ScheduleTotalHoursAndCourses({
     totalCourses,
 }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div className='min-w-64 flex flex-wrap content-center items-baseline gap-2 uppercase'>
+        <div className='min-w-64 flex whitespace-nowrap	content-center items-baseline gap-2 uppercase'>
             <Text className='text-[#BF5700]' variant='h1' as='span'>
                 {`${scheduleName}: `}
             </Text>
