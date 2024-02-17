@@ -5,6 +5,8 @@ import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
 import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import { Chip } from '../Chip/Chip';
 import styles from './CalendarGrid.module.scss';
+import calIcon from 'src/assets/icons/cal.svg';
+import pngIcon from 'src/assets/icons/png.svg';
 
 const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
@@ -59,7 +61,7 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                     {grid.map(row => row)}
                 </div>
             </div>
-            {courseCells.map((Block: typeof CalendarCourseCell) => (
+            {/* {courseCells.map((Block: typeof CalendarCourseCell) => (
                 <div
                     key={`${Block}`}
                     style={{
@@ -69,7 +71,19 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                 >
                     <CalendarCourseCell courseDeptAndInstr={} />
                 </div>
-                ))}
+                ))} */}
+            <div className={styles.buttonContainer}>
+                <div className={styles.divider}></div> {/* First divider */}
+                <button className={styles.calendarButton}>
+                    <img src={calIcon} className={styles.buttonIcon} alt="CAL" />
+                    Save as .CAL
+                </button>
+                <div className={styles.divider}></div> {/* Second divider */}
+                <button className={styles.calendarButton}>
+                    <img src={pngIcon} className={styles.buttonIcon} alt="PNG" />
+                    Save as .PNG
+                </button>
+            </div>
         </div>
     );
 }
