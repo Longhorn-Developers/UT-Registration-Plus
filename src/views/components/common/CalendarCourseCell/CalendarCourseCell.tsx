@@ -6,10 +6,10 @@ import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
 import Text from '../Text/Text';
 
-    /** The Course that the meeting is for. */
-    course: Course;
-    /* index into course meeting array to display */
-    meetingIdx?: number;
+export interface CalendarCourseCellProps {
+    courseDeptAndInstr: string;
+    timeAndLocation?: string;
+    status: Status;
     colors: CourseColors;
 }
 
