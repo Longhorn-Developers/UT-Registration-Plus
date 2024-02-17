@@ -17,7 +17,7 @@ export interface ScheduleTotalHoursAndCoursesProps {
  */
 export default function ScheduleTotalHoursAndCoursess({ scheduleName, totalHours, totalCourses }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div className="flex min-w-64 content-center gap-2 flex-wrap uppercase items-baseline">
+        <div className="min-w-64 flex flex-wrap content-center items-baseline gap-2 uppercase">
             <Text
                 className="text-[#BF5700]"
                 variant='h1'
@@ -28,7 +28,7 @@ export default function ScheduleTotalHoursAndCoursess({ scheduleName, totalHours
             <Text
                 variant='h3'
                 as='div'
-                className="text-[#1A2024] flex flex-row gap-2 items-center"
+                className="flex flex-row items-center gap-2 text-[#1A2024]"
             >
                 {`${totalHours} HOURS`}
                 <Text

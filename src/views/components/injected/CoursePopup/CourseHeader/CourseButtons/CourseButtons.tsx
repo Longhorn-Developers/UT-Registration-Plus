@@ -83,7 +83,7 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
             <Button
                 onClick={openRateMyProfessorURL}
                 disabled={!course.instructors.length}
-                type='primary'
+                variant='primary'
                 className={styles.button}
                 title='Search for this professor on RateMyProfessor'
             >
@@ -94,7 +94,7 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
             </Button>
             <Button
                 onClick={openSyllabiURL}
-                type='secondary'
+                variant='secondary'
                 className={styles.button}
                 title='Search for syllabi for this course'
             >
@@ -105,7 +105,7 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
             </Button>
             <Button
                 onClick={openTextbookURL}
-                type='tertiary'
+                variant='tertiary'
                 className={styles.button}
                 title='Search for textbooks for this course'
             >
@@ -118,7 +118,7 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
                 disabled={!activeSchedule}
                 onClick={isCourseSaved ? handleRemoveCourse : handleSaveCourse}
                 title={isCourseSaved ? 'Remove this course from your schedule' : 'Add this course to your schedule'}
-                type={isCourseSaved ? 'danger' : 'success'}
+                variant={isCourseSaved ? 'danger' : 'success'}
                 className={styles.button}
             >
 
