@@ -2,6 +2,7 @@ import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import React from 'react';
 import { CourseColors, pickFontColor } from 'src/shared/util/colors';
+import clsx from 'clsx';
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
@@ -13,12 +14,14 @@ export interface CalendarCourseBlockProps {
     /* index into course meeting array to display */
     meetingIdx?: number;
     colors: CourseColors;
+    className?: string;
 }
 
 const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({
     course,
     meetingIdx,
     colors,
+    className,
 }: CalendarCourseBlockProps) => {
     let meeting: CourseMeeting | null = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : null;
     let rightIcon: React.ReactNode | null = null;
@@ -35,16 +38,16 @@ const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({
 
     return (
         <div
-            className={`w-full flex justify-center rounded p-2 ${fontColor}`}
+            className={clsx('w-full flex justify-center rounded p-2', fontColor, className)}
             style={{
                 backgroundColor: colors.primaryColor,
             }}
         >
             <div className='flex flex-1 flex-col gap-1'>
-                <Text variant='h1-course' className='leading-[75%]!'>
+                <Text variant='h1-course'>
                     {course.department} {course.number} - {course.instructors[0].lastName}
                 </Text>
-                <Text variant='h3-course' className='leading-[75%]!'>
+                <Text variant='h3-course'>
                     {meeting &&
                         `${meeting.getTimeString({ separator: '–', capitalize: true })}${
                             meeting.location ? ` – ${meeting.location.building}` : ''
