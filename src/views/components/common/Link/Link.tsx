@@ -28,7 +28,7 @@ export default function Link(props: PropsWithChildren<Props>) {
         <Text
             color='bluebonnet'
             {...passedProps}
-            span
+            as='span'
             className={clsx(
                 styles.link,
                 {
