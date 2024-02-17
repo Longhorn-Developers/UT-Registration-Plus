@@ -28,7 +28,7 @@ const CalendarHeader = () => (
                 <ScheduleTotalHoursAndCourses scheduleName='SCHEDULE' totalHours={22} totalCourses={8} />
                 DATA UPDATED ON: 12:00 AM 02/01/2024
             </div>
-            <div className='flex flex-row'>
+            <div className='flex flex-row items-center space-x-8'>
                 <div className='flex flex-row space-x-4'>
                     <CourseStatus size='small' status={Status.WAITLISTED} />
                     <CourseStatus size='small' status={Status.CLOSED} />
