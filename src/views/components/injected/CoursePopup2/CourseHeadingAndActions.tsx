@@ -1,21 +1,75 @@
 import React from 'react';
 import { Course } from 'src/shared/types/Course';
-import Text from '../../common/Text/Text';
 import { Button } from '../../common/Button/Button';
+import Icon from '../../common/Icon/Icon';
+import Text from '../../common/Text/Text';
 
 interface CourseHeadingAndActionsProps {
     course: Course;
+    onClose: () => void;
 }
 
-const CourseHeadingAndActions = ({ course }: CourseHeadingAndActionsProps) => {
-    const { courseName, department, number, uniqueId } = course;
+const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsProps) => {
+    const { courseName, department, number, uniqueId, instructors, flags, schedule } = course;
+    const instructorString = instructors
+        .map(instructor => {
+            const firstInitial = instructor.firstName.length > 0 ? `${instructor.firstName.charAt(0)}. ` : '';
+            return `${firstInitial}${instructor.lastName}`;
+        })
+        .join(', ');
     return (
         <div className='w-full pb-3 pt-6'>
-            <div className='flex gap-1'>
-                <Text variant='h1'>
-                    {courseName} ({department} {number})
-                </Text>
-                <Button>{uniqueId}</Button>
+            <div className='flex flex-col gap-1'>
+                <div className='flex justify-center gap-1'>
+                    <Text variant='h1' className='flex items-center'>
+                        {courseName} ({department} {number})
+                    </Text>
+                    {/* TODO: change this button, include the left icon */}
+                    <Button>{uniqueId}</Button>
+                    <Button onClick={onClose}>
+                        <Icon name='close' />
+                    </Button>
+                </div>
+                <div className='flex gap-2.5 flex-content-center'>
+                    <Text variant='h4'>
+                        with <span className='text-ut-burntorange underline'>{instructorString}</span>
+                    </Text>
+                    <div className='flex gap-1 flex-content-center'>
+                        {flags.map(flag => (
+                            <div className='p flex justify-center flex-content-center rounded-lg bg-ut-yellow px-1 py-px'>
+                                {/* get the first letter of each word in flag */}
+                                <Text variant='h4' className='text-ut-black'>
+                                    {flag
+                                        .split(' ')
+                                        .map(word => word.charAt(0))
+                                        .join('')}
+                                </Text>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className='flex flex-col'>
+                    {schedule.meetings.map(meeting => (
+                        <Text variant='h4'>
+                            {meeting.getDaysString({ format: 'long', separator: 'long' })}{' '}
+                            {meeting.getTimeString({ separator: ' to ', capitalize: false })}
+                            {meeting.location && (
+                                <>
+                                    {` in `}
+                                    <Text variant='h4' className='text-ut-burntorange underline'>
+                                        {meeting.location.building}
+                                    </Text>
+                                </>
+                            )}
+                        </Text>
+                    ))}
+                </div>
+            </div>
+            <div className='my-3 flex justify-start gap-1'>
+                <Button className='m0'>
+                    <Icon name='calendar_today' />
+                </Button>
+                <Button>RateMyProf</Button>
             </div>
         </div>
     );

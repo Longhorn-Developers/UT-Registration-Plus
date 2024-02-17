@@ -24,7 +24,7 @@ export default defineConfig({
         },
         colors: {
             ut: {
-                'burnt-orange': '#BF5700',
+                burntorange: '#BF5700',
                 black: '#333F48',
                 orange: '#f8971f',
                 yellow: '#ffd600',

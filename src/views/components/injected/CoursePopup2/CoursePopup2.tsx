@@ -1,20 +1,20 @@
+import Popup from '@views/components/common/Popup/Popup';
 import React from 'react';
 import { Course } from 'src/shared/types/Course';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
-import Popup from '../../common/Popup/Popup';
 import CourseHeadingAndActions from './CourseHeadingAndActions';
 
 interface CoursePopup2Props {
     course: Course;
     activeSchedule?: UserSchedule;
+    onClose: () => void;
 }
 
-const CoursePopup2 = ({ course, activeSchedule }: CoursePopup2Props) => (
-    <Popup className='px-6'>
+const CoursePopup2 = ({ course, activeSchedule, onClose }: CoursePopup2Props) => (
+    <Popup overlay className='px-6' onClose={onClose}>
         <div className='flex flex-col'>
-            <CourseHeadingAndActions  course={course} />
+            <CourseHeadingAndActions course={course} onClose={onClose} />
         </div>
     </Popup>
 );
-
 export default CoursePopup2;
