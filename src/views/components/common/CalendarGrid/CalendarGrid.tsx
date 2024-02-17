@@ -5,8 +5,8 @@ import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
 import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import { Chip } from '../Chip/Chip';
 import styles from './CalendarGrid.module.scss';
-import calIcon from './cal.svg';
-import pngIcon from './png.svg';
+import calIcon from 'src/assets/icons/cal.svg';
+import pngIcon from 'src/assets/icons/png.svg';
 
 const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);

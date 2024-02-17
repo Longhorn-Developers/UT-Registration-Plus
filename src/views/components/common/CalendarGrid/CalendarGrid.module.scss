@@ -95,7 +95,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 10px; // Adjust the gap as needed
+    gap: 10px;
     padding: 10px;
     margin-top: auto;
 }
@@ -103,25 +103,25 @@
 .calendarButton {
     display: flex;
     align-items: center;
-    gap: 5px; // Space between icon and text
+    gap: 5px;
     padding: 6px 6px;
     border: none;
     background-color: transparent;
-    color: #333; // Adjust based on your design
+    color: #333;
     cursor: pointer;
     
     &:hover {
-        background-color: rgba(0, 0, 0, 0.1); // Adjust hover effect as desired
+        background-color: rgba(0, 0, 0, 0.1);
     }
 }
 
 .buttonIcon {
-    height: 24px; // Adjust size as needed
+    height: 24px;
     fill: currentColor;
 }
 
 .divider {
-    height: 30px; // Adjust height as needed
+    height: 30px;
     width: 1px;
-    background-color: grey; // Adjust color as needed
+    background-color: grey;
 }
