@@ -9,8 +9,7 @@ const meta = {
     },
     tags: ['autodocs'],
     argTypes: {
-        saturday: { control: 'text' },
-        sunday: { control: 'text' },
+        saturdayClass: { control: 'boolean' },
     },
 } satisfies Meta<typeof CalendarGrid>;
 export default meta;
@@ -19,7 +18,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        saturday: true,
-        sunday: true,
+        saturdayClass: true,
     },
 };
