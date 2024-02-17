@@ -37,16 +37,4 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "typescript.tsdk": "node_modules/typescript/lib",
-    "tailwindCSS.experimental.configFile": null,
-    "tailwindCSS.includeLanguages": {
-        "html": "html",
-        "javascript": "javascript",
-        "css": "css",
-        "javascriptreact": "javascriptreact",
-        "typescript": "typescript",
-        "typescriptreact": "typescriptreact",
-    },
-    "editor.quickSuggestions": {
-        "strings": true
-    }
 }
