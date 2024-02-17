@@ -12,21 +12,23 @@ import ScheduleTotalHoursAndCourses from '../ScheduleTotalHoursAndCourses/Schedu
 import CourseStatus from '../CourseStatus/CourseStatus';
 
 const CalendarHeader = () => (
-    <div className='min-h-79px min-w-672px flex flex-wrap items-center px-0 py-15'>
-        <div className="flex flex-row gap-2">
-            <div className='flex gap-1'>
-                <Button variant='single' icon={MenuIcon} color='ut-gray' />
-                <div className='flex items-center'>
-                    <LogoIcon style={{ marginRight: '5px' }} />
-                    <div className='flex flex-col whitespace-nowrap gap-1'>
-                        <Text>UT Registration</Text>
-                        <Text>Plus</Text>
+    <div className='min-h-79px min-w-672px flex px-0 py-15'>
+        <div className="flex flex-row gap-20">
+            <div className='flex gap-10'>
+                <div className='flex gap-1'>
+                    <Button variant='single' icon={MenuIcon} color='ut-gray' />
+                    <div className='flex items-center'>
+                        <LogoIcon style={{ marginRight: '5px' }} />
+                        <div className='flex flex-col whitespace-nowrap gap-1'>
+                            <Text className='leading-trim text-cap font-roboto font-medium text-base'>UT Registration</Text>
+                            <Text className='leading-trim text-cap font-roboto font-medium text-base'>Plus</Text>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className='flex flex-col'>
-                <ScheduleTotalHoursAndCourses scheduleName='SCHEDULE' totalHours={22} totalCourses={8} />
-                DATA UPDATED ON: 12:00 AM 02/01/2024
+                <div className='flex flex-col'>
+                    <ScheduleTotalHoursAndCourses scheduleName='SCHEDULE' totalHours={22} totalCourses={8} />
+                    DATA UPDATED ON: 12:00 AM 02/01/2024
+                </div>
             </div>
             <div className='flex flex-row items-center space-x-8'>
                 <div className='flex flex-row space-x-4'>
