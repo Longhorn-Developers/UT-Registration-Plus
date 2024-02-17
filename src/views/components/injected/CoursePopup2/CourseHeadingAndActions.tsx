@@ -1,15 +1,30 @@
 import React from 'react';
 import { Course } from 'src/shared/types/Course';
+import Add from '~icons/material-symbols/add';
+import CalendarMonth from '~icons/material-symbols/calendar-month';
+import Close from '~icons/material-symbols/close';
+import Copy from '~icons/material-symbols/content-copy';
+import Description from '~icons/material-symbols/description';
+import Mood from '~icons/material-symbols/mood';
+import Reviews from '~icons/material-symbols/reviews';
 import { Button } from '../../common/Button/Button';
 import { Chip, flagMap } from '../../common/Chip/Chip';
-import Icon from '../../common/Icon/Icon';
+import Divider from '../../common/Divider/Divider';
 import Text from '../../common/Text/Text';
 
 interface CourseHeadingAndActionsProps {
+    /* The course to display */
     course: Course;
+    /* The function to call when the popup should be closed */
     onClose: () => void;
 }
 
+/**
+ * Renders the heading component for the CoursePopup component.
+ *
+ * @param {CourseHeadingAndActionsProps} props - The component props.
+ * @returns {JSX.Element} The rendered component.
+ */
 const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsProps) => {
     const { courseName, department, number, uniqueId, instructors, flags, schedule } = course;
     const instructorString = instructors
@@ -18,6 +33,11 @@ const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsPro
             return `${firstInitial}${instructor.lastName}`;
         })
         .join(', ');
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(uniqueId.toString());
+    };
+
     return (
         <div className='w-full pb-3 pt-6'>
             <div className='flex flex-col gap-1'>
@@ -25,17 +45,19 @@ const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsPro
                     <Text variant='h1' className='flex items-center'>
                         {courseName} ({department} {number})
                     </Text>
-                    {/* TODO: change this button, include the left icon */}
-                    <Button>{uniqueId}</Button>
-                    <Button onClick={onClose}>
-                        <Icon name='close' />
-                    </Button>
+                    {/* need to do handlers */}
+                    <div className='ml-3'>
+                        <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
+                            {uniqueId}
+                        </Button>
+                    </div>
+                    <Button variant='single' icon={Close} color='ut-black' onClick={onClose} />
                 </div>
                 <div className='flex gap-2.5 flex-content-center'>
                     <Text variant='h4' className='text-'>
                         with <span className='text-ut-burntorange underline'>{instructorString}</span>
                     </Text>
-                    <div className='flex gap-1 flex-content-center'>
+                    <div className='flex-content-centr flex gap-1'>
                         {flags.map(flag => (
                             <Chip label={flagMap[flag]} />
                         ))}
@@ -58,11 +80,21 @@ const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsPro
                     ))}
                 </div>
             </div>
-            <div className='my-3 flex justify-start gap-1'>
-                <Button className='m0'>
-                    <Icon name='calendar_today' />
+            <div className='my-3 h-[40px] flex items-center gap-[15px]'>
+                <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} />
+                <Divider type='solid' color='ut-offwhite' className='h-[28px]' />
+                <Button variant='outline' color='ut-blue' icon={Reviews}>
+                    RateMyProf
                 </Button>
-                <Button>RateMyProf</Button>
+                <Button variant='outline' color='ut-teal' icon={Mood}>
+                    CES
+                </Button>
+                <Button variant='outline' color='ut-orange' icon={Description}>
+                    Past Syllabi
+                </Button>
+                <Button variant='filled' color='ut-green' icon={Add}>
+                    Add Course
+                </Button>
             </div>
         </div>
     );
