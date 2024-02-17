@@ -3,6 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Course, Status } from '@shared/types/Course';
 import Instructor from '@shared/types/Instructor';
 import { CalendarBottomBar } from '@views/components/common/CalendarBottomBar/CalendarBottomBar';
+import { getCourseColors } from '../../shared/util/colors';
 
 const exampleGovCourse: Course = new Course({
     courseName: 'Nope',
@@ -79,7 +80,18 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        courses: [exampleGovCourse, examplePsyCourse],
+        courses: [
+            {
+                colors: getCourseColors('pink', 200),
+                courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0].lastName}`,
+                status: exampleGovCourse.status,
+            },
+            {
+                colors: getCourseColors('slate', 500),
+                courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0].lastName}`,
+                status: examplePsyCourse.status,
+            },
+        ],
     },
     render: props => (
         <div className='outline-red outline w-292.5!'>

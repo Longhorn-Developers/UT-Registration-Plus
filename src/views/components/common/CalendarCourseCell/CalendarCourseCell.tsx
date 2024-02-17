@@ -1,35 +1,33 @@
-import { Course, Status } from '@shared/types/Course';
-import { CourseMeeting } from '@shared/types/CourseMeeting';
+import { Status } from '@shared/types/Course';
+import clsx from 'clsx';
 import React from 'react';
 import { CourseColors, pickFontColor } from 'src/shared/util/colors';
-import clsx from 'clsx';
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
 import Text from '../Text/Text';
 
-export interface CalendarCourseBlockProps {
-    /** The Course that the meeting is for. */
-    course: Course;
-    /* index into course meeting array to display */
-    meetingIdx?: number;
+export interface CalendarCourseCellProps {
+    courseDeptAndInstr: string;
+    timeAndLocation?: string;
+    status: Status;
     colors: CourseColors;
     className?: string;
 }
 
-const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({
-    course,
-    meetingIdx,
+const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
+    courseDeptAndInstr,
+    timeAndLocation,
+    status,
     colors,
     className,
-}: CalendarCourseBlockProps) => {
-    let meeting: CourseMeeting | null = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : null;
+}: CalendarCourseCellProps) => {
     let rightIcon: React.ReactNode | null = null;
-    if (course.status === Status.WAITLISTED) {
+    if (status === Status.WAITLISTED) {
         rightIcon = <WaitlistIcon className='h-5 w-5' />;
-    } else if (course.status === Status.CLOSED) {
+    } else if (status === Status.CLOSED) {
         rightIcon = <ClosedIcon className='h-5 w-5' />;
-    } else if (course.status === Status.CANCELLED) {
+    } else if (status === Status.CANCELLED) {
         rightIcon = <CancelledIcon className='h-5 w-5' />;
     }
 
@@ -43,16 +41,20 @@ const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({
                 backgroundColor: colors.primaryColor,
             }}
         >
-            <div className='flex flex-1 flex-col gap-1'>
-                <Text variant='h1-course'>
-                    {course.department} {course.number} - {course.instructors[0].lastName}
+            <div className='flex flex-1 flex-col gap-1 overflow-x-hidden'>
+                <Text
+                    variant='h1-course'
+                    className={clsx('-my-0.8 leading-tight', {
+                        truncate: timeAndLocation,
+                    })}
+                >
+                    {courseDeptAndInstr}
                 </Text>
-                <Text variant='h3-course'>
-                    {meeting &&
-                        `${meeting.getTimeString({ separator: '–', capitalize: true })}${
-                            meeting.location ? ` – ${meeting.location.building}` : ''
-                        }`}
-                </Text>
+                {timeAndLocation && (
+                    <Text variant='h3-course' className='-mb-0.5'>
+                        {timeAndLocation}
+                    </Text>
+                )}
             </div>
             {rightIcon && (
                 <div
@@ -68,4 +70,4 @@ const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({
     );
 };
 
-export default CalendarCourseBlock;
+export default CalendarCourseCell;

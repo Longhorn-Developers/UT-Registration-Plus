@@ -1,14 +1,13 @@
 import React from 'react';
+import clsx from 'clsx';
 import Text from '../Text/Text';
-import CalendarCourseBlock from '../CalendarCourseCell/CalendarCourseCell';
-import { Course } from '../../../../shared/types/Course';
+import CalendarCourseBlock, { CalendarCourseCellProps } from '../CalendarCourseCell/CalendarCourseCell';
 import { Button } from '../Button/Button';
 import ImageIcon from '~icons/material-symbols/image';
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
-import { getCourseColors } from '../../../../shared/util/colors';
 
 type CalendarBottomBarProps = {
-    courses: Course[];
+    courses: CalendarCourseCellProps[];
 };
 
 /**
@@ -23,10 +22,11 @@ export const CalendarBottomBar = ({ courses }: CalendarBottomBarProps): JSX.Elem
                 <div className='h-14 inline-flex gap-2.5'>
                     {courses.map(course => (
                         <CalendarCourseBlock
-                            course={course}
-                            colors={getCourseColors('orange')}
-                            key={course.uniqueId}
-                            className='w-35!'
+                            courseDeptAndInstr={course.courseDeptAndInstr}
+                            status={course.status}
+                            colors={course.colors}
+                            key={course.courseDeptAndInstr}
+                            className={clsx(course.className, 'w-35!')}
                         />
                     ))}
                 </div>
