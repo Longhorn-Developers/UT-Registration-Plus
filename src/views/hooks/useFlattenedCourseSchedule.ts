@@ -15,7 +15,7 @@ interface CalendarGridPoint {
     endIndex: number;
 }
 
-interface SomeObject {
+export interface CalendarGridCourse {
     calendarGridPoint?: CalendarGridPoint;
     componentProps: CalendarCourseCellProps;
 }
