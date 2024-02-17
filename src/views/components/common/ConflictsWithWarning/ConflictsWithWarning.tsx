@@ -19,7 +19,7 @@ export default function ConflictsWithWarning( { ConflictingCourse, SectionNumber
     const UniqueCourseConflictText = `${ConflictingCourse} (${SectionNumber})`;
 
     return (
-        <div className="flex w-21 min-w-21 p-2.5 flex-col items-start gap-2.5 rounded bg-[#AF2E2D]">
+        <div className="min-w-21 w-21 flex flex-col items-start gap-2.5 rounded bg-[#AF2E2D] p-2.5">
             <ConflictsWithoutWarningText>
                Conflicts With:
             </ConflictsWithoutWarningText>

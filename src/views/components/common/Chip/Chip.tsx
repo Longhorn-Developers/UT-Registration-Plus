@@ -16,17 +16,11 @@ export function Chip({
     label
 }: React.PropsWithChildren<Props>): JSX.Element {
     return (
-        <Text as = {'div'} variant = 'h4'
-            style = {{
-                display: "inline-flex",
-                minWidth: "21px",
-                padding: "1px 4px",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "10px",
-                borderRadius: "8px",
-                background: "#FFD600", //Yellow
-            }}>
+        <Text as = 'div' variant = 'h4'
+        className="min-w-5 inline-flex items-center justify-center gap-2.5 rounded-lg px-1 py-0.5" 
+        style={{
+            backgroundColor: "#FFD600"
+        }}>
             {label}
         </Text>
     );
