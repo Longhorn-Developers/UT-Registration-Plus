@@ -12,7 +12,7 @@ import ScheduleTotalHoursAndCourses from '../ScheduleTotalHoursAndCourses/Schedu
 import CourseStatus from '../CourseStatus/CourseStatus';
 
 const CalendarHeader = () => (
-    <div className='min-h-79px min-w-672px flex flex-wrap items-center justify-between px-0 py-15'>
+    <div className='min-h-79px min-w-672px flex flex-wrap items-center px-0 py-15'>
         <div className='flex gap-20'>
             <Button variant='single' icon={MenuIcon} color='ut-gray' />
             <div className='flex items-center gap-10'>
