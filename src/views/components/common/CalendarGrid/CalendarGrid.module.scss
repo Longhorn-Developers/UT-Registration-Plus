@@ -1,3 +1,6 @@
+@use 'sass:color';
+@use 'src/views/styles/colors.module.scss';
+
 .dayLabelContainer {
     display: flex;
     flex-direction: row;
@@ -29,6 +32,7 @@
 
 .day {
     gap: 5px;
+    color: colors.$burnt_orange;
     text-align: center;
     font-size: 14.22px;
     font-style: normal;
