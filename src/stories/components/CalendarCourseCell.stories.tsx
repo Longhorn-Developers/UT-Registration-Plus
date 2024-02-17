@@ -30,8 +30,7 @@ const meta = {
         courseNumber: exampleCourse.number,
         instructorLastName: exampleCourse.instructors[0].lastName,
         status: exampleCourse.status,
-        meetingTime: exampleCourse.schedule.meetings[0].getTimeString({separator: '-'}),
-
+        meetingTime: exampleCourse.schedule.meetings[0].getTimeString({ separator: '-' }),
 
         colors: getCourseColors('emerald', 500),
     },
