@@ -130,6 +130,7 @@ const CourseHeadingAndActions = ({ course, onClose, activeSchedule }: CourseHead
                     Add Course
                 </Button>
             </div>
+            <Divider />
         </div>
     );
 };
