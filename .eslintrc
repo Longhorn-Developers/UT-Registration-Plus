@@ -73,6 +73,7 @@
                 "ignoreReadBeforeAssign": false
             }
         ],
+        "no-plusplus": "off",
         "no-inner-declarations": "off",
         "sort-imports": "off",
         "no-case-declarations": "off",
