@@ -1,32 +1,34 @@
 import { Course, Status } from '@shared/types/Course';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import type { Meta, StoryObj } from '@storybook/react';
+import { Serialized } from 'chrome-extension-toolkit';
 import React from 'react';
 import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';
 import Instructor from 'src/shared/types/Instructor';
-import { CalendarSchedules } from 'src/views/components/common/CalendarSchedules/CalendarSchedules';
+import Dropdown from 'src/views/components/common/Dropdown/Dropdown';
+import ScheduleListItem from 'src/views/components/common/ScheduleListItem/ScheduleListItem';
 
-const meta = {
-    title: 'Components/Common/CalendarSchedules',
-    component: CalendarSchedules,
+const meta: Meta<typeof Dropdown> = {
+    title: 'Components/Common/Dropdown',
+    component: Dropdown,
     parameters: {
         layout: 'centered',
-        tags: ['autodocs'],
     },
+    tags: ['autodocs'],
     argTypes: {
         dummySchedules: { control: 'object' },
         dummyActiveIndex: { control: 'number' },
-        
+        scheduleComponents: { control: 'object' },
     },
     render: (args: any) => (
-        <div>
-            <CalendarSchedules {...args} />
+        <div className='w-80'>
+            <Dropdown {...args} />
         </div>
     ),
-} satisfies Meta<typeof CalendarSchedules>;
-
+} satisfies Meta<typeof Dropdown>;
 export default meta;
+
 type Story = StoryObj<typeof meta>;
 
 const schedules = [
@@ -60,13 +62,13 @@ const schedules = [
                 instructionMode: 'In Person',
                 semester: {
                     year: 2024,
-                    season: 'Fall',
+                    season: 'Fall'
                 },
             }),
         ],
         name: 'Main Schedule',
-        hours: 0, // Add the missing 'hours' property
-    }),
+        hours: 0,
+    } as Serialized<UserSchedule>),
     new UserSchedule({
         courses: [
             new Course({
@@ -97,7 +99,7 @@ const schedules = [
                 instructionMode: 'In Person',
                 semester: {
                     year: 2024,
-                    season: 'Spring',
+                    season: 'Fall'
                 },
             }),
             new Course({
@@ -128,19 +130,30 @@ const schedules = [
                 instructionMode: 'In Person',
                 semester: {
                     year: 2024,
-                    season: 'Fall',
+                    season: 'Fall'
                 },
             }),
         ],
         name: 'Backup #3',
-        hours: 0, // Add the missing 'hours' property
-    }),
+        hours: 0,
+    } as Serialized<UserSchedule>),
 ];
 
-export const Default: Story = {
+export const Hidden: Story = {
+    parameters: {
+        design: {
+            type: 'figma',
+            url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=1579-5083&mode=dev',
+        },
+    },
+
     args: {
         dummySchedules: schedules,
         dummyActiveIndex: 0,
-
+        scheduleComponents: schedules.map((schedule, index) => (
+            <div onClick={() => {}} className='p-l-3'>
+                <ScheduleListItem active={index === 0} name={schedule.name} />
+            </div>
+        )),
     },
 };
