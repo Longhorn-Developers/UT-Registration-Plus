@@ -6,7 +6,7 @@ import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
 import Text from '../Text/Text';
 
-export interface CalendarCourseBlockProps {
+export interface CalendarCourseCellProps {
     /** The Course that the meeting is for. */
     course: Course;
     /* index into course meeting array to display */
@@ -15,7 +15,7 @@ export interface CalendarCourseBlockProps {
     color: string;
 }
 
-const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({ course, meetingIdx }: CalendarCourseBlockProps) => {
+const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({ course, meetingIdx }: CalendarCourseCellProps) => {
     let meeting: CourseMeeting | null = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : null;
     let rightIcon: React.ReactNode | null = null;
     if (status === Status.WAITLISTED) {
@@ -60,4 +60,4 @@ const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({ course, meeti
     );
 };
 
-export default CalendarCourseBlock;
+export default CalendarCourseCell;
