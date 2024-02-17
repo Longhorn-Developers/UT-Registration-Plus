@@ -144,14 +144,13 @@ const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, 
                                         <div
                                             ref={draggableProvided.innerRef}
                                             {...draggableProvided.draggableProps}
-                                            {...draggableProvided.dragHandleProps}
                                             style={{
                                                 ...draggableProvided.draggableProps.style,
                                                 // if last item, don't add margin
-                                                marginBottom: index === items.length - 1 ? '0px' : `${gap}px`,
+                                                marginBottom: `${gap}px`,
                                             }}
                                         >
-                                            {item.content}
+                                            {React.cloneElement(item.content, { dragHandleProps: draggableProvided.dragHandleProps })}
                                         </div>
                                     )}
                                 </Draggable>

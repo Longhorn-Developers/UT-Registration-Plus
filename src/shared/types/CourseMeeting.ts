@@ -15,7 +15,7 @@ export const DAY_MAP = {
 } as const;
 
 /** A day of the week that a class is taught */
-export type Day = typeof DAY_MAP[keyof typeof DAY_MAP];
+export type Day = (typeof DAY_MAP)[keyof typeof DAY_MAP];
 
 /** A physical room that a class is taught in */
 export type Location = {
