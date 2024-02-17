@@ -1,7 +1,7 @@
 import { CalendarCourseCellProps } from 'src/views/components/common/CalendarCourseCell/CalendarCourseCell';
 import useSchedules from './useSchedules';
 
-const dayToNumber = {
+const dayToNumber: { [day: string]: number } = {
     Monday: 0,
     Tuesday: 1,
     Wednesday: 2,
@@ -15,6 +15,9 @@ interface CalendarGridPoint {
     endIndex: number;
 }
 
+/**
+ * Return type of useFlattenedCourseSchedule
+ */
 export interface CalendarGridCourse {
     calendarGridPoint?: CalendarGridPoint;
     componentProps: CalendarCourseCellProps;
@@ -22,11 +25,15 @@ export interface CalendarGridCourse {
 
 const convertMinutesToIndex = (minutes: number): number => Math.floor(minutes - 420 / 30);
 
-export function useFlattenedCourseSchedule() {
+/**
+ * Get the active schedule, and convert it to be render-able into a calendar.
+ * @returns CalendarGridCourse
+ */
+export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
     const [activeSchedule] = useSchedules();
     const { courses } = activeSchedule;
 
-    const out = courses.flatMap(course => {
+    return courses.flatMap(course => {
         const {
             status,
             department,
@@ -43,6 +50,7 @@ export function useFlattenedCourseSchedule() {
                         courseDeptAndInstr,
                         status,
                         colors: {
+                            // TODO: figure out colors - these are defaults
                             primaryColor: 'ut-gray',
                             secondaryColor: 'ut-gray',
                         },
@@ -50,36 +58,30 @@ export function useFlattenedCourseSchedule() {
                 },
             ];
         }
+
+        // in-person
         return meetings.flatMap(meeting => {
             const { days, startTime, endTime, location } = meeting;
             const time = meeting.getTimeString({ separator: ' - ', capitalize: true });
             const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
 
-            return days.map(d => {
-                const dayIndex = dayToNumber[d];
-                const startIndex = convertMinutesToIndex(startTime);
-                const endIndex = convertMinutesToIndex(endTime);
-                const calendarGridPoint: CalendarGridPoint = {
-                    dayIndex,
-                    startIndex,
-                    endIndex,
-                };
-
-                return {
-                    calendarGridPoint,
-                    componentProps: {
-                        courseDeptAndInstr,
-                        timeAndLocation,
-                        status,
-                        colors: {
-                            primaryColor: 'ut-orange',
-                            secondaryColor: 'ut-orange',
-                        },
+            return days.map(d => ({
+                calendarGridPoint: {
+                    dayIndex: dayToNumber[d],
+                    startIndex: convertMinutesToIndex(startTime),
+                    endIndex: convertMinutesToIndex(endTime),
+                },
+                componentProps: {
+                    courseDeptAndInstr,
+                    timeAndLocation,
+                    status,
+                    colors: {
+                        // TODO: figure out colors - these are defaults
+                        primaryColor: 'ut-orange',
+                        secondaryColor: 'ut-orange',
                     },
-                };
-            });
+                },
+            }));
         });
     });
-
-    return out;
 }
