@@ -29,8 +29,9 @@ const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsPro
     const { courseName, department, number, uniqueId, instructors, flags, schedule } = course;
     const instructorString = instructors
         .map(instructor => {
-            const firstInitial = instructor.firstName.length > 0 ? `${instructor.firstName.charAt(0)}. ` : '';
-            return `${firstInitial}${instructor.lastName}`;
+            const { firstName, lastName } = instructor;
+            if (firstName === '') return lastName;
+            return `${firstName} ${lastName}`;
         })
         .join(', ');
 
@@ -38,24 +39,31 @@ const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsPro
         navigator.clipboard.writeText(uniqueId.toString());
     };
 
+    const handleOpenRateMyProf = () => {
+        instructors.forEach(instructor => {
+            const { fullName } = instructor;
+            const url = `https://www.ratemyprofessors.com/search/professors/1255?q=${fullName}`;
+            window.open(url, '_blank')?.focus();
+        });
+    };
+
     return (
         <div className='w-full pb-3 pt-6'>
             <div className='flex flex-col gap-1'>
-                <div className='flex justify-center gap-1'>
+                <div className='flex justify-between gap-1'>
                     <Text variant='h1' className='flex items-center'>
                         {courseName} ({department} {number})
                     </Text>
-                    {/* need to do handlers */}
-                    <div className='ml-3'>
+                    <div className='flex items-center justify-center'>
                         <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
                             {uniqueId}
                         </Button>
+                        <Button variant='single' icon={Close} color='ut-black' onClick={onClose} />
                     </div>
-                    <Button variant='single' icon={Close} color='ut-black' onClick={onClose} />
                 </div>
                 <div className='flex gap-2.5 flex-content-center'>
                     <Text variant='h4' className='text-'>
-                        with <span className='text-ut-burntorange underline'>{instructorString}</span>
+                        with {instructorString}
                     </Text>
                     <div className='flex-content-centr flex gap-1'>
                         {flags.map(flag => (
@@ -83,7 +91,7 @@ const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsPro
             <div className='my-3 h-[40px] flex items-center gap-[15px]'>
                 <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} />
                 <Divider type='solid' color='ut-offwhite' className='h-[28px]' />
-                <Button variant='outline' color='ut-blue' icon={Reviews}>
+                <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
                     RateMyProf
                 </Button>
                 <Button variant='outline' color='ut-teal' icon={Mood}>
