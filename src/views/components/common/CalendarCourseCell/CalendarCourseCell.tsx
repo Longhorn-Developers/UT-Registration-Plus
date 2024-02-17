@@ -1,5 +1,4 @@
-import { Course, Status } from '@shared/types/Course';
-import { CourseMeeting } from '@shared/types/CourseMeeting';
+import { Status } from '@shared/types/Course';
 import clsx from 'clsx';
 import React from 'react';
 import { CourseColors, pickFontColor } from 'src/shared/util/colors';
@@ -44,10 +43,10 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
                 <Text
                     variant='h1-course'
                     className={clsx('-my-0.8 leading-tight', {
-                        truncate: meeting,
+                        truncate: timeAndLocation,
                     })}
                 >
-                    {course.department} {course.number} - {course.instructors[0].lastName}
+                    {courseDeptAndInstr}
                 </Text>
                 {timeAndLocation && (
                     <Text variant='h3-course' className='-mb-0.5'>
