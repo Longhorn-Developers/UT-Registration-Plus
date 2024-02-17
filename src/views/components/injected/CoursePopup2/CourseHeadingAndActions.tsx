@@ -2,7 +2,7 @@ import React from 'react';
 import { Course } from 'src/shared/types/Course';
 import Add from '~icons/material-symbols/add';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
-import Close from '~icons/material-symbols/close';
+import CloseIcon from '~icons/material-symbols/close';
 import Copy from '~icons/material-symbols/content-copy';
 import Description from '~icons/material-symbols/description';
 import Mood from '~icons/material-symbols/mood';
@@ -50,16 +50,20 @@ const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsPro
     return (
         <div className='w-full pb-3 pt-6'>
             <div className='flex flex-col gap-1'>
-                <div className='flex justify-between gap-1'>
-                    <Text variant='h1' className='flex items-center'>
-                        {courseName} ({department} {number})
+                <div className='flex items-center gap-1'>
+                    <Text variant='h1' className='truncate'>
+                        {courseName}
                     </Text>
-                    <div className='flex items-center justify-center'>
-                        <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
-                            {uniqueId}
-                        </Button>
-                        <Button variant='single' icon={Close} color='ut-black' onClick={onClose} />
-                    </div>
+                    <Text variant='h1' className='flex-1 whitespace-nowrap'>
+                        {' '}
+                        ({department} {number})
+                    </Text>
+                    <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
+                        {uniqueId}
+                    </Button>
+                    <button className='btn bg-transparent p-0'>
+                        <CloseIcon className='h-7 w-7' />
+                    </button>
                 </div>
                 <div className='flex gap-2.5 flex-content-center'>
                     <Text variant='h4' className='text-'>
@@ -88,9 +92,9 @@ const CourseHeadingAndActions = ({ course, onClose }: CourseHeadingAndActionsPro
                     ))}
                 </div>
             </div>
-            <div className='my-3 h-[40px] flex items-center gap-[15px]'>
+            <div className='my-3 flex flex-wrap items-center gap-[15px]'>
                 <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} />
-                <Divider type='solid' color='ut-offwhite' className='h-[28px]' />
+                <Divider type='solid' color='ut-offwhite' className='h-7' />
                 <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
                     RateMyProf
                 </Button>
