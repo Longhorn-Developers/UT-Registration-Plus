@@ -8,7 +8,7 @@ import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
 import Text from '../Text/Text';
 
-export interface CalendarCourseCellProps {
+export interface CalendarCourseBlockProps {
     /** The Course that the meeting is for. */
     course: Course;
     /* index into course meeting array to display */
@@ -72,4 +72,4 @@ const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({
     );
 };
 
-export default CalendarCourseCell;
+export default CalendarCourseBlock;
