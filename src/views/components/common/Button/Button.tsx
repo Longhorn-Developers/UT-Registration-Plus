@@ -33,7 +33,7 @@ export function Button({
     const Icon = icon;
     const isIconOnly = !children && !!icon;
     const colorHex = getThemeColorHexByName(color);
-    const colorRgb = getThemeColorRgbByName(color).join(' ');
+    const colorRgb = getThemeColorRgbByName(color)?.join(' ');
 
     return (
         <button
