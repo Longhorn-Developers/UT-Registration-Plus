@@ -1,5 +1,4 @@
-import { Course, Status } from '@shared/types/Course';
-import { CourseMeeting } from '@shared/types/CourseMeeting';
+import { Status } from '@shared/types/Course';
 import React from 'react';
 import { CourseColors, pickFontColor } from 'src/shared/util/colors';
 import ClosedIcon from '~icons/material-symbols/lock';
@@ -7,7 +6,6 @@ import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
 import Text from '../Text/Text';
 
-export interface CalendarCourseBlockProps {
     /** The Course that the meeting is for. */
     course: Course;
     /* index into course meeting array to display */
@@ -15,18 +13,18 @@ export interface CalendarCourseBlockProps {
     colors: CourseColors;
 }
 
-const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({
-    course,
-    meetingIdx,
+const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
+    courseDeptAndInstr,
+    timeAndLocation,
+    status,
     colors,
-}: CalendarCourseBlockProps) => {
-    let meeting: CourseMeeting | null = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : null;
+}: CalendarCourseCellProps) => {
     let rightIcon: React.ReactNode | null = null;
-    if (course.status === Status.WAITLISTED) {
+    if (status === Status.WAITLISTED) {
         rightIcon = <WaitlistIcon className='h-5 w-5' />;
-    } else if (course.status === Status.CLOSED) {
+    } else if (status === Status.CLOSED) {
         rightIcon = <ClosedIcon className='h-5 w-5' />;
-    } else if (course.status === Status.CANCELLED) {
+    } else if (status === Status.CANCELLED) {
         rightIcon = <CancelledIcon className='h-5 w-5' />;
     }
 
@@ -42,14 +40,13 @@ const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({
         >
             <div className='flex flex-1 flex-col gap-1'>
                 <Text variant='h1-course' className='leading-[75%]!'>
-                    {course.department} {course.number} - {course.instructors[0].lastName}
+                    {courseDeptAndInstr}
                 </Text>
-                <Text variant='h3-course' className='leading-[75%]!'>
-                    {meeting &&
-                        `${meeting.getTimeString({ separator: '–', capitalize: true })}${
-                            meeting.location ? ` – ${meeting.location.building}` : ''
-                        }`}
-                </Text>
+                {timeAndLocation && (
+                    <Text variant='h3-course' className='leading-[75%]!'>
+                        {timeAndLocation}
+                    </Text>
+                )}
             </div>
             {rightIcon && (
                 <div
@@ -65,4 +62,4 @@ const CalendarCourseBlock: React.FC<CalendarCourseBlockProps> = ({
     );
 };
 
-export default CalendarCourseBlock;
+export default CalendarCourseCell;
