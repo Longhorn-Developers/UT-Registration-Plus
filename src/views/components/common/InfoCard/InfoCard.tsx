@@ -15,39 +15,26 @@ export function InfoCard({
     bodyText
 }: React.PropsWithChildren<Props>): JSX.Element {
     return (
-        <div style = {{
-            display: "flex",
-            width: "200px",
-            minWidth: "200px",
-            maxWidth: "200px",
-            padding: "15px",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            borderRadius: "4px",
-            border: "1px solid #D6D2C4",
-            background: "#FFF" //White
-        }}>
-            <div style = {{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                gap: "7px",
-                alignSelf: "stretch",
+        <div
+            className = 'w-50 flex flex-col items-start justify-center border rounded p-4'  
+            style = {{
+                border: "1px solid #D6D2C4",
+                background: "#FFF" //   White
             }}>
-                <Text variant = "h4" as = 'span'
-                    style = {{
-                        color: '#F8971F', //Orange
-                    }}> 
-                    {titleText} 
-                </Text>
-                <Text variant = "small" as = 'span'
-                    style = {{
-                        color: '#333F48', //Black
-                    }}> 
-                    {bodyText} 
-                </Text>
-            </ div>
+                <div className="flex flex-col items-start self-stretch gap-1.5">
+                    <Text variant = "h4" as = 'span'
+                        style = {{
+                            color: '#F8971F', //    Orange
+                        }}> 
+                        {titleText} 
+                    </Text>
+                    <Text variant = "small" as = 'span'
+                        style = {{
+                            color: '#333F48', //    Black
+                        }}> 
+                        {bodyText} 
+                    </Text>
+                </ div>
         </div>
     );
 }
