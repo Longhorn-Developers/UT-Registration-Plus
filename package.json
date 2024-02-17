@@ -30,6 +30,7 @@
         "react-window": "^1.8.10",
         "sass": "^1.70.0",
         "sql.js": "1.10.2",
+        "styled-components": "^6.1.8",
         "uuid": "^9.0.1"
     },
     "devDependencies": {
