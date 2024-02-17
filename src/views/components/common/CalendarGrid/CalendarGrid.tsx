@@ -1,9 +1,10 @@
 import React from 'react';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
-import styles from './CalendarGrid.module.scss';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
+import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
 import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import { Chip } from '../Chip/Chip';
+import styles from './CalendarGrid.module.scss';
 
 const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
@@ -23,7 +24,7 @@ for (let i = 0; i < 13; i++) {
 }
 
 interface Props {
-    courseCells: any[];
+    courseCells: CalendarGridCourse[];
     saturdayClass: boolean;
 }
 
@@ -58,7 +59,7 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                     {grid.map(row => row)}
                 </div>
             </div>
-            {/* courseCells.map((Block: typeof CalendarCourseCell) => (
+            {courseCells.map((Block: typeof CalendarCourseCell) => (
                 <div
                     key={`${Block}`}
                     style={{
@@ -66,9 +67,9 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                         gridRow: `1`,
                     }}
                 >
-                    <Chip label='test' />
+                    <CalendarCourseCell courseDeptAndInstr={} />
                 </div>
-                ))  */}
+                ))}
         </div>
     );
 }
