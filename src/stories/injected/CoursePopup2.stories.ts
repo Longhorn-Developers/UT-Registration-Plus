@@ -4,7 +4,7 @@ import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';
 import Instructor from 'src/shared/types/Instructor';
 
-import CoursePopup2 from 'src/views/components/injected/CoursePopup2/CoursePopup2';
+import CoursePopup from 'src/views/components/injected/CoursePopup/CoursePopup';
 
 const exampleCourse: Course = new Course({
     uniqueId: 50805,
@@ -48,16 +48,16 @@ const exampleCourse: Course = new Course({
     },
 });
 
-const meta: Meta<typeof CoursePopup2> = {
+const meta: Meta<typeof CoursePopup> = {
     title: 'Components/Injected/CoursePopup2',
-    component: CoursePopup2,
+    component: CoursePopup,
     argTypes: {
         onClose: { action: 'onClose' },
     },
 };
 
 export default meta;
-type Story = StoryObj<typeof CoursePopup2>;
+type Story = StoryObj<typeof CoursePopup>;
 
 export const Default: Story = {
     args: {
