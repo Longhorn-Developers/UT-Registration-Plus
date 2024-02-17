@@ -13,11 +13,10 @@ const meta = {
     },
     tags: ['autodocs'],
     argTypes: {
-        department: { control: { type: 'text' } },
-        courseNumber: { control: { type: 'text' } },
-        instructorLastName: { control: { type: 'text' } },
+        courseDeptAndInstr: { control: { type: 'text' } },
+        className: { control: { type: 'text' } },
         status: { control: { type: 'select', options: Object.values(Status) } },
-        meetingTime: { control: { type: 'text' } },
+        timeAndLocation: { control: { type: 'text' } },
         colors: { control: { type: 'object' } },
     },
     render: (args: any) => (
@@ -26,11 +25,10 @@ const meta = {
         </div>
     ),
     args: {
-        department: exampleCourse.department,
-        courseNumber: exampleCourse.number,
-        instructorLastName: exampleCourse.instructors[0].lastName,
+        courseDeptAndInstr: exampleCourse.department,
+        className: exampleCourse.number,
         status: exampleCourse.status,
-        meetingTime: exampleCourse.schedule.meetings[0].getTimeString({ separator: '-' }),
+        timeAndLocation: exampleCourse.schedule.meetings[0].getTimeString({ separator: '-' }),
 
         colors: getCourseColors('emerald', 500),
     },
