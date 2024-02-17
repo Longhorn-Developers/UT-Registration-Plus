@@ -88,7 +88,7 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                     <CalendarCourseCell courseDeptAndInstr={block.componentProps.courseDeptAndInstr} 
                                         status={block.componentProps.status} colors={block.componentProps.colors}/>
                 </div>
-                ))} */}
+                ))}
             <div className={styles.buttonContainer}>
                 <div className={styles.divider}></div> {/* First divider */}
                 <button className={styles.calendarButton}>
