@@ -12,6 +12,7 @@ export interface CalendarCourseCellProps {
     timeAndLocation?: string;
     status: Status;
     colors: CourseColors;
+    className?: string;
 }
 
 const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
@@ -19,6 +20,7 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
     timeAndLocation,
     status,
     colors,
+    className,
 }: CalendarCourseCellProps) => {
     let rightIcon: React.ReactNode | null = null;
     if (status === Status.WAITLISTED) {
@@ -34,7 +36,7 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
 
     return (
         <div
-            className={`w-full flex justify-center rounded p-2 ${fontColor}`}
+            className={clsx('w-full flex justify-center rounded p-2', fontColor, className)}
             style={{
                 backgroundColor: colors.primaryColor,
             }}
