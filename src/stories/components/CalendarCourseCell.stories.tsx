@@ -36,7 +36,7 @@ export const Default: Story = {};
 
 export const Variants: Story = {
     render: props => (
-        <div className='grid grid-cols-2 h-40 max-w-xl w-90vw gap-x-4 gap-y-2'>
+        <div className='grid grid-cols-2 h-40 max-w-60 w-90vw gap-x-4 gap-y-2'>
             <CalendarCourseCell
                 {...props}
                 course={new Course({ ...exampleCourse, status: Status.OPEN })}
