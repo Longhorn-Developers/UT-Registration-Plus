@@ -13,9 +13,12 @@ const meta = {
     },
     tags: ['autodocs'],
     argTypes: {
-        course: { control: 'object' },
-        meetingIdx: { control: 'number' },
-        colors: { control: 'object' },
+        department: { control: { type: 'text' } },
+        courseNumber: { control: { type: 'text' } },
+        instructorLastName: { control: { type: 'text' } },
+        status: { control: { type: 'select', options: Object.values(Status) } },
+        meetingTime: { control: { type: 'text' } },
+        colors: { control: { type: 'object' } },
     },
     render: (args: any) => (
         <div className='w-45'>
@@ -23,8 +26,13 @@ const meta = {
         </div>
     ),
     args: {
-        course: exampleCourse,
-        meetingIdx: 0,
+        department: exampleCourse.department,
+        courseNumber: exampleCourse.number,
+        instructorLastName: exampleCourse.instructors[0].lastName,
+        status: exampleCourse.status,
+        meetingTime: exampleCourse.schedule.meetings[0].getTimeString({separator: '-'}),
+
+
         colors: getCourseColors('emerald', 500),
     },
 } satisfies Meta<typeof CalendarCourseCell>;
