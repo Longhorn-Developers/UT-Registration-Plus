@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import styles from './CalendarGrid.module.scss';
-import calIcon from 'src/assets/icons/cal.svg';
-import pngIcon from 'src/assets/icons/png.svg';
+
+//  import calIcon from 'src/assets/icons/cal.svg';
+//  import pngIcon from 'src/assets/icons/png.svg';
 
 const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
@@ -34,56 +35,64 @@ interface Props {
  * @param props
  */
 function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Props> ): JSX.Element {
+    const [iterator, setIterator] = useState<number>(0);
     return (
         <div className={styles.calendar}>
             <div className={styles.dayLabelContainer} />
-            {/* Displaying the rest of the calendar */}
-            <div className={styles.timeAndGrid}>
-                {/* <div className={styles.timeColumn}>
-            <div className={styles.timeBlock}></div>
-            {hoursOfDay.map((hour) => (
-                <div key={hour} className={styles.timeBlock}>
-                <div className={styles.timeLabelContainer}>
-                    <p>{hour % 12 === 0 ? 12 : hour % 12} {hour < 12 ? 'AM' : 'PM'}</p>
-                </div>
-                </div>
-            ))}
-            </div> */}
-                <div className={styles.calendarGrid}>
+                {/* Displaying the rest of the calendar */}
+                <div className={styles.timeAndGrid}>
+                    {/* <div className={styles.timeColumn}>
+                <div className={styles.timeBlock}></div>
+                {hoursOfDay.map((hour) => (
+                    <div key={hour} className={styles.timeBlock}>
+                    <div className={styles.timeLabelContainer}>
+                        <p>{hour % 12 === 0 ? 12 : hour % 12} {hour < 12 ? 'AM' : 'PM'}</p>
+                    </div>
+                    </div>
+                ))}
+                </div> */}
+                <div className={styles.calendarGrid} id='grid1'>
                     {/* Displaying day labels */}
                     <div className={styles.timeBlock} />
-                    {daysOfWeek.map(day => (
-                        <div key={day} className={styles.day}>
+                    {daysOfWeek.map((day, x) => (
+                        <div key={`${day}`} className={styles.day}>
                             {day}
                         </div>
                     ))}
-                    {grid.map(row => row)}
+                    {grid.map((row, y) => (
+                        <div key={`${row}`}>
+                            {row.map((cell, x) => {
+                                const shouldRenderChild = courseCells[iterator].calendarGridPoint && x === courseCells[iterator].calendarGridPoint.dayIndex && y === courseCells[iterator].calendarGridPoint.startIndex;
+                                if (shouldRenderChild) {
+                                    setIterator((iterator) => iterator + 1);
+                                }
+                                return (
+                                    <div key={`${cell}`}>
+                                        {cell}
+                                        {shouldRenderChild && <CalendarCourseCell 
+                                        courseDeptAndInstr={courseCells[iterator].componentProps.courseDeptAndInstr}
+                                        status={courseCells[iterator].componentProps.status}
+                                        colors={courseCells[iterator].componentProps.colors} />}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ))}
                 </div>
             </div>
-            {courseCells.map((block: CalendarGridCourse) => (
-                <div
-                    key={`${block}`}
-                    style={{
-                        gridColumn: `${block.calendarGridPoint.dayIndex}`,
-                        gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
-                    }}
-                >
-                    <CalendarCourseCell courseDeptAndInstr={block.componentProps.courseDeptAndInstr} 
-                                        status={block.componentProps.status} colors={block.componentProps.colors}/>
-                </div>
-                ))} */}
-            <div className={styles.buttonContainer}>
-                <div className={styles.divider}></div> {/* First divider */}
+            
+            {/* <div className={styles.buttonContainer}>
+                <div className={styles.divider}></div> 
                 <button className={styles.calendarButton}>
                     <img src={calIcon} className={styles.buttonIcon} alt="CAL" />
                     Save as .CAL
                 </button>
-                <div className={styles.divider}></div> {/* Second divider */}
+                <div className={styles.divider}></div> 
                 <button className={styles.calendarButton}>
                     <img src={pngIcon} className={styles.buttonIcon} alt="PNG" />
                     Save as .PNG
                 </button>
-            </div>
+            </div>  */}
         </div>
     );
 }

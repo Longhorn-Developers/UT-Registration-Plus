@@ -21,8 +21,8 @@ const testData: CalendarGridCourse[] = [
   {
       calendarGridPoint: {
           dayIndex: 0,
-          startIndex: 1,
-          endIndex: 2,
+          startIndex: 4,
+          endIndex: 6,
       },
       componentProps: {
           courseDeptAndInstr: 'Course 1',
@@ -33,9 +33,9 @@ const testData: CalendarGridCourse[] = [
   },
   {
       calendarGridPoint: {
-          dayIndex: 1,
-          startIndex: 2,
-          endIndex: 3,
+          dayIndex: 4,
+          startIndex: 10,
+          endIndex: 20,
       },
       componentProps: {
           courseDeptAndInstr: 'Course 2',
