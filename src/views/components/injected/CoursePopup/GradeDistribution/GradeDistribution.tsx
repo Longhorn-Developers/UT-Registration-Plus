@@ -203,18 +203,18 @@ export default function GradeDistribution({ course }: Props) {
             {status === DataStatus.LOADING && <Spinner />}
             {status === DataStatus.ERROR && (
                 <Card className={styles.text}>
-                    <Text color='speedway_brick' size='medium' weight='semi_bold'>
+                    <Text color='speedway_brick' /* size='medium' weight='semi_bold'    */>
                         There was an error fetching the grade distribution data
                     </Text>
-                    <Icon color='speedway_brick' size='large' name='sentiment_dissatisfied' />
+                    <Icon color='speedway_brick' /* size='large'  */ name='sentiment_dissatisfied'    />
                 </Card>
             )}
             {status === DataStatus.NOT_FOUND && (
                 <Card className={styles.text}>
-                    <Text color='charcoal' size='medium' weight='semi_bold'>
+                    <Text color='charcoal' /*   size='medium' weight='semi_bold'    */>
                         No grade distribution data was found for this course
                     </Text>
-                    <Icon color='charcoal' size='x_large' name='search_off' />
+                    <Icon color='charcoal' /* size='x_large' */ name='search_off' />
                 </Card>
             )}
         </Card>

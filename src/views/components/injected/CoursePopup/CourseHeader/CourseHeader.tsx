@@ -5,7 +5,7 @@ import Card from '@views/components/common/Card/Card';
 import Icon from '@views/components/common/Icon/Icon';
 import Link from '@views/components/common/Link/Link';
 import Text from '@views/components/common/Text/Text';
-import CourseButtons from './CourseButtons/CourseButtons';
+//  import CourseButtons from './CourseButtons/CourseButtons';
 import styles from './CourseHeader.module.scss';
 
 type Props = {
@@ -26,23 +26,23 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
 
     return (
         <Card className={styles.header}>
-            <Icon className={styles.close} size='large' name='close' onClick={onClose} />
+            <Icon className={styles.close}  /*  size='large'    */ name='close' onClick={onClose} />
             <div className={styles.title}>
-                <Text className={styles.courseName} size='large' weight='bold' color='black'>
+                <Text className={styles.courseName} /* size='large' weight='bold' color='black' */>
                     {course.courseName} ({course.department} {course.number})
                 </Text>
                 <Link
                     url={course.url}
                     className={styles.uniqueId}
-                    size='medium'
-                    weight='semi_bold'
+                    /* size='medium' 
+                    weight='semi_bold' */
                     color='burnt_orange'
                     title='View course details on UT Course Schedule'
                 >
                     #{course.uniqueId}
                 </Link>
             </div>
-            <Text size='medium' className={styles.instructors}>
+            <Text /*    size='medium' className={styles.instructors}    */>
                 {`with ${!course.instructors.length ? 'TBA' : ''}`}
                 {course.instructors.map((instructor, index) => {
                     const name = instructor.toString({
@@ -58,8 +58,8 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
                             {numInstructors > 1 && index === course.instructors.length - 1 ? '& ' : ''}
                             <Link
                                 key={name}
-                                size='medium'
-                                weight='normal'
+                                /*  size='medium'    
+                                weight='normal' */
                                 url={url}
                                 title="View instructor's directory page"
                             >
@@ -71,15 +71,15 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
                 })}
             </Text>
             {course.schedule.meetings.map(meeting => (
-                <Text size='medium' className={styles.meeting} key={meeting.startTime}>
-                    <Text span size='medium' weight='bold' color='black'>
+                <Text /*    size='medium'   */ className={styles.meeting} key={meeting.startTime}>
+                    <Text as='span' /*  size='medium'    weight='bold'  */ color='black'>
                         {meeting.getDaysString({
                             format: 'long',
                             separator: 'short',
                         })}
                     </Text>
                     {' at '}
-                    <Text span size='medium'>
+                    <Text as='span' /*  size='medium'  */>
                         {meeting.getTimeString({
                             separator: 'to',
                             capitalize: true,
@@ -87,8 +87,8 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
                     </Text>
                     {' in '}
                     <Link
-                        size='medium'
-                        weight='normal'
+                        /*  size='medium'
+                        weight='normal' */
                         title='View building on UT Map'
                         url={getBuildingUrl(meeting.location?.building)}
                         disabled={!meeting.location?.building}
@@ -98,7 +98,7 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
                 </Text>
             ))}
 
-            <CourseButtons course={course} activeSchedule={activeSchedule} />
+            {/* <CourseButtons course={course} activeSchedule={activeSchedule} />   */}
         </Card>
     );
 }

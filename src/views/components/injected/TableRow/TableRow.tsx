@@ -76,7 +76,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             element.classList.remove(styles.isConflict);
             setConflicts([]);
         };
-    }, [activeSchedule, course]);
+    }, [activeSchedule, course, element.classList]);
 
     if (!container) {
         return null;
@@ -91,7 +91,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
                 <div className={styles.conflictTooltip}>
                     <div className={styles.body}>
                         {conflicts.map(c => (
-                            <Text size='small' key={c.uniqueId}>
+                            <Text /*    size='small'    */ key={c.uniqueId}>
                                 {c.department} {c.number} ({c.uniqueId})
                             </Text>
                         ))}
