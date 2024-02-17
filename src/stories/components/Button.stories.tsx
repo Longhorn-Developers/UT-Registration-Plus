@@ -1,14 +1,14 @@
-import { Button } from 'src/views/components/common/Button/Button';
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { colorsFlattened } from 'src/shared/util/themeColors';
-import ImagePlaceholderIcon from '~icons/material-symbols/image';
+import { Button } from 'src/views/components/common/Button/Button';
 import AddIcon from '~icons/material-symbols/add';
-import RemoveIcon from '~icons/material-symbols/remove';
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
-import ReviewsIcon from '~icons/material-symbols/reviews';
-import HappyFaceIcon from '~icons/material-symbols/mood';
 import DescriptionIcon from '~icons/material-symbols/description';
+import ImagePlaceholderIcon from '~icons/material-symbols/image';
+import HappyFaceIcon from '~icons/material-symbols/mood';
+import RemoveIcon from '~icons/material-symbols/remove';
+import ReviewsIcon from '~icons/material-symbols/reviews';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -128,7 +128,7 @@ export const CourseCatalogActionButtons: Story = {
     },
     render: props => (
         <div style={{ display: 'flex', gap: '15px' }}>
-            <Button {...props} variant='filled' color='ut-burnt-orange' icon={CalendarMonthIcon} />
+            <Button {...props} variant='filled' color='ut-burntorange' icon={CalendarMonthIcon} />
             <Button {...props} variant='outline' color='ut-blue' icon={ReviewsIcon}>
                 RateMyProf
             </Button>

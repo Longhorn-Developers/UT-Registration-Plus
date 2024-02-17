@@ -1,15 +1,15 @@
 export const colors = {
     ut: {
-        'burnt-orange': '#BF5700',
+        burntorange: '#BF5700',
         black: '#333F48',
         orange: '#f8971f',
         yellow: '#ffd600',
-        'light-green': '#a6cd57',
+        lightgreen: '#a6cd57',
         green: '#579d42',
         teal: '#00a9b7',
         blue: '#005f86',
         gray: '#9cadb7',
-        'off-white': '#d6d2c4',
+        offwhite: '#d6d2c4',
         concrete: '#95a5a6',
     },
     theme: {
