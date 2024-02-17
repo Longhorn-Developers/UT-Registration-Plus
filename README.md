@@ -15,11 +15,13 @@
 1. Clone this repo
 2. Run `pnpm install` to install and patch all the required dependencies
 
-If you want to run the development build:
-Run `pnpm run dev`
+-   If you want to run the development build:
 
-If you want to build the extension for production:
-Run `pnpm build`
+    -   Run `pnpm run dev`
+
+-   If you want to build the extension for production:
+
+    -   Run `pnpm build`
 
 You may have to rename the `__uno.css.js` to `uno.css.js` in dist
 
