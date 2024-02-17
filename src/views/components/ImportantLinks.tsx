@@ -17,7 +17,7 @@ export default function ImportantLinks({ className }: Props) {
             <Text variant='h3'>Important Links</Text>
             <a
                 href='https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/'
-                className='text-ut-burntorange flex items-center gap-0.5'
+                className='flex items-center gap-0.5 text-ut-burntorange'
                 target='_blank'
                 rel='noreferrer'
             >
@@ -26,7 +26,7 @@ export default function ImportantLinks({ className }: Props) {
             </a>
             <a
                 href='https://utdirect.utexas.edu/apps/registrar/course_schedule/20236/'
-                className='text-ut-burntorange flex items-center gap-0.5'
+                className='flex items-center gap-0.5 text-ut-burntorange'
                 target='_blank'
                 rel='noreferrer'
             >
@@ -35,7 +35,7 @@ export default function ImportantLinks({ className }: Props) {
             </a>
             <a
                 href='https://utdirect.utexas.edu/registrar/ris.WBX'
-                className='text-ut-burntorange flex items-center gap-0.5'
+                className='flex items-center gap-0.5 text-ut-burntorange'
                 target='_blank'
                 rel='noreferrer'
             >
@@ -44,7 +44,7 @@ export default function ImportantLinks({ className }: Props) {
             </a>
             <a
                 href='https://utdirect.utexas.edu/registration/chooseSemester.WBX'
-                className='text-ut-burntorange flex items-center gap-0.5'
+                className='flex items-center gap-0.5 text-ut-burntorange'
                 target='_blank'
                 rel='noreferrer'
             >
@@ -53,7 +53,7 @@ export default function ImportantLinks({ className }: Props) {
             </a>
             <a
                 href='https://utdirect.utexas.edu/apps/degree/audits/'
-                className='text-ut-burntorange flex items-center gap-0.5'
+                className='flex items-center gap-0.5 text-ut-burntorange'
                 target='_blank'
                 rel='noreferrer'
             >
