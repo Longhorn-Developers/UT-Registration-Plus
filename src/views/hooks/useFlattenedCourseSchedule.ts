@@ -62,7 +62,7 @@ export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
         // in-person
         return meetings.flatMap(meeting => {
             const { days, startTime, endTime, location } = meeting;
-            const time = meeting.getTimeString({ separator: ' - ', capitalize: true });
+            const time = meeting.getTimeString({ separator: '-', capitalize: true });
             const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
 
             return days.map(d => ({
