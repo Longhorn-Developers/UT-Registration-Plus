@@ -13,12 +13,12 @@ import CourseStatus from '../CourseStatus/CourseStatus';
 
 const CalendarHeader = () => (
     <div className='min-h-79px min-w-672px flex flex-wrap items-center px-0 py-15'>
-        <div className="flex flex-row gap-2">
+        <div className='flex flex-row gap-2'>
             <div className='flex gap-1'>
                 <Button variant='single' icon={MenuIcon} color='ut-gray' />
                 <div className='flex items-center'>
                     <LogoIcon style={{ marginRight: '5px' }} />
-                    <div className='flex flex-col whitespace-nowrap gap-1'>
+                    <div className='flex flex-col gap-1 whitespace-nowrap'>
                         <Text>UT Registration</Text>
                         <Text>Plus</Text>
                     </div>
