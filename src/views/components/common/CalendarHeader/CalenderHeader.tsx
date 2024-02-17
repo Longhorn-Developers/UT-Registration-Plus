@@ -15,16 +15,16 @@ const CalendarHeader = () => (
     <div className='min-h-79px min-w-672px flex flex-wrap items-center justify-between px-0 py-15'>
         <div className='flex'>
             <Button variant='single' icon={MenuIcon} color='ut-gray' />
-            <div className='flex items-center'>
+            <div className='flex items-center gap-10'>
                 <LogoIcon style={{ marginRight: '5px' }} />
                 <Text>UT Registration Plus</Text>
             </div>
         </div>
-
         <div className='flex flex-col'>
             <ScheduleTotalHoursAndCourses scheduleName='SCHEDULE' totalHours={22} totalCourses={8} />
             DATA UPDATED ON: 12:00 AM 02/01/2024
         </div>
+        // Split
         <div className='flex flex-row items-center'>
             <CourseStatus size='small' status={Status.WAITLISTED} />
             <CourseStatus size='small' status={Status.CLOSED} />
