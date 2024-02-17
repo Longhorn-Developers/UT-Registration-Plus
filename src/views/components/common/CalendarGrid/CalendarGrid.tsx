@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useRef} from 'react';
+import html2canvas from 'html2canvas';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
@@ -35,11 +36,25 @@ interface Props {
  * @param props
  */
 function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Props> ): JSX.Element {
+    const calendarRef = useRef(null); // Create a ref for the calendar grid
+
+    const saveAsPNG = () => {
+        if (calendarRef.current) {
+            html2canvas(calendarRef.current).then((canvas) => {
+                // Create an a element to trigger download
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/png');
+                a.download = 'calendar.png';
+                a.click();
+            });
+        }
+    };
+
     return (
         <div className={styles.calendar}>
             <div className={styles.dayLabelContainer} />
             {/* Displaying the rest of the calendar */}
-            <div className={styles.timeAndGrid}>
+            <div ref={calendarRef} className={styles.timeAndGrid}>
                 {/* <div className={styles.timeColumn}>
             <div className={styles.timeBlock}></div>
             {hoursOfDay.map((hour) => (
@@ -58,7 +73,9 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                             {day}
                         </div>
                     ))}
-                    {grid.map(row => row)}
+                    {grid.map((row, index) => (
+                        <React.Fragment key={index}>{row}</React.Fragment>
+                    ))}
                 </div>
             </div>
             {/* {courseCells.map((Block: typeof CalendarCourseCell) => (
@@ -79,7 +96,7 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                     Save as .CAL
                 </button>
                 <div className={styles.divider}></div> {/* Second divider */}
-                <button className={styles.calendarButton}>
+                <button onClick={saveAsPNG} className={styles.calendarButton}>
                     <img src={pngIcon} className={styles.buttonIcon} alt="PNG" />
                     Save as .PNG
                 </button>
