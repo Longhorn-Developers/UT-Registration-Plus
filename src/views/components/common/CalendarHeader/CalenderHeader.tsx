@@ -20,10 +20,12 @@ const CalendarHeader = () => (
                     <div className='flex items-center'>
                         <LogoIcon style={{ marginRight: '5px' }} />
                         <div className='flex flex-col gap-1 whitespace-nowrap'>
-                            <Text className='leading-trim text-cap font-roboto text-base font-medium'>
+                            <Text className='leading-trim text-cap font-roboto text-base text-ut-burntorange font-medium'>
                                 UT Registration
                             </Text>
-                            <Text className='leading-trim text-cap font-roboto text-base font-medium'>Plus</Text>
+                            <Text className='leading-trim text-cap font-roboto text-base text-ut-orange font-medium'>
+                                Plus
+                            </Text>
                         </div>
                     </div>
                 </div>
