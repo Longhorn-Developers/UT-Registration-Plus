@@ -13,6 +13,7 @@ export interface PopupCourseBlockProps {
     className?: string;
     course: Course;
     colors: CourseColors;
+    dragHandleProps?: any;
 }
 
 /**
@@ -20,7 +21,7 @@ export interface PopupCourseBlockProps {
  *
  * @param props PopupCourseBlockProps
  */
-export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): JSX.Element {
+export default function PopupCourseBlock({ className, course, colors, dragHandleProps }: PopupCourseBlockProps): JSX.Element {
     // whiteText based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
 
@@ -36,6 +37,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                     backgroundColor: colors.secondaryColor,
                 }}
                 className='flex cursor-move items-center self-stretch rounded rounded-r-0'
+                {...dragHandleProps}
             >
                 <DragIndicatorIcon className='h-6 w-6 text-white' />
             </div>
