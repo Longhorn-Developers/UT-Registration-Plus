@@ -114,6 +114,7 @@ const CourseHeadingAndActions = ({ course, onClose, activeSchedule }: CourseHead
                 </div>
             </div>
             <div className='my-3 flex flex-wrap items-center gap-[15px]'>
+                {/* TODO: make this open the calendar page */}
                 <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} />
                 <Divider type='solid' color='ut-offwhite' className='h-7' />
                 <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
