@@ -84,7 +84,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     return ReactDOM.createPortal(
         <>
-            <Button className={styles.rowButton} onClick={onClick} variant='secondary'>
+            <Button className={styles.rowButton} onClick={onClick} variant='filled' color='ut-black'>
                 <Icon name='bar_chart' color='white' size='medium' />
             </Button>
             {conflicts.length > 0 && (
