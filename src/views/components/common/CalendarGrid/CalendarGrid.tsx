@@ -1,9 +1,5 @@
-import React, { useRef } from 'react';
-// import html2canvas from 'html2canvas';
 import * as htmlToImage from 'html-to-image';
-import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
-import { DAY_MAP } from 'src/shared/types/CourseMeeting';
-import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
+import React, { useRef } from 'react';
 import calIcon from 'src/assets/icons/cal.svg';
 import pngIcon from 'src/assets/icons/png.svg';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
@@ -13,22 +9,24 @@ import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import styles from './CalendarGrid.module.scss';
 
-const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
-const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
+const DAYS_OF_THE_WEEK = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
+const HOURS_OF_THE_DAY = Array.from({ length: 14 }, (_, index) => index + 8);
 const grid = [];
-for (let i = 0; i < 13; i++) {
-    const row = [];
-    let hour = hoursOfDay[i];
-    row.push(
-        <div key={hour} className={styles.timeBlock}>
-            <div className={styles.timeLabelContainer}>
-                <p>{(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}</p>
+(() => {
+    for (let i = 0; i < 13; i++) {
+        const row = [];
+        let hour = HOURS_OF_THE_DAY[i];
+        row.push(
+            <div key={hour} className={styles.timeBlock}>
+                <div className={styles.timeLabelContainer}>
+                    <p>{(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}</p>
+                </div>
             </div>
-        </div>
-    );
-    row.push(Array.from({ length: 5 }, (_, j) => <CalendarCell key={j} />));
-    grid.push(row);
-}
+        );
+        row.push(Array.from({ length: 5 }, (_, j) => <CalendarCell key={j} />));
+        grid.push(row);
+    }
+})();
 
 interface Props {
     courseCells: CalendarGridCourse[];
@@ -52,33 +50,36 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
         //         a.click();
         //     });
         // }
-        htmlToImage.toPng(calendarRef.current, {
-            backgroundColor: "white",
-            style: { 
-            background: "white",
-            marginTop: "20px",
-            marginBottom: "20px",
-            marginRight: "20px",
-            marginLeft: "20px",}})
-        .then(function (dataUrl) {
-            var img = new Image();
-            img.src = dataUrl;
-            fetch(dataUrl)
-            .then(response => response.blob())
-            .then(blob => {
-                const href = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = href;
-                link.download = 'my-schedule.png';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+        htmlToImage
+            .toPng(calendarRef.current, {
+                backgroundColor: 'white',
+                style: {
+                    background: 'white',
+                    marginTop: '20px',
+                    marginBottom: '20px',
+                    marginRight: '20px',
+                    marginLeft: '20px',
+                },
             })
-            .catch(error => console.error('Error downloading file:', error));
-        })
-        .catch(function (error) {
-            console.error('oops, something went wrong!', error);
-        });
+            .then(dataUrl => {
+                let img = new Image();
+                img.src = dataUrl;
+                fetch(dataUrl)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const href = window.URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = href;
+                        link.download = 'my-schedule.png';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    })
+                    .catch(error => console.error('Error downloading file:', error));
+            })
+            .catch(error => {
+                console.error('oops, something went wrong!', error);
+            });
     };
 
     return (
@@ -99,7 +100,7 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                 <div className={styles.calendarGrid}>
                     {/* Displaying day labels */}
                     <div className={styles.timeBlock} />
-                    {daysOfWeek.map(day => (
+                    {DAYS_OF_THE_WEEK.map(day => (
                         <div key={day} className={styles.day}>
                             {day}
                         </div>
