@@ -15,9 +15,11 @@ for (let i = 0; i < 13; i++) {
     const row = [];
     let hour = hoursOfDay[i];
     row.push(
-        <div key={hour} className={styles.timeBlock}>
-            <div className={styles.timeLabelContainer}>
-                <p>{(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}</p>
+        <div key={hour} className='flex flex-col items-end'>
+            <div className='flex flex-1 flex-col items-end gap-17'>
+                <p className='font-roboto-flex mb-0 mr-10 mt-[-10px] h-6.6 self-stretch text-left text-gray-900 font-normal'>
+                    {(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}
+                </p>
             </div>
         </div>
     );
@@ -50,20 +52,9 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
     };
 
     return (
-        <div className={styles.calendar}>
-            <div className={styles.dayLabelContainer} />
-            {/* Displaying the rest of the calendar */}
-            <div ref={calendarRef} className={styles.timeAndGrid}>
-                {/* <div className={styles.timeColumn}>
-            <div className={styles.timeBlock}></div>
-            {hoursOfDay.map((hour) => (
-                <div key={hour} className={styles.timeBlock}>
-                <div className={styles.timeLabelContainer}>
-                    <p>{hour % 12 === 0 ? 12 : hour % 12} {hour < 12 ? 'AM' : 'PM'}</p>
-                </div>
-                </div>
-            ))}
-            </div> */}
+        <div className='relative flex flex-col gap-10'>
+            <div className='h-13 min-h-13 min-w-40 flex flex-1 flex-row items-center justify-center gap-10 pb-15' />
+            <div ref={calendarRef} className='flex'>
                 <div className={styles.calendarGrid}>
                     {/* Displaying day labels */}
                     <div className={styles.timeBlock} />
