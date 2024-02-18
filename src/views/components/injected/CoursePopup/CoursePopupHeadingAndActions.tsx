@@ -31,7 +31,7 @@ interface CourseHeadingAndActionsProps {
  * @returns {JSX.Element} The rendered component.
  */
 const CourseHeadingAndActions = ({ course, onClose, activeSchedule }: CourseHeadingAndActionsProps) => {
-    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule, semester } = course;
+    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
     const instructorString = instructors
         .map(instructor => {
             const { firstName, lastName } = instructor;
@@ -60,7 +60,7 @@ const CourseHeadingAndActions = ({ course, onClose, activeSchedule }: CourseHead
 
     const handleOpenPastSyllabi = async () => {
         const firstInstructor = instructors[0];
-        const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=${semester}&department=${department}&course_number=${courseNumber}&course_title=${courseName}&unique=${uniqueId}&instructor_first=${firstInstructor.firstName}&instructor_last=${firstInstructor.lastName}&course_type=In+Residence&search=Search`;
+        const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=${courseName}&unique=&instructor_first=${firstInstructor.firstName}&instructor_last=${firstInstructor.lastName}&course_type=In+Residence&search=Search`;
         await openNewTab(url);
     };
 
