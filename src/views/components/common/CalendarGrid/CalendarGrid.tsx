@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
-import html2canvas from 'html2canvas';
-// import domtoimage from 'dom-to-image-more';
+// import html2canvas from 'html2canvas';
 import * as htmlToImage from 'html-to-image';
 import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
@@ -50,7 +49,11 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
         //         a.click();
         //     });
         // }
-        htmlToImage.toPng(calendarRef.current, {style: { background: "white" }})
+        htmlToImage.toPng(calendarRef.current, {
+            backgroundColor: "white",
+            style: { 
+            background: "white",
+            margin: "20px",}})
         .then(function (dataUrl) {
             var img = new Image();
             img.src = dataUrl;
