@@ -36,7 +36,7 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
 
     return (
         <div
-            className={clsx('w-full flex justify-center rounded p-2', fontColor, className)}
+            className={clsx('h-full w-full flex justify-center rounded p-2', fontColor, className)}
             style={{
                 backgroundColor: colors.primaryColor,
             }}

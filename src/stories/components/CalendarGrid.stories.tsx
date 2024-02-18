@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
-import CalendarGrid from 'src/views/components/common/CalendarGrid/CalendarGrid';
-import { getCourseColors } from 'src/shared/util/colors';
-import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
-import { Status } from 'src/shared/types/Course';
+import CalendarGrid from '@views/components/common/CalendarGrid/CalendarGrid';
+import { getCourseColors } from '@shared/util/colors';
+import { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
+import { Status } from '@shared/types/Course';
 
 const meta = {
     title: 'Components/Common/CalendarGrid',
@@ -20,9 +20,9 @@ export default meta;
 const testData: CalendarGridCourse[] = [
   {
       calendarGridPoint: {
-          dayIndex: 0,
-          startIndex: 4,
-          endIndex: 6,
+          dayIndex: 4,
+          startIndex: 10,
+          endIndex: 11,
       },
       componentProps: {
           courseDeptAndInstr: 'Course 1',
@@ -33,9 +33,9 @@ const testData: CalendarGridCourse[] = [
   },
   {
       calendarGridPoint: {
-          dayIndex: 4,
+          dayIndex: 1,
           startIndex: 10,
-          endIndex: 20,
+          endIndex: 12,
       },
       componentProps: {
           courseDeptAndInstr: 'Course 2',
