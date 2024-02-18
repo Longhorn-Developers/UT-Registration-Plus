@@ -18,7 +18,7 @@ const HOT_RELOADING_WHITELIST = [
     'gmail.com',
     'photopea.com',
     'chat.openai.com',
-];
+] as const satisfies readonly string[];
 
 /**
  * Reloads the tab that was open when the extension was reloaded

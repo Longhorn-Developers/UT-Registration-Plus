@@ -1,7 +1,8 @@
 import { DevStore } from '@shared/storage/DevStore';
 
 /**
- * Open the debug tab as the first tab
+ * Opens the debug tab as the first tab in the browser if the environment is set to development.
+ * @returns {Promise<void>} A promise that resolves once the debug tab is opened.
  */
 export async function openDebugTab() {
     if (process.env.NODE_ENV === 'development') {
@@ -18,7 +19,7 @@ export async function openDebugTab() {
             active: wasDebugTabVisible,
             pinned: true,
             index: 0,
-        });
+        } satisfies chrome.tabs.CreateProperties);
 
         await DevStore.set('debugTabId', tab.id);
     }

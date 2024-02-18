@@ -22,6 +22,6 @@ export const DevStore = createLocalStore<IDevStore>({
     wasDebugTabVisible: false,
     isExtensionReloading: true,
     reloadTabId: undefined,
-});
+} satisfies IDevStore);
 
 debugStore({ devStore: DevStore });

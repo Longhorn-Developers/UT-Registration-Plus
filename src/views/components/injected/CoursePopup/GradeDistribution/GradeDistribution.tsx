@@ -1,9 +1,5 @@
-/* eslint-disable no-nested-ternary */
-import { Course, Semester } from '@shared/types/Course';
-import { Distribution, LetterGrade } from '@shared/types/Distribution';
-import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
-import React, { useEffect, useRef, useState } from 'react';
+import type { Course, Semester } from '@shared/types/Course';
+import type { Distribution, LetterGrade } from '@shared/types/Distribution';
 import Card from '@views/components/common/Card/Card';
 import Icon from '@views/components/common/Icon/Icon';
 import Spinner from '@views/components/common/Spinner/Spinner';
@@ -14,14 +10,23 @@ import {
     querySemesterDistribution,
 } from '@views/lib/database/queryDistribution';
 import colors from '@views/styles/colors.module.scss';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import React, { useEffect, useRef, useState } from 'react';
+
 import styles from './GradeDistribution.module.scss';
 
-enum DataStatus {
-    LOADING = 'LOADING',
-    FOUND = 'FOUND',
-    NOT_FOUND = 'NOT_FOUND',
-    ERROR = 'ERROR',
-}
+const DataStatus = {
+    LOADING: 'LOADING',
+    FOUND: 'FOUND',
+    NOT_FOUND: 'NOT_FOUND',
+    ERROR: 'ERROR',
+} as const;
+
+/**
+ * Represents the type of data status for the GradeDistribution component.
+ */
+type DataStatusType = (typeof DataStatus)[keyof typeof DataStatus];
 
 interface Props {
     course: Course;
@@ -51,7 +56,7 @@ export default function GradeDistribution({ course }: Props) {
     const [semesters, setSemesters] = useState<Semester[]>([]);
     const [selectedSemester, setSelectedSemester] = useState<Semester | null>(null);
     const [distribution, setDistribution] = useState<Distribution | null>(null);
-    const [status, setStatus] = useState<DataStatus>(DataStatus.LOADING);
+    const [status, setStatus] = useState<DataStatusType>(DataStatus.LOADING);
 
     const [chartOptions, setChartOptions] = useState<Highcharts.Options>({
         title: {

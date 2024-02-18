@@ -1,6 +1,7 @@
-import { Button } from 'src/views/components/common/Button/Button';
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
+import { Button } from 'src/views/components/common/Button/Button';
+
 import Text from '../../views/components/common/Text/Text';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export

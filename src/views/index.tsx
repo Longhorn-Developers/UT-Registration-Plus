@@ -1,10 +1,10 @@
 import { ContextInvalidated, createShadowDOM, onContextInvalidated } from 'chrome-extension-toolkit';
 import React from 'react';
-import render from './lib/react';
 
 import CourseCatalogMain from './components/CourseCatalogMain';
 import PopupMain from './components/PopupMain';
 import getSiteSupport, { SiteSupport } from './lib/getSiteSupport';
+import render from './lib/react';
 import colors from './styles/colors.module.scss';
 
 const support = getSiteSupport(window.location.href);

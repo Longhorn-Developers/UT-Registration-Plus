@@ -1,6 +1,10 @@
 import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import { useEffect, useState } from 'react';
 
+/**
+ * Custom hook that returns the current version.
+ * @returns The current version as a string.
+ */
 export default function useVersion(): string {
     const [version, setVersion] = useState<string>('');
 

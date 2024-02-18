@@ -1,11 +1,12 @@
-import React, { useRef } from 'react';
 import html2canvas from 'html2canvas';
-import { DAY_MAP } from 'src/shared/types/CourseMeeting';
-import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
+import React, { useRef } from 'react';
 import calIcon from 'src/assets/icons/cal.svg';
 import pngIcon from 'src/assets/icons/png.svg';
-import CalendarCell from '../CalendarGridCell/CalendarGridCell';
+import { DAY_MAP } from 'src/shared/types/CourseMeeting';
+import type { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
+
 import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
+import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import styles from './CalendarGrid.module.scss';
 
 const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));

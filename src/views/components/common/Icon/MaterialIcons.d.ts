@@ -2194,4 +2194,7 @@ const icons = [
     'zoom_out_map',
 ] as const;
 
-export type MaterialIconCode = typeof icons[number];
+/**
+ * Represents a type that corresponds to a material icon code.
+ */
+export type MaterialIconCode = (typeof icons)[number];

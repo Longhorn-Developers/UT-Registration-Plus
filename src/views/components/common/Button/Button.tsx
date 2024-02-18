@@ -1,7 +1,11 @@
 import clsx from 'clsx';
 import React from 'react';
+
 import type IconComponent from '~icons/material-symbols';
-import { ThemeColor, getThemeColorHexByName, getThemeColorRgbByName } from '../../../../shared/util/themeColors';
+
+// TODO: Fix import
+import type { ThemeColor } from '../../../../shared/util/themeColors';
+import { getThemeColorHexByName, getThemeColorRgbByName } from '../../../../shared/util/themeColors';
 import Text from '../Text/Text';
 
 interface Props {

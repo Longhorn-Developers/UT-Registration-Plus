@@ -1,12 +1,20 @@
 import { theme } from 'unocss/preset-mini';
 
+/**
+ * Represents the colors associated with a course.
+ */
 export interface CourseColors {
     primaryColor: string;
     secondaryColor: string;
 }
 
-// calculates luminance of a hex string
-function getLuminance(hex: string): number {
+/**
+ * Calculates the luminance of a given hexadecimal color.
+ *
+ * @param hex - The hexadecimal color value.
+ * @returns The luminance value between 0 and 1.
+ */
+export function getLuminance(hex: string): number {
     let r = parseInt(hex.substring(1, 3), 16);
     let g = parseInt(hex.substring(3, 5), 16);
     let b = parseInt(hex.substring(5, 7), 16);
@@ -22,7 +30,13 @@ function getLuminance(hex: string): number {
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-// calculates contrast ratio between two hex strings
+/**
+ * Calculates the contrast ratio between two colors.
+ *
+ * @param hex1 - The first color in hexadecimal format.
+ * @param hex2 - The second color in hexadecimal format.
+ * @returns The contrast ratio between the two colors.
+ */
 function contrastRatioPair(hex1: string, hex2: string) {
     const lum1 = getLuminance(hex1);
     const lum2 = getLuminance(hex2);

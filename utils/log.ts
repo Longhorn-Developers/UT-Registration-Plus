@@ -1,5 +1,10 @@
 type ColorType = 'success' | 'info' | 'error' | 'warning' | keyof typeof COLORS;
 
+/**
+ * Logs a message with an optional color type.
+ * @param message - The message to be logged.
+ * @param type - The color type for the log message. Defaults to undefined.
+ */
 export default function colorLog(message: string, type?: ColorType) {
     let color: string = type || COLORS.FgBlack;
 
@@ -16,10 +21,15 @@ export default function colorLog(message: string, type?: ColorType) {
         case 'warning':
             color = COLORS.FgYellow;
             break;
+        default:
+            color = COLORS.FgBlack;
+            break;
     }
 
     console.log(color, message);
 }
+
+type ANSIEscapeCodes = `\x1b[${number}m`;
 
 const COLORS = {
     Reset: '\x1b[0m',
@@ -45,4 +55,4 @@ const COLORS = {
     BgMagenta: '\x1b[45m',
     BgCyan: '\x1b[46m',
     BgWhite: '\x1b[47m',
-} as const;
+} as const satisfies Record<string, ANSIEscapeCodes>;

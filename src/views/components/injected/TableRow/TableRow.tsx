@@ -1,7 +1,8 @@
-import { Course, ScrapedRow } from '@shared/types/Course';
-import { UserSchedule } from '@shared/types/UserSchedule';
+import type { Course, ScrapedRow } from '@shared/types/Course';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+
 import { Button } from '../../common/Button/Button';
 import Icon from '../../common/Icon/Icon';
 import Text from '../../common/Text/Text';
@@ -54,7 +55,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         return () => {
             element.classList.remove(styles.inActiveSchedule);
         };
-    }, [activeSchedule, element.classList]);
+    }, [activeSchedule, element.classList, course]);
 
     useEffect(() => {
         if (!activeSchedule || !course) {

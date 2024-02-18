@@ -1,9 +1,9 @@
-import React from 'react';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import React from 'react';
 
 /**
- * Calendar page
- * @returns entire page
+ * Renders the main calendar component.
+ * @returns The JSX element representing the main calendar component.
  */
 export default function CalendarMain() {
     return (

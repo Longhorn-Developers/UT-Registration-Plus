@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { colorsFlattened } from 'src/shared/util/themeColors';
 import { Button } from 'src/views/components/common/Button/Button';
+
 import AddIcon from '~icons/material-symbols/add';
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 import DescriptionIcon from '~icons/material-symbols/description';
@@ -49,6 +50,7 @@ export const Disabled: Story = {
     },
 };
 
+// TODO: Remove the ts-ignore comments once the `render` function is typed
 // @ts-ignore
 export const Grid: Story = {
     render: props => (
@@ -71,6 +73,7 @@ export const Grid: Story = {
 };
 
 export const PrettyColors: Story = {
+    // TODO: Remove the ts-ignore comments once the `args` object is typed
     // @ts-ignore
     args: {
         children: '',
@@ -101,6 +104,7 @@ export const PrettyColors: Story = {
     },
 };
 
+// TODO: Remove the ts-ignore comments once the `render` function is typed
 // @ts-ignore
 export const CourseButtons: Story = {
     render: props => (
@@ -122,6 +126,7 @@ export const CourseButtons: Story = {
 };
 
 export const CourseCatalogActionButtons: Story = {
+    // TODO: Remove the ts-ignore comments once the `args` object is typed
     // @ts-ignore
     args: {
         children: '',

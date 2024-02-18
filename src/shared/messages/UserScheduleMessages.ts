@@ -1,5 +1,8 @@
-import { Course } from '../types/Course';
+import type { Course } from '../types/Course';
 
+/**
+ * Represents a collection of user schedule messages.
+ */
 export interface UserScheduleMessages {
     /**
      * Add a course to a schedule

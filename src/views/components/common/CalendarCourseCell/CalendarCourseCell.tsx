@@ -1,16 +1,23 @@
 import { Status } from '@shared/types/Course';
 import clsx from 'clsx';
 import React from 'react';
-import { CourseColors, pickFontColor } from 'src/shared/util/colors';
+import type { CourseStatus } from 'src/shared/types/Course';
+import type { CourseColors } from 'src/shared/util/colors';
+import { pickFontColor } from 'src/shared/util/colors';
+
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
+
 import Text from '../Text/Text';
 
+/**
+ * Props for the CalendarCourseCell component.
+ */
 export interface CalendarCourseCellProps {
     courseDeptAndInstr: string;
     timeAndLocation?: string;
-    status: Status;
+    status: CourseStatus;
     colors: CourseColors;
     className?: string;
 }

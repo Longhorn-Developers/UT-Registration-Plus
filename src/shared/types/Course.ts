@@ -1,6 +1,6 @@
-/* eslint-disable max-classes-per-file */
-import { Serialized } from 'chrome-extension-toolkit';
-import { CourseMeeting } from './CourseMeeting';
+import type { Serialized } from 'chrome-extension-toolkit';
+
+import type { CourseMeeting } from './CourseMeeting';
 import { CourseSchedule } from './CourseSchedule';
 import Instructor from './Instructor';
 
@@ -9,15 +9,21 @@ import Instructor from './Instructor';
  */
 export type InstructionMode = 'Online' | 'In Person' | 'Hybrid';
 
+// TODO: Change to as const type
 /**
  * The status of a course (e.g. open, closed, waitlisted, cancelled)
  */
-export enum Status {
-    OPEN = 'OPEN',
-    CLOSED = 'CLOSED',
-    WAITLISTED = 'WAITLISTED',
-    CANCELLED = 'CANCELLED',
-}
+export const Status = {
+    OPEN: 'OPEN',
+    CLOSED: 'CLOSED',
+    WAITLISTED: 'WAITLISTED',
+    CANCELLED: 'CANCELLED',
+} as const;
+
+/**
+ * Represents the status of a course.
+ */
+export type CourseStatus = (typeof Status)[keyof typeof Status];
 
 /**
  * Represents a semester, with the year and the season for when a course is offered
@@ -49,7 +55,7 @@ export class Course {
     /** The number of credits that a course is worth */
     creditHours: number;
     /** Is the course open, closed, waitlisted, or cancelled? */
-    status: Status;
+    status: CourseStatus;
     /** all the people that are teaching this course, and some metadata about their names */
     instructors: Instructor[];
     /** Some courses at UT are reserved for certain groups of people or people within a certain major, which makes it difficult for people outside of that group to register for the course. */

@@ -1,31 +1,32 @@
-import { Course, InstructionMode, ScrapedRow, Semester, Status } from '@shared/types/Course';
+import type { CourseStatus,InstructionMode, ScrapedRow, Semester } from '@shared/types/Course';
+import { Course, Status } from '@shared/types/Course';
 import { CourseSchedule } from '@shared/types/CourseSchedule';
 import Instructor from '@shared/types/Instructor';
-import { SiteSupport } from '@views/lib/getSiteSupport';
+import type { SiteSupport } from '@views/lib/getSiteSupport';
 
 /**
  * The selectors that we use to scrape the course catalog list table (https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/results/?fos_fl=C+S&level=U&search_type_main=FIELD)
  */
-enum TableDataSelector {
-    COURSE_HEADER = 'td.course_header',
-    UNIQUE_ID = 'td[data-th="Unique"]',
-    REGISTER_URL = 'td[data-th="Add"] a',
-    INSTRUCTORS = 'td[data-th="Instructor"] span',
-    INSTRUCTION_MODE = 'td[data-th="Instruction Mode"]',
-    STATUS = 'td[data-th="Status"]',
-    SCHEDULE_DAYS = 'td[data-th="Days"]>span',
-    SCHEDULE_HOURS = 'td[data-th="Hour"]>span',
-    SCHEDULE_LOCATION = 'td[data-th="Room"]>span',
-    FLAGS = 'td[data-th="Flags"] ul li',
-}
+const TableDataSelector = {
+    COURSE_HEADER: 'td.course_header',
+    UNIQUE_ID: 'td[data-th="Unique"]',
+    REGISTER_URL: 'td[data-th="Add"] a',
+    INSTRUCTORS: 'td[data-th="Instructor"] span',
+    INSTRUCTION_MODE: 'td[data-th="Instruction Mode"]',
+    STATUS: 'td[data-th="Status"]',
+    SCHEDULE_DAYS: 'td[data-th="Days"]>span',
+    SCHEDULE_HOURS: 'td[data-th="Hour"]>span',
+    SCHEDULE_LOCATION: 'td[data-th="Room"]>span',
+    FLAGS: 'td[data-th="Flags"] ul li',
+} as const;
 
 /**
  * The selectors that we use to scrape the course details page for an individual course (https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52700/)
  */
-enum DetailsSelector {
-    COURSE_NAME = '#details h2',
-    COURSE_DESCRIPTION = '#details p',
-}
+const DetailsSelector = {
+    COURSE_NAME: '#details h2',
+    COURSE_DESCRIPTION: '#details p',
+} as const;
 
 /**
  * A class that allows us to scrape information from UT's course catalog to create our internal representation of a course
@@ -273,7 +274,7 @@ export class CourseCatalogScraper {
      * @param row the row of the course catalog table
      * @returns
      */
-    getStatus(row: HTMLTableRowElement): [status: Status, isReserved: boolean] {
+    getStatus(row: HTMLTableRowElement): [status: CourseStatus, isReserved: boolean] {
         const div = row.querySelector(TableDataSelector.STATUS);
         if (!div) {
             throw new Error('Status not found');

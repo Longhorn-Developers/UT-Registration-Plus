@@ -1,15 +1,11 @@
-import { Course } from '@shared/types/Course';
-import { UserSchedule } from '@shared/types/UserSchedule';
-import React from 'react';
-import Card from '@views/components/common/Card/Card';
-import Icon from '@views/components/common/Icon/Icon';
-import Link from '@views/components/common/Link/Link';
+import type { Course } from '@shared/types/Course';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
+import React from 'react';
 import { Button } from 'src/views/components/common/Button/Button';
-import CourseButtons from './CourseButtons/CourseButtons';
-import styles from './CourseHeader.module.scss';
-import CopyIcon from '~icons/material-symbols/content-copy';
+
 import CloseIcon from '~icons/material-symbols/close';
+import CopyIcon from '~icons/material-symbols/content-copy';
 
 type Props = {
     course: Course;

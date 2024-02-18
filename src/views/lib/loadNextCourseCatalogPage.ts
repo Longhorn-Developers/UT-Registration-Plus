@@ -2,15 +2,22 @@ import getCourseTableRows from './getCourseTableRows';
 
 const NEXT_PAGE_BUTTON_SELECTOR = '#next_nav_link';
 const PREV_PAGE_BUTTON_SELECTOR = '#prev_nav_link';
+
 /**
  * Represents all the states that we care about when autoloading the next page of courses
  */
-export enum AutoLoadStatus {
-    LOADING = 'LOADING',
-    IDLE = 'IDLE',
-    ERROR = 'ERROR',
-    DONE = 'DONE',
-}
+export const AutoLoadStatuses = {
+    LOADING: 'LOADING',
+    IDLE: 'IDLE',
+    ERROR: 'ERROR',
+    DONE: 'DONE',
+} as const;
+
+/**
+ * Represents the auto load status of a course catalog page.
+ * It is a union type that can take one of the values defined in AutoLoadStatuses.
+ */
+export type AutoLoadStatus = (typeof AutoLoadStatuses)[keyof typeof AutoLoadStatuses];
 
 let isLoading = false;
 let nextPageURL = getNextButton(document)?.href;
@@ -25,13 +32,13 @@ let nextPageURL = getNextButton(document)?.href;
 export async function loadNextCourseCatalogPage(): Promise<[AutoLoadStatus, HTMLTableRowElement[]]> {
     // if there is no more nextPageURL, then we have reached the end of the course catalog, so we can stop
     if (!nextPageURL) {
-        return [AutoLoadStatus.DONE, []];
+        return [AutoLoadStatuses.DONE, []];
     }
     // remove the next button so that we don't load the same page twice
     removePaginationButtons(document);
     if (isLoading) {
         // if we are already loading the next page, then we don't need to do anything
-        return [AutoLoadStatus.LOADING, []];
+        return [AutoLoadStatuses.LOADING, []];
     }
 
     // begin loading the next page
@@ -45,16 +52,16 @@ export async function loadNextCourseCatalogPage(): Promise<[AutoLoadStatus, HTML
         // extract the table rows from the document of the next page
         const tableRows = getCourseTableRows(newDocument);
         if (!tableRows) {
-            return [AutoLoadStatus.ERROR, []];
+            return [AutoLoadStatuses.ERROR, []];
         }
 
         // extract the next page url from the document of the next page, so when we scroll again we can use that
         nextPageURL = getNextButton(newDocument)?.href;
         isLoading = false;
-        return [AutoLoadStatus.IDLE, Array.from(tableRows)];
+        return [AutoLoadStatuses.IDLE, Array.from(tableRows)];
     } catch (e) {
         console.error(e);
-        return [AutoLoadStatus.ERROR, []];
+        return [AutoLoadStatuses.ERROR, []];
     }
 }
 
