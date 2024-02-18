@@ -15,7 +15,7 @@ import Description from '~icons/material-symbols/description';
 import Mood from '~icons/material-symbols/mood';
 import Reviews from '~icons/material-symbols/reviews';
 
-interface CourseHeadingAndActionsProps {
+interface HeadingAndActionProps {
     /* The course to display */
     course: Course;
     /* The active schedule */
@@ -27,10 +27,10 @@ interface CourseHeadingAndActionsProps {
 /**
  * Renders the heading component for the CoursePopup component.
  *
- * @param {CourseHeadingAndActionsProps} props - The component props.
+ * @param {HeadingAndActionProps} props - The component props.
  * @returns {JSX.Element} The rendered component.
  */
-const CourseHeadingAndActions = ({ course, onClose, activeSchedule }: CourseHeadingAndActionsProps) => {
+const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, activeSchedule }) => {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
     const instructorString = instructors
         .map(instructor => {
@@ -58,9 +58,10 @@ const CourseHeadingAndActions = ({ course, onClose, activeSchedule }: CourseHead
         // TODO (achadaga): not implemented
     };
 
+    // open past syllabi for the course
+    // not specific to professor
     const handleOpenPastSyllabi = async () => {
-        const firstInstructor = instructors[0];
-        const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=${courseName}&unique=&instructor_first=${firstInstructor.firstName}&instructor_last=${firstInstructor.lastName}&course_type=In+Residence&search=Search`;
+        const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=${courseName}&unique=&instructor_first=&instructor_last=&course_type=In+Residence&search=Search`;
         await openNewTab(url);
     };
 
@@ -135,4 +136,4 @@ const CourseHeadingAndActions = ({ course, onClose, activeSchedule }: CourseHead
     );
 };
 
-export default CourseHeadingAndActions;
+export default HeadingAndActions;

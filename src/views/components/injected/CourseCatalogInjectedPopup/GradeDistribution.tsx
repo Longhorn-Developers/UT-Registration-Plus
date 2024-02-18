@@ -12,7 +12,7 @@ import {
 } from 'src/views/lib/database/queryDistribution';
 import colors from 'src/views/styles/colors.module.scss';
 
-interface CoursePopupGradeDistributionProps {
+interface GradeDistributionProps {
     course: Course;
 }
 
@@ -74,7 +74,7 @@ function reducer(state: State, action: Action): State {
     }
 }
 
-const CoursePopupGradeDistribution: React.FC<CoursePopupGradeDistributionProps> = ({ course }) => {
+const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
     const [state, dispatch] = React.useReducer(reducer, initialState);
     const ref = React.useRef<HighchartsReact.RefObject>(null);
 
@@ -201,4 +201,4 @@ const CoursePopupGradeDistribution: React.FC<CoursePopupGradeDistributionProps> 
     );
 };
 
-export default CoursePopupGradeDistribution;
+export default GradeDistribution;

@@ -2,11 +2,11 @@ import clsx from 'clsx';
 import React from 'react';
 import Text from '../../common/Text/Text';
 
-interface CoursePopupDescriptionsProps {
+interface DescriptionProps {
     lines: string[];
 }
 
-const CoursePopupDescriptions: React.FC<CoursePopupDescriptionsProps> = ({ lines }: CoursePopupDescriptionsProps) => {
+const Description: React.FC<DescriptionProps> = ({ lines }: DescriptionProps) => {
     const keywords = ['prerequisite', 'restricted'];
     return (
         <ul className='my-[5px] space-y-1.5 children:marker:text-ut-burntorange'>
@@ -27,4 +27,4 @@ const CoursePopupDescriptions: React.FC<CoursePopupDescriptionsProps> = ({ lines
     );
 };
 
-export default CoursePopupDescriptions;
+export default Description;
