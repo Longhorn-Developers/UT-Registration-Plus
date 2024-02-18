@@ -50,6 +50,26 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
         //         a.click();
         //     });
         // }
+        htmlToImage.toPng(calendarRef.current)
+        .then(function (dataUrl) {
+            var img = new Image();
+            img.src = dataUrl;
+            fetch(dataUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const href = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = href;
+                link.download = 'my-schedule.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => console.error('Error downloading file:', error));
+        })
+        .catch(function (error) {
+            console.error('oops, something went wrong!', error);
+        });
     };
 
     return (

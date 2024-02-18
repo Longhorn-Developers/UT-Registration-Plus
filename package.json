@@ -22,6 +22,7 @@
         "@vitejs/plugin-react": "^4.2.1",
         "chrome-extension-toolkit": "^0.0.51",
         "clsx": "^2.1.0",
+        "downloadjs": "^1.4.7",
         "highcharts": "^11.3.0",
         "highcharts-react-official": "^3.2.1",
         "html-to-image": "^1.11.11",
