@@ -50,7 +50,7 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
         //         a.click();
         //     });
         // }
-        htmlToImage.toPng(calendarRef.current)
+        htmlToImage.toPng(calendarRef.current, {style: { background: "white" }})
         .then(function (dataUrl) {
             var img = new Image();
             img.src = dataUrl;
