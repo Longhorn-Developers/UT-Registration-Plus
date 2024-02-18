@@ -1,5 +1,9 @@
-import html2canvas from 'html2canvas';
 import React, { useRef } from 'react';
+// import html2canvas from 'html2canvas';
+import * as htmlToImage from 'html-to-image';
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
+import { DAY_MAP } from 'src/shared/types/CourseMeeting';
+import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
 import calIcon from 'src/assets/icons/cal.svg';
 import pngIcon from 'src/assets/icons/png.svg';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
@@ -39,15 +43,42 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
     const calendarRef = useRef(null); // Create a ref for the calendar grid
 
     const saveAsPNG = () => {
-        if (calendarRef.current) {
-            html2canvas(calendarRef.current).then(canvas => {
-                // Create an a element to trigger download
-                const a = document.createElement('a');
-                a.href = canvas.toDataURL('image/png');
-                a.download = 'calendar.png';
-                a.click();
-            });
-        }
+        // if (calendarRef.current) {
+        //     html2canvas(calendarRef.current).then(canvas => {
+        //         // Create an a element to trigger download
+        //         const a = document.createElement('a');
+        //         a.href = canvas.toDataURL('image/png');
+        //         a.download = 'calendar.png';
+        //         a.click();
+        //     });
+        // }
+        htmlToImage.toPng(calendarRef.current, {
+            backgroundColor: "white",
+            style: { 
+            background: "white",
+            marginTop: "20px",
+            marginBottom: "20px",
+            marginRight: "20px",
+            marginLeft: "20px",}})
+        .then(function (dataUrl) {
+            var img = new Image();
+            img.src = dataUrl;
+            fetch(dataUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const href = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = href;
+                link.download = 'my-schedule.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => console.error('Error downloading file:', error));
+        })
+        .catch(function (error) {
+            console.error('oops, something went wrong!', error);
+        });
     };
 
     return (
