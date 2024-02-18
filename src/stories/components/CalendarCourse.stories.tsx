@@ -1,8 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
 import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import { CourseSchedule } from '@shared/types/CourseSchedule';
 import Instructor from '@shared/types/Instructor';
+import type { Meta, StoryObj } from '@storybook/react';
 import CalendarCourse from '@views/components/common/CalendarCourseBlock/CalendarCourseMeeting';
 
 const meta = {

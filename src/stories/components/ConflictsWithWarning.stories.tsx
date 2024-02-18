@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
 
 const meta = {

@@ -7,7 +7,7 @@ import Instructor from 'src/shared/types/Instructor';
 import { getCourseColors } from 'src/shared/util/colors';
 import { theme } from 'unocss/preset-mini';
 
-export const exampleCourse: Course = new Course({
+export const ExampleCourse: Course = new Course({
     courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',
     creditHours: 3,
     department: 'C S',
@@ -62,7 +62,7 @@ const meta = {
     // More on argTypes: https://storybook.js.org/docs/api/argtypes
     args: {
         colors: getCourseColors('emerald'),
-        course: exampleCourse,
+        course: ExampleCourse,
     },
     argTypes: {
         colors: {
@@ -87,10 +87,10 @@ export const Default: Story = {
 export const Variants: Story = {
     render: props => (
         <div className='grid grid-cols-2 max-w-2xl w-90vw gap-x-4 gap-y-2'>
-            <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.OPEN })} />
-            <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.CLOSED })} />
-            <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.WAITLISTED })} />
-            <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.CANCELLED })} />
+            <PopupCourseBlock {...props} course={new Course({ ...ExampleCourse, status: Status.OPEN })} />
+            <PopupCourseBlock {...props} course={new Course({ ...ExampleCourse, status: Status.CLOSED })} />
+            <PopupCourseBlock {...props} course={new Course({ ...ExampleCourse, status: Status.WAITLISTED })} />
+            <PopupCourseBlock {...props} course={new Course({ ...ExampleCourse, status: Status.CANCELLED })} />
         </div>
     ),
 };
@@ -105,7 +105,7 @@ export const AllColors: Story = {
     render: props => (
         <div className='grid grid-flow-col grid-cols-2 grid-rows-9 max-w-2xl w-90vw gap-x-4 gap-y-2'>
             {test_colors.map((color, i) => (
-                <PopupCourseBlock key={color.primaryColor} course={exampleCourse} colors={color} />
+                <PopupCourseBlock key={color.primaryColor} course={ExampleCourse} colors={color} />
             ))}
         </div>
     ),

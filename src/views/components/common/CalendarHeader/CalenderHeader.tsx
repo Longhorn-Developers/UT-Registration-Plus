@@ -1,16 +1,22 @@
-import React from 'react';
 import { Status } from '@shared/types/Course';
-import Divider from '../Divider/Divider';
-import { Button } from '../Button/Button';
-import Text from '../Text/Text';
-import MenuIcon from '~icons/material-symbols/menu';
+import React from 'react';
+
 import LogoIcon from '~icons/material-symbols/add-circle-outline';
-import UndoIcon from '~icons/material-symbols/undo';
+import MenuIcon from '~icons/material-symbols/menu';
 import RedoIcon from '~icons/material-symbols/redo';
 import SettingsIcon from '~icons/material-symbols/settings';
-import ScheduleTotalHoursAndCourses from '../ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
-import CourseStatus from '../CourseStatus/CourseStatus';
+import UndoIcon from '~icons/material-symbols/undo';
 
+import { Button } from '../Button/Button';
+import CourseStatus from '../CourseStatus/CourseStatus';
+import Divider from '../Divider/Divider';
+import ScheduleTotalHoursAndCourses from '../ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
+import Text from '../Text/Text';
+
+/**
+ * Renders the header component for the calendar.
+ * @returns {JSX.Element} The rendered header component.
+ */
 const CalendarHeader = () => (
     <div className='min-h-79px min-w-672px flex px-0 py-15'>
         <div className='flex flex-row gap-20'>
@@ -20,7 +26,7 @@ const CalendarHeader = () => (
                     <div className='flex items-center'>
                         <LogoIcon style={{ marginRight: '5px' }} />
                         <div className='flex flex-col gap-1 whitespace-nowrap'>
-                            <Text className='leading-trim text-cap font-roboto text-base text-ut-burntorange font-medium'>
+                            <Text className='leading-trim font-roboto text-cap text-base text-ut-burntorange font-medium'>
                                 UT Registration
                             </Text>
                             <Text className='leading-trim text-cap font-roboto text-base text-ut-orange font-medium'>

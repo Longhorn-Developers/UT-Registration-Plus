@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Text from '../Text/Text';
 
 export const flags = ['WR', 'QR', 'GC', 'CD', 'E', 'II'];

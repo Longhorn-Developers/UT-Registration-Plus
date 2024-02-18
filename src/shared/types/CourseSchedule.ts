@@ -1,6 +1,6 @@
 import type { Serialized } from 'chrome-extension-toolkit';
 
-import type { Day} from './CourseMeeting';
+import type { Day } from './CourseMeeting';
 import { CourseMeeting, DAY_MAP } from './CourseMeeting';
 
 /**

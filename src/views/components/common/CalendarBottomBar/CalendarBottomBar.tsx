@@ -1,10 +1,13 @@
-import React from 'react';
 import clsx from 'clsx';
-import Text from '../Text/Text';
-import CalendarCourseBlock, { CalendarCourseCellProps } from '../CalendarCourseCell/CalendarCourseCell';
-import { Button } from '../Button/Button';
-import ImageIcon from '~icons/material-symbols/image';
+import React from 'react';
+
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
+import ImageIcon from '~icons/material-symbols/image';
+
+import { Button } from '../Button/Button';
+import type { CalendarCourseCellProps } from '../CalendarCourseCell/CalendarCourseCell';
+import CalendarCourseBlock from '../CalendarCourseCell/CalendarCourseCell';
+import Text from '../Text/Text';
 
 type CalendarBottomBarProps = {
     courses: CalendarCourseCellProps[];

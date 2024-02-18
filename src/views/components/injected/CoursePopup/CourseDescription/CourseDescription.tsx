@@ -77,11 +77,7 @@ function DescriptionLine({ line }: LineProps) {
         [styles.restriction]: lowerCaseLine.includes('restrict'),
     });
 
-    return (
-        <Text className={className} /*  size='medium'   */>
-            {line}
-        </Text>
-    );
+    return <Text className={className} /*  size='medium'   */>{line}</Text>;
 }
 
 async function fetchDescription(course: Course): Promise<string[]> {

@@ -1,8 +1,9 @@
-import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
 import { Course, Status } from '@shared/types/Course';
 import Instructor from '@shared/types/Instructor';
+import type { Meta, StoryObj } from '@storybook/react';
 import { CalendarBottomBar } from '@views/components/common/CalendarBottomBar/CalendarBottomBar';
+import React from 'react';
+
 import { getCourseColors } from '../../shared/util/colors';
 
 const exampleGovCourse: Course = new Course({

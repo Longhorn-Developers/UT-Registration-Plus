@@ -88,9 +88,7 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
                 className={styles.button}
                 title='Search for this professor on RateMyProfessor'
             >
-                <Text /*    size='medium' weight='regular' */color='white'>
-                    RateMyProf
-                </Text>
+                <Text /*    size='medium' weight='regular' */ color='white'>RateMyProf</Text>
                 <Icon className={styles.icon} color='white' name='school' size='medium' />
             </Button>
             <Button
@@ -99,9 +97,7 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
                 className={styles.button}
                 title='Search for syllabi for this course'
             >
-                <Text /*    size='medium' weight='regular'  */ color='white'>
-                    Syllabi
-                </Text>
+                <Text /*    size='medium' weight='regular'  */ color='white'>Syllabi</Text>
                 <Icon className={styles.icon} color='white' name='grading' size='medium' />
             </Button>
             <Button
@@ -110,9 +106,7 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
                 className={styles.button}
                 title='Search for textbooks for this course'
             >
-                <Text /*   size='medium' weight='regular' color='white'    */>
-                    Textbook
-                </Text>
+                <Text /*   size='medium' weight='regular' color='white'    */>Textbook</Text>
                 <Icon className={styles.icon} color='white' name='collections_bookmark' size='medium' />
             </Button>
             <Button
@@ -122,10 +116,7 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
                 variant={isCourseSaved ? 'danger' : 'success'}
                 className={styles.button}
             >
-
-                <Text /*   size='medium' weight='regular' color='white'    */ >
-                    {isCourseSaved ? 'Remove' : 'Add'}
-                </Text>
+                <Text /*   size='medium' weight='regular' color='white'    */>{isCourseSaved ? 'Remove' : 'Add'}</Text>
                 <Icon className={styles.icon} color='white' name={isCourseSaved ? 'remove' : 'add'} size='medium' />
             </Button>
         </Card>

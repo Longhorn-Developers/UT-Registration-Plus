@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import CalendarCourseCell from '@views/components/common/CalendarCourseCell/CalendarCourseCell';
 import React from 'react';
 
-import { exampleCourse } from './PopupCourseBlock.stories';
+import { ExampleCourse } from './PopupCourseBlock.stories';
 
 const meta = {
     title: 'Components/Common/CalendarCourseCell',
@@ -27,11 +27,11 @@ const meta = {
         </div>
     ),
     args: {
-        department: exampleCourse.department,
-        courseNumber: exampleCourse.number,
-        instructorLastName: exampleCourse.instructors[0].lastName,
-        status: exampleCourse.status,
-        meetingTime: exampleCourse.schedule.meetings[0].getTimeString({ separator: '-' }),
+        department: ExampleCourse.department,
+        courseNumber: ExampleCourse.number,
+        instructorLastName: ExampleCourse.instructors[0].lastName,
+        status: ExampleCourse.status,
+        meetingTime: ExampleCourse.schedule.meetings[0].getTimeString({ separator: '-' }),
 
         colors: getCourseColors('emerald', 500),
     },
@@ -47,22 +47,22 @@ export const Variants: Story = {
         <div className='grid grid-cols-2 h-40 max-w-60 w-90vw gap-x-4 gap-y-2'>
             <CalendarCourseCell
                 {...props}
-                course={new Course({ ...exampleCourse, status: Status.OPEN })}
+                course={new Course({ ...ExampleCourse, status: Status.OPEN })}
                 colors={getCourseColors('green', 500)}
             />
             <CalendarCourseCell
                 {...props}
-                course={new Course({ ...exampleCourse, status: Status.CLOSED })}
+                course={new Course({ ...ExampleCourse, status: Status.CLOSED })}
                 colors={getCourseColors('teal', 400)}
             />
             <CalendarCourseCell
                 {...props}
-                course={new Course({ ...exampleCourse, status: Status.WAITLISTED })}
+                course={new Course({ ...ExampleCourse, status: Status.WAITLISTED })}
                 colors={getCourseColors('indigo', 400)}
             />
             <CalendarCourseCell
                 {...props}
-                course={new Course({ ...exampleCourse, status: Status.CANCELLED })}
+                course={new Course({ ...ExampleCourse, status: Status.CANCELLED })}
                 colors={getCourseColors('red', 500)}
             />
         </div>

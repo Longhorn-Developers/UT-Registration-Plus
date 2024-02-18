@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { Chip } from 'src/views/components/common/Chip/Chip';
 
 const meta = {

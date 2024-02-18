@@ -36,7 +36,7 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
                     <Button icon={CopyIcon} variant='single' className='mr-1 px-2' color='ut-burntorange'>
                         {course.uniqueId}
                     </Button>
-                    <button className='btn bg-transparent p-0'>
+                    <button className='bg-transparent p-0 btn'>
                         <CloseIcon className='h-7 w-7' />
                     </button>
                 </div>

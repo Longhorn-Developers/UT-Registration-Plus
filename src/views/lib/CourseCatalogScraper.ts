@@ -1,4 +1,4 @@
-import type { CourseStatus,InstructionMode, ScrapedRow, Semester } from '@shared/types/Course';
+import type { CourseStatus, InstructionMode, ScrapedRow, Semester } from '@shared/types/Course';
 import { Course, Status } from '@shared/types/Course';
 import { CourseSchedule } from '@shared/types/CourseSchedule';
 import Instructor from '@shared/types/Instructor';

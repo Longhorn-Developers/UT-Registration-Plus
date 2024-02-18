@@ -1,4 +1,5 @@
-import { CalendarCourseCellProps } from 'src/views/components/common/CalendarCourseCell/CalendarCourseCell';
+import type { CalendarCourseCellProps } from 'src/views/components/common/CalendarCourseCell/CalendarCourseCell';
+
 import useSchedules from './useSchedules';
 
 const dayToNumber: { [day: string]: number } = {

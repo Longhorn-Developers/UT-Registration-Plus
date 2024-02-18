@@ -22,6 +22,18 @@ export interface CalendarCourseCellProps {
     className?: string;
 }
 
+/**
+ * Renders a calendar course cell component.
+ *
+ * @component
+ * @param {CalendarCourseCellProps} props - The component props.
+ * @param {string} props.courseDeptAndInstr - The course department and instructor.
+ * @param {string} props.timeAndLocation - The time and location of the course.
+ * @param {Status} props.status - The status of the course.
+ * @param {Colors} props.colors - The colors for styling the component.
+ * @param {string} props.className - Additional CSS class name for the component.
+ * @returns {JSX.Element} The rendered component.
+ */
 const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
     courseDeptAndInstr,
     timeAndLocation,

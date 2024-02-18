@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import type { PropsWithChildren} from 'react';
+import type { PropsWithChildren } from 'react';
 import React, { useCallback } from 'react';
 
 import styles from './Popup.module.scss';

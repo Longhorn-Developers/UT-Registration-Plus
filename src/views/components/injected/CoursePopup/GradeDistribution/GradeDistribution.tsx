@@ -211,7 +211,7 @@ export default function GradeDistribution({ course }: Props) {
                     <Text color='speedway_brick' /* size='medium' weight='semi_bold'    */>
                         There was an error fetching the grade distribution data
                     </Text>
-                    <Icon color='speedway_brick' /* size='large'  */ name='sentiment_dissatisfied'    />
+                    <Icon color='speedway_brick' /* size='large'  */ name='sentiment_dissatisfied' />
                 </Card>
             )}
             {status === DataStatus.NOT_FOUND && (

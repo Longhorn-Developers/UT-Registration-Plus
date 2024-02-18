@@ -1,4 +1,3 @@
- 
 import { PointOptionsObject } from 'highcharts';
 
 import { Semester } from './Course';
