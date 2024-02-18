@@ -3,6 +3,7 @@ import React from 'react';
 import { Course } from 'src/shared/types/Course';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
 import CoursePopupDescriptions from './CoursePopupDescriptions';
+import CoursePopupGradeDistribution from './CoursePopupGradeDistribution';
 import CoursePopupHeadingAndActions from './CoursePopupHeadingAndActions';
 
 interface CoursePopup2Props {
@@ -16,6 +17,7 @@ const CoursePopup = ({ course, activeSchedule, onClose }: CoursePopup2Props) => 
         <div className='flex flex-col'>
             <CoursePopupHeadingAndActions course={course} onClose={onClose} activeSchedule={activeSchedule} />
             <CoursePopupDescriptions lines={course.description} />
+            <CoursePopupGradeDistribution course={course} />
         </div>
     </Popup>
 );
