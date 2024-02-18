@@ -1,4 +1,4 @@
-import type { CalendarCourseCellProps } from 'src/views/components/common/CalendarCourseCell/CalendarCourseCell';
+import type { CalendarCourseCellProps } from '@views/components/common/CalendarCourseCell/CalendarCourseCell';
 
 import useSchedules from './useSchedules';
 
@@ -24,7 +24,12 @@ export interface CalendarGridCourse {
     componentProps: CalendarCourseCellProps;
 }
 
-const convertMinutesToIndex = (minutes: number): number => Math.floor(minutes - 420 / 30);
+/**
+ * Converts minutes to an index value.
+ * @param minutes - The number of minutes.
+ * @returns The index value.
+ */
+export const convertMinutesToIndex = (minutes: number): number => Math.floor((minutes - 420) / 30);
 
 /**
  * Get the active schedule, and convert it to be render-able into a calendar.
