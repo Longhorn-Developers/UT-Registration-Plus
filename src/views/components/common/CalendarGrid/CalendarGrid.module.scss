@@ -22,9 +22,10 @@
 }
 
 .calendar {
-    // display: grid;
-    // grid-template-columns: auto repeat(5, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 10px;
+    position: relative; // Ensuring that child elements can be positioned in relation to this.
 }
 
 .day {
@@ -88,4 +89,39 @@
         font-weight: 500;
         line-height: normal;
     }
+}
+
+.buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px;
+    margin-top: auto;
+}
+
+.calendarButton {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 6px;
+    border: none;
+    background-color: transparent;
+    color: #333;
+    cursor: pointer;
+    
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+}
+
+.buttonIcon {
+    height: 24px;
+    fill: currentColor;
+}
+
+.divider {
+    height: 30px;
+    width: 1px;
+    background-color: grey;
 }
