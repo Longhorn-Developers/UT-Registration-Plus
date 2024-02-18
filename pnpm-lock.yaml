@@ -28,6 +28,9 @@ dependencies:
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
+  dom-to-image-more:
+    specifier: ^3.3.0
+    version: 3.3.0
   highcharts:
     specifier: ^11.3.0
     version: 11.3.0
@@ -6988,6 +6991,10 @@ packages:
       domhandler: 5.0.3
       entities: 4.5.0
     dev: true
+
+  /dom-to-image-more@3.3.0:
+    resolution: {integrity: sha512-4k0oxVfQ4Nrv4/Iva6FpsXTAtPCp5JnZNO/n/hsuOpe3ANlMiK50URZDQKzJslthQD8k76z9vHS3usIzmJoFVw==}
+    dev: false
 
   /domelementtype@2.3.0:
     resolution: {integrity: sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw==}
