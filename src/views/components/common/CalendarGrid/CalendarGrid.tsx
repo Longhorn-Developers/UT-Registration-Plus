@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import html2canvas from 'html2canvas';
-import domtoimage from 'dom-to-image-more';
+// import domtoimage from 'dom-to-image-more';
+import * as htmlToImage from 'html-to-image';
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
 import calIcon from 'src/assets/icons/cal.svg';
@@ -48,17 +50,6 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
         //         a.click();
         //     });
         // }
-        if(calendarRef.current) {
-            domtoimage.topng(calendarRef).then(function (dataUrl) {
-                var link = document.createElement('a');
-                link.download = 'my-image-name.jpeg';
-                link.href = dataUrl;
-                link.click();
-            })
-            .catch(function (error) {
-                console.error('oops, something went wrong!', error);
-            });
-        }
     };
 
     return (

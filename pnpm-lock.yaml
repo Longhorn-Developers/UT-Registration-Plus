@@ -28,15 +28,15 @@ dependencies:
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
-  dom-to-image-more:
-    specifier: ^3.3.0
-    version: 3.3.0
   highcharts:
     specifier: ^11.3.0
     version: 11.3.0
   highcharts-react-official:
     specifier: ^3.2.1
     version: 3.2.1(highcharts@11.3.0)(react@18.2.0)
+  html-to-image:
+    specifier: ^1.11.11
+    version: 1.11.11
   html2canvas:
     specifier: ^1.4.1
     version: 1.4.1
@@ -6992,10 +6992,6 @@ packages:
       entities: 4.5.0
     dev: true
 
-  /dom-to-image-more@3.3.0:
-    resolution: {integrity: sha512-4k0oxVfQ4Nrv4/Iva6FpsXTAtPCp5JnZNO/n/hsuOpe3ANlMiK50URZDQKzJslthQD8k76z9vHS3usIzmJoFVw==}
-    dev: false
-
   /domelementtype@2.3.0:
     resolution: {integrity: sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw==}
     dev: true
@@ -8669,6 +8665,10 @@ packages:
     resolution: {integrity: sha512-ztqyC3kLto0e9WbNp0aeP+M3kTt+nbaIveGmUxAtZa+8iFgKLUOD4YKM5j+f3QD89bra7UeumolZHKuOXnTmeQ==}
     engines: {node: '>=8'}
     dev: true
+
+  /html-to-image@1.11.11:
+    resolution: {integrity: sha512-9gux8QhvjRO/erSnDPv28noDZcPZmYE7e1vFsBLKLlRlKDSqNJYebj6Qz1TGd5lsRV+X+xYyjCKjuZdABinWjA==}
+    dev: false
 
   /html2canvas@1.4.1:
     resolution: {integrity: sha512-fPU6BHNpsyIhr8yyMpTLLxAbkaK8ArIBcmZIRiBLiDhjeqvXolaEmDGmELFuX9I4xDcaKKcJl+TKZLqruBbmWA==}
