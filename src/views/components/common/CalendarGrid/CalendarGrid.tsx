@@ -53,7 +53,10 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
             backgroundColor: "white",
             style: { 
             background: "white",
-            margin: "20px",}})
+            marginTop: "20px",
+            marginBottom: "20px",
+            marginRight: "20px",
+            marginLeft: "20px",}})
         .then(function (dataUrl) {
             var img = new Image();
             img.src = dataUrl;
