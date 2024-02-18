@@ -23,6 +23,7 @@ enum DataStatus {
     ERROR = 'ERROR',
 }
 
+// TODO: Use tailwind colors here
 const GRADE_COLORS: Record<LetterGrade, string> = {
     A: colors.turtle_pond,
     'A-': colors.turtle_pond,
