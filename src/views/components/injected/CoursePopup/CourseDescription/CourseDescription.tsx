@@ -1,12 +1,12 @@
 import type { Course } from '@shared/types/Course';
+import Card from '@views/components/common/Card/Card';
 import Spinner from '@views/components/common/Spinner/Spinner';
 import Text from '@views/components/common/Text/Text';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-import { SiteSupport } from '@views/lib/getSiteSupport';
+import { SiteSupports } from '@views/lib/getSiteSupport';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
-import Card from '../../../common/Card/Card';
 import styles from './CourseDescription.module.scss';
 
 type Props = {
@@ -25,7 +25,10 @@ const LoadStatus = {
 type LoadStatusType = (typeof LoadStatus)[keyof typeof LoadStatus];
 
 /**
- *
+ * Renders the course description component.
+ * @param {Props} props - The component props.
+ * @param {Course} props.course - The course object.
+ * @returns {JSX.Element} The rendered course description component.
  */
 export default function CourseDescription({ course }: Props) {
     const [description, setDescription] = useState<string[]>([]);
@@ -86,7 +89,7 @@ async function fetchDescription(course: Course): Promise<string[]> {
         const text = await response.text();
         const doc = new DOMParser().parseFromString(text, 'text/html');
 
-        const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS);
+        const scraper = new CourseCatalogScraper(SiteSupports.COURSE_CATALOG_DETAILS);
         course.description = scraper.getDescription(doc);
     }
     return course.description;
