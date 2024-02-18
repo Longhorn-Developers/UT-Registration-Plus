@@ -62,7 +62,7 @@ const schedules = [
                 instructionMode: 'In Person',
                 semester: {
                     year: 2024,
-                    season: 'Fall'
+                    season: 'Fall',
                 },
             }),
         ],
@@ -99,7 +99,7 @@ const schedules = [
                 instructionMode: 'In Person',
                 semester: {
                     year: 2024,
-                    season: 'Fall'
+                    season: 'Fall',
                 },
             }),
             new Course({
@@ -130,7 +130,7 @@ const schedules = [
                 instructionMode: 'In Person',
                 semester: {
                     year: 2024,
-                    season: 'Fall'
+                    season: 'Fall',
                 },
             }),
         ],
@@ -151,9 +151,7 @@ export const Hidden: Story = {
         dummySchedules: schedules,
         dummyActiveIndex: 0,
         scheduleComponents: schedules.map((schedule, index) => (
-            <div onClick={() => {}} className='p-l-3'>
-                <ScheduleListItem active={index === 0} name={schedule.name} />
-            </div>
+            <ScheduleListItem active={index === 0} name={schedule.name} />
         )),
     },
 };

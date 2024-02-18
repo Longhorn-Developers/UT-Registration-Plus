@@ -16,9 +16,7 @@ export function CalendarSchedules(props: Props) {
     const [schedules, setSchedules] = useState(props.dummySchedules || []);
 
     const scheduleComponents = schedules.map((schedule, index) => (
-        <div onClick={() => setActiveScheduleIndex(index)}>
             <ScheduleListItem active={index === activeScheduleIndex} name={schedule.name} />
-        </div>
     ));
 
     return (
