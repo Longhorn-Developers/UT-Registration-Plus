@@ -1,3 +1,7 @@
+import { Button } from '@views/components/common/Button/Button';
+import { Chip, flagMap } from '@views/components/common/Chip/Chip';
+import Divider from '@views/components/common/Divider/Divider';
+import Text from '@views/components/common/Text/Text';
 import React from 'react';
 import addCourse from 'src/pages/background/lib/addCourse';
 import openNewTab from 'src/pages/background/util/openNewTab';
@@ -10,10 +14,6 @@ import Copy from '~icons/material-symbols/content-copy';
 import Description from '~icons/material-symbols/description';
 import Mood from '~icons/material-symbols/mood';
 import Reviews from '~icons/material-symbols/reviews';
-import { Button } from '../../common/Button/Button';
-import { Chip, flagMap } from '../../common/Chip/Chip';
-import Divider from '../../common/Divider/Divider';
-import Text from '../../common/Text/Text';
 
 interface CourseHeadingAndActionsProps {
     /* The course to display */
@@ -55,7 +55,7 @@ const CourseHeadingAndActions = ({ course, onClose, activeSchedule }: CourseHead
     };
 
     const handleOpenCES = () => {
-        // TODO: not implemented
+        // TODO (achadaga): not implemented
     };
 
     const handleOpenPastSyllabi = async () => {
@@ -87,7 +87,7 @@ const CourseHeadingAndActions = ({ course, onClose, activeSchedule }: CourseHead
                     </button>
                 </div>
                 <div className='flex gap-2.5 flex-content-center'>
-                    <Text variant='h4' className='text-'>
+                    <Text variant='h4' className='inline-flex items-center justify-center'>
                         with {instructorString}
                     </Text>
                     <div className='flex-content-centr flex gap-1'>
@@ -114,7 +114,7 @@ const CourseHeadingAndActions = ({ course, onClose, activeSchedule }: CourseHead
                 </div>
             </div>
             <div className='my-3 flex flex-wrap items-center gap-[15px]'>
-                {/* TODO: make this open the calendar page */}
+                {/* TODO (achadaga): make this open the calendar page */}
                 <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} />
                 <Divider type='solid' color='ut-offwhite' className='h-7' />
                 <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
