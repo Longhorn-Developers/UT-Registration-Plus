@@ -6,9 +6,8 @@ import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
 import pngIcon from 'src/assets/icons/png.svg';
 */
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
-import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';  
+import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import styles from './CalendarGrid.module.scss';
-
 
 /*  const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
@@ -37,14 +36,13 @@ interface Props {
  * @param props
  */
 function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Props>): JSX.Element {
-    const [iterator, setIterator] = useState<number>(0);
     const [grid, setGrid] = useState([]);
     const calendarRef = useRef(null); // Create a ref for the calendar grid
 
     const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
     const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 
-    const saveAsPNG = () => {
+    /*  const saveAsPNG = () => {
         htmlToImage
             .toPng(calendarRef.current, {
                 backgroundColor: 'white',
@@ -75,7 +73,7 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
             .catch(error => {
                 console.error('oops, something went wrong!', error);
             });
-    };
+    };  */
 
     useEffect(() => {
         const newGrid = [];
@@ -84,7 +82,7 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
             let hour = hoursOfDay[i];
             let styleProp = {
                 gridColumn: '1',
-                gridRow: `${(2 * i) + 2}`,
+                gridRow: `${2 * i + 2}`,
             };
             row.push(
                 <div key={hour} className={styles.timeBlock} style={styleProp}>
@@ -104,28 +102,30 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                 let childElement = <div className={styles.dot}/>;   */
                 /*  let completeGridCell = shouldRenderChild ? <CalendarCell key={k} children={childElement}/>  
                 : <CalendarCell key={k} />;     */
-                row.push(<CalendarCell key={k} styleProp={styleProp}/>);
+                row.push(<CalendarCell key={k} styleProp={styleProp} />);
             }
             newGrid.push(row);
         }
-    };
+        setGrid(newGrid);
+    }, []);
 
     return (
         <div className={styles.calendar}>
-            <div className={styles.dayLabelContainer}/>
+            <div className={styles.dayLabelContainer} />
             {/* Displaying the rest of the calendar */}
             <div className={styles.timeAndGrid}>
                 <div className={styles.calendarGrid}>
                     {/* Displaying day labels */}
-                    <div className={styles.timeBlock}/>
+                    <div className={styles.timeBlock} />
                     {daysOfWeek.map(day => (
                         <div key={day} className={styles.day}>
-                        {day}
+                            {day}
                         </div>
                     ))}
-                    {grid.map((row, rowIndex) => (row))}
-                    {courseCells.map((block: CalendarGridCourse) => (
-                         <div
+                    {grid.map((row, rowIndex) => row)}
+                    {accountForCourseConflicts(courseCells)}
+                    {/*     courseCells.map((block: CalendarGridCourse) => (
+                        <div
                             key={`${block}`}
                             style={{
                                 gridColumn: `${block.calendarGridPoint.dayIndex + 1}`,
@@ -138,8 +138,8 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                                 status={block.componentProps.status}
                                 colors={block.componentProps.colors}
                             />
-                        </div>  
-                    ))} 
+                        </div>
+                        ))  */}
                 </div>
             </div>
         </div>
@@ -148,6 +148,67 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
 
 export default CalendarGrid;
 
+function accountForCourseConflicts(courseCells: CalendarGridCourse[]): JSX.Element[] {
+    //  Groups by dayIndex to identify overlaps
+    const days = courseCells.reduce((acc, cell: CalendarGridCourse) => {
+        const { dayIndex } = cell.calendarGridPoint;
+        if (!acc[dayIndex]) {
+            acc[dayIndex] = [];
+        }
+        acc[dayIndex].push(cell);
+        return acc;
+    }, {});
+
+    // Check for overlaps within each day and adjust gridColumnIndex and totalColumns
+    Object.values(days).forEach((dayCells: CalendarGridCourse[]) => {
+        // Sort by start time to ensure proper columnIndex assignment
+        dayCells.sort((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
+
+        dayCells.forEach((cell, _, arr) => {
+            let columnIndex = 1;
+            cell.totalColumns = 1;
+            // Check for overlaps and adjust columnIndex as needed
+            for (let otherCell of arr) {
+                if (otherCell !== cell) {
+                    const isOverlapping =
+                        otherCell.calendarGridPoint.startIndex < cell.calendarGridPoint.endIndex &&
+                        otherCell.calendarGridPoint.endIndex > cell.calendarGridPoint.startIndex;
+                    if (isOverlapping) {
+                        console.log('Found overlapping element');
+                        // Adjust columnIndex to not overlap with the otherCell
+                        if (otherCell.gridColumnStart && otherCell.gridColumnStart >= columnIndex) {
+                            columnIndex = otherCell.gridColumnStart + 1;
+                            console.log(columnIndex);
+                        }
+                        cell.totalColumns += 1;
+                    }
+                }
+            }
+            cell.gridColumnStart = columnIndex;
+            cell.gridColumnEnd = columnIndex + 1;
+        });
+    });
+
+    return courseCells.map(block => (
+        <div
+            key={`${block}`}
+            style={{
+                gridColumn: `${block.calendarGridPoint.dayIndex + 1}`,
+                gridRow: `${block.calendarGridPoint.startIndex + 1} / ${block.calendarGridPoint.endIndex + 1}`,
+                width: `calc(100% / ${block.totalColumns})`, 
+                marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`, 
+                padding: '0px 10px 4px 0px',
+            }}
+        >
+            <CalendarCourseCell
+                courseDeptAndInstr={block.componentProps.courseDeptAndInstr}
+                timeAndLocation={block.componentProps.timeAndLocation}
+                status={block.componentProps.status}
+                colors={block.componentProps.colors}
+            />
+        </div>
+    ));
+}
 
 /* <div className={styles.buttonContainer}>
                 <div className={styles.divider} /> 

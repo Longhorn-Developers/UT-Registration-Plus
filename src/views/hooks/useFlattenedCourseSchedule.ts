@@ -21,6 +21,9 @@ interface CalendarGridPoint {
 export interface CalendarGridCourse {
     calendarGridPoint: CalendarGridPoint;
     componentProps: CalendarCourseCellProps;
+    gridColumnStart?: number;
+    gridColumnEnd?: number;
+    totalColumns?: number;
 }
 
 const convertMinutesToIndex = (minutes: number): number => Math.floor(minutes - 420 / 30);

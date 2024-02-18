@@ -36,12 +36,12 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
 
     return (
         <div
-            className={clsx('h-full w-full flex justify-center rounded p-2', fontColor, className)}
+            className={clsx('h-full w-full flex justify-center rounded p-2 overflow-x-hidden', fontColor, className)}
             style={{
                 backgroundColor: colors.primaryColor,
             }}
         >
-            <div className='flex flex-1 flex-col gap-1 overflow-x-hidden'>
+            <div className='flex flex-1 flex-col gap-1'>
                 <Text
                     variant='h1-course'
                     className={clsx('-my-0.8 leading-tight', {
