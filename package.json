@@ -17,6 +17,8 @@
         "build-storybook": "storybook build"
     },
     "dependencies": {
+        "@headlessui/react": "^1.7.18",
+        "@headlessui/tailwindcss": "^0.2.0",
         "@hello-pangea/dnd": "^16.5.0",
         "@types/sql.js": "^1.4.9",
         "@unocss/reset": "^0.58.5",

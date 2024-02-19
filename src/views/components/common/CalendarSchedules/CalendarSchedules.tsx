@@ -1,5 +1,5 @@
 import { UserSchedule } from '@shared/types/UserSchedule';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import AddSchedule from '~icons/material-symbols/add';
 import List from '../List/List';
 import ScheduleListItem from '../ScheduleListItem/ScheduleListItem';
@@ -15,13 +15,8 @@ export function CalendarSchedules(props: Props) {
     const [activeScheduleIndex, setActiveScheduleIndex] = useState(props.dummyActiveIndex || 0);
     const [schedules, setSchedules] = useState(props.dummySchedules || []);
 
-    let scheduleComponents = schedules.map((schedule, index) => (
-        <div onClick={() => setActiveScheduleIndex(index)}>
-            <ScheduleListItem
-                active={index === activeScheduleIndex}
-                name={schedule.name}
-            />
-        </div>
+    const scheduleComponents = schedules.map((schedule, index) => (
+            <ScheduleListItem active={index === activeScheduleIndex} name={schedule.name} />
     ));
 
     return (
@@ -35,7 +30,7 @@ export function CalendarSchedules(props: Props) {
                 </div>
             </div>
 
-            <List gap={10} draggableElements={scheduleComponents} itemHeight={30} listHeight={0} listWidth={240} />
+            <List gap={10} draggableElements={scheduleComponents} itemHeight={30} listHeight={30} listWidth={240} />
         </div>
     );
 }

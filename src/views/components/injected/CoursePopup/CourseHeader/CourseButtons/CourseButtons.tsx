@@ -1,11 +1,11 @@
 import { background } from '@shared/messages';
 import { Course } from '@shared/types/Course';
 import { UserSchedule } from '@shared/types/UserSchedule';
-import React from 'react';
 import { Button } from '@views/components/common/Button/Button';
 import Card from '@views/components/common/Card/Card';
 import Icon from '@views/components/common/Icon/Icon';
 import Text from '@views/components/common/Text/Text';
+import React from 'react';
 import styles from './CourseButtons.module.scss';
 
 type Props = {
@@ -83,48 +83,43 @@ export default function CourseButtons({ course, activeSchedule }: Props) {
             <Button
                 onClick={openRateMyProfessorURL}
                 disabled={!course.instructors.length}
-                variant='primary'
+                variant='filled'
                 className={styles.button}
+                color='ut-black'
                 title='Search for this professor on RateMyProfessor'
             >
-                <Text /*    size='medium' weight='regular' */color='white'>
-                    RateMyProf
-                </Text>
+                <Text /*    size='medium' weight='regular' */ color='white'>RateMyProf</Text>
                 <Icon className={styles.icon} color='white' name='school' size='medium' />
             </Button>
             <Button
                 onClick={openSyllabiURL}
-                variant='secondary'
+                variant='filled'
                 className={styles.button}
+                color='ut-black'
                 title='Search for syllabi for this course'
             >
-                <Text /*    size='medium' weight='regular'  */ color='white'>
-                    Syllabi
-                </Text>
+                <Text /*    size='medium' weight='regular'  */ color='white'>Syllabi</Text>
                 <Icon className={styles.icon} color='white' name='grading' size='medium' />
             </Button>
             <Button
                 onClick={openTextbookURL}
-                variant='tertiary'
+                variant='filled'
                 className={styles.button}
+                color='ut-black'
                 title='Search for textbooks for this course'
             >
-                <Text /*   size='medium' weight='regular' color='white'    */>
-                    Textbook
-                </Text>
+                <Text /*   size='medium' weight='regular' color='white'    */>Textbook</Text>
                 <Icon className={styles.icon} color='white' name='collections_bookmark' size='medium' />
             </Button>
             <Button
                 disabled={!activeSchedule}
                 onClick={isCourseSaved ? handleRemoveCourse : handleSaveCourse}
                 title={isCourseSaved ? 'Remove this course from your schedule' : 'Add this course to your schedule'}
-                variant={isCourseSaved ? 'danger' : 'success'}
+                variant='filled'
                 className={styles.button}
+                color='ut-black'
             >
-
-                <Text /*   size='medium' weight='regular' color='white'    */ >
-                    {isCourseSaved ? 'Remove' : 'Add'}
-                </Text>
+                <Text /*   size='medium' weight='regular' color='white'    */>{isCourseSaved ? 'Remove' : 'Add'}</Text>
                 <Icon className={styles.icon} color='white' name={isCourseSaved ? 'remove' : 'add'} size='medium' />
             </Button>
         </Card>
