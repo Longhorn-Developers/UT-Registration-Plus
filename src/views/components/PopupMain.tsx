@@ -7,47 +7,10 @@ import Text from './common/Text/Text';
 import Divider from './common/Divider/Divider';
 import logoImage from '../../assets/logo.png'; // Adjust the path as necessary
 import List from './common/List/List'; // Ensure this path is correctly pointing to your List component
-
-
+import { generateCourses } from 'src/stories/components/List.stories';
 
 export default function PopupMain() {
-   const courses = [
-       {
-           uniqueId: '47280',
-           department: 'BIO',
-           number: '311C',
-           instructors: [{ lastName: 'Fritz' }],
-           status: 'OPEN',
-       },
-       {
-           uniqueId: '51180',
-           department: 'C S',
-           number: '374L',
-           instructors: [{ lastName: 'Baer' }],
-           status: 'CLOSED',
-       },
-       {
-           uniqueId: '60020',
-           department: 'S W',
-           number: '310',
-           instructors: [{ lastName: 'Whalley' }],
-           status: 'WAITLISTED',
-       },
-       {
-           uniqueId: '13190',
-           department: 'PED',
-           number: '106C',
-           instructors: [{ lastName: 'Rich' }],
-           status: 'CANCELLED',
-       },
-       {
-           uniqueId: '44435',
-           department: 'WGS',
-           number: '301',
-           instructors: [{ lastName: 'RODRIGUEZ' }],
-           status: 'TEMP',
-       },
-   ];
+   const courses = generateCourses(5); 
 
 
    // Manually applying colors for the demonstration
