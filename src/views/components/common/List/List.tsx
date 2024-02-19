@@ -135,8 +135,7 @@ const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, 
                         <div
                             {...provided.droppableProps}
                             ref={provided.innerRef}
-                            style={{ width: `${listWidth}px` }}
-                            className=''
+                            style={{ width: `${listWidth}px`, marginBottom: `-${gap}px` }}
                         >
                             {items.map((item, index) => (
                                 <Draggable key={item.id} draggableId={item.id} index={index}>
@@ -144,14 +143,15 @@ const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, 
                                         <div
                                             ref={draggableProvided.innerRef}
                                             {...draggableProvided.draggableProps}
-                                            {...draggableProvided.dragHandleProps}
                                             style={{
                                                 ...draggableProvided.draggableProps.style,
                                                 // if last item, don't add margin
-                                                marginBottom: index === items.length - 1 ? '0px' : `${gap}px`,
+                                                marginBottom: `${gap}px`,
                                             }}
                                         >
-                                            {item.content}
+                                            {React.cloneElement(item.content, {
+                                                dragHandleProps: draggableProvided.dragHandleProps,
+                                            })}
                                         </div>
                                     )}
                                 </Draggable>

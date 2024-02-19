@@ -1,10 +1,9 @@
+import { Course, Status } from '@shared/types/Course';
+import { getCourseColors } from '@shared/util/colors';
 import { Meta, StoryObj } from '@storybook/react';
+import CalendarCourseCell from '@views/components/common/CalendarCourseCell/CalendarCourseCell';
 import React from 'react';
-import { Course, Status } from 'src/shared/types/Course';
-import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
-import { CourseSchedule } from 'src/shared/types/CourseSchedule';
-import Instructor from 'src/shared/types/Instructor';
-import CalendarCourseCell from 'src/views/components/common/CalendarCourseCell/CalendarCourseCell';
+import { exampleCourse } from './PopupCourseBlock.stories';
 
 const meta = {
     title: 'Components/Common/CalendarCourseCell',
@@ -14,54 +13,102 @@ const meta = {
     },
     tags: ['autodocs'],
     argTypes: {
-        course: { control: 'object' },
-        meetingIdx: { control: 'number' },
-        color: { control: 'color' },
+        courseDeptAndInstr: { control: { type: 'text' } },
+        className: { control: { type: 'text' } },
+        status: { control: { type: 'select', options: Object.values(Status) } },
+        timeAndLocation: { control: { type: 'text' } },
+        colors: { control: { type: 'object' } },
     },
     render: (args: any) => (
-        <div className="w-45">
+        <div className='w-45'>
             <CalendarCourseCell {...args} />
         </div>
     ),
+    args: {
+        courseDeptAndInstr: exampleCourse.department,
+        className: exampleCourse.number,
+        status: exampleCourse.status,
+        timeAndLocation: exampleCourse.schedule.meetings[0].getTimeString({ separator: '-' }),
+
+        colors: getCourseColors('emerald', 500),
+    },
 } satisfies Meta<typeof CalendarCourseCell>;
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-    args: {
-        course: new Course({
-            uniqueId: 123,
-            number: '311C',
-            fullName: "311C - Bevo's Default Course",
-            courseName: "Bevo's Default Course",
-            department: 'BVO',
-            creditHours: 3,
-            status: Status.WAITLISTED,
-            instructors: [new Instructor({ firstName: '', lastName: 'Bevo', fullName: 'Bevo' })],
-            isReserved: false,
-            url: '',
-            flags: [],
-            schedule: new CourseSchedule({
-                meetings: [
-                    new CourseMeeting({
-                        days: [DAY_MAP.M, DAY_MAP.W, DAY_MAP.F],
-                        startTime: 480,
-                        endTime: 570,
-                        location: {
-                            building: 'UTC',
-                            room: '123',
-                        },
-                    }),
-                ],
-            }),
-            instructionMode: 'In Person',
-            semester: {
-                year: 2024,
-                season: 'Spring',
-            },
-        }),
-        meetingIdx: 0,
-        color: 'red',
-    },
+export const Default: Story = {};
+
+export const Variants: Story = {
+    render: props => (
+        <div className='grid grid-cols-2 h-40 max-w-60 w-90vw gap-x-4 gap-y-2'>
+            <CalendarCourseCell
+                {...props}
+                // course={new Course({ ...exampleCourse, status: Status.OPEN })}
+                // Course = new Course({
+                //     courseName: 'PRINCIPLES OF COMPUTER SYSTEMS',
+                //     creditHours: 3,
+                //     department: 'C S',
+                //     description: [
+                //         'Restricted to computer science majors.',
+                //         'An introduction to computer systems software abstractions with an emphasis on the connection of these abstractions to underlying computer hardware. Key abstractions include threads, virtual memory, protection, and I/O. Requires writing of synchronized multithreaded programs and pieces of an operating system.',
+                //         'Computer Science 439 and 439H may not both be counted.',
+                //         'Prerequisite: Computer Science 429, or 429H with a grade of at least C-.',
+                //         'May be counted toward the Independent Inquiry flag requirement.',
+                //     ],
+                //     flags: ['Independent Inquiry'],
+                //     fullName: 'C S 439 PRINCIPLES OF COMPUTER SYSTEMS',
+                //     instructionMode: 'In Person',
+                //     instructors: [
+                //         new Instructor({
+                //             firstName: 'Allison',
+                //             lastName: 'Norman',
+                //             fullName: 'Allison Norman',
+                //         }),
+                //     ],
+                //     isReserved: false,
+                //     number: '439',
+                //     schedule: {
+                //         meetings: [
+                //             new CourseMeeting({
+                //                 days: ['Tuesday', 'Thursday'],
+                //                 startTime: 930,
+                //                 endTime: 1050,
+                //             }),
+                //             new CourseMeeting({
+                //                 days: ['Friday'],
+                //                 startTime: 600,
+                //                 endTime: 720,
+                //             }),
+                //         ],
+                //     },
+                //     semester: {
+                //         code: '12345',
+                //         season: 'Spring',
+                //         year: 2024,
+                //     },
+                //     status: Status.WAITLISTED,
+                //     uniqueId: 67890,
+                //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+                // });
+                
+                colors={getCourseColors('green', 500)}
+            />
+            <CalendarCourseCell
+                {...props}
+                // course={new Course({ ...exampleCourse, status: Status.CLOSED })}
+                colors={getCourseColors('teal', 400)}
+            />
+            <CalendarCourseCell
+                {...props}
+                // course={new Course({ ...exampleCourse, status: Status.WAITLISTED })}
+                colors={getCourseColors('indigo', 400)}
+            />
+            <CalendarCourseCell
+                {...props}
+                // course={new Course({ ...exampleCourse, status: Status.CANCELLED })}
+                colors={getCourseColors('red', 500)}
+            />
+        </div>
+    ),
 };

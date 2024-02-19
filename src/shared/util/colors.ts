@@ -42,9 +42,9 @@ export function pickFontColor(bgColor: string): 'text-white' | 'text-black' {
  * Get primary and secondary colors from a tailwind colorway
  * @param colorway the tailwind colorway ex. "emerald"
  */
-export function getCourseColors(colorway: keyof typeof theme.colors): CourseColors {
+export function getCourseColors(colorway: keyof typeof theme.colors, index = 600, offset = 200): CourseColors {
     return {
-        primaryColor: theme.colors[colorway][600] as string,
-        secondaryColor: theme.colors[colorway][800] as string,
+        primaryColor: theme.colors[colorway][index] as string,
+        secondaryColor: theme.colors[colorway][index + offset] as string,
     };
 }

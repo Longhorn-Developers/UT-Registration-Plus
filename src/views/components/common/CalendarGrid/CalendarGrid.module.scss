@@ -1,6 +1,3 @@
-@use 'sass:color';
-@use 'src/views/styles/colors.module.scss';
-
 .dayLabelContainer {
     display: flex;
     flex-direction: row;
@@ -16,7 +13,7 @@
 
 .calendarGrid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     grid-template-rows: repeat(13, 1fr);
 }
 
@@ -25,19 +22,24 @@
 }
 
 .calendar {
-    // display: grid;
-    // grid-template-columns: auto repeat(5, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 10px;
+    position: relative; // Ensuring that child elements can be positioned in relation to this.
 }
 
 .day {
     gap: 5px;
-    color: colors.$burnt_orange;
+    color: #bf5700;
     text-align: center;
     font-size: 14.22px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
+    margin-top: 20px;
+    border-right: 1px solid #dadce0;
+    border-bottom: 1px solid #dadce0;
+    border-left: 1px solid #dadce0;
 }
 
 .timeAndGrid {
@@ -56,14 +58,11 @@
 
 .timeBlock {
     display: flex;
-    width: 50px;
-    height: 40.279px;
-    min-width: 50px;
-    max-width: 50px;
-    min-height: 40px;
+    width: auto;
+    height: auto;
     flex-direction: column;
     align-items: flex-end;
-    
+
     .timeLabelContainer {
         display: flex;
         max-height: 20px;
@@ -71,24 +70,58 @@
         align-items: flex-end;
         gap: 17px;
         flex: 1 0 0;
-        align-self: stretch;
         border-radius: var(--border-radius-none, 0px);
     }
 
     p {
-        color: #1A2024;
+        color: #1a2024;
         text-align: left;
         height: 6.6px;
         align-self: stretch;
-        margin-top: 0;
+        margin-top: -10px;
+        margin-right: 10px;
         margin-bottom: 0;
 
         /* Type scale/small */
-        font-family: "Roboto Flex";
+        font-family: 'Roboto Flex';
         font-size: 14.22px;
         font-style: normal;
         font-weight: 500;
         line-height: normal;
-    } 
+    }
 }
 
+.buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px;
+    margin-top: auto;
+}
+
+.calendarButton {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 6px;
+    border: none;
+    background-color: transparent;
+    color: #333;
+    cursor: pointer;
+    
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+}
+
+.buttonIcon {
+    height: 24px;
+    fill: currentColor;
+}
+
+.divider {
+    height: 30px;
+    width: 1px;
+    background-color: grey;
+}

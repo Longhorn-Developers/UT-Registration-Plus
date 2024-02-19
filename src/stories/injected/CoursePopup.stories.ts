@@ -1,8 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Course, Status } from 'src/shared/types/Course';
 import { CourseMeeting } from 'src/shared/types/CourseMeeting';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
 import CoursePopup from 'src/views/components/injected/CoursePopupOld/CoursePopup';
+import type { Meta, StoryObj } from '@storybook/react';
+import Instructor from 'src/shared/types/Instructor';
 
 const exampleCourse: Course = new Course({
     courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',
@@ -18,7 +19,20 @@ const exampleCourse: Course = new Course({
     flags: ['Quantitative Reasoning'],
     fullName: 'C S 303E ELEMS OF COMPTRS/PROGRAMMNG-WB',
     instructionMode: 'Online',
-    instructors: [],
+    instructors: [
+        new Instructor({
+            firstName: 'William',
+            lastName: 'Young',
+            middleInitial: 'D',
+            fullName: 'William D Young',
+        }),
+        new Instructor({
+            firstName: 'William',
+            lastName: 'Young',
+            middleInitial: 'D',
+            fullName: 'William D Young',
+        }),
+    ],
     isReserved: false,
     number: '303E',
     schedule: {
@@ -43,6 +57,7 @@ const exampleCourse: Course = new Course({
 const exampleSchedule: UserSchedule = new UserSchedule({
     courses: [exampleCourse],
     name: 'Example Schedule',
+    hours: 0,
 });
 
 const meta = {
@@ -82,6 +97,7 @@ export const Open: Story = {
         activeSchedule: new UserSchedule({
             courses: [],
             name: 'Example Schedule',
+            hours: 0,
         }),
     },
 };

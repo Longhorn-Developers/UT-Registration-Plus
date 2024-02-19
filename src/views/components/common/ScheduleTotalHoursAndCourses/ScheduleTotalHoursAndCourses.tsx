@@ -15,27 +15,19 @@ export interface ScheduleTotalHoursAndCoursesProps {
  *
  * @param props ScheduleTotalHoursAndCoursesProps
  */
-export default function ScheduleTotalHoursAndCoursess({ scheduleName, totalHours, totalCourses }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
+export default function ScheduleTotalHoursAndCourses({
+    scheduleName,
+    totalHours,
+    totalCourses,
+}: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div className="min-w-64 flex flex-wrap content-center items-baseline gap-2 uppercase">
-            <Text
-                className="text-[#BF5700]"
-                variant='h1'
-                as='span'
-            >
+        <div className='min-w-64 flex whitespace-nowrap	content-center items-baseline gap-2 uppercase'>
+            <Text className='text-[#BF5700]' variant='h1' as='span'>
                 {`${scheduleName}: `}
             </Text>
-            <Text
-                variant='h3'
-                as='div'
-                className="flex flex-row items-center gap-2 text-[#1A2024]"
-            >
+            <Text variant='h3' as='div' className='flex flex-row items-center gap-2 text-[#1A2024]'>
                 {`${totalHours} HOURS`}
-                <Text
-                    variant='h4'
-                    as='span'
-                    className="text-[#333F48]"
-                >
+                <Text variant='h4' as='span' className='text-[#333F48]'>
                     {`${totalCourses} courses`}
                 </Text>
             </Text>
