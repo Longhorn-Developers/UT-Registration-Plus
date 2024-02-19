@@ -39,36 +39,34 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
             return `${firstName} ${lastName}`;
         })
         .join(', ');
-
     const handleCopy = () => {
         navigator.clipboard.writeText(uniqueId.toString());
     };
-
+    const handleOpenCalendar = async () => {
+        const url = chrome.runtime.getURL('calendar.html');
+        await openNewTab(url);
+    };
     const handleOpenRateMyProf = async () => {
         const openTabs = instructors.map(instructor => {
             const { fullName } = instructor;
             const url = `https://www.ratemyprofessors.com/search/professors/1255?q=${fullName}`;
             return openNewTab(url);
         });
-
         await Promise.all(openTabs);
     };
-
-    const handleOpenCES = () => {
-        // TODO (achadaga): not implemented
+    const handleOpenCES = async () => {
+        // TODO: does not look up the professor just takes you to the page
+        const cisUrl = 'https://utexas.bluera.com/utexas/rpvl.aspx?rid=d3db767b-049f-46c5-9a67-29c21c29c580&regl=en-US';
+        await openNewTab(cisUrl);
     };
-
-    // open past syllabi for the course
-    // not specific to professor
     const handleOpenPastSyllabi = async () => {
+        // not specific to professor
         const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=${courseName}&unique=&instructor_first=&instructor_last=&course_type=In+Residence&search=Search`;
         await openNewTab(url);
     };
-
     const handleAddCourse = async () => {
         await addCourse(activeSchedule.name, course);
     };
-
     return (
         <div className='w-full pb-3 pt-6'>
             <div className='flex flex-col gap-1'>
@@ -115,8 +113,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                 </div>
             </div>
             <div className='my-3 flex flex-wrap items-center gap-[15px]'>
-                {/* TODO (achadaga): make this open the calendar page */}
-                <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} />
+                <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} onClick={handleOpenCalendar} />
                 <Divider type='solid' color='ut-offwhite' className='h-7' />
                 <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
                     RateMyProf
