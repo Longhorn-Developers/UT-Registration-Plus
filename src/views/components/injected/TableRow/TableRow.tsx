@@ -3,9 +3,9 @@ import { UserSchedule } from '@shared/types/UserSchedule';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Button } from '../../common/Button/Button';
-import Icon from '../../common/Icon/Icon';
-import Text from '../../common/Text/Text';
 import styles from './TableRow.module.scss';
+import ConflictsWithWarning from '../../common/ConflictsWithWarning/ConflictsWithWarning';
+import AddIcon from '~icons/material-symbols/add-circle';
 
 interface Props {
     isSelected: boolean;
@@ -54,7 +54,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         return () => {
             element.classList.remove(styles.inActiveSchedule);
         };
-    }, [activeSchedule, element.classList]);
+    }, [activeSchedule, course, element.classList]);
 
     useEffect(() => {
         if (!activeSchedule || !course) {
@@ -84,20 +84,14 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     return ReactDOM.createPortal(
         <>
-            <Button className={styles.rowButton} onClick={onClick} variant='secondary'>
-                <Icon name='bar_chart' color='white' size='medium' />
-            </Button>
-            {conflicts.length > 0 && (
-                <div className={styles.conflictTooltip}>
-                    <div className={styles.body}>
-                        {conflicts.map(c => (
-                            <Text /*    size='small'    */ key={c.uniqueId}>
-                                {c.department} {c.number} ({c.uniqueId})
-                            </Text>
-                        ))}
-                    </div>
-                </div>
-            )}
+            <Button
+                icon={AddIcon}
+                className={styles.rowButton}
+                color='ut-burntorange'
+                onClick={onClick}
+                variant='single'
+            />
+            {conflicts.length > 0 && <ConflictsWithWarning className={styles.conflictTooltip} conflicts={conflicts} />}
         </>,
         container
     );
