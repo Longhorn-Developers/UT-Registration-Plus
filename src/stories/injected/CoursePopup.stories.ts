@@ -57,6 +57,7 @@ const exampleCourse: Course = new Course({
 const exampleSchedule: UserSchedule = new UserSchedule({
     courses: [exampleCourse],
     name: 'Example Schedule',
+    hours: 0,
 });
 
 const meta = {
@@ -96,6 +97,7 @@ export const Open: Story = {
         activeSchedule: new UserSchedule({
             courses: [],
             name: 'Example Schedule',
+            hours: 0,
         }),
     },
 };

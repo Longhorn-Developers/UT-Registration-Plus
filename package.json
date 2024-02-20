@@ -17,6 +17,8 @@
         "build-storybook": "storybook build"
     },
     "dependencies": {
+        "@headlessui/react": "^1.7.18",
+        "@headlessui/tailwindcss": "^0.2.0",
         "@hello-pangea/dnd": "^16.5.0",
         "@types/sql.js": "^1.4.9",
         "@vitejs/plugin-react": "^4.2.1",
@@ -28,6 +30,7 @@
         "react": "^18.2.0",
         "react-devtools-core": "^5.0.0",
         "react-dom": "^18.2.0",
+        "react-icons": "^5.0.1",
         "react-window": "^1.8.10",
         "sass": "^1.70.0",
         "sql.js": "1.10.2",
