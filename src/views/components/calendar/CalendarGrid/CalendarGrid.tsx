@@ -27,8 +27,8 @@ for (let i = 0; i < 13; i++) {
 }   */
 
 interface Props {
-    courseCells: CalendarGridCourse[];
-    saturdayClass: boolean;
+    courseCells?: CalendarGridCourse[];
+    saturdayClass?: boolean;
 }
 
 /**
@@ -110,21 +110,17 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
     }, []);
 
     return (
-        <div className={styles.calendar}>
-            <div className={styles.dayLabelContainer} />
-            {/* Displaying the rest of the calendar */}
-            <div className={styles.timeAndGrid}>
-                <div className={styles.calendarGrid}>
-                    {/* Displaying day labels */}
-                    <div className={styles.timeBlock} />
-                    {daysOfWeek.map(day => (
-                        <div key={day} className={styles.day}>
-                            {day}
-                        </div>
-                    ))}
-                    {grid.map((row, rowIndex) => row)}
-                    {accountForCourseConflicts(courseCells)}
-                    {/*     courseCells.map((block: CalendarGridCourse) => (
+        <div className={styles.calendarGrid}>
+            {/* Displaying day labels */}
+            <div className={styles.timeBlock} />
+            {daysOfWeek.map(day => (
+                <div key={day} className={styles.day}>
+                    {day}
+                </div>
+            ))}
+            {grid.map((row, rowIndex) => row)}
+            {courseCells ? accountForCourseConflicts(courseCells) : null}
+            {/*     courseCells.map((block: CalendarGridCourse) => (
                         <div
                             key={`${block}`}
                             style={{
@@ -140,8 +136,6 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                             />
                         </div>
                         ))  */}
-                </div>
-            </div>
         </div>
     );
 }
@@ -195,8 +189,8 @@ function accountForCourseConflicts(courseCells: CalendarGridCourse[]): JSX.Eleme
             style={{
                 gridColumn: `${block.calendarGridPoint.dayIndex + 1}`,
                 gridRow: `${block.calendarGridPoint.startIndex + 1} / ${block.calendarGridPoint.endIndex + 1}`,
-                width: `calc(100% / ${block.totalColumns})`, 
-                marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`, 
+                width: `calc(100% / ${block.totalColumns})`,
+                marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`,
                 padding: '0px 10px 4px 0px',
             }}
         >

@@ -5,7 +5,7 @@ import { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import { Status } from '@shared/types/Course';
 
 const meta = {
-    title: 'Components/Common/CalendarGrid',
+    title: 'Components/Calendar/CalendarGrid',
     component: CalendarGrid,
     parameters: {
         layout: 'centered',
