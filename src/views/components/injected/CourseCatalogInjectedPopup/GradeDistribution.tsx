@@ -51,7 +51,7 @@ const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
                 color: GRADE_COLORS[grade as LetterGrade],
             }));
         }
-        return [];
+        return Array(12).fill(0);
     }, [distributions, semester, status]);
 
     React.useEffect(() => {
