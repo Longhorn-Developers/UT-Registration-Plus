@@ -8,7 +8,7 @@ import { SiteSupport } from '../lib/getSiteSupport';
 import { populateSearchInputs } from '../lib/populateSearchInputs';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
 import AutoLoad from './injected/AutoLoad/AutoLoad';
-import CoursePopup from './injected/CoursePopup/CoursePopup';
+import CoursePopup from './injected/CoursePopupOld/CoursePopup';
 import RecruitmentBanner from './injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from './injected/TableHead';
 import TableRow from './injected/TableRow/TableRow';
