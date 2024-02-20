@@ -1,7 +1,7 @@
 import { Course, Status } from '@shared/types/Course';
 import { getCourseColors } from '@shared/util/colors';
 import { Meta, StoryObj } from '@storybook/react';
-import CalendarCourseCell from '@views/components/common/CalendarCourseCell/CalendarCourseCell';
+import CalendarCourseCell from 'src/views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import React from 'react';
 import { exampleCourse } from './PopupCourseBlock.stories';
 
@@ -91,7 +91,7 @@ export const Variants: Story = {
                 //     uniqueId: 67890,
                 //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
                 // });
-                
+
                 colors={getCourseColors('green', 500)}
             />
             <CalendarCourseCell

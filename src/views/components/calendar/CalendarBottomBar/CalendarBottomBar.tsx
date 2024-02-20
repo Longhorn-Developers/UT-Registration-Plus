@@ -1,8 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
-import Text from '../Text/Text';
+import Text from '../../common/Text/Text';
 import CalendarCourseBlock, { CalendarCourseCellProps } from '../CalendarCourseCell/CalendarCourseCell';
-import { Button } from '../Button/Button';
+import { Button } from '../../common/Button/Button';
 import ImageIcon from '~icons/material-symbols/image';
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 

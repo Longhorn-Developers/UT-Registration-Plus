@@ -5,7 +5,7 @@ import { CourseColors, pickFontColor } from 'src/shared/util/colors';
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
-import Text from '../Text/Text';
+import Text from '../../common/Text/Text';
 
 export interface CalendarCourseCellProps {
     courseDeptAndInstr: string;
