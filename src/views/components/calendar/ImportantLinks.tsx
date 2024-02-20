@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import Text from './common/Text/Text';
+import Text from '../common/Text/Text';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
 type Props = {

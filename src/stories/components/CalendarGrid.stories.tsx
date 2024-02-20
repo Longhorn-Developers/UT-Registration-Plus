@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import CalendarGrid from 'src/views/components/common/CalendarGrid/CalendarGrid';
+import CalendarGrid from 'src/views/components/calendar/CalendarGrid/CalendarGrid';
 import { getCourseColors } from 'src/shared/util/colors';
 import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
 import { Status } from 'src/shared/types/Course';

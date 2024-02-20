@@ -1,15 +1,15 @@
 import React from 'react';
 import { Status } from '@shared/types/Course';
-import Divider from '../Divider/Divider';
-import { Button } from '../Button/Button';
-import Text from '../Text/Text';
+import Divider from '../../common/Divider/Divider';
+import { Button } from '../../common/Button/Button';
+import Text from '../../common/Text/Text';
 import MenuIcon from '~icons/material-symbols/menu';
 import LogoIcon from '~icons/material-symbols/add-circle-outline';
 import UndoIcon from '~icons/material-symbols/undo';
 import RedoIcon from '~icons/material-symbols/redo';
 import SettingsIcon from '~icons/material-symbols/settings';
-import ScheduleTotalHoursAndCourses from '../ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
-import CourseStatus from '../CourseStatus/CourseStatus';
+import ScheduleTotalHoursAndCourses from '../../common/ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
+import CourseStatus from '../../common/CourseStatus/CourseStatus';
 
 const CalendarHeader = () => (
     <div className='min-h-79px min-w-672px flex px-0 py-15'>

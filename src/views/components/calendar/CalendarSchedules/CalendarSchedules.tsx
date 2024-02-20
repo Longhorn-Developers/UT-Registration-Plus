@@ -1,9 +1,9 @@
 import { UserSchedule } from '@shared/types/UserSchedule';
 import React, { useState } from 'react';
 import AddSchedule from '~icons/material-symbols/add';
-import List from '../List/List';
-import ScheduleListItem from '../ScheduleListItem/ScheduleListItem';
-import Text from '../Text/Text';
+import List from '../../common/List/List';
+import ScheduleListItem from '../../common/ScheduleListItem/ScheduleListItem';
+import Text from '../../common/Text/Text';
 
 export type Props = {
     style?: React.CSSProperties;
@@ -16,7 +16,7 @@ export function CalendarSchedules(props: Props) {
     const [schedules, setSchedules] = useState(props.dummySchedules || []);
 
     const scheduleComponents = schedules.map((schedule, index) => (
-            <ScheduleListItem active={index === activeScheduleIndex} name={schedule.name} />
+        <ScheduleListItem active={index === activeScheduleIndex} name={schedule.name} />
     ));
 
     return (
