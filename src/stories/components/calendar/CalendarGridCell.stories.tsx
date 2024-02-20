@@ -4,7 +4,7 @@ import CalendarCell from 'src/views/components/calendar/CalendarGridCell/Calenda
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta = {
-    title: 'Components/Common/CalendarGridCell',
+    title: 'Components/Calendar/CalendarGridCell',
     component: CalendarCell,
     parameters: {
         // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout

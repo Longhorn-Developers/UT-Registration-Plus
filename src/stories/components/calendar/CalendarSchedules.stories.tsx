@@ -8,7 +8,7 @@ import Instructor from 'src/shared/types/Instructor';
 import { CalendarSchedules } from 'src/views/components/calendar/CalendarSchedules/CalendarSchedules';
 
 const meta = {
-    title: 'Components/Common/CalendarSchedules',
+    title: 'Components/Calendar/CalendarSchedules',
     component: CalendarSchedules,
     parameters: {
         layout: 'centered',

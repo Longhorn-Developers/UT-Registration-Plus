@@ -6,7 +6,7 @@ import Instructor from '@shared/types/Instructor';
 import CalendarCourse from 'src/views/components/calendar/CalendarCourseBlock/CalendarCourseMeeting';
 
 const meta = {
-    title: 'Components/Common/CalendarCourseMeeting',
+    title: 'Components/Calendar/CalendarCourseMeeting',
     component: CalendarCourse,
     parameters: {
         layout: 'centered',

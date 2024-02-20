@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Course, Status } from '@shared/types/Course';
 import Instructor from '@shared/types/Instructor';
 import { CalendarBottomBar } from 'src/views/components/calendar/CalendarBottomBar/CalendarBottomBar';
-import { getCourseColors } from '../../shared/util/colors';
+import { getCourseColors } from '../../../shared/util/colors';
 
 const exampleGovCourse: Course = new Course({
     courseName: 'Nope',
@@ -66,7 +66,7 @@ const examplePsyCourse: Course = new Course({
 });
 
 const meta = {
-    title: 'Components/Common/CalendarBottomBar',
+    title: 'Components/Calendar/CalendarBottomBar',
     component: CalendarBottomBar,
     parameters: {
         layout: 'centered',
