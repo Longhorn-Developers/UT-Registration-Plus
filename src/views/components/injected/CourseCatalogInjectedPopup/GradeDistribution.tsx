@@ -5,12 +5,12 @@ import HighchartsReact from 'highcharts-react-official';
 import React from 'react';
 import { Course } from 'src/shared/types/Course';
 import { Distribution, LetterGrade } from 'src/shared/types/Distribution';
+import { colors } from 'src/shared/util/themeColors';
 import {
     NoDataError,
     queryAggregateDistribution,
     querySemesterDistribution,
 } from 'src/views/lib/database/queryDistribution';
-import colors from 'src/views/styles/colors.module.scss';
 
 interface GradeDistributionProps {
     course: Course;
@@ -23,20 +23,19 @@ enum DataStatus {
     ERROR = 'ERROR',
 }
 
-// TODO: Use tailwind colors here
 const GRADE_COLORS: Record<LetterGrade, string> = {
-    A: colors.turtle_pond,
-    'A-': colors.turtle_pond,
-    'B+': colors.cactus,
-    B: colors.cactus,
-    'B-': colors.cactus,
-    'C+': colors.sunshine,
-    C: colors.sunshine,
-    'C-': colors.sunshine,
-    'D+': colors.tangerine,
-    D: colors.tangerine,
-    'D-': colors.tangerine,
-    F: colors.speedway_brick,
+    A: colors.gradeDistribution.a,
+    'A-': colors.gradeDistribution.aminus,
+    'B+': colors.gradeDistribution.bplus,
+    B: colors.gradeDistribution.b,
+    'B-': colors.gradeDistribution.bminus,
+    'C+': colors.gradeDistribution.cplus,
+    C: colors.gradeDistribution.c,
+    'C-': colors.gradeDistribution.cminus,
+    'D+': colors.gradeDistribution.dplus,
+    D: colors.gradeDistribution.d,
+    'D-': colors.gradeDistribution.dminus,
+    F: colors.gradeDistribution.f,
 };
 
 interface State {
