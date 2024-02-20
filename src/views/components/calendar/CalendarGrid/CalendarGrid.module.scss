@@ -1,0 +1,140 @@
+.dayLabelContainer {
+    display: flex;
+    flex-direction: row;
+    height: 13px;
+    min-width: 40px;
+    min-height: 13px;
+    padding-bottom: 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex: 1 0 0;
+}
+
+.calendarGrid {
+    display: grid;
+    grid-template-columns: auto repeat(5, 6fr);
+    grid-template-rows: repeat(26, 1fr);
+    width: 100%;
+    height: 100%;
+}
+
+.calendarRow {
+    display: flex;
+}
+
+.calendar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.day {
+    gap: 5px;
+    color: #bf5700;
+    text-align: center;
+    font-size: 14.22px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-top: 20px;
+    border-right: 1px solid #dadce0;
+    border-bottom: 1px solid #dadce0;
+    border-left: 1px solid #dadce0;
+}
+
+.timeAndGrid {
+    display: flex;
+}
+
+.timeColumn {
+    display: flex;
+    min-height: 573px;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex: 1 0 0;
+    border-radius: 0px;
+}
+
+.timeBlock {
+    display: flex;
+    width: auto;
+    height: auto;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .timeLabelContainer {
+        display: flex;
+        max-height: 20px;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 17px;
+        flex: 1 0 0;
+        border-radius: var(--border-radius-none, 0px);
+    }
+
+    p {
+        color: #1a2024;
+        text-align: left;
+        height: 6.6px;
+        align-self: stretch;
+        margin-top: -10px;
+        margin-right: 10px;
+        margin-bottom: 0;
+
+        /* Type scale/small */
+        font-family: 'Roboto Flex';
+        font-size: 14.22px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+    }
+}
+
+.buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px;
+    margin-top: auto;
+}
+
+.calendarButton {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 6px;
+    border: none;
+    background-color: transparent;
+    color: #333;
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+}
+
+.buttonIcon {
+    height: 24px;
+    fill: currentColor;
+}
+
+.divider {
+    height: 30px;
+    width: 1px;
+    background-color: grey;
+}
+
+.dot {
+    height: 75%; /* 75% of the container's height */
+    width: 75%; /* 75% of the container's width */
+    background-color: #000000; /* Color of the dot */
+    border-radius: 50%; /* Rounds the corners into a circle */
+    top: 12.5%; /* Centers the dot vertically */
+    left: 12.5%; /* Centers the dot horizontally */
+}

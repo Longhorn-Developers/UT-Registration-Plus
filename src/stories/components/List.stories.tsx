@@ -9,7 +9,7 @@ import { test_colors } from './PopupCourseBlock.stories';
 
 const numberOfCourses = 5;
 
-const generateCourses = count => {
+export const generateCourses = count => {
     const courses = [];
 
     for (let i = 0; i < count; i++) {
@@ -64,7 +64,7 @@ const generateCourses = count => {
 const exampleCourses = generateCourses(numberOfCourses);
 const generateCourseBlocks = (exampleCourses, colors) =>
     exampleCourses.map((course, i) => <PopupCourseBlock key={course.uniqueId} course={course} colors={colors[i]} />);
-const exampleCourseBlocks = generateCourseBlocks(exampleCourses, test_colors);
+export const exampleCourseBlocks = generateCourseBlocks(exampleCourses, test_colors);
 
 const meta = {
     title: 'Components/Common/List',
