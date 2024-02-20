@@ -5,7 +5,7 @@ import Text from '@views/components/common/Text/Text';
 import React from 'react';
 import addCourse from 'src/pages/background/lib/addCourse';
 import openNewTab from 'src/pages/background/util/openNewTab';
-import { Course } from 'src/shared/types/Course';
+import { Course, Status } from 'src/shared/types/Course';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
 import Add from '~icons/material-symbols/add';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
@@ -31,7 +31,7 @@ interface HeadingAndActionProps {
  * @returns {JSX.Element} The rendered component.
  */
 const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, activeSchedule }) => {
-    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
+    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule, status } = course;
     const instructorString = instructors
         .map(instructor => {
             const { firstName, lastName } = instructor;
@@ -81,7 +81,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                     <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
                         {uniqueId}
                     </Button>
-                    <button className='btn bg-transparent p-0' onClick={onClose}>
+                    <button className='bg-transparent p-0 btn' onClick={onClose}>
                         <CloseIcon className='h-7 w-7' />
                     </button>
                 </div>
@@ -124,7 +124,13 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                 <Button variant='outline' color='ut-orange' icon={Description} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
                 </Button>
-                <Button variant='filled' color='ut-green' icon={Add} onClick={handleAddCourse}>
+                <Button
+                    variant='filled'
+                    color='ut-green'
+                    icon={Add}
+                    onClick={handleAddCourse}
+                    disabled={status !== Status.OPEN}
+                >
                     Add Course
                 </Button>
             </div>
