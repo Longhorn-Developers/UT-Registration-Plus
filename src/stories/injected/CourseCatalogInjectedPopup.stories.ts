@@ -51,6 +51,50 @@ const exampleCourse: Course = new Course({
     },
 });
 
+const bevoCourse: Course = new Course({
+    uniqueId: 47280,
+    number: '311C',
+    fullName: "BVO 311C BEVO'S SEMINAR LONGHORN CARE",
+    courseName: "BEVO'S SEMINAR LONGHORN CARE",
+    department: 'BVO',
+    creditHours: 3,
+    status: Status.OPEN,
+    instructors: [new Instructor({ fullName: 'BEVO', firstName: 'BEVO', lastName: 'BEVO', middleInitial: '' })],
+    isReserved: false,
+    description: [
+        'Restricted to Students in the School of Longhorn Enthusiasts',
+        'Immerse yourself in the daily routine of a longhorn—sunrise pasture walks and the best shady spots for a midday siesta. Understand the behavioral science behind our mascot’s stoic demeanor during games.',
+        'BVO 311C and 312H may not both be counted.',
+        'Prerequisite: Grazing 311 or 311H.',
+        'May be counted toward the Independent Inquiry flag requirement. May be counted toward the Writing flag requirement',
+        'Offered on the letter-grade basis only.',
+    ],
+    schedule: new CourseSchedule({
+        meetings: [
+            new CourseMeeting({
+                days: ['Tuesday', 'Thursday'],
+                startTime: 480,
+                endTime: 570,
+                location: { building: 'UTC', room: '123' },
+            }),
+            new CourseMeeting({
+                days: ['Thursday'],
+                startTime: 570,
+                endTime: 630,
+                location: { building: 'JES', room: '123' },
+            }),
+        ],
+    }),
+    url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+    flags: ['Independent Inquiry', 'Writing'],
+    instructionMode: 'In Person',
+    semester: {
+        code: '12345',
+        year: 2024,
+        season: 'Spring',
+    },
+});
+
 const meta: Meta<typeof CourseCatalogInjectedPopup> = {
     title: 'Components/Injected/CourseCatalogInjectedPopup',
     component: CourseCatalogInjectedPopup,
@@ -62,8 +106,23 @@ const meta: Meta<typeof CourseCatalogInjectedPopup> = {
 export default meta;
 type Story = StoryObj<typeof CourseCatalogInjectedPopup>;
 
-export const Default: Story = {
+export const OpenCourse: Story = {
     args: {
         course: exampleCourse,
+    },
+};
+
+export const ClosedCourse: Story = {
+    args: {
+        course: {
+            ...exampleCourse,
+            status: Status.CLOSED,
+        } as Course,
+    },
+};
+
+export const CourseWithNoData: Story = {
+    args: {
+        course: bevoCourse,
     },
 };
