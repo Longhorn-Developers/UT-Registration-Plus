@@ -81,7 +81,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                     <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
                         {uniqueId}
                     </Button>
-                    <button className='btn bg-transparent p-0' onClick={onClose}>
+                    <button className='bg-transparent p-0 btn' onClick={onClose}>
                         <CloseIcon className='h-7 w-7' />
                     </button>
                 </div>
