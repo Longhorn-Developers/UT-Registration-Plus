@@ -38,44 +38,21 @@ const GRADE_COLORS: Record<LetterGrade, string> = {
     F: colors.gradeDistribution.f,
 };
 
-interface State {
-    semester: string;
-    distributions: Record<string, Distribution>;
-    status: DataStatus;
-    chartData: { y: number; color: string | null }[];
-}
-
-type Action =
-    | { type: 'SET_SEMESTER'; semester: string }
-    | { type: 'SET_DISTRIBUTIONS'; distributions: Record<string, Distribution> }
-    | { type: 'SET_STATUS'; status: DataStatus }
-    | { type: 'SET_CHART_DATA'; chartData: { y: number; color: string | null }[] };
-
-const initialState: State = {
-    semester: 'Aggregate',
-    distributions: {},
-    status: DataStatus.LOADING,
-    chartData: [],
-};
-
-function reducer(state: State, action: Action): State {
-    switch (action.type) {
-        case 'SET_SEMESTER':
-            return { ...state, semester: action.semester };
-        case 'SET_DISTRIBUTIONS':
-            return { ...state, distributions: action.distributions };
-        case 'SET_STATUS':
-            return { ...state, status: action.status };
-        case 'SET_CHART_DATA':
-            return { ...state, chartData: action.chartData };
-        default:
-            return state;
-    }
-}
-
 const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
-    const [state, dispatch] = React.useReducer(reducer, initialState);
+    const [semester, setSemester] = React.useState('Aggregate');
+    const [distributions, setDistributions] = React.useState<Record<string, Distribution>>({});
+    const [status, setStatus] = React.useState(DataStatus.LOADING);
     const ref = React.useRef<HighchartsReact.RefObject>(null);
+
+    const chartData = React.useMemo(() => {
+        if (status === DataStatus.FOUND && distributions[semester]) {
+            return Object.entries(distributions[semester]).map(([grade, count]) => ({
+                y: count,
+                color: GRADE_COLORS[grade as LetterGrade],
+            }));
+        }
+        return [];
+    }, [distributions, semester, status]);
 
     React.useEffect(() => {
         const fetchInitialData = async () => {
@@ -87,14 +64,14 @@ const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
                 semesters.forEach((semester, i) => {
                     initialDistributions[`${semester.season} ${semester.year}`] = semesterDistributions[i];
                 });
-                dispatch({ type: 'SET_DISTRIBUTIONS', distributions: initialDistributions });
-                dispatch({ type: 'SET_STATUS', status: DataStatus.FOUND });
+                setDistributions(initialDistributions);
+                setStatus(DataStatus.FOUND);
             } catch (e) {
                 console.error(e);
                 if (e instanceof NoDataError) {
-                    dispatch({ type: 'SET_STATUS', status: DataStatus.NOT_FOUND });
+                    setStatus(DataStatus.NOT_FOUND);
                 } else {
-                    dispatch({ type: 'SET_STATUS', status: DataStatus.ERROR });
+                    setStatus(DataStatus.ERROR);
                 }
             }
         };
@@ -102,18 +79,8 @@ const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
         fetchInitialData();
     }, [course]);
 
-    React.useEffect(() => {
-        if (state.status === DataStatus.FOUND && state.distributions[state.semester]) {
-            const chartData = Object.entries(state.distributions[state.semester]).map(([grade, count]) => ({
-                y: count,
-                color: GRADE_COLORS[grade as LetterGrade],
-            }));
-            dispatch({ type: 'SET_CHART_DATA', chartData });
-        }
-    }, [state.distributions, state.semester, state.status]);
-
     const handleSelectSemester = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        dispatch({ type: 'SET_SEMESTER', semester: event.target.value });
+        setSemester(event.target.value);
     };
 
     const chartOptions: Highcharts.Options = {
@@ -153,17 +120,17 @@ const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
             {
                 type: 'column',
                 name: 'Grades',
-                data: state.chartData,
+                data: chartData,
             },
         ],
     };
 
     return (
         <div className='pb-[25px] pt-[12px]'>
-            {state.status === DataStatus.LOADING && <Spinner />}
-            {state.status === DataStatus.NOT_FOUND && <Text variant='p'>No grade distribution data found</Text>}
-            {state.status === DataStatus.ERROR && <Text variant='p'>Error fetching grade distribution data</Text>}
-            {state.status === DataStatus.FOUND && (
+            {status === DataStatus.LOADING && <Spinner />}
+            {status === DataStatus.NOT_FOUND && <Text variant='p'>No grade distribution data found</Text>}
+            {status === DataStatus.ERROR && <Text variant='p'>Error fetching grade distribution data</Text>}
+            {status === DataStatus.FOUND && (
                 <>
                     <div className='w-full flex items-center justify-center gap-[12px]'>
                         <Text variant='p'>Grade distribution for {`${course.department} ${course.number}`}</Text>
@@ -171,7 +138,7 @@ const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
                             className='border border rounded-[4px] border-solid px-[12px] py-[8px]'
                             onChange={handleSelectSemester}
                         >
-                            {Object.keys(state.distributions)
+                            {Object.keys(distributions)
                                 .sort((k1, k2) => {
                                     if (k1 === 'Aggregate') {
                                         return -1;
