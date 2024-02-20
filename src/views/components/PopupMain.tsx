@@ -34,7 +34,7 @@ export default function PopupMain() {
 
 return (
     <ExtensionRoot>
-        <div className="p-4 bg-white max-w-sm mx-auto rounded-lg shadow-md">
+        <div className="mx-auto max-w-sm rounded-lg bg-white p-4 shadow-md">
             <div className="mb-2 flex items-center justify-between bg-white">
                 <div className="flex items-center">
                     <img src={logoImage} alt="Logo" style={{ width: '40px', height: '40px', marginRight: '8px' }} />
