@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import CalendarHeader from 'src/views/components/calendar/CalendarHeader/CalenderHeader';
 import { CalendarBottomBar } from '../CalendarBottomBar/CalendarBottomBar';
 import { CalendarSchedules } from '../CalendarSchedules/CalendarSchedules';
@@ -16,6 +16,7 @@ interface Props {
  * @returns
  */
 export function Calendar(): JSX.Element {
+    const calendarRef = useRef(null);
     return (
         <>
             <CalendarHeader />
@@ -27,11 +28,11 @@ export function Calendar(): JSX.Element {
                     <ImportantLinks />
                 </div>
                 <div className='flex flex-grow flex-col gap-4 overflow-hidden'>
-                    <div className='flex-grow overflow-auto'>
+                    <div ref={calendarRef} className='flex-grow overflow-auto'>
                         <CalendarGrid />
                     </div>
                     <div>
-                        <CalendarBottomBar />
+                        <CalendarBottomBar calendarRef={calendarRef} />
                     </div>
                 </div>
             </div>

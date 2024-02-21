@@ -1,10 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-//  import html2canvas from 'html2canvas';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
-/*  import calIcon from 'src/assets/icons/cal.svg';
-import pngIcon from 'src/assets/icons/png.svg';
-*/
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import styles from './CalendarGrid.module.scss';
@@ -119,7 +115,7 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                 </div>
             ))}
             {grid.map((row, rowIndex) => row)}
-            {courseCells ? <AccountForCourseConflicts courseCells={courseCells}/> : null}
+            {courseCells ? <AccountForCourseConflicts courseCells={courseCells} /> : null}
             {/*     courseCells.map((block: CalendarGridCourse) => (
                         <div
                             key={`${block}`}

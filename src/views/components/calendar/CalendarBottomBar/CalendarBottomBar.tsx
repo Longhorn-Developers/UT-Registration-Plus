@@ -1,5 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
+import { toPng } from 'html-to-image';
 import Text from '../../common/Text/Text';
 import CalendarCourseBlock, { CalendarCourseCellProps } from '../CalendarCourseCell/CalendarCourseCell';
 import { Button } from '../../common/Button/Button';
@@ -8,12 +9,28 @@ import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 
 type CalendarBottomBarProps = {
     courses?: CalendarCourseCellProps[];
+    calendarRef: React.RefObject<HTMLDivElement>;
 };
 
 /**
  *
  */
-export const CalendarBottomBar = ({ courses }: CalendarBottomBarProps): JSX.Element => {
+export const CalendarBottomBar = ({ courses, calendarRef }: CalendarBottomBarProps): JSX.Element => {
+    const saveAsPng = () => {
+        if (calendarRef.current) {
+            toPng(calendarRef.current, { cacheBust: true })
+                .then(dataUrl => {
+                    const link = document.createElement('a');
+                    link.download = 'my-calendar.png';
+                    link.href = dataUrl;
+                    link.click();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    };
+
     if (courses?.length === -1) console.log('foo'); // dumb line to make eslint happy
     return (
         <div className='w-full flex py-1.25'>
@@ -35,7 +52,7 @@ export const CalendarBottomBar = ({ courses }: CalendarBottomBarProps): JSX.Elem
                 <Button variant='single' color='ut-black' icon={CalendarMonthIcon}>
                     Save as .CAL
                 </Button>
-                <Button variant='single' color='ut-black' icon={ImageIcon}>
+                <Button variant='single' color='ut-black' icon={ImageIcon} onClick={saveAsPng}>
                     Save as .PNG
                 </Button>
             </div>
