@@ -10,6 +10,7 @@ import RedoIcon from '~icons/material-symbols/redo';
 import SettingsIcon from '~icons/material-symbols/settings';
 import ScheduleTotalHoursAndCourses from '../../common/ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
 import CourseStatus from '../../common/CourseStatus/CourseStatus';
+import calIcon from 'src/assets/logo.png';
 
 const CalendarHeader = () => (
     <div className='min-h-79px min-w-672px flex px-0 py-15'>
@@ -19,7 +20,8 @@ const CalendarHeader = () => (
                     <Button variant='single' icon={MenuIcon} color='ut-gray' />
                     <div className='flex items-center'>
                         <LogoIcon style={{ marginRight: '5px' }} />
-                        <div className='flex flex-col gap-1 whitespace-nowrap'>
+                        <img src={calIcon} className='min-w-[48px] max-w-[48px]' alt='UT Registration Plus Logo' />
+                        <div className='flex flex-col whitespace-nowrap'>
                             <Text className='leading-trim text-cap font-roboto text-base text-ut-burntorange font-medium'>
                                 UT Registration
                             </Text>
