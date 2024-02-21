@@ -1,13 +1,15 @@
+import React, { useState } from 'react';
 import { Button } from '@views/components/common/Button/Button';
 import { Chip, flagMap } from '@views/components/common/Chip/Chip';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
-import React from 'react';
 import addCourse from 'src/pages/background/lib/addCourse';
-import openNewTab from 'src/pages/background/util/openNewTab';
+import removeCourse from 'src/pages/background/lib/removeCourse';
+import { openTabFromContentScript } from 'src/views/lib/openNewTabFromContentScript';
 import { Course } from 'src/shared/types/Course';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
 import Add from '~icons/material-symbols/add';
+import Minus from '~icons/material-symbols/minus';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
 import CloseIcon from '~icons/material-symbols/close';
 import Copy from '~icons/material-symbols/content-copy';
@@ -24,6 +26,11 @@ interface HeadingAndActionProps {
     onClose: () => void;
 }
 
+export const handleOpenCalendar = async () => { //  Not sure if it's bad practice to export this
+    const url = chrome.runtime.getURL('calendar.html');
+    await openTabFromContentScript(url);
+};
+
 /**
  * Renders the heading component for the CoursePopup component.
  *
@@ -32,6 +39,10 @@ interface HeadingAndActionProps {
  */
 const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, activeSchedule }) => {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
+    const [courseAdded, setCourseAdded] = useState<boolean>(
+        activeSchedule.courses.some(course => course.uniqueId === uniqueId)
+      );
+
     const instructorString = instructors
         .map(instructor => {
             const { firstName, lastName } = instructor;
@@ -42,30 +53,32 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
     const handleCopy = () => {
         navigator.clipboard.writeText(uniqueId.toString());
     };
-    const handleOpenCalendar = async () => {
-        const url = chrome.runtime.getURL('calendar.html');
-        await openNewTab(url);
-    };
     const handleOpenRateMyProf = async () => {
         const openTabs = instructors.map(instructor => {
             const { fullName } = instructor;
             const url = `https://www.ratemyprofessors.com/search/professors/1255?q=${fullName}`;
-            return openNewTab(url);
+            return openTabFromContentScript(url);
         });
         await Promise.all(openTabs);
     };
     const handleOpenCES = async () => {
         // TODO: does not look up the professor just takes you to the page
         const cisUrl = 'https://utexas.bluera.com/utexas/rpvl.aspx?rid=d3db767b-049f-46c5-9a67-29c21c29c580&regl=en-US';
-        await openNewTab(cisUrl);
+        await openTabFromContentScript(cisUrl);
     };
     const handleOpenPastSyllabi = async () => {
         // not specific to professor
         const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=${courseName}&unique=&instructor_first=&instructor_last=&course_type=In+Residence&search=Search`;
-        await openNewTab(url);
+        await openTabFromContentScript(url);
     };
-    const handleAddCourse = async () => {
-        await addCourse(activeSchedule.name, course);
+    const handleAddOrRemoveCourse = async () => {
+        if (!courseAdded) {
+            await addCourse(activeSchedule.name, course);
+        }
+        else {
+            await removeCourse(activeSchedule.name, course);
+        }
+        setCourseAdded(!courseAdded);
     };
     return (
         <div className='w-full pb-3 pt-6'>
@@ -124,8 +137,8 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                 <Button variant='outline' color='ut-orange' icon={Description} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
                 </Button>
-                <Button variant='filled' color='ut-green' icon={Add} onClick={handleAddCourse}>
-                    Add Course
+                <Button variant='filled' color={!courseAdded ? 'ut-green' : 'ut-red'} icon={!courseAdded ? Add : Minus} onClick={handleAddOrRemoveCourse}>
+                    {!courseAdded ? 'Add Course' : 'Remove Course'}
                 </Button>
             </div>
             <Divider />
