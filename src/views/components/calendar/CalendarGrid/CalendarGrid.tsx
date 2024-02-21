@@ -119,7 +119,7 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                 </div>
             ))}
             {grid.map((row, rowIndex) => row)}
-            {courseCells ? accountForCourseConflicts(courseCells) : null}
+            {courseCells ? <AccountForCourseConflicts courseCells={courseCells}/> : null}
             {/*     courseCells.map((block: CalendarGridCourse) => (
                         <div
                             key={`${block}`}
@@ -142,7 +142,11 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
 
 export default CalendarGrid;
 
-function accountForCourseConflicts(courseCells: CalendarGridCourse[]): JSX.Element[] {
+interface AccountForCourseConflictsProps {
+    courseCells: CalendarGridCourse[];
+}
+
+function AccountForCourseConflicts({ courseCells }: AccountForCourseConflictsProps): JSX.Element[] {
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce((acc, cell: CalendarGridCourse) => {
         const { dayIndex } = cell.calendarGridPoint;
@@ -199,6 +203,7 @@ function accountForCourseConflicts(courseCells: CalendarGridCourse[]): JSX.Eleme
                 timeAndLocation={block.componentProps.timeAndLocation}
                 status={block.componentProps.status}
                 colors={block.componentProps.colors}
+                onClick={}
             />
         </div>
     ));
