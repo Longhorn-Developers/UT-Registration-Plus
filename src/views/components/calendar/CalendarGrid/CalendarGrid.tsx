@@ -203,7 +203,6 @@ function AccountForCourseConflicts({ courseCells }: AccountForCourseConflictsPro
                 timeAndLocation={block.componentProps.timeAndLocation}
                 status={block.componentProps.status}
                 colors={block.componentProps.colors}
-                onClick={}
             />
         </div>
     ));
