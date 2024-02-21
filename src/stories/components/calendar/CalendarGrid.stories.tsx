@@ -58,56 +58,56 @@ const testData: CalendarGridCourse[] = [
         },
     },
     {
-    calendarGridPoint: {
-        dayIndex: 4,
-        startIndex: 10,
-        endIndex: 11,
-    },
-    componentProps: {
-        courseDeptAndInstr: 'Course 1',
-        timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
-        status: Status.OPEN,
-        colors: getCourseColors('emerald', 500),
-    },
-    },
-    {
-    calendarGridPoint: {
-        dayIndex: 1,
-        startIndex: 10,
-        endIndex: 12,
-    },
-    componentProps: {
-        courseDeptAndInstr: 'Course 2',
-        timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
-        status: Status.CLOSED,
-        colors: getCourseColors('emerald', 500),
-    },
+        calendarGridPoint: {
+            dayIndex: 4,
+            startIndex: 10,
+            endIndex: 11,
+        },
+        componentProps: {
+            courseDeptAndInstr: 'Course 1',
+            timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
+            status: Status.OPEN,
+            colors: getCourseColors('emerald', 500),
+        },
     },
     {
-    calendarGridPoint: {
-        dayIndex: 1,
-        startIndex: 10,
-        endIndex: 12,
-    },
-    componentProps: {
-        courseDeptAndInstr: 'Course 3',
-        timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
-        status: Status.CLOSED,
-        colors: getCourseColors('emerald', 500),
-    },
+        calendarGridPoint: {
+            dayIndex: 1,
+            startIndex: 10,
+            endIndex: 12,
+        },
+        componentProps: {
+            courseDeptAndInstr: 'Course 2',
+            timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
+            status: Status.CLOSED,
+            colors: getCourseColors('emerald', 500),
+        },
     },
     {
-    calendarGridPoint: {
-        dayIndex: 1,
-        startIndex: 10,
-        endIndex: 12,
+        calendarGridPoint: {
+            dayIndex: 1,
+            startIndex: 10,
+            endIndex: 12,
+        },
+        componentProps: {
+            courseDeptAndInstr: 'Course 3',
+            timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
+            status: Status.CLOSED,
+            colors: getCourseColors('emerald', 500),
+        },
     },
-    componentProps: {
-        courseDeptAndInstr: 'Course 4',
-        timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
-        status: Status.CLOSED,
-        colors: getCourseColors('emerald', 500),
-    },
+    {
+        calendarGridPoint: {
+            dayIndex: 1,
+            startIndex: 10,
+            endIndex: 12,
+        },
+        componentProps: {
+            courseDeptAndInstr: 'Course 4',
+            timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
+            status: Status.CLOSED,
+            colors: getCourseColors('emerald', 500),
+        },
     },
 ];
 
