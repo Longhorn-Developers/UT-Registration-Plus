@@ -9,7 +9,7 @@ import { openTabFromContentScript } from 'src/views/lib/openNewTabFromContentScr
 import { Course } from 'src/shared/types/Course';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
 import Add from '~icons/material-symbols/add';
-import Minus from '~icons/material-symbols/minus';
+import Remove from '~icons/material-symbols/remove';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
 import CloseIcon from '~icons/material-symbols/close';
 import Copy from '~icons/material-symbols/content-copy';
@@ -137,7 +137,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                 <Button variant='outline' color='ut-orange' icon={Description} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
                 </Button>
-                <Button variant='filled' color={!courseAdded ? 'ut-green' : 'ut-red'} icon={!courseAdded ? Add : Minus} onClick={handleAddOrRemoveCourse}>
+                <Button variant='filled' color={!courseAdded ? 'ut-green' : 'ut-red'} icon={!courseAdded ? Add : Remove} onClick={handleAddOrRemoveCourse}>
                     {!courseAdded ? 'Add Course' : 'Remove Course'}
                 </Button>
             </div>
