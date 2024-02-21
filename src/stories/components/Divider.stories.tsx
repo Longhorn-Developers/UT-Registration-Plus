@@ -57,7 +57,7 @@ export const CourseCatalogActionButtons: Story = {
         variant: 'vertical',
     },
     render: props => (
-        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+        <div className='flex items-center gap-3.75'>
             <Button variant='filled' color='ut-burntorange' icon={CalendarMonthIcon} />
             <Divider {...props} />
             <Button variant='outline' color='ut-blue' icon={ReviewsIcon}>
