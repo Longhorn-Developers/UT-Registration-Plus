@@ -4,7 +4,6 @@ import Divider from '../../common/Divider/Divider';
 import { Button } from '../../common/Button/Button';
 import Text from '../../common/Text/Text';
 import MenuIcon from '~icons/material-symbols/menu';
-import LogoIcon from '~icons/material-symbols/add-circle-outline';
 import UndoIcon from '~icons/material-symbols/undo';
 import RedoIcon from '~icons/material-symbols/redo';
 import SettingsIcon from '~icons/material-symbols/settings';
@@ -19,7 +18,6 @@ const CalendarHeader = () => (
                 <div className='flex gap-1'>
                     <Button variant='single' icon={MenuIcon} color='ut-gray' />
                     <div className='flex items-center'>
-                        <LogoIcon style={{ marginRight: '5px' }} />
                         <img src={calIcon} className='min-w-[48px] max-w-[48px]' alt='UT Registration Plus Logo' />
                         <div className='flex flex-col whitespace-nowrap'>
                             <Text className='leading-trim text-cap font-roboto text-base text-ut-burntorange font-medium'>
