@@ -6,7 +6,7 @@ export interface CourseColors {
 }
 
 // calculates luminance of a hex string
-function getLuminance(hex: string): number {
+export function getLuminance(hex: string): number {
     let r = parseInt(hex.substring(1, 3), 16);
     let g = parseInt(hex.substring(3, 5), 16);
     let b = parseInt(hex.substring(5, 7), 16);
