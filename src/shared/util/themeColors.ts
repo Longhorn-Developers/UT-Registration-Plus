@@ -11,10 +11,25 @@ export const colors = {
         gray: '#9cadb7',
         offwhite: '#d6d2c4',
         concrete: '#95a5a6',
+        red: '#B91C1C' //   Not sure if this should be here, but it's used for remove course, and add course is ut-green
     },
     theme: {
         red: '#af2e2d',
         black: '#1a2024',
+    },
+    gradeDistribution: {
+        a: '#22c55e',
+        aminus: '#a3e635',
+        bplus: '#84CC16',
+        b: '#FDE047',
+        bminus: '#FACC15',
+        cplus: '#F59E0B',
+        c: '#FB923C',
+        cminus: '#F97316',
+        dplus: '#EA580C', // TODO (achadaga): copilot generated, get actual color from Isaiah
+        d: '#DC2626',
+        dminus: '#B91C1C',
+        f: '#B91C1C',
     },
 } as const;
 
