@@ -21,7 +21,6 @@ export default defineConfig({
     shortcuts: {
         focusable: 'outline-none ring-blue-500/50 dark:ring-blue-400/60 ring-0 focus-visible:ring-4',
         btn: 'h-10 w-auto flex cursor-pointer justify-center items-center gap-2 rounded-1 px-4 py-0 text-4.5 btn-transition btn-transition disabled:(cursor-not-allowed opacity-50) active:enabled:scale-96 focusable',
-        divider: 'border-solid border-ut-offwhite w-0 h-0',
     },
     theme: {
         easing: {

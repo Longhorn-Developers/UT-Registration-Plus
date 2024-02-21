@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import Divider from '@views/components/common/Divider/Divider';
-import { Button } from '../../views/components/common/Button/Button';
+import { Button } from '@views/components/common/Button/Button';
 import AddIcon from '~icons/material-symbols/add';
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 import DescriptionIcon from '~icons/material-symbols/description';
@@ -15,7 +15,6 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-    // argTypes: {},
 } satisfies Meta<typeof Divider>;
 export default meta;
 
@@ -44,38 +43,10 @@ export const IGotHorizontalIGotVerticalWhatYouWant: Story = {
     },
 
     render: props => (
-        <div
-            style={{
-                display: 'grid',
-                gridTemplate: 'repeat(3, 1fr) / repeat(7, 1fr)',
-                alignItems: 'center',
-                justifyItems: 'center',
-                gap: '15px',
-            }}
-        >
-            <Divider {...props} variant='horizontal' />
-            <Divider {...props} variant='vertical' />
-            <Divider {...props} variant='horizontal' />
-            <Divider {...props} variant='vertical' />
-            <Divider {...props} variant='horizontal' />
-            <Divider {...props} variant='vertical' />
-            <Divider {...props} variant='horizontal' />
-
-            <Divider {...props} variant='vertical' />
-            <Divider {...props} variant='horizontal' />
-            <Divider {...props} variant='vertical' />
-            <Divider {...props} variant='horizontal' />
-            <Divider {...props} variant='vertical' />
-            <Divider {...props} variant='horizontal' />
-            <Divider {...props} variant='vertical' />
-
-            <Divider {...props} variant='horizontal' />
-            <Divider {...props} variant='vertical' />
-            <Divider {...props} variant='horizontal' />
-            <Divider {...props} variant='vertical' />
-            <Divider {...props} variant='horizontal' />
-            <Divider {...props} variant='vertical' />
-            <Divider {...props} variant='horizontal' />
+        <div className='grid grid-cols-7 grid-rows-3 items-center justify-items-center gap-3.75'>
+            {Array.from({ length: 21 }).map((_, i) => (
+                <Divider {...props} variant={i % 2 === 0 ? 'horizontal' : 'vertical'} />
+            ))}
         </div>
     ),
 };

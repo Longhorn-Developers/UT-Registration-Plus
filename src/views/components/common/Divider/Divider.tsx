@@ -37,5 +37,11 @@ export default function Divider({ className, testId, size, variant }: DividerPro
             ? { width: size, borderBottomWidth: '1px' }
             : { height: size, borderRightWidth: '1px' };
 
-    return <div style={style} data-testid={testId} className={clsx('divider', className)} />;
+    return (
+        <div
+            style={style}
+            data-testid={testId}
+            className={clsx('border-solid border-ut-offwhite w-0 h-0', className)}
+        />
+    );
 }
