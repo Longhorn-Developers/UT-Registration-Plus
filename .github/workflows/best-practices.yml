@@ -27,17 +27,17 @@ jobs:
 
         steps:
             - name: Checkout code
-                uses: actions/checkout@v4
-                with:
-                    fetch-depth: 0
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
             - name: Setup pnpm
-                uses: pnpm/action-setup@v3
-                with:
-                    version: 8
+              uses: pnpm/action-setup@v3
+              with:
+                  version: 8
 
             - name: Install dependencies
-                run: pnpm install
+              run: pnpm install
 
             - name: Run Prettier
-                run: pnpm run prettier
+              run: pnpm run prettier
