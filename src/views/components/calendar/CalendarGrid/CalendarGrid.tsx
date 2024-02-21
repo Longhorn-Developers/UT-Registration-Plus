@@ -33,43 +33,9 @@ interface Props {
  */
 function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Props>): JSX.Element {
     const [grid, setGrid] = useState([]);
-    const calendarRef = useRef(null); // Create a ref for the calendar grid
 
     const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
     const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
-
-    /*  const saveAsPNG = () => {
-        htmlToImage
-            .toPng(calendarRef.current, {
-                backgroundColor: 'white',
-                style: {
-                    background: 'white',
-                    marginTop: '20px',
-                    marginBottom: '20px',
-                    marginRight: '20px',
-                    marginLeft: '20px',
-                },
-            })
-            .then(dataUrl => {
-                let img = new Image();
-                img.src = dataUrl;
-                fetch(dataUrl)
-                    .then(response => response.blob())
-                    .then(blob => {
-                        const href = window.URL.createObjectURL(blob);
-                        const link = document.createElement('a');
-                        link.href = href;
-                        link.download = 'my-schedule.png';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    })
-                    .catch(error => console.error('Error downloading file:', error));
-            })
-            .catch(error => {
-                console.error('oops, something went wrong!', error);
-            });
-    };  */
 
     useEffect(() => {
         const newGrid = [];
