@@ -29,8 +29,6 @@ for (let i = 0; i < 13; i++) {
 interface Props {
     courseCells?: CalendarGridCourse[];
     saturdayClass?: boolean;
-    courseCells?: CalendarGridCourse[];
-    saturdayClass?: boolean;
 }
 
 /**
