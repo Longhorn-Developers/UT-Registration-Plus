@@ -3,8 +3,8 @@ import Text from '@views/components/common/Text/Text';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import React from 'react';
-import { Course } from 'src/shared/types/Course';
-import { Distribution, LetterGrade } from 'src/shared/types/Distribution';
+import type { Course } from 'src/shared/types/Course';
+import type { Distribution, LetterGrade } from 'src/shared/types/Distribution';
 import { colors } from 'src/shared/util/themeColors';
 import {
     NoDataError,

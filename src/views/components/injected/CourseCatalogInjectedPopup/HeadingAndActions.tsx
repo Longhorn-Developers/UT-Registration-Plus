@@ -1,20 +1,21 @@
-import React, { useState } from 'react';
 import { Button } from '@views/components/common/Button/Button';
 import { Chip, flagMap } from '@views/components/common/Chip/Chip';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
+import React, { useState } from 'react';
 import addCourse from 'src/pages/background/lib/addCourse';
 import removeCourse from 'src/pages/background/lib/removeCourse';
+import type { Course } from 'src/shared/types/Course';
+import type { UserSchedule } from 'src/shared/types/UserSchedule';
 import { openTabFromContentScript } from 'src/views/lib/openNewTabFromContentScript';
-import { Course } from 'src/shared/types/Course';
-import { UserSchedule } from 'src/shared/types/UserSchedule';
+
 import Add from '~icons/material-symbols/add';
-import Remove from '~icons/material-symbols/remove';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
 import CloseIcon from '~icons/material-symbols/close';
 import Copy from '~icons/material-symbols/content-copy';
 import Description from '~icons/material-symbols/description';
 import Mood from '~icons/material-symbols/mood';
+import Remove from '~icons/material-symbols/remove';
 import Reviews from '~icons/material-symbols/reviews';
 
 interface HeadingAndActionProps {
@@ -26,7 +27,8 @@ interface HeadingAndActionProps {
     onClose: () => void;
 }
 
-export const handleOpenCalendar = async () => { //  Not sure if it's bad practice to export this
+export const handleOpenCalendar = async () => {
+    //  Not sure if it's bad practice to export this
     const url = chrome.runtime.getURL('calendar.html');
     await openTabFromContentScript(url);
 };
@@ -41,7 +43,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
     const [courseAdded, setCourseAdded] = useState<boolean>(
         activeSchedule.courses.some(course => course.uniqueId === uniqueId)
-      );
+    );
 
     const instructorString = instructors
         .map(instructor => {
@@ -74,8 +76,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
     const handleAddOrRemoveCourse = async () => {
         if (!courseAdded) {
             await addCourse(activeSchedule.name, course);
-        }
-        else {
+        } else {
             await removeCourse(activeSchedule.name, course);
         }
         setCourseAdded(!courseAdded);
@@ -137,7 +138,12 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                 <Button variant='outline' color='ut-orange' icon={Description} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
                 </Button>
-                <Button variant='filled' color={!courseAdded ? 'ut-green' : 'ut-red'} icon={!courseAdded ? Add : Remove} onClick={handleAddOrRemoveCourse}>
+                <Button
+                    variant='filled'
+                    color={!courseAdded ? 'ut-green' : 'ut-red'}
+                    icon={!courseAdded ? Add : Remove}
+                    onClick={handleAddOrRemoveCourse}
+                >
                     {!courseAdded ? 'Add Course' : 'Remove Course'}
                 </Button>
             </div>

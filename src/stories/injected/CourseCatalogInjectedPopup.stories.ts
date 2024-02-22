@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import type { Serialized } from 'chrome-extension-toolkit';
 import { Course, Status } from 'src/shared/types/Course';
 import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';
 import Instructor from 'src/shared/types/Instructor';
-
+import { UserSchedule } from 'src/shared/types/UserSchedule';
 import CourseCatalogInjectedPopup from 'src/views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 
 const exampleCourse: Course = new Course({
@@ -51,11 +52,19 @@ const exampleCourse: Course = new Course({
     },
 });
 
+const exampleSchedule = new UserSchedule({
+    name: 'Example Schedule',
+    courses: [exampleCourse],
+    hours: 3,
+} as Serialized<UserSchedule>);
+
 const meta: Meta<typeof CourseCatalogInjectedPopup> = {
     title: 'Components/Injected/CourseCatalogInjectedPopup',
     component: CourseCatalogInjectedPopup,
     argTypes: {
         onClose: { action: 'onClose' },
+        activeSchedule: { control: 'object' },
+        course: { control: 'object' },
     },
 };
 
@@ -64,6 +73,7 @@ type Story = StoryObj<typeof CourseCatalogInjectedPopup>;
 
 export const Default: Story = {
     args: {
+        activeSchedule: exampleSchedule,
         course: exampleCourse,
     },
 };
