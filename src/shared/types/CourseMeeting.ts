@@ -1,4 +1,4 @@
-import { Serialized } from 'chrome-extension-toolkit';
+import type { Serialized } from 'chrome-extension-toolkit';
 
 /**
  * a map of the days of the week that a class is taught, and the corresponding abbreviation

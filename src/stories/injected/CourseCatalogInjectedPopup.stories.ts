@@ -3,7 +3,6 @@ import { Course, Status } from 'src/shared/types/Course';
 import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';
 import Instructor from 'src/shared/types/Instructor';
-
 import CourseCatalogInjectedPopup from 'src/views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 
 const exampleCourse: Course = new Course({

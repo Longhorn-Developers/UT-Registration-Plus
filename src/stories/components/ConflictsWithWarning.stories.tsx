@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
 import { Course, Status } from 'src/shared/types/Course';
 import { CourseMeeting } from 'src/shared/types/CourseMeeting';

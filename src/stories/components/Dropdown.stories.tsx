@@ -1,7 +1,7 @@
 import { Course, Status } from '@shared/types/Course';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Serialized } from 'chrome-extension-toolkit';
+import type { Serialized } from 'chrome-extension-toolkit';
 import React from 'react';
 import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';

@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { Calendar } from 'src/views/components/calendar/Calendar/Calendar';
 
 const meta = {
@@ -8,16 +8,12 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-    argTypes: {
-        
-    },
+    argTypes: {},
 } satisfies Meta<typeof Calendar>;
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-    args: {
-        
-    },
+    args: {},
 };

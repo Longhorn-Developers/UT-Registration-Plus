@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { colorsFlattened } from 'src/shared/util/themeColors';
 import { Button } from 'src/views/components/common/Button/Button';
+
 import AddIcon from '~icons/material-symbols/add';
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 import DescriptionIcon from '~icons/material-symbols/description';

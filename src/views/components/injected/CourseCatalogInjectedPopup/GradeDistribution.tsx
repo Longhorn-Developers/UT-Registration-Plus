@@ -3,8 +3,8 @@ import Text from '@views/components/common/Text/Text';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import React from 'react';
-import { Course } from 'src/shared/types/Course';
-import { Distribution, LetterGrade } from 'src/shared/types/Distribution';
+import type { Course } from 'src/shared/types/Course';
+import type { Distribution, LetterGrade } from 'src/shared/types/Distribution';
 import { colors } from 'src/shared/util/themeColors';
 import {
     NoDataError,
@@ -38,6 +38,14 @@ const GRADE_COLORS: Record<LetterGrade, string> = {
     F: colors.gradeDistribution.f,
 };
 
+/**
+ * Renders the grade distribution chart for a specific course.
+ *
+ * @component
+ * @param {GradeDistributionProps} props - The component props.
+ * @param {Course} props.course - The course for which to display the grade distribution.
+ * @returns {JSX.Element} The grade distribution chart component.
+ */
 const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
     const [semester, setSemester] = React.useState('Aggregate');
     const [distributions, setDistributions] = React.useState<Record<string, Distribution>>({});

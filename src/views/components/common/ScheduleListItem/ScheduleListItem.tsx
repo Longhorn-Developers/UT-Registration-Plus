@@ -1,8 +1,12 @@
+import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
-import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
-import Text from '../Text/Text';
 
+import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
+
+/**
+ * Props for the ScheduleListItem component.
+ */
 export type Props = {
     style?: React.CSSProperties;
     active?: boolean;
@@ -18,11 +22,11 @@ export default function ScheduleListItem(props: Props) {
     console.log(props);
     return (
         <div style={{ ...props.style }} className='items-center'>
-            <li className='text-ut-burntorange w-100% flex cursor-pointer items-center self-stretch justify-left'>
+            <li className='w-100% flex cursor-pointer items-center self-stretch justify-left text-ut-burntorange'>
                 <div className='group flex justify-center'>
-                    <div 
+                    <div
                         className='flex cursor-move items-center self-stretch rounded rounded-r-0'
-                        {...dragHandleProps}  
+                        {...dragHandleProps}
                     >
                         <DragIndicatorIcon className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
                     </div>

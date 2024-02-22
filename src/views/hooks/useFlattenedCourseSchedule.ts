@@ -27,6 +27,11 @@ export interface CalendarGridCourse {
     totalColumns?: number;
 }
 
+/**
+ * Converts minutes to an index value.
+ * @param minutes The number of minutes.
+ * @returns The index value.
+ */
 export const convertMinutesToIndex = (minutes: number): number => Math.floor(minutes - 420 / 30);
 
 /**

@@ -1,7 +1,10 @@
-import React, { SVGProps } from 'react';
+import type { SVGProps } from 'react';
+import React from 'react';
+
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
+
 import { Status } from '../types/Course';
 
 /**

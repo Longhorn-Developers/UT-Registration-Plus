@@ -1,4 +1,5 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react';
+import type { PropsWithChildren } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 /**
