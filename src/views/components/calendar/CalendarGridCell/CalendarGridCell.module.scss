@@ -1,0 +1,18 @@
+.calendarCell {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    min-width: 45px;
+    min-height: 40px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    border: 1px solid #dadce0;
+}
+
+.hourLine {
+    width: 100%;
+    height: 1px;
+    border-radius: 0px;
+    background: rgba(218, 220, 224, 0.25);
+}

@@ -8,11 +8,12 @@ import { SiteSupport } from '../lib/getSiteSupport';
 import { populateSearchInputs } from '../lib/populateSearchInputs';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
 import AutoLoad from './injected/AutoLoad/AutoLoad';
-import CoursePopup from './injected/CoursePopup/CoursePopup';
+import CoursePopup from './injected/CoursePopupOld/CoursePopup';
 import RecruitmentBanner from './injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from './injected/TableHead';
 import TableRow from './injected/TableRow/TableRow';
 import TableSubheading from './injected/TableSubheading/TableSubheading';
+import CourseCatalogInjectedPopup from './injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 
 interface Props {
     support: SiteSupport.COURSE_CATALOG_DETAILS | SiteSupport.COURSE_CATALOG_LIST;
@@ -79,7 +80,7 @@ export default function CourseCatalogMain({ support }: Props) {
                 );
             })}
             {selectedCourse && (
-                <CoursePopup
+                <CourseCatalogInjectedPopup
                     course={selectedCourse}
                     activeSchedule={activeSchedule}
                     onClose={handleClearSelectedCourse}

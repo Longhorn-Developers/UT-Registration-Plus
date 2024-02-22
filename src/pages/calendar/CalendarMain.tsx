@@ -1,5 +1,6 @@
 import React from 'react';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import { Calendar } from 'src/views/components/calendar/Calendar/Calendar';
 
 /**
  * Calendar page
@@ -8,7 +9,7 @@ import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot'
 export default function CalendarMain() {
     return (
         <ExtensionRoot>
-            <div>Calendar Placeholder</div>
+            <Calendar />
         </ExtensionRoot>
     );
 }
