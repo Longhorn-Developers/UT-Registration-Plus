@@ -10,7 +10,7 @@ import React from 'react';
  * @param testId - Test id for the divider
  */
 export type DividerProps = {
-    variant: 'horizontal' | 'vertical';
+    orientation: 'horizontal' | 'vertical';
     size: React.CSSProperties['width' | 'height'];
     className?: string;
     testId?: string;
@@ -31,9 +31,9 @@ export type DividerProps = {
  * <Divider size="19px" variant="horizontal" />
  * ```
  */
-export default function Divider({ className, testId, size, variant }: DividerProps) {
+export default function Divider({ className, testId, size, orientation }: DividerProps) {
     const style: React.CSSProperties =
-        variant === 'horizontal'
+        orientation === 'horizontal'
             ? { width: size, borderBottomWidth: '1px' }
             : { height: size, borderRightWidth: '1px' };
 

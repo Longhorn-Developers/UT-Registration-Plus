@@ -23,7 +23,7 @@ type Story = StoryObj<typeof meta>;
 export const Vertical: Story = {
     args: {
         size: '2.5rem',
-        variant: 'vertical',
+        orientation: 'vertical',
     },
     render: props => <Divider {...props} />,
 };
@@ -31,7 +31,7 @@ export const Vertical: Story = {
 export const Horizontal: Story = {
     args: {
         size: '2.5rem',
-        variant: 'horizontal',
+        orientation: 'horizontal',
     },
     render: props => <Divider {...props} />,
 };
@@ -39,13 +39,13 @@ export const Horizontal: Story = {
 export const IGotHorizontalIGotVerticalWhatYouWant: Story = {
     args: {
         size: '2.5rem',
-        variant: 'vertical',
+        orientation: 'vertical',
     },
 
     render: props => (
         <div className='grid grid-cols-7 grid-rows-3 items-center justify-items-center gap-3.75'>
             {Array.from({ length: 21 }).map((_, i) => (
-                <Divider {...props} variant={i % 2 === 0 ? 'horizontal' : 'vertical'} />
+                <Divider {...props} orientation={i % 2 === 0 ? 'horizontal' : 'vertical'} />
             ))}
         </div>
     ),
@@ -54,7 +54,7 @@ export const IGotHorizontalIGotVerticalWhatYouWant: Story = {
 export const CourseCatalogActionButtons: Story = {
     args: {
         size: '1.75rem',
-        variant: 'vertical',
+        orientation: 'vertical',
     },
     render: props => (
         <div className='flex items-center gap-3.75'>
