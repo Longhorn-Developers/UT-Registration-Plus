@@ -31,7 +31,7 @@ export const colors = {
         dminus: '#B91C1C',
         f: '#B91C1C',
     },
-} as const;
+} as const satisfies Record<string, Record<string, string>>;
 
 type NestedKeys<T> = {
     [K in keyof T]: T[K] extends Record<string, any> ? `${string & K}-${string & keyof T[K]}` : never;
@@ -42,6 +42,10 @@ type NestedKeys<T> = {
  */
 export type ThemeColor = NestedKeys<typeof colors>;
 
+/**
+ * Flattened colors object.
+ * @type {Record<ThemeColor, string>}
+ */
 export const colorsFlattened = Object.entries(colors).reduce(
     (acc, [prefix, group]) => {
         for (const [name, hex] of Object.entries(group)) {
@@ -52,9 +56,18 @@ export const colorsFlattened = Object.entries(colors).reduce(
     {} as Record<ThemeColor, string>
 );
 
-const hexToRgb = (hex: string) =>
+/**
+ * Converts a hexadecimal color code to an RGB color array.
+ * @param hex The hexadecimal color code to convert.
+ * @returns An array representing the RGB color values.
+ */
+export const hexToRgb = (hex: string) =>
     hex.match(/[0-9a-f]{2}/gi).map(partialHex => parseInt(partialHex, 16)) as [number, number, number];
 
+/**
+ * Represents the flattened RGB values of the colors.
+ * @type {Record<ThemeColor, ReturnType<typeof hexToRgb>>}
+ */
 const colorsFlattenedRgb = Object.fromEntries(
     Object.entries(colorsFlattened).map(([name, hex]) => [name, hexToRgb(hex)])
 ) as Record<ThemeColor, ReturnType<typeof hexToRgb>>;
