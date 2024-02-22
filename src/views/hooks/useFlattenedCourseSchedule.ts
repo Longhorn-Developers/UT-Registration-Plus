@@ -1,4 +1,4 @@
-import { CalendarCourseCellProps } from 'src/views/components/common/CalendarCourseCell/CalendarCourseCell';
+import { CalendarCourseCellProps } from 'src/views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import useSchedules from './useSchedules';
 
 const dayToNumber: { [day: string]: number } = {
@@ -21,6 +21,9 @@ interface CalendarGridPoint {
 export interface CalendarGridCourse {
     calendarGridPoint: CalendarGridPoint;
     componentProps: CalendarCourseCellProps;
+    gridColumnStart?: number;
+    gridColumnEnd?: number;
+    totalColumns?: number;
 }
 
 const convertMinutesToIndex = (minutes: number): number => Math.floor(minutes - 420 / 30);

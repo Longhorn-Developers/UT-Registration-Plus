@@ -5,10 +5,10 @@ import React from 'react';
 import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';
 import Instructor from 'src/shared/types/Instructor';
-import { CalendarSchedules } from 'src/views/components/common/CalendarSchedules/CalendarSchedules';
+import { CalendarSchedules } from 'src/views/components/calendar/CalendarSchedules/CalendarSchedules';
 
 const meta = {
-    title: 'Components/Common/CalendarSchedules',
+    title: 'Components/Calendar/CalendarSchedules',
     component: CalendarSchedules,
     parameters: {
         layout: 'centered',
@@ -17,7 +17,6 @@ const meta = {
     argTypes: {
         dummySchedules: { control: 'object' },
         dummyActiveIndex: { control: 'number' },
-        
     },
     render: (args: any) => (
         <div>
@@ -141,6 +140,5 @@ export const Default: Story = {
     args: {
         dummySchedules: schedules,
         dummyActiveIndex: 0,
-
     },
 };

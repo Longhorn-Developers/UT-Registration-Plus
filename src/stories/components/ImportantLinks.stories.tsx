@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import ImportantLinks from 'src/views/components/ImportantLinks';
+import ImportantLinks from 'src/views/components/calendar/ImportantLinks';
 
 const meta = {
     title: 'Components/Common/ImportantLinks',

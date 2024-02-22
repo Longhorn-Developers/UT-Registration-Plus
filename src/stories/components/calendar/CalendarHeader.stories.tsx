@@ -1,9 +1,9 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
-import CalendarHeader from '@views/components/common/CalendarHeader/CalenderHeader';
+import CalendarHeader from 'src/views/components/calendar/CalendarHeader/CalenderHeader';
 
 const meta = {
-    title: 'Components/Common/CalendarHeader',
+    title: 'Components/Calendar/CalendarHeader',
     component: CalendarHeader,
     parameters: {
         layout: 'centered',
