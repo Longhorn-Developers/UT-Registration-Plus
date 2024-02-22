@@ -1,4 +1,5 @@
 import type { Course } from '@shared/types/Course';
+import Card from '@views/components/common/Card/Card';
 import Spinner from '@views/components/common/Spinner/Spinner';
 import Text from '@views/components/common/Text/Text';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
@@ -6,25 +7,30 @@ import { SiteSupport } from '@views/lib/getSiteSupport';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
-import Card from '../../../common/Card/Card';
 import styles from './CourseDescription.module.scss';
 
 type Props = {
     course: Course;
 };
 
-enum LoadStatus {
-    LOADING = 'LOADING',
-    DONE = 'DONE',
-    ERROR = 'ERROR',
-}
+const LoadStatus = {
+    LOADING: 'LOADING',
+    DONE: 'DONE',
+    ERROR: 'ERROR',
+} as const;
+
+type LoadStatusType = (typeof LoadStatus)[keyof typeof LoadStatus];
 
 /**
+ * Renders the course description component.
  *
+ * @param {Props} props - The component props.
+ * @param {Course} props.course - The course object.
+ * @returns {JSX.Element} The rendered course description component.
  */
 export default function CourseDescription({ course }: Props) {
     const [description, setDescription] = useState<string[]>([]);
-    const [status, setStatus] = useState<LoadStatus>(LoadStatus.LOADING);
+    const [status, setStatus] = useState<LoadStatusType>(LoadStatus.LOADING);
 
     useEffect(() => {
         fetchDescription(course)

@@ -1,11 +1,11 @@
 import type { Course } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { Button } from '@views/components/common/Button/Button';
 import Card from '@views/components/common/Card/Card';
 import Icon from '@views/components/common/Icon/Icon';
 import Link from '@views/components/common/Link/Link';
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
-import { Button } from 'src/views/components/common/Button/Button';
 
 import CloseIcon from '~icons/material-symbols/close';
 import CopyIcon from '~icons/material-symbols/content-copy';
