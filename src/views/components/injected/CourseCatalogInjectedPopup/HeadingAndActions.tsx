@@ -3,12 +3,10 @@ import { Chip, flagMap } from '@views/components/common/Chip/Chip';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
 import React, { useState } from 'react';
-import addCourse from 'src/pages/background/lib/addCourse';
-import removeCourse from 'src/pages/background/lib/removeCourse';
+import { background } from 'src/shared/messages';
 import { Course } from 'src/shared/types/Course';
 import Instructor from 'src/shared/types/Instructor';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
-import { openTabFromContentScript } from 'src/views/lib/openNewTabFromContentScript';
 import Add from '~icons/material-symbols/add';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
 import CloseIcon from '~icons/material-symbols/close';
@@ -17,6 +15,8 @@ import Description from '~icons/material-symbols/description';
 import Mood from '~icons/material-symbols/mood';
 import Remove from '~icons/material-symbols/remove';
 import Reviews from '~icons/material-symbols/reviews';
+
+const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
 interface HeadingAndActionProps {
     /* The course to display */
@@ -30,7 +30,7 @@ interface HeadingAndActionProps {
 export const handleOpenCalendar = async () => {
     //  Not sure if it's bad practice to export this
     const url = chrome.runtime.getURL('calendar.html');
-    await openTabFromContentScript(url);
+    openNewTab({ url });
 };
 
 /**
@@ -42,7 +42,7 @@ export const handleOpenCalendar = async () => {
 const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, activeSchedule }) => {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
     const [courseAdded, setCourseAdded] = useState<boolean>(
-        activeSchedule?.courses.some(course => course.uniqueId === uniqueId)
+        activeSchedule !== undefined ? activeSchedule.courses.some(course => course.uniqueId === uniqueId) : false
     );
 
     const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
@@ -62,27 +62,33 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
             const instructorSearchTerm = getInstructorFullName(instructor);
             instructorSearchTerm.replace(' ', '+');
             const url = `https://www.ratemyprofessors.com/search/professors/1255?q=${instructorSearchTerm}`;
-            return openTabFromContentScript(url);
+            return openNewTab({ url });
         });
         await Promise.all(openTabs);
     };
     const handleOpenCES = async () => {
         // TODO: does not look up the professor just takes you to the page
-        const cisUrl = 'https://utexas.bluera.com/utexas/rpvl.aspx?rid=d3db767b-049f-46c5-9a67-29c21c29c580&regl=en-US';
-        await openTabFromContentScript(cisUrl);
+        const openTabs = instructors.map(instructor => {
+            let { firstName, lastName } = instructor;
+            firstName = capitalizeString(firstName);
+            lastName = capitalizeString(lastName);
+            return openCESPage({ instructorFirstName: firstName, instructorLastName: lastName });
+        });
+        await Promise.all(openTabs);
     };
     const handleOpenPastSyllabi = async () => {
         // not specific to professor
         const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=${courseName}&unique=&instructor_first=&instructor_last=&course_type=In+Residence&search=Search`;
-        await openTabFromContentScript(url);
+        openNewTab({ url });
     };
     const handleAddOrRemoveCourse = async () => {
+        if (!activeSchedule) return;
         if (!courseAdded) {
-            await addCourse(activeSchedule.name, course);
+            addCourse({ course, scheduleName: activeSchedule.name });
         } else {
-            await removeCourse(activeSchedule.name, course);
+            removeCourse({ course, scheduleName: activeSchedule.name });
         }
-        setCourseAdded(!courseAdded);
+        setCourseAdded(prev => !prev);
     };
     return (
         <div className='w-full pb-3 pt-6'>

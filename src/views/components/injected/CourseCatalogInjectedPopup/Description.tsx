@@ -7,6 +7,8 @@ interface DescriptionProps {
 }
 
 const Description: React.FC<DescriptionProps> = ({ lines }: DescriptionProps) => {
+    // TODO: This needs to fetch the url and grab the description from the course catalog
+    // IT WILL NOT ALREADY BE IN THE COURSE OBJECT (lookat CourseDescription.tsx for an example of how to do this)
     const keywords = ['prerequisite', 'restricted'];
     return (
         <ul className='my-[5px] space-y-1.5 children:marker:text-ut-burntorange'>

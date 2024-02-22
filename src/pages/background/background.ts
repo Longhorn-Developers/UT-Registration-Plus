@@ -3,6 +3,7 @@ import { MessageListener } from 'chrome-extension-toolkit';
 import onInstall from './events/onInstall';
 import onServiceWorkerAlive from './events/onServiceWorkerAlive';
 import onUpdate from './events/onUpdate';
+import CESHandler from './handler/CESHandler';
 import browserActionHandler from './handler/browserActionHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
 import userScheduleHandler from './handler/userScheduleHandler';
@@ -31,6 +32,7 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...browserActionHandler,
     ...tabManagementHandler,
     ...userScheduleHandler,
+    ...CESHandler,
 });
 
 messageListener.listen();

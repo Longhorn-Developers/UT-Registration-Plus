@@ -16,6 +16,7 @@ const HOST_PERMISSIONS: string[] = [
     '*://*.catalog.utexas.edu/ribbit/',
     '*://*.registrar.utexas.edu/schedules/*',
     '*://*.login.utexas.edu/login/*',
+    'https://utexas.bluera.com/*',
 ];
 
 const manifest = defineManifest(async () => ({
