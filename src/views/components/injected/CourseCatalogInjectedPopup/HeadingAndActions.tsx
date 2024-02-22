@@ -1,32 +1,34 @@
-import React, { useState } from 'react';
 import { Button } from '@views/components/common/Button/Button';
 import { Chip, flagMap } from '@views/components/common/Chip/Chip';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
+import React, { useState } from 'react';
 import addCourse from 'src/pages/background/lib/addCourse';
 import removeCourse from 'src/pages/background/lib/removeCourse';
-import { openTabFromContentScript } from 'src/views/lib/openNewTabFromContentScript';
 import { Course } from 'src/shared/types/Course';
+import Instructor from 'src/shared/types/Instructor';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
+import { openTabFromContentScript } from 'src/views/lib/openNewTabFromContentScript';
 import Add from '~icons/material-symbols/add';
-import Remove from '~icons/material-symbols/remove';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
 import CloseIcon from '~icons/material-symbols/close';
 import Copy from '~icons/material-symbols/content-copy';
 import Description from '~icons/material-symbols/description';
 import Mood from '~icons/material-symbols/mood';
+import Remove from '~icons/material-symbols/remove';
 import Reviews from '~icons/material-symbols/reviews';
 
 interface HeadingAndActionProps {
     /* The course to display */
     course: Course;
     /* The active schedule */
-    activeSchedule: UserSchedule;
+    activeSchedule?: UserSchedule;
     /* The function to call when the popup should be closed */
     onClose: () => void;
 }
 
-export const handleOpenCalendar = async () => { //  Not sure if it's bad practice to export this
+export const handleOpenCalendar = async () => {
+    //  Not sure if it's bad practice to export this
     const url = chrome.runtime.getURL('calendar.html');
     await openTabFromContentScript(url);
 };
@@ -40,23 +42,26 @@ export const handleOpenCalendar = async () => { //  Not sure if it's bad practic
 const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, activeSchedule }) => {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
     const [courseAdded, setCourseAdded] = useState<boolean>(
-        activeSchedule.courses.some(course => course.uniqueId === uniqueId)
-      );
+        activeSchedule?.courses.some(course => course.uniqueId === uniqueId)
+    );
 
-    const instructorString = instructors
-        .map(instructor => {
-            const { firstName, lastName } = instructor;
-            if (firstName === '') return lastName;
-            return `${firstName} ${lastName}`;
-        })
-        .join(', ');
+    const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+    const getInstructorFullName = (instructor: Instructor) => {
+        const { firstName, lastName } = instructor;
+        if (firstName === '') return lastName;
+        return `${capitalizeString(firstName)} ${capitalizeString(lastName)}`;
+    };
+
+    const instructorString = instructors.map(getInstructorFullName).join(', ');
     const handleCopy = () => {
         navigator.clipboard.writeText(uniqueId.toString());
     };
     const handleOpenRateMyProf = async () => {
         const openTabs = instructors.map(instructor => {
-            const { fullName } = instructor;
-            const url = `https://www.ratemyprofessors.com/search/professors/1255?q=${fullName}`;
+            const instructorSearchTerm = getInstructorFullName(instructor);
+            instructorSearchTerm.replace(' ', '+');
+            const url = `https://www.ratemyprofessors.com/search/professors/1255?q=${instructorSearchTerm}`;
             return openTabFromContentScript(url);
         });
         await Promise.all(openTabs);
@@ -74,15 +79,14 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
     const handleAddOrRemoveCourse = async () => {
         if (!courseAdded) {
             await addCourse(activeSchedule.name, course);
-        }
-        else {
+        } else {
             await removeCourse(activeSchedule.name, course);
         }
         setCourseAdded(!courseAdded);
     };
     return (
         <div className='w-full pb-3 pt-6'>
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col'>
                 <div className='flex items-center gap-1'>
                     <Text variant='h1' className='truncate'>
                         {courseName}
@@ -99,9 +103,11 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                     </button>
                 </div>
                 <div className='flex gap-2.5 flex-content-center'>
-                    <Text variant='h4' className='inline-flex items-center justify-center'>
-                        with {instructorString}
-                    </Text>
+                    {instructorString.length > 0 && (
+                        <Text variant='h4' className='inline-flex items-center justify-center'>
+                            with {instructorString}
+                        </Text>
+                    )}
                     <div className='flex-content-centr flex gap-1'>
                         {flags.map(flag => (
                             <Chip label={flagMap[flag]} />
@@ -137,7 +143,12 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                 <Button variant='outline' color='ut-orange' icon={Description} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
                 </Button>
-                <Button variant='filled' color={!courseAdded ? 'ut-green' : 'ut-red'} icon={!courseAdded ? Add : Remove} onClick={handleAddOrRemoveCourse}>
+                <Button
+                    variant='filled'
+                    color={!courseAdded ? 'ut-green' : 'ut-red'}
+                    icon={!courseAdded ? Add : Remove}
+                    onClick={handleAddOrRemoveCourse}
+                >
                     {!courseAdded ? 'Add Course' : 'Remove Course'}
                 </Button>
             </div>
