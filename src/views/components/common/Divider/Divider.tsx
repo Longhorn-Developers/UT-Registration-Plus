@@ -4,7 +4,7 @@ import React from 'react';
 /**
  * Props for the Divider component
  *
- * @param variant - Orientation of the divider (horizontal or vertical)
+ * @param orientation - Orientation of the divider (horizontal or vertical)
  * @param size - Size of the divider (forwards to width or height in CSS)
  * @param className - Additional classes to be added to the divider
  * @param testId - Test id for the divider
@@ -23,12 +23,12 @@ export type DividerProps = {
  *
  * @example
  * ```tsx
- * <Divider size="2.5rem" variant="vertical" />
+ * <Divider size="2.5rem" orientation="vertical" />
  * ```
  *
  * @example
  * ```tsx
- * <Divider size="19px" variant="horizontal" />
+ * <Divider size="19px" orientation="horizontal" />
  * ```
  */
 export default function Divider({ className, testId, size, orientation }: DividerProps) {
