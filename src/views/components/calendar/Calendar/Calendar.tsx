@@ -1,9 +1,14 @@
 import React from 'react';
+import { Course } from 'src/shared/types/Course';
+import { exampleCourse } from 'src/stories/components/PopupCourseBlock.stories';
 import CalendarHeader from 'src/views/components/calendar/CalendarHeader/CalenderHeader';
+import { useFlattenedCourseSchedule } from 'src/views/hooks/useFlattenedCourseSchedule';
+
+import CourseCatalogInjectedPopup from '../../injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarBottomBar } from '../CalendarBottomBar/CalendarBottomBar';
+import CalendarGrid from '../CalendarGrid/CalendarGrid';
 import { CalendarSchedules } from '../CalendarSchedules/CalendarSchedules';
 import ImportantLinks from '../ImportantLinks';
-import CalendarGrid from '../CalendarGrid/CalendarGrid';
 
 export const flags = ['WR', 'QR', 'GC', 'CD', 'E', 'II'];
 
@@ -16,6 +21,8 @@ interface Props {
  * @returns
  */
 export function Calendar(): JSX.Element {
+    const courseCells = useFlattenedCourseSchedule();
+    const [showPopup, setShowPopup] = React.useState<boolean>(false);
     return (
         <>
             <CalendarHeader />
@@ -28,13 +35,14 @@ export function Calendar(): JSX.Element {
                 </div>
                 <div className='flex flex-grow flex-col gap-4 overflow-hidden'>
                     <div className='flex-grow overflow-auto'>
-                        <CalendarGrid />
+                        <CalendarGrid courseCells = {courseCells} setShowPopup={setShowPopup}/>
                     </div>
                     <div>
                         <CalendarBottomBar />
                     </div>
                 </div>
             </div>
+            {showPopup ? <CourseCatalogInjectedPopup course = {exampleCourse } onClose={() => setShowPopup(false)}/> : null}
         </>
     );
 }
