@@ -136,7 +136,7 @@ export const CourseCatalogActionButtons: Story = {
             <Button {...props} variant='outline' color='ut-teal' icon={HappyFaceIcon}>
                 CES
             </Button>
-            <Button {...props} variant='outline' color='ut-yellow' icon={DescriptionIcon}>
+            <Button {...props} variant='outline' color='ut-orange' icon={DescriptionIcon}>
                 Past Syllabi
             </Button>
             <Button {...props} variant='filled' color='ut-green' icon={AddIcon}>

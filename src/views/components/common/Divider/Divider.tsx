@@ -2,28 +2,47 @@ import type { Color } from '@views/styles/colors.module.scss';
 import clsx from 'clsx';
 import React from 'react';
 
-import styles from './Divider.module.scss';
-
 /**
- * Props for the Divider component.
+ * Props for the Divider component
+ *
+ * @param orientation - Orientation of the divider (horizontal or vertical)
+ * @param size - Size of the divider (forwards to width or height in CSS)
+ * @param className - Additional classes to be added to the divider
+ * @param testId - Test id for the divider
  */
-export type Props = {
-    color?: Color | React.CSSProperties['borderColor'];
-    type?: 'solid' | 'dashed' | 'dotted';
-    style?: React.CSSProperties;
+export type DividerProps = {
+    orientation: 'horizontal' | 'vertical';
+    size: React.CSSProperties['width' | 'height'];
     className?: string;
     testId?: string;
 };
 
 /**
  * This is a reusable divider component that can be used to separate content
+ *
+ * @returns A divider component
+ *
+ * @example
+ * ```tsx
+ * <Divider size="2.5rem" orientation="vertical" />
+ * ```
+ *
+ * @example
+ * ```tsx
+ * <Divider size="19px" orientation="horizontal" />
+ * ```
  */
-export default function Divider(props: Props) {
-    const style = {
-        ...props.style,
-        borderColor: props.color,
-        borderStyle: props.type,
-    };
+export default function Divider({ className, testId, size, orientation }: DividerProps) {
+    const style: React.CSSProperties =
+        orientation === 'horizontal'
+            ? { width: size, borderBottomWidth: '1px' }
+            : { height: size, borderRightWidth: '1px' };
 
-    return <hr data-testid={props.testId} style={style} className={clsx(styles.divider, props.className)} />;
+    return (
+        <div
+            style={style}
+            data-testid={testId}
+            className={clsx('border-solid border-ut-offwhite w-0 h-0', className)}
+        />
+    );
 }
