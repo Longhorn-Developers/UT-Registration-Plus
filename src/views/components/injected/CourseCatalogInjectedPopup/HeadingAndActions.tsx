@@ -67,7 +67,6 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
         await Promise.all(openTabs);
     };
     const handleOpenCES = async () => {
-        // TODO: does not look up the professor just takes you to the page
         const openTabs = instructors.map(instructor => {
             let { firstName, lastName } = instructor;
             firstName = capitalizeString(firstName);
