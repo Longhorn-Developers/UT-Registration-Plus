@@ -47,7 +47,7 @@ const CalendarHeader = () => (
                 <div className='flex flex-row'>
                     <Button variant='single' icon={UndoIcon} color='ut-black' />
                     <Button variant='single' icon={RedoIcon} color='ut-black' />
-                    <Button variant='single' icon={SettingsIcon} color='ut-black' />
+                    <Button variant='single' icon={SettingsIcon} color='ut-black' onClick={handleOpenOptions}/>
                 </div>
             </div>
         </div>

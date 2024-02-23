@@ -44,9 +44,7 @@ export const handleOpenCalendar = async () => {
  */
 const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, activeSchedule }) => {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
-    const [courseAdded, setCourseAdded] = useState<boolean>(
-        activeSchedule.courses.some(course => course.uniqueId === uniqueId)
-    );
+    const courseAdded = activeSchedule.courses.some(course => course.uniqueId === uniqueId);
 
     const instructorString = instructors
         .map(instructor => {
@@ -82,7 +80,6 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
         } else {
             await removeCourse(activeSchedule.name, course);
         }
-        setCourseAdded(!courseAdded);
     };
     return (
         <div className='w-full pb-3 pt-6'>
