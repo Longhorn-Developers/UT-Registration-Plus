@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
 import { resolve } from 'path';
@@ -148,6 +149,11 @@ export default defineConfig({
             //     chunkFileNames: `[name].js`,
             // },
             // external: ['/@react-refresh'],
+        },
+    },
+    test: {
+        coverage: {
+            provider: 'v8',
         },
     },
 });
