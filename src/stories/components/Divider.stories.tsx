@@ -1,7 +1,8 @@
-import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
-import Divider from '@views/components/common/Divider/Divider';
+import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@views/components/common/Button/Button';
+import Divider from '@views/components/common/Divider/Divider';
+import React from 'react';
+
 import AddIcon from '~icons/material-symbols/add';
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 import DescriptionIcon from '~icons/material-symbols/description';

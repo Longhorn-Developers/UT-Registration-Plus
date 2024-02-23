@@ -1,19 +1,20 @@
-import { Course, ScrapedRow } from '@shared/types/Course';
+import type { Course, ScrapedRow } from '@shared/types/Course';
 import React, { useEffect, useState } from 'react';
+
 import { useKeyPress } from '../hooks/useKeyPress';
 import useSchedules from '../hooks/useSchedules';
 import { CourseCatalogScraper } from '../lib/CourseCatalogScraper';
 import getCourseTableRows from '../lib/getCourseTableRows';
-import { SiteSupport } from '../lib/getSiteSupport';
+import type { SiteSupport } from '../lib/getSiteSupport';
 import { populateSearchInputs } from '../lib/populateSearchInputs';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
 import AutoLoad from './injected/AutoLoad/AutoLoad';
+import CourseCatalogInjectedPopup from './injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import CoursePopup from './injected/CoursePopupOld/CoursePopup';
 import RecruitmentBanner from './injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from './injected/TableHead';
 import TableRow from './injected/TableRow/TableRow';
 import TableSubheading from './injected/TableSubheading/TableSubheading';
-import CourseCatalogInjectedPopup from './injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 
 interface Props {
     support: SiteSupport.COURSE_CATALOG_DETAILS | SiteSupport.COURSE_CATALOG_LIST;

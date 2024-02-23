@@ -1,11 +1,13 @@
-import { Course, ScrapedRow } from '@shared/types/Course';
-import { UserSchedule } from '@shared/types/UserSchedule';
+import type { Course, ScrapedRow } from '@shared/types/Course';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Button } from '../../common/Button/Button';
-import styles from './TableRow.module.scss';
-import ConflictsWithWarning from '../../common/ConflictsWithWarning/ConflictsWithWarning';
+
 import AddIcon from '~icons/material-symbols/add-circle';
+
+import { Button } from '../../common/Button/Button';
+import ConflictsWithWarning from '../../common/ConflictsWithWarning/ConflictsWithWarning';
+import styles from './TableRow.module.scss';
 
 interface Props {
     isSelected: boolean;

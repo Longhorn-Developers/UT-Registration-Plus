@@ -1,9 +1,12 @@
+import type { Color } from '@views/styles/colors.module.scss';
+import colors from '@views/styles/colors.module.scss';
+import type { Size } from '@views/styles/fonts.module.scss';
+import fonts from '@views/styles/fonts.module.scss';
 import clsx from 'clsx';
 import React from 'react';
-import colors, { Color } from '@views/styles/colors.module.scss';
-import fonts, { Size } from '@views/styles/fonts.module.scss';
+
 import styles from './Icon.module.scss';
-import { MaterialIconCode } from './MaterialIcons';
+import type { MaterialIconCode } from './MaterialIcons';
 
 /**
  *

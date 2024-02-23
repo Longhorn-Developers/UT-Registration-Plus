@@ -2,24 +2,24 @@ export const colors = {
     ut: {
         burntorange: '#BF5700',
         black: '#333F48',
-        orange: '#f8971f',
-        yellow: '#ffd600',
-        lightgreen: '#a6cd57',
-        green: '#579d42',
-        teal: '#00a9b7',
-        blue: '#005f86',
-        gray: '#9cadb7',
-        offwhite: '#d6d2c4',
-        concrete: '#95a5a6',
-        red: '#B91C1C' //   Not sure if this should be here, but it's used for remove course, and add course is ut-green
+        orange: '#F8971F',
+        yellow: '#FFD600',
+        lightgreen: '#A6CD57',
+        green: '#579D42',
+        teal: '#00A9B7',
+        blue: '#005F86',
+        gray: '#9CADB7',
+        offwhite: '#D6D2C4',
+        concrete: '#95A5A6',
+        red: '#B91C1C', //   Not sure if this should be here, but it's used for remove course, and add course is ut-green
     },
     theme: {
-        red: '#af2e2d',
-        black: '#1a2024',
+        red: '#AF2E2D',
+        black: '#1A2024',
     },
     gradeDistribution: {
-        a: '#22c55e',
-        aminus: '#a3e635',
+        a: '#22C55E',
+        aminus: '#A3E635',
         bplus: '#84CC16',
         b: '#FDE047',
         bminus: '#FACC15',
@@ -31,7 +31,7 @@ export const colors = {
         dminus: '#B91C1C',
         f: '#B91C1C',
     },
-} as const;
+} as const satisfies Record<string, Record<string, string>>;
 
 type NestedKeys<T> = {
     [K in keyof T]: T[K] extends Record<string, any> ? `${string & K}-${string & keyof T[K]}` : never;
@@ -42,6 +42,10 @@ type NestedKeys<T> = {
  */
 export type ThemeColor = NestedKeys<typeof colors>;
 
+/**
+ * Flattened colors object.
+ * @type {Record<ThemeColor, string>}
+ */
 export const colorsFlattened = Object.entries(colors).reduce(
     (acc, [prefix, group]) => {
         for (const [name, hex] of Object.entries(group)) {
@@ -52,9 +56,18 @@ export const colorsFlattened = Object.entries(colors).reduce(
     {} as Record<ThemeColor, string>
 );
 
-const hexToRgb = (hex: string) =>
+/**
+ * Converts a hexadecimal color code to an RGB color array.
+ * @param hex The hexadecimal color code to convert.
+ * @returns An array representing the RGB color values.
+ */
+export const hexToRgb = (hex: string) =>
     hex.match(/[0-9a-f]{2}/gi).map(partialHex => parseInt(partialHex, 16)) as [number, number, number];
 
+/**
+ * Represents the flattened RGB values of the colors.
+ * @type {Record<ThemeColor, ReturnType<typeof hexToRgb>>}
+ */
 const colorsFlattenedRgb = Object.fromEntries(
     Object.entries(colorsFlattened).map(([name, hex]) => [name, hexToRgb(hex)])
 ) as Record<ThemeColor, ReturnType<typeof hexToRgb>>;

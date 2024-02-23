@@ -6,43 +6,22 @@
         "module": "esnext",
         "noEmit": true,
         "jsx": "react",
-        "typeRoots": [
-            "./node_modules/@types",
-            "./@types/"
-        ],
+        "typeRoots": ["./node_modules/@types", "./@types/"],
         "skipLibCheck": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
         "moduleResolution": "node",
-        "types": [
-            "vite/client",
-            "unplugin-icons/types/react",
-            "node"
-        ],
+        "types": ["vite/client", "unplugin-icons/types/react", "node"],
         "noFallthroughCasesInSwitch": true,
         "allowSyntheticDefaultImports": true,
         "paths": {
-            "src/*": [
-                "src/*"
-            ],
-            "@assets/*": [
-                "src/assets/*"
-            ],
-            "@pages/*": [
-                "src/pages/*"
-            ],
-            "@public/*": [
-                "public/*"
-            ],
-            "@shared/*": [
-                "src/shared/*"
-            ],
-            "@background/*": [
-                "src/pages/background/*"
-            ],
-            "@views/*": [
-                "src/views/*"
-            ],
+            "src/*": ["src/*"],
+            "@assets/*": ["src/assets/*"],
+            "@pages/*": ["src/pages/*"],
+            "@public/*": ["public/*"],
+            "@shared/*": ["src/shared/*"],
+            "@background/*": ["src/pages/background/*"],
+            "@views/*": ["src/views/*"]
         }
     },
     "include": [
@@ -55,6 +34,6 @@
         ".eslintrc",
         "postcss.config.cjs",
         ".storybook",
-        "unocss.config.ts",
+        "unocss.config.ts"
     ]
 }

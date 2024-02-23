@@ -1,7 +1,11 @@
 import clsx from 'clsx';
 import React from 'react';
+
 import styles from './Card.module.scss';
 
+/**
+ * Props for the Card component.
+ */
 export type Props = {
     style?: React.CSSProperties;
     className?: string;
