@@ -4,7 +4,8 @@ import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
 import React, { useState } from 'react';
 import { background } from 'src/shared/messages';
-import type { Course, Status } from 'src/shared/types/Course';
+import type { Course } from 'src/shared/types/Course';
+import { Status } from 'src/shared/types/Course';
 import Instructor from 'src/shared/types/Instructor';
 import type { UserSchedule } from 'src/shared/types/UserSchedule';
 import Add from '~icons/material-symbols/add';
@@ -31,7 +32,7 @@ interface HeadingAndActionProps {
  * Opens the calendar in a new tab.
  * @returns {Promise<void>} A promise that resolves when the tab is opened.
  */
-export const handleOpenCalendar = async () => {
+export const handleOpenCalendar = async (): Promise<void> => {
     const url = chrome.runtime.getURL('calendar.html');
     openNewTab({ url });
 };
@@ -40,9 +41,16 @@ export const handleOpenCalendar = async () => {
  * Renders the heading component for the CoursePopup component.
  *
  * @param {HeadingAndActionProps} props - The component props.
+ * @param {Course} props.course - The course object containing course details.
+ * @param {Schedule} props.activeSchedule - The active schedule object.
+ * @param {Function} props.onClose - The function to close the popup.
  * @returns {JSX.Element} The rendered component.
  */
-const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, activeSchedule }) => {
+const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
+    course,
+    activeSchedule,
+    onClose,
+}: HeadingAndActionProps): JSX.Element => {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
     const [courseAdded, setCourseAdded] = useState<boolean>(
         activeSchedule !== undefined ? activeSchedule.courses.some(course => course.uniqueId === uniqueId) : false
@@ -138,7 +146,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
             </div>
             <div className='my-3 flex flex-wrap items-center gap-[15px]'>
                 <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} onClick={handleOpenCalendar} />
-                <Divider type='solid' color='ut-offwhite' className='h-7' />
+                <Divider size='1.75rem' orientation='vertical' />
                 <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
                     RateMyProf
                 </Button>
@@ -158,7 +166,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                     {!courseAdded ? 'Add Course' : 'Remove Course'}
                 </Button>
             </div>
-            <Divider />
+            <Divider size={'100%'} orientation='horizontal' />
         </div>
     );
 };

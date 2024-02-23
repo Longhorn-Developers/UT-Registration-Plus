@@ -1,7 +1,7 @@
 import { createMessenger } from 'chrome-extension-toolkit';
 
 import type BrowserActionMessages from './BrowserActionMessages';
-import { CESMessage } from './CESMessage';
+import type CESMessage from './CESMessage';
 import type TabManagementMessages from './TabManagementMessages';
 import type TAB_MESSAGES from './TabMessages';
 import type { UserScheduleMessages } from './UserScheduleMessages';

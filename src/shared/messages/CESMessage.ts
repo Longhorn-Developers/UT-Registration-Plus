@@ -1,4 +1,4 @@
-export interface CESMessage {
+interface CESMessage {
     /**
      * Opens the CES page for the specified instructor
      *
@@ -6,3 +6,5 @@ export interface CESMessage {
      */
     openCESPage: (data: { instructorFirstName: string; instructorLastName: string }) => chrome.tabs.Tab;
 }
+
+export default CESMessage;

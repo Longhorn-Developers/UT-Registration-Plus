@@ -5,7 +5,6 @@ import { Course } from 'src/shared/types/Course';
 import { CourseCatalogScraper } from 'src/views/lib/CourseCatalogScraper';
 import { SiteSupport } from 'src/views/lib/getSiteSupport';
 import Spinner from '../../common/Spinner/Spinner';
-import Text from '../../common/Text/Text';
 
 interface DescriptionProps {
     course: Course;
@@ -34,7 +33,7 @@ async function fetchDescription(course: Course): Promise<string[]> {
  *
  * @component
  * @param {DescriptionProps} props - The component props.
- * @param {string[]} props.lines - The lines of text to render.
+ * @param {Course} props.course - The course for which to display the description.
  * @returns {JSX.Element} The rendered description component.
  */
 const Description: React.FC<DescriptionProps> = ({ course }: DescriptionProps) => {
@@ -56,10 +55,9 @@ const Description: React.FC<DescriptionProps> = ({ course }: DescriptionProps) =
     return (
         <>
             {status === LoadStatus.ERROR && (
-                <Text color='speedway_brick'>
-                    Please refresh the page and log back in using your UT EID and password
-                </Text>
+                <Text color='theme-red'>Please refresh the page and log back in using your UT EID and password</Text>
             )}
+            {/* TODO (achadaga): would be nice to have a new spinner here */}
             {status === LoadStatus.LOADING && <Spinner />}
             {status === LoadStatus.DONE && (
                 <ul className='my-[5px] space-y-1.5 children:marker:text-ut-burntorange'>
