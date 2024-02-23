@@ -40,6 +40,9 @@ export const convertMinutesToIndex = (minutes: number): number => Math.floor((mi
  */
 export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
     const [activeSchedule] = useSchedules();
+    if (!activeSchedule) {
+        return [];
+    }
     const { courses } = activeSchedule;
 
     return courses

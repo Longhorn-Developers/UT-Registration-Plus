@@ -19,10 +19,7 @@ export interface CalendarCourseCellProps {
     status: StatusType;
     colors: CourseColors;
     className?: string;
-<<<<<<< Updated upstream
-=======
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
->>>>>>> Stashed changes
 }
 
 /**
@@ -43,10 +40,7 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
     status,
     colors,
     className,
-<<<<<<< Updated upstream
-=======
     onClick,
->>>>>>> Stashed changes
 }: CalendarCourseCellProps) => {
     let rightIcon: React.ReactNode | null = null;
     if (status === Status.WAITLISTED) {
@@ -57,10 +51,6 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
         rightIcon = <CancelledIcon className='h-5 w-5' />;
     }
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     // whiteText based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
 
