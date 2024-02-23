@@ -1,4 +1,5 @@
-import { CalendarCourseCellProps } from 'src/views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+import type { CalendarCourseCellProps } from 'src/views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+import { CourseMeeting } from 'src/shared/types/CourseMeeting';
 import useSchedules from './useSchedules';
 
 const dayToNumber: { [day: string]: number } = {
@@ -34,6 +35,9 @@ const convertMinutesToIndex = (minutes: number): number => Math.floor(minutes - 
  */
 export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
     const [activeSchedule] = useSchedules();
+    if (!activeSchedule) {
+        return [];
+    }
     const { courses } = activeSchedule;
 
     return courses

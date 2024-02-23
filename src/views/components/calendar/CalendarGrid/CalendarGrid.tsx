@@ -97,27 +97,7 @@ function CalendarGrid({ courseCells, saturdayClass, setShowPopup }: React.PropsW
                 </div>
             ))}
             {grid.map((row, rowIndex) => row)}
-<<<<<<< Updated upstream
-            {courseCells ? <AccountForCourseConflicts courseCells={courseCells}/> : null}
-=======
             {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setShowPopup={setShowPopup}/> : null}
-            {/*     courseCells.map((block: CalendarGridCourse) => (
-                        <div
-                            key={`${block}`}
-                            style={{
-                                gridColumn: `${block.calendarGridPoint.dayIndex + 1}`,
-                                gridRow: `${block.calendarGridPoint.startIndex + 1} / ${block.calendarGridPoint.endIndex + 1}`,
-                            }}
-                        >
-                            <CalendarCourseCell
-                                courseDeptAndInstr={block.componentProps.courseDeptAndInstr}
-                                timeAndLocation={block.componentProps.timeAndLocation}
-                                status={block.componentProps.status}
-                                colors={block.componentProps.colors}
-                            />
-                        </div>
-                        ))  */}
->>>>>>> Stashed changes
         </div>
     );
 }
@@ -186,10 +166,7 @@ function AccountForCourseConflicts({ courseCells, setShowPopup }: AccountForCour
                 timeAndLocation={block.componentProps.timeAndLocation}
                 status={block.componentProps.status}
                 colors={block.componentProps.colors}
-<<<<<<< Updated upstream
-=======
                 onClick={() => setShowPopup(true)}
->>>>>>> Stashed changes
             />
         </div>
     ));

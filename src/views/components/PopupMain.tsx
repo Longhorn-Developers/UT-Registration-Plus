@@ -3,6 +3,14 @@ import { FaCalendarAlt, FaCog, FaRedo } from 'react-icons/fa'; // Added FaRedo f
 import { StatusIcon } from '@shared/util/icons';
 import { Status } from 'src/shared/types/Course';
 import { test_colors } from 'src/stories/components/PopupCourseBlock.stories';
+<<<<<<< Updated upstream
+=======
+
+import logoImage from '../../assets/logo.png'; // Adjust the path as necessary
+import useSchedules from '../hooks/useSchedules';
+import { openTabFromContentScript } from '../lib/openNewTabFromContentScript';
+import Divider from './common/Divider/Divider';
+>>>>>>> Stashed changes
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
 import PopupCourseBlock from './common/PopupCourseBlock/PopupCourseBlock';
 import Text from './common/Text/Text';
