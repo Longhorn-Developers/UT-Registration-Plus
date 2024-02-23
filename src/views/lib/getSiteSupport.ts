@@ -11,7 +11,6 @@ export enum SiteSupport {
     WAITLIST = 'WAITLIST',
     EXTENSION_POPUP = 'EXTENSION_POPUP',
     MY_CALENDAR = 'MY_CALENDAR',
-    CES = 'CES',
 }
 
 /**
@@ -39,9 +38,6 @@ export default function getSiteSupport(url: string): SiteSupport | null {
     }
     if (url.includes('utdirect.utexas.edu') && (url.includes('waitlist') || url.includes('classlist'))) {
         return SiteSupport.WAITLIST;
-    }
-    if (url.includes('utexas.bluera')) {
-        return SiteSupport.CES;
     }
     return null;
 }

@@ -16,9 +16,3 @@ if (support === SiteSupport.COURSE_CATALOG_DETAILS || support === SiteSupport.CO
         </React.StrictMode>
     );
 }
-
-if (support === SiteSupport.CES) {
-    alert('CES');
-    const input = document.getElementById('ctl00_ContentPlaceHolder1_ViewList_tbxValue') as HTMLInputElement;
-    console.log(input.value);
-}
