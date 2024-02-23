@@ -16,7 +16,7 @@ const CourseCatalogInjectedPopup: React.FC<CourseCatalogInjectedPopupProps> = ({
     <Popup overlay className='max-w-[780px] px-6' onClose={onClose}>
         <div className='flex flex-col'>
             <HeadingAndActions course={course} onClose={onClose} activeSchedule={activeSchedule} />
-            <Description lines={course.description} />
+            <Description course={course} />
             <GradeDistribution course={course} />
         </div>
     </Popup>

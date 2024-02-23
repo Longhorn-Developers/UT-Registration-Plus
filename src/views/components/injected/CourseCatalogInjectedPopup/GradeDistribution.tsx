@@ -128,7 +128,17 @@ const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
     return (
         <div className='pb-[25px] pt-[12px]'>
             {status === DataStatus.LOADING && <Spinner />}
-            {status === DataStatus.NOT_FOUND && <Text variant='p'>No grade distribution data found</Text>}
+            {status === DataStatus.NOT_FOUND && (
+                <HighchartsReact
+                    ref={ref}
+                    highcharts={Highcharts}
+                    options={{
+                        ...chartOptions,
+                        title: { text: 'No grade distribution data available' },
+                        tooltip: { enabled: false },
+                    }}
+                />
+            )}
             {status === DataStatus.ERROR && <Text variant='p'>Error fetching grade distribution data</Text>}
             {status === DataStatus.FOUND && (
                 <>

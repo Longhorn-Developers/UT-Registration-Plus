@@ -4,7 +4,7 @@ import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
 import React, { useState } from 'react';
 import { background } from 'src/shared/messages';
-import { Course } from 'src/shared/types/Course';
+import { Course, Status } from 'src/shared/types/Course';
 import Instructor from 'src/shared/types/Instructor';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
 import Add from '~icons/material-symbols/add';
@@ -115,25 +115,22 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                     )}
                     <div className='flex-content-centr flex gap-1'>
                         {flags.map(flag => (
-                            <Chip label={flagMap[flag]} />
+                            <Chip key={flagMap[flag]} label={flagMap[flag]} />
                         ))}
                     </div>
                 </div>
                 <div className='flex flex-col'>
-                    {schedule.meetings.map(meeting => (
-                        <Text variant='h4'>
-                            {meeting.getDaysString({ format: 'long', separator: 'long' })}{' '}
-                            {meeting.getTimeString({ separator: ' to ', capitalize: false })}
-                            {meeting.location && (
-                                <>
-                                    {` in `}
-                                    <Text variant='h4' className='text-ut-burntorange underline'>
-                                        {meeting.location.building}
-                                    </Text>
-                                </>
-                            )}
-                        </Text>
-                    ))}
+                    {schedule.meetings.map(meeting => {
+                        const daysString = meeting.getDaysString({ format: 'long', separator: 'long' });
+                        const timeString = meeting.getTimeString({ separator: ' to ', capitalize: false });
+                        const locationString = meeting.location ? ` in ${meeting.location.building}` : '';
+                        return (
+                            <Text key={daysString + timeString + locationString} variant='h4'>
+                                {daysString} {timeString}
+                                {locationString}
+                            </Text>
+                        );
+                    })}
                 </div>
             </div>
             <div className='my-3 flex flex-wrap items-center gap-[15px]'>
@@ -150,6 +147,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                 </Button>
                 <Button
                     variant='filled'
+                    disabled={course.status !== Status.OPEN}
                     color={!courseAdded ? 'ut-green' : 'ut-red'}
                     icon={!courseAdded ? Add : Remove}
                     onClick={handleAddOrRemoveCourse}

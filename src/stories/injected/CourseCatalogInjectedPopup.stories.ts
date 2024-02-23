@@ -41,7 +41,7 @@ const exampleCourse: Course = new Course({
             }),
         ],
     }),
-    url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+    url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/50825/',
     flags: ['Writing', 'Independent Inquiry'],
     instructionMode: 'In Person',
     semester: {
