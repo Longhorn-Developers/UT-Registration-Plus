@@ -13,13 +13,14 @@ import styles from './CalendarGrid.module.scss';
 interface Props {
     courseCells?: CalendarGridCourse[];
     saturdayClass?: boolean;
+    setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  * @param props
  */
-function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Props>): JSX.Element {
+function CalendarGrid({ courseCells, saturdayClass, setShowPopup }: React.PropsWithChildren<Props>): JSX.Element {
     const [grid, setGrid] = useState([]);
     const calendarRef = useRef(null); // Create a ref for the calendar grid
 
@@ -97,7 +98,27 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                 </div>
             ))}
             {grid.map((row, rowIndex) => row)}
+<<<<<<< Updated upstream
             {courseCells ? <AccountForCourseConflicts courseCells={courseCells}/> : null}
+=======
+            {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setShowPopup={setShowPopup}/> : null}
+            {/*     courseCells.map((block: CalendarGridCourse) => (
+                        <div
+                            key={`${block}`}
+                            style={{
+                                gridColumn: `${block.calendarGridPoint.dayIndex + 1}`,
+                                gridRow: `${block.calendarGridPoint.startIndex + 1} / ${block.calendarGridPoint.endIndex + 1}`,
+                            }}
+                        >
+                            <CalendarCourseCell
+                                courseDeptAndInstr={block.componentProps.courseDeptAndInstr}
+                                timeAndLocation={block.componentProps.timeAndLocation}
+                                status={block.componentProps.status}
+                                colors={block.componentProps.colors}
+                            />
+                        </div>
+                        ))  */}
+>>>>>>> Stashed changes
         </div>
     );
 }
@@ -106,9 +127,10 @@ export default CalendarGrid;
 
 interface AccountForCourseConflictsProps {
     courseCells: CalendarGridCourse[];
+    setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function AccountForCourseConflicts({ courseCells }: AccountForCourseConflictsProps): JSX.Element[] {
+function AccountForCourseConflicts({ courseCells, setShowPopup }: AccountForCourseConflictsProps): JSX.Element[] {
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce((acc, cell: CalendarGridCourse) => {
         const { dayIndex } = cell.calendarGridPoint;
@@ -165,6 +187,10 @@ function AccountForCourseConflicts({ courseCells }: AccountForCourseConflictsPro
                 timeAndLocation={block.componentProps.timeAndLocation}
                 status={block.componentProps.status}
                 colors={block.componentProps.colors}
+<<<<<<< Updated upstream
+=======
+                onClick={() => setShowPopup(true)}
+>>>>>>> Stashed changes
             />
         </div>
     ));
