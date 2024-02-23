@@ -7,24 +7,26 @@ import { useEffect } from 'react';
  */
 
 /**
+ * Custom hook for implementing infinite scrolling behavior.
  *
+ * @param callback - The function to be called when scrolling reaches the specified threshold.
+ * @param deps - Optional dependencies to be passed to the useEffect hook.
  */
 export default function useInfiniteScroll(
     callback: () => Promise<void> | void,
     deps?: React.DependencyList | undefined
 ) {
-    const isScrolling = () => {
-        const { innerHeight } = window;
-        const { scrollTop, offsetHeight } = document.documentElement;
-        if (innerHeight + scrollTop >= offsetHeight - 650) {
-            callback();
-        }
-    };
-
     useEffect(() => {
+        const isScrolling = () => {
+            const { innerHeight } = window;
+            const { scrollTop, offsetHeight } = document.documentElement;
+            if (innerHeight + scrollTop >= offsetHeight - 650) {
+                callback();
+            }
+        };
         window.addEventListener('scroll', isScrolling, {
             passive: true,
         });
         return () => window.removeEventListener('scroll', isScrolling);
-    }, deps);
+    }, [deps, callback]);
 }

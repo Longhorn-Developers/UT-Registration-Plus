@@ -1,12 +1,17 @@
 import { Status } from '@shared/types/Course';
+import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
-import { CourseColors, pickFontColor } from 'src/shared/util/colors';
+import type { CourseColors } from 'src/shared/util/colors';
+import { pickFontColor } from 'src/shared/util/colors';
+
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
-import Text from '../../common/Text/Text';
 
+/**
+ * Props for the CalendarCourseCell component.
+ */
 export interface CalendarCourseCellProps {
     courseDeptAndInstr: string;
     timeAndLocation?: string;
@@ -15,6 +20,18 @@ export interface CalendarCourseCellProps {
     className?: string;
 }
 
+/**
+ * Renders a cell for a calendar course.
+ *
+ * @component
+ * @param {CalendarCourseCellProps} props - The component props.
+ * @param {string} props.courseDeptAndInstr - The course department and instructor.
+ * @param {string} props.timeAndLocation - The time and location of the course.
+ * @param {Status} props.status - The status of the course.
+ * @param {Colors} props.colors - The colors for styling the cell.
+ * @param {string} props.className - Additional CSS class name for the cell.
+ * @returns {JSX.Element} The rendered component.
+ */
 const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
     courseDeptAndInstr,
     timeAndLocation,

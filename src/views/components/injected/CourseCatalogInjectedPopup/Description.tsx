@@ -1,11 +1,19 @@
+import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
-import Text from '../../common/Text/Text';
 
 interface DescriptionProps {
     lines: string[];
 }
 
+/**
+ * Renders the description component.
+ *
+ * @component
+ * @param {DescriptionProps} props - The component props.
+ * @param {string[]} props.lines - The lines of text to render.
+ * @returns {JSX.Element} The rendered description component.
+ */
 const Description: React.FC<DescriptionProps> = ({ lines }: DescriptionProps) => {
     const keywords = ['prerequisite', 'restricted'];
     return (

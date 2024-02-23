@@ -14,7 +14,7 @@ export default async function createSchedule(scheduleName: string): Promise<stri
     schedules.push({
         name: scheduleName,
         courses: [],
-        hours: 0
+        hours: 0,
     });
 
     await UserScheduleStore.set('schedules', schedules);

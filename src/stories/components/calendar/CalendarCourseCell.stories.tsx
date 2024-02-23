@@ -1,9 +1,10 @@
 import { Course, Status } from '@shared/types/Course';
 import { getCourseColors } from '@shared/util/colors';
-import { Meta, StoryObj } from '@storybook/react';
-import CalendarCourseCell from 'src/views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+import type { Meta, StoryObj } from '@storybook/react';
+import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import React from 'react';
-import { exampleCourse } from '../PopupCourseBlock.stories';
+
+import { ExampleCourse } from '../PopupCourseBlock.stories';
 
 const meta = {
     title: 'Components/Calendar/CalendarCourseCell',
@@ -25,10 +26,10 @@ const meta = {
         </div>
     ),
     args: {
-        courseDeptAndInstr: exampleCourse.department,
-        className: exampleCourse.number,
-        status: exampleCourse.status,
-        timeAndLocation: exampleCourse.schedule.meetings[0].getTimeString({ separator: '-' }),
+        courseDeptAndInstr: ExampleCourse.department,
+        className: ExampleCourse.number,
+        status: ExampleCourse.status,
+        timeAndLocation: ExampleCourse.schedule.meetings[0].getTimeString({ separator: '-' }),
 
         colors: getCourseColors('emerald', 500),
     },

@@ -1,9 +1,10 @@
 import React from 'react';
 import CalendarHeader from 'src/views/components/calendar/CalendarHeader/CalenderHeader';
+
 import { CalendarBottomBar } from '../CalendarBottomBar/CalendarBottomBar';
+import CalendarGrid from '../CalendarGrid/CalendarGrid';
 import { CalendarSchedules } from '../CalendarSchedules/CalendarSchedules';
 import ImportantLinks from '../ImportantLinks';
-import CalendarGrid from '../CalendarGrid/CalendarGrid';
 
 export const flags = ['WR', 'QR', 'GC', 'CD', 'E', 'II'];
 

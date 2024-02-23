@@ -1,3 +1,4 @@
+import type { Color } from '@views/styles/colors.module.scss';
 import clsx from 'clsx';
 import React from 'react';
 

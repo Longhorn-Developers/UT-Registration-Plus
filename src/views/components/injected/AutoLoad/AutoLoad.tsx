@@ -1,6 +1,4 @@
-import { ScrapedRow } from '@shared/types/Course';
-import React, { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
+import type { ScrapedRow } from '@shared/types/Course';
 import useInfiniteScroll from '@views/hooks/useInfiniteScroll';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import { SiteSupport } from '@views/lib/getSiteSupport';
@@ -9,6 +7,9 @@ import {
     loadNextCourseCatalogPage,
     removePaginationButtons,
 } from '@views/lib/loadNextCourseCatalogPage';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+
 import styles from './AutoLoad.module.scss';
 
 type Props = {

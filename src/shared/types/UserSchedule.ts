@@ -1,4 +1,5 @@
-import { Serialized } from 'chrome-extension-toolkit';
+import type { Serialized } from 'chrome-extension-toolkit';
+
 import { Course } from './Course';
 
 /**

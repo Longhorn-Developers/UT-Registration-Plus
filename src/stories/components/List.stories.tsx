@@ -1,15 +1,22 @@
 import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import List from '@views/components/common/List/List';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import React from 'react';
-import { test_colors } from './PopupCourseBlock.stories';
+
+import { TestColors } from './PopupCourseBlock.stories';
 
 const numberOfCourses = 5;
 
-export const generateCourses = count => {
+/**
+ * Generates an array of courses.
+ *
+ * @param count - The number of courses to generate.
+ * @returns An array of generated courses.
+ */
+export const GenerateCourses = count => {
     const courses = [];
 
     for (let i = 0; i < count; i++) {
@@ -61,10 +68,10 @@ export const generateCourses = count => {
     return courses;
 };
 
-const exampleCourses = generateCourses(numberOfCourses);
+const exampleCourses = GenerateCourses(numberOfCourses);
 const generateCourseBlocks = (exampleCourses, colors) =>
     exampleCourses.map((course, i) => <PopupCourseBlock key={course.uniqueId} course={course} colors={colors[i]} />);
-export const exampleCourseBlocks = generateCourseBlocks(exampleCourses, test_colors);
+export const ExampleCourseBlocks = generateCourseBlocks(exampleCourses, TestColors);
 
 const meta = {
     title: 'Components/Common/List',
@@ -87,7 +94,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        draggableElements: exampleCourseBlocks,
+        draggableElements: ExampleCourseBlocks,
         itemHeight: 55,
         listHeight: 300,
         listWidth: 300,
