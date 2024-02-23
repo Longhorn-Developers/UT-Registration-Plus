@@ -3,11 +3,12 @@ import React from 'react';
 import type { Course } from 'src/shared/types/Course';
 import type { UserSchedule } from 'src/shared/types/UserSchedule';
 
+
 import Description from './Description';
 import GradeDistribution from './GradeDistribution';
 import HeadingAndActions from './HeadingAndActions';
 
-interface CourseCatalogInjectedPopupProps {
+export interface CourseCatalogInjectedPopupProps {
     course: Course;
     activeSchedule?: UserSchedule;
     onClose: () => void;

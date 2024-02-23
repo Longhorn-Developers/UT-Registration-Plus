@@ -1,10 +1,13 @@
 import { Status } from '@shared/types/Course';
 import clsx from 'clsx';
 import React from 'react';
-import { CourseColors, pickFontColor } from 'src/shared/util/colors';
+import type { CourseColors } from 'src/shared/util/colors';
+import { pickFontColor } from 'src/shared/util/colors';
+
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
+
 import Text from '../../common/Text/Text';
 
 export interface CalendarCourseCellProps {
@@ -13,6 +16,7 @@ export interface CalendarCourseCellProps {
     status: Status;
     colors: CourseColors;
     className?: string;
+    popup?: any;
 }
 
 const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
@@ -21,7 +25,9 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
     status,
     colors,
     className,
+    popup,
 }: CalendarCourseCellProps) => {
+    const [showPopup, setShowPopup] = React.useState(false);
     let rightIcon: React.ReactNode | null = null;
     if (status === Status.WAITLISTED) {
         rightIcon = <WaitlistIcon className='h-5 w-5' />;
@@ -31,15 +37,26 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
         rightIcon = <CancelledIcon className='h-5 w-5' />;
     }
 
+    // popup.onClose = () => setShowPopup(false);
+
+    const handleClick = () => {
+        setShowPopup(true);
+    };
+
     // whiteText based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
 
     return (
         <div
-            className={clsx('h-full w-full flex justify-center rounded p-2 overflow-x-hidden', fontColor, className)}
+            className={clsx(
+                'h-full w-full flex justify-center rounded p-2 overflow-x-hidden cursor-pointer',
+                fontColor,
+                className
+            )}
             style={{
                 backgroundColor: colors.primaryColor,
             }}
+            onClick={handleClick}
         >
             <div className='flex flex-1 flex-col gap-1'>
                 <Text
@@ -66,6 +83,7 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
                     {rightIcon}
                 </div>
             )}
+            <div>{showPopup ? popup : null}</div>
         </div>
     );
 };

@@ -1,4 +1,5 @@
 import type { CalendarCourseCellProps } from 'src/views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+import type { CourseCatalogInjectedPopupProps } from 'src/views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 
 import useSchedules from './useSchedules';
 
@@ -25,6 +26,7 @@ export interface CalendarGridCourse {
     gridColumnStart?: number;
     gridColumnEnd?: number;
     totalColumns?: number;
+    popupProps: CourseCatalogInjectedPopupProps;
 }
 
 export const convertMinutesToIndex = (minutes: number): number => Math.floor(minutes - 420 / 30);
@@ -58,12 +60,18 @@ export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
                         },
                         componentProps: {
                             courseDeptAndInstr,
+                            timeAndLocation: 'Asynchronous',
                             status,
                             colors: {
                                 // TODO: figure out colors - these are defaults
                                 primaryColor: 'ut-gray',
                                 secondaryColor: 'ut-gray',
                             },
+                        },
+                        popupProps: {
+                            course,
+                            activeSchedule,
+                            onClose: () => {},
                         },
                     },
                 ];
@@ -90,6 +98,11 @@ export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
                             primaryColor: 'ut-orange',
                             secondaryColor: 'ut-orange',
                         },
+                    },
+                    popupProps: {
+                        course,
+                        activeSchedule,
+                        onClose: () => {}, // Add onClose property here
                     },
                 }));
             });

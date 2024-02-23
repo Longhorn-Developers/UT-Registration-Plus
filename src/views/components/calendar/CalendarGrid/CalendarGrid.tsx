@@ -1,13 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 //  import html2canvas from 'html2canvas';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
-import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
+import CourseCatalogInjectedPopup from 'src/views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
+import type { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
+
+import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 /*  import calIcon from 'src/assets/icons/cal.svg';
 import pngIcon from 'src/assets/icons/png.svg';
 */
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
-import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import styles from './CalendarGrid.module.scss';
+
 
 /*  const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
@@ -119,7 +122,7 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                 </div>
             ))}
             {grid.map((row, rowIndex) => row)}
-            {courseCells ? <AccountForCourseConflicts courseCells={courseCells}/> : null}
+            {courseCells ? <AccountForCourseConflicts courseCells={courseCells} /> : null}
             {/*     courseCells.map((block: CalendarGridCourse) => (
                         <div
                             key={`${block}`}
@@ -203,6 +206,7 @@ function AccountForCourseConflicts({ courseCells }: AccountForCourseConflictsPro
                 timeAndLocation={block.componentProps.timeAndLocation}
                 status={block.componentProps.status}
                 colors={block.componentProps.colors}
+                popup={<CourseCatalogInjectedPopup course={block.popupProps.course} activeSchedule={block.popupProps.activeSchedule} onClose={block.popupProps.onClose} />}
             />
         </div>
     ));
