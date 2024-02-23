@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 export default interface BrowserActionMessages {
     /** make it so that clicking the browser action will open the popup.html */
     enableBrowserAction: () => void;

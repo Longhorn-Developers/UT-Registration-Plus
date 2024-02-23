@@ -1,5 +1,6 @@
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
-import React, { ReactElement, useCallback, useState } from 'react';
+import type { ReactElement } from 'react';
+import React, { useCallback, useState } from 'react';
 import { areEqual } from 'react-window';
 
 /*

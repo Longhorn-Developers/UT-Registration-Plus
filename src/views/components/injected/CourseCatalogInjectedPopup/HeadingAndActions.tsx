@@ -4,9 +4,9 @@ import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
 import React, { useState } from 'react';
 import { background } from 'src/shared/messages';
-import { Course, Status } from 'src/shared/types/Course';
+import type { Course, Status } from 'src/shared/types/Course';
 import Instructor from 'src/shared/types/Instructor';
-import { UserSchedule } from 'src/shared/types/UserSchedule';
+import type { UserSchedule } from 'src/shared/types/UserSchedule';
 import Add from '~icons/material-symbols/add';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
 import CloseIcon from '~icons/material-symbols/close';
@@ -27,8 +27,11 @@ interface HeadingAndActionProps {
     onClose: () => void;
 }
 
+/**
+ * Opens the calendar in a new tab.
+ * @returns {Promise<void>} A promise that resolves when the tab is opened.
+ */
 export const handleOpenCalendar = async () => {
-    //  Not sure if it's bad practice to export this
     const url = chrome.runtime.getURL('calendar.html');
     openNewTab({ url });
 };

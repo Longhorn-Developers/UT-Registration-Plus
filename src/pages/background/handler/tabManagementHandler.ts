@@ -1,5 +1,6 @@
-import TabManagementMessages from '@shared/messages/TabManagementMessages';
-import { MessageHandler } from 'chrome-extension-toolkit';
+import type TabManagementMessages from '@shared/messages/TabManagementMessages';
+import type { MessageHandler } from 'chrome-extension-toolkit';
+
 import openNewTab from '../util/openNewTab';
 
 const tabManagementHandler: MessageHandler<TabManagementMessages> = {

@@ -1,7 +1,8 @@
+import { colorsFlattened } from '@shared/util/themeColors';
 import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from '@views/components/common/Button/Button';
 import React from 'react';
-import { colorsFlattened } from 'src/shared/util/themeColors';
-import { Button } from 'src/views/components/common/Button/Button';
+
 import AddIcon from '~icons/material-symbols/add';
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 import DescriptionIcon from '~icons/material-symbols/description';
@@ -135,7 +136,7 @@ export const CourseCatalogActionButtons: Story = {
             <Button {...props} variant='outline' color='ut-teal' icon={HappyFaceIcon}>
                 CES
             </Button>
-            <Button {...props} variant='outline' color='ut-yellow' icon={DescriptionIcon}>
+            <Button {...props} variant='outline' color='ut-orange' icon={DescriptionIcon}>
                 Past Syllabi
             </Button>
             <Button {...props} variant='filled' color='ut-green' icon={AddIcon}>

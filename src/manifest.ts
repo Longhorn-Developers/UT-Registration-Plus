@@ -1,4 +1,5 @@
 import { defineManifest } from '@crxjs/vite-plugin';
+
 import packageJson from '../package.json';
 
 // Convert from Semver (example: 0.1.0-beta6)

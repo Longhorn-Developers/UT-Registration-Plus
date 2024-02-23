@@ -1,5 +1,7 @@
 import clsx from 'clsx';
-import React, { PropsWithChildren, useCallback } from 'react';
+import type { PropsWithChildren } from 'react';
+import React, { useCallback } from 'react';
+
 import styles from './Popup.module.scss';
 
 interface Props {
@@ -19,8 +21,6 @@ export default function Popup({ onClose, children, className, style, testId, ove
     const containerRef = React.useRef<HTMLDivElement>(null);
     const bodyRef = React.useRef<HTMLDivElement>(null);
 
-
-    
     const handleClickOutside = useCallback(
         (event: MouseEvent) => {
             if (!bodyRef.current) return;

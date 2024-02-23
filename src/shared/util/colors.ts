@@ -1,12 +1,20 @@
 import { theme } from 'unocss/preset-mini';
 
+/**
+ * Represents the colors for a course.
+ */
 export interface CourseColors {
     primaryColor: string;
     secondaryColor: string;
 }
 
-// calculates luminance of a hex string
-function getLuminance(hex: string): number {
+/**
+ * Calculates the luminance of a given hexadecimal color.
+ *
+ * @param hex - The hexadecimal color value.
+ * @returns The luminance value between 0 and 1.
+ */
+export function getLuminance(hex: string): number {
     let r = parseInt(hex.substring(1, 3), 16);
     let g = parseInt(hex.substring(3, 5), 16);
     let b = parseInt(hex.substring(5, 7), 16);

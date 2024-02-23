@@ -1,16 +1,21 @@
-import React from 'react';
 import { Status } from '@shared/types/Course';
-import Divider from '../../common/Divider/Divider';
-import { Button } from '../../common/Button/Button';
-import Text from '../../common/Text/Text';
-import MenuIcon from '~icons/material-symbols/menu';
-import UndoIcon from '~icons/material-symbols/undo';
-import RedoIcon from '~icons/material-symbols/redo';
-import SettingsIcon from '~icons/material-symbols/settings';
-import ScheduleTotalHoursAndCourses from '../../common/ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
-import CourseStatus from '../../common/CourseStatus/CourseStatus';
+import { Button } from '@views/components/common/Button/Button';
+import CourseStatus from '@views/components/common/CourseStatus/CourseStatus';
+import Divider from '@views/components/common/Divider/Divider';
+import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
+import Text from '@views/components/common/Text/Text';
+import React from 'react';
 import calIcon from 'src/assets/logo.png';
 
+import MenuIcon from '~icons/material-symbols/menu';
+import RedoIcon from '~icons/material-symbols/redo';
+import SettingsIcon from '~icons/material-symbols/settings';
+import UndoIcon from '~icons/material-symbols/undo';
+
+/**
+ * Renders the header component for the calendar.
+ * @returns The CalendarHeader component.
+ */
 const CalendarHeader = () => (
     <div className='min-h-79px min-w-672px flex px-0 py-15'>
         <div className='flex flex-row gap-20'>
@@ -18,9 +23,9 @@ const CalendarHeader = () => (
                 <div className='flex gap-1'>
                     <Button variant='single' icon={MenuIcon} color='ut-gray' />
                     <div className='flex items-center'>
-                        <img src={calIcon} className='min-w-[48px] max-w-[48px]' alt='UT Registration Plus Logo' />
+                        <img src={calIcon} className='max-w-[48px] min-w-[48px]' alt='UT Registration Plus Logo' />
                         <div className='flex flex-col whitespace-nowrap'>
-                            <Text className='leading-trim text-cap font-roboto text-base text-ut-burntorange font-medium'>
+                            <Text className='leading-trim font-roboto text-cap text-base text-ut-burntorange font-medium'>
                                 UT Registration
                             </Text>
                             <Text className='leading-trim text-cap font-roboto text-base text-ut-orange font-medium'>

@@ -1,3 +1,4 @@
+import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
 import { Course } from 'src/shared/types/Course';
@@ -28,6 +29,14 @@ async function fetchDescription(course: Course): Promise<string[]> {
     return course.description;
 }
 
+/**
+ * Renders the description component.
+ *
+ * @component
+ * @param {DescriptionProps} props - The component props.
+ * @param {string[]} props.lines - The lines of text to render.
+ * @returns {JSX.Element} The rendered description component.
+ */
 const Description: React.FC<DescriptionProps> = ({ course }: DescriptionProps) => {
     const [description, setDescription] = React.useState<string[]>([]);
     const [status, setStatus] = React.useState<LoadStatus>(LoadStatus.LOADING);

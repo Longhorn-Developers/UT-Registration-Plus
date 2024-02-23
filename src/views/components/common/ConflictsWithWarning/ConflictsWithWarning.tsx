@@ -1,6 +1,7 @@
-import React from 'react';
-import { Course } from 'src/shared/types/Course';
 import clsx from 'clsx';
+import React from 'react';
+import type { Course } from 'src/shared/types/Course';
+
 import Text from '../Text/Text';
 
 /**
@@ -28,9 +29,7 @@ export default function ConflictsWithWarning({ className, conflicts }: Conflicts
         >
             <div>Conflicts With:</div>
             {conflicts.map(course => (
-                <div>
-                    {`${course.department} ${course.number} (${course.uniqueId})`}
-                </div>
+                <div>{`${course.department} ${course.number} (${course.uniqueId})`}</div>
             ))}
         </Text>
     );

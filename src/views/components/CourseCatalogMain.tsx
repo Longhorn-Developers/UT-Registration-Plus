@@ -1,10 +1,11 @@
-import { Course, ScrapedRow } from '@shared/types/Course';
+import type { Course, ScrapedRow } from '@shared/types/Course';
 import React, { useEffect, useState } from 'react';
+
 import { useKeyPress } from '../hooks/useKeyPress';
 import useSchedules from '../hooks/useSchedules';
 import { CourseCatalogScraper } from '../lib/CourseCatalogScraper';
 import getCourseTableRows from '../lib/getCourseTableRows';
-import { SiteSupport } from '../lib/getSiteSupport';
+import type { SiteSupport } from '../lib/getSiteSupport';
 import { populateSearchInputs } from '../lib/populateSearchInputs';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
 import AutoLoad from './injected/AutoLoad/AutoLoad';
