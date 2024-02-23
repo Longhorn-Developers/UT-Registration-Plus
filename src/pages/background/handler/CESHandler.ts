@@ -1,5 +1,6 @@
-import { MessageHandler } from 'chrome-extension-toolkit';
-import { CESMessage } from 'src/shared/messages/CESMessage';
+import type { MessageHandler } from 'chrome-extension-toolkit';
+import type CESMessage from 'src/shared/messages/CESMessage';
+
 import openNewTab from '../util/openNewTab';
 
 const CESHandler: MessageHandler<CESMessage> = {
