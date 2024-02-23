@@ -9,23 +9,6 @@ import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import styles from './CalendarGrid.module.scss';
 
-/*  const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
-const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
-const grid = [];
-for (let i = 0; i < 13; i++) {
-    const row = [];
-    let hour = hoursOfDay[i];
-    row.push(
-        <div key={hour} className={styles.timeBlock}>
-            <div className={styles.timeLabelContainer}>
-                <p>{(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}</p>
-            </div>
-        </div>
-    );
-    row.push(Array.from({ length: 5 }, (_, j) => <CalendarCell key={j} />));
-    grid.push(row);
-}   */
-
 interface Props {
     courseCells?: CalendarGridCourse[];
     saturdayClass?: boolean;
@@ -92,16 +75,10 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                 </div>
             );
             for (let k = 0; k < 5; k++) {
-                //  let shouldRender = false;
                 styleProp = {
                     gridColumn: `${k + 2}`,
                     gridRow: `${2 * i + 2} / ${2 * i + 4}`,
                 };
-                /*  let shouldRenderChild = courseCells[iterator]?.calendarGridPoint && 
-                k === courseCells[iterator].calendarGridPoint.dayIndex && i === courseCells[iterator].calendarGridPoint.startIndex;
-                let childElement = <div className={styles.dot}/>;   */
-                /*  let completeGridCell = shouldRenderChild ? <CalendarCell key={k} children={childElement}/>  
-                : <CalendarCell key={k} />;     */
                 row.push(<CalendarCell key={k} styleProp={styleProp} />);
             }
             newGrid.push(row);
@@ -120,22 +97,6 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
             ))}
             {grid.map((row, rowIndex) => row)}
             {courseCells ? <AccountForCourseConflicts courseCells={courseCells}/> : null}
-            {/*     courseCells.map((block: CalendarGridCourse) => (
-                        <div
-                            key={`${block}`}
-                            style={{
-                                gridColumn: `${block.calendarGridPoint.dayIndex + 1}`,
-                                gridRow: `${block.calendarGridPoint.startIndex + 1} / ${block.calendarGridPoint.endIndex + 1}`,
-                            }}
-                        >
-                            <CalendarCourseCell
-                                courseDeptAndInstr={block.componentProps.courseDeptAndInstr}
-                                timeAndLocation={block.componentProps.timeAndLocation}
-                                status={block.componentProps.status}
-                                colors={block.componentProps.colors}
-                            />
-                        </div>
-                        ))  */}
         </div>
     );
 }

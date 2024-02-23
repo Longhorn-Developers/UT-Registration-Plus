@@ -14,6 +14,17 @@ import { handleOpenCalendar } from './injected/CourseCatalogInjectedPopup/Headin
 import { openTabFromContentScript } from '../lib/openNewTabFromContentScript';
 
 
+/**
+ * Opens the settings page in new tab.
+ */
+export const handleOpenOptions = async () => { //  Not sure if it's bad practice to export this
+    const url = chrome.runtime.getURL('/src/pages/options/index.html');
+    await openTabFromContentScript(url);
+};
+
+/**
+ * Chrome extension main popup (when you click extension icon)
+ */
 export default function PopupMain() {
    const [activeSchedule] = useSchedules();
 
@@ -26,10 +37,7 @@ export default function PopupMain() {
         />
     ));
 
-    const handleOpenOptions = async () => { //  Not sure if it's bad practice to export this
-        const url = chrome.runtime.getURL('/src/pages/options/index.html');
-        await openTabFromContentScript(url);
-    };
+    
 
     return (
         <ExtensionRoot>
