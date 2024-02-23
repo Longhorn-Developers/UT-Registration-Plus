@@ -3,7 +3,7 @@ import { CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import { CourseSchedule } from '@shared/types/CourseSchedule';
 import Instructor from '@shared/types/Instructor';
 import type { Meta, StoryObj } from '@storybook/react';
-import CalendarCourse from 'src/views/components/calendar/CalendarCourseBlock/CalendarCourseMeeting';
+import CalendarCourse from '@views/components/calendar/CalendarCourseBlock/CalendarCourseMeeting';
 
 const meta = {
     title: 'Components/Calendar/CalendarCourseMeeting',

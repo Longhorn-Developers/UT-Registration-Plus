@@ -1,9 +1,9 @@
+import { Course, Status } from '@shared/types/Course';
+import { CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
+import { CourseSchedule } from '@shared/types/CourseSchedule';
+import Instructor from '@shared/types/Instructor';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Course, Status } from 'src/shared/types/Course';
-import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
-import { CourseSchedule } from 'src/shared/types/CourseSchedule';
-import Instructor from 'src/shared/types/Instructor';
-import CourseCatalogInjectedPopup from 'src/views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
+import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 
 const exampleCourse: Course = new Course({
     uniqueId: 50805,

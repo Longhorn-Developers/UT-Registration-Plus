@@ -1,13 +1,13 @@
 import { Course, Status } from '@shared/types/Course';
+import { CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
+import { CourseSchedule } from '@shared/types/CourseSchedule';
+import Instructor from '@shared/types/Instructor';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import type { Meta, StoryObj } from '@storybook/react';
+import Dropdown from '@views/components/common/Dropdown/Dropdown';
+import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
 import type { Serialized } from 'chrome-extension-toolkit';
 import React from 'react';
-import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
-import { CourseSchedule } from 'src/shared/types/CourseSchedule';
-import Instructor from 'src/shared/types/Instructor';
-import Dropdown from 'src/views/components/common/Dropdown/Dropdown';
-import ScheduleListItem from 'src/views/components/common/ScheduleListItem/ScheduleListItem';
 
 const meta: Meta<typeof Dropdown> = {
     title: 'Components/Common/Dropdown',

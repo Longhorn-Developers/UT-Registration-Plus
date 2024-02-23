@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Calendar } from 'src/views/components/calendar/Calendar/Calendar';
+import { Calendar } from '@views/components/calendar/Calendar/Calendar';
 
 const meta = {
     title: 'Components/Calendar/Calendar',

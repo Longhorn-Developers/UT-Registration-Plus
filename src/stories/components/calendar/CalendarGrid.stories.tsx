@@ -1,8 +1,8 @@
 import { Status } from '@shared/types/Course';
 import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
+import CalendarGrid from '@views/components/calendar/CalendarGrid/CalendarGrid';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import CalendarGrid from 'src/views/components/calendar/CalendarGrid/CalendarGrid';
 
 const meta = {
     title: 'Components/Calendar/CalendarGrid',

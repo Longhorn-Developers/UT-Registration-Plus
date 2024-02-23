@@ -1,11 +1,11 @@
 import { Course, Status } from '@shared/types/Course';
+import { CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
+import { CourseSchedule } from '@shared/types/CourseSchedule';
+import Instructor from '@shared/types/Instructor';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import type { Meta, StoryObj } from '@storybook/react';
+import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules/CalendarSchedules';
 import React from 'react';
-import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
-import { CourseSchedule } from 'src/shared/types/CourseSchedule';
-import Instructor from 'src/shared/types/Instructor';
-import { CalendarSchedules } from 'src/views/components/calendar/CalendarSchedules/CalendarSchedules';
 
 const meta = {
     title: 'Components/Calendar/CalendarSchedules',

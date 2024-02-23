@@ -1,7 +1,7 @@
+import { colorsFlattened } from '@shared/util/themeColors';
 import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from '@views/components/common/Button/Button';
 import React from 'react';
-import { colorsFlattened } from 'src/shared/util/themeColors';
-import { Button } from 'src/views/components/common/Button/Button';
 
 import AddIcon from '~icons/material-symbols/add';
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';

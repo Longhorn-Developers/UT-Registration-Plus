@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import Card from '@views/components/common/Card/Card';
 import React from 'react';
-import Card from 'src/views/components/common/Card/Card';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {

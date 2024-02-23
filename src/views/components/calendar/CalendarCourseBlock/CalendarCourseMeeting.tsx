@@ -27,6 +27,8 @@ export interface CalendarCourseMeetingProps {
 const CalendarCourseMeeting: React.FC<CalendarCourseMeetingProps> = ({
     course,
     meetingIdx,
+    color,
+    rightIcon,
 }: CalendarCourseMeetingProps) => {
     let meeting: CourseMeeting | null = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : null;
     return (

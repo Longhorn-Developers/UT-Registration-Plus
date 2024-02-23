@@ -1,9 +1,9 @@
+import { Course, Status } from '@shared/types/Course';
+import { CourseMeeting } from '@shared/types/CourseMeeting';
+import Instructor from '@shared/types/Instructor';
+import { UserSchedule } from '@shared/types/UserSchedule';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Course, Status } from 'src/shared/types/Course';
-import { CourseMeeting } from 'src/shared/types/CourseMeeting';
-import Instructor from 'src/shared/types/Instructor';
-import { UserSchedule } from 'src/shared/types/UserSchedule';
-import CoursePopup from 'src/views/components/injected/CoursePopupOld/CoursePopup';
+import CoursePopup from '@views/components/injected/CoursePopupOld/CoursePopup';
 
 const exampleCourse: Course = new Course({
     courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',
