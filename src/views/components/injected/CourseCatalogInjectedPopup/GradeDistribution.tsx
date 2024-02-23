@@ -137,6 +137,7 @@ const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
 
     return (
         <div className='pb-[25px] pt-[12px]'>
+            {/* TODO (achadaga): again would be nice to have an updated spinner */}
             {status === DataStatus.LOADING && <Spinner />}
             {status === DataStatus.NOT_FOUND && (
                 <HighchartsReact
@@ -144,7 +145,9 @@ const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
                     highcharts={Highcharts}
                     options={{
                         ...chartOptions,
-                        title: { text: 'No grade distribution data available' },
+                        title: {
+                            text: `There is currently no grade distribution data for ${course.department} ${course.number}`,
+                        },
                         tooltip: { enabled: false },
                     }}
                 />

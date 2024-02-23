@@ -58,7 +58,7 @@ const bevoCourse: Course = new Course({
     department: 'BVO',
     creditHours: 3,
     status: Status.OPEN,
-    instructors: [new Instructor({ fullName: 'BEVO', firstName: 'BEVO', lastName: 'BEVO', middleInitial: '' })],
+    instructors: [new Instructor({ fullName: 'BEVO', firstName: '', lastName: 'BEVO', middleInitial: '' })],
     isReserved: false,
     description: [
         'Restricted to Students in the School of Longhorn Enthusiasts',

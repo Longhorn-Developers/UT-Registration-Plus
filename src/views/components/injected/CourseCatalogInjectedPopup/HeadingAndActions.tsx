@@ -60,7 +60,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
 
     const getInstructorFullName = (instructor: Instructor) => {
         const { firstName, lastName } = instructor;
-        if (firstName === '') return lastName;
+        if (firstName === '') return capitalizeString(lastName);
         return `${capitalizeString(firstName)} ${capitalizeString(lastName)}`;
     };
 
@@ -118,7 +118,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
                         <CloseIcon className='h-7 w-7' />
                     </button>
                 </div>
-                <div className='flex gap-2.5 flex-content-center'>
+                <div className='flex gap-2 flex-content-center'>
                     {instructorString.length > 0 && (
                         <Text variant='h4' className='inline-flex items-center justify-center'>
                             with {instructorString}
