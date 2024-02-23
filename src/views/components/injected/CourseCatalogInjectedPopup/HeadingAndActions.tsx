@@ -6,8 +6,9 @@ import React, { useState } from 'react';
 import { background } from 'src/shared/messages';
 import type { Course } from 'src/shared/types/Course';
 import { Status } from 'src/shared/types/Course';
-import Instructor from 'src/shared/types/Instructor';
+import type Instructor from 'src/shared/types/Instructor';
 import type { UserSchedule } from 'src/shared/types/UserSchedule';
+
 import Add from '~icons/material-symbols/add';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
 import CloseIcon from '~icons/material-symbols/close';
@@ -166,7 +167,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
                     {!courseAdded ? 'Add Course' : 'Remove Course'}
                 </Button>
             </div>
-            <Divider size={'100%'} orientation='horizontal' />
+            <Divider size='100%' orientation='horizontal' />
         </div>
     );
 };

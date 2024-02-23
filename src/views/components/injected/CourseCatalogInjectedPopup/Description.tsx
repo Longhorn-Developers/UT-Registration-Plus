@@ -1,20 +1,22 @@
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
-import { Course } from 'src/shared/types/Course';
+import type { Course } from 'src/shared/types/Course';
 import { CourseCatalogScraper } from 'src/views/lib/CourseCatalogScraper';
 import { SiteSupport } from 'src/views/lib/getSiteSupport';
+
 import Spinner from '../../common/Spinner/Spinner';
 
 interface DescriptionProps {
     course: Course;
 }
 
-enum LoadStatus {
-    LOADING = 'LOADING',
-    DONE = 'DONE',
-    ERROR = 'ERROR',
-}
+const LoadStatus = {
+    LOADING: 'LOADING',
+    DONE: 'DONE',
+    ERROR: 'ERROR',
+} as const;
+type LoadStatusType = keyof typeof LoadStatus;
 
 async function fetchDescription(course: Course): Promise<string[]> {
     if (!course.description?.length) {
@@ -38,7 +40,7 @@ async function fetchDescription(course: Course): Promise<string[]> {
  */
 const Description: React.FC<DescriptionProps> = ({ course }: DescriptionProps) => {
     const [description, setDescription] = React.useState<string[]>([]);
-    const [status, setStatus] = React.useState<LoadStatus>(LoadStatus.LOADING);
+    const [status, setStatus] = React.useState<LoadStatusType>(LoadStatus.LOADING);
 
     React.useEffect(() => {
         fetchDescription(course)
