@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
-import { Meta, StoryObj } from '@storybook/react';
-=======
 import { Course, Status } from '@shared/types/Course';
 import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
@@ -10,11 +7,8 @@ import { CourseMeeting, DAY_MAP } from 'src/shared/types/CourseMeeting';
 import { CourseSchedule } from 'src/shared/types/CourseSchedule';
 import Instructor from 'src/shared/types/Instructor';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
->>>>>>> Stashed changes
 import CalendarGrid from 'src/views/components/calendar/CalendarGrid/CalendarGrid';
-import { getCourseColors } from '@shared/util/colors';
-import { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import { Status } from '@shared/types/Course';
+
 
 const meta = {
     title: 'Components/Calendar/CalendarGrid',
@@ -29,9 +23,6 @@ const meta = {
 } satisfies Meta<typeof CalendarGrid>;
 export default meta;
 
-<<<<<<< Updated upstream
-const testData: CalendarGridCourse[] = [
-=======
 const exampleCourse: Course = new Course({
     uniqueId: 50805,
     number: '314',
@@ -84,7 +75,6 @@ const exampleSchedule = new UserSchedule({
 } as Serialized<UserSchedule>);
 
 export const exampleCalendarGridCourses: CalendarGridCourse[] = [
->>>>>>> Stashed changes
     {
         calendarGridPoint: {
             dayIndex: 4,

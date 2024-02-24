@@ -1,26 +1,17 @@
 import { Status } from '@shared/types/Course';
 import React from 'react';
 import calIcon from 'src/assets/logo.png';
-
 import MenuIcon from '~icons/material-symbols/menu';
-<<<<<<< Updated upstream
 import LogoIcon from '~icons/material-symbols/add-circle-outline';
 import UndoIcon from '~icons/material-symbols/undo';
-=======
->>>>>>> Stashed changes
 import RedoIcon from '~icons/material-symbols/redo';
 import SettingsIcon from '~icons/material-symbols/settings';
-import UndoIcon from '~icons/material-symbols/undo';
-
 import { Button } from '../../common/Button/Button';
 import CourseStatus from '../../common/CourseStatus/CourseStatus';
-<<<<<<< Updated upstream
-import { handleOpenOptions } from '../../PopupMain';
-=======
 import Divider from '../../common/Divider/Divider';
 import ScheduleTotalHoursAndCourses from '../../common/ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
 import Text from '../../common/Text/Text';
->>>>>>> Stashed changes
+import { handleOpenOptions } from '../../PopupMain';
 
 const CalendarHeader = () => (
     <div className='min-h-79px min-w-672px flex px-0 py-15'>
@@ -29,15 +20,9 @@ const CalendarHeader = () => (
                 <div className='flex gap-1'>
                     <Button variant='single' icon={MenuIcon} color='ut-gray' />
                     <div className='flex items-center'>
-<<<<<<< Updated upstream
-                        <LogoIcon style={{ marginRight: '5px' }} />
-                        <div className='flex flex-col gap-1 whitespace-nowrap'>
-                            <Text className='leading-trim text-cap font-roboto text-base text-ut-burntorange font-medium'>
-=======
                         <img src={calIcon} className='max-w-[48px] min-w-[48px]' alt='UT Registration Plus Logo' />
                         <div className='flex flex-col whitespace-nowrap'>
                             <Text className='leading-trim font-roboto text-cap text-base text-ut-burntorange font-medium'>
->>>>>>> Stashed changes
                                 UT Registration
                             </Text>
                             <Text className='leading-trim text-cap font-roboto text-base text-ut-orange font-medium'>

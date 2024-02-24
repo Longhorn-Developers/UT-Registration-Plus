@@ -128,7 +128,7 @@ export class CourseMeeting {
 /**
  * Options to control the format of the time string
  */
-type TimeStringOptions = {
+export type TimeStringOptions = {
     /** the separator between the start and end times */
     separator: string;
     /** capitalizes the AM/PM */

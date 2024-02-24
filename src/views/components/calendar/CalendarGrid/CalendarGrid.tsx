@@ -5,6 +5,7 @@ import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
 /*  import calIcon from 'src/assets/icons/cal.svg';
 import pngIcon from 'src/assets/icons/png.svg';
 */
+import { getCourseColors } from 'src/shared/util/colors';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import styles from './CalendarGrid.module.scss';
@@ -20,12 +21,12 @@ interface Props {
  * @param props
  */
 function CalendarGrid({ courseCells, saturdayClass, setShowPopup }: React.PropsWithChildren<Props>): JSX.Element {
-    const [grid, setGrid] = useState([]);
+    //  const [grid, setGrid] = useState([]);
     const calendarRef = useRef(null); // Create a ref for the calendar grid
 
     const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
     const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
-
+    console.log(courseCells);
     /*  const saveAsPNG = () => {
         htmlToImage
             .toPng(calendarRef.current, {
@@ -59,33 +60,33 @@ function CalendarGrid({ courseCells, saturdayClass, setShowPopup }: React.PropsW
             });
     };  */
 
-    useEffect(() => {
-        const newGrid = [];
-        for (let i = 0; i < 13; i++) {
-            const row = [];
-            let hour = hoursOfDay[i];
-            let styleProp = {
-                gridColumn: '1',
-                gridRow: `${2 * i + 2}`,
-            };
-            row.push(
-                <div key={hour} className={styles.timeBlock} style={styleProp}>
-                    <div className={styles.timeLabelContainer}>
-                        <p>{(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}</p>
-                    </div>
+
+    const grid = [];
+    for (let i = 0; i < 13; i++) {
+        const row = [];
+        let hour = hoursOfDay[i];
+        let styleProp = {
+            gridColumn: '1',
+            gridRow: `${2 * i + 2}`,
+        };
+        row.push(
+            <div key={hour} className={styles.timeBlock} style={styleProp}>
+                <div className={styles.timeLabelContainer}>
+                    <p>{(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}</p>
                 </div>
-            );
-            for (let k = 0; k < 5; k++) {
-                styleProp = {
-                    gridColumn: `${k + 2}`,
-                    gridRow: `${2 * i + 2} / ${2 * i + 4}`,
-                };
-                row.push(<CalendarCell key={k} styleProp={styleProp} />);
-            }
-            newGrid.push(row);
+            </div>
+        );
+        for (let k = 0; k < 5; k++) {
+            styleProp = {
+                gridColumn: `${k + 2}`,
+                gridRow: `${2 * i + 2} / ${2 * i + 4}`,
+            };
+            row.push(<CalendarCell key={k} styleProp={styleProp} />);
         }
-        setGrid(newGrid);
-    }, []);
+        grid.push(row);
+    }
+    //  setGrid(newGrid);
+
 
     return (
         <div className={styles.calendarGrid}>
@@ -154,8 +155,8 @@ function AccountForCourseConflicts({ courseCells, setShowPopup }: AccountForCour
         <div
             key={`${block}`}
             style={{
-                gridColumn: `${block.calendarGridPoint.dayIndex + 1}`,
-                gridRow: `${block.calendarGridPoint.startIndex + 1} / ${block.calendarGridPoint.endIndex + 1}`,
+                gridColumn: `${block.calendarGridPoint.dayIndex + 2}`,
+                gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
                 width: `calc(100% / ${block.totalColumns})`,
                 marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`,
                 padding: '0px 10px 4px 0px',
@@ -165,7 +166,7 @@ function AccountForCourseConflicts({ courseCells, setShowPopup }: AccountForCour
                 courseDeptAndInstr={block.componentProps.courseDeptAndInstr}
                 timeAndLocation={block.componentProps.timeAndLocation}
                 status={block.componentProps.status}
-                colors={block.componentProps.colors}
+                colors={getCourseColors('emerald', 500) /*  block.componentProps.colors */}
                 onClick={() => setShowPopup(true)}
             />
         </div>

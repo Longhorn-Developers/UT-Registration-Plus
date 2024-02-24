@@ -3,7 +3,6 @@ import { Course } from 'src/shared/types/Course';
 import { exampleCourse } from 'src/stories/components/PopupCourseBlock.stories';
 import CalendarHeader from 'src/views/components/calendar/CalendarHeader/CalenderHeader';
 import { useFlattenedCourseSchedule } from 'src/views/hooks/useFlattenedCourseSchedule';
-
 import CourseCatalogInjectedPopup from '../../injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarBottomBar } from '../CalendarBottomBar/CalendarBottomBar';
 import CalendarGrid from '../CalendarGrid/CalendarGrid';
@@ -23,6 +22,7 @@ interface Props {
 export function Calendar(): JSX.Element {
     const courseCells = useFlattenedCourseSchedule();
     const [showPopup, setShowPopup] = React.useState<boolean>(false);
+    console.log(courseCells);
     return (
         <>
             <CalendarHeader />

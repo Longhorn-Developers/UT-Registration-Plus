@@ -1,13 +1,7 @@
 import Popup from '@views/components/common/Popup/Popup';
 import React from 'react';
-<<<<<<< Updated upstream
 import { Course } from 'src/shared/types/Course';
 import { UserSchedule } from 'src/shared/types/UserSchedule';
-=======
-import type { Course } from 'src/shared/types/Course';
-import type { UserSchedule } from 'src/shared/types/UserSchedule';
-
->>>>>>> Stashed changes
 import Description from './Description';
 import GradeDistribution from './GradeDistribution';
 import HeadingAndActions from './HeadingAndActions';
