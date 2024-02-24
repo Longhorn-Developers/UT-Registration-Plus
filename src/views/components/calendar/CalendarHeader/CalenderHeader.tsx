@@ -12,12 +12,8 @@ import RedoIcon from '~icons/material-symbols/redo';
 import SettingsIcon from '~icons/material-symbols/settings';
 import UndoIcon from '~icons/material-symbols/undo';
 
-/**
- * Renders the header component for the calendar.
- * @returns The CalendarHeader component.
- */
-const CalendarHeader = () => (
-    <div className='min-h-79px min-w-672px flex px-0 py-15'>
+const CalendarHeader = ( { totalHours, totalCourses, scheduleName } ) => (
+    <div className='min-h-79px min-w-672px w-full flex px-0 py-15'>
         <div className='flex flex-row gap-20'>
             <div className='flex gap-10'>
                 <div className='flex gap-1'>

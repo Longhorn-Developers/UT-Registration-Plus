@@ -177,13 +177,13 @@ export const exampleCalendarGridCourses: CalendarGridCourse[] = [
             colors: getCourseColors('emerald', 500),
         },
     },
-];
+];  */
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+/*  export const Default: Story = {
     args: {
         saturdayClass: true,
         courseCells: exampleCalendarGridCourses,
     },
-};
+};  */

@@ -10,18 +10,19 @@ import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 
 import styles from './CalendarGrid.module.scss';
 
+
 interface Props {
     courseCells?: CalendarGridCourse[];
     saturdayClass?: boolean;
-    setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
+    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 }
 
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  * @param props
  */
-function CalendarGrid({ courseCells, saturdayClass, setShowPopup }: React.PropsWithChildren<Props>): JSX.Element {
-    const [grid, setGrid] = useState([]);
+function CalendarGrid({ courseCells, saturdayClass, setCourse }: React.PropsWithChildren<Props>): JSX.Element {
+    //  const [grid, setGrid] = useState([]);
     const calendarRef = useRef(null); // Create a ref for the calendar grid
 
     const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
@@ -60,33 +61,32 @@ function CalendarGrid({ courseCells, saturdayClass, setShowPopup }: React.PropsW
             });
     };  */
 
-    useEffect(() => {
-        const newGrid = [];
-        for (let i = 0; i < 13; i++) {
-            const row = [];
-            let hour = hoursOfDay[i];
-            let styleProp = {
-                gridColumn: '1',
-                gridRow: `${2 * i + 2}`,
-            };
-            row.push(
-                <div key={hour} className={styles.timeBlock} style={styleProp}>
-                    <div className={styles.timeLabelContainer}>
-                        <p>{(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}</p>
-                    </div>
+
+    const grid = [];
+    for (let i = 0; i < 13; i++) {
+        const row = [];
+        let hour = hoursOfDay[i];
+        let styleProp = {
+            gridColumn: '1',
+            gridRow: `${2 * i + 2}`,
+        };
+        row.push(
+            <div key={hour} className={styles.timeBlock} style={styleProp}>
+                <div className={styles.timeLabelContainer}>
+                    <p>{(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}</p>
                 </div>
-            );
-            for (let k = 0; k < 5; k++) {
-                styleProp = {
-                    gridColumn: `${k + 2}`,
-                    gridRow: `${2 * i + 2} / ${2 * i + 4}`,
-                };
-                row.push(<CalendarCell key={k} styleProp={styleProp} />);
-            }
-            newGrid.push(row);
+            </div>
+        );
+        for (let k = 0; k < 5; k++) {
+            styleProp = {
+                gridColumn: `${k + 2}`,
+                gridRow: `${2 * i + 2} / ${2 * i + 4}`,
+            };
+            row.push(<CalendarCell key={k} styleProp={styleProp} />);
         }
-        setGrid(newGrid);
-    }, [hoursOfDay]);
+        grid.push(row);
+    }
+
 
     return (
         <div className={styles.calendarGrid}>
@@ -98,7 +98,7 @@ function CalendarGrid({ courseCells, saturdayClass, setShowPopup }: React.PropsW
                 </div>
             ))}
             {grid.map((row, rowIndex) => row)}
-            {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setShowPopup={setShowPopup}/> : null}
+            {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse}/> : null}
         </div>
     );
 }
@@ -107,10 +107,10 @@ export default CalendarGrid;
 
 interface AccountForCourseConflictsProps {
     courseCells: CalendarGridCourse[];
-    setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
+    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 }
 
-function AccountForCourseConflicts({ courseCells, setShowPopup }: AccountForCourseConflictsProps): JSX.Element[] {
+function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce((acc, cell: CalendarGridCourse) => {
         const { dayIndex } = cell.calendarGridPoint;
@@ -136,11 +136,9 @@ function AccountForCourseConflicts({ courseCells, setShowPopup }: AccountForCour
                         otherCell.calendarGridPoint.startIndex < cell.calendarGridPoint.endIndex &&
                         otherCell.calendarGridPoint.endIndex > cell.calendarGridPoint.startIndex;
                     if (isOverlapping) {
-                        console.log('Found overlapping element');
                         // Adjust columnIndex to not overlap with the otherCell
                         if (otherCell.gridColumnStart && otherCell.gridColumnStart >= columnIndex) {
                             columnIndex = otherCell.gridColumnStart + 1;
-                            console.log(columnIndex);
                         }
                         cell.totalColumns += 1;
                     }
@@ -150,6 +148,9 @@ function AccountForCourseConflicts({ courseCells, setShowPopup }: AccountForCour
             cell.gridColumnEnd = columnIndex + 1;
         });
     });
+
+    //  Part of TODO: block.course is definitely a course object
+    console.log(courseCells);
 
     return courseCells.map(block => (
         <div
@@ -166,8 +167,8 @@ function AccountForCourseConflicts({ courseCells, setShowPopup }: AccountForCour
                 courseDeptAndInstr={block.componentProps.courseDeptAndInstr}
                 timeAndLocation={block.componentProps.timeAndLocation}
                 status={block.componentProps.status}
-                colors={block.componentProps.colors}
-                onClick={() => setShowPopup(true)}
+                colors={getCourseColors('emerald', 500) /*  block.componentProps.colors */}
+                onClick={() => setCourse(block.course)}
             />
         </div>
     ));

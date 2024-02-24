@@ -12,14 +12,15 @@ export type Props = {
     active?: boolean;
     name: string;
     dragHandleProps?: any;
+    onClick?: (index) => void;
 };
 
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
 export default function ScheduleListItem(props: Props) {
-    const { dragHandleProps } = props;
-    console.log(props);
+    const { dragHandleProps, onClick } = props;
+
     return (
         <div style={{ ...props.style }} className='items-center'>
             <li className='w-100% flex cursor-pointer items-center self-stretch justify-left text-ut-burntorange'>
@@ -31,7 +32,8 @@ export default function ScheduleListItem(props: Props) {
                         <DragIndicatorIcon className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
                     </div>
                     <div className='inline-flex items-center justify-center gap-1.5'>
-                        <div className='h-5.5 w-5.5 flex items-center justify-center border-2px border-current rounded-full btn-transition group-active:scale-95'>
+                        <div className='h-5.5 w-5.5 flex items-center justify-center border-2px border-current rounded-full btn-transition group-active:scale-95'
+                            onClick={onClick}>
                             <div
                                 className={clsx(
                                     'bg-current h-3 w-3 rounded-full transition tansform scale-100 ease-out-expo duration-250',
