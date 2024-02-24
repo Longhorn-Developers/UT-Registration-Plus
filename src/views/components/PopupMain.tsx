@@ -10,8 +10,13 @@ import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInje
 import useSchedules from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
-import { FaCalendarAlt, FaCog, FaRedo } from 'react-icons/fa'; // Added FaRedo for the refresh icon
 import { TestColors } from 'src/stories/components/PopupCourseBlock.stories';
+
+import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
+import RedoIcon from '~icons/material-symbols/redo';
+import SettingsIcon from '~icons/material-symbols/settings';
+
+import { Button } from './common/Button/Button';
 
 /**
  * Renders the main popup component.
@@ -46,27 +51,25 @@ export default function PopupMain() {
                         </div>
                     </div>
                     <div className='flex items-center'>
-                        <button
-                            style={{ backgroundColor: '#bf5700', borderRadius: '8px', padding: '8px' }}
+                        <Button
+                            className='rounded-lg px-4 py-2'
                             onClick={handleOpenCalendar}
+                            variant='filled'
+                            color='ut-burntorange'
                         >
-                            <FaCalendarAlt color='white' />
-                        </button>
-                        <button
-                            style={{
-                                backgroundColor: 'white',
-                                marginLeft: '10px',
-                                borderRadius: '8px',
-                                padding: '8px',
-                                boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-                            }}
+                            <CalendarMonthIcon className='text-white' />
+                        </Button>
+                        <Button
+                            className='ml-10 rounded-lg px-4 py-2 shadow-sm'
                             onClick={handleOpenOptions}
+                            variant='filled'
+                            color='ut-offwhite'
                         >
-                            <FaCog color='#C05621' />
-                        </button>
+                            <SettingsIcon className='text-ut-burntorange' />
+                        </Button>
                     </div>
                 </div>
-                <Divider color='#E2E8F0' type='solid' style={{ margin: '1rem 0' }} />
+                <Divider orientation='horizontal' size='width' />
                 <div
                     className='mb-4 rounded-lg bg-white p-2 text-left shadow-inner'
                     style={{ backgroundColor: 'white', border: '1px solid #FBD38D', borderRadius: '0.5rem' }}
@@ -152,7 +155,7 @@ export default function PopupMain() {
                         <Text as='div' variant='mini'>
                             DATA UPDATED ON: 12:00 AM 02/01/2024
                         </Text>
-                        <FaRedo className='ml-2 h-4 w-4 text-gray-600' />
+                        <RedoIcon className='ml-2 h-4 w-4 text-gray' />
                     </div>
                 </div>
             </div>
