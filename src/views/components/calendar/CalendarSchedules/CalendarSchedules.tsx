@@ -1,6 +1,8 @@
-import { UserSchedule } from '@shared/types/UserSchedule';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import React, { useState } from 'react';
+
 import AddSchedule from '~icons/material-symbols/add';
+
 import List from '../../common/List/List';
 import ScheduleListItem from '../../common/ScheduleListItem/ScheduleListItem';
 import Text from '../../common/Text/Text';

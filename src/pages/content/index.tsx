@@ -1,7 +1,7 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
 import CourseCatalogMain from '@views/components/CourseCatalogMain';
 import getSiteSupport, { SiteSupport } from '@views/lib/getSiteSupport';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 
 const support = getSiteSupport(window.location.href);
 

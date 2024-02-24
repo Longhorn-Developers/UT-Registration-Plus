@@ -1,6 +1,7 @@
+import type { Color } from '@views/styles/colors.module.scss';
 import clsx from 'clsx';
 import React from 'react';
-import { Color } from '@views/styles/colors.module.scss';
+
 import styles from './Divider.module.scss';
 
 export type Props = {

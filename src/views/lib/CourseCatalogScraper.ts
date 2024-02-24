@@ -1,7 +1,8 @@
-import { Course, InstructionMode, ScrapedRow, Semester, Status } from '@shared/types/Course';
+import type { InstructionMode, ScrapedRow, Semester} from '@shared/types/Course';
+import { Course, Status } from '@shared/types/Course';
 import { CourseSchedule } from '@shared/types/CourseSchedule';
 import Instructor from '@shared/types/Instructor';
-import { SiteSupport } from '@views/lib/getSiteSupport';
+import type { SiteSupport } from '@views/lib/getSiteSupport';
 
 /**
  * The selectors that we use to scrape the course catalog list table (https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/results/?fos_fl=C+S&level=U&search_type_main=FIELD)

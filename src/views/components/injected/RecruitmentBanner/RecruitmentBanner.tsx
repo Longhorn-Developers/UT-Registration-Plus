@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+
 import Link from '../../common/Link/Link';
 import Text from '../../common/Text/Text';
 import styles from './RecruitmentBanner.module.scss';

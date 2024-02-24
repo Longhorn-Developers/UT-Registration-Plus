@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { Calendar } from 'src/views/components/calendar/Calendar/Calendar';
 
 const meta = {

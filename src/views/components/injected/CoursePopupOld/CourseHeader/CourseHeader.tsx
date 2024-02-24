@@ -1,15 +1,17 @@
-import { Course } from '@shared/types/Course';
-import { UserSchedule } from '@shared/types/UserSchedule';
-import React from 'react';
+import type { Course } from '@shared/types/Course';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import Card from '@views/components/common/Card/Card';
 import Icon from '@views/components/common/Icon/Icon';
 import Link from '@views/components/common/Link/Link';
 import Text from '@views/components/common/Text/Text';
+import React from 'react';
 import { Button } from 'src/views/components/common/Button/Button';
+
+import CloseIcon from '~icons/material-symbols/close';
+import CopyIcon from '~icons/material-symbols/content-copy';
+
 import CourseButtons from './CourseButtons/CourseButtons';
 import styles from './CourseHeader.module.scss';
-import CopyIcon from '~icons/material-symbols/content-copy';
-import CloseIcon from '~icons/material-symbols/close';
 
 type Props = {
     course: Course;
@@ -40,7 +42,7 @@ export default function CourseHeader({ course, activeSchedule, onClose }: Props)
                     <Button icon={CopyIcon} variant='single' className='mr-1 px-2' color='ut-burntorange'>
                         {course.uniqueId}
                     </Button>
-                    <button className='btn bg-transparent p-0'>
+                    <button className='bg-transparent p-0 btn'>
                         <CloseIcon className='h-7 w-7' />
                     </button>
                 </div>

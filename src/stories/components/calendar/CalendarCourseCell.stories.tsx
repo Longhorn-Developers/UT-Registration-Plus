@@ -1,8 +1,9 @@
 import { Course, Status } from '@shared/types/Course';
 import { getCourseColors } from '@shared/util/colors';
-import { Meta, StoryObj } from '@storybook/react';
-import CalendarCourseCell from 'src/views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
+import CalendarCourseCell from 'src/views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+
 import { exampleCourse } from '../PopupCourseBlock.stories';
 
 const meta = {

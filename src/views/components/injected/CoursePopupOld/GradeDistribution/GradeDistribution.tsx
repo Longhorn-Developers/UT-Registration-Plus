@@ -1,9 +1,6 @@
-/* eslint-disable no-nested-ternary */
-import { Course, Semester } from '@shared/types/Course';
-import { Distribution, LetterGrade } from '@shared/types/Distribution';
-import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
-import React, { useEffect, useRef, useState } from 'react';
+ 
+import type { Course, Semester } from '@shared/types/Course';
+import type { Distribution, LetterGrade } from '@shared/types/Distribution';
 import Card from '@views/components/common/Card/Card';
 import Icon from '@views/components/common/Icon/Icon';
 import Spinner from '@views/components/common/Spinner/Spinner';
@@ -14,6 +11,10 @@ import {
     querySemesterDistribution,
 } from '@views/lib/database/queryDistribution';
 import colors from '@views/styles/colors.module.scss';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import React, { useEffect, useRef, useState } from 'react';
+
 import styles from './GradeDistribution.module.scss';
 
 enum DataStatus {

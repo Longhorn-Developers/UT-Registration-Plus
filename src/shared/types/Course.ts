@@ -1,6 +1,7 @@
-/* eslint-disable max-classes-per-file */
-import { Serialized } from 'chrome-extension-toolkit';
-import { CourseMeeting } from './CourseMeeting';
+ 
+import type { Serialized } from 'chrome-extension-toolkit';
+
+import type { CourseMeeting } from './CourseMeeting';
 import { CourseSchedule } from './CourseSchedule';
 import Instructor from './Instructor';
 

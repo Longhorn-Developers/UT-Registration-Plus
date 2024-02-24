@@ -1,9 +1,11 @@
 import { Disclosure, Transition } from '@headlessui/react';
-import { UserSchedule } from '@shared/types/UserSchedule';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import React from 'react';
 import userScheduleHandler from 'src/pages/background/handler/userScheduleHandler';
+
 import DropdownArrowDown from '~icons/material-symbols/arrow-drop-down';
 import DropdownArrowUp from '~icons/material-symbols/arrow-drop-up';
+
 import List from '../List/List';
 import Text from '../Text/Text';
 
@@ -62,7 +64,7 @@ export default function Dropdown(props: Props) {
                 <Disclosure.Button>
                     <div className='flex items-center border-none bg-white p-3 text-left'>
                         <div className='flex-1'>
-                            <Text as='div' variant='h4' className='text-ut-burntorange mb-1 w-100%'>
+                            <Text as='div' variant='h4' className='mb-1 w-100% text-ut-burntorange'>
                                 MAIN SCHEDULE:
                             </Text>
                             <div>
@@ -74,7 +76,7 @@ export default function Dropdown(props: Props) {
                                 </Text>
                             </div>
                         </div>
-                        <Text className='text-ut-burntorange text-2xl font-normal'>
+                        <Text className='text-2xl text-ut-burntorange font-normal'>
                             {expanded ? <DropdownArrowDown /> : <DropdownArrowUp />}
                         </Text>
                     </div>

@@ -1,6 +1,7 @@
-import React from 'react';
-import { Course } from 'src/shared/types/Course';
 import clsx from 'clsx';
+import React from 'react';
+import type { Course } from 'src/shared/types/Course';
+
 import Text from '../Text/Text';
 
 /**

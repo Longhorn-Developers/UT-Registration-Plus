@@ -1,10 +1,11 @@
-import { Course } from '@shared/types/Course';
-import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import type { Course } from '@shared/types/Course';
 import Spinner from '@views/components/common/Spinner/Spinner';
 import Text from '@views/components/common/Text/Text';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import { SiteSupport } from '@views/lib/getSiteSupport';
+import clsx from 'clsx';
+import React, { useEffect, useState } from 'react';
+
 import Card from '../../../common/Card/Card';
 import styles from './CourseDescription.module.scss';
 
