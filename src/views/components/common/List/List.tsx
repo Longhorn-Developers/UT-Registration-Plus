@@ -1,5 +1,5 @@
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
-import React, { ReactElement, useCallback, useState } from 'react';
+import React, { ReactElement, useCallback, useState, useEffect } from 'react';
 import { areEqual } from 'react-window';
 
 /*
@@ -84,7 +84,11 @@ const Row: React.FC<RowProps> = React.memo(({ data: { items, gap }, index, style
  */
 const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, listWidth, gap = 12 }: ListProps) => {
     const [items, setItems] = useState(() => initial(draggableElements));
-
+    
+    useEffect(() => {
+        setItems(initial(draggableElements));
+    }, [draggableElements]);
+    
     const onDragEnd = useCallback(
         result => {
             if (!result.destination) {
@@ -113,8 +117,7 @@ const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, 
                         const transform = style?.transform;
 
                         if (snapshot.isDragging && transform) {
-                            console.log(transform);
-                            let [, _x, y] = transform.match(/translate\(([-\d]+)px, ([-\d]+)px\)/) || [];
+                            let [, , y] = transform.match(/translate\(([-\d]+)px, ([-\d]+)px\)/) || [];
 
                             style.transform = `translate3d(0px, ${y}px, 0px)`; // Apply constrained y value
                         }

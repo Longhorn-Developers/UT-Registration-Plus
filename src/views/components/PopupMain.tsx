@@ -12,6 +12,7 @@ import List from './common/List/List'; // Ensure this path is correctly pointing
 import useSchedules from '../hooks/useSchedules';
 import { handleOpenCalendar } from './injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import { openTabFromContentScript } from '../lib/openNewTabFromContentScript';
+import { act } from 'react-dom/test-utils';
 
 
 /**
@@ -26,8 +27,11 @@ export const handleOpenOptions = async () => { //  Not sure if it's bad practice
  * Chrome extension main popup (when you click extension icon)
  */
 export default function PopupMain() {
-   const [activeSchedule] = useSchedules();
-
+   const [activeSchedule, schedules] = useSchedules();
+   const coursesLength = activeSchedule ? activeSchedule.courses.length : 0;
+   if (!activeSchedule) {
+       return;
+   }
    
    const draggableElements = activeSchedule?.courses.map((course, i) => (
         <PopupCourseBlock
@@ -62,10 +66,10 @@ export default function PopupMain() {
                 </div>
                 <Divider color="#E2E8F0" type="solid" style={{ margin: '1rem 0' }} />
                 <div className="mb-4 rounded-lg bg-white p-2 text-left shadow-inner" style={{ backgroundColor: 'white', border: '1px solid #FBD38D', borderRadius: '0.5rem' }}>
-                    <Text as="div" variant="h2-course" style={{ color: '#DD6B20', fontSize: '1.2rem' }}>MAIN SCHEDULE:</Text>
+                    <Text as="div" variant="h2-course" style={{ color: '#DD6B20', fontSize: '1.2rem' }}>{`${activeSchedule.name}`}:</Text>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'start', color: '#333f48' }}>
-                        <Text as="div" variant="h1" style={{ fontSize: '1.2rem', fontWeight: 'bold', marginRight: '0.5rem' }}>22 HOURS</Text>
-                        <Text as="div" variant="h2-course" style={{ fontSize: '1.2rem' }}>8 Courses</Text>
+                        <Text as="div" variant="h1" style={{ fontSize: '1.2rem', fontWeight: 'bold', marginRight: '0.5rem' }}>{`${activeSchedule.hours} HOURS`}</Text>
+                        <Text as="div" variant="h2-course" style={{ fontSize: '1.2rem' }}>{`${coursesLength} HOURS`}</Text>
                     </div>
                 </div>
                 {/* Integrate the List component here */}

@@ -13,8 +13,8 @@ import ScheduleTotalHoursAndCourses from '../../common/ScheduleTotalHoursAndCour
 import Text from '../../common/Text/Text';
 import { handleOpenOptions } from '../../PopupMain';
 
-const CalendarHeader = () => (
-    <div className='min-h-79px min-w-672px flex px-0 py-15'>
+const CalendarHeader = ( { totalHours, totalCourses, scheduleName } ) => (
+    <div className='min-h-79px min-w-672px w-full flex px-0 py-15'>
         <div className='flex flex-row gap-20'>
             <div className='flex gap-10'>
                 <div className='flex gap-1'>
@@ -32,7 +32,7 @@ const CalendarHeader = () => (
                     </div>
                 </div>
                 <div className='flex flex-col'>
-                    <ScheduleTotalHoursAndCourses scheduleName='SCHEDULE' totalHours={22} totalCourses={8} />
+                    <ScheduleTotalHoursAndCourses scheduleName={scheduleName} totalHours={totalHours} totalCourses={totalCourses} />
                     DATA UPDATED ON: 12:00 AM 02/01/2024
                 </div>
             </div>

@@ -1,7 +1,9 @@
 import type { CalendarCourseCellProps } from 'src/views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import { CourseMeeting, TimeStringOptions } from 'src/shared/types/CourseMeeting';
-import type { Status } from 'src/shared/types/Course';
+import type { Status, Course } from 'src/shared/types/Course';
 import useSchedules from './useSchedules';
+import { UserSchedule } from 'src/shared/types/UserSchedule';
+
 
 
 const dayToNumber: { [day: string]: number } = {
@@ -18,15 +20,25 @@ interface CalendarGridPoint {
     endIndex: number;
 }
 
+interface componentProps {
+    calendarCourseCellProps: CalendarCourseCellProps; 
+}
+
 /**
  * Return type of useFlattenedCourseSchedule
  */
 export interface CalendarGridCourse {
     calendarGridPoint: CalendarGridPoint;
     componentProps: CalendarCourseCellProps;
+    course: Course;
     gridColumnStart?: number;
     gridColumnEnd?: number;
     totalColumns?: number;
+}
+
+export interface FlattenedCourseSchedule {
+    courseCells: CalendarGridCourse[];
+    activeSchedule?: UserSchedule;
 }
 
 const convertMinutesToIndex = (minutes: number): number => Math.floor((minutes - 420) / 30);
@@ -35,14 +47,35 @@ const convertMinutesToIndex = (minutes: number): number => Math.floor((minutes -
  * Get the active schedule, and convert it to be render-able into a calendar.
  * @returns CalendarGridCourse
  */
-export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
+export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const [activeSchedule] = useSchedules();
-    if (!activeSchedule) {
-        return [];
-    }
-    const { courses } = activeSchedule;
 
-    return courses
+    if (!activeSchedule) {
+        return {
+            courseCells: [] as CalendarGridCourse[],
+            activeSchedule: {
+                name: 'Something may have went wrong',
+                courses: [],
+                hours: 0,
+            } as UserSchedule,
+        } as FlattenedCourseSchedule;
+    }
+    else if (activeSchedule.courses.length === 0) {
+        return {
+            courseCells: [] as CalendarGridCourse[],
+            activeSchedule: {
+                name: activeSchedule.name,
+                courses: activeSchedule.courses,
+                hours: activeSchedule.hours,
+                containsCourse: activeSchedule.containsCourse,
+            } as UserSchedule,
+        } as FlattenedCourseSchedule;
+
+    }
+
+    const { courses, name, hours } = activeSchedule;
+
+    const processedCourses = courses
         .flatMap(course => {
             const {
                 status,
@@ -56,7 +89,7 @@ export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
                 schedule: { meetings: CourseMeeting[] };
             };
             const courseDeptAndInstr = `${department} ${instructors[0].lastName}`;
-
+    
             if (meetings.length === 0) {
                 // asynch, online course
                 return [
@@ -75,10 +108,11 @@ export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
                                 secondaryColor: 'ut-gray',
                             },
                         },
-                    },
+                        course,
+                    } as CalendarGridCourse,
                 ];
             }
-
+    
             // in-person
             return meetings.flatMap((meeting) => {
                 const { days, startTime, endTime, location } = meeting;
@@ -101,6 +135,7 @@ export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
                             secondaryColor: 'ut-orange',
                         },
                     },
+                    course,
                 }));
             });
         })
@@ -113,6 +148,12 @@ export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
             }
             return a.calendarGridPoint.endIndex - b.calendarGridPoint.endIndex;
         });
+    
+    return {
+        courseCells: processedCourses as CalendarGridCourse[],
+        activeSchedule: { name, courses, hours } as UserSchedule,
+    } as FlattenedCourseSchedule;
+
 }
 
 function getTimeString(options: TimeStringOptions, startTime: number, endTime: number): string {

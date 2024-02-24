@@ -5,28 +5,30 @@ import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
 /*  import calIcon from 'src/assets/icons/cal.svg';
 import pngIcon from 'src/assets/icons/png.svg';
 */
+import { Course } from 'src/shared/types/Course';
 import { getCourseColors } from 'src/shared/util/colors';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import styles from './CalendarGrid.module.scss';
 
+
 interface Props {
     courseCells?: CalendarGridCourse[];
     saturdayClass?: boolean;
-    setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
+    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 }
 
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  * @param props
  */
-function CalendarGrid({ courseCells, saturdayClass, setShowPopup }: React.PropsWithChildren<Props>): JSX.Element {
+function CalendarGrid({ courseCells, saturdayClass, setCourse }: React.PropsWithChildren<Props>): JSX.Element {
     //  const [grid, setGrid] = useState([]);
     const calendarRef = useRef(null); // Create a ref for the calendar grid
 
     const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
     const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
-    console.log(courseCells);
+
     /*  const saveAsPNG = () => {
         htmlToImage
             .toPng(calendarRef.current, {
@@ -85,7 +87,6 @@ function CalendarGrid({ courseCells, saturdayClass, setShowPopup }: React.PropsW
         }
         grid.push(row);
     }
-    //  setGrid(newGrid);
 
 
     return (
@@ -98,7 +99,7 @@ function CalendarGrid({ courseCells, saturdayClass, setShowPopup }: React.PropsW
                 </div>
             ))}
             {grid.map((row, rowIndex) => row)}
-            {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setShowPopup={setShowPopup}/> : null}
+            {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse}/> : null}
         </div>
     );
 }
@@ -107,10 +108,10 @@ export default CalendarGrid;
 
 interface AccountForCourseConflictsProps {
     courseCells: CalendarGridCourse[];
-    setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
+    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 }
 
-function AccountForCourseConflicts({ courseCells, setShowPopup }: AccountForCourseConflictsProps): JSX.Element[] {
+function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce((acc, cell: CalendarGridCourse) => {
         const { dayIndex } = cell.calendarGridPoint;
@@ -136,11 +137,9 @@ function AccountForCourseConflicts({ courseCells, setShowPopup }: AccountForCour
                         otherCell.calendarGridPoint.startIndex < cell.calendarGridPoint.endIndex &&
                         otherCell.calendarGridPoint.endIndex > cell.calendarGridPoint.startIndex;
                     if (isOverlapping) {
-                        console.log('Found overlapping element');
                         // Adjust columnIndex to not overlap with the otherCell
                         if (otherCell.gridColumnStart && otherCell.gridColumnStart >= columnIndex) {
                             columnIndex = otherCell.gridColumnStart + 1;
-                            console.log(columnIndex);
                         }
                         cell.totalColumns += 1;
                     }
@@ -150,6 +149,9 @@ function AccountForCourseConflicts({ courseCells, setShowPopup }: AccountForCour
             cell.gridColumnEnd = columnIndex + 1;
         });
     });
+
+    //  Part of TODO: block.course is definitely a course object
+    console.log(courseCells);
 
     return courseCells.map(block => (
         <div
@@ -167,7 +169,7 @@ function AccountForCourseConflicts({ courseCells, setShowPopup }: AccountForCour
                 timeAndLocation={block.componentProps.timeAndLocation}
                 status={block.componentProps.status}
                 colors={getCourseColors('emerald', 500) /*  block.componentProps.colors */}
-                onClick={() => setShowPopup(true)}
+                onClick={() => setCourse(block.course)}
             />
         </div>
     ));

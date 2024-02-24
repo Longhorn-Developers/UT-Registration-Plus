@@ -1,11 +1,12 @@
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import useSchedules from 'src/views/hooks/useSchedules';
+import createSchedule from 'src/pages/background/lib/createSchedule';
 import AddSchedule from '~icons/material-symbols/add';
-
 import List from '../../common/List/List';
 import ScheduleListItem from '../../common/ScheduleListItem/ScheduleListItem';
 import Text from '../../common/Text/Text';
+import switchSchedule from 'src/pages/background/lib/switchSchedule';
 
 export type Props = {
     style?: React.CSSProperties;
@@ -14,12 +15,42 @@ export type Props = {
 };
 
 export function CalendarSchedules(props: Props) {
-    const [activeScheduleIndex, setActiveScheduleIndex] = useState(props.dummyActiveIndex || 0);
-    const [schedules, setSchedules] = useState(props.dummySchedules || []);
+    const [activeScheduleIndex, setActiveScheduleIndex] = useState(0);
+    const [newSchedule, setNewSchedule] = useState('');
+    const [activeSchedule, schedules] = useSchedules();
 
-    const scheduleComponents = schedules.map((schedule, index) => (
-        <ScheduleListItem active={index === activeScheduleIndex} name={schedule.name} />
-    ));
+    useEffect(() => {
+        const index = schedules.findIndex(schedule => schedule.name === activeSchedule.name);
+        if (index !== -1) {
+            setActiveScheduleIndex(index);
+        }
+    }, [activeSchedule, schedules]);
+
+    const handleKeyDown = (event) => {
+        if (event.code === 'Enter') {
+            createSchedule(newSchedule);
+            setNewSchedule(''); 
+        }
+    };
+
+    const handleScheduleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewSchedule(e.target.value);
+    };
+
+    const selectItem = (index: number) => {
+        setActiveScheduleIndex(index);
+        switchSchedule(schedules[index].name);
+    };
+
+    const scheduleComponents = schedules.map((schedule, index) => {
+        return (
+            <ScheduleListItem
+                active={index === activeScheduleIndex}
+                name={schedule.name}
+                onClick={() => selectItem(index)}
+            />
+        );
+    });
 
     return (
         <div style={{ ...props.style }} className='items-center'>
@@ -31,8 +62,11 @@ export function CalendarSchedules(props: Props) {
                     </Text>
                 </div>
             </div>
-
-            <List gap={10} draggableElements={scheduleComponents} itemHeight={30} listHeight={30} listWidth={240} />
+            <div className="flex flex-col space-y-2.5">
+                <List gap={10} draggableElements={scheduleComponents} itemHeight={30} listHeight={30} listWidth={240} />
+                <input type="text" placeholder='Enter new schedule' value={newSchedule} 
+                onChange={handleScheduleInputChange} onKeyDown={handleKeyDown}/>
+            </div>
         </div>
     );
 }

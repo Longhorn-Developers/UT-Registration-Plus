@@ -30,7 +30,7 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
             UserScheduleStore.removeListener(l1);
             UserScheduleStore.removeListener(l2);
         };
-    }, []);
+    }, [activeIndex, schedules]);
 
     return [activeSchedule, schedules];
 }

@@ -39,7 +39,7 @@ export const handleOpenCalendar = async () => { //  Not sure if it's bad practic
  */
 const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, activeSchedule }) => {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
-    const courseAdded = activeSchedule.courses.some(course => course.uniqueId === uniqueId);
+    const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
 
     const instructorString = instructors
         .map(instructor => {

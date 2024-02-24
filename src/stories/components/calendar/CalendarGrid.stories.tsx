@@ -74,7 +74,7 @@ const exampleSchedule = new UserSchedule({
     hours: 3,
 } as Serialized<UserSchedule>);
 
-export const exampleCalendarGridCourses: CalendarGridCourse[] = [
+/*  export const exampleCalendarGridCourses: CalendarGridCourse[] = [
     {
         calendarGridPoint: {
             dayIndex: 4,
@@ -166,13 +166,13 @@ export const exampleCalendarGridCourses: CalendarGridCourse[] = [
             colors: getCourseColors('emerald', 500),
         },
     },
-];
+];  */
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+/*  export const Default: Story = {
     args: {
         saturdayClass: true,
         courseCells: exampleCalendarGridCourses,
     },
-};
+};  */

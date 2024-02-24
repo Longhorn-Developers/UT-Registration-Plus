@@ -13,12 +13,12 @@ interface CourseCatalogInjectedPopupProps {
 }
 
 const CourseCatalogInjectedPopup: React.FC<CourseCatalogInjectedPopupProps> = ({ course, activeSchedule, onClose }) => (
-    <Popup overlay className='max-w-[780px] px-6' onClose={onClose}>
-        <div className='flex flex-col'>
-            <HeadingAndActions course={course} onClose={onClose} activeSchedule={activeSchedule} />
-            <Description lines={course.description} />
-            <GradeDistribution course={course} />
-        </div>
-    </Popup>
-);
+        <Popup overlay className='max-w-[780px] px-6' onClose={onClose}>
+            <div className='flex flex-col'>
+                <HeadingAndActions course={course} onClose={onClose} activeSchedule={activeSchedule} />
+                <Description lines={course.description} />
+                <GradeDistribution course={course} />
+            </div>
+        </Popup>
+    )
 export default CourseCatalogInjectedPopup;
