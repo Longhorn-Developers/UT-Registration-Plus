@@ -10,8 +10,11 @@ import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInje
 import useSchedules from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
-import { FaCalendarAlt, FaCog, FaRedo } from 'react-icons/fa'; // Added FaRedo for the refresh icon
 import { TestColors } from 'src/stories/components/PopupCourseBlock.stories';
+
+import CalendarIcon from '~icons/material-symbols/calendar-month';
+import RefreshIcon from '~icons/material-symbols/refresh';
+import SettingsIcon from '~icons/material-symbols/settings';
 
 /**
  * Renders the main popup component.
@@ -50,7 +53,7 @@ export default function PopupMain() {
                             style={{ backgroundColor: '#bf5700', borderRadius: '8px', padding: '8px' }}
                             onClick={handleOpenCalendar}
                         >
-                            <FaCalendarAlt color='white' />
+                            <CalendarIcon color='white' />
                         </button>
                         <button
                             style={{
@@ -62,7 +65,7 @@ export default function PopupMain() {
                             }}
                             onClick={handleOpenOptions}
                         >
-                            <FaCog color='#C05621' />
+                            <SettingsIcon color='#C05621' />
                         </button>
                     </div>
                 </div>
@@ -152,7 +155,7 @@ export default function PopupMain() {
                         <Text as='div' variant='mini'>
                             DATA UPDATED ON: 12:00 AM 02/01/2024
                         </Text>
-                        <FaRedo className='ml-2 h-4 w-4 text-gray-600' />
+                        <RefreshIcon className='ml-2 h-4 w-4 text-gray-600' />
                     </div>
                 </div>
             </div>
