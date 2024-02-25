@@ -50,7 +50,6 @@ const CalendarHeader = () => (
                 </div>
             </div>
         </div>
-        <Divider type='solid' />
     </div>
 );
 
