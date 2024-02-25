@@ -1,10 +1,11 @@
 import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
-import { getCourseColors, TestColors } from '@shared/util/colors';
+import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import React from 'react';
+import { tailwindColorways } from 'src/shared/util/storybook';
 
 /**
  * Represents an example course.
@@ -103,7 +104,7 @@ export const Variants: Story = {
 export const AllColors: Story = {
     render: props => (
         <div className='grid grid-flow-col grid-cols-2 grid-rows-9 max-w-2xl w-90vw gap-x-4 gap-y-2'>
-            {TestColors.map((color, i) => (
+            {tailwindColorways.map((color, i) => (
                 <PopupCourseBlock key={color.primaryColor} course={ExampleCourse} colors={color} />
             ))}
         </div>
