@@ -36,7 +36,9 @@ const CalendarHeader = () => (
                 </div>
                 <div className='flex flex-col'>
                     <ScheduleTotalHoursAndCourses scheduleName='SCHEDULE' totalHours={22} totalCourses={8} />
-                    DATA UPDATED ON: 12:00 AM 02/01/2024
+                    <Text variant='h4' className='text-gray text-xs font-medium leading-normal'>
+                        DATA UPDATED ON: 12:00 AM 02/01/2024
+                    </Text>
                 </div>
             </div>
             <div className='flex flex-row items-center space-x-8'>
