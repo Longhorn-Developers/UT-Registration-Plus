@@ -6,7 +6,6 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
 import calIcon from 'src/assets/logo.png';
-
 import MenuIcon from '~icons/material-symbols/menu';
 import RedoIcon from '~icons/material-symbols/redo';
 import SettingsIcon from '~icons/material-symbols/settings';
@@ -21,20 +20,17 @@ const CalendarHeader = () => (
         <div className='flex flex-row gap-20'>
             <div className='flex gap-10'>
                 <div className='flex gap-1'>
-                    <Button variant='single' icon={MenuIcon} color='ut-gray' />
-                    <div className='flex items-center'>
+                    <Button className='self-center' variant='single' icon={MenuIcon} color='ut-gray' />
+                    <div className='flex items-center gap-2'>
                         <img src={calIcon} className='max-w-[48px] min-w-[48px]' alt='UT Registration Plus Logo' />
                         <div className='flex flex-col whitespace-nowrap'>
-                            <Text className='leading-trim font-roboto text-cap text-base text-ut-burntorange font-medium'>
-                                UT Registration
-                            </Text>
-                            <Text className='leading-trim text-cap font-roboto text-base text-ut-orange font-medium'>
-                                Plus
-                            </Text>
+                            <Text className='text-lg text-ut-burntorange font-medium'>UT Registration</Text>
+                            <Text className='text-lg text-ut-orange font-medium'>Plus</Text>
                         </div>
                     </div>
                 </div>
-                <div className='flex flex-col'>
+                <Divider className='self-center' size='2.5rem' orientation='vertical'></Divider>
+                <div className='flex flex-col self-center'>
                     <ScheduleTotalHoursAndCourses scheduleName='SCHEDULE' totalHours={22} totalCourses={8} />
                     <Text variant='h4' className='text-gray text-xs font-medium leading-normal'>
                         DATA UPDATED ON: 12:00 AM 02/01/2024
