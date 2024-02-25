@@ -1,5 +1,6 @@
 import logoImage from '@assets/logo.png'; // Adjust the path as necessary
 import { Status } from '@shared/types/Course';
+import { TestColors } from '@shared/util/colors';
 import { StatusIcon } from '@shared/util/icons';
 import Divider from '@views/components/common/Divider/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
@@ -10,7 +11,6 @@ import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInje
 import useSchedules from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
-import { TestColors } from '@shared/util/colors';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
