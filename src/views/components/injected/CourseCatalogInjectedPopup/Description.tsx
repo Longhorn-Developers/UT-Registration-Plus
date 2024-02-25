@@ -1,11 +1,10 @@
+import type { Course } from '@shared/types/Course';
+import Spinner from '@views/components/common/Spinner/Spinner';
 import Text from '@views/components/common/Text/Text';
+import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
+import { SiteSupport } from '@views/lib/getSiteSupport';
 import clsx from 'clsx';
 import React from 'react';
-import type { Course } from 'src/shared/types/Course';
-import { CourseCatalogScraper } from 'src/views/lib/CourseCatalogScraper';
-import { SiteSupport } from 'src/views/lib/getSiteSupport';
-
-import Spinner from '../../common/Spinner/Spinner';
 
 interface DescriptionProps {
     course: Course;
@@ -16,7 +15,7 @@ const LoadStatus = {
     DONE: 'DONE',
     ERROR: 'ERROR',
 } as const;
-type LoadStatusType = keyof typeof LoadStatus;
+type LoadStatusType = (typeof LoadStatus)[keyof typeof LoadStatus];
 
 async function fetchDescription(course: Course): Promise<string[]> {
     if (!course.description?.length) {

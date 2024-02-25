@@ -22,7 +22,7 @@ const DataStatus = {
     NOT_FOUND: 'NOT_FOUND',
     ERROR: 'ERROR',
 } as const;
-type DataStatusType = keyof typeof DataStatus;
+type DataStatusType = (typeof DataStatus)[keyof typeof DataStatus];
 
 const GRADE_COLORS = {
     A: colors.gradeDistribution.a,

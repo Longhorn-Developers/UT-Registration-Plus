@@ -1,7 +1,7 @@
+import type { Course } from '@shared/types/Course';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import Popup from '@views/components/common/Popup/Popup';
 import React from 'react';
-import type { Course } from 'src/shared/types/Course';
-import type { UserSchedule } from 'src/shared/types/UserSchedule';
 
 import Description from './Description';
 import GradeDistribution from './GradeDistribution';

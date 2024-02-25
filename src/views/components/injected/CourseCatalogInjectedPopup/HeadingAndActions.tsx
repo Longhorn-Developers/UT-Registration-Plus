@@ -1,13 +1,13 @@
+import { background } from '@shared/messages';
+import type { Course } from '@shared/types/Course';
+import { Status } from '@shared/types/Course';
+import type Instructor from '@shared/types/Instructor';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import { Button } from '@views/components/common/Button/Button';
 import { Chip, flagMap } from '@views/components/common/Chip/Chip';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
 import React, { useState } from 'react';
-import { background } from 'src/shared/messages';
-import type { Course } from 'src/shared/types/Course';
-import { Status } from 'src/shared/types/Course';
-import type Instructor from 'src/shared/types/Instructor';
-import type { UserSchedule } from 'src/shared/types/UserSchedule';
 
 import Add from '~icons/material-symbols/add';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
@@ -38,6 +38,8 @@ export const handleOpenCalendar = async (): Promise<void> => {
     openNewTab({ url });
 };
 
+const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
 /**
  * Renders the heading component for the CoursePopup component.
  *
@@ -57,8 +59,6 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
         activeSchedule !== undefined ? activeSchedule.courses.some(course => course.uniqueId === uniqueId) : false
     );
 
-    const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-
     const getInstructorFullName = (instructor: Instructor) => {
         const { firstName, lastName } = instructor;
         if (firstName === '') return capitalizeString(lastName);
@@ -66,9 +66,11 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
     };
 
     const instructorString = instructors.map(getInstructorFullName).join(', ');
+
     const handleCopy = () => {
         navigator.clipboard.writeText(uniqueId.toString());
     };
+    
     const handleOpenRateMyProf = async () => {
         const openTabs = instructors.map(instructor => {
             const instructorSearchTerm = getInstructorFullName(instructor);
@@ -78,6 +80,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
         });
         await Promise.all(openTabs);
     };
+
     const handleOpenCES = async () => {
         const openTabs = instructors.map(instructor => {
             let { firstName, lastName } = instructor;
@@ -87,11 +90,13 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
         });
         await Promise.all(openTabs);
     };
+
     const handleOpenPastSyllabi = async () => {
         // not specific to professor
         const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=${courseName}&unique=&instructor_first=&instructor_last=&course_type=In+Residence&search=Search`;
         openNewTab({ url });
     };
+
     const handleAddOrRemoveCourse = async () => {
         if (!activeSchedule) return;
         if (!courseAdded) {
@@ -101,6 +106,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
         }
         setCourseAdded(prev => !prev);
     };
+
     return (
         <div className='w-full pb-3 pt-6'>
             <div className='flex flex-col'>
