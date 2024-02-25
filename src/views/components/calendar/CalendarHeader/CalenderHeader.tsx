@@ -29,7 +29,7 @@ const CalendarHeader = () => (
                         </div>
                     </div>
                 </div>
-                <Divider className='self-center' size='2.5rem' orientation='vertical'></Divider>
+                <Divider className='self-center' size='2.5rem' orientation='vertical' />
                 <div className='flex flex-col self-center'>
                     <ScheduleTotalHoursAndCourses scheduleName='SCHEDULE' totalHours={22} totalCourses={8} />
                     <Text variant='h4' className='text-gray text-xs font-medium leading-normal'>
