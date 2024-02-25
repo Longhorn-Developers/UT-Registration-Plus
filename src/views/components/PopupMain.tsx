@@ -10,7 +10,7 @@ import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInje
 import useSchedules from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
-import { TestColors } from 'src/stories/components/PopupCourseBlock.stories';
+import { TestColors } from 'src/shared/util/colors';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
