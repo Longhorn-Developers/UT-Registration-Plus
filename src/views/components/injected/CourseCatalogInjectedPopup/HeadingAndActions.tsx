@@ -131,7 +131,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
             </div>
             <div className='my-3 flex flex-wrap items-center gap-[15px]'>
                 <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} onClick={handleOpenCalendar} />
-                <Divider type='solid' color='ut-offwhite' className='h-7' />
+                {/* <Divider type='solid' color='ut-offwhite' className='h-7' /> */}
                 <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
                     RateMyProf
                 </Button>
@@ -150,7 +150,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                     {!courseAdded ? 'Add Course' : 'Remove Course'}
                 </Button>
             </div>
-            <Divider />
+            {/* <Divider /> */}
         </div>
     );
 };

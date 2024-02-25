@@ -17,7 +17,7 @@ import TableRow from './injected/TableRow/TableRow';
 import TableSubheading from './injected/TableSubheading/TableSubheading';
 
 interface Props {
-    support: SiteSupport.COURSE_CATALOG_DETAILS | SiteSupport.COURSE_CATALOG_LIST;
+    support: any; // SiteSupport.COURSE_CATALOG_DETAILS | SiteSupport.COURSE_CATALOG_LIST;
 }
 
 /**

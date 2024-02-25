@@ -69,7 +69,7 @@ export default function PopupMain() {
                         </button>
                     </div>
                 </div>
-                <Divider color='#E2E8F0' type='solid' style={{ margin: '1rem 0' }} />
+                {/* <Divider color='#E2E8F0' type='solid' style={{ margin: '1rem 0' }} /> */}
                 <div
                     className='mb-4 rounded-lg bg-white p-2 text-left shadow-inner'
                     style={{ backgroundColor: 'white', border: '1px solid #FBD38D', borderRadius: '0.5rem' }}

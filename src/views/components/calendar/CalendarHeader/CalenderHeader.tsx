@@ -52,7 +52,7 @@ const CalendarHeader = () => (
                 </div>
             </div>
         </div>
-        <Divider type='solid' />
+        {/* <Divider type='solid' /> */}
     </div>
 );
 

@@ -1,3 +1,4 @@
+import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
@@ -15,7 +16,7 @@ import CancelledIcon from '~icons/material-symbols/warning';
 export interface CalendarCourseCellProps {
     courseDeptAndInstr: string;
     timeAndLocation?: string;
-    status: Status;
+    status: StatusType;
     colors: CourseColors;
     className?: string;
 }
