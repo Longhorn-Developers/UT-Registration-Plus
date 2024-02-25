@@ -53,7 +53,7 @@ export default function PopupMain() {
                             style={{ backgroundColor: '#bf5700', borderRadius: '8px', padding: '8px' }}
                             onClick={handleOpenCalendar}
                         >
-                            <CalendarIcon color='white' />
+                            <CalendarIcon className='text-white' />
                         </button>
                         <button
                             style={{
