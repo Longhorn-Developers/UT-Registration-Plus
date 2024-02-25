@@ -1,11 +1,10 @@
 import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
-import { getCourseColors } from '@shared/util/colors';
+import { getCourseColors, TestColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import React from 'react';
-import { theme } from 'unocss/preset-mini';
 
 /**
  * Represents an example course.
@@ -100,12 +99,6 @@ export const Variants: Story = {
         </div>
     ),
 };
-
-export const TestColors = Object.keys(theme.colors)
-    // check that the color is a colorway (is an object)
-    .filter(color => typeof theme.colors[color] === 'object')
-    .slice(0, 17)
-    .map(color => getCourseColors(color as keyof typeof theme.colors));
 
 export const AllColors: Story = {
     render: props => (
