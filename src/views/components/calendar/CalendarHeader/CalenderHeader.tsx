@@ -37,7 +37,7 @@ const CalendarHeader = () => (
                     </Text>
                 </div>
             </div>
-            <div className='flex flex-row items-center space-x-8'>
+            <div className='flex flex-row justify-end items-center space-x-8'>
                 <div className='flex flex-row space-x-4'>
                     <CourseStatus size='small' status={Status.WAITLISTED} />
                     <CourseStatus size='small' status={Status.CLOSED} />
