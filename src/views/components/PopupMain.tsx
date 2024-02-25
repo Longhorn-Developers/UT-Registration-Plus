@@ -35,59 +35,36 @@ export default function PopupMain() {
 
     return (
         <ExtensionRoot>
-            <div className='mx-auto max-w-sm rounded-lg bg-white p-4 shadow-md'>
+            <div className='mx-auto max-w-sm rounded bg-white p-4 shadow-md'>
                 <div className='mb-2 flex items-center justify-between bg-white'>
                     <div className='flex items-center'>
-                        <img src={logoImage} alt='Logo' style={{ width: '40px', height: '40px', marginRight: '8px' }} />
+                        <img src={logoImage} alt='Logo' className='mr-2 h-10 w-10.4' />
                         <div>
-                            <Text as='div' variant='h1-course' style={{ color: '#bf5700', fontSize: '1.3rem' }}>
+                            <Text as='div' variant='h1-course' className='color-ut-burntorange'>
                                 UT Registration
                             </Text>
-                            <Text as='div' variant='h1-course' style={{ color: '#f8971f', fontSize: '1.3rem' }}>
+                            <Text as='div' variant='h1-course' className='color-ut-orange'>
                                 Plus
                             </Text>
                         </div>
                     </div>
                     <div className='flex items-center'>
-                        <button
-                            style={{ backgroundColor: '#bf5700', borderRadius: '8px', padding: '8px' }}
-                            onClick={handleOpenCalendar}
-                        >
+                        <button className='rounded-lg bg-ut-burntorange p2' onClick={handleOpenCalendar}>
                             <CalendarIcon className='text-white' />
                         </button>
-                        <button
-                            style={{
-                                backgroundColor: 'white',
-                                marginLeft: '10px',
-                                borderRadius: '8px',
-                                padding: '8px',
-                                boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-                            }}
-                            onClick={handleOpenOptions}
-                        >
-                            <SettingsIcon color='#C05621' />
+                        <button className='bg-transparent btn' onClick={handleOpenOptions}>
+                            <SettingsIcon className='h-5 w-5 color-ut-black' />
                         </button>
                     </div>
                 </div>
-                <Divider color='#E2E8F0' type='solid' style={{ margin: '1rem 0' }} />
-                <div
-                    className='mb-4 rounded-lg bg-white p-2 text-left shadow-inner'
-                    style={{ backgroundColor: 'white', border: '1px solid #FBD38D', borderRadius: '0.5rem' }}
-                >
-                    <Text as='div' variant='h2-course' style={{ color: '#DD6B20', fontSize: '1.2rem' }}>
+                <Divider orientation='horizontal' className='my-4' size='100%' />
+                <div className='mb-4 border border-ut-offwhite rounded p-2 text-left'>
+                    <Text as='div' variant='h1-course' className='color-ut-burntorange'>
                         MAIN SCHEDULE:
                     </Text>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'start', color: '#333f48' }}>
-                        <Text
-                            as='div'
-                            variant='h1'
-                            style={{ fontSize: '1.2rem', fontWeight: 'bold', marginRight: '0.5rem' }}
-                        >
-                            22 HOURS
-                        </Text>
-                        <Text as='div' variant='h2-course' style={{ fontSize: '1.2rem' }}>
-                            8 Courses
-                        </Text>
+                    <div className='flex items-center justify-start gap2.5 color-ut-black'>
+                        <Text variant='h1'>22 HOURS</Text>
+                        <Text variant='h2-course'>8 Courses</Text>
                     </div>
                 </div>
                 {/* Integrate the List component here */}
@@ -100,49 +77,25 @@ export default function PopupMain() {
                         gap={12} // Spacing between items
                     />
                 ) : null}
-                <div className='mt-4 flex justify-between border-t border-gray-200 p-4 text-xs'>
-                    <div className='flex items-center'>
-                        <div
-                            style={{
-                                backgroundColor: '#6B7280',
-                                padding: '1px',
-                                borderRadius: '4px',
-                                marginRight: '3px',
-                                marginLeft: '8px',
-                            }}
-                        >
+                <div className='mt-4 flex gap-2 border-t border-gray-200 p-4 text-xs'>
+                    <div className='flex items-center gap-1'>
+                        <div className='rounded bg-ut-black p-1px'>
                             <StatusIcon status={Status.WAITLISTED} className='h-5 w-5 text-white' />
                         </div>
                         <Text as='span' variant='mini'>
                             WAITLISTED
                         </Text>
                     </div>
-                    <div className='flex items-center'>
-                        <div
-                            style={{
-                                backgroundColor: '#6B7280',
-                                padding: '1px',
-                                borderRadius: '4px',
-                                marginRight: '3px',
-                                marginLeft: '8px',
-                            }}
-                        >
+                    <div className='flex items-center gap-1'>
+                        <div className='rounded bg-ut-black p-1px'>
                             <StatusIcon status={Status.CLOSED} className='h-5 w-5 text-white' />
                         </div>
                         <Text as='span' variant='mini'>
                             CLOSED
                         </Text>
                     </div>
-                    <div className='flex items-center'>
-                        <div
-                            style={{
-                                backgroundColor: '#6B7280',
-                                padding: '1px',
-                                borderRadius: '4px',
-                                marginRight: '3px',
-                                marginLeft: '8px',
-                            }}
-                        >
+                    <div className='flex items-center gap-1'>
+                        <div className='rounded bg-ut-black p-1px'>
                             <StatusIcon status={Status.CANCELLED} className='h-5 w-5 text-white' />
                         </div>
                         <Text as='span' variant='mini'>
@@ -151,11 +104,9 @@ export default function PopupMain() {
                     </div>
                 </div>
                 <div className='mt-2 text-center text-xs'>
-                    <div className='inline-flex items-center justify-center'>
-                        <Text as='div' variant='mini'>
-                            DATA UPDATED ON: 12:00 AM 02/01/2024
-                        </Text>
-                        <RefreshIcon className='ml-2 h-4 w-4 text-gray-600' />
+                    <div className='inline-flex items-center justify-center text-ut-gray'>
+                        <Text variant='mini'>DATA UPDATED ON: 12:00 AM 02/01/2024</Text>
+                        <RefreshIcon className='ml-2 h-4 w-4 color-gray-600' />
                     </div>
                 </div>
             </div>
