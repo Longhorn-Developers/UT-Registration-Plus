@@ -5,7 +5,7 @@ import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import React from 'react';
-import { theme } from 'unocss/preset-mini';
+import { tailwindColorways } from 'src/shared/util/storybook';
 
 /**
  * Represents an example course.
@@ -101,16 +101,10 @@ export const Variants: Story = {
     ),
 };
 
-export const TestColors = Object.keys(theme.colors)
-    // check that the color is a colorway (is an object)
-    .filter(color => typeof theme.colors[color] === 'object')
-    .slice(0, 17)
-    .map(color => getCourseColors(color as keyof typeof theme.colors));
-
 export const AllColors: Story = {
     render: props => (
         <div className='grid grid-flow-col grid-cols-2 grid-rows-9 max-w-2xl w-90vw gap-x-4 gap-y-2'>
-            {TestColors.map((color, i) => (
+            {tailwindColorways.map((color, i) => (
                 <PopupCourseBlock key={color.primaryColor} course={ExampleCourse} colors={color} />
             ))}
         </div>
