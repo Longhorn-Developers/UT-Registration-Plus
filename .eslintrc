@@ -18,7 +18,14 @@
         "@unocss",
         "prettier",
     ],
-    "plugins": ["import", "jsdoc", "react-prefer-function-component", "@typescript-eslint", "simple-import-sort"],
+    "plugins": [
+        "import",
+        "jsdoc",
+        "react-prefer-function-component",
+        "@typescript-eslint",
+        "simple-import-sort",
+        "restrict-import-depth",
+    ],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly",
@@ -201,5 +208,6 @@
         "@typescript-eslint/consistent-type-imports": "error",
         "simple-import-sort/imports": "error",
         "simple-import-sort/exports": "error",
+        "restrict-import-depth/restrict-import-depth": "error",
     },
 }
