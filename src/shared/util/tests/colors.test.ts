@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getLuminance } from '../colors';
+import { getLuminance } from '@shared/util/colors';
 
 describe('getLuminance', () => {
     it('should return the correct luminance value for a given hex color', () => {
