@@ -1,12 +1,12 @@
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { Button } from '@views/components/common/Button/Button';
+import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 import AddIcon from '~icons/material-symbols/add-circle';
 
-import { Button } from '../../common/Button/Button';
-import ConflictsWithWarning from '../../common/ConflictsWithWarning/ConflictsWithWarning';
 import styles from './TableRow.module.scss';
 
 interface Props {
