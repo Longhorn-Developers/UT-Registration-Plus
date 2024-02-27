@@ -1,4 +1,4 @@
-import { Status, StatusType } from '@shared/types/Course';
+import { Status } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
@@ -15,7 +15,7 @@ import CancelledIcon from '~icons/material-symbols/warning';
 export interface CalendarCourseCellProps {
     courseDeptAndInstr: string;
     timeAndLocation?: string;
-    status: StatusType;
+    status: Status;
     colors: CourseColors;
     className?: string;
 }
@@ -27,7 +27,7 @@ export interface CalendarCourseCellProps {
  * @param {CalendarCourseCellProps} props - The component props.
  * @param {string} props.courseDeptAndInstr - The course department and instructor.
  * @param {string} props.timeAndLocation - The time and location of the course.
- * @param {StatusType} props.status - The status of the course.
+ * @param {Status} props.status - The status of the course.
  * @param {Colors} props.colors - The colors for styling the cell.
  * @param {string} props.className - Additional CSS class name for the cell.
  * @returns {JSX.Element} The rendered component.
