@@ -2,6 +2,7 @@ import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import { CourseSchedule } from '@shared/types/CourseSchedule';
 import Instructor from '@shared/types/Instructor';
+import { UserSchedule } from '@shared/types/UserSchedule';
 import type { Meta, StoryObj } from '@storybook/react';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 
@@ -50,6 +51,12 @@ const exampleCourse: Course = new Course({
     },
 });
 
+const exampleSchedule: UserSchedule = new UserSchedule({
+    courses: [exampleCourse],
+    name: 'Example Schedule',
+    hours: 0,
+});
+
 const meta: Meta<typeof CourseCatalogInjectedPopup> = {
     title: 'Components/Injected/CourseCatalogInjectedPopup',
     component: CourseCatalogInjectedPopup,
@@ -64,5 +71,6 @@ type Story = StoryObj<typeof CourseCatalogInjectedPopup>;
 export const Default: Story = {
     args: {
         course: exampleCourse,
+        activeSchedule: exampleSchedule,
     },
 };
