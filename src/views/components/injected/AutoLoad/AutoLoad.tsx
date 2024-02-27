@@ -2,9 +2,9 @@ import type { ScrapedRow } from '@shared/types/Course';
 import useInfiniteScroll from '@views/hooks/useInfiniteScroll';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import { SiteSupport } from '@views/lib/getSiteSupport';
+import type { AutoLoadStatusType } from '@views/lib/loadNextCourseCatalogPage';
 import {
     AutoLoadStatus,
-    AutoLoadStatusType,
     loadNextCourseCatalogPage,
     removePaginationButtons,
 } from '@views/lib/loadNextCourseCatalogPage';
