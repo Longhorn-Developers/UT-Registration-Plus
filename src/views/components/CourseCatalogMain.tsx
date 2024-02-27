@@ -11,12 +11,12 @@ import { useKeyPress } from '@views/hooks/useKeyPress';
 import useSchedules from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
-import type { SiteSupport, SiteSupportType } from '@views/lib/getSiteSupport';
+import type { SiteSupport } from '@views/lib/getSiteSupport';
 import { populateSearchInputs } from '@views/lib/populateSearchInputs';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 
 interface Props {
-    support: Extract<SiteSupportType, 'COURSE_CATALOG_DETAILS' | 'COURSE_CATALOG_LIST'>;
+    support: typeof SiteSupport.COURSE_CATALOG_DETAILS | typeof SiteSupport.COURSE_CATALOG_LIST;
 }
 
 /**
