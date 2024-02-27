@@ -5,7 +5,7 @@ import { useKeyPress } from '../hooks/useKeyPress';
 import useSchedules from '../hooks/useSchedules';
 import { CourseCatalogScraper } from '../lib/CourseCatalogScraper';
 import getCourseTableRows from '../lib/getCourseTableRows';
-import type { SiteSupport } from '../lib/getSiteSupport';
+import type { SiteSupport, SiteSupportType } from '../lib/getSiteSupport';
 import { populateSearchInputs } from '../lib/populateSearchInputs';
 import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
 import AutoLoad from './injected/AutoLoad/AutoLoad';
@@ -17,7 +17,7 @@ import TableRow from './injected/TableRow/TableRow';
 import TableSubheading from './injected/TableSubheading/TableSubheading';
 
 interface Props {
-    support: SiteSupport.COURSE_CATALOG_DETAILS | SiteSupport.COURSE_CATALOG_LIST;
+    support: typeof SiteSupport.COURSE_CATALOG_DETAILS | typeof SiteSupport.COURSE_CATALOG_LIST;
 }
 
 /**
