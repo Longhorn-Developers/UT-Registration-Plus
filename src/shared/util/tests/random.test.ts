@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import { generateRandomId } from '@shared/util/random';
+import { describe, expect, it } from 'vitest';
 
 describe('generateRandomId', () => {
     it('should generate a random ID with the specified length', () => {
