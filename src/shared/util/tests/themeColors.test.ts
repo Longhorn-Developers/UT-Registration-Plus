@@ -1,6 +1,5 @@
+import { getThemeColorHexByName, getThemeColorRgbByName, hexToRgb } from '@shared/util/themeColors';
 import { describe, expect, it } from 'vitest';
-
-import { getThemeColorHexByName, getThemeColorRgbByName, hexToRgb } from '../themeColors';
 
 describe('hexToRgb', () => {
     it('should convert hex color to RGB', () => {
