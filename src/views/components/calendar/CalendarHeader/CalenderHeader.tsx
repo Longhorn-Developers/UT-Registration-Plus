@@ -12,6 +12,9 @@ import RedoIcon from '~icons/material-symbols/redo';
 import SettingsIcon from '~icons/material-symbols/settings';
 import UndoIcon from '~icons/material-symbols/undo';
 
+import handleOpenOptions from '../../PopupMain';
+import UndoIcon from '~icons/material-symbols/undo';
+
 const CalendarHeader = ( { totalHours, totalCourses, scheduleName } ) => (
     <div className='min-h-79px min-w-672px w-full flex px-0 py-15'>
         <div className='flex flex-row gap-20'>

@@ -1,8 +1,9 @@
-import type { CalendarCourseCellProps } from 'src/views/components/calendar/CalendarCourseCell/CalendarCourseCell';
-import { CourseMeeting, TimeStringOptions } from 'src/shared/types/CourseMeeting';
-import type { Status, Course } from 'src/shared/types/Course';
+import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+import type { Course, StatusType } from 'src/shared/types/Course';
+import type { CourseMeeting, TimeStringOptions } from 'src/shared/types/CourseMeeting';
+import type { UserSchedule } from 'src/shared/types/UserSchedule';
+
 import useSchedules from './useSchedules';
-import { UserSchedule } from 'src/shared/types/UserSchedule';
 
 
 
@@ -65,7 +66,8 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
             } as UserSchedule,
         } as FlattenedCourseSchedule;
     }
-    else if (activeSchedule.courses.length === 0) {
+
+    if (activeSchedule.courses.length === 0) {
         return {
             courseCells: [] as CalendarGridCourse[],
             activeSchedule: {
@@ -80,76 +82,93 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
 
     const { courses, name, hours } = activeSchedule;
 
-    const processedCourses = courses
-        .flatMap(course => {
-            const {
-                status,
-                department,
-                instructors,
-                schedule: { meetings },
-            } = course;
-            const courseDeptAndInstr = `${department} ${instructors[0].lastName}`;
+    const processedCourses = courses.flatMap((course: Course) => {
+        const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
     
-            if (meetings.length === 0) {
-                // asynch, online course
-                return [
-                    {
-                        calendarGridPoint: {
-                            dayIndex: 0,
-                            startIndex: 0,
-                            endIndex: 0,
-                        },
-                        componentProps: {
-                            courseDeptAndInstr,
-                            status,
-                            colors: {
-                                // TODO: figure out colors - these are defaults
-                                primaryColor: 'ut-gray',
-                                secondaryColor: 'ut-gray',
-                            },
-                        },
-                        course,
-                    } as CalendarGridCourse,
-                ];
-            }
+        if (meetings.length === 0) {
+            return processAsyncCourses({ courseDeptAndInstr, status, course });
+        }
     
-            // in-person
-            return meetings.flatMap(meeting => {
-                const { days, startTime, endTime, location } = meeting;
-                const time = meeting.getTimeString({ separator: '-', capitalize: true });
-                const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
+        return meetings.flatMap((meeting: CourseMeeting) => 
+            processInPersonMeetings(meeting, { courseDeptAndInstr, status, course })
+        );
+    }).sort(sortCourses);
+    
+    return {
+        courseCells: processedCourses as CalendarGridCourse[],
+        activeSchedule: { name, courses, hours } as UserSchedule,
+    } as FlattenedCourseSchedule;
 
-                return days.map(d => ({
-                    calendarGridPoint: {
-                        dayIndex: dayToNumber[d],
-                        startIndex: convertMinutesToIndex(startTime),
-                        endIndex: convertMinutesToIndex(endTime),
-                    },
-                    componentProps: {
-                        courseDeptAndInstr,
-                        timeAndLocation,
-                        status,
-                        colors: {
-                            // TODO: figure out colors - these are defaults
-                            primaryColor: 'ut-orange',
-                            secondaryColor: 'ut-orange',
-                        },
-                    },
-                    course,
-                }));
-            });
-        })
-        .sort((a: CalendarGridCourse, b: CalendarGridCourse) => {
-            if (a.calendarGridPoint.dayIndex !== b.calendarGridPoint.dayIndex) {
-                return a.calendarGridPoint.dayIndex - b.calendarGridPoint.dayIndex;
-            }
-            if (a.calendarGridPoint.startIndex !== b.calendarGridPoint.startIndex) {
-                return a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex;
-            }
-            return a.calendarGridPoint.endIndex - b.calendarGridPoint.endIndex;
-        });
 }
 
+// Helper function to extract and format basic course information
+function extractCourseInfo(course: Course) {
+    const {
+        status,
+        department,
+        instructors,
+        schedule: { meetings },
+    } = course;
+    const courseDeptAndInstr = `${department} ${instructors[0].lastName}`;
+    return { status, courseDeptAndInstr, meetings, course };
+}
+
+// Function to handle asynchronous (online) courses
+function processAsyncCourses({ courseDeptAndInstr, status, course }: { courseDeptAndInstr: string, status: StatusType, course: Course }) {
+    return [{
+        calendarGridPoint: {
+            dayIndex: 0,
+            startIndex: 0,
+            endIndex: 0,
+        },
+        componentProps: {
+            courseDeptAndInstr,
+            status,
+            colors: {
+                primaryColor: 'ut-gray',
+                secondaryColor: 'ut-gray',
+            },
+        },
+        course,
+    }];
+}
+
+// Function to process in-person meeting times and locations
+function processInPersonMeetings({ days, startTime, endTime, location }: CourseMeeting, { courseDeptAndInstr, status, course }) {
+    const time = getTimeString({ separator: '-', capitalize: true }, startTime, endTime);
+    const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
+    return days.map(day => ({
+        calendarGridPoint: {
+            dayIndex: dayToNumber[day],
+            startIndex: convertMinutesToIndex(startTime),
+            endIndex: convertMinutesToIndex(endTime),
+        },
+        componentProps: {
+            courseDeptAndInstr,
+            timeAndLocation,
+            status,
+            colors: {
+                primaryColor: 'ut-orange',
+                secondaryColor: 'ut-orange',
+            },
+        },
+        course,
+    }));
+}
+
+// Utility function to sort courses for the calendar grid
+function sortCourses(a, b) {
+    if (a.calendarGridPoint.dayIndex !== b.calendarGridPoint.dayIndex) {
+        return a.calendarGridPoint.dayIndex - b.calendarGridPoint.dayIndex;
+    }
+    if (a.calendarGridPoint.startIndex !== b.calendarGridPoint.startIndex) {
+        return a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex;
+    }
+    return a.calendarGridPoint.endIndex - b.calendarGridPoint.endIndex;
+}
+
+
+// Utility function also present in CourseMeeting object. Wasn't being found at runtime, so I copied it over.
 function getTimeString(options: TimeStringOptions, startTime: number, endTime: number): string {
     const startHour = Math.floor(startTime / 60);
     const startMinute = startTime % 60;
