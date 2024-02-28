@@ -5,7 +5,6 @@ import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules/
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import React from 'react';
 import type { Course } from 'src/shared/types/Course';
-import { UserSchedule } from 'src/shared/types/UserSchedule';
 import { ExampleCourse } from 'src/stories/components/PopupCourseBlock.stories';
 import { useFlattenedCourseSchedule } from 'src/views/hooks/useFlattenedCourseSchedule';
 

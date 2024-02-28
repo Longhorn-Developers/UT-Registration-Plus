@@ -37,7 +37,6 @@ export default function PopupMain() {
     ));
 
     const handleOpenOptions = async () => {
-        //  Not sure if it's bad practice to export this
         const url = chrome.runtime.getURL('/src/pages/options/index.html');
         await openTabFromContentScript(url);
     };

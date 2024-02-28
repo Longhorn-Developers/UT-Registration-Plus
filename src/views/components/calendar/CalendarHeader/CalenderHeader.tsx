@@ -6,14 +6,17 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
 import calIcon from 'src/assets/logo.png';
+import { openTabFromContentScript } from 'src/views/lib/openNewTabFromContentScript';
 
 import MenuIcon from '~icons/material-symbols/menu';
 import RedoIcon from '~icons/material-symbols/redo';
 import SettingsIcon from '~icons/material-symbols/settings';
 import UndoIcon from '~icons/material-symbols/undo';
 
-import handleOpenOptions from '../../PopupMain';
-import UndoIcon from '~icons/material-symbols/undo';
+const handleOpenOptions = async () => {
+    const url = chrome.runtime.getURL('/src/pages/options/index.html');
+    await openTabFromContentScript(url);
+};
 
 const CalendarHeader = ( { totalHours, totalCourses, scheduleName } ) => (
     <div className='min-h-79px min-w-672px w-full flex px-0 py-15'>

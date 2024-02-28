@@ -158,8 +158,8 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
         <div
             key={`${block}`}
             style={{
-                gridColumn: `${block.calendarGridPoint.dayIndex + 1}`,
-                gridRow: `${block.calendarGridPoint.startIndex + 1} / ${block.calendarGridPoint.endIndex + 1}`,
+                gridColumn: `${block.calendarGridPoint.dayIndex + 2}`,
+                gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
                 width: `calc(100% / ${block.totalColumns})`,
                 marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`,
                 padding: '0px 10px 4px 0px',

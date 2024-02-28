@@ -1,6 +1,6 @@
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import type { Course, StatusType } from 'src/shared/types/Course';
-import type { CourseMeeting, TimeStringOptions } from 'src/shared/types/CourseMeeting';
+import type { CourseMeeting } from 'src/shared/types/CourseMeeting';
 import type { UserSchedule } from 'src/shared/types/UserSchedule';
 
 import useSchedules from './useSchedules';
@@ -113,7 +113,9 @@ function extractCourseInfo(course: Course) {
     return { status, courseDeptAndInstr, meetings, course };
 }
 
-// Function to handle asynchronous (online) courses
+/**
+ * Function to process each in-person class into its distinct meeting objects for calendar grid
+ */
 function processAsyncCourses({ courseDeptAndInstr, status, course }: { courseDeptAndInstr: string, status: StatusType, course: Course }) {
     return [{
         calendarGridPoint: {
@@ -133,7 +135,9 @@ function processAsyncCourses({ courseDeptAndInstr, status, course }: { courseDep
     }];
 }
 
-// Function to process in-person meeting times and locations
+/**
+ * Function to process each in-person class into its distinct meeting objects for calendar grid
+ */
 function processInPersonMeetings({ days, startTime, endTime, location }: CourseMeeting, { courseDeptAndInstr, status, course }) {
     const time = getTimeString({ separator: '-', capitalize: true }, startTime, endTime);
     const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
@@ -156,7 +160,10 @@ function processInPersonMeetings({ days, startTime, endTime, location }: CourseM
     }));
 }
 
-// Utility function to sort courses for the calendar grid
+
+/**
+ * Utility function to sort courses for the calendar grid
+ */
 function sortCourses(a, b) {
     if (a.calendarGridPoint.dayIndex !== b.calendarGridPoint.dayIndex) {
         return a.calendarGridPoint.dayIndex - b.calendarGridPoint.dayIndex;
@@ -168,7 +175,9 @@ function sortCourses(a, b) {
 }
 
 
-// Utility function also present in CourseMeeting object. Wasn't being found at runtime, so I copied it over.
+/**
+ * Utility function also present in CourseMeeting object. Wasn't being found at runtime, so I copied it over.
+ */
 function getTimeString(options: TimeStringOptions, startTime: number, endTime: number): string {
     const startHour = Math.floor(startTime / 60);
     const startMinute = startTime % 60;
@@ -206,3 +215,13 @@ function getTimeString(options: TimeStringOptions, startTime: number, endTime: n
 
     return `${startTimeString} ${options.separator} ${endTimeString}`;
 }
+
+/**
+ * Options to control the format of the time string
+ */
+type TimeStringOptions = {
+    /** the separator between the start and end times */
+    separator: string;
+    /** capitalizes the AM/PM */
+    capitalize?: boolean;
+};
