@@ -1,7 +1,9 @@
-import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+import type { Course } from '@shared/types/Course';
 /*  import calIcon from 'src/assets/icons/cal.svg';
 import pngIcon from 'src/assets/icons/png.svg';
 */
+import { getCourseColors } from '@shared/util/colors';
+import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import CalendarCell from '@views/components/calendar/CalendarGridCell/CalendarGridCell';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React, { useEffect, useRef, useState } from 'react';
@@ -61,7 +63,7 @@ function CalendarGrid({ courseCells, saturdayClass, setCourse }: React.PropsWith
             });
     };  */
 
-
+    // TODO: Change to useMemo hook once we start calculating grid size based on if there's a Saturday class or not
     const grid = [];
     for (let i = 0; i < 13; i++) {
         const row = [];
@@ -167,6 +169,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                 courseDeptAndInstr={block.componentProps.courseDeptAndInstr}
                 timeAndLocation={block.componentProps.timeAndLocation}
                 status={block.componentProps.status}
+                //  TODO: Change to block.componentProps.colors when colors are integrated to the rest of the project
                 colors={getCourseColors('emerald', 500) /*  block.componentProps.colors */}
                 onClick={() => setCourse(block.course)}
             />
