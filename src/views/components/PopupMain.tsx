@@ -9,8 +9,8 @@ import Text from '@views/components/common/Text/Text';
 import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import useSchedules from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
-import { act } from 'react-dom/test-utils';
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { tailwindColorways } from 'src/shared/util/storybook';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
@@ -32,7 +32,7 @@ export default function PopupMain() {
         <PopupCourseBlock
             key={course.uniqueId}
             course={course}
-            colors={test_colors[i]}
+            colors={tailwindColorways[i]}
         />
     ));
 
