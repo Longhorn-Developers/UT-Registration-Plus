@@ -6,6 +6,7 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
 import calIcon from 'src/assets/logo.png';
+
 import MenuIcon from '~icons/material-symbols/menu';
 import RedoIcon from '~icons/material-symbols/redo';
 import SettingsIcon from '~icons/material-symbols/settings';
@@ -32,12 +33,12 @@ const CalendarHeader = () => (
                 <Divider className='self-center' size='2.5rem' orientation='vertical' />
                 <div className='flex flex-col self-center'>
                     <ScheduleTotalHoursAndCourses scheduleName='SCHEDULE' totalHours={22} totalCourses={8} />
-                    <Text variant='h4' className='text-gray text-xs font-medium leading-normal'>
+                    <Text variant='h4' className='text-xs text-gray font-medium leading-normal'>
                         DATA UPDATED ON: 12:00 AM 02/01/2024
                     </Text>
                 </div>
             </div>
-            <div className='flex flex-row justify-end items-center space-x-8'>
+            <div className='flex flex-row items-center justify-end space-x-8'>
                 <div className='flex flex-row space-x-4'>
                     <CourseStatus size='small' status={Status.WAITLISTED} />
                     <CourseStatus size='small' status={Status.CLOSED} />
