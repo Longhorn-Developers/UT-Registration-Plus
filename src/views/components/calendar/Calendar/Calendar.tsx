@@ -5,15 +5,11 @@ import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules/
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import React from 'react';
 import { Course } from 'src/shared/types/Course';
-import { exampleCourse } from 'src/stories/components/PopupCourseBlock.stories';
-import CalendarHeader from 'src/views/components/calendar/CalendarHeader/CalenderHeader';
+import { ExampleCourse } from 'src/stories/components/PopupCourseBlock.stories';
 import { useFlattenedCourseSchedule } from 'src/views/hooks/useFlattenedCourseSchedule';
 
 import CourseCatalogInjectedPopup from '../../injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
-import { CalendarBottomBar } from '../CalendarBottomBar/CalendarBottomBar';
-import CalendarGrid from '../CalendarGrid/CalendarGrid';
-import { CalendarSchedules } from '../CalendarSchedules/CalendarSchedules';
-import ImportantLinks from '../ImportantLinks';
+
 
 export const flags = ['WR', 'QR', 'GC', 'CD', 'E', 'II'];
 
@@ -47,7 +43,7 @@ export function Calendar(): JSX.Element {
                     </div>
                 </div>
             </div>
-            {showPopup ? <CourseCatalogInjectedPopup course = {exampleCourse } onClose={() => setShowPopup(false)}/> : null}
+            {showPopup ? <CourseCatalogInjectedPopup course = { ExampleCourse } onClose={() => setShowPopup(false)}/> : null}
         </>
     );
 }
