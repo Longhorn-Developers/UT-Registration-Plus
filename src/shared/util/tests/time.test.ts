@@ -1,6 +1,5 @@
+import { sleep } from '@shared/util/time';
 import { describe, expect, it } from 'vitest';
-
-import { sleep } from '../time';
 
 describe('sleep', () => {
     it('should resolve after the specified number of milliseconds', async () => {

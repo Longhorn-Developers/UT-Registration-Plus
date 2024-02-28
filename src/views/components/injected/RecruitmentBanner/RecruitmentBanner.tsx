@@ -1,8 +1,8 @@
+import Link from '@views/components/common/Link/Link';
+import Text from '@views/components/common/Text/Text';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import Link from '../../common/Link/Link';
-import Text from '../../common/Text/Text';
 import styles from './RecruitmentBanner.module.scss';
 
 const DISCORD_URL = 'https://discord.gg/qjcvgyVJbT';
