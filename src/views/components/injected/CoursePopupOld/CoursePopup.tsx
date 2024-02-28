@@ -1,8 +1,8 @@
 import type { Course } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import Popup from '@views/components/common/Popup/Popup';
 import React from 'react';
 
-import Popup from '../../common/Popup/Popup';
 import CourseDescription from './CourseDescription/CourseDescription';
 import CourseHeader from './CourseHeader/CourseHeader';
 import styles from './CoursePopup.module.scss';

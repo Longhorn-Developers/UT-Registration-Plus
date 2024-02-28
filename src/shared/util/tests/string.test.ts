@@ -1,6 +1,5 @@
+import { capitalize, capitalizeFirstLetter, ellipsify } from '@shared/util/string';
 import { describe, expect, it } from 'vitest';
-
-import { capitalize, capitalizeFirstLetter, ellipsify } from '../string';
 
 // TODO: Fix `string.ts` and `string.test.ts` to make the tests pass
 // `capitalize` is adding an extra space at the end of the word.

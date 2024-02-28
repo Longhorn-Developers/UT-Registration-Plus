@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { PluginOption } from 'vite';
+import type { PluginOption } from 'vite';
+
 import manifest from '../../src/manifest';
 import colorLog from '../log';
 

@@ -1,6 +1,5 @@
+import { getCourseColors } from '@shared/util/colors';
 import { theme } from 'unocss/preset-mini';
-
-import { getCourseColors } from './colors';
 
 export const tailwindColorways = Object.keys(theme.colors)
     // check that the color is a colorway (is an object)
