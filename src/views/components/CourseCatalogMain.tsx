@@ -1,6 +1,7 @@
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import React, { useEffect, useState } from 'react';
 
+import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import AutoLoad from '@views/components/injected/AutoLoad/AutoLoad';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/RecruitmentBanner';
@@ -13,7 +14,6 @@ import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import type { SiteSupportType } from '@views/lib/getSiteSupport';
 import { populateSearchInputs } from '@views/lib/populateSearchInputs';
-import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 
 interface Props {
     support: Extract<SiteSupportType, 'COURSE_CATALOG_DETAILS' | 'COURSE_CATALOG_LIST'>;
