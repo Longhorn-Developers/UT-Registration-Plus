@@ -2,6 +2,7 @@ import type { ScrapedRow } from '@shared/types/Course';
 import useInfiniteScroll from '@views/hooks/useInfiniteScroll';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import { SiteSupport } from '@views/lib/getSiteSupport';
+import type { AutoLoadStatusType } from '@views/lib/loadNextCourseCatalogPage';
 import {
     AutoLoadStatus,
     loadNextCourseCatalogPage,
@@ -22,7 +23,7 @@ type Props = {
  */
 export default function AutoLoad({ addRows }: Props) {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
-    const [status, setStatus] = useState<AutoLoadStatus>(AutoLoadStatus.IDLE);
+    const [status, setStatus] = useState<AutoLoadStatusType>(AutoLoadStatus.IDLE);
 
     useEffect(() => {
         const portalContainer = document.createElement('div');

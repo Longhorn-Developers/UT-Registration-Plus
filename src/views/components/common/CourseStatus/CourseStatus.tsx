@@ -1,4 +1,4 @@
-import type { Status } from '@shared/types/Course';
+import type { StatusType } from '@shared/types/Course';
 import { StatusIcon } from '@shared/util/icons';
 import clsx from 'clsx';
 import React from 'react';
@@ -11,7 +11,7 @@ type SizeType = 'small' | 'mini';
  * Props for CourseStatus
  */
 export interface CourseStatusProps {
-    status: Status;
+    status: StatusType;
     size: SizeType;
 }
 
