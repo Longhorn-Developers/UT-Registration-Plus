@@ -1,5 +1,5 @@
-import { Status } from '@shared/types/Course';
 import type { StatusType } from '@shared/types/Course';
+import { Status } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
