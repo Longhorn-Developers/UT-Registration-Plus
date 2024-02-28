@@ -1,9 +1,7 @@
 import { createMessenger } from 'chrome-extension-toolkit';
 
 type MyMessages = {
-    openNewTab: {
-        data: { url: string };
-    };
+    openNewTab: (data: { url: string }) => void;
 };
 
 const messenger = createMessenger<MyMessages>('background');
@@ -16,7 +14,6 @@ const messenger = createMessenger<MyMessages>('background');
  *  with the background script.
  */
 export async function openTabFromContentScript(url: string) {
-    //  @ts-ignore
     messenger
         .openNewTab({ url })
         .then(() => {
