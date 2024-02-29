@@ -1,9 +1,7 @@
 import { createMessenger } from 'chrome-extension-toolkit';
 
 type MyMessages = {
-    openNewTab: {
-        data: { url: string };
-    };
+    openNewTab: (data: { url: string }) => void;
 };
 
 const messenger = createMessenger<MyMessages>('background');
@@ -17,8 +15,7 @@ const messenger = createMessenger<MyMessages>('background');
  */
 export async function openTabFromContentScript(url: string) {
     messenger
-    //  @ts-ignore
-        .openNewTab({ url: url }) // Fix: Pass the url as a property of an object
+        .openNewTab({ url }) // Fix: Pass the url as a property of an object
         .then(() => {
             console.log('New tab opened with URL:', url);
         })
