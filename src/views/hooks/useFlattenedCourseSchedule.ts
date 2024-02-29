@@ -1,7 +1,7 @@
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
-import type { Course, StatusType } from 'src/shared/types/Course';
-import type { CourseMeeting } from 'src/shared/types/CourseMeeting';
-import type { UserSchedule } from 'src/shared/types/UserSchedule';
+import type { Course, StatusType } from '@shared/types/Course';
+import type { CourseMeeting } from '@shared/types/CourseMeeting';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 
 import useSchedules from './useSchedules';
 
@@ -63,8 +63,8 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
                 name: 'Something may have went wrong',
                 courses: [],
                 hours: 0,
-            } as UserSchedule,
-        } as FlattenedCourseSchedule;
+            } satisfies UserSchedule,
+        } satisfies FlattenedCourseSchedule;
     }
 
     if (activeSchedule.courses.length === 0) {
@@ -75,8 +75,8 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
                 courses: activeSchedule.courses,
                 hours: activeSchedule.hours,
                 containsCourse: activeSchedule.containsCourse,
-            } as UserSchedule,
-        } as FlattenedCourseSchedule;
+            } satisfies UserSchedule,
+        } satisfies FlattenedCourseSchedule;
 
     }
 
@@ -97,7 +97,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     return {
         courseCells: processedCourses as CalendarGridCourse[],
         activeSchedule: { name, courses, hours } as UserSchedule,
-    } as FlattenedCourseSchedule;
+    } satisfies FlattenedCourseSchedule;
 
 }
 

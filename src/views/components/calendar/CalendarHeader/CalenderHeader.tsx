@@ -6,7 +6,7 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
 import calIcon from 'src/assets/logo.png';
-import { openTabFromContentScript } from 'src/views/lib/openNewTabFromContentScript';
+import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 
 import MenuIcon from '~icons/material-symbols/menu';
 import RedoIcon from '~icons/material-symbols/redo';
