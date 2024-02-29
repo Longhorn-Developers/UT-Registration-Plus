@@ -63,8 +63,8 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
                 name: 'Something may have went wrong',
                 courses: [],
                 hours: 0,
-            } as UserSchedule,
-        } as FlattenedCourseSchedule;
+            } satisfies UserSchedule,
+        } satisfies FlattenedCourseSchedule;
     }
 
     if (activeSchedule.courses.length === 0) {
