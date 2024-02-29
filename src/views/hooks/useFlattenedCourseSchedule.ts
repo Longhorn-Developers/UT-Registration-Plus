@@ -1,7 +1,7 @@
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
-import type { Course, StatusType } from 'src/shared/types/Course';
-import type { CourseMeeting } from 'src/shared/types/CourseMeeting';
-import type { UserSchedule } from 'src/shared/types/UserSchedule';
+import type { Course, StatusType } from '@shared/types/Course';
+import type { CourseMeeting } from '@shared/types/CourseMeeting';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 
 import useSchedules from './useSchedules';
 
