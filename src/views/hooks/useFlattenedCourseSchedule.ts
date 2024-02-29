@@ -132,7 +132,7 @@ function processAsyncCourses({ courseDeptAndInstr, status, course }: { courseDep
             },
         },
         course,
-    }];
+    }] satisfies CalendarGridCourse[];
 }
 
 /**
@@ -157,7 +157,7 @@ function processInPersonMeetings({ days, startTime, endTime, location }: CourseM
             },
         },
         course,
-    }));
+    })) satisfies CalendarGridCourse[];
 }
 
 
@@ -165,13 +165,16 @@ function processInPersonMeetings({ days, startTime, endTime, location }: CourseM
  * Utility function to sort courses for the calendar grid
  */
 function sortCourses(a, b) {
-    if (a.calendarGridPoint.dayIndex !== b.calendarGridPoint.dayIndex) {
-        return a.calendarGridPoint.dayIndex - b.calendarGridPoint.dayIndex;
+    const { dayIndex: dayIndexA, startIndex: startIndexA, endIndex: endIndexA } = a.calendarGridPoint;
+    const { dayIndex: dayIndexB, startIndex: startIndexB, endIndex: endIndexB } = b.calendarGridPoint;
+
+    if (dayIndexA !== dayIndexB) {
+        return dayIndexA - dayIndexB;
     }
-    if (a.calendarGridPoint.startIndex !== b.calendarGridPoint.startIndex) {
-        return a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex;
+    if (startIndexA !== startIndexB) {
+        return startIndexA - startIndexB;
     }
-    return a.calendarGridPoint.endIndex - b.calendarGridPoint.endIndex;
+    return endIndexA - endIndexB;
 }
 
 

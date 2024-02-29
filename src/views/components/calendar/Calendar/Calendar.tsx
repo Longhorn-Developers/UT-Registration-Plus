@@ -1,14 +1,13 @@
+import type { Course } from '@shared/types/Course';
 import { CalendarBottomBar } from '@views/components/calendar/CalendarBottomBar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalenderHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules/CalendarSchedules';
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
+import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
+import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import React from 'react';
-import type { Course } from 'src/shared/types/Course';
 import { ExampleCourse } from 'src/stories/components/PopupCourseBlock.stories';
-import { useFlattenedCourseSchedule } from 'src/views/hooks/useFlattenedCourseSchedule';
-
-import CourseCatalogInjectedPopup from '../../injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 
 
 
