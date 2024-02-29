@@ -1,5 +1,5 @@
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import createSchedule from 'src/pages/background/lib/createSchedule';
 import switchSchedule from 'src/pages/background/lib/switchSchedule';
 import useSchedules from 'src/views/hooks/useSchedules';
@@ -34,10 +34,10 @@ export function CalendarSchedules(props: Props) {
         }
     }, [activeSchedule, schedules]);
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = event => {
         if (event.code === 'Enter') {
             createSchedule(newSchedule);
-            setNewSchedule(''); 
+            setNewSchedule('');
         }
     };
 
@@ -51,12 +51,12 @@ export function CalendarSchedules(props: Props) {
     };
 
     const scheduleComponents = schedules.map((schedule, index) => (
-            <ScheduleListItem
-                active={index === activeScheduleIndex}
-                name={schedule.name}
-                onClick={() => selectItem(index)}
-            />
-        ));
+        <ScheduleListItem
+            active={index === activeScheduleIndex}
+            name={schedule.name}
+            onClick={() => selectItem(index)}
+        />
+    ));
 
     return (
         <div style={{ ...props.style }} className='items-center'>
@@ -68,10 +68,15 @@ export function CalendarSchedules(props: Props) {
                     </Text>
                 </div>
             </div>
-            <div className="flex flex-col space-y-2.5">
+            <div className='flex flex-col space-y-2.5'>
                 <List gap={10} draggableElements={scheduleComponents} itemHeight={30} listHeight={30} listWidth={240} />
-                <input type="text" placeholder='Enter new schedule' value={newSchedule} 
-                onChange={handleScheduleInputChange} onKeyDown={handleKeyDown}/>
+                <input
+                    type='text'
+                    placeholder='Enter new schedule'
+                    value={newSchedule}
+                    onChange={handleScheduleInputChange}
+                    onKeyDown={handleKeyDown}
+                />
             </div>
         </div>
     );
