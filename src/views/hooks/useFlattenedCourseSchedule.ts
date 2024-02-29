@@ -75,8 +75,8 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
                 courses: activeSchedule.courses,
                 hours: activeSchedule.hours,
                 containsCourse: activeSchedule.containsCourse,
-            } as UserSchedule,
-        } as FlattenedCourseSchedule;
+            } satisfies UserSchedule,
+        } satisfies FlattenedCourseSchedule;
 
     }
 
@@ -97,7 +97,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     return {
         courseCells: processedCourses as CalendarGridCourse[],
         activeSchedule: { name, courses, hours } as UserSchedule,
-    } as FlattenedCourseSchedule;
+    } satisfies FlattenedCourseSchedule;
 
 }
 
