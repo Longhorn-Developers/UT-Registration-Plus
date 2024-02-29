@@ -19,7 +19,7 @@ export interface ListProps {
     gap: number; // Impacts the spacing between items in the list
 }
 
-function initial(draggableElements: any[] = [], count: number) {
+function initial(count: number, draggableElements: any[] = []) {
     return draggableElements.map((element, index) => ({
         id: `id:${index + count}`,
         content: element as ReactElement,
@@ -83,13 +83,13 @@ const Row: React.FC<RowProps> = React.memo(({ data: { items, gap }, index, style
  * <List draggableElements={elements} />
  */
 const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, listWidth, gap = 12 }: ListProps) => {
-    const [items, setItems] = useState(() => initial(draggableElements, 0));
+    const [items, setItems] = useState(() => initial(0, draggableElements));
     
     useEffect(() => {
         setItems((prevItems) => {
             const prevItemIds = prevItems.map(item => item.id);
             const newElements = draggableElements.filter((_, index) => !prevItemIds.includes(`id:${index}`));
-            const newItems = initial(newElements, prevItems.length);
+            const newItems = initial(prevItems.length, newElements);
             return [...prevItems, ...newItems];
         });
     }, [draggableElements]);

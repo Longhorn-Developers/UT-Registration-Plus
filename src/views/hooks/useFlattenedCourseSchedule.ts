@@ -1,7 +1,7 @@
-import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import type { Course, StatusType } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
-import type { UserSchedule } from '@shared/types/UserSchedule';
+import { UserSchedule } from '@shared/types/UserSchedule';
+import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 
 import useSchedules from './useSchedules';
 
@@ -59,23 +59,14 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     if (!activeSchedule) {
         return {
             courseCells: [] as CalendarGridCourse[],
-            activeSchedule: {
-                name: 'Something may have went wrong',
-                courses: [],
-                hours: 0,
-            } satisfies UserSchedule,
-        } satisfies FlattenedCourseSchedule;
+            activeSchedule: new UserSchedule([], 'Something may have went wrong', 0),
+        } as FlattenedCourseSchedule;
     }
 
     if (activeSchedule.courses.length === 0) {
         return {
             courseCells: [] as CalendarGridCourse[],
-            activeSchedule: {
-                name: activeSchedule.name,
-                courses: activeSchedule.courses,
-                hours: activeSchedule.hours,
-                containsCourse: activeSchedule.containsCourse,
-            } satisfies UserSchedule,
+            activeSchedule
         } satisfies FlattenedCourseSchedule;
 
     }
@@ -98,7 +89,6 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
         courseCells: processedCourses as CalendarGridCourse[],
         activeSchedule: { name, courses, hours } as UserSchedule,
     } satisfies FlattenedCourseSchedule;
-
 }
 
 // Helper function to extract and format basic course information
@@ -138,7 +128,7 @@ function processAsyncCourses({ courseDeptAndInstr, status, course }: { courseDep
 /**
  * Function to process each in-person class into its distinct meeting objects for calendar grid
  */
-function processInPersonMeetings({ days, startTime, endTime, location }: CourseMeeting, { courseDeptAndInstr, status, course }) {
+function processInPersonMeetings( { days, startTime, endTime, location }: CourseMeeting, { courseDeptAndInstr, status, course }) {
     const time = getTimeString({ separator: '-', capitalize: true }, startTime, endTime);
     const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
     return days.map(day => ({

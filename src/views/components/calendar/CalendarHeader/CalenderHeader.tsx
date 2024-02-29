@@ -4,9 +4,9 @@ import CourseStatus from '@views/components/common/CourseStatus/CourseStatus';
 import Divider from '@views/components/common/Divider/Divider';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
 import Text from '@views/components/common/Text/Text';
+import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
 import calIcon from 'src/assets/logo.png';
-import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 
 import MenuIcon from '~icons/material-symbols/menu';
 import RedoIcon from '~icons/material-symbols/redo';
