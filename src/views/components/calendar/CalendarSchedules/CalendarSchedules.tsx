@@ -1,8 +1,8 @@
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import React, { useEffect,useState } from 'react';
-import createSchedule from 'src/pages/background/lib/createSchedule';
-import switchSchedule from 'src/pages/background/lib/switchSchedule';
-import useSchedules from 'src/views/hooks/useSchedules';
+import createSchedule from '@pages/background/lib/createSchedule';
+import switchSchedule from '@pages/background/lib/switchSchedule';
+import useSchedules from '@views/hooks/useSchedules';
 
 import AddSchedule from '~icons/material-symbols/add';
 
