@@ -1,6 +1,6 @@
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import type { ReactElement } from 'react';
-import React, { useCallback, useEffect,useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 /*
  * Ctrl + f dragHandleProps on PopupCourseBlock.tsx for example implementation of drag handle (two lines of code)
@@ -84,16 +84,16 @@ const Row: React.FC<RowProps> = React.memo(({ data: { items, gap }, index, style
  */
 const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, listWidth, gap = 12 }: ListProps) => {
     const [items, setItems] = useState(() => initial(0, draggableElements));
-    
+
     useEffect(() => {
-        setItems((prevItems) => {
+        setItems(prevItems => {
             const prevItemIds = prevItems.map(item => item.id);
             const newElements = draggableElements.filter((_, index) => !prevItemIds.includes(`id:${index}`));
             const newItems = initial(prevItems.length, newElements);
             return [...prevItems, ...newItems];
         });
     }, [draggableElements]);
-    
+
     const onDragEnd = useCallback(
         result => {
             if (!result.destination) {
