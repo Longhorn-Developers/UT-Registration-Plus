@@ -12,6 +12,7 @@ export const colors = {
         offwhite: '#D6D2C4',
         concrete: '#95A5A6',
         red: '#B91C1C', //   Not sure if this should be here, but it's used for remove course, and add course is ut-green
+        white: '#FFFFFF',
     },
     theme: {
         red: '#AF2E2D',
@@ -30,6 +31,28 @@ export const colors = {
         d: '#DC2626',
         dminus: '#B91C1C',
         f: '#B91C1C',
+    },
+    palette: {
+        slate500: '#64748B',
+        gray500: '#6B7280',
+        stone500: '#78716C',
+        red500: '#EF4444',
+        orange500: '#F97316',
+        amber500: '#F59E0B',
+        yellow500: '#EAB308',
+        lime500: '#84CC16',
+        green500: '#22C55E',
+        emerald500: '#10B981',
+        teal500: '#14B8A6',
+        cyan500: '#06B6D4',
+        sky500: '#0EA5E9',
+        blue500: '#3B82F6',
+        indigo500: '#6366F1',
+        violet500: '#8B5CF6',
+        purple500: '#A855F7',
+        fuschia500: '#D946EF',
+        pink500: '#EC4899',
+        rose500: '#F43F5E',
     },
 } as const satisfies Record<string, Record<string, string>>;
 
