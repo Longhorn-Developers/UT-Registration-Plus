@@ -15,7 +15,7 @@ const messenger = createMessenger<MyMessages>('background');
  */
 export async function openTabFromContentScript(url: string) {
     messenger
-        .openNewTab({ url })
+        .openNewTab({ url }) // Fix: Pass the url as a property of an object
         .then(() => {
             console.log('New tab opened with URL:', url);
         })

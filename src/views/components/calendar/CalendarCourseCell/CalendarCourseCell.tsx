@@ -19,6 +19,7 @@ export interface CalendarCourseCellProps {
     status: StatusType;
     colors: CourseColors;
     className?: string;
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 /**
@@ -39,6 +40,7 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
     status,
     colors,
     className,
+    onClick,
 }: CalendarCourseCellProps) => {
     let rightIcon: React.ReactNode | null = null;
     if (status === Status.WAITLISTED) {
@@ -54,10 +56,11 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
 
     return (
         <div
-            className={clsx('h-full w-full flex justify-center rounded p-2 overflow-x-hidden', fontColor, className)}
+            className={clsx('h-full w-full flex justify-center rounded p-2 overflow-x-hidden cursor-default hover:cursor-pointer', fontColor, className)}
             style={{
                 backgroundColor: colors.primaryColor,
             }}
+            onClick={onClick}
         >
             <div className='flex flex-1 flex-col gap-1 overflow-x-hidden'>
                 <Text

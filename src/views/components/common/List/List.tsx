@@ -1,6 +1,6 @@
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import type { ReactElement } from 'react';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect,useState } from 'react';
 
 /*
  * Ctrl + f dragHandleProps on PopupCourseBlock.tsx for example implementation of drag handle (two lines of code)
@@ -19,9 +19,9 @@ export interface ListProps {
     gap: number; // Impacts the spacing between items in the list
 }
 
-function initial(draggableElements: any[] = []) {
+function initial(count: number, draggableElements: any[] = []) {
     return draggableElements.map((element, index) => ({
-        id: `id:${index}`,
+        id: `id:${index + count}`,
         content: element as ReactElement,
     }));
 }
@@ -83,8 +83,17 @@ const Row: React.FC<RowProps> = React.memo(({ data: { items, gap }, index, style
  * <List draggableElements={elements} />
  */
 const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, listWidth, gap = 12 }: ListProps) => {
-    const [items, setItems] = useState(() => initial(draggableElements));
-
+    const [items, setItems] = useState(() => initial(0, draggableElements));
+    
+    useEffect(() => {
+        setItems((prevItems) => {
+            const prevItemIds = prevItems.map(item => item.id);
+            const newElements = draggableElements.filter((_, index) => !prevItemIds.includes(`id:${index}`));
+            const newItems = initial(prevItems.length, newElements);
+            return [...prevItems, ...newItems];
+        });
+    }, [draggableElements]);
+    
     const onDragEnd = useCallback(
         result => {
             if (!result.destination) {
@@ -113,8 +122,7 @@ const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, 
                         const transform = style?.transform;
 
                         if (snapshot.isDragging && transform) {
-                            console.log(transform);
-                            let [, _x, y] = transform.match(/translate\(([-\d]+)px, ([-\d]+)px\)/) || [];
+                            let [, , y] = transform.match(/translate\(([-\d]+)px, ([-\d]+)px\)/) || [];
 
                             style.transform = `translate3d(0px, ${y}px, 0px)`; // Apply constrained y value
                         }

@@ -4,6 +4,7 @@ import CourseStatus from '@views/components/common/CourseStatus/CourseStatus';
 import Divider from '@views/components/common/Divider/Divider';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
 import Text from '@views/components/common/Text/Text';
+import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
 import calIcon from 'src/assets/logo.png';
 
@@ -12,12 +13,13 @@ import RedoIcon from '~icons/material-symbols/redo';
 import SettingsIcon from '~icons/material-symbols/settings';
 import UndoIcon from '~icons/material-symbols/undo';
 
-/**
- * Renders the header component for the calendar.
- * @returns The CalendarHeader component.
- */
-const CalendarHeader = () => (
-    <div className='min-h-79px min-w-672px flex px-0 py-15'>
+const handleOpenOptions = async () => {
+    const url = chrome.runtime.getURL('/src/pages/options/index.html');
+    await openTabFromContentScript(url);
+};
+
+const CalendarHeader = ( { totalHours, totalCourses, scheduleName } ) => (
+    <div className='min-h-79px min-w-672px w-full flex px-0 py-15'>
         <div className='flex flex-row gap-20'>
             <div className='flex gap-10'>
                 <div className='flex gap-1'>
@@ -47,7 +49,7 @@ const CalendarHeader = () => (
                 <div className='flex flex-row'>
                     <Button variant='single' icon={UndoIcon} color='ut-black' />
                     <Button variant='single' icon={RedoIcon} color='ut-black' />
-                    <Button variant='single' icon={SettingsIcon} color='ut-black' />
+                    <Button variant='single' icon={SettingsIcon} color='ut-black' onClick={handleOpenOptions}/>
                 </div>
             </div>
         </div>

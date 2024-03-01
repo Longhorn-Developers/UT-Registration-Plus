@@ -1,6 +1,11 @@
+import type { Course, StatusType } from '@shared/types/Course';
+import type { CourseMeeting } from '@shared/types/CourseMeeting';
+import { UserSchedule } from '@shared/types/UserSchedule';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 
 import useSchedules from './useSchedules';
+
+
 
 const dayToNumber: { [day: string]: number } = {
     Monday: 0,
@@ -16,15 +21,25 @@ interface CalendarGridPoint {
     endIndex: number;
 }
 
+interface componentProps {
+    calendarCourseCellProps: CalendarCourseCellProps; 
+}
+
 /**
  * Return type of useFlattenedCourseSchedule
  */
 export interface CalendarGridCourse {
     calendarGridPoint: CalendarGridPoint;
     componentProps: CalendarCourseCellProps;
+    course: Course;
     gridColumnStart?: number;
     gridColumnEnd?: number;
     totalColumns?: number;
+}
+
+export interface FlattenedCourseSchedule {
+    courseCells: CalendarGridCourse[];
+    activeSchedule?: UserSchedule;
 }
 
 /**
@@ -38,74 +53,168 @@ export const convertMinutesToIndex = (minutes: number): number => Math.floor((mi
  * Get the active schedule, and convert it to be render-able into a calendar.
  * @returns CalendarGridCourse
  */
-export function useFlattenedCourseSchedule(): CalendarGridCourse[] {
+export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const [activeSchedule] = useSchedules();
-    const { courses } = activeSchedule;
 
-    return courses
-        .flatMap(course => {
-            const {
-                status,
-                department,
-                instructors,
-                schedule: { meetings },
-            } = course;
-            const courseDeptAndInstr = `${department} ${instructors[0].lastName}`;
+    if (!activeSchedule) {
+        return {
+            courseCells: [] as CalendarGridCourse[],
+            activeSchedule: new UserSchedule([], 'Something may have went wrong', 0),
+        } as FlattenedCourseSchedule;
+    }
 
-            if (meetings.length === 0) {
-                // asynch, online course
-                return [
-                    {
-                        calendarGridPoint: {
-                            dayIndex: 0,
-                            startIndex: 0,
-                            endIndex: 0,
-                        },
-                        componentProps: {
-                            courseDeptAndInstr,
-                            status,
-                            colors: {
-                                // TODO: figure out colors - these are defaults
-                                primaryColor: 'ut-gray',
-                                secondaryColor: 'ut-gray',
-                            },
-                        },
-                    },
-                ];
-            }
+    if (activeSchedule.courses.length === 0) {
+        return {
+            courseCells: [] as CalendarGridCourse[],
+            activeSchedule
+        } satisfies FlattenedCourseSchedule;
 
-            // in-person
-            return meetings.flatMap(meeting => {
-                const { days, startTime, endTime, location } = meeting;
-                const time = meeting.getTimeString({ separator: '-', capitalize: true });
-                const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
+    }
 
-                return days.map(d => ({
-                    calendarGridPoint: {
-                        dayIndex: dayToNumber[d],
-                        startIndex: convertMinutesToIndex(startTime),
-                        endIndex: convertMinutesToIndex(endTime),
-                    },
-                    componentProps: {
-                        courseDeptAndInstr,
-                        timeAndLocation,
-                        status,
-                        colors: {
-                            // TODO: figure out colors - these are defaults
-                            primaryColor: 'ut-orange',
-                            secondaryColor: 'ut-orange',
-                        },
-                    },
-                }));
-            });
-        })
-        .sort((a: CalendarGridCourse, b: CalendarGridCourse) => {
-            if (a.calendarGridPoint.dayIndex !== b.calendarGridPoint.dayIndex) {
-                return a.calendarGridPoint.dayIndex - b.calendarGridPoint.dayIndex;
-            }
-            if (a.calendarGridPoint.startIndex !== b.calendarGridPoint.startIndex) {
-                return a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex;
-            }
-            return a.calendarGridPoint.endIndex - b.calendarGridPoint.endIndex;
-        });
+    const { courses, name, hours } = activeSchedule;
+
+    const processedCourses = courses.flatMap((course: Course) => {
+        const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
+    
+        if (meetings.length === 0) {
+            return processAsyncCourses({ courseDeptAndInstr, status, course });
+        }
+    
+        return meetings.flatMap((meeting: CourseMeeting) => 
+            processInPersonMeetings(meeting, { courseDeptAndInstr, status, course })
+        );
+    }).sort(sortCourses);
+    
+    return {
+        courseCells: processedCourses as CalendarGridCourse[],
+        activeSchedule: { name, courses, hours } as UserSchedule,
+    } satisfies FlattenedCourseSchedule;
 }
+
+// Helper function to extract and format basic course information
+function extractCourseInfo(course: Course) {
+    const {
+        status,
+        department,
+        instructors,
+        schedule: { meetings },
+    } = course;
+    const courseDeptAndInstr = `${department} ${instructors[0].lastName}`;
+    return { status, courseDeptAndInstr, meetings, course };
+}
+
+/**
+ * Function to process each in-person class into its distinct meeting objects for calendar grid
+ */
+function processAsyncCourses({ courseDeptAndInstr, status, course }: { courseDeptAndInstr: string, status: StatusType, course: Course }) {
+    return [{
+        calendarGridPoint: {
+            dayIndex: 0,
+            startIndex: 0,
+            endIndex: 0,
+        },
+        componentProps: {
+            courseDeptAndInstr,
+            status,
+            colors: {
+                primaryColor: 'ut-gray',
+                secondaryColor: 'ut-gray',
+            },
+        },
+        course,
+    }] satisfies CalendarGridCourse[];
+}
+
+/**
+ * Function to process each in-person class into its distinct meeting objects for calendar grid
+ */
+function processInPersonMeetings( { days, startTime, endTime, location }: CourseMeeting, { courseDeptAndInstr, status, course }) {
+    const time = getTimeString({ separator: '-', capitalize: true }, startTime, endTime);
+    const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
+    return days.map(day => ({
+        calendarGridPoint: {
+            dayIndex: dayToNumber[day],
+            startIndex: convertMinutesToIndex(startTime),
+            endIndex: convertMinutesToIndex(endTime),
+        },
+        componentProps: {
+            courseDeptAndInstr,
+            timeAndLocation,
+            status,
+            colors: {
+                primaryColor: 'ut-orange',
+                secondaryColor: 'ut-orange',
+            },
+        },
+        course,
+    })) satisfies CalendarGridCourse[];
+}
+
+
+/**
+ * Utility function to sort courses for the calendar grid
+ */
+function sortCourses(a, b) {
+    const { dayIndex: dayIndexA, startIndex: startIndexA, endIndex: endIndexA } = a.calendarGridPoint;
+    const { dayIndex: dayIndexB, startIndex: startIndexB, endIndex: endIndexB } = b.calendarGridPoint;
+
+    if (dayIndexA !== dayIndexB) {
+        return dayIndexA - dayIndexB;
+    }
+    if (startIndexA !== startIndexB) {
+        return startIndexA - startIndexB;
+    }
+    return endIndexA - endIndexB;
+}
+
+
+/**
+ * Utility function also present in CourseMeeting object. Wasn't being found at runtime, so I copied it over.
+ */
+function getTimeString(options: TimeStringOptions, startTime: number, endTime: number): string {
+    const startHour = Math.floor(startTime / 60);
+    const startMinute = startTime % 60;
+    const endHour = Math.floor(endTime / 60);
+    const endMinute = endTime % 60;
+
+    let startTimeString = '';
+    let endTimeString = '';
+
+    if (startHour === 0) {
+        startTimeString = '12';
+    } else if (startHour > 12) {
+        startTimeString = `${startHour - 12}`;
+    } else {
+        startTimeString = `${startHour}`;
+    }
+
+    startTimeString += startMinute === 0 ? ':00' : `:${startMinute}`;
+    startTimeString += startHour >= 12 ? 'pm' : 'am';
+
+    if (endHour === 0) {
+        endTimeString = '12';
+    } else if (endHour > 12) {
+        endTimeString = `${endHour - 12}`;
+    } else {
+        endTimeString = `${endHour}`;
+    }
+    endTimeString += endMinute === 0 ? ':00' : `:${endMinute}`;
+    endTimeString += endHour >= 12 ? 'pm' : 'am';
+
+    if (options.capitalize) {
+        startTimeString = startTimeString.toUpperCase();
+        endTimeString = endTimeString.toUpperCase();
+    }
+
+    return `${startTimeString} ${options.separator} ${endTimeString}`;
+}
+
+/**
+ * Options to control the format of the time string
+ */
+type TimeStringOptions = {
+    /** the separator between the start and end times */
+    separator: string;
+    /** capitalizes the AM/PM */
+    capitalize?: boolean;
+};
