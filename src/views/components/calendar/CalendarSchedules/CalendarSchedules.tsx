@@ -2,7 +2,7 @@ import createSchedule from '@pages/background/lib/createSchedule';
 import switchSchedule from '@pages/background/lib/switchSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import useSchedules from '@views/hooks/useSchedules';
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
 
