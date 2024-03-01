@@ -1,7 +1,8 @@
+import Link from '@views/components/common/Link/Link';
+import Text from '@views/components/common/Text/Text';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import Link from '../../common/Link/Link';
-import Text from '../../common/Text/Text';
+
 import styles from './RecruitmentBanner.module.scss';
 
 const DISCORD_URL = 'https://discord.gg/qjcvgyVJbT';
@@ -50,6 +51,10 @@ export default function RecruitmentBanner() {
     );
 }
 
+/**
+ * Determines if recruitment can be done from the current department.
+ * @returns {boolean} True if recruitment can be done from the current department, false otherwise.
+ */
 export function canRecruitFrom(): boolean {
     const params = ['fos_fl', 'fos_cn'];
     let department = '';

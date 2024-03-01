@@ -1,10 +1,12 @@
-import { Course, ScrapedRow } from '@shared/types/Course';
-import { UserSchedule } from '@shared/types/UserSchedule';
+import type { Course, ScrapedRow } from '@shared/types/Course';
+import type { UserSchedule } from '@shared/types/UserSchedule';
+import { Button } from '@views/components/common/Button/Button';
+import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Button } from '../../common/Button/Button';
-import Icon from '../../common/Icon/Icon';
-import Text from '../../common/Text/Text';
+
+import AddIcon from '~icons/material-symbols/add-circle';
+
 import styles from './TableRow.module.scss';
 
 interface Props {
@@ -54,7 +56,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         return () => {
             element.classList.remove(styles.inActiveSchedule);
         };
-    }, [activeSchedule, element.classList]);
+    }, [activeSchedule, course, element.classList]);
 
     useEffect(() => {
         if (!activeSchedule || !course) {
@@ -76,7 +78,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             element.classList.remove(styles.isConflict);
             setConflicts([]);
         };
-    }, [activeSchedule, course]);
+    }, [activeSchedule, course, element.classList]);
 
     if (!container) {
         return null;
@@ -84,20 +86,14 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     return ReactDOM.createPortal(
         <>
-            <Button className={styles.rowButton} onClick={onClick} type='secondary'>
-                <Icon name='bar_chart' color='white' size='medium' />
-            </Button>
-            {conflicts.length > 0 && (
-                <div className={styles.conflictTooltip}>
-                    <div className={styles.body}>
-                        {conflicts.map(c => (
-                            <Text size='small' key={c.uniqueId}>
-                                {c.department} {c.number} ({c.uniqueId})
-                            </Text>
-                        ))}
-                    </div>
-                </div>
-            )}
+            <Button
+                icon={AddIcon}
+                className={styles.rowButton}
+                color='ut-burntorange'
+                onClick={onClick}
+                variant='single'
+            />
+            {conflicts.length > 0 && <ConflictsWithWarning className={styles.conflictTooltip} conflicts={conflicts} />}
         </>,
         container
     );

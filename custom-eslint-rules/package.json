@@ -1,0 +1,6 @@
+{
+  "name": "eslint-plugin-restrict-import-depth",
+  "version": "0.1.0",
+  "description": "ESLint plugin to restrict the depth of import statements",
+  "main": "index.js"
+}

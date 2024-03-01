@@ -1,8 +1,9 @@
 import { createMessenger } from 'chrome-extension-toolkit';
-import BrowserActionMessages from './BrowserActionMessages';
-import TabManagementMessages from './TabManagementMessages';
-import TAB_MESSAGES from './TabMessages';
-import { UserScheduleMessages } from './UserScheduleMessages';
+
+import type BrowserActionMessages from './BrowserActionMessages';
+import type TabManagementMessages from './TabManagementMessages';
+import type TAB_MESSAGES from './TabMessages';
+import type { UserScheduleMessages } from './UserScheduleMessages';
 
 /**
  * This is a type with all the message definitions that can be sent TO the background script

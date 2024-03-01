@@ -4,12 +4,9 @@
         "browser": true,
         "es6": true,
         "node": true,
-        "webextensions": true
+        "webextensions": true,
     },
-    "ignorePatterns": [
-        "*.html",
-        "tsconfig.json"
-    ],
+    "ignorePatterns": ["*.html", "tsconfig.json"],
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
@@ -24,7 +21,10 @@
     "plugins": [
         "import",
         "jsdoc",
-        "react-prefer-function-component"
+        "react-prefer-function-component",
+        "@typescript-eslint",
+        "simple-import-sort",
+        "restrict-import-depth",
     ],
     "globals": {
         "Atomics": "readonly",
@@ -32,7 +32,7 @@
         "debugger": true,
         "browser": true,
         "context": true,
-        "JSX": true
+        "JSX": true,
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -42,37 +42,35 @@
         "ecmaFeatures": {
             "jsx": true,
             "modules": true,
-            "experimentalObjectRestSpread": true
-        }
+            "experimentalObjectRestSpread": true,
+        },
     },
     "settings": {
         "react": {
-            "version": "detect"
+            "version": "detect",
         },
         "jsdoc": {
-            "mode": "typescript"
+            "mode": "typescript",
         },
         "import/parsers": {
-            "@typescript-eslint/parser": [
-                ".ts",
-                ".tsx"
-            ]
+            "@typescript-eslint/parser": [".ts", ".tsx"],
         },
         "import/resolver": {
             "typescript": {
                 "alwaysTryTypes": true,
-                "project": "./tsconfig.json"
-            }
-        }
+                "project": "./tsconfig.json",
+            },
+        },
     },
     "rules": {
         "prefer-const": [
             "off",
             {
                 "destructuring": "any",
-                "ignoreReadBeforeAssign": false
-            }
+                "ignoreReadBeforeAssign": false,
+            },
         ],
+        "no-plusplus": "off",
         "no-inner-declarations": "off",
         "sort-imports": "off",
         "no-case-declarations": "off",
@@ -82,20 +80,16 @@
         "no-undef": "off",
         "no-return-await": "off",
         "@typescript-eslint/return-await": "off",
-        "@typescript-eslint/no-shadow": [
-            "off"
-        ],
-        "@typescript-eslint/no-use-before-define": [
-            "off"
-        ],
+        "@typescript-eslint/no-shadow": ["off"],
+        "@typescript-eslint/no-use-before-define": ["off"],
         "class-methods-use-this": "off",
         "react-hooks/exhaustive-deps": "warn",
         "@typescript-eslint/lines-between-class-members": "off",
         "no-param-reassign": [
             "error",
             {
-                "props": false
-            }
+                "props": false,
+            },
         ],
         "no-console": "off",
         "consistent-return": "off",
@@ -109,8 +103,8 @@
             "error",
             {
                 "before": true,
-                "after": true
-            }
+                "after": true,
+            },
         ],
         "no-continue": "off",
         "space-before-blocks": [
@@ -118,24 +112,22 @@
             {
                 "functions": "always",
                 "keywords": "always",
-                "classes": "always"
-            }
+                "classes": "always",
+            },
         ],
         "react/jsx-filename-extension": [
             1,
             {
-                "extensions": [
-                    ".tsx"
-                ]
-            }
+                "extensions": [".tsx"],
+            },
         ],
         "react/no-deprecated": "warn",
         "react/prop-types": "off",
         "react-prefer-function-component/react-prefer-function-component": [
             "warn",
             {
-                "allowComponentDidCatch": false
-            }
+                "allowComponentDidCatch": false,
+            },
         ],
         "react/function-component-definition": "off",
         "react/button-has-type": "off",
@@ -153,7 +145,7 @@
                     "ArrowFunctionExpression": true,
                     "ClassDeclaration": true,
                     "ClassExpression": true,
-                    "FunctionExpression": true
+                    "FunctionExpression": true,
                 },
                 "contexts": [
                     "MethodDefinition:not([key.name=\"componentDidMount\"]):not([key.name=\"render\"])",
@@ -168,9 +160,9 @@
                     "TSInterfaceDeclaration",
                     "TSMethodSignature",
                     "TSModuleDeclaration",
-                    "TSTypeAliasDeclaration"
-                ]
-            }
+                    "TSTypeAliasDeclaration",
+                ],
+            },
         ],
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-unused-vars": "warn",
@@ -185,31 +177,37 @@
                     {
                         "target": "./src/background",
                         "from": "./src/views",
-                        "message": "You cannot import into the `background` directory from the `views` directory (i.e. content script files) because it will break the build!"
+                        "message": "You cannot import into the `background` directory from the `views` directory (i.e. content script files) because it will break the build!",
                     },
                     {
                         "target": "./src/views",
                         "from": "./src/background",
-                        "message": "You cannot import into the `views` directory from the `background` directory (i.e. background script files) because it will break the build!"
+                        "message": "You cannot import into the `views` directory from the `background` directory (i.e. background script files) because it will break the build!",
                     },
                     {
                         "target": "./src/shared",
                         "from": "./",
-                        "except": [
-                            "./src/shared",
-                            "./node_modules"
-                        ],
-                        "message": "You cannot import into `shared` from an external directory."
-                    }
-                ]
-            }
+                        "except": ["./src/shared", "./node_modules"],
+                        "message": "You cannot import into `shared` from an external directory.",
+                    },
+                ],
+            },
         ],
         "import/extensions": "off",
         "no-restricted-syntax": [
             "error",
             "ForInStatement",
             "LabeledStatement",
-            "WithStatement"
-        ]
-    }
+            "WithStatement",
+            {
+                "selector": "TSEnumDeclaration",
+                "message": "Don't declare enums",
+            },
+        ],
+        "@typescript-eslint/consistent-type-exports": "error",
+        "@typescript-eslint/consistent-type-imports": "error",
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error",
+        "restrict-import-depth/restrict-import-depth": "error",
+    },
 }

@@ -4,9 +4,14 @@ import transformerDirectives from '@unocss/transformer-directives';
 import transformerVariantGroup from '@unocss/transformer-variant-group';
 import { defineConfig } from 'unocss';
 
+import { colors } from './src/shared/util/themeColors';
+
 export default defineConfig({
     rules: [
-        ['btn-transition', { transition: 'color 180ms, border-color 150ms, background-color 150ms, transform 50ms' }],
+        [
+            'btn-transition',
+            { transition: 'color 180ms, border-color 150ms, background-color 150ms, box-shadow 100ms, transform 50ms' },
+        ],
         [
             'ring-offset-0',
             {
@@ -16,31 +21,14 @@ export default defineConfig({
     ],
     shortcuts: {
         focusable: 'outline-none ring-blue-500/50 dark:ring-blue-400/60 ring-0 focus-visible:ring-4',
+        btn: 'h-10 w-auto flex cursor-pointer justify-center items-center gap-2 rounded-1 px-4 py-0 text-4.5 btn-transition btn-transition disabled:(cursor-not-allowed opacity-50) active:enabled:scale-96 focusable',
     },
     theme: {
         easing: {
             'in-out-expo': 'cubic-bezier(.46, 0, .21, 1)',
             'out-expo': 'cubic-bezier(0.19, 1, 0.22, 1)',
         },
-        colors: {
-            ut: {
-                burntorange: '#BF5700',
-                black: '#333F48',
-                orange: '#f8971f',
-                yellow: '#ffd600',
-                lightgreen: '#a6cd57',
-                green: '#579d42',
-                teal: '#00a9b7',
-                blue: '#005f86',
-                gray: '#9cadb7',
-                offwhite: '#d6d2c4',
-                concrete: '#95a5a6',
-            },
-            theme: {
-                red: '#af2e2d',
-                black: '#1a2024',
-            },
-        },
+        colors,
     },
 
     presets: [

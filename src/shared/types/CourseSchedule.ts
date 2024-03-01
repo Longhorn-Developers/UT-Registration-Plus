@@ -1,5 +1,7 @@
-import { Serialized } from 'chrome-extension-toolkit';
-import { CourseMeeting, Day, DAY_MAP } from './CourseMeeting';
+import type { Serialized } from 'chrome-extension-toolkit';
+
+import type { Day } from './CourseMeeting';
+import { CourseMeeting, DAY_MAP } from './CourseMeeting';
 
 /**
  * This represents the schedule for a course, which includes all the meeting times for the course, as well as helper functions for parsing, serializing, and deserializing the schedule

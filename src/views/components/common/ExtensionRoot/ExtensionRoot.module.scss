@@ -2,4 +2,11 @@
 
 .extensionRoot {
     @apply font-sans;
+    color: #303030;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-family: Inter, sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 18px;
 }
