@@ -10,6 +10,7 @@ import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInje
 import useSchedules from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { tailwindColorways } from 'src/shared/util/storybook';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
@@ -21,14 +22,21 @@ import SettingsIcon from '~icons/material-symbols/settings';
  * This component displays the main schedule, courses, and options buttons.
  */
 export default function PopupMain() {
-    const [activeSchedule] = useSchedules();
-
-    const draggableElements = activeSchedule?.courses.map((course, i) => (
-        <PopupCourseBlock key={course.uniqueId} course={course} colors={tailwindColorways[i]} />
+   const [activeSchedule, schedules] = useSchedules();
+   const coursesLength = activeSchedule ? activeSchedule.courses.length : 0;
+   if (!activeSchedule) {
+       return;
+   }
+   
+   const draggableElements = activeSchedule?.courses.map((course, i) => (
+        <PopupCourseBlock
+            key={course.uniqueId}
+            course={course}
+            colors={tailwindColorways[i]}
+        />
     ));
 
     const handleOpenOptions = async () => {
-        //  Not sure if it's bad practice to export this
         const url = chrome.runtime.getURL('/src/pages/options/index.html');
         await openTabFromContentScript(url);
     };
@@ -60,11 +68,11 @@ export default function PopupMain() {
                 <Divider orientation='horizontal' className='my-4' size='100%' />
                 <div className='mb-4 border border-ut-offwhite rounded p-2 text-left'>
                     <Text as='div' variant='h1-course' className='color-ut-burntorange'>
-                        MAIN SCHEDULE:
+                        {`${activeSchedule.name}`}:
                     </Text>
                     <div className='flex items-center justify-start gap2.5 color-ut-black'>
-                        <Text variant='h1'>22 HOURS</Text>
-                        <Text variant='h2-course'>8 Courses</Text>
+                        <Text variant='h1'>{`${activeSchedule.hours} HOURS`}</Text>
+                        <Text variant='h2-course'>{`${coursesLength} Courses`}</Text>
                     </div>
                 </div>
                 {/* Integrate the List component here */}
