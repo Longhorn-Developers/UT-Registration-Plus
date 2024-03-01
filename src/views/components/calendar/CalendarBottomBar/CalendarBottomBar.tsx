@@ -1,11 +1,14 @@
-import React from 'react';
+import { Button } from '@views/components/common/Button/Button';
+import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import { toPng } from 'html-to-image';
-import Text from '../../common/Text/Text';
-import CalendarCourseBlock, { CalendarCourseCellProps } from '../CalendarCourseCell/CalendarCourseCell';
-import { Button } from '../../common/Button/Button';
-import ImageIcon from '~icons/material-symbols/image';
+import React from 'react';
+
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
+import ImageIcon from '~icons/material-symbols/image';
+
+import type { CalendarCourseCellProps } from '../CalendarCourseCell/CalendarCourseCell';
+import CalendarCourseBlock from '../CalendarCourseCell/CalendarCourseCell';
 
 type CalendarBottomBarProps = {
     courses?: CalendarCourseCellProps[];

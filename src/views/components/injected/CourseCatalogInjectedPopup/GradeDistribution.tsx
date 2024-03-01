@@ -1,29 +1,31 @@
+import type { Course } from '@shared/types/Course';
+import type { Distribution, LetterGrade } from '@shared/types/Distribution';
+import { colors } from '@shared/util/themeColors';
 import Spinner from '@views/components/common/Spinner/Spinner';
 import Text from '@views/components/common/Text/Text';
-import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
-import React from 'react';
-import { Course } from 'src/shared/types/Course';
-import { Distribution, LetterGrade } from 'src/shared/types/Distribution';
-import { colors } from 'src/shared/util/themeColors';
 import {
     NoDataError,
     queryAggregateDistribution,
     querySemesterDistribution,
-} from 'src/views/lib/database/queryDistribution';
+} from '@views/lib/database/queryDistribution';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import React from 'react';
 
 interface GradeDistributionProps {
     course: Course;
 }
 
-enum DataStatus {
-    LOADING = 'LOADING',
-    FOUND = 'FOUND',
-    NOT_FOUND = 'NOT_FOUND',
-    ERROR = 'ERROR',
-}
+const DataStatus = {
+    LOADING: 'LOADING',
+    FOUND: 'FOUND',
+    NOT_FOUND: 'NOT_FOUND',
+    ERROR: 'ERROR',
+} as const;
 
-const GRADE_COLORS: Record<LetterGrade, string> = {
+type DataStatusType = (typeof DataStatus)[keyof typeof DataStatus];
+
+const GRADE_COLORS = {
     A: colors.gradeDistribution.a,
     'A-': colors.gradeDistribution.aminus,
     'B+': colors.gradeDistribution.bplus,
@@ -36,12 +38,20 @@ const GRADE_COLORS: Record<LetterGrade, string> = {
     D: colors.gradeDistribution.d,
     'D-': colors.gradeDistribution.dminus,
     F: colors.gradeDistribution.f,
-};
+} as const satisfies Record<LetterGrade, string>;
 
+/**
+ * Renders the grade distribution chart for a specific course.
+ *
+ * @component
+ * @param {GradeDistributionProps} props - The component props.
+ * @param {Course} props.course - The course for which to display the grade distribution.
+ * @returns {JSX.Element} The grade distribution chart component.
+ */
 const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
     const [semester, setSemester] = React.useState('Aggregate');
     const [distributions, setDistributions] = React.useState<Record<string, Distribution>>({});
-    const [status, setStatus] = React.useState(DataStatus.LOADING);
+    const [status, setStatus] = React.useState<DataStatusType>(DataStatus.LOADING);
     const ref = React.useRef<HighchartsReact.RefObject>(null);
 
     const chartData = React.useMemo(() => {

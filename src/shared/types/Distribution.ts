@@ -1,5 +1,5 @@
-/* eslint-disable max-classes-per-file */
 import { PointOptionsObject } from 'highcharts';
+
 import { Semester } from './Course';
 /**
  * Each of the possible letter grades that can be given in a course

@@ -1,13 +1,19 @@
+import { Course, Status } from '@shared/types/Course';
+import { CourseMeeting } from '@shared/types/CourseMeeting';
+import Instructor from '@shared/types/Instructor';
+import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import React from 'react';
-import { Course, Status } from 'src/shared/types/Course';
-import { CourseMeeting } from 'src/shared/types/CourseMeeting';
-import Instructor from 'src/shared/types/Instructor';
-import { getCourseColors } from 'src/shared/util/colors';
-import { theme } from 'unocss/preset-mini';
+import { tailwindColorways } from 'src/shared/util/storybook';
 
-export const exampleCourse: Course = new Course({
+/**
+ * Represents an example course.
+ *
+ * @remarks
+ * This is a sample course object that provides information about a specific course.
+ */
+export const ExampleCourse: Course = new Course({
     courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',
     creditHours: 3,
     department: 'C S',
@@ -62,7 +68,7 @@ const meta = {
     // More on argTypes: https://storybook.js.org/docs/api/argtypes
     args: {
         colors: getCourseColors('emerald'),
-        course: exampleCourse,
+        course: ExampleCourse,
     },
     argTypes: {
         colors: {
@@ -87,25 +93,19 @@ export const Default: Story = {
 export const Variants: Story = {
     render: props => (
         <div className='grid grid-cols-2 max-w-2xl w-90vw gap-x-4 gap-y-2'>
-            <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.OPEN })} />
-            <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.CLOSED })} />
-            <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.WAITLISTED })} />
-            <PopupCourseBlock {...props} course={new Course({ ...exampleCourse, status: Status.CANCELLED })} />
+            <PopupCourseBlock {...props} course={new Course({ ...ExampleCourse, status: Status.OPEN })} />
+            <PopupCourseBlock {...props} course={new Course({ ...ExampleCourse, status: Status.CLOSED })} />
+            <PopupCourseBlock {...props} course={new Course({ ...ExampleCourse, status: Status.WAITLISTED })} />
+            <PopupCourseBlock {...props} course={new Course({ ...ExampleCourse, status: Status.CANCELLED })} />
         </div>
     ),
 };
 
-export const test_colors = Object.keys(theme.colors)
-    // check that the color is a colorway (is an object)
-    .filter(color => typeof theme.colors[color] === 'object')
-    .slice(0, 17)
-    .map(color => getCourseColors(color as keyof typeof theme.colors));
-
 export const AllColors: Story = {
     render: props => (
         <div className='grid grid-flow-col grid-cols-2 grid-rows-9 max-w-2xl w-90vw gap-x-4 gap-y-2'>
-            {test_colors.map((color, i) => (
-                <PopupCourseBlock key={color.primaryColor} course={exampleCourse} colors={color} />
+            {tailwindColorways.map((color, i) => (
+                <PopupCourseBlock key={color.primaryColor} course={ExampleCourse} colors={color} />
             ))}
         </div>
     ),

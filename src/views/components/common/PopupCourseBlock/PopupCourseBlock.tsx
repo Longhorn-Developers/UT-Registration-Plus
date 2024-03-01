@@ -1,10 +1,13 @@
-import { Course, Status } from '@shared/types/Course';
-import { CourseColors, pickFontColor } from '@shared/util/colors';
+import type { Course } from '@shared/types/Course';
+import { Status } from '@shared/types/Course';
+import type { CourseColors } from '@shared/util/colors';
+import { pickFontColor } from '@shared/util/colors';
 import { StatusIcon } from '@shared/util/icons';
+import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
+
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
-import Text from '../Text/Text';
 
 /**
  * Props for PopupCourseBlock

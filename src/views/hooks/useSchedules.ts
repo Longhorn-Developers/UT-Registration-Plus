@@ -2,6 +2,10 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import { useEffect, useState } from 'react';
 
+/**
+ * Custom hook that manages user schedules.
+ * @returns A tuple containing the active schedule and an array of all schedules.
+ */
 export default function useSchedules(): [active: UserSchedule | null, schedules: UserSchedule[]] {
     const [schedules, setSchedules] = useState<UserSchedule[]>([]);
     const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -30,7 +34,7 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
             UserScheduleStore.removeListener(l1);
             UserScheduleStore.removeListener(l2);
         };
-    }, []);
+    }, [activeIndex, schedules]);
 
     return [activeSchedule, schedules];
 }

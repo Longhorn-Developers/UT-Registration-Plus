@@ -1,15 +1,18 @@
-import React, { SVGProps } from 'react';
+import type { StatusType } from '@shared/types/Course';
+import { Status } from '@shared/types/Course';
+import type { SVGProps } from 'react';
+import React from 'react';
+
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
-import { Status } from '../types/Course';
 
 /**
  * Get Icon component based on status
  * @param props.status status
  * @returns React.ReactElement - the icon component
  */
-export function StatusIcon(props: SVGProps<SVGSVGElement> & { status: Status }): React.ReactElement {
+export function StatusIcon(props: SVGProps<SVGSVGElement> & { status: StatusType }): React.ReactElement {
     const { status, ...rest } = props;
 
     switch (props.status) {

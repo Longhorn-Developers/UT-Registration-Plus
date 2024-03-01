@@ -1,7 +1,10 @@
 import { background } from '@shared/messages';
+import type { TextProps } from '@views/components/common/Text/Text';
+import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React, { PropsWithChildren } from 'react';
-import Text, { TextProps } from '../Text/Text';
+import type { PropsWithChildren } from 'react';
+import React from 'react';
+
 import styles from './Link.module.scss';
 
 type Props = Omit<TextProps, 'span'> & {

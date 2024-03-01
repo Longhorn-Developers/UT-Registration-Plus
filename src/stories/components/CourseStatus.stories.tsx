@@ -1,8 +1,7 @@
-import React from 'react';
-
 import { Status } from '@shared/types/Course';
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import CourseStatus from '@views/components/common/CourseStatus/CourseStatus';
+import React from 'react';
 
 const meta = {
     title: 'Components/Common/CourseStatus',
@@ -40,7 +39,7 @@ export const Default: Story = {};
 
 export const Variants: Story = {
     render: args => (
-        <div className='flex flex-col gap-4 items-center'>
+        <div className='flex flex-col items-center gap-4'>
             <CourseStatus {...args} size='small' />
             <CourseStatus {...args} size='mini' />
         </div>

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Course } from 'src/shared/types/Course';
-import { CourseMeeting } from 'src/shared/types/CourseMeeting';
+import type { Course } from 'src/shared/types/Course';
+import type { CourseMeeting } from 'src/shared/types/CourseMeeting';
+
 import styles from './CalendarCourseMeeting.module.scss';
 
 /**
@@ -26,6 +27,8 @@ export interface CalendarCourseMeetingProps {
 const CalendarCourseMeeting: React.FC<CalendarCourseMeetingProps> = ({
     course,
     meetingIdx,
+    color,
+    rightIcon,
 }: CalendarCourseMeetingProps) => {
     let meeting: CourseMeeting | null = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : null;
     return (

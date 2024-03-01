@@ -1,11 +1,12 @@
 import { background } from '@shared/messages';
-import { Course } from '@shared/types/Course';
-import { UserSchedule } from '@shared/types/UserSchedule';
+import type { Course } from '@shared/types/Course';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import { Button } from '@views/components/common/Button/Button';
 import Card from '@views/components/common/Card/Card';
 import Icon from '@views/components/common/Icon/Icon';
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
+
 import styles from './CourseButtons.module.scss';
 
 type Props = {

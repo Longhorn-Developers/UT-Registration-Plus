@@ -18,6 +18,8 @@ export function capitalize(input: string): string {
         }
         capitalized += ' ';
     }
+    capitalized = capitalized.trim(); // Remove extra space
+
     return capitalized;
 }
 
@@ -31,7 +33,7 @@ export function capitalizeFirstLetter(input: string): string {
 }
 
 /**
- * Cuts the
+ * Cuts the input string to the specified length and adds an ellipsis if the string is longer than the specified length.
  * @param input The string to ellipsify.
  * @param length The length of the string to return.
  * @returns The ellipsified string.

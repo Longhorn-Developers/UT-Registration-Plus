@@ -1,10 +1,13 @@
+/// <reference types="vitest" />
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
 import { resolve } from 'path';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
-import { Plugin, ResolvedConfig, ViteDevServer, defineConfig } from 'vite';
+import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite';
+import { defineConfig } from 'vite';
 import inspect from 'vite-plugin-inspect';
+
 import manifest from './src/manifest';
 
 const root = resolve(__dirname, 'src');
@@ -146,6 +149,11 @@ export default defineConfig({
             //     chunkFileNames: `[name].js`,
             // },
             // external: ['/@react-refresh'],
+        },
+    },
+    test: {
+        coverage: {
+            provider: 'v8',
         },
     },
 });

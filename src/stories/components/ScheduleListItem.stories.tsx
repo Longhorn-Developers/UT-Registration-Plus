@@ -1,5 +1,6 @@
+/* eslint-disable jsdoc/require-jsdoc */
+import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
 import React from 'react';
-import ScheduleListItem from 'src/views/components/common/ScheduleListItem/ScheduleListItem';
 
 export default {
     title: 'Components/Common/ScheduleListItem',
@@ -14,21 +15,21 @@ export default {
     },
 };
 
-export const Default = (args) => <ScheduleListItem {...args} />;
+export const Default = args => <ScheduleListItem {...args} />;
 
 Default.args = {
     name: 'My Schedule',
     active: true,
 };
 
-export const Active = (args) => <ScheduleListItem {...args} />;
+export const Active = args => <ScheduleListItem {...args} />;
 
 Active.args = {
     name: 'My Schedule',
     active: true,
 };
 
-export const Inactive = (args) => <ScheduleListItem {...args} />;
+export const Inactive = args => <ScheduleListItem {...args} />;
 
 Inactive.args = {
     name: 'My Schedule',

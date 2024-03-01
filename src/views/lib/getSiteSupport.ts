@@ -4,21 +4,27 @@ import { isExtensionPage, isExtensionPopup } from 'chrome-extension-toolkit';
  * An enum that represents the different types of pages that we support
  * a given url/page can correspond to many of these enum values
  */
-export enum SiteSupport {
-    COURSE_CATALOG_LIST = 'COURSE_CATALOG_LIST',
-    COURSE_CATALOG_DETAILS = 'COURSE_CATALOG_DETAILS',
-    UT_PLANNER = 'UT_PLANNER',
-    WAITLIST = 'WAITLIST',
-    EXTENSION_POPUP = 'EXTENSION_POPUP',
-    MY_CALENDAR = 'MY_CALENDAR',
-}
+export const SiteSupport = {
+    COURSE_CATALOG_LIST: 'COURSE_CATALOG_LIST',
+    COURSE_CATALOG_DETAILS: 'COURSE_CATALOG_DETAILS',
+    UT_PLANNER: 'UT_PLANNER',
+    WAITLIST: 'WAITLIST',
+    EXTENSION_POPUP: 'EXTENSION_POPUP',
+    MY_CALENDAR: 'MY_CALENDAR',
+} as const;
+
+/**
+ * Represents the type of SiteSupport.
+ * It is a union type that includes all the values of the SiteSupport object.
+ */
+export type SiteSupportType = (typeof SiteSupport)[keyof typeof SiteSupport];
 
 /**
  * We use this function to determine what page the user is on, and then we can use that information to determine what to do
  * @param url the url of the current page
  * @returns a list of page types that the current page is
  */
-export default function getSiteSupport(url: string): SiteSupport | null {
+export default function getSiteSupport(url: string): SiteSupportType | null {
     if (isExtensionPopup()) {
         return SiteSupport.EXTENSION_POPUP;
     }

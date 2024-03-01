@@ -1,6 +1,7 @@
-import React from 'react';
+import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import Text from '../common/Text/Text';
+import React from 'react';
+
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
 type Props = {

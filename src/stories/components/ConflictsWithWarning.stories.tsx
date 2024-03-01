@@ -1,8 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Course, Status } from '@shared/types/Course';
+import { CourseMeeting } from '@shared/types/CourseMeeting';
+import Instructor from '@shared/types/Instructor';
+import type { Meta, StoryObj } from '@storybook/react';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
-import { Course, Status } from 'src/shared/types/Course';
-import { CourseMeeting } from 'src/shared/types/CourseMeeting';
-import Instructor from 'src/shared/types/Instructor';
 
 export const ExampleCourse: Course = new Course({
     courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',

@@ -1,8 +1,10 @@
-import { Meta, StoryObj } from '@storybook/react';
-import CalendarGrid from 'src/views/components/calendar/CalendarGrid/CalendarGrid';
-import { getCourseColors } from '@shared/util/colors';
-import { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import { Status } from '@shared/types/Course';
+import { getCourseColors } from '@shared/util/colors';
+import type { Meta, StoryObj } from '@storybook/react';
+import CalendarGrid from '@views/components/calendar/CalendarGrid/CalendarGrid';
+import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
+
+import { ExampleCourse } from '../PopupCourseBlock.stories';
 
 const meta = {
     title: 'Components/Calendar/CalendarGrid',
@@ -30,6 +32,7 @@ const testData: CalendarGridCourse[] = [
             status: Status.OPEN,
             colors: getCourseColors('emerald', 500),
         },
+        course: ExampleCourse,
     },
     {
         calendarGridPoint: {
@@ -43,6 +46,7 @@ const testData: CalendarGridCourse[] = [
             status: Status.OPEN,
             colors: getCourseColors('emerald', 500),
         },
+        course: ExampleCourse,
     },
     {
         calendarGridPoint: {
@@ -56,6 +60,7 @@ const testData: CalendarGridCourse[] = [
             status: Status.CLOSED,
             colors: getCourseColors('emerald', 500),
         },
+        course: ExampleCourse,
     },
     {
         calendarGridPoint: {
@@ -69,6 +74,7 @@ const testData: CalendarGridCourse[] = [
             status: Status.OPEN,
             colors: getCourseColors('emerald', 500),
         },
+        course: ExampleCourse,
     },
     {
         calendarGridPoint: {
@@ -82,6 +88,7 @@ const testData: CalendarGridCourse[] = [
             status: Status.CLOSED,
             colors: getCourseColors('emerald', 500),
         },
+        course: ExampleCourse,
     },
     {
         calendarGridPoint: {
@@ -95,6 +102,7 @@ const testData: CalendarGridCourse[] = [
             status: Status.CLOSED,
             colors: getCourseColors('emerald', 500),
         },
+        course: ExampleCourse,
     },
     {
         calendarGridPoint: {
@@ -108,6 +116,7 @@ const testData: CalendarGridCourse[] = [
             status: Status.CLOSED,
             colors: getCourseColors('emerald', 500),
         },
+        course: ExampleCourse,
     },
 ];
 
