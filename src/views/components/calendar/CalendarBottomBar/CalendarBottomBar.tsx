@@ -7,6 +7,7 @@ import React from 'react';
 
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 import ImageIcon from '~icons/material-symbols/image';
+import Divider from '../../common/Divider/Divider';
 
 import type { CalendarCourseCellProps } from '../CalendarCourseCell/CalendarCourseCell';
 import CalendarCourseBlock from '../CalendarCourseCell/CalendarCourseCell';
@@ -126,9 +127,11 @@ export const CalendarBottomBar = ({ courses, calendarRef }: CalendarBottomBarPro
                 </div>
             </div>
             <div className='flex items-center pl-2.5 pr-7.5'>
+                <Divider orientation='vertical' size='1rem' className='mx-1.25' />
                 <Button variant='single' color='ut-black' icon={CalendarMonthIcon} onClick={saveAsCal}>
                     Save as .CAL
                 </Button>
+                <Divider orientation='vertical' size='1rem' className='mx-1.25' />
                 <Button variant='single' color='ut-black' icon={ImageIcon} onClick={saveAsPng}>
                     Save as .PNG
                 </Button>
