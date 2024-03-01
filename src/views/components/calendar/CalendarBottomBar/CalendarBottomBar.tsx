@@ -1,5 +1,6 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { Button } from '@views/components/common/Button/Button';
+import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import { toPng } from 'html-to-image';
@@ -7,7 +8,6 @@ import React from 'react';
 
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 import ImageIcon from '~icons/material-symbols/image';
-import Divider from '../../common/Divider/Divider';
 
 import type { CalendarCourseCellProps } from '../CalendarCourseCell/CalendarCourseCell';
 import CalendarCourseBlock from '../CalendarCourseCell/CalendarCourseCell';
