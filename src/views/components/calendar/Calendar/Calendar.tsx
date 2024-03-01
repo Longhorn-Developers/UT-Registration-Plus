@@ -6,7 +6,7 @@ import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules/
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
-import React from 'react';
+import React, { useRef } from 'react';
 import { ExampleCourse } from 'src/stories/components/PopupCourseBlock.stories';
 
 export const flags = ['WR', 'QR', 'GC', 'CD', 'E', 'II'];
@@ -20,6 +20,7 @@ interface Props {
  * @returns
  */
 export function Calendar(): JSX.Element {
+    const calendarRef = useRef(null);
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
     const [course, setCourse] = React.useState<Course | null>(null);
 
@@ -38,11 +39,11 @@ export function Calendar(): JSX.Element {
                     <ImportantLinks />
                 </div>
                 <div className='flex flex-grow flex-col gap-4 overflow-hidden pr-12'>
-                    <div className='flex-grow overflow-auto'>
+                    <div ref={calendarRef} className='flex-grow overflow-auto'>
                         <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                     </div>
                     <div>
-                        <CalendarBottomBar />
+                        <CalendarBottomBar calendarRef={calendarRef} />
                     </div>
                 </div>
             </div>

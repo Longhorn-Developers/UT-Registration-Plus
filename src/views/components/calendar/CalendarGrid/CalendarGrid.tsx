@@ -22,6 +22,8 @@ interface Props {
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  * @param props
  */
+// function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Props>): JSX.Element {
+//     const [grid, setGrid] = useState([]);
 function CalendarGrid({ courseCells, saturdayClass, setCourse }: React.PropsWithChildren<Props>): JSX.Element {
     //  const [grid, setGrid] = useState([]);
     const calendarRef = useRef(null); // Create a ref for the calendar grid
