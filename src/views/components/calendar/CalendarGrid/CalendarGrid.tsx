@@ -12,7 +12,6 @@ import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 
 import styles from './CalendarGrid.module.scss';
 
-
 interface Props {
     courseCells?: CalendarGridCourse[];
     saturdayClass?: boolean;
@@ -89,7 +88,6 @@ function CalendarGrid({ courseCells, saturdayClass, setCourse }: React.PropsWith
         grid.push(row);
     }
 
-
     return (
         <div className={styles.calendarGrid}>
             {/* Displaying day labels */}
@@ -100,7 +98,7 @@ function CalendarGrid({ courseCells, saturdayClass, setCourse }: React.PropsWith
                 </div>
             ))}
             {grid.map((row, rowIndex) => row)}
-            {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse}/> : null}
+            {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} /> : null}
         </div>
     );
 }

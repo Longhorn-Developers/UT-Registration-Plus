@@ -22,18 +22,14 @@ import SettingsIcon from '~icons/material-symbols/settings';
  * This component displays the main schedule, courses, and options buttons.
  */
 export default function PopupMain() {
-   const [activeSchedule, schedules] = useSchedules();
-   const coursesLength = activeSchedule ? activeSchedule.courses.length : 0;
-   if (!activeSchedule) {
-       return;
-   }
-   
-   const draggableElements = activeSchedule?.courses.map((course, i) => (
-        <PopupCourseBlock
-            key={course.uniqueId}
-            course={course}
-            colors={tailwindColorways[i]}
-        />
+    const [activeSchedule, schedules] = useSchedules();
+    const coursesLength = activeSchedule ? activeSchedule.courses.length : 0;
+    if (!activeSchedule) {
+        return;
+    }
+
+    const draggableElements = activeSchedule?.courses.map((course, i) => (
+        <PopupCourseBlock key={course.uniqueId} course={course} colors={tailwindColorways[i]} />
     ));
 
     const handleOpenOptions = async () => {
