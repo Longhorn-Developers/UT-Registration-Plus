@@ -20,14 +20,11 @@ module.exports = {
         return {
             ImportDeclaration(node) {
                 const importPath = node.source.value;
-                if (importPath.startsWith('../')) {
-                    const depth = importPath.match(/\.\.\//g).length;
-                    if (depth > 2) {
-                        context.report({
-                            node,
-                            message: 'Importing files more than 2 directories up is not allowed.',
-                        });
-                    }
+                if (importPath.startsWith('../../')) {
+                    context.report({
+                        node,
+                        message: 'Importing files more than 2 directories up is not allowed.',
+                    });
                 }
             },
         };
