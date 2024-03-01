@@ -245,7 +245,7 @@ const hexCodeToBaseColorPatchIndex = new Map(
 
 const hexCodeToShadeColorPatchIndex = new Map(
     colorPatches.flatMap((color: Color, index: number) =>
-        color.shades.map((shade, _) => [getThemeColorHexByName(shade), index])
+        color.shades.map(shade => [getThemeColorHexByName(shade), index])
     )
 );
 
@@ -328,7 +328,7 @@ const CourseCellColorPicker: React.FC<CourseCellColorPickerProps> = ({
         }
         console.log('finalColor', finalColor);
         setFinalColor(finalColor);
-    }, [hexCode, selectedBaseColorPatch, selectedShadeColorPatch, colorPatches, setFinalColor]);
+    }, [hexCode, selectedBaseColorPatch, selectedShadeColorPatch, setFinalColor]);
 
     return (
         <div className='inline-flex flex-col border border-1 border-ut-offwhite rounded-1 p-[5px]'>

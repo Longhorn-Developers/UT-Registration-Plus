@@ -32,11 +32,7 @@ const ColorPatch: React.FC<ColorPatchProps> = ({
 }: ColorPatchProps): JSX.Element => {
     const isSelected = selectedColor === index;
     const handleClick = () => {
-        if (isSelected) {
-            handleSetSelectedColorPatch(-1);
-        } else {
-            handleSetSelectedColorPatch(index);
-        }
+        handleSetSelectedColorPatch(isSelected ? -1 : index);
     };
     return (
         <Button
