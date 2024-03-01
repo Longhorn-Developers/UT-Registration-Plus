@@ -1,9 +1,10 @@
+import { Button } from '@views/components/common/Button/Button';
 import React from 'react';
+import type { ThemeColor } from 'src/shared/util/themeColors';
+import { getThemeColorHexByName } from 'src/shared/util/themeColors';
 
 import InvertColorsOffIcon from '~icons/material-symbols/invert-colors-off';
 
-import { Button } from '@views/components/common/Button/Button';
-import { ThemeColor, getThemeColorHexByName } from 'src/shared/util/themeColors';
 import Divider from '../Divider/Divider';
 import ColorPatch from './ColorPatch';
 import DivWrapper from './DivWrapper';
@@ -244,7 +245,7 @@ const hexCodeToBaseColorPatchIndex = new Map(
 
 const hexCodeToShadeColorPatchIndex = new Map(
     colorPatches.flatMap((color: Color, index: number) =>
-        color.shades.map((shade, shadeIndex) => [getThemeColorHexByName(shade), index])
+        color.shades.map((shade, _) => [getThemeColorHexByName(shade), index])
     )
 );
 
@@ -312,7 +313,7 @@ const CourseCellColorPicker: React.FC<CourseCellColorPickerProps> = ({
         if (!hexCodeToBaseColorPatchIndex.has(hexCodeWithHash) && !hexCodeToShadeColorPatchIndex.has(hexCodeWithHash)) {
             setSelectedBaseColorPatch(-1);
         }
-    }, [hexCode, hexCodeToBaseColorPatchIndex]);
+    }, [hexCode]);
 
     React.useEffect(() => {
         let finalColor: string | null = null;
@@ -327,7 +328,7 @@ const CourseCellColorPicker: React.FC<CourseCellColorPickerProps> = ({
         }
         console.log('finalColor', finalColor);
         setFinalColor(finalColor);
-    }, [hexCode, selectedBaseColorPatch, selectedShadeColorPatch, colorPatches]);
+    }, [hexCode, selectedBaseColorPatch, selectedShadeColorPatch, colorPatches, setFinalColor]);
 
     return (
         <div className='inline-flex flex-col border border-1 border-ut-offwhite rounded-1 p-[5px]'>

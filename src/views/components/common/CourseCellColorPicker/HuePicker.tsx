@@ -1,5 +1,6 @@
 import React from 'react';
-import { ThemeColor } from 'src/shared/util/themeColors';
+import type { ThemeColor } from 'src/shared/util/themeColors';
+
 import ColorPatch from './ColorPatch';
 import DivWrapper from './DivWrapper';
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import { getThemeColorHexByName } from 'src/shared/util/themeColors';
+
 import TagIcon from '~icons/material-symbols/tag';
 
-/*
+/**
  * Props for the HexColorEditor component
  */
 export interface HexColorEditorProps {
@@ -27,7 +28,7 @@ const HexColorEditor: React.FC<HexColorEditorProps> = ({ hexCode, setHexCode }: 
         <div className='h-[22px] w-[74px] flex items-center border-[0.5px] border-ut-gray/50 rounded-1'>
             <div
                 style={{ backgroundColor: previewColor }}
-                className={`h-[22px] w-[21px] flex items-center justify-center rounded-l-1 -m-[0.5px]`}
+                className='h-[22px] w-[21px] flex items-center justify-center rounded-l-1 -m-[0.5px]'
             >
                 <TagIcon className='h-[16px] w-[16px] text-ut-white' />
             </div>

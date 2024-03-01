@@ -1,6 +1,6 @@
 import { Button } from '@views/components/common/Button/Button';
 import React from 'react';
-import { ThemeColor } from 'src/shared/util/themeColors';
+import type { ThemeColor } from 'src/shared/util/themeColors';
 
 import CheckIcon from '~icons/material-symbols/check';
 
