@@ -44,9 +44,7 @@ export const handleOpenCalendar = async () => {
  */
 const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, activeSchedule }) => {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
-    const [courseAdded, setCourseAdded] = useState<boolean>(
-        activeSchedule.courses.some(course => course.uniqueId === uniqueId)
-    );
+    const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
 
     const instructorString = instructors
         .map(instructor => {
@@ -82,7 +80,6 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
         } else {
             await removeCourse(activeSchedule.name, course);
         }
-        setCourseAdded(!courseAdded);
     };
     return (
         <div className='w-full pb-3 pt-6'>
@@ -131,7 +128,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
             </div>
             <div className='my-3 flex flex-wrap items-center gap-[15px]'>
                 <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} onClick={handleOpenCalendar} />
-                <Divider type='solid' color='ut-offwhite' className='h-7' />
+                <Divider orientation='vertical' size='28px' />
                 <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
                     RateMyProf
                 </Button>
@@ -150,7 +147,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({ course, onClose, a
                     {!courseAdded ? 'Add Course' : 'Remove Course'}
                 </Button>
             </div>
-            <Divider />
+            <Divider orientation='horizontal' size='100%' />
         </div>
     );
 };

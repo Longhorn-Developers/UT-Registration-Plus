@@ -1,3 +1,4 @@
+import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
@@ -15,9 +16,10 @@ import CancelledIcon from '~icons/material-symbols/warning';
 export interface CalendarCourseCellProps {
     courseDeptAndInstr: string;
     timeAndLocation?: string;
-    status: Status;
+    status: StatusType;
     colors: CourseColors;
     className?: string;
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 /**
@@ -27,7 +29,7 @@ export interface CalendarCourseCellProps {
  * @param {CalendarCourseCellProps} props - The component props.
  * @param {string} props.courseDeptAndInstr - The course department and instructor.
  * @param {string} props.timeAndLocation - The time and location of the course.
- * @param {Status} props.status - The status of the course.
+ * @param {StatusType} props.status - The status of the course.
  * @param {Colors} props.colors - The colors for styling the cell.
  * @param {string} props.className - Additional CSS class name for the cell.
  * @returns {JSX.Element} The rendered component.
@@ -38,6 +40,7 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
     status,
     colors,
     className,
+    onClick,
 }: CalendarCourseCellProps) => {
     let rightIcon: React.ReactNode | null = null;
     if (status === Status.WAITLISTED) {
@@ -53,10 +56,15 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
 
     return (
         <div
-            className={clsx('h-full w-full flex justify-center rounded p-2 overflow-x-hidden', fontColor, className)}
+            className={clsx(
+                'h-full w-full flex justify-center rounded p-2 overflow-x-hidden cursor-default hover:cursor-pointer',
+                fontColor,
+                className
+            )}
             style={{
                 backgroundColor: colors.primaryColor,
             }}
+            onClick={onClick}
         >
             <div className='flex flex-1 flex-col gap-1'>
                 <Text

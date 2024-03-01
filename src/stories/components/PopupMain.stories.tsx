@@ -8,6 +8,7 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
+    args: {},
     argTypes: {},
 } satisfies Meta<typeof PopupMain>;
 export default meta;

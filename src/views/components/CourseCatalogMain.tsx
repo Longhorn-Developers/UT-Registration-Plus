@@ -1,23 +1,21 @@
 import type { Course, ScrapedRow } from '@shared/types/Course';
+import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import AutoLoad from '@views/components/injected/AutoLoad/AutoLoad';
+import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
+import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/RecruitmentBanner';
+import TableHead from '@views/components/injected/TableHead';
+import TableRow from '@views/components/injected/TableRow/TableRow';
+import TableSubheading from '@views/components/injected/TableSubheading/TableSubheading';
+import { useKeyPress } from '@views/hooks/useKeyPress';
+import useSchedules from '@views/hooks/useSchedules';
+import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
+import getCourseTableRows from '@views/lib/getCourseTableRows';
+import type { SiteSupportType } from '@views/lib/getSiteSupport';
+import { populateSearchInputs } from '@views/lib/populateSearchInputs';
 import React, { useEffect, useState } from 'react';
 
-import { useKeyPress } from '../hooks/useKeyPress';
-import useSchedules from '../hooks/useSchedules';
-import { CourseCatalogScraper } from '../lib/CourseCatalogScraper';
-import getCourseTableRows from '../lib/getCourseTableRows';
-import type { SiteSupport } from '../lib/getSiteSupport';
-import { populateSearchInputs } from '../lib/populateSearchInputs';
-import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
-import AutoLoad from './injected/AutoLoad/AutoLoad';
-import CourseCatalogInjectedPopup from './injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
-import CoursePopup from './injected/CoursePopupOld/CoursePopup';
-import RecruitmentBanner from './injected/RecruitmentBanner/RecruitmentBanner';
-import TableHead from './injected/TableHead';
-import TableRow from './injected/TableRow/TableRow';
-import TableSubheading from './injected/TableSubheading/TableSubheading';
-
 interface Props {
-    support: SiteSupport.COURSE_CATALOG_DETAILS | SiteSupport.COURSE_CATALOG_LIST;
+    support: Extract<SiteSupportType, 'COURSE_CATALOG_DETAILS' | 'COURSE_CATALOG_LIST'>;
 }
 
 /**
