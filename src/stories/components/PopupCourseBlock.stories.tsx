@@ -2,10 +2,10 @@ import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import { getCourseColors } from '@shared/util/colors';
+import { tailwindColorways } from '@shared/util/storybook';
 import type { Meta, StoryObj } from '@storybook/react';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import React from 'react';
-import { tailwindColorways } from 'src/shared/util/storybook';
 
 /**
  * Represents an example course.

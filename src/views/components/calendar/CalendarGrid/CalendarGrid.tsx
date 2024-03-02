@@ -1,4 +1,6 @@
 import type { Course } from '@shared/types/Course';
+//  import html2canvas from 'html2canvas';
+import { DAY_MAP } from '@shared/types/CourseMeeting';
 /*  import calIcon from 'src/assets/icons/cal.svg';
 import pngIcon from 'src/assets/icons/png.svg';
 */
@@ -7,8 +9,6 @@ import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/Ca
 import CalendarCell from '@views/components/calendar/CalendarGridCell/CalendarGridCell';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React, { useEffect, useRef, useState } from 'react';
-//  import html2canvas from 'html2canvas';
-import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 
 import styles from './CalendarGrid.module.scss';
 
