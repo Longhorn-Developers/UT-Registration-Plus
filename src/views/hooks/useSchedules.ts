@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
  * Custom hook that manages user schedules.
  * @returns A tuple containing the active schedule and an array of all schedules.
  */
-export default function useSchedules(): [active: UserSchedule | null, schedules: UserSchedule[]] {
+export default function useSchedules(): [UserSchedule | null, UserSchedule[], (schedule: UserSchedule) => void] {
     const [schedules, setSchedules] = useState<UserSchedule[]>([]);
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [activeSchedule, setActiveSchedule] = useState<UserSchedule | null>(null);
@@ -17,32 +17,27 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
                 UserScheduleStore.get('schedules'),
                 UserScheduleStore.get('activeIndex'),
             ]);
-            setSchedules(storedSchedules.map(s => new UserSchedule(s)));
+
+            const userSchedules = storedSchedules.map(s => new UserSchedule(s));
+            setSchedules(userSchedules);
             setActiveIndex(storedActiveIndex);
-            setActiveSchedule(new UserSchedule(storedSchedules[storedActiveIndex]));
-
-            const initializable = UserScheduleStore.initialize();
-
-            if (initializable) {
-                const l1 = UserScheduleStore.listen('schedules', ({ newValue }) => {
-                    setSchedules(newValue.map(s => new UserSchedule(s)));
-                    setActiveSchedule(new UserSchedule(newValue[activeIndex]));
-                });
-
-                const l2 = UserScheduleStore.listen('activeIndex', ({ newValue }) => {
-                    setActiveIndex(newValue);
-                    setActiveSchedule(new UserSchedule(schedules[newValue]));
-                });
-
-                return () => {
-                    UserScheduleStore.removeListener(l1);
-                    UserScheduleStore.removeListener(l2);
-                };
-            }
+            setActiveSchedule(userSchedules[storedActiveIndex] || null);
         };
 
         fetchData();
-    }, [activeIndex, schedules]);
+    }, []);
 
-    return [activeSchedule, schedules];
+    // Function to set and persist the active schedule
+    const setActive = (schedule: UserSchedule) => {
+        const index = schedules.findIndex(s => s.name === schedule.name);
+        if (index === -1) return; // Schedule not found, exit function
+
+        setActiveSchedule(schedule);
+        setActiveIndex(index);
+
+        // Persist changes
+        UserScheduleStore.set('activeIndex', index);
+    };
+
+    return [activeSchedule, schedules, setActive];
 }

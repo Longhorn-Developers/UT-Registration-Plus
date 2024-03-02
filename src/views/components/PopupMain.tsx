@@ -9,7 +9,7 @@ import Text from '@views/components/common/Text/Text';
 import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import useSchedules from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { act } from 'react-dom/test-utils';
 import { tailwindColorways } from 'src/shared/util/storybook';
 
@@ -23,16 +23,33 @@ import styles from 'src/views/styles/popup.module.scss';
  * This component displays the main schedule, courses, and options buttons.
  */
 export default function PopupMain() {
-    const [activeSchedule, schedules] = useSchedules();
+    const [activeSchedule, schedules, setActiveSchedule] = useSchedules();
     const coursesLength = activeSchedule ? activeSchedule.courses.length : 0;
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const popupRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (popupRef.current && !popupRef.current.contains(event.target)) {
+                setIsPopupVisible(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [popupRef]);
 
     if (!activeSchedule) {
-        return;
+        return null;
     }
 
-    const toggleExpand = () => {
-        setIsExpanded(prevState => !prevState);
+    const togglePopupVisibility = () => {
+        setIsPopupVisible(prev => !prev);
+    };
+
+    const selectSchedule = selectedSchedule => {
+        setActiveSchedule(selectedSchedule);
+        setIsPopupVisible(false);
     };
 
     const draggableElements = activeSchedule?.courses.map((course, i) => (
@@ -71,7 +88,7 @@ export default function PopupMain() {
                 <Divider orientation='horizontal' className='my-4' size='100%' />
                 <div
                     className='mb-4 border border-ut-offwhite rounded p-2 text-left flex justify-between items-center'
-                    onClick={toggleExpand}
+                    onClick={togglePopupVisibility}
                     style={{ cursor: 'pointer' }}
                 >
                     <div>
@@ -83,8 +100,17 @@ export default function PopupMain() {
                             <Text variant='h2-course'>{`${coursesLength} Courses`}</Text>
                         </div>
                     </div>
-                    <div className={`${styles.arrow} ${isExpanded ? styles.expanded : ''}`}></div>
+                    <div className={`${styles.arrow} ${isPopupVisible ? styles.expanded : ''}`}></div>
                 </div>
+                {isPopupVisible && (
+                    <div className='schedules-popup' ref={popupRef}>
+                        {schedules.map(schedule => (
+                            <div key={schedule.name} className='schedule-item' onClick={() => selectSchedule(schedule)}>
+                                <Text variant='h2-course'>{schedule.name}</Text>
+                            </div>
+                        ))}
+                    </div>
+                )}
                 {/* Integrate the List component here */}
                 {activeSchedule ? (
                     <List
