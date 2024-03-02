@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
 import logoImage from '@assets/logo.png';
 import { Status } from '@shared/types/Course';
 import { StatusIcon } from '@shared/util/icons';
+import { tailwindColorways } from '@shared/util/storybook';
 import Divider from '@views/components/common/Divider/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List/List';
@@ -10,8 +10,8 @@ import Text from '@views/components/common/Text/Text';
 import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import useSchedules, { switchSchedule } from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
-import { tailwindColorways } from 'src/shared/util/storybook';
-import styles from 'src/views/styles/popupMain.module.scss';
+import styles from '@views/styles/popupMain.module.scss';
+import React, { useEffect, useRef,useState } from 'react';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
@@ -88,7 +88,7 @@ export default function PopupMain() {
                 <Divider orientation='horizontal' className='my-4' size='100%' />
                 <div
                     ref={toggleRef}
-                    className={`mb-4 border border-ut-offwhite rounded p-2 text-left flex justify-between items-center`}
+                    className="mb-4 flex items-center justify-between border border-ut-offwhite rounded p-2 text-left"
                     onClick={handleClick}
                     style={{ cursor: 'pointer' }}
                 >
@@ -101,7 +101,7 @@ export default function PopupMain() {
                             <Text variant='h2-course'>{`${activeSchedule.courses.length} Courses`}</Text>
                         </div>
                     </div>
-                    <div className={`${styles.arrow} ${isPopupVisible ? styles.expanded : ''}`}></div>
+                    <div className={`${styles.arrow} ${isPopupVisible ? styles.expanded : ''}`} />
                 </div>
                 {isPopupVisible && (
                     <div ref={popupRef}>

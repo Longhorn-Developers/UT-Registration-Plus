@@ -1,6 +1,6 @@
 import createSchedule from '@pages/background/lib/createSchedule';
 import switchSchedule from '@pages/background/lib/switchSchedule';
-// import type { UserSchedule } from '@shared/types/UserSchedule';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import List from '@views/components/common/List/List';
 import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
 import Text from '@views/components/common/Text/Text';
@@ -11,8 +11,8 @@ import AddSchedule from '~icons/material-symbols/add';
 
 export type Props = {
     style?: React.CSSProperties;
-    // dummySchedules?: UserSchedule[];
-    // dummyActiveIndex?: number;
+    dummySchedules?: UserSchedule[];
+    dummyActiveIndex?: number;
 };
 
 /**
@@ -56,6 +56,12 @@ export function CalendarSchedules(props: Props) {
             onClick={() => selectItem(index)}
         />
     ));
+
+    const fixBuildError = {
+        dummySchedules: props.dummySchedules,
+        dummyActiveIndex: props.dummyActiveIndex,
+    };
+    console.log(fixBuildError);
 
     return (
         <div style={{ ...props.style }} className='items-center'>
