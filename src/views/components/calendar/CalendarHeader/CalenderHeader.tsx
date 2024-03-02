@@ -1,3 +1,4 @@
+import calIcon from '@assets/logo.png';
 import { Status } from '@shared/types/Course';
 import { Button } from '@views/components/common/Button/Button';
 import CourseStatus from '@views/components/common/CourseStatus/CourseStatus';
@@ -6,7 +7,6 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import Text from '@views/components/common/Text/Text';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
-import calIcon from 'src/assets/logo.png';
 
 import MenuIcon from '~icons/material-symbols/menu';
 import RedoIcon from '~icons/material-symbols/redo';

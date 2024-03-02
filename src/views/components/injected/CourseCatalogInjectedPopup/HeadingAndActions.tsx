@@ -1,13 +1,13 @@
+import addCourse from '@pages/background/lib/addCourse';
+import removeCourse from '@pages/background/lib/removeCourse';
+import type { Course } from '@shared/types/Course';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import { Button } from '@views/components/common/Button/Button';
 import { Chip, flagMap } from '@views/components/common/Chip/Chip';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
+import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React, { useState } from 'react';
-import addCourse from 'src/pages/background/lib/addCourse';
-import removeCourse from 'src/pages/background/lib/removeCourse';
-import type { Course } from 'src/shared/types/Course';
-import type { UserSchedule } from 'src/shared/types/UserSchedule';
-import { openTabFromContentScript } from 'src/views/lib/openNewTabFromContentScript';
 
 import Add from '~icons/material-symbols/add';
 import CalendarMonth from '~icons/material-symbols/calendar-month';

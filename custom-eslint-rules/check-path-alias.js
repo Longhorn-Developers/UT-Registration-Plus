@@ -12,7 +12,7 @@ module.exports = {
             category: 'Possible Errors',
             recommended: true,
         },
-        fixable: null,
+        fixable: 'code', // Enable autofix
         schema: [],
     },
 
@@ -43,9 +43,16 @@ module.exports = {
                 }
 
                 if (pathList.some(path => importPath.startsWith(path))) {
+                    const matchingPath = pathList.find(path => importPath.startsWith(path));
+                    const alias = Object.keys(paths).find(key => paths[key].includes(matchingPath + '/*'));
+                    const aliasParsed = alias.replace('/*', '');
+                    const updatedImportPath = importPath.replace(matchingPath, aliasParsed);
                     context.report({
                         node,
-                        message: 'Use a path alias here',
+                        message: `Run autofix to use path alias: ${alias}`,
+                        fix: fixer => {
+                            return fixer.replaceText(node.source, `'${updatedImportPath}'`);
+                        },
                     });
                 }
             },
