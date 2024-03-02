@@ -23,17 +23,18 @@ interface CourseCatalogInjectedPopupProps {
  * @param {Function} props.onClose - The function to close the popup.
  * @returns {JSX.Element} The CourseCatalogInjectedPopup component.
  */
-const CourseCatalogInjectedPopup: React.FC<CourseCatalogInjectedPopupProps> = ({
+export default function CourseCatalogInjectedPopup({
     course,
     activeSchedule,
     onClose,
-}: CourseCatalogInjectedPopupProps): JSX.Element => (
-    <Popup overlay className='max-w-[780px] px-6' onClose={onClose}>
-        <div className='flex flex-col'>
-            <HeadingAndActions course={course} onClose={onClose} activeSchedule={activeSchedule} />
-            <Description course={course} />
-            <GradeDistribution course={course} />
-        </div>
-    </Popup>
-);
-export default CourseCatalogInjectedPopup;
+}: CourseCatalogInjectedPopupProps) {
+    return (
+        <Popup overlay className='max-w-[780px] px-6' onClose={onClose}>
+            <div className='flex flex-col'>
+                <HeadingAndActions course={course} onClose={onClose} activeSchedule={activeSchedule} />
+                <Description lines={course.description} />
+                <GradeDistribution course={course} />
+            </div>
+        </Popup>
+    );
+}

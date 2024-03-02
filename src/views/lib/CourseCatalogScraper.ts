@@ -1,4 +1,4 @@
-import type { InstructionMode, ScrapedRow, Semester } from '@shared/types/Course';
+import type { InstructionMode, ScrapedRow, Semester, StatusType } from '@shared/types/Course';
 import { Course, Status } from '@shared/types/Course';
 import { CourseSchedule } from '@shared/types/CourseSchedule';
 import Instructor from '@shared/types/Instructor';
@@ -278,7 +278,7 @@ export class CourseCatalogScraper {
      * @param row the row of the course catalog table
      * @returns
      */
-    getStatus(row: HTMLTableRowElement): [status: Status, isReserved: boolean] {
+    getStatus(row: HTMLTableRowElement): [status: StatusType, isReserved: boolean] {
         const div = row.querySelector(TableDataSelector.STATUS);
         if (!div) {
             throw new Error('Status not found');

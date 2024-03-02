@@ -1,12 +1,11 @@
 import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
+import { tailwindColorways } from '@shared/util/storybook';
 import type { Meta, StoryObj } from '@storybook/react';
 import List from '@views/components/common/List/List';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import React from 'react';
-
-import { TestColors } from './PopupCourseBlock.stories';
 
 const numberOfCourses = 5;
 
@@ -71,7 +70,7 @@ export const GenerateCourses = count => {
 const exampleCourses = GenerateCourses(numberOfCourses);
 const generateCourseBlocks = (exampleCourses, colors) =>
     exampleCourses.map((course, i) => <PopupCourseBlock key={course.uniqueId} course={course} colors={colors[i]} />);
-export const ExampleCourseBlocks = generateCourseBlocks(exampleCourses, TestColors);
+export const ExampleCourseBlocks = generateCourseBlocks(exampleCourses, tailwindColorways);
 
 const meta = {
     title: 'Components/Common/List',

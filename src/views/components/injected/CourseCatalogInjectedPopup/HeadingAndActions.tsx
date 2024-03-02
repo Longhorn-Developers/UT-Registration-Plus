@@ -1,12 +1,15 @@
-import { background } from '@shared/messages';
-import type { Course } from '@shared/types/Course';
+import { background } from '@shared/messages'
 import { Status } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
+import addCourse from '@pages/background/lib/addCourse';
+import removeCourse from '@pages/background/lib/removeCourse';
+import type { Course } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { Button } from '@views/components/common/Button/Button';
 import { Chip, flagMap } from '@views/components/common/Chip/Chip';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
+import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React, { useState } from 'react';
 
 import Add from '~icons/material-symbols/add';
@@ -173,7 +176,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
                     {!courseAdded ? 'Add Course' : 'Remove Course'}
                 </Button>
             </div>
-            <Divider size='100%' orientation='horizontal' />
+            <Divider orientation='horizontal' size='100%' />
         </div>
     );
 };
