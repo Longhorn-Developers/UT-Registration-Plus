@@ -1,10 +1,10 @@
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
+import type { CourseColors } from '@shared/util/colors';
+import { pickFontColor } from '@shared/util/colors';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
-import type { CourseColors } from 'src/shared/util/colors';
-import { pickFontColor } from 'src/shared/util/colors';
 
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';

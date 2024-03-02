@@ -1,6 +1,6 @@
+import type { Course } from '@shared/types/Course';
+import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import React from 'react';
-import type { Course } from 'src/shared/types/Course';
-import type { CourseMeeting } from 'src/shared/types/CourseMeeting';
 
 import styles from './CalendarCourseMeeting.module.scss';
 

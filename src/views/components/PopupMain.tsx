@@ -1,6 +1,7 @@
 import logoImage from '@assets/logo.png'; // Adjust the path as necessary
 import { Status } from '@shared/types/Course';
 import { StatusIcon } from '@shared/util/icons';
+import { tailwindColorways } from '@shared/util/storybook';
 import Divider from '@views/components/common/Divider/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List/List'; // Ensure this path is correctly pointing to your List component
@@ -11,7 +12,6 @@ import useSchedules from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { tailwindColorways } from 'src/shared/util/storybook';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
