@@ -1,6 +1,6 @@
 {
-  "name": "eslint-plugin-restrict-import-depth",
+  "name": "eslint-plugin-custom-utrp",
   "version": "0.1.0",
-  "description": "ESLint plugin to restrict the depth of import statements",
+  "description": "Custom ESLint rules for UTRP",
   "main": "index.js"
 }

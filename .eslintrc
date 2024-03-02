@@ -24,7 +24,7 @@
         "react-prefer-function-component",
         "@typescript-eslint",
         "simple-import-sort",
-        "restrict-import-depth",
+        "custom-utrp",
     ],
     "globals": {
         "Atomics": "readonly",
@@ -208,6 +208,7 @@
         "@typescript-eslint/consistent-type-imports": "error",
         "simple-import-sort/imports": "error",
         "simple-import-sort/exports": "error",
-        "restrict-import-depth/restrict-import-depth": "error",
+        "custom-utrp/restrict-import-depth": "error",
+        "custom-utrp/check-path-alias": "error",
     },
 }
