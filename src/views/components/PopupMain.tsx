@@ -25,28 +25,29 @@ export default function PopupMain() {
     const [activeSchedule, schedules] = useSchedules();
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const popupRef = useRef(null);
+    const toggleRef = useRef(null);
 
     useEffect(() => {
         function handleClickOutside(event) {
-            if (popupRef.current && !popupRef.current.contains(event.target)) {
+            if (!popupRef.current.contains(event.target) && !toggleRef.current.contains(event.target)) {
                 setIsPopupVisible(false);
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [popupRef]);
+    }, []);
+
+    const handleClick = () => {
+        setIsPopupVisible(prev => !prev);
+    };
 
     if (!activeSchedule || schedules.length === 0) {
         return <ExtensionRoot>No active schedule available.</ExtensionRoot>;
     }
 
-    const togglePopupVisibility = () => {
-        setIsPopupVisible(!isPopupVisible);
-    };
-
     const selectSchedule = async selectedSchedule => {
         await switchSchedule(selectedSchedule.name);
-        togglePopupVisibility();
+        handleClick();
     };
 
     const nonActiveSchedules = schedules.filter(s => s.name !== activeSchedule.name);
@@ -86,8 +87,9 @@ export default function PopupMain() {
                 </div>
                 <Divider orientation='horizontal' className='my-4' size='100%' />
                 <div
-                    className={`${styles.scheduleBox} mb-4 border border-ut-offwhite rounded p-2 text-left flex justify-between items-center`}
-                    onClick={togglePopupVisibility}
+                    ref={toggleRef}
+                    className={`mb-4 border border-ut-offwhite rounded p-2 text-left flex justify-between items-center`}
+                    onClick={handleClick}
                     style={{ cursor: 'pointer' }}
                 >
                     <div>
