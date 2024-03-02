@@ -1,17 +1,17 @@
-import logoImage from '@assets/logo.png'; // Adjust the path as necessary
+import logoImage from '@assets/logo.png';
 import { Status } from '@shared/types/Course';
 import { StatusIcon } from '@shared/util/icons';
 import { tailwindColorways } from '@shared/util/storybook';
 import Divider from '@views/components/common/Divider/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
-import List from '@views/components/common/List/List'; // Ensure this path is correctly pointing to your List component
+import List from '@views/components/common/List/List';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import Text from '@views/components/common/Text/Text';
 import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
-import useSchedules from '@views/hooks/useSchedules';
+import useSchedules, { switchSchedule } from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
-import React from 'react';
-import { act } from 'react-dom/test-utils';
+import styles from '@views/styles/popupMain.module.scss';
+import React, { useEffect, useRef,useState } from 'react';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
@@ -23,10 +23,34 @@ import SettingsIcon from '~icons/material-symbols/settings';
  */
 export default function PopupMain() {
     const [activeSchedule, schedules] = useSchedules();
-    const coursesLength = activeSchedule ? activeSchedule.courses.length : 0;
-    if (!activeSchedule) {
-        return;
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const popupRef = useRef(null);
+    const toggleRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (!popupRef.current.contains(event.target) && !toggleRef.current.contains(event.target)) {
+                setIsPopupVisible(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleClick = () => {
+        setIsPopupVisible(prev => !prev);
+    };
+
+    if (!activeSchedule || schedules.length === 0) {
+        return <ExtensionRoot>No active schedule available.</ExtensionRoot>;
     }
+
+    const selectSchedule = async selectedSchedule => {
+        await switchSchedule(selectedSchedule.name);
+        handleClick();
+    };
+
+    const nonActiveSchedules = schedules.filter(s => s.name !== activeSchedule.name);
 
     const draggableElements = activeSchedule?.courses.map((course, i) => (
         <PopupCourseBlock key={course.uniqueId} course={course} colors={tailwindColorways[i]} />
@@ -62,25 +86,53 @@ export default function PopupMain() {
                     </div>
                 </div>
                 <Divider orientation='horizontal' className='my-4' size='100%' />
-                <div className='mb-4 border border-ut-offwhite rounded p-2 text-left'>
-                    <Text as='div' variant='h1-course' className='color-ut-burntorange'>
-                        {`${activeSchedule.name}`}:
-                    </Text>
-                    <div className='flex items-center justify-start gap2.5 color-ut-black'>
-                        <Text variant='h1'>{`${activeSchedule.hours} HOURS`}</Text>
-                        <Text variant='h2-course'>{`${coursesLength} Courses`}</Text>
+                <div
+                    ref={toggleRef}
+                    className="mb-4 flex items-center justify-between border border-ut-offwhite rounded p-2 text-left"
+                    onClick={handleClick}
+                    style={{ cursor: 'pointer' }}
+                >
+                    <div>
+                        <Text as='div' variant='h1-course' className='color-ut-burntorange'>
+                            {`${activeSchedule.name}`}:
+                        </Text>
+                        <div className='flex items-center justify-start gap2.5 color-ut-black'>
+                            <Text variant='h1'>{`${activeSchedule.hours} HOURS`}</Text>
+                            <Text variant='h2-course'>{`${activeSchedule.courses.length} Courses`}</Text>
+                        </div>
                     </div>
+                    <div className={`${styles.arrow} ${isPopupVisible ? styles.expanded : ''}`} />
                 </div>
-                {/* Integrate the List component here */}
-                {activeSchedule ? (
+                {isPopupVisible && (
+                    <div ref={popupRef}>
+                        {nonActiveSchedules.map(schedule => (
+                            <div
+                                key={schedule.name}
+                                className={styles.scheduleItem}
+                                onClick={() => selectSchedule(schedule)}
+                            >
+                                <Text as='div' variant='h1-course' className='color-ut-burntorange'>
+                                    {schedule.name}:
+                                </Text>
+                                <div className='flex items-center justify-start gap2.5 color-ut-black'>
+                                    <Text variant='h1'>{`${schedule.hours} HOURS`}</Text>
+                                    <Text variant='h2-course'>{`${schedule.courses.length} Courses`}</Text>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                {!isPopupVisible && (
                     <List
-                        draggableElements={draggableElements}
-                        itemHeight={100} // Adjust based on your content size
-                        listHeight={500} // Adjust based on total height you want for the list
-                        listWidth={350} // Adjust based on your layout/design
-                        gap={12} // Spacing between items
+                        draggableElements={activeSchedule?.courses.map((course, i) => (
+                            <PopupCourseBlock key={course.uniqueId} course={course} colors={tailwindColorways[i]} />
+                        ))}
+                        itemHeight={100}
+                        listHeight={500}
+                        listWidth={350}
+                        gap={12}
                     />
-                ) : null}
+                )}
                 <div className='mt-4 flex gap-2 border-t border-gray-200 p-4 text-xs'>
                     <div className='flex items-center gap-1'>
                         <div className='rounded bg-ut-black p-1px'>
