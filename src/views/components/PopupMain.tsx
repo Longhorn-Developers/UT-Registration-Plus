@@ -8,7 +8,7 @@ import List from '@views/components/common/List/List';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import Text from '@views/components/common/Text/Text';
 import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
-import useSchedules from '@views/hooks/useSchedules';
+import useSchedules, { switchSchedule } from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import { tailwindColorways } from 'src/shared/util/storybook';
 import styles from 'src/views/styles/popupMain.module.scss';
@@ -22,7 +22,7 @@ import SettingsIcon from '~icons/material-symbols/settings';
  * This component displays the main schedule, courses, and options buttons.
  */
 export default function PopupMain() {
-    const [activeSchedule, schedules, setActiveSchedule] = useSchedules();
+    const [activeSchedule, schedules] = useSchedules();
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const popupRef = useRef(null);
 
@@ -45,8 +45,9 @@ export default function PopupMain() {
     };
 
     const selectSchedule = selectedSchedule => {
-        setActiveSchedule(selectedSchedule);
-        setIsPopupVisible(false);
+        // setActiveSchedule(selectedSchedule);
+        switchSchedule(selectedSchedule.name);
+        togglePopupVisibility();
     };
 
     const nonActiveSchedules = schedules.filter(s => s.name !== activeSchedule.name);
