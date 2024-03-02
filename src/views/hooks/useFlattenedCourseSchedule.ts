@@ -160,7 +160,7 @@ function processInPersonMeetings(
 /**
  * Utility function to sort courses for the calendar grid
  */
-function sortCourses(a, b) {
+function sortCourses(a: CalendarGridCourse, b: CalendarGridCourse): number {
     const { dayIndex: dayIndexA, startIndex: startIndexA, endIndex: endIndexA } = a.calendarGridPoint;
     const { dayIndex: dayIndexB, startIndex: startIndexB, endIndex: endIndexB } = b.calendarGridPoint;
 

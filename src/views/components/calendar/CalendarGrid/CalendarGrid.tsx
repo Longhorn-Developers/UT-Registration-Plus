@@ -151,28 +151,32 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
 
     //  Part of TODO: block.course is definitely a course object
     //  console.log(courseCells);
+    
+    return courseCells.map((block, i) => {
+        const { courseDeptAndInstr, timeAndLocation, status, colors } = courseCells[i].componentProps;
 
-    return courseCells.map(block => (
-        <div
-            key={`${block}`}
-            style={{
-                gridColumn: `${block.calendarGridPoint.dayIndex + 2}`,
-                gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
-                width: `calc(100% / ${block.totalColumns})`,
-                marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`,
-                padding: '0px 10px 4px 0px',
-            }}
-        >
-            <CalendarCourseCell
-                courseDeptAndInstr={block.componentProps.courseDeptAndInstr}
-                timeAndLocation={block.componentProps.timeAndLocation}
-                status={block.componentProps.status}
-                //  TODO: Change to block.componentProps.colors when colors are integrated to the rest of the project
-                colors={getCourseColors('emerald', 500) /*  block.componentProps.colors */}
-                onClick={() => setCourse(block.course)}
-            />
-        </div>
-    ));
+        return (
+            <div
+                key={`${block}`}
+                style={{
+                    gridColumn: `${block.calendarGridPoint.dayIndex + 2}`,
+                    gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
+                    width: `calc(100% / ${block.totalColumns})`,
+                    marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`,
+                    padding: '0px 10px 4px 0px',
+                }}
+            >
+                <CalendarCourseCell
+                    courseDeptAndInstr={courseDeptAndInstr}
+                    timeAndLocation={timeAndLocation}
+                    status={status}
+                    //  TODO: Change to block.componentProps.colors when colors are integrated to the rest of the project
+                    colors={getCourseColors('emerald', 500) /*  block.componentProps.colors */}
+                    onClick={() => setCourse(block.course)}
+                />
+            </div>
+        )
+    });
 }
 
 /* <div className={styles.buttonContainer}>
