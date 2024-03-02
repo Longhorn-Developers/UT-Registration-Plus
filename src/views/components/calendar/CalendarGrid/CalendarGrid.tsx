@@ -6,8 +6,6 @@ import pngIcon from 'src/assets/icons/png.svg';
 */
 import { getCourseColors } from '@shared/util/colors';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
-import { getCourseColors } from '@shared/util/colors';
-import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import CalendarCell from '@views/components/calendar/CalendarGridCell/CalendarGridCell';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React, { useEffect, useRef, useState } from 'react';
@@ -160,8 +158,6 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
             style={{
                 gridColumn: `${block.calendarGridPoint.dayIndex + 2}`,
                 gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
-                gridColumn: `${block.calendarGridPoint.dayIndex + 2}`,
-                gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
                 width: `calc(100% / ${block.totalColumns})`,
                 marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`,
                 padding: '0px 10px 4px 0px',
@@ -171,9 +167,6 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                 courseDeptAndInstr={block.componentProps.courseDeptAndInstr}
                 timeAndLocation={block.componentProps.timeAndLocation}
                 status={block.componentProps.status}
-                //  TODO: Change to block.componentProps.colors when colors are integrated to the rest of the project
-                colors={getCourseColors('emerald', 500) /*  block.componentProps.colors */}
-                onClick={() => setCourse(block.course)}
                 //  TODO: Change to block.componentProps.colors when colors are integrated to the rest of the project
                 colors={getCourseColors('emerald', 500) /*  block.componentProps.colors */}
                 onClick={() => setCourse(block.course)}

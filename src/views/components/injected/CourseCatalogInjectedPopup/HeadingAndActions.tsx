@@ -1,8 +1,8 @@
 import { background } from '@shared/messages'
 import { Status } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
-import addCourse from '@pages/background/lib/addCourse';
-import removeCourse from '@pages/background/lib/removeCourse';
+//  import addCourse from '@pages/background/lib/addCourse'; Looks like this got replaced and is now handled by background
+//  import removeCourse from '@pages/background/lib/removeCourse'; Looks like this got replaced and is now handled by background
 import type { Course } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { Button } from '@views/components/common/Button/Button';
