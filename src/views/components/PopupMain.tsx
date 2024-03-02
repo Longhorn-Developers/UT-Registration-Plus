@@ -11,7 +11,7 @@ import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInje
 import useSchedules, { switchSchedule } from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import styles from '@views/styles/popupMain.module.scss';
-import React, { useEffect, useRef,useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
@@ -88,7 +88,7 @@ export default function PopupMain() {
                 <Divider orientation='horizontal' className='my-4' size='100%' />
                 <div
                     ref={toggleRef}
-                    className="mb-4 flex items-center justify-between border border-ut-offwhite rounded p-2 text-left"
+                    className='mb-4 flex items-center justify-between border border-ut-offwhite rounded p-2 text-left'
                     onClick={handleClick}
                     style={{ cursor: 'pointer' }}
                 >
