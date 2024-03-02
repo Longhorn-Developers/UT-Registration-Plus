@@ -1,7 +1,6 @@
 import logoImage from '@assets/logo.png'; // Adjust the path as necessary
 import { Status } from '@shared/types/Course';
 import { StatusIcon } from '@shared/util/icons';
-import { tailwindColorways } from '@shared/util/storybook';
 import Divider from '@views/components/common/Divider/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List/List'; // Ensure this path is correctly pointing to your List component
@@ -10,12 +9,14 @@ import Text from '@views/components/common/Text/Text';
 import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import useSchedules from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
-import React from 'react';
+import React, { useState } from 'react';
 import { act } from 'react-dom/test-utils';
+import { tailwindColorways } from 'src/shared/util/storybook';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
 import SettingsIcon from '~icons/material-symbols/settings';
+import styles from 'src/views/styles/popup.module.scss';
 
 /**
  * Renders the main popup component.
@@ -24,9 +25,15 @@ import SettingsIcon from '~icons/material-symbols/settings';
 export default function PopupMain() {
     const [activeSchedule, schedules] = useSchedules();
     const coursesLength = activeSchedule ? activeSchedule.courses.length : 0;
+    const [isExpanded, setIsExpanded] = useState(false);
+
     if (!activeSchedule) {
         return;
     }
+
+    const toggleExpand = () => {
+        setIsExpanded(prevState => !prevState);
+    };
 
     const draggableElements = activeSchedule?.courses.map((course, i) => (
         <PopupCourseBlock key={course.uniqueId} course={course} colors={tailwindColorways[i]} />
@@ -62,14 +69,21 @@ export default function PopupMain() {
                     </div>
                 </div>
                 <Divider orientation='horizontal' className='my-4' size='100%' />
-                <div className='mb-4 border border-ut-offwhite rounded p-2 text-left'>
-                    <Text as='div' variant='h1-course' className='color-ut-burntorange'>
-                        {`${activeSchedule.name}`}:
-                    </Text>
-                    <div className='flex items-center justify-start gap2.5 color-ut-black'>
-                        <Text variant='h1'>{`${activeSchedule.hours} HOURS`}</Text>
-                        <Text variant='h2-course'>{`${coursesLength} Courses`}</Text>
+                <div
+                    className='mb-4 border border-ut-offwhite rounded p-2 text-left flex justify-between items-center'
+                    onClick={toggleExpand}
+                    style={{ cursor: 'pointer' }}
+                >
+                    <div>
+                        <Text as='div' variant='h1-course' className='color-ut-burntorange'>
+                            {`${activeSchedule.name}`}:
+                        </Text>
+                        <div className='flex items-center justify-start gap2.5 color-ut-black'>
+                            <Text variant='h1'>{`${activeSchedule.hours} HOURS`}</Text>
+                            <Text variant='h2-course'>{`${coursesLength} Courses`}</Text>
+                        </div>
                     </div>
+                    <div className={`${styles.arrow} ${isExpanded ? styles.expanded : ''}`}></div>
                 </div>
                 {/* Integrate the List component here */}
                 {activeSchedule ? (
