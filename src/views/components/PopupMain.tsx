@@ -102,7 +102,7 @@ export default function PopupMain() {
                     <div className={`${styles.arrow} ${isPopupVisible ? styles.expanded : ''}`}></div>
                 </div>
                 {isPopupVisible && (
-                    <div className={styles.schedulesPopup} ref={popupRef}>
+                    <div ref={popupRef}>
                         {nonActiveSchedules.map(schedule => (
                             <div
                                 key={schedule.name}

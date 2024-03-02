@@ -12,3 +12,17 @@
 .expanded {
     transform: rotate(180deg);
 }
+
+.scheduleItem {
+    border: 1px solid #ccc; /* Example border */
+    margin: 8px 0; /* Increased spacing */
+    padding: 10px; /* Inner spacing */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    background-color: #fff; /* Ensure background contrast */
+    cursor: pointer;
+
+    &:hover {
+        background-color: #f9f9f9; /* Hover effect */
+    }
+}
