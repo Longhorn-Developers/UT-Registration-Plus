@@ -23,7 +23,7 @@ module.exports = {
                 if (importPath.startsWith('../../')) {
                     context.report({
                         node,
-                        message: 'Importing files more than 2 directories up is not allowed.',
+                        message: 'Importing files more than 2 directories up is not allowed',
                     });
                 }
             },

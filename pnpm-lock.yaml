@@ -198,6 +198,9 @@ devDependencies:
   eslint-import-resolver-typescript:
     specifier: ^3.6.1
     version: 3.6.1(@typescript-eslint/parser@6.21.0)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
+  eslint-plugin-custom-utrp:
+    specifier: link:./custom-eslint-rules
+    version: link:custom-eslint-rules
   eslint-plugin-import:
     specifier: ^2.29.1
     version: 2.29.1(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
@@ -219,9 +222,6 @@ devDependencies:
   eslint-plugin-react-refresh:
     specifier: ^0.4.5
     version: 0.4.5(eslint@8.56.0)
-  eslint-plugin-restrict-import-depth:
-    specifier: link:./custom-eslint-rules
-    version: link:custom-eslint-rules
   eslint-plugin-simple-import-sort:
     specifier: ^12.0.0
     version: 12.0.0(eslint@8.56.0)
