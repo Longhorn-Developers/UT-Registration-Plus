@@ -44,9 +44,8 @@ export default function PopupMain() {
         setIsPopupVisible(!isPopupVisible);
     };
 
-    const selectSchedule = selectedSchedule => {
-        // setActiveSchedule(selectedSchedule);
-        switchSchedule(selectedSchedule.name);
+    const selectSchedule = async selectedSchedule => {
+        await switchSchedule(selectedSchedule.name);
         togglePopupVisibility();
     };
 
