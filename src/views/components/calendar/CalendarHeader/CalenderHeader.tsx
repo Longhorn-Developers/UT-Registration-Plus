@@ -19,7 +19,7 @@ const handleOpenOptions = async () => {
 };
 
 const CalendarHeader = ({ totalHours, totalCourses, scheduleName }) => (
-    <div className='min-h-79px min-w-672px w-full flex px-0 py-15'>
+    <div className='min-h-79px min-w-672px w-full flex px-0'>
         <div className='flex flex-row gap-20'>
             <div className='flex gap-10'>
                 <div className='flex gap-1'>
