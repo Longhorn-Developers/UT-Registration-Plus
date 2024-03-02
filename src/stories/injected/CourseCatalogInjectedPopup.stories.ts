@@ -117,7 +117,7 @@ export const ClosedCourse: Story = {
         course: {
             ...exampleCourse,
             status: Status.CLOSED,
-        } as Course,
+        } satisfies Course,
     },
 };
 
