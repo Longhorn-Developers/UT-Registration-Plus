@@ -128,14 +128,21 @@ function processAsyncCourses({ courseDeptAndInstr, status, course }: { courseDep
 /**
  * Function to process each in-person class into its distinct meeting objects for calendar grid
  */
-function processInPersonMeetings( { days, startTime, endTime, location }: CourseMeeting, { courseDeptAndInstr, status, course }) {
+function processInPersonMeetings(
+    { days, startTime, endTime, location }: CourseMeeting,
+    { courseDeptAndInstr, status, course }
+) {
+    const midnightIndex = 1440;
+    const normalizingTimeFactor = 720;
     const time = getTimeString({ separator: '-', capitalize: true }, startTime, endTime);
     const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
+    let normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
+    let normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
     return days.map(day => ({
         calendarGridPoint: {
             dayIndex: dayToNumber[day],
-            startIndex: convertMinutesToIndex(startTime),
-            endIndex: convertMinutesToIndex(endTime),
+            startIndex: convertMinutesToIndex(normalizedStartTime),
+            endIndex: convertMinutesToIndex(normalizedEndTime),
         },
         componentProps: {
             courseDeptAndInstr,

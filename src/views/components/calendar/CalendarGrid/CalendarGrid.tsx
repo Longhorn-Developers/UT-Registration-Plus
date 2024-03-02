@@ -152,7 +152,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
     });
 
     //  Part of TODO: block.course is definitely a course object
-    console.log(courseCells);
+    //  console.log(courseCells);
 
     return courseCells.map(block => (
         <div
