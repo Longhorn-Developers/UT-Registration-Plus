@@ -16,7 +16,7 @@ import { tailwindColorways } from 'src/shared/util/storybook';
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
 import SettingsIcon from '~icons/material-symbols/settings';
-import styles from 'src/views/styles/popup.module.scss';
+import styles from 'src/views/styles/popupMain.module.scss';
 
 /**
  * Renders the main popup component.
