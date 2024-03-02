@@ -14,6 +14,20 @@ import type { SiteSupportType } from '@views/lib/getSiteSupport';
 import { populateSearchInputs } from '@views/lib/populateSearchInputs';
 import React, { useEffect, useState } from 'react';
 
+import { useKeyPress } from '../hooks/useKeyPress';
+import useSchedules from '../hooks/useSchedules';
+import { CourseCatalogScraper } from '../lib/CourseCatalogScraper';
+import getCourseTableRows from '../lib/getCourseTableRows';
+import type { SiteSupport } from '../lib/getSiteSupport';
+import { populateSearchInputs } from '../lib/populateSearchInputs';
+import ExtensionRoot from './common/ExtensionRoot/ExtensionRoot';
+import AutoLoad from './injected/AutoLoad/AutoLoad';
+import CourseCatalogInjectedPopup from './injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
+import RecruitmentBanner from './injected/RecruitmentBanner/RecruitmentBanner';
+import TableHead from './injected/TableHead';
+import TableRow from './injected/TableRow/TableRow';
+import TableSubheading from './injected/TableSubheading/TableSubheading';
+
 interface Props {
     support: Extract<SiteSupportType, 'COURSE_CATALOG_DETAILS' | 'COURSE_CATALOG_LIST'>;
 }
