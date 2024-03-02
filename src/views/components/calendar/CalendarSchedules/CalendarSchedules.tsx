@@ -1,19 +1,18 @@
 import createSchedule from '@pages/background/lib/createSchedule';
 import switchSchedule from '@pages/background/lib/switchSchedule';
-import type { UserSchedule } from '@shared/types/UserSchedule';
+// import type { UserSchedule } from '@shared/types/UserSchedule';
+import List from '@views/components/common/List/List';
+import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
+import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
 
-import List from '../../common/List/List';
-import ScheduleListItem from '../../common/ScheduleListItem/ScheduleListItem';
-import Text from '../../common/Text/Text';
-
 export type Props = {
     style?: React.CSSProperties;
-    dummySchedules?: UserSchedule[];
-    dummyActiveIndex?: number;
+    // dummySchedules?: UserSchedule[];
+    // dummyActiveIndex?: number;
 };
 
 /**

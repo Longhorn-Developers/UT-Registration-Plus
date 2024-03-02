@@ -22,7 +22,6 @@ const DataStatus = {
     NOT_FOUND: 'NOT_FOUND',
     ERROR: 'ERROR',
 } as const;
-
 type DataStatusType = (typeof DataStatus)[keyof typeof DataStatus];
 
 const GRADE_COLORS = {
@@ -61,7 +60,7 @@ const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
                 color: GRADE_COLORS[grade as LetterGrade],
             }));
         }
-        return [];
+        return Array(12).fill(0);
     }, [distributions, semester, status]);
 
     React.useEffect(() => {
@@ -137,8 +136,21 @@ const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
 
     return (
         <div className='pb-[25px] pt-[12px]'>
+            {/* TODO (achadaga): again would be nice to have an updated spinner */}
             {status === DataStatus.LOADING && <Spinner />}
-            {status === DataStatus.NOT_FOUND && <Text variant='p'>No grade distribution data found</Text>}
+            {status === DataStatus.NOT_FOUND && (
+                <HighchartsReact
+                    ref={ref}
+                    highcharts={Highcharts}
+                    options={{
+                        ...chartOptions,
+                        title: {
+                            text: `There is currently no grade distribution data for ${course.department} ${course.number}`,
+                        },
+                        tooltip: { enabled: false },
+                    }}
+                />
+            )}
             {status === DataStatus.ERROR && <Text variant='p'>Error fetching grade distribution data</Text>}
             {status === DataStatus.FOUND && (
                 <>

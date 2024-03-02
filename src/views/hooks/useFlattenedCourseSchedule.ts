@@ -22,7 +22,7 @@ interface CalendarGridPoint {
 }
 
 interface componentProps {
-    calendarCourseCellProps: CalendarCourseCellProps; 
+    calendarCourseCellProps: CalendarCourseCellProps;
 }
 
 /**
@@ -157,7 +157,6 @@ function processInPersonMeetings(
     })) satisfies CalendarGridCourse[];
 }
 
-
 /**
  * Utility function to sort courses for the calendar grid
  */
@@ -173,7 +172,6 @@ function sortCourses(a, b) {
     }
     return endIndexA - endIndexB;
 }
-
 
 /**
  * Utility function also present in CourseMeeting object. Wasn't being found at runtime, so I copied it over.
