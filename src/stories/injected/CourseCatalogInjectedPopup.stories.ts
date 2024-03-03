@@ -1,14 +1,15 @@
-import { UserSchedule } from '@shared/types/UserSchedule';
-import type { Meta, StoryObj } from '@storybook/react';
-import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
+/* eslint-disable storybook/story-exports */
+// import { UserSchedule } from '@shared/types/UserSchedule';
+// import type { Meta, StoryObj } from '@storybook/react';
+// import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 
-import { exampleCourse } from './mocked';
+// import { exampleCourse } from './mocked';
 
-const exampleSchedule: UserSchedule = new UserSchedule({
-    courses: [exampleCourse],
-    name: 'Example Schedule',
-    hours: 0,
-});
+// const exampleSchedule: UserSchedule = new UserSchedule({
+//     courses: [exampleCourse],
+//     name: 'Example Schedule',
+//     hours: 0,
+// });
 // TODO (achadaga): import this after
 // https://github.com/Longhorn-Developers/UT-Registration-Plus/pull/106 is merged
 // const bevoCourse: Course = new Course({
@@ -107,3 +108,4 @@ const exampleSchedule: UserSchedule = new UserSchedule({
 //         course: bevoCourse,
 //     },
 // };
+export default {};
