@@ -18,8 +18,8 @@ const handleOpenOptions = async () => {
     await openTabFromContentScript(url);
 };
 
-const CalendarHeader = ({ totalHours, totalCourses, scheduleName }) => (
-    <div className='min-h-79px min-w-672px w-full flex px-0'>
+const CalendarHeader = ( { totalHours, totalCourses, scheduleName } ) => (
+    <div className='min-h-79px min-w-672px w-full flex px-0 py-15'>
         <div className='flex flex-row gap-20'>
             <div className='flex gap-10'>
                 <div className='flex gap-1'>
@@ -49,7 +49,7 @@ const CalendarHeader = ({ totalHours, totalCourses, scheduleName }) => (
                 <div className='flex flex-row'>
                     <Button variant='single' icon={UndoIcon} color='ut-black' />
                     <Button variant='single' icon={RedoIcon} color='ut-black' />
-                    <Button variant='single' icon={SettingsIcon} color='ut-black' onClick={handleOpenOptions} />
+                    <Button variant='single' icon={SettingsIcon} color='ut-black' onClick={handleOpenOptions}/>
                 </div>
             </div>
         </div>

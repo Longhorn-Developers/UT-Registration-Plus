@@ -5,6 +5,8 @@ import type { CalendarCourseCellProps } from '@views/components/calendar/Calenda
 
 import useSchedules from './useSchedules';
 
+
+
 const dayToNumber: { [day: string]: number } = {
     Monday: 0,
     Tuesday: 1,
@@ -58,32 +60,31 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
         return {
             courseCells: [] as CalendarGridCourse[],
             activeSchedule: new UserSchedule([], 'Something may have went wrong', 0),
-        } as FlattenedCourseSchedule;
+        } satisfies FlattenedCourseSchedule;
     }
 
     if (activeSchedule.courses.length === 0) {
         return {
             courseCells: [] as CalendarGridCourse[],
-            activeSchedule,
+            activeSchedule
         } satisfies FlattenedCourseSchedule;
+
     }
 
     const { courses, name, hours } = activeSchedule;
 
-    const processedCourses = courses
-        .flatMap((course: Course) => {
-            const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
-
-            if (meetings.length === 0) {
-                return processAsyncCourses({ courseDeptAndInstr, status, course });
-            }
-
-            return meetings.flatMap((meeting: CourseMeeting) =>
-                processInPersonMeetings(meeting, { courseDeptAndInstr, status, course })
-            );
-        })
-        .sort(sortCourses);
-
+    const processedCourses = courses.flatMap((course: Course) => {
+        const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
+    
+        if (meetings.length === 0) {
+            return processAsyncCourses({ courseDeptAndInstr, status, course });
+        }
+    
+        return meetings.flatMap((meeting: CourseMeeting) => 
+            processInPersonMeetings(meeting, { courseDeptAndInstr, status, course })
+        );
+    }).sort(sortCourses);
+    
     return {
         courseCells: processedCourses as CalendarGridCourse[],
         activeSchedule: { name, courses, hours } as UserSchedule,
@@ -105,33 +106,23 @@ function extractCourseInfo(course: Course) {
 /**
  * Function to process each in-person class into its distinct meeting objects for calendar grid
  */
-function processAsyncCourses({
-    courseDeptAndInstr,
-    status,
-    course,
-}: {
-    courseDeptAndInstr: string;
-    status: StatusType;
-    course: Course;
-}) {
-    return [
-        {
-            calendarGridPoint: {
-                dayIndex: 0,
-                startIndex: 0,
-                endIndex: 0,
-            },
-            componentProps: {
-                courseDeptAndInstr,
-                status,
-                colors: {
-                    primaryColor: 'ut-gray',
-                    secondaryColor: 'ut-gray',
-                },
-            },
-            course,
+function processAsyncCourses({ courseDeptAndInstr, status, course }: { courseDeptAndInstr: string, status: StatusType, course: Course }) {
+    return [{
+        calendarGridPoint: {
+            dayIndex: 0,
+            startIndex: 0,
+            endIndex: 0,
         },
-    ] satisfies CalendarGridCourse[];
+        componentProps: {
+            courseDeptAndInstr,
+            status,
+            colors: {
+                primaryColor: 'ut-gray',
+                secondaryColor: 'ut-gray',
+            },
+        },
+        course,
+    }] satisfies CalendarGridCourse[];
 }
 
 /**
@@ -141,13 +132,17 @@ function processInPersonMeetings(
     { days, startTime, endTime, location }: CourseMeeting,
     { courseDeptAndInstr, status, course }
 ) {
+    const midnightIndex = 1440;
+    const normalizingTimeFactor = 720;
     const time = getTimeString({ separator: '-', capitalize: true }, startTime, endTime);
     const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
+    let normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
+    let normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
     return days.map(day => ({
         calendarGridPoint: {
             dayIndex: dayToNumber[day],
-            startIndex: convertMinutesToIndex(startTime),
-            endIndex: convertMinutesToIndex(endTime),
+            startIndex: convertMinutesToIndex(normalizedStartTime),
+            endIndex: convertMinutesToIndex(normalizedEndTime),
         },
         componentProps: {
             courseDeptAndInstr,
@@ -165,7 +160,7 @@ function processInPersonMeetings(
 /**
  * Utility function to sort courses for the calendar grid
  */
-function sortCourses(a, b) {
+function sortCourses(a: CalendarGridCourse, b: CalendarGridCourse): number {
     const { dayIndex: dayIndexA, startIndex: startIndexA, endIndex: endIndexA } = a.calendarGridPoint;
     const { dayIndex: dayIndexB, startIndex: startIndexB, endIndex: endIndexB } = b.calendarGridPoint;
 

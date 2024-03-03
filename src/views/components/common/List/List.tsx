@@ -93,7 +93,6 @@ const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, 
             return [...prevItems, ...newItems];
         });
     }, [draggableElements]);
-
     const onDragEnd = useCallback(
         result => {
             if (!result.destination) {

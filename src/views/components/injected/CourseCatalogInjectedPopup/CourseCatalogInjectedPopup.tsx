@@ -32,7 +32,7 @@ export default function CourseCatalogInjectedPopup({
         <Popup overlay className='max-w-[780px] px-6' onClose={onClose}>
             <div className='flex flex-col'>
                 <HeadingAndActions course={course} onClose={onClose} activeSchedule={activeSchedule} />
-                <Description lines={course.description} />
+                <Description course={course} /* lines={course.description} Looks like this was replaced. Description now set internally*/ /> 
                 <GradeDistribution course={course} />
             </div>
         </Popup>
