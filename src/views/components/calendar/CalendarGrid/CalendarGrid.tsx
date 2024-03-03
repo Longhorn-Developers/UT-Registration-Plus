@@ -151,7 +151,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
 
     //  Part of TODO: block.course is definitely a course object
     //  console.log(courseCells);
-    
+
     return courseCells.map((block, i) => {
         const { courseDeptAndInstr, timeAndLocation, status, colors } = courseCells[i].componentProps;
 
@@ -175,7 +175,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                     onClick={() => setCourse(block.course)}
                 />
             </div>
-        )
+        );
     });
 }
 

@@ -5,8 +5,6 @@ import type { CalendarCourseCellProps } from '@views/components/calendar/Calenda
 
 import useSchedules from './useSchedules';
 
-
-
 const dayToNumber: { [day: string]: number } = {
     Monday: 0,
     Tuesday: 1,
@@ -66,25 +64,26 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     if (activeSchedule.courses.length === 0) {
         return {
             courseCells: [] as CalendarGridCourse[],
-            activeSchedule
+            activeSchedule,
         } satisfies FlattenedCourseSchedule;
-
     }
 
     const { courses, name, hours } = activeSchedule;
 
-    const processedCourses = courses.flatMap((course: Course) => {
-        const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
-    
-        if (meetings.length === 0) {
-            return processAsyncCourses({ courseDeptAndInstr, status, course });
-        }
-    
-        return meetings.flatMap((meeting: CourseMeeting) => 
-            processInPersonMeetings(meeting, { courseDeptAndInstr, status, course })
-        );
-    }).sort(sortCourses);
-    
+    const processedCourses = courses
+        .flatMap((course: Course) => {
+            const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
+
+            if (meetings.length === 0) {
+                return processAsyncCourses({ courseDeptAndInstr, status, course });
+            }
+
+            return meetings.flatMap((meeting: CourseMeeting) =>
+                processInPersonMeetings(meeting, { courseDeptAndInstr, status, course })
+            );
+        })
+        .sort(sortCourses);
+
     return {
         courseCells: processedCourses as CalendarGridCourse[],
         activeSchedule: { name, courses, hours } as UserSchedule,
@@ -106,23 +105,33 @@ function extractCourseInfo(course: Course) {
 /**
  * Function to process each in-person class into its distinct meeting objects for calendar grid
  */
-function processAsyncCourses({ courseDeptAndInstr, status, course }: { courseDeptAndInstr: string, status: StatusType, course: Course }) {
-    return [{
-        calendarGridPoint: {
-            dayIndex: 0,
-            startIndex: 0,
-            endIndex: 0,
-        },
-        componentProps: {
-            courseDeptAndInstr,
-            status,
-            colors: {
-                primaryColor: 'ut-gray',
-                secondaryColor: 'ut-gray',
+function processAsyncCourses({
+    courseDeptAndInstr,
+    status,
+    course,
+}: {
+    courseDeptAndInstr: string;
+    status: StatusType;
+    course: Course;
+}) {
+    return [
+        {
+            calendarGridPoint: {
+                dayIndex: 0,
+                startIndex: 0,
+                endIndex: 0,
             },
+            componentProps: {
+                courseDeptAndInstr,
+                status,
+                colors: {
+                    primaryColor: 'ut-gray',
+                    secondaryColor: 'ut-gray',
+                },
+            },
+            course,
         },
-        course,
-    }] satisfies CalendarGridCourse[];
+    ] satisfies CalendarGridCourse[];
 }
 
 /**

@@ -36,7 +36,7 @@ export class CourseMeeting {
      * */
     startTime: number;
     /** NOTE: Times starting and after 12 PM have an additional 720 minutes (12 hrs) added to them
-     * The end time of the course, in minutes since midnight 
+     * The end time of the course, in minutes since midnight
      * */
     endTime: number;
     /** The location that the course is taught */
