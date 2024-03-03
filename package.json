@@ -87,7 +87,6 @@
         "eslint-config-airbnb-typescript": "^17.1.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-import-resolver-typescript": "^3.6.1",
-        "eslint-plugin-custom-utrp": "link:custom-eslint-rules",
         "eslint-plugin-import": "^2.29.1",
         "eslint-plugin-import-essentials": "^0.2.1",
         "eslint-plugin-jsdoc": "^48.2.0",
