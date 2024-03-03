@@ -1,6 +1,0 @@
-{
-  "name": "eslint-plugin-custom-utrp",
-  "version": "0.1.0",
-  "description": "Custom ESLint rules for UTRP",
-  "main": "index.js"
-}

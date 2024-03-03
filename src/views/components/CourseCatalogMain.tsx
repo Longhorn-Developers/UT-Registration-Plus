@@ -10,7 +10,7 @@ import { useKeyPress } from '@views/hooks/useKeyPress';
 import useSchedules from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
-import type { SiteSupportType } from '@views/lib/getSiteSupport';
+import type { SiteSupport, SiteSupportType } from '@views/lib/getSiteSupport';
 import { populateSearchInputs } from '@views/lib/populateSearchInputs';
 import React, { useEffect, useState } from 'react';
 

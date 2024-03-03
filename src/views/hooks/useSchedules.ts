@@ -46,3 +46,9 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
 
     return [activeSchedule, schedules];
 }
+
+export async function switchSchedule(name: string) {
+    const schedules = await UserScheduleStore.get('schedules');
+    const activeIndex = schedules.findIndex(s => s.name === name);
+    await UserScheduleStore.set('activeIndex', activeIndex);
+}

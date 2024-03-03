@@ -9,7 +9,7 @@ const exampleSchedule: UserSchedule = new UserSchedule({
     name: 'Example Schedule',
     hours: 0,
 });
-// TODO (achadaga): import this after 
+// TODO (achadaga): import this after
 // https://github.com/Longhorn-Developers/UT-Registration-Plus/pull/106 is merged
 // const bevoCourse: Course = new Course({
 //     uniqueId: 47280,
