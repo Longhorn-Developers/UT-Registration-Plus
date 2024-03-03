@@ -15,8 +15,8 @@ const meta = {
         tags: ['autodocs'],
     },
     argTypes: {
-        dummySchedules: { control: 'object' },
-        dummyActiveIndex: { control: 'number' },
+        //  dummySchedules: { control: 'object' },
+        //  dummyActiveIndex: { control: 'number' },
     },
     render: (args: any) => (
         <div>
@@ -138,7 +138,7 @@ const schedules = [
 
 export const Default: Story = {
     args: {
-        dummySchedules: schedules,
-        dummyActiveIndex: 0,
+        //  dummySchedules: schedules,
+        //  dummyActiveIndex: 0,
     },
 };

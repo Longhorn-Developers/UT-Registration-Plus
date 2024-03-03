@@ -56,9 +56,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
     onClose,
 }: HeadingAndActionProps): JSX.Element => {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
-    const [courseAdded, setCourseAdded] = useState<boolean>(
-        activeSchedule !== undefined ? activeSchedule.courses.some(course => course.uniqueId === uniqueId) : false
-    );
+    const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
 
     const getInstructorFullName = (instructor: Instructor) => {
         const { firstName, lastName } = instructor;
@@ -105,7 +103,6 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
         } else {
             removeCourse({ course, scheduleName: activeSchedule.name });
         }
-        setCourseAdded(prev => !prev);
     };
 
     return (
