@@ -9,7 +9,7 @@ import HeadingAndActions from './HeadingAndActions';
 
 interface CourseCatalogInjectedPopupProps {
     course: Course;
-    activeSchedule?: UserSchedule;
+    activeSchedule: UserSchedule;
     onClose: () => void;
 }
 
@@ -27,16 +27,12 @@ export default function CourseCatalogInjectedPopup({
     course,
     activeSchedule,
     onClose,
-}: CourseCatalogInjectedPopupProps) {
+}: CourseCatalogInjectedPopupProps): JSX.Element {
     return (
         <Popup overlay className='max-w-[780px] px-6' onClose={onClose}>
             <div className='flex flex-col'>
                 <HeadingAndActions course={course} onClose={onClose} activeSchedule={activeSchedule} />
-                <Description
-                    course={
-                        course
-                    } /* lines={course.description} Looks like this was replaced. Description now set internally */
-                />
+                <Description course={course} />
                 <GradeDistribution course={course} />
             </div>
         </Popup>
