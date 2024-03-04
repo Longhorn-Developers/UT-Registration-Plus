@@ -3,10 +3,10 @@ import CourseCellColorPicker from '@views/components/common/CourseCellColorPicke
 import React, { useState } from 'react';
 import type { ThemeColor } from 'src/shared/util/themeColors';
 
-const meta: Meta<typeof CourseCellColorPicker> = {
+const meta = {
     title: 'Components/Common/CourseCellColorPicker',
     component: CourseCellColorPicker,
-};
+} satisfies Meta<typeof CourseCellColorPicker>;
 
 export default meta;
 type Story = StoryObj<typeof CourseCellColorPicker>;
