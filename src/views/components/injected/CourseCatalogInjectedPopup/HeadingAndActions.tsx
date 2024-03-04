@@ -7,8 +7,7 @@ import { Button } from '@views/components/common/Button/Button';
 import { Chip, flagMap } from '@views/components/common/Chip/Chip';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
-import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
-import React, { useState } from 'react';
+import React from 'react';
 
 import Add from '~icons/material-symbols/add';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
@@ -25,7 +24,7 @@ interface HeadingAndActionProps {
     /* The course to display */
     course: Course;
     /* The active schedule */
-    activeSchedule?: UserSchedule;
+    activeSchedule: UserSchedule;
     /* The function to call when the popup should be closed */
     onClose: () => void;
 }
