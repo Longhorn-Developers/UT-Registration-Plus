@@ -10,7 +10,7 @@ import { useKeyPress } from '@views/hooks/useKeyPress';
 import useSchedules from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
-import type { SiteSupport, SiteSupportType } from '@views/lib/getSiteSupport';
+import type { SiteSupportType } from '@views/lib/getSiteSupport';
 import { populateSearchInputs } from '@views/lib/populateSearchInputs';
 import React, { useEffect, useState } from 'react';
 
@@ -21,7 +21,7 @@ interface Props {
 /**
  * This is the top level react component orchestrating the course catalog page.
  */
-export default function CourseCatalogMain({ support }: Props) {
+export default function CourseCatalogMain({ support }: Props): JSX.Element {
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 

@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
  * This adds a new column to the course catalog table header.
  * @returns a react portal to the new column or null if the column has not been created yet.
  */
-export default function TableHead({ children }: PropsWithChildren) {
+export default function TableHead({ children }: PropsWithChildren): JSX.Element | null {
     const [container, setContainer] = useState<HTMLTableCellElement | null>(null);
 
     useEffect(() => {

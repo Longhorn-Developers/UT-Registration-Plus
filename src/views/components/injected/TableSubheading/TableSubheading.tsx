@@ -11,7 +11,7 @@ interface Props {
  * This component is injected into each row of the course catalog table.
  * @returns a react portal to the new td in the column or null if the column has not been created yet.
  */
-export default function TableSubheading({ row }: Props) {
+export default function TableSubheading({ row }: Props): JSX.Element | null {
     const { element } = row;
 
     useEffect(() => {

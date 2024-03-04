@@ -21,7 +21,7 @@ const DataStatus = {
     FOUND: 'FOUND',
     NOT_FOUND: 'NOT_FOUND',
     ERROR: 'ERROR',
-} as const;
+} as const satisfies Record<string, string>;
 type DataStatusType = (typeof DataStatus)[keyof typeof DataStatus];
 
 const GRADE_COLORS = {
@@ -47,7 +47,7 @@ const GRADE_COLORS = {
  * @param {Course} props.course - The course for which to display the grade distribution.
  * @returns {JSX.Element} The grade distribution chart component.
  */
-const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
+export default function GradeDistribution({ course }: GradeDistributionProps): JSX.Element {
     const [semester, setSemester] = React.useState('Aggregate');
     const [distributions, setDistributions] = React.useState<Record<string, Distribution>>({});
     const [status, setStatus] = React.useState<DataStatusType>(DataStatus.LOADING);
@@ -187,6 +187,4 @@ const GradeDistribution: React.FC<GradeDistributionProps> = ({ course }) => {
             )}
         </div>
     );
-};
-
-export default GradeDistribution;
+}

@@ -14,10 +14,10 @@ const LoadStatus = {
     LOADING: 'LOADING',
     DONE: 'DONE',
     ERROR: 'ERROR',
-} as const;
+} as const satisfies Record<string, string>;
 type LoadStatusType = (typeof LoadStatus)[keyof typeof LoadStatus];
 
-async function fetchDescription(course: Course): Promise<string[]> {
+const fetchDescription = async (course: Course): Promise<string[]> => {
     if (!course.description?.length) {
         const response = await fetch(course.url);
         const text = await response.text();
@@ -27,7 +27,7 @@ async function fetchDescription(course: Course): Promise<string[]> {
         course.description = scraper.getDescription(doc);
     }
     return course.description;
-}
+};
 
 /**
  * Renders the description component.
@@ -37,7 +37,7 @@ async function fetchDescription(course: Course): Promise<string[]> {
  * @param {Course} props.course - The course for which to display the description.
  * @returns {JSX.Element} The rendered description component.
  */
-const Description: React.FC<DescriptionProps> = ({ course }: DescriptionProps) => {
+export default function Description({ course }: DescriptionProps): JSX.Element {
     const [description, setDescription] = React.useState<string[]>([]);
     const [status, setStatus] = React.useState<LoadStatusType>(LoadStatus.LOADING);
 
@@ -82,6 +82,4 @@ const Description: React.FC<DescriptionProps> = ({ course }: DescriptionProps) =
             )}
         </>
     );
-};
-
-export default Description;
+}

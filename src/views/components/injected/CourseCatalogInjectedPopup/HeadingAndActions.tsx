@@ -38,6 +38,12 @@ export const handleOpenCalendar = async (): Promise<void> => {
     openNewTab({ url });
 };
 
+/**
+ * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.
+ *
+ * @param str - The string to be capitalized.
+ * @returns The capitalized string.
+ */
 const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
 /**
@@ -49,11 +55,7 @@ const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slic
  * @param {Function} props.onClose - The function to close the popup.
  * @returns {JSX.Element} The rendered component.
  */
-const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
-    course,
-    activeSchedule,
-    onClose,
-}: HeadingAndActionProps): JSX.Element => {
+export default function HeadingAndActions({ course, activeSchedule, onClose }: HeadingAndActionProps): JSX.Element {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
 
@@ -173,6 +175,4 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
             <Divider orientation='horizontal' size='100%' />
         </div>
     );
-};
-
-export default HeadingAndActions;
+}

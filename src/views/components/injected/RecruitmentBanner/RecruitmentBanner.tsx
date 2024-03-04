@@ -14,7 +14,7 @@ const RECRUIT_FROM_DEPARTMENTS = ['C S', 'ECE', 'MIS', 'CSE', 'EE', 'ITD'];
  * This adds a new column to the course catalog table header.
  * @returns a react portal to the new column or null if the column has not been created yet.
  */
-export default function RecruitmentBanner() {
+export default function RecruitmentBanner(): JSX.Element {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -55,7 +55,7 @@ export default function RecruitmentBanner() {
  * Determines if recruitment can be done from the current department.
  * @returns {boolean} True if recruitment can be done from the current department, false otherwise.
  */
-export function canRecruitFrom(): boolean {
+export const canRecruitFrom = (): boolean => {
     const params = ['fos_fl', 'fos_cn'];
     let department = '';
     params.forEach(p => {
@@ -68,4 +68,4 @@ export function canRecruitFrom(): boolean {
         return false;
     }
     return RECRUIT_FROM_DEPARTMENTS.includes(department);
-}
+};

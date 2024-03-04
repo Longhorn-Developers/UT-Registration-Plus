@@ -21,7 +21,7 @@ import SettingsIcon from '~icons/material-symbols/settings';
  * Renders the main popup component.
  * This component displays the main schedule, courses, and options buttons.
  */
-export default function PopupMain() {
+export default function PopupMain(): JSX.Element {
     const [activeSchedule, schedules] = useSchedules();
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const popupRef = useRef(null);
