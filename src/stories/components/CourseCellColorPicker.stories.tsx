@@ -13,7 +13,6 @@ type Story = StoryObj<typeof CourseCellColorPicker>;
 
 export const Default: Story = {
     render: () => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks, @typescript-eslint/no-unused-vars
         const [selectedColor, setSelectedColor] = useState<ThemeColor | null>(null);
         return <CourseCellColorPicker setSelectedColor={setSelectedColor} />;
     },
