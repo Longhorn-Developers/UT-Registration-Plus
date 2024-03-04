@@ -7,6 +7,7 @@ import { Button } from '@views/components/common/Button/Button';
 import { Chip, flagMap } from '@views/components/common/Chip/Chip';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
+import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React, { useState } from 'react';
 
 import Add from '~icons/material-symbols/add';
@@ -55,9 +56,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
     onClose,
 }: HeadingAndActionProps): JSX.Element => {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
-    const [courseAdded, setCourseAdded] = useState<boolean>(
-        activeSchedule !== undefined ? activeSchedule.courses.some(course => course.uniqueId === uniqueId) : false
-    );
+    const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
 
     const getInstructorFullName = (instructor: Instructor) => {
         const { firstName, lastName } = instructor;
@@ -70,7 +69,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
     const handleCopy = () => {
         navigator.clipboard.writeText(uniqueId.toString());
     };
-    
+
     const handleOpenRateMyProf = async () => {
         const openTabs = instructors.map(instructor => {
             const instructorSearchTerm = getInstructorFullName(instructor);
@@ -104,7 +103,6 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
         } else {
             removeCourse({ course, scheduleName: activeSchedule.name });
         }
-        setCourseAdded(prev => !prev);
     };
 
     return (
@@ -173,7 +171,7 @@ const HeadingAndActions: React.FC<HeadingAndActionProps> = ({
                     {!courseAdded ? 'Add Course' : 'Remove Course'}
                 </Button>
             </div>
-            <Divider size='100%' orientation='horizontal' />
+            <Divider orientation='horizontal' size='100%' />
         </div>
     );
 };

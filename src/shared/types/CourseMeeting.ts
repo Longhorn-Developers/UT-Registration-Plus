@@ -31,9 +31,13 @@ export type Location = {
 export class CourseMeeting {
     /** The day of the week that the course is taught */
     days: Day[];
-    /** The start time of the course, in minutes since midnight */
+    /** NOTE: Times starting and after 12 PM have an additional 720 minutes (12 hrs) added to them
+     * The start time of the course, in minutes since midnight
+     * */
     startTime: number;
-    /** The end time of the course, in minutes since midnight */
+    /** NOTE: Times starting and after 12 PM have an additional 720 minutes (12 hrs) added to them
+     * The end time of the course, in minutes since midnight
+     * */
     endTime: number;
     /** The location that the course is taught */
     location?: Location;

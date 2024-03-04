@@ -1,6 +1,6 @@
+import { Calendar } from '@views/components/calendar/Calendar/Calendar';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React from 'react';
-import { Calendar } from 'src/views/components/calendar/Calendar/Calendar';
 
 /**
  * Calendar page
