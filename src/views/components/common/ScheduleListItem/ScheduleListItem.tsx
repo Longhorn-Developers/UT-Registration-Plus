@@ -18,11 +18,9 @@ export type Props = {
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
-export default function ScheduleListItem(props: Props) {
-    const { dragHandleProps, onClick } = props;
-
+export default function ScheduleListItem({ style, active, name, dragHandleProps, onClick }: Props): JSX.Element {
     return (
-        <div style={{ ...props.style }} className='items-center'>
+        <div style={{ ...style }} className='items-center'>
             <li className='w-100% flex cursor-pointer items-center self-stretch justify-left text-ut-burntorange'>
                 <div className='group flex justify-center'>
                     <div
@@ -40,12 +38,12 @@ export default function ScheduleListItem(props: Props) {
                                 className={clsx(
                                     'bg-current h-3 w-3 rounded-full transition tansform scale-100 ease-out-expo duration-250',
                                     {
-                                        'scale-0! opacity-0 ease-in-out! duration-200!': !props.active,
+                                        'scale-0! opacity-0 ease-in-out! duration-200!': !active,
                                     }
                                 )}
                             />
                         </div>
-                        <Text variant='p'>{props.name}</Text>
+                        <Text variant='p'>{name}</Text>
                     </div>
                 </div>
             </li>

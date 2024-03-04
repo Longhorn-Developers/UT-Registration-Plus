@@ -1,7 +1,7 @@
+import type { ThemeColor } from '@shared/util/themeColors';
+import { getThemeColorHexByName } from '@shared/util/themeColors';
 import { Button } from '@views/components/common/Button/Button';
 import React from 'react';
-import type { ThemeColor } from 'src/shared/util/themeColors';
-import { getThemeColorHexByName } from 'src/shared/util/themeColors';
 
 import InvertColorsOffIcon from '~icons/material-symbols/invert-colors-off';
 
@@ -16,228 +16,229 @@ interface Color {
     shades: ThemeColor[];
 }
 
-const colorPatches: Color[] = [
-    {
-        baseColor: 'palette-slateBase',
-        shades: [
-            'palette-slate200',
-            'palette-slate300',
-            'palette-slate400',
-            'palette-slateBase',
-            'palette-slate600',
-            'palette-slate700',
-        ],
-    },
-    {
-        baseColor: 'palette-grayBase',
-        shades: [
-            'palette-gray200',
-            'palette-gray300',
-            'palette-gray400',
-            'palette-grayBase',
-            'palette-gray600',
-            'palette-gray700',
-        ],
-    },
-    {
-        baseColor: 'palette-stoneBase',
-        shades: [
-            'palette-stone200',
-            'palette-stone300',
-            'palette-stone400',
-            'palette-stoneBase',
-            'palette-stone600',
-            'palette-stone700',
-        ],
-    },
-    {
-        baseColor: 'palette-redBase',
-        shades: [
-            'palette-red200',
-            'palette-red300',
-            'palette-red400',
-            'palette-redBase',
-            'palette-red600',
-            'palette-red700',
-        ],
-    },
-    {
-        baseColor: 'palette-orangeBase',
-        shades: [
-            'palette-orange200',
-            'palette-orange300',
-            'palette-orange400',
-            'palette-orangeBase',
-            'palette-orange600',
-            'palette-orange700',
-        ],
-    },
-    {
-        baseColor: 'palette-amberBase',
-        shades: [
-            'palette-amber200',
-            'palette-amber300',
-            'palette-amber400',
-            'palette-amberBase',
-            'palette-amber600',
-            'palette-amber700',
-        ],
-    },
-    {
-        baseColor: 'palette-yellowBase',
-        shades: [
-            'palette-yellow200',
-            'palette-yellow300',
-            'palette-yellow400',
-            'palette-yellowBase',
-            'palette-yellow600',
-            'palette-yellow700',
-        ],
-    },
-    {
-        baseColor: 'palette-limeBase',
-        shades: [
-            'palette-lime200',
-            'palette-lime300',
-            'palette-lime400',
-            'palette-limeBase',
-            'palette-lime600',
-            'palette-lime700',
-        ],
-    },
-    {
-        baseColor: 'palette-greenBase',
-        shades: [
-            'palette-green200',
-            'palette-green300',
-            'palette-green400',
-            'palette-greenBase',
-            'palette-green600',
-            'palette-green700',
-        ],
-    },
-    {
-        baseColor: 'palette-emeraldBase',
-        shades: [
-            'palette-emerald200',
-            'palette-emerald300',
-            'palette-emerald400',
-            'palette-emeraldBase',
-            'palette-emerald600',
-            'palette-emerald700',
-        ],
-    },
-    {
-        baseColor: 'palette-tealBase',
-        shades: [
-            'palette-teal200',
-            'palette-teal300',
-            'palette-teal400',
-            'palette-tealBase',
-            'palette-teal600',
-            'palette-teal700',
-        ],
-    },
-    {
-        baseColor: 'palette-cyanBase',
-        shades: [
-            'palette-cyan200',
-            'palette-cyan300',
-            'palette-cyan400',
-            'palette-cyanBase',
-            'palette-cyan600',
-            'palette-cyan700',
-        ],
-    },
-    {
-        baseColor: 'palette-skyBase',
-        shades: [
-            'palette-sky200',
-            'palette-sky300',
-            'palette-sky400',
-            'palette-skyBase',
-            'palette-sky600',
-            'palette-sky700',
-        ],
-    },
-    {
-        baseColor: 'palette-blueBase',
-        shades: [
-            'palette-blue200',
-            'palette-blue300',
-            'palette-blue400',
-            'palette-blueBase',
-            'palette-blue600',
-            'palette-blue700',
-        ],
-    },
-    {
-        baseColor: 'palette-indigoBase',
-        shades: [
-            'palette-indigo200',
-            'palette-indigo300',
-            'palette-indigo400',
-            'palette-indigoBase',
-            'palette-indigo600',
-            'palette-indigo700',
-        ],
-    },
-    {
-        baseColor: 'palette-violetBase',
-        shades: [
-            'palette-violet200',
-            'palette-violet300',
-            'palette-violet400',
-            'palette-violetBase',
-            'palette-violet600',
-            'palette-violet700',
-        ],
-    },
-    {
-        baseColor: 'palette-purpleBase',
-        shades: [
-            'palette-purple200',
-            'palette-purple300',
-            'palette-purple400',
-            'palette-purpleBase',
-            'palette-purple600',
-            'palette-purple700',
-        ],
-    },
-    {
-        baseColor: 'palette-fuschiaBase',
-        shades: [
-            'palette-fuschia200',
-            'palette-fuschia300',
-            'palette-fuschia400',
-            'palette-fuschiaBase',
-            'palette-fuschia600',
-            'palette-fuschia700',
-        ],
-    },
-    {
-        baseColor: 'palette-pinkBase',
-        shades: [
-            'palette-pink200',
-            'palette-pink300',
-            'palette-pink400',
-            'palette-pinkBase',
-            'palette-pink600',
-            'palette-pink700',
-        ],
-    },
-    {
-        baseColor: 'palette-roseBase',
-        shades: [
-            'palette-rose200',
-            'palette-rose300',
-            'palette-rose400',
-            'palette-roseBase',
-            'palette-rose600',
-            'palette-rose700',
-        ],
-    },
-];
+// TODO: Replace with UnoCSS theme
+// const colorPatches: Color[] = [
+//     {
+//         baseColor: 'palette-slateBase',
+//         shades: [
+//             'palette-slate200',
+//             'palette-slate300',
+//             'palette-slate400',
+//             'palette-slateBase',
+//             'palette-slate600',
+//             'palette-slate700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-grayBase',
+//         shades: [
+//             'palette-gray200',
+//             'palette-gray300',
+//             'palette-gray400',
+//             'palette-grayBase',
+//             'palette-gray600',
+//             'palette-gray700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-stoneBase',
+//         shades: [
+//             'palette-stone200',
+//             'palette-stone300',
+//             'palette-stone400',
+//             'palette-stoneBase',
+//             'palette-stone600',
+//             'palette-stone700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-redBase',
+//         shades: [
+//             'palette-red200',
+//             'palette-red300',
+//             'palette-red400',
+//             'palette-redBase',
+//             'palette-red600',
+//             'palette-red700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-orangeBase',
+//         shades: [
+//             'palette-orange200',
+//             'palette-orange300',
+//             'palette-orange400',
+//             'palette-orangeBase',
+//             'palette-orange600',
+//             'palette-orange700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-amberBase',
+//         shades: [
+//             'palette-amber200',
+//             'palette-amber300',
+//             'palette-amber400',
+//             'palette-amberBase',
+//             'palette-amber600',
+//             'palette-amber700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-yellowBase',
+//         shades: [
+//             'palette-yellow200',
+//             'palette-yellow300',
+//             'palette-yellow400',
+//             'palette-yellowBase',
+//             'palette-yellow600',
+//             'palette-yellow700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-limeBase',
+//         shades: [
+//             'palette-lime200',
+//             'palette-lime300',
+//             'palette-lime400',
+//             'palette-limeBase',
+//             'palette-lime600',
+//             'palette-lime700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-greenBase',
+//         shades: [
+//             'palette-green200',
+//             'palette-green300',
+//             'palette-green400',
+//             'palette-greenBase',
+//             'palette-green600',
+//             'palette-green700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-emeraldBase',
+//         shades: [
+//             'palette-emerald200',
+//             'palette-emerald300',
+//             'palette-emerald400',
+//             'palette-emeraldBase',
+//             'palette-emerald600',
+//             'palette-emerald700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-tealBase',
+//         shades: [
+//             'palette-teal200',
+//             'palette-teal300',
+//             'palette-teal400',
+//             'palette-tealBase',
+//             'palette-teal600',
+//             'palette-teal700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-cyanBase',
+//         shades: [
+//             'palette-cyan200',
+//             'palette-cyan300',
+//             'palette-cyan400',
+//             'palette-cyanBase',
+//             'palette-cyan600',
+//             'palette-cyan700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-skyBase',
+//         shades: [
+//             'palette-sky200',
+//             'palette-sky300',
+//             'palette-sky400',
+//             'palette-skyBase',
+//             'palette-sky600',
+//             'palette-sky700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-blueBase',
+//         shades: [
+//             'palette-blue200',
+//             'palette-blue300',
+//             'palette-blue400',
+//             'palette-blueBase',
+//             'palette-blue600',
+//             'palette-blue700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-indigoBase',
+//         shades: [
+//             'palette-indigo200',
+//             'palette-indigo300',
+//             'palette-indigo400',
+//             'palette-indigoBase',
+//             'palette-indigo600',
+//             'palette-indigo700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-violetBase',
+//         shades: [
+//             'palette-violet200',
+//             'palette-violet300',
+//             'palette-violet400',
+//             'palette-violetBase',
+//             'palette-violet600',
+//             'palette-violet700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-purpleBase',
+//         shades: [
+//             'palette-purple200',
+//             'palette-purple300',
+//             'palette-purple400',
+//             'palette-purpleBase',
+//             'palette-purple600',
+//             'palette-purple700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-fuschiaBase',
+//         shades: [
+//             'palette-fuschia200',
+//             'palette-fuschia300',
+//             'palette-fuschia400',
+//             'palette-fuschiaBase',
+//             'palette-fuschia600',
+//             'palette-fuschia700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-pinkBase',
+//         shades: [
+//             'palette-pink200',
+//             'palette-pink300',
+//             'palette-pink400',
+//             'palette-pinkBase',
+//             'palette-pink600',
+//             'palette-pink700',
+//         ],
+//     },
+//     {
+//         baseColor: 'palette-roseBase',
+//         shades: [
+//             'palette-rose200',
+//             'palette-rose300',
+//             'palette-rose400',
+//             'palette-roseBase',
+//             'palette-rose600',
+//             'palette-rose700',
+//         ],
+//     },
+// ];
 
 const hexCodeToBaseColorPatchIndex = new Map(
     colorPatches.map((color: Color, index: number) => [getThemeColorHexByName(color.baseColor), index])
@@ -278,9 +279,9 @@ export interface CourseCellColorPickerProps {
  * This component is available when a user hovers over a course cell in their calendar to
  * color for the course cell. The user can set any valid hex color they want.
  */
-const CourseCellColorPicker: React.FC<CourseCellColorPickerProps> = ({
+export default function CourseCellColorPicker({
     setSelectedColor: setFinalColor,
-}: CourseCellColorPickerProps): JSX.Element => {
+}: CourseCellColorPickerProps): JSX.Element {
     const [selectedBaseColorPatch, setSelectedBaseColorPatch] = React.useState<number>(-1);
     const [selectedShadeColorPatch, setSelectShadeColorPatch] = React.useState<number>(-1);
     const [hexCode, setHexCode] = React.useState<string>('');
@@ -387,7 +388,4 @@ const CourseCellColorPicker: React.FC<CourseCellColorPickerProps> = ({
                 />
             )}
         </div>
-    );
-};
-
-export default CourseCellColorPicker;
+}

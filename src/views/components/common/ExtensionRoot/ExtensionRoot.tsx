@@ -11,7 +11,7 @@ interface Props {
 /**
  * A wrapper component for the extension elements that adds some basic styling to them
  */
-export default function ExtensionRoot(props: React.PropsWithChildren<Props>) {
+export default function ExtensionRoot(props: React.PropsWithChildren<Props>): JSX.Element {
     return (
         <div className={styles.extensionRoot} data-testid={props.testId}>
             {props.children}

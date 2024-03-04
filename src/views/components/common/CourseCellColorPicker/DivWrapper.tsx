@@ -15,8 +15,6 @@ interface ItemWrapperProps {
  * @param {React.ReactNode} props.children - the children to be wrapped in the div
  * @returns {JSX.Element} - the div wrapper component
  */
-const DivWrapper: React.FC<ItemWrapperProps> = ({ children }: ItemWrapperProps) => (
-    <div className='h-[26px] w-[26px] flex items-center justify-center p-[2px]'>{children}</div>
-);
-
-export default DivWrapper;
+export default function DivWrapper({ children }: ItemWrapperProps): JSX.Element {
+    return <div className='h-[26px] w-[26px] flex items-center justify-center p-[2px]'>{children}</div>;
+}

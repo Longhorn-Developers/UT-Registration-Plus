@@ -32,6 +32,7 @@ export default function Dropdown(props: Props) {
 
     const schedules = props.dummySchedules;
     if (schedules == null) {
+        // TODO
         // if no dummy values passed in
         // useSchedules hook here
     }
@@ -40,6 +41,7 @@ export default function Dropdown(props: Props) {
         toggle(!expanded);
     };
 
+    // TODO
     // WIP function to swap schedules. Prefer to use the hook when in production
     const switchSchedule = (index: number) => {
         const scheduleToSwitchTo = schedules[index];
@@ -91,12 +93,8 @@ export default function Dropdown(props: Props) {
                     leave='transition duration-75 ease-out'
                     leaveFrom='transform scale-100 opacity-100'
                     leaveTo='transform scale-95 opacity-0'
-                    beforeEnter={() => {
-                        toggleSwitch();
-                    }}
-                    afterLeave={() => {
-                        toggleSwitch();
-                    }}
+                    beforeEnter={toggleSwitch}
+                    afterLeave={toggleSwitch}
                 >
                     <Disclosure.Panel>
                         <List

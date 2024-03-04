@@ -3,6 +3,7 @@ import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/the
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
+import { satisfies } from 'semver';
 
 import type IconComponent from '~icons/material-symbols';
 
@@ -44,7 +45,7 @@ export function Button({
                     ...style,
                     color: colorHex,
                     backgroundColor: `rgb(${colorRgb} / var(--un-bg-opacity)`,
-                } as React.CSSProperties
+                } satisfies React.CSSProperties
             }
             className={clsx(
                 'btn',

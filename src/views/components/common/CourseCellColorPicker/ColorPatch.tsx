@@ -1,6 +1,6 @@
+import type { ThemeColor } from '@shared/util/themeColors';
 import { Button } from '@views/components/common/Button/Button';
 import React from 'react';
-import type { ThemeColor } from 'src/shared/util/themeColors';
 
 import CheckIcon from '~icons/material-symbols/check';
 
@@ -24,12 +24,12 @@ interface ColorPatchProps {
  * is passed from the parent and updates the necessary parent state when this color patch is selected.
  * @returns {JSX.Element} - the color patch component
  */
-const ColorPatch: React.FC<ColorPatchProps> = ({
+export default function ColorPatch({
     color,
     index,
     selectedColor,
     handleSetSelectedColorPatch,
-}: ColorPatchProps): JSX.Element => {
+}: ColorPatchProps): JSX.Element {
     const isSelected = selectedColor === index;
     const handleClick = () => {
         handleSetSelectedColorPatch(isSelected ? -1 : index);
@@ -45,6 +45,4 @@ const ColorPatch: React.FC<ColorPatchProps> = ({
             {isSelected && <CheckIcon className='h-[20px] w-[20px]' />}
         </Button>
     );
-};
-
-export default ColorPatch;
+}

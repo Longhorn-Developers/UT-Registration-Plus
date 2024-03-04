@@ -16,7 +16,7 @@ type Props = Omit<TextProps, 'span'> & {
 /**
  * A reusable Text component with props that build on top of the design system for the extension
  */
-export default function Link(props: PropsWithChildren<Props>) {
+export default function Link(props: PropsWithChildren<Props>): JSX.Element {
     let passedProps = {
         ...props,
     };

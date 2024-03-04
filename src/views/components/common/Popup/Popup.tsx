@@ -15,9 +15,15 @@ interface Props {
 
 /**
  * A reusable popup component that can be used to display content on the page
- * @returns
  */
-export default function Popup({ onClose, children, className, style, testId, overlay }: PropsWithChildren<Props>) {
+export default function Popup({
+    onClose,
+    children,
+    className,
+    style,
+    testId,
+    overlay,
+}: PropsWithChildren<Props>): JSX.Element {
     const containerRef = React.useRef<HTMLDivElement>(null);
     const bodyRef = React.useRef<HTMLDivElement>(null);
 

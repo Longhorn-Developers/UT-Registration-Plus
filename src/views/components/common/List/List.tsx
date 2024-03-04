@@ -1,6 +1,7 @@
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import type { ReactElement } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
+import { satisfies } from 'semver';
 
 /*
  * Ctrl + f dragHandleProps on PopupCourseBlock.tsx for example implementation of drag handle (two lines of code)
@@ -11,7 +12,7 @@ import React, { useCallback, useEffect, useState } from 'react';
  * Props for the List component.
  */
 export interface ListProps {
-    draggableElements: any[]; // Will later define draggableElements based on what types
+    draggableElements: any[]; // TODO: Will later define draggableElements based on what types
     // of components are draggable.
     itemHeight: number;
     listHeight: number;
@@ -82,7 +83,13 @@ const Row: React.FC<RowProps> = React.memo(({ data: { items, gap }, index, style
  * @example
  * <List draggableElements={elements} />
  */
-const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, listWidth, gap = 12 }: ListProps) => {
+export default function List({
+    draggableElements,
+    itemHeight,
+    listHeight,
+    listWidth,
+    gap = 12,
+}: ListProps): JSX.Element {
     const [items, setItems] = useState(() => initial(0, draggableElements));
 
     useEffect(() => {
@@ -105,7 +112,7 @@ const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, 
 
             const newItems = reorder(items, result.source.index, result.destination.index);
 
-            setItems(newItems as { id: string; content: React.ReactElement }[]);
+            setItems(newItems satisfies { id: string; content: React.ReactElement }[]);
         },
         [items]
     );
@@ -170,6 +177,4 @@ const List: React.FC<ListProps> = ({ draggableElements, itemHeight, listHeight, 
             </DragDropContext>
         </div>
     );
-};
-
-export default List;
+}

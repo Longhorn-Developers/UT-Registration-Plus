@@ -9,7 +9,7 @@ import styles from './Icon.module.scss';
 import type { MaterialIconCode } from './MaterialIcons';
 
 /**
- *
+ * Props for the Icon component.
  */
 export type Props = {
     name: MaterialIconCode;
@@ -27,7 +27,7 @@ export type Props = {
  * This is a reusable Icon component that uses the Material Icons Round font internally
  * You can find the list of icons here: https://fonts.google.com/icons?selected=Material+Icons+Round
  */
-export default function Icon(props: Props) {
+export default function Icon(props: Props): JSX.Element {
     const style = props.style || {};
 
     style.color ??= colors?.[props.color ?? 'charcoal'];

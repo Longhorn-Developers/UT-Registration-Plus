@@ -12,6 +12,6 @@ type Props = {
 /**
  * A simple spinner component that can be used to indicate loading.
  */
-export default function Spinner({ className, testId, style }: Props) {
+export default function Spinner({ className, testId, style }: Props): JSX.Element {
     return <div data-testid={testId} style={style} className={clsx(styles.spinner, className)} />;
 }

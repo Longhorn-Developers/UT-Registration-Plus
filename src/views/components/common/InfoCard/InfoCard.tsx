@@ -10,7 +10,7 @@ interface Props {
  * A maybe reusable InfoCard component that follows the design system of the extension.
  * @returns
  */
-export function InfoCard({ titleText, bodyText }: React.PropsWithChildren<Props>): JSX.Element {
+export default function InfoCard({ titleText, bodyText }: React.PropsWithChildren<Props>): JSX.Element {
     return (
         <div
             className='w-50 flex flex-col items-start justify-center border rounded p-4'

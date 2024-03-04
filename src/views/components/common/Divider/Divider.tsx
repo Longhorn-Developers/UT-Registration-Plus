@@ -1,4 +1,3 @@
-import type { Color } from '@views/styles/colors.module.scss';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -32,7 +31,7 @@ export type DividerProps = {
  * <Divider size="19px" orientation="horizontal" />
  * ```
  */
-export default function Divider({ className, testId, size, orientation }: DividerProps) {
+export default function Divider({ className, testId, size, orientation }: DividerProps): JSX.Element {
     const style: React.CSSProperties =
         orientation === 'horizontal'
             ? { width: size, borderBottomWidth: '1px' }
