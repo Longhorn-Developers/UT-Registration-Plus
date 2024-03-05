@@ -34,7 +34,7 @@ export function CalendarSchedules(props: Props) {
     }, [activeSchedule, schedules]);
 
     const handleKeyDown = event => {
-        if (event.code === 'Enter') {
+        if (event.code === 'Enter' || event.code === 'mousedown') {
             createSchedule(newSchedule);
             setNewSchedule('');
         }
@@ -48,6 +48,12 @@ export function CalendarSchedules(props: Props) {
         setActiveScheduleIndex(index);
         switchSchedule(schedules[index].name);
     };
+
+    const handleAddSchedule = () => {
+        createSchedule(newSchedule);
+        setNewSchedule('Untitled Schedule');
+
+    }
 
     const scheduleComponents = schedules.map((schedule, index) => (
         <ScheduleListItem
@@ -67,15 +73,16 @@ export function CalendarSchedules(props: Props) {
                     </Text>
                 </div>
             </div>
+
             <div className='flex flex-col space-y-2.5'>
                 <List gap={10} draggableElements={scheduleComponents} itemHeight={30} listHeight={30} listWidth={240} />
-                <input
+                {/* <input
                     type='text'
                     placeholder='Enter new schedule'
                     value={newSchedule}
                     onChange={handleScheduleInputChange}
                     onKeyDown={handleKeyDown}
-                />
+                /> */}
             </div>
         </div>
     );

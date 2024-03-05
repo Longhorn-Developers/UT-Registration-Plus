@@ -32,10 +32,12 @@ export function Calendar(): JSX.Element {
             />
             <div className='h-screen w-full flex flex-col md:flex-row'>
                 <div className='min-h-[30%] flex flex-col items-start gap-2.5 p-5 pl-7'>
-                    <div className='min-h-[30%]'>
+                    <div className='min-h-[30%] z-10'>
                         <CalendarSchedules />
                     </div>
-                    <ImportantLinks />
+                    <div className='z-0'>
+                        <ImportantLinks />
+                    </div>
                 </div>
                 <div className='flex flex-grow flex-col gap-4 overflow-hidden pr-12'>
                     <div className='flex-grow overflow-auto'>
