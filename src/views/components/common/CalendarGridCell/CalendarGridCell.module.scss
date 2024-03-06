@@ -9,3 +9,10 @@
     align-items: flex-start;
     border: 1px solid #dadce0;
 }
+
+.hourLine {
+    width: 165px;
+    height: 1px;
+    border-radius: var(--border-radius-none, 0px);
+    background: rgba(218, 220, 224, 0.25);
+}
