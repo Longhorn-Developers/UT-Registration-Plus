@@ -7,20 +7,20 @@ import ImageIcon from '~icons/material-symbols/image';
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 
 type CalendarBottomBarProps = {
-    courses: CalendarCourseCellProps[];
+    courses?: CalendarCourseCellProps[];
 };
 
 /**
  *
  */
 export const CalendarBottomBar = ({ courses }: CalendarBottomBarProps): JSX.Element => {
-    if (courses.length === -1) console.log('foo'); // dumb line to make eslint happy
+    if (courses?.length === -1) console.log('foo'); // dumb line to make eslint happy
     return (
         <div className='w-full flex py-1.25'>
             <div className='flex flex-grow items-center gap-3.75 pl-7.5 pr-2.5'>
                 <Text variant='h4'>Async. and Other:</Text>
                 <div className='h-14 inline-flex gap-2.5'>
-                    {courses.map(course => (
+                    {courses?.map(course => (
                         <CalendarCourseBlock
                             courseDeptAndInstr={course.courseDeptAndInstr}
                             status={course.status}

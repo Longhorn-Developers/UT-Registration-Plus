@@ -3,10 +3,10 @@ import { getCourseColors } from '@shared/util/colors';
 import { Meta, StoryObj } from '@storybook/react';
 import CalendarCourseCell from 'src/views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import React from 'react';
-import { exampleCourse } from './PopupCourseBlock.stories';
+import { exampleCourse } from '../PopupCourseBlock.stories';
 
 const meta = {
-    title: 'Components/Common/CalendarCourseCell',
+    title: 'Components/Calendar/CalendarCourseCell',
     component: CalendarCourseCell,
     parameters: {
         layout: 'centered',
