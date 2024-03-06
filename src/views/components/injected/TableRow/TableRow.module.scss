@@ -80,8 +80,13 @@
 
 .isConflict {
     * {
-        color: colors.$speedway_brick !important;
-        font-weight: normal !important;
-        text-decoration: line-through !important;
+        color: colors.$speedway_brick;
+        font-weight: normal;
+        text-decoration: line-through;
+    }
+
+    > td:last-child * {
+        color: white;
+        text-decoration-line: unset !important;
     }
 }

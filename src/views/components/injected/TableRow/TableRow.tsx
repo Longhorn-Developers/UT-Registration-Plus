@@ -1,11 +1,10 @@
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import { Button } from '@views/components/common/Button/Button';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-import AddIcon from '~icons/material-symbols/add-circle';
+import RowIcon from '~icons/material-symbols/bar-chart-rounded';
 
 import styles from './TableRow.module.scss';
 
@@ -86,14 +85,22 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     return ReactDOM.createPortal(
         <>
-            <Button
-                icon={AddIcon}
-                className={styles.rowButton}
-                color='ut-burntorange'
+            <button
+                className='bg-ut-burntorange w-6 h-6 items-center justify-center color-white! flex m1 rounded'
                 onClick={onClick}
-                variant='single'
-            />
-            {conflicts.length > 0 && <ConflictsWithWarning className={styles.conflictTooltip} conflicts={conflicts} />}
+            >
+                <RowIcon
+                    color='ut-white'
+                />
+            </button>
+            {conflicts.length > 0 && (
+                <div className='relative hidden'>
+                    <ConflictsWithWarning
+                        className='text-white absolute left-10'
+                        conflicts={conflicts}
+                    />
+                </div>
+            )}
         </>,
         container
     );
