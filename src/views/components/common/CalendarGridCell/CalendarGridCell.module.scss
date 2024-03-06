@@ -7,12 +7,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    border: 1px solid #dadce0;
+    position: relative;
 }
 
 .hourLine {
-    width: 165px;
-    height: 1px;
-    border-radius: var(--border-radius-none, 0px);
-    background: rgba(218, 220, 224, 0.25);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    border-top: 1px solid black; /* Adjust line styles as needed */
 }
