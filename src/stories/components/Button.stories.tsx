@@ -1,7 +1,14 @@
 import { Button } from 'src/views/components/common/Button/Button';
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
+import { colorsFlattened } from 'src/shared/util/themeColors';
 import ImagePlaceholderIcon from '~icons/material-symbols/image';
+import AddIcon from '~icons/material-symbols/add';
+import RemoveIcon from '~icons/material-symbols/remove';
+import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
+import ReviewsIcon from '~icons/material-symbols/reviews';
+import HappyFaceIcon from '~icons/material-symbols/mood';
+import DescriptionIcon from '~icons/material-symbols/description';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -16,6 +23,7 @@ const meta = {
     // More on argTypes: https://storybook.js.org/docs/api/argtypes
     args: {
         children: 'Button',
+        icon: ImagePlaceholderIcon,
     },
     argTypes: {
         children: { control: 'text' },
@@ -27,71 +35,79 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Default: Story = {
-    args: {},
+    args: {
+        variant: 'filled',
+        color: 'ut-black',
+    },
 };
 
 export const Disabled: Story = {
     args: {
+        variant: 'filled',
+        color: 'ut-black',
         disabled: true,
     },
 };
 
 export const Grid: Story = {
     render: props => (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex' }}>
-                <Button {...props} variant='filled' className='bg-ut-black' />
-                <Button {...props} variant='outline' className='text-ut-black' />
-                <Button {...props} variant='single' className='text-ut-black' />
-            </div>
-            <div style={{ display: 'flex' }}>
-                <Button {...props} variant='filled' className='bg-ut-black' useScss />
-                <Button {...props} variant='outline' className='text-ut-black' useScss />
-                <Button {...props} variant='single' className='text-ut-black' useScss />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <Button {...props} variant='filled' color='ut-black' />
+                <Button {...props} variant='outline' color='ut-black' />
+                <Button {...props} variant='single' color='ut-black' />
             </div>
 
             <hr />
-            <div style={{ display: 'flex' }}>
-                <Button {...props} variant='filled' className='bg-ut-black' disabled />
-                <Button {...props} variant='outline' className='text-ut-black' disabled />
-                <Button {...props} variant='single' className='text-ut-black' disabled />
-            </div>
-            <div style={{ display: 'flex' }}>
-                <Button {...props} variant='filled' className='bg-ut-black' disabled useScss />
-                <Button {...props} variant='outline' className='text-ut-black' disabled useScss />
-                <Button {...props} variant='single' className='text-ut-black' disabled useScss />
+
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <Button {...props} variant='filled' color='ut-black' disabled />
+                <Button {...props} variant='outline' color='ut-black' disabled />
+                <Button {...props} variant='single' color='ut-black' disabled />
             </div>
         </div>
     ),
 };
 
-export const Icons: Story = {
-    render: props => (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Button {...props} variant='filled' icon={ImagePlaceholderIcon} />
-            <Button {...props} variant='outline' icon={ImagePlaceholderIcon} />
-            <Button {...props} variant='single' icon={ImagePlaceholderIcon} />
-        </div>
-    ),
-};
-
-// TODO: Actually show the buttons as they appear in the design
-export const CourseButtons: Story = {
+export const PrettyColors: Story = {
     args: {
-        children: 'Add Course',
+        children: '',
     },
+    render: props => {
+        const colorsNames = Object.keys(colorsFlattened) as (keyof typeof colorsFlattened)[];
+
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                {colorsNames.map(color => (
+                    <div style={{ display: 'flex', gap: '15px' }} key={color}>
+                        <Button {...props} variant='filled' color={color}>
+                            Button
+                        </Button>
+                        <Button {...props} variant='outline' color={color}>
+                            Button
+                        </Button>
+                        <Button {...props} variant='single' color={color}>
+                            Button
+                        </Button>
+                        <Button {...props} variant='filled' color={color} />
+                        <Button {...props} variant='outline' color={color} />
+                        <Button {...props} variant='single' color={color} />
+                    </div>
+                ))}
+            </div>
+        );
+    },
+};
+
+export const CourseButtons: Story = {
     render: props => (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex' }}>
-                <Button {...props} variant='filled' />
-                <Button {...props} variant='outline' />
-                <Button {...props} variant='single' />
-            </div>
-            <div style={{ display: 'flex' }}>
-                <Button {...props} variant='filled' disabled />
-                <Button {...props} variant='outline' disabled />
-                <Button {...props} variant='single' disabled />
-            </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+            <Button {...props} variant='filled' color='ut-green' icon={AddIcon}>
+                Add Course
+            </Button>
+            <Button {...props} variant='filled' color='theme-red' icon={RemoveIcon}>
+                Remove Course
+            </Button>
         </div>
     ),
     parameters: {
@@ -100,4 +116,27 @@ export const CourseButtons: Story = {
             url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=324-389&mode=design&t=BoS5xBrpSsjgQXqv-4',
         },
     },
+};
+
+export const CourseCatalogActionButtons: Story = {
+    args: {
+        children: '',
+    },
+    render: props => (
+        <div style={{ display: 'flex', gap: '15px' }}>
+            <Button {...props} variant='filled' color='ut-burnt-orange' icon={CalendarMonthIcon} />
+            <Button {...props} variant='outline' color='ut-blue' icon={ReviewsIcon}>
+                RateMyProf
+            </Button>
+            <Button {...props} variant='outline' color='ut-teal' icon={HappyFaceIcon}>
+                CES
+            </Button>
+            <Button {...props} variant='outline' color='ut-yellow' icon={DescriptionIcon}>
+                Past Syllabi
+            </Button>
+            <Button {...props} variant='filled' color='ut-green' icon={AddIcon}>
+                Add Course
+            </Button>
+        </div>
+    ),
 };
