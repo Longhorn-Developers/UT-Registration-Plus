@@ -9,6 +9,7 @@ import RowIcon from '~icons/material-symbols/bar-chart-rounded';
 import styles from './TableRow.module.scss';
 
 interface Props {
+    className: string;
     isSelected: boolean;
     row: ScrapedRow;
     onClick: (...args: any[]) => any;
@@ -19,7 +20,7 @@ interface Props {
  * This component is injected into each row of the course catalog table.
  * @returns a react portal to the new td in the column or null if the column has not been created yet.
  */
-export default function TableRow({ row, isSelected, activeSchedule, onClick }: Props): JSX.Element | null {
+export default function TableRow({ className, row, isSelected, activeSchedule, onClick }: Props): JSX.Element | null {
     const [container, setContainer] = useState<HTMLTableCellElement | null>(null);
 
     // the courses in the active schedule that conflict with the course for this row
@@ -29,8 +30,9 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     useEffect(() => {
         element.classList.add(styles.row);
+        element.classList.add('group');
         const portalContainer = document.createElement('td');
-        portalContainer.style.textAlign = 'right';
+        // portalContainer.style.textAlign = 'right';
         const lastTableCell = element.querySelector('td:last-child');
         lastTableCell!.after(portalContainer);
         setContainer(portalContainer);
@@ -85,22 +87,20 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     return ReactDOM.createPortal(
         <>
-            <button
-                className='bg-ut-burntorange w-6 h-6 items-center justify-center color-white! flex m1 rounded'
-                onClick={onClick}
-            >
-                <RowIcon
-                    color='ut-white'
-                />
-            </button>
-            {conflicts.length > 0 && (
-                <div className='relative hidden'>
+            <div className='relative'>
+                <button
+                    className='bg-ut-burntorange w-6 h-6 items-center justify-center color-white! flex m1 rounded'
+                    onClick={onClick}
+                >
+                    <RowIcon color='ut-white' />
+                </button>
+                {conflicts.length > 0 && (
                     <ConflictsWithWarning
-                        className='text-white absolute left-10'
+                        className='group-hover:visible invisible text-white absolute left-13 top--3'
                         conflicts={conflicts}
                     />
-                </div>
-            )}
+                )}
+            </div>
         </>,
         container
     );

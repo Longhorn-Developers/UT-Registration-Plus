@@ -70,6 +70,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
                 }
                 return (
                     <TableRow
+                        className='group'
                         key={row.course.uniqueId}
                         row={row}
                         isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
