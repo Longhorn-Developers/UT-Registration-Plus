@@ -9,10 +9,17 @@ const meta = {
         layout: 'centered',
         tags: ['autodocs'],
     },
-} satisfies Meta<typeof Calendar>;
-
+    tags: ['autodocs'],
+    argTypes: {
+        saturdayClass: { control: 'boolean' },
+    },
+} satisfies Meta<typeof CalendarGrid>;
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+    args: {
+        saturdayClass: true,
+    },
+};
