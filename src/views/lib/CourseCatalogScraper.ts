@@ -18,7 +18,7 @@ const TableDataSelector = {
     SCHEDULE_HOURS: 'td[data-th="Hour"]>span',
     SCHEDULE_LOCATION: 'td[data-th="Room"]>span',
     FLAGS: 'td[data-th="Flags"] ul li',
-} as const;
+} as const satisfies Record<string, string>;
 
 type TableDataSelectorType = (typeof TableDataSelector)[keyof typeof TableDataSelector];
 

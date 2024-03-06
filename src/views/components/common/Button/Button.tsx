@@ -3,7 +3,6 @@ import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/the
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
-import { satisfies } from 'semver';
 
 import type IconComponent from '~icons/material-symbols';
 

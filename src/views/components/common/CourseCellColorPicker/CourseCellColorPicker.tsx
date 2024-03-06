@@ -388,4 +388,5 @@ export default function CourseCellColorPicker({
                 />
             )}
         </div>
+    );
 }

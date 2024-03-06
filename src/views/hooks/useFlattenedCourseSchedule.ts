@@ -5,13 +5,13 @@ import type { CalendarCourseCellProps } from '@views/components/calendar/Calenda
 
 import useSchedules from './useSchedules';
 
-const dayToNumber: { [day: string]: number } = {
+const dayToNumber = {
     Monday: 0,
     Tuesday: 1,
     Wednesday: 2,
     Thursday: 3,
     Friday: 4,
-};
+} as const satisfies Record<string, number>;
 
 interface CalendarGridPoint {
     dayIndex: number;

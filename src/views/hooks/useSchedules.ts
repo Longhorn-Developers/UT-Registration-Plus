@@ -47,7 +47,12 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
     return [activeSchedule, schedules];
 }
 
-export async function switchSchedule(name: string) {
+/**
+ * Switches the active schedule to the one with the specified name.
+ * @param name - The name of the schedule to switch to.
+ * @returns A promise that resolves when the active schedule has been switched.
+ */
+export async function switchSchedule(name: string): Promise<void> {
     const schedules = await UserScheduleStore.get('schedules');
     const activeIndex = schedules.findIndex(s => s.name === name);
     await UserScheduleStore.set('activeIndex', activeIndex);
