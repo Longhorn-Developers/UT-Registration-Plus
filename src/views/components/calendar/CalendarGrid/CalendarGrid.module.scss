@@ -14,7 +14,9 @@
 .calendarGrid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: repeat(13, 1fr);
+    grid-template-rows: repeat(26, 1fr);
+    width: 100%;
+    height: 100%;
 }
 
 .calendarRow {
@@ -26,6 +28,8 @@
     flex-direction: column;
     gap: 10px;
     position: relative; // Ensuring that child elements can be positioned in relation to this.
+    min-width: 800px;
+    min-height: 500px;
 }
 
 .day {
@@ -53,7 +57,7 @@
     justify-content: space-between;
     align-items: flex-start;
     flex: 1 0 0;
-    border-radius: var(--border-radius-none, 0px);
+    border-radius: 0px;
 }
 
 .timeBlock {
@@ -125,3 +129,12 @@
     width: 1px;
     background-color: grey;
 }
+
+.dot {
+    height: 75%; /* 75% of the container's height */
+    width: 75%; /* 75% of the container's width */
+    background-color: #000000; /* Color of the dot */
+    border-radius: 50%; /* Rounds the corners into a circle */
+    top: 12.5%; /* Centers the dot vertically */
+    left: 12.5%; /* Centers the dot horizontally */
+  }

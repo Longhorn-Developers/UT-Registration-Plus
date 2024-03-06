@@ -36,20 +36,11 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
 
     return (
         <div
-            className={clsx('w-full flex justify-center rounded p-2', fontColor, className)}
+            className={clsx('h-full w-full flex justify-center rounded p-2 overflow-x-hidden', fontColor, className)}
             style={{
                 backgroundColor: colors.primaryColor,
             }}
         >
-<<<<<<< HEAD
-            <div className='flex flex-1 flex-col gap-1'>
-                <Text variant='h1-course' className='leading-[75%]!'>
-                    {courseDeptAndInstr}
-                </Text>
-                {timeAndLocation && (
-                    <Text variant='h3-course' className='leading-[75%]!'>
-                        {timeAndLocation}
-=======
             <div className='flex flex-1 flex-col gap-1 overflow-x-hidden'>
                 <Text
                     variant='h1-course'
@@ -64,7 +55,6 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
                         {`${meeting.getTimeString({ separator: '–', capitalize: true })}${
                             meeting.location ? ` – ${meeting.location.building}` : ''
                         }`}
->>>>>>> 73fe14e (fix calendar course cell spacing)
                     </Text>
                 )}
             </div>
