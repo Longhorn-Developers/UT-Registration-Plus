@@ -95,7 +95,7 @@ export const Variants: Story = {
     ),
 };
 
-const colors = Object.keys(theme.colors)
+export const test_colors = Object.keys(theme.colors)
     // check that the color is a colorway (is an object)
     .filter(color => typeof theme.colors[color] === 'object')
     .slice(0, 17)
@@ -104,7 +104,7 @@ const colors = Object.keys(theme.colors)
 export const AllColors: Story = {
     render: props => (
         <div className='grid grid-rows-9 grid-cols-2 grid-flow-col max-w-2xl w-90vw gap-x-4 gap-y-2'>
-            {colors.map((color, i) => (
+            {test_colors.map((color, i) => (
                 <PopupCourseBlock key={color.primaryColor} course={exampleCourse} colors={color} />
             ))}
         </div>
