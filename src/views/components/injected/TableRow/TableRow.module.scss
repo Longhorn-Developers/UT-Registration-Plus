@@ -72,21 +72,16 @@
 }
 
 .inActiveSchedule {
-    * {
+    > :not(td:last-child) * {
         color: colors.$turtle_pond !important;
         font-weight: bold !important;
     }
 }
 
 .isConflict {
-    * {
+    > :not(td:last-child) * {
         color: colors.$speedway_brick;
         font-weight: normal;
         text-decoration: line-through;
-    }
-
-    > td:last-child * {
-        color: white;
-        text-decoration-line: unset !important;
     }
 }
