@@ -5,17 +5,17 @@ import styles from './Button.module.scss';
 interface Props {
     className?: string;
     style?: React.CSSProperties;
-    type?: 'filled' | 'outline' | 'single';
+    variant?: 'filled' | 'outline' | 'single';
     onClick?: () => void;
-    iconOnly?: boolean;
-    showSymbol?: boolean;
-    symbol?: React.ReactNode;
+    icon?: React.ReactNode;
     disabled?: boolean;
     title?: string;
     testId?: string;
-    primaryColor?: string;
-    secondaryColor?: string;
+    useScss?: boolean;
 }
+
+const BUTTON_BASE_CLASS =
+    'm-2.5 h-10 w-auto flex cursor-pointer content-center items-center gap-2 rounded-1 px-4 py-0 text-4.5 font-500 leading-normal font-sans btn-transition';
 
 /**
  * A reusable button component that follows the design system of the extension.
@@ -24,25 +24,22 @@ interface Props {
 export function Button({
     className,
     style,
-    type,
+    variant,
     onClick,
-    iconOnly,
-    showSymbol,
-    symbol,
+    icon,
     disabled,
     title,
     testId,
-    primaryColor,
-    secondaryColor,
     children,
+    useScss = false,
 }: React.PropsWithChildren<Props>): JSX.Element {
     return (
         <button
             style={
                 {
                     ...style,
-                    '--color-primary': primaryColor ?? '#333F48',
-                    '--color-secondary': secondaryColor ?? '#FFFFFF',
+                    '--color-primary': '#333F48',
+                    '--color-secondary': '#FFFFFF',
                 } as React.CSSProperties
             }
             data-testid={testId}
@@ -50,9 +47,11 @@ export function Button({
                 [styles.disabled]: disabled,
             })}
             title={title}
+            disabled={disabled}
             onClick={disabled ? undefined : onClick}
         >
-            {!iconOnly && children}
+            {icon}
+            {children}
         </button>
     );
 }

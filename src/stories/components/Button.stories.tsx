@@ -1,6 +1,7 @@
 import { Button } from 'src/views/components/common/Button/Button';
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
+import ImagePlaceholderIcon from '~icons/material-symbols/image';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -39,15 +40,37 @@ export const Grid: Story = {
     render: props => (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex' }}>
-                <Button {...props} type='filled' />
-                <Button {...props} type='outline' />
-                <Button {...props} type='single' />
+                <Button {...props} variant='filled' className='bg-ut-black' />
+                <Button {...props} variant='outline' className='text-ut-black' />
+                <Button {...props} variant='single' className='text-ut-black' />
             </div>
             <div style={{ display: 'flex' }}>
-                <Button {...props} type='filled' disabled />
-                <Button {...props} type='outline' disabled />
-                <Button {...props} type='single' disabled />
+                <Button {...props} variant='filled' className='bg-ut-black' useScss />
+                <Button {...props} variant='outline' className='text-ut-black' useScss />
+                <Button {...props} variant='single' className='text-ut-black' useScss />
             </div>
+
+            <hr />
+            <div style={{ display: 'flex' }}>
+                <Button {...props} variant='filled' className='bg-ut-black' disabled />
+                <Button {...props} variant='outline' className='text-ut-black' disabled />
+                <Button {...props} variant='single' className='text-ut-black' disabled />
+            </div>
+            <div style={{ display: 'flex' }}>
+                <Button {...props} variant='filled' className='bg-ut-black' disabled useScss />
+                <Button {...props} variant='outline' className='text-ut-black' disabled useScss />
+                <Button {...props} variant='single' className='text-ut-black' disabled useScss />
+            </div>
+        </div>
+    ),
+};
+
+export const Icons: Story = {
+    render: props => (
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Button {...props} variant='filled' icon={ImagePlaceholderIcon} />
+            <Button {...props} variant='outline' icon={ImagePlaceholderIcon} />
+            <Button {...props} variant='single' icon={ImagePlaceholderIcon} />
         </div>
     ),
 };
@@ -60,14 +83,14 @@ export const CourseButtons: Story = {
     render: props => (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex' }}>
-                <Button {...props} type='filled' />
-                <Button {...props} type='outline' />
-                <Button {...props} type='single' />
+                <Button {...props} variant='filled' />
+                <Button {...props} variant='outline' />
+                <Button {...props} variant='single' />
             </div>
             <div style={{ display: 'flex' }}>
-                <Button {...props} type='filled' disabled />
-                <Button {...props} type='outline' disabled />
-                <Button {...props} type='single' disabled />
+                <Button {...props} variant='filled' disabled />
+                <Button {...props} variant='outline' disabled />
+                <Button {...props} variant='single' disabled />
             </div>
         </div>
     ),
