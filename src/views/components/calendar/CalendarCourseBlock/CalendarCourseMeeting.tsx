@@ -24,12 +24,12 @@ export interface CalendarCourseMeetingProps {
  * @example
  * <CalendarCourseMeeting course={course} meeting={meeting} color="red" rightIcon={<Icon />} />
  */
-const CalendarCourseMeeting: React.FC<CalendarCourseMeetingProps> = ({
+export default function CalendarCourseMeeting({
     course,
     meetingIdx,
     color,
     rightIcon,
-}: CalendarCourseMeetingProps) => {
+}: CalendarCourseMeetingProps): JSX.Element {
     let meeting: CourseMeeting | null = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : null;
     return (
         <div className={styles.component}>
@@ -47,6 +47,4 @@ const CalendarCourseMeeting: React.FC<CalendarCourseMeetingProps> = ({
             </div>
         </div>
     );
-};
-
-export default CalendarCourseMeeting;
+}

@@ -12,7 +12,7 @@ type Props = {
  * The "Important Links" section of the calendar website
  * @returns
  */
-export default function ImportantLinks({ className }: Props) {
+export default function ImportantLinks({ className }: Props): JSX.Element {
     return (
         <article className={clsx(className, 'flex flex-col gap-2')}>
             <Text variant='h3'>Important Links</Text>

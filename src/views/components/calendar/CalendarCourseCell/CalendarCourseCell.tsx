@@ -34,14 +34,14 @@ export interface CalendarCourseCellProps {
  * @param {string} props.className - Additional CSS class name for the cell.
  * @returns {JSX.Element} The rendered component.
  */
-const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
+export default function CalendarCourseCell({
     courseDeptAndInstr,
     timeAndLocation,
     status,
     colors,
     className,
     onClick,
-}: CalendarCourseCellProps) => {
+}: CalendarCourseCellProps): JSX.Element {
     let rightIcon: React.ReactNode | null = null;
     if (status === Status.WAITLISTED) {
         rightIcon = <WaitlistIcon className='h-5 w-5' />;
@@ -95,6 +95,4 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
             )}
         </div>
     );
-};
-
-export default CalendarCourseBlock;
+}

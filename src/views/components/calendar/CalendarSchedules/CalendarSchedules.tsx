@@ -9,6 +9,9 @@ import React, { useEffect, useState } from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
 
+/**
+ * Props for the CalendarSchedules component.
+ */
 export type Props = {
     style?: React.CSSProperties;
     dummySchedules?: UserSchedule[];
@@ -21,7 +24,7 @@ export type Props = {
  * @param props - The component props.
  * @returns The rendered component.
  */
-export function CalendarSchedules(props: Props) {
+export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: Props) {
     const [activeScheduleIndex, setActiveScheduleIndex] = useState(0);
     const [newSchedule, setNewSchedule] = useState('');
     const [activeSchedule, schedules] = useSchedules();
@@ -58,13 +61,13 @@ export function CalendarSchedules(props: Props) {
     ));
 
     const fixBuildError = {
-        dummySchedules: props.dummySchedules,
-        dummyActiveIndex: props.dummyActiveIndex,
+        dummySchedules,
+        dummyActiveIndex,
     };
     console.log(fixBuildError);
 
     return (
-        <div style={{ ...props.style }} className='items-center'>
+        <div style={{ ...style }} className='items-center'>
             <div className='m0 m-b-2 w-full flex justify-between'>
                 <Text variant='h3'>MY SCHEDULES</Text>
                 <div className='cursor-pointer items-center justify-center btn-transition -ml-1.5 hover:text-zinc-400'>

@@ -11,15 +11,11 @@ import { ExampleCourse } from 'src/stories/components/PopupCourseBlock.stories';
 
 export const flags = ['WR', 'QR', 'GC', 'CD', 'E', 'II'];
 
-interface Props {
-    label: string;
-}
-
 /**
  * A reusable chip component that follows the design system of the extension.
  * @returns
  */
-export function Calendar(): JSX.Element {
+export default function Calendar(): JSX.Element {
     const calendarRef = useRef(null);
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
     const [course, setCourse] = React.useState<Course | null>(null);
