@@ -1,9 +1,8 @@
 import React from 'react';
 import styles from './CalendarGrid.module.scss';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
-import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 
-const daysOfWeek = Object.values(DAY_MAP).filter(d => d != 'Saturday' && d != 'Sunday');
+const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 const grid = Array.from({ length: 5 }, () =>
     Array.from({ length: 13 }, (_, columnIndex) => <CalendarCell key={columnIndex} />)
