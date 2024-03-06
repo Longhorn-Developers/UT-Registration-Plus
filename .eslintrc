@@ -20,11 +20,11 @@
     ],
     "plugins": [
         "import",
+        "import-essentials",
         "jsdoc",
         "react-prefer-function-component",
         "@typescript-eslint",
         "simple-import-sort",
-        "custom-utrp",
     ],
     "globals": {
         "Atomics": "readonly",
@@ -208,7 +208,7 @@
         "@typescript-eslint/consistent-type-imports": "error",
         "simple-import-sort/imports": "error",
         "simple-import-sort/exports": "error",
-        "custom-utrp/restrict-import-depth": "error",
-        "custom-utrp/check-path-alias": "error",
+        "import-essentials/restrict-import-depth": "error",
+        "import-essentials/check-path-alias": "error",
     },
 }
