@@ -14,24 +14,7 @@
     flex: 1 0 0;
 }
 
-.calendarGrid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(13, 1fr);
-}
-
-.calendarRow {
-    display: flex;
-}
-
-.calendar {
-    // display: grid;
-    // grid-template-columns: auto repeat(5, 1fr);
-    gap: 10px;
-}
-
-.day {
-    gap: 5px;
+.dayLabel {
     color: colors.$burnt_orange;
     text-align: center;
     font-size: 14.22px;
