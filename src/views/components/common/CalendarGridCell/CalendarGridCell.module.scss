@@ -1,5 +1,11 @@
 .calendarCell {
-    flex: 1;
-    border: 1px solid #ddd;
-    min-height: 50px;
+    display: flex;
+    width: 165px;
+    height: 52.231px;
+    min-width: 45px;
+    min-height: 40px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    border: 1px solid #dadce0;
 }

@@ -33,9 +33,7 @@ const Calendar: React.FC = (props) => {
       {/* Displaying the rest of the calendar */}
       <div className={styles.calendarGrid}>
         {grid.map((row, rowIndex) => (
-          <div className={styles.row} key={rowIndex}>
-            {row}
-          </div>
+          row
         ))}
       </div>
 
