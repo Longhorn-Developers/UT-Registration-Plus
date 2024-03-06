@@ -7,17 +7,21 @@ import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
 import Text from '../Text/Text';
 
-export interface CalendarCourseBlockProps {
-    /** The Course that the meeting is for. */
-    course: Course;
-    /* index into course meeting array to display */
-    meetingIdx?: number;
-    /** The background color for the course. */
-    color: string;
+export interface CalendarCourseCellProps {
+    courseDeptAndInstr: string;
+    timeAndLocation?: string;
+    status: Status;
+    colors: CourseColors;
+    className?: string;
 }
 
-const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({ course, meetingIdx }: CalendarCourseCellProps) => {
-    let meeting: CourseMeeting | null = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : null;
+const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
+    courseDeptAndInstr,
+    timeAndLocation,
+    status,
+    colors,
+    className,
+}: CalendarCourseCellProps) => {
     let rightIcon: React.ReactNode | null = null;
     if (status === Status.WAITLISTED) {
         rightIcon = <WaitlistIcon className='h-5 w-5' />;
@@ -32,7 +36,7 @@ const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({ course, meeting
 
     return (
         <div
-            className={`w-full flex justify-center rounded p-2 ${fontColor}`}
+            className={clsx('w-full flex justify-center rounded p-2', fontColor, className)}
             style={{
                 backgroundColor: colors.primaryColor,
             }}
