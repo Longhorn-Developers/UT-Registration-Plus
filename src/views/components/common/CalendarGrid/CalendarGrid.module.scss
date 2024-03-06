@@ -1,8 +1,7 @@
-:root {
-    --Primary-Colors-Burnt-Orange: #BF5700;
-}
+@use 'sass:color';
+@use 'src/views/styles/colors.module.scss';
 
-.day-label-container {
+.dayLabelContainer {
     display: flex;
     height: 13px;
     min-width: 40px;
@@ -14,8 +13,8 @@
     flex: 1 0 0;
 }
 
-.day-label {
-    color: var(--Primary-Colors-Burnt-Orange);
+.dayLabel {
+    color: colors.$burnt_orange;
     text-align: center;
     font-family: Roboto;
     font-size: 14.22px;
@@ -31,12 +30,10 @@
 }
 
 .day {
-    display: grid;
-    grid-template-columns: auto repeat(14, 1fr);
     gap: 5px;
 }
 
-.time-block {
+.timeBlock {
     display: flex;
     width: 50px;
     height: 40.279px;
@@ -48,7 +45,7 @@
     align-items: flex-end;
 }
 
-.time-label-container {
+.timeLabelContainer {
     display: flex;
     max-height: 20px;
     flex-direction: column;

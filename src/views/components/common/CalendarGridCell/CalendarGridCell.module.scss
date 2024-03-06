@@ -1,4 +1,4 @@
-.calendar-cell {
+.calendarCell {
     display: flex;
     width: 165px;
     height: 52.231px;
@@ -8,13 +8,12 @@
     justify-content: center;
     align-items: flex-start;
     position: relative;
-  }
-  
-  .hour-line {
+}
+
+.hourLine {
     position: absolute;
     left: 0;
     right: 0;
     top: 50%;
     border-top: 1px solid black; /* Adjust line styles as needed */
-  }
-  
+}
