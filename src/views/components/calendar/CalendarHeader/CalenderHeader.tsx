@@ -15,10 +15,10 @@ import UndoIcon from '~icons/material-symbols/undo';
 
 /**
  * Opens the options page in a new tab.
- * @returns {Promise<void>} A promise that resolves when the options page is opened.
+ * @returns A promise that resolves when the options page is opened.
  */
-const handleOpenOptions = async () => {
-    const url = chrome.runtime.getURL('/src/pages/options/index.html');
+const handleOpenOptions = async (): Promise<void> => {
+    const url = chrome.runtime.getURL('/options.html');
     await openTabFromContentScript(url);
 };
 

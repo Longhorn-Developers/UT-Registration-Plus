@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { InfoCard } from '@views/components/common/InfoCard/InfoCard';
+import InfoCard from '@views/components/common/InfoCard/InfoCard';
 
 const meta = {
     title: 'Components/Common/InfoCard',

@@ -107,7 +107,7 @@ export default defineConfig({
                 return code;
             },
         },
-        // renameFile('src/pages/debug/index.html', 'debug.html'),
+        renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
     ],
     resolve: {

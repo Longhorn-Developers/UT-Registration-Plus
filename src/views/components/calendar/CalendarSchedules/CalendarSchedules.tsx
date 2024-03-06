@@ -77,7 +77,7 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
                 </div>
             </div>
             <div className='flex flex-col space-y-2.5'>
-                <List gap={10} draggableElements={scheduleComponents} itemHeight={30} listHeight={30} listWidth={240} />
+                <List gap={10} draggableElements={scheduleComponents} listWidth={240} />
                 <input
                     type='text'
                     placeholder='Enter new schedule'

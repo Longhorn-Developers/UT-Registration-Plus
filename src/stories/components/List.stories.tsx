@@ -81,8 +81,6 @@ const meta = {
     tags: ['autodocs'],
     argTypes: {
         draggableElements: { control: 'object' },
-        itemHeight: { control: 'number' },
-        listHeight: { control: 'number' },
         listWidth: { control: 'number' },
         gap: { control: 'number' },
     },
@@ -94,8 +92,6 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     args: {
         draggableElements: ExampleCourseBlocks,
-        itemHeight: 55,
-        listHeight: 300,
         listWidth: 300,
         gap: 12,
     },

@@ -31,7 +31,7 @@
         "node_modules/@types",
         "src/manifest.ts",
         "package.json",
-        ".eslintrc",
+        ".eslintrc.cjs",
         "postcss.config.cjs",
         ".storybook",
         "unocss.config.ts"

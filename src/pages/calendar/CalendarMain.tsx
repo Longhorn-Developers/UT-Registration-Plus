@@ -1,4 +1,4 @@
-import { Calendar } from '@views/components/calendar/Calendar/Calendar';
+import Calendar from '@views/components/calendar/Calendar/Calendar';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React from 'react';
 

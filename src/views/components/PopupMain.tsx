@@ -10,7 +10,7 @@ import Text from '@views/components/common/Text/Text';
 import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import useSchedules, { switchSchedule } from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
-import styles from '@views/styles/popupMain.module.scss';
+import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
@@ -97,26 +97,31 @@ export default function PopupMain(): JSX.Element {
                             {`${activeSchedule.name}`}:
                         </Text>
                         <div className='flex items-center justify-start gap2.5 color-ut-black'>
-                            <Text variant='h1'>{`${activeSchedule.hours} HOURS`}</Text>
-                            <Text variant='h2-course'>{`${activeSchedule.courses.length} Courses`}</Text>
+                            <Text variant='h1'>{activeSchedule.hours} HOURS</Text>
+                            <Text variant='h2-course'>{activeSchedule.courses.length} Courses</Text>
                         </div>
                     </div>
-                    <div className={`${styles.arrow} ${isPopupVisible ? styles.expanded : ''}`} />
+                    <div
+                        className={clsx(
+                            'ml-auto inline-block h-0 w-0 border-l-5 border-r-5 border-t-5 border-transparent border-ut-orange transition-transform duration-300 ease-in-out',
+                            { 'rotate-180': isPopupVisible }
+                        )}
+                    />
                 </div>
                 {isPopupVisible && (
                     <div ref={popupRef}>
                         {nonActiveSchedules.map(schedule => (
                             <div
                                 key={schedule.name}
-                                className={styles.scheduleItem}
+                                className='my-2 cursor-pointer border border-gray-300 rounded-md border-solid bg-white py-4 shadow-sm hover:bg-gray-100'
                                 onClick={() => selectSchedule(schedule)}
                             >
                                 <Text as='div' variant='h1-course' className='color-ut-burntorange'>
                                     {schedule.name}:
                                 </Text>
                                 <div className='flex items-center justify-start gap2.5 color-ut-black'>
-                                    <Text variant='h1'>{`${schedule.hours} HOURS`}</Text>
-                                    <Text variant='h2-course'>{`${schedule.courses.length} Courses`}</Text>
+                                    <Text variant='h1'>{schedule.hours} HOURS</Text>
+                                    <Text variant='h2-course'>{schedule.courses.length} Courses</Text>
                                 </div>
                             </div>
                         ))}
@@ -127,8 +132,6 @@ export default function PopupMain(): JSX.Element {
                         draggableElements={activeSchedule?.courses.map((course, i) => (
                             <PopupCourseBlock key={course.uniqueId} course={course} colors={tailwindColorways[i]} />
                         ))}
-                        itemHeight={100}
-                        listHeight={500}
                         listWidth={350}
                         gap={12}
                     />

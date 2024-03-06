@@ -25,16 +25,6 @@
     font-style: normal;
 }
 
-@font-face {
-    font-family: 'Material Icons Round';
-    font-style: normal;
-    font-display: block;
-    font-weight: 400;
-    src: url('@public/fonts/material-icons.woff2') format('woff2');
-}
-
-$normal_weight: 500; // Used by <Icon>, will be removed later
-
 $medium_size: 16px;
 
 :export {

@@ -5,13 +5,6 @@ import { describe, expect, it } from 'vitest';
 // `capitalize` is adding an extra space at the end of the word.
 describe('capitalize', () => {
     it('should capitalize the first letter of each word', () => {
-        // Debug
-        // const word = 'hello world';
-        // const capitalized = capitalize(word);
-        // console.log(capitalize(word));
-        // console.log(capitalized.length);
-        // console.log(capitalized.split(''));
-
         // Test case 1: Single word
         expect(capitalize('hello')).toBe('Hello');
 

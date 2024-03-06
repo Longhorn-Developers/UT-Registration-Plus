@@ -1,11 +1,9 @@
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import type { ReactElement } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { satisfies } from 'semver';
 
 /*
  * Ctrl + f dragHandleProps on PopupCourseBlock.tsx for example implementation of drag handle (two lines of code)
- *
  */
 
 /**
@@ -14,8 +12,6 @@ import { satisfies } from 'semver';
 export interface ListProps {
     draggableElements: any[]; // TODO: Will later define draggableElements based on what types
     // of components are draggable.
-    itemHeight: number;
-    listHeight: number;
     listWidth: number;
     gap: number; // Impacts the spacing between items in the list
 }
@@ -56,40 +52,13 @@ function Item({ provided, item, style, isDragging /* , gap */ }) {
     );
 }
 
-interface RowProps {
-    data: any; //   DraggableElements[]; Need to define DraggableElements interface once those components are ready
-    index: number;
-    style: React.CSSProperties;
-}
-
-const Row: React.FC<RowProps> = React.memo(({ data: { items, gap }, index, style }) => {
-    const item = items[index];
-    const adjustedStyle = {
-        ...style,
-        height: `calc(${style.height}px - ${gap}px)`, // Reduce the height by gap to accommodate the margin
-        marginBottom: `${gap}px`, // Add gap as bottom margin
-    };
-    return (
-        <Draggable draggableId={item.id} index={index} key={item.id}>
-            {/* @ts-ignore  */}
-            {provided => <Item provided={provided} item={item} style={adjustedStyle} gap={gap} />}
-        </Draggable>
-    );
-});
-
 /**
  * `List` is a functional component that displays a course meeting.
  *
  * @example
  * <List draggableElements={elements} />
  */
-export default function List({
-    draggableElements,
-    itemHeight,
-    listHeight,
-    listWidth,
-    gap = 12,
-}: ListProps): JSX.Element {
+export default function List({ draggableElements, listWidth, gap = 12 }: ListProps): JSX.Element {
     const [items, setItems] = useState(() => initial(0, draggableElements));
 
     useEffect(() => {

@@ -1,5 +1,5 @@
 import type { Course } from '@shared/types/Course';
-import { CalendarBottomBar } from '@views/components/calendar/CalendarBottomBar/CalendarBottomBar';
+import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalenderHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules/CalendarSchedules';
@@ -8,8 +8,6 @@ import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalog
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import React, { useRef } from 'react';
 import { ExampleCourse } from 'src/stories/components/PopupCourseBlock.stories';
-
-export const flags = ['WR', 'QR', 'GC', 'CD', 'E', 'II'];
 
 /**
  * A reusable chip component that follows the design system of the extension.
@@ -23,9 +21,10 @@ export default function Calendar(): JSX.Element {
     return (
         <div className='flex flex-col'>
             <CalendarHeader
-                totalHours={activeSchedule.hours}
-                scheduleName={activeSchedule.name}
-                totalCourses={activeSchedule?.courses.length}
+            // TODO: implement props
+            // totalHours={activeSchedule.hours}
+            // scheduleName={activeSchedule.name}
+            // totalCourses={activeSchedule?.courses.length}
             />
             <div className='h-screen w-full flex flex-col md:flex-row'>
                 <div className='min-h-[30%] flex flex-col items-start gap-2.5 p-5 pl-7'>
@@ -43,7 +42,7 @@ export default function Calendar(): JSX.Element {
                     </div>
                 </div>
             </div>
-            {/* TODO: Doesn't work when exampleCourse is replaced with an actual course through setCourse. 
+            {/* TODO: Doesn't work when exampleCourse is replaced with an actual course through setCourse.
                 Check CalendarGrid.tsx and AccountForCourseConflicts for an example */}
             {course ? (
                 <CourseCatalogInjectedPopup

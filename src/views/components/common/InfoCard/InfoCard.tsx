@@ -12,30 +12,12 @@ interface Props {
  */
 export default function InfoCard({ titleText, bodyText }: React.PropsWithChildren<Props>): JSX.Element {
     return (
-        <div
-            className='w-50 flex flex-col items-start justify-center border rounded p-4'
-            style={{
-                border: '1px solid #D6D2C4',
-                background: '#FFF', //   White
-            }}
-        >
-            <div className='flex flex-col items-start self-stretch gap-1.5'>
-                <Text
-                    variant='h4'
-                    as='span'
-                    style={{
-                        color: '#F8971F', //    Orange
-                    }}
-                >
+        <div className='w-50 border rounded p-4 border-gray-300 bg-white'>
+            <div className='flex flex-col gap-1.5'>
+                <Text variant='h4' as='span' className='text-ut-orange'>
                     {titleText}
                 </Text>
-                <Text
-                    variant='small'
-                    as='span'
-                    style={{
-                        color: '#333F48', //    Black
-                    }}
-                >
+                <Text variant='small' as='span' className='text-ut-black'>
                     {bodyText}
                 </Text>
             </div>

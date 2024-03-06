@@ -97,13 +97,7 @@ export default function Dropdown(props: Props) {
                     afterLeave={toggleSwitch}
                 >
                     <Disclosure.Panel>
-                        <List
-                            draggableElements={scheduleComponents}
-                            itemHeight={30}
-                            listHeight={30}
-                            listWidth={240}
-                            gap={10}
-                        />
+                        <List draggableElements={scheduleComponents} listWidth={240} gap={10} />
                     </Disclosure.Panel>
                 </Transition>
             </Disclosure>
