@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './CalendarGrid.module.scss';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 
@@ -9,11 +8,12 @@ const grid = [];
 for (let i = 0; i < 13; i++) {
   const row = [];
   let hour = hoursOfDay[i];
-  row.push(<>
-    <div key={hour} className={styles.timeBlock}>
-      <div className={styles.timeLabelContainer}><p>{(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}</p></div>
+  row.push(
+    <div key={hour} className="flex">
+      <div className="flex flex-col items-end">
+        <p className="text-left">{(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}</p>
+      </div>
     </div>
-  </>
   );
   row.push(Array.from({ length: 5 }, (_, j) => <CalendarCell key={j} />));
   grid.push(row);
@@ -25,26 +25,26 @@ for (let i = 0; i < 13; i++) {
  */
 const Calendar: React.FC = (props) => {
   return (
-    <div className={styles.calendar}>
-      <div className={styles.dayLabelContainer}>
+    <div className="grid grid-cols-7">
+      <div className="flex justify-center items-center h-13 min-w-40 min-h-13 pb-15 gap-10 flex-1">
       </div>
       {/* Displaying the rest of the calendar */}
-      <div className={styles.timeAndGrid}>
-        {/* <div className={styles.timeColumn}>
-          <div className={styles.timeBlock}></div>
+      <div className="flex">
+        {/* <div className="flex flex-col justify-between items-start flex-1">
+          <div className="flex"></div>
           {hoursOfDay.map((hour) => (
-            <div key={hour} className={styles.timeBlock}>
-              <div className={styles.timeLabelContainer}>
+            <div key={hour} className="flex">
+              <div className="flex flex-col items-end">
                 <p>{hour % 12 === 0 ? 12 : hour % 12} {hour < 12 ? 'AM' : 'PM'}</p>
               </div>
             </div>
           ))}
         </div> */}
-        <div className={styles.calendarGrid}>
+        <div className="grid grid-cols-6 grid-rows-13">
           {/* Displaying day labels */}
-          <div className={styles.timeBlock}></div>
+          <div className="flex"></div>
           {daysOfWeek.map(day => (
-            <div key={day} className={styles.day}>
+            <div key={day} className="border border-solid border-gray-300 text-center">
               {day}
             </div>
           ))}
