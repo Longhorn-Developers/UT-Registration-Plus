@@ -5,7 +5,6 @@ import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
 import { Chip } from '../Chip/Chip';
 
-
 const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 const grid = [];
@@ -24,15 +23,15 @@ for (let i = 0; i < 13; i++) {
 }
 
 interface Props {
-    courseCells: typeof CalendarCourseCell[];
+    courseCells: any[];
+    saturdayClass: boolean;
 }
 
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  * @param props
  */
-export function Calendar({ courseCells }: React.PropsWithChildren<Props>): JSX.Element {
-
+function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Props> ): JSX.Element {
     return (
         <div className={styles.calendar}>
             <div className={styles.dayLabelContainer} />
@@ -56,20 +55,22 @@ export function Calendar({ courseCells }: React.PropsWithChildren<Props>): JSX.E
                             {day}
                         </div>
                     ))}
-                    {grid.map((row) => row)}
+                    {grid.map(row => row)}
                 </div>
             </div>
-            {courseCells.map((Block: typeof CalendarCourseCell) => (
-                <div key={`${Block}`} 
-                     style ={{
-                            gridColumn: `1`,
-                            gridRow: `1`
-                     }}>
-                    <Chip label='test'/>
+            {/* courseCells.map((Block: typeof CalendarCourseCell) => (
+                <div
+                    key={`${Block}`}
+                    style={{
+                        gridColumn: `1`,
+                        gridRow: `1`,
+                    }}
+                >
+                    <Chip label='test' />
                 </div>
-            ))}
+                ))  */}
         </div>
     );
-};
+}
 
-export default Calendar;
+export default CalendarGrid;

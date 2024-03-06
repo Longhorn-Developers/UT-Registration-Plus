@@ -1,19 +1,25 @@
-// Calendar.stories.tsx
-import React from 'react';
-import Calendar from '@views/components/common/CalendarGrid/CalendarGrid';
-import type { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
+import CalendarGrid from 'src/views/components/common/CalendarGrid/CalendarGrid';
 
 const meta = {
-    title: 'Components/Common/Calendar',
-    component: Calendar,
+    title: 'Components/Common/CalendarGrid',
+    component: CalendarGrid,
     parameters: {
-        // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
         layout: 'centered',
-        tags: ['autodocs'],
     },
-} satisfies Meta<typeof Calendar>;
-
+    tags: ['autodocs'],
+    argTypes: {
+        saturday: { control: 'text' },
+        sunday: { control: 'text' },
+    },
+} satisfies Meta<typeof CalendarGrid>;
 export default meta;
+
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+    args: {
+        saturday: true,
+        sunday: true,
+    },
+};
