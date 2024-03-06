@@ -7,18 +7,16 @@ import CancelledIcon from '~icons/material-symbols/warning';
 import Text from '../Text/Text';
 
 export interface CalendarCourseCellProps {
-    courseDeptAndInstr: string;
-    timeAndLocation?: string;
-    status: Status;
-    colors: CourseColors;
+    /** The Course that the meeting is for. */
+    course: Course;
+    /* index into course meeting array to display */
+    meetingIdx?: number;
+    /** The background color for the course. */
+    color: string;
 }
 
-const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({
-    courseDeptAndInstr,
-    timeAndLocation,
-    status,
-    colors,
-}: CalendarCourseCellProps) => {
+const CalendarCourseCell: React.FC<CalendarCourseCellProps> = ({ course, meetingIdx }: CalendarCourseCellProps) => {
+    let meeting: CourseMeeting | null = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : null;
     let rightIcon: React.ReactNode | null = null;
     if (status === Status.WAITLISTED) {
         rightIcon = <WaitlistIcon className='h-5 w-5' />;

@@ -2,7 +2,9 @@ import React from 'react';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 import styles from './CalendarGrid.module.scss';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
-import { CourseMeeting } from 'src/shared/types/CourseMeeting';
+import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
+import { Chip } from '../Chip/Chip';
+
 
 const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
@@ -22,14 +24,14 @@ for (let i = 0; i < 13; i++) {
 }
 
 interface Props {
-    CourseMeetingBlocks: CourseMeeting[];
+    courseCells: typeof CalendarCourseCell[];
 }
 
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  * @param props
  */
-export function Calendar({ courseMeetingBlocks }: React.PropsWithChildren<Props>): JSX.Element {
+export function Calendar({ courseCells }: React.PropsWithChildren<Props>): JSX.Element {
 
     return (
         <div className={styles.calendar}>
@@ -54,12 +56,16 @@ export function Calendar({ courseMeetingBlocks }: React.PropsWithChildren<Props>
                             {day}
                         </div>
                     ))}
-                    {grid.map((row, rowIndex) => row)}
+                    {grid.map((row) => row)}
                 </div>
             </div>
-            {courseMeetingBlocks.map((block: CourseMeeting, index: number) => (
-                <div key={index}>
-                    {block}
+            {courseCells.map((Block: typeof CalendarCourseCell) => (
+                <div key={`${Block}`} 
+                     style ={{
+                            gridColumn: `1`,
+                            gridRow: `1`
+                     }}>
+                    <Chip label='test'/>
                 </div>
             ))}
         </div>
