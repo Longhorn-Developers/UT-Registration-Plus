@@ -39,40 +39,31 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-    args: {
-        course: new Course({
-            uniqueId: 123,
-            number: '311C',
-            fullName: "311C - Bevo's Default Course",
-            courseName: "Bevo's Default Course",
-            department: 'BVO',
-            creditHours: 3,
-            status: Status.WAITLISTED,
-            instructors: [new Instructor({ firstName: '', lastName: 'Bevo', fullName: 'Bevo' })],
-            isReserved: false,
-            url: '',
-            flags: [],
-            schedule: new CourseSchedule({
-                meetings: [
-                    new CourseMeeting({
-                        days: [DAY_MAP.M, DAY_MAP.W, DAY_MAP.F],
-                        startTime: 480,
-                        endTime: 570,
-                        location: {
-                            building: 'UTC',
-                            room: '123',
-                        },
-                    }),
-                ],
-            }),
-            instructionMode: 'In Person',
-            semester: {
-                year: 2024,
-                season: 'Spring',
-            },
-        }),
-        meetingIdx: 0,
-        color: 'red',
-    },
+export const Default: Story = {};
+
+export const Variants: Story = {
+    render: props => (
+        <div className='grid grid-cols-2 h-40 max-w-60 w-90vw gap-x-4 gap-y-2'>
+            <CalendarCourseCell
+                {...props}
+                course={new Course({ ...exampleCourse, status: Status.OPEN })}
+                colors={getCourseColors('green', 500)}
+            />
+            <CalendarCourseCell
+                {...props}
+                course={new Course({ ...exampleCourse, status: Status.CLOSED })}
+                colors={getCourseColors('teal', 400)}
+            />
+            <CalendarCourseCell
+                {...props}
+                course={new Course({ ...exampleCourse, status: Status.WAITLISTED })}
+                colors={getCourseColors('indigo', 400)}
+            />
+            <CalendarCourseCell
+                {...props}
+                course={new Course({ ...exampleCourse, status: Status.CANCELLED })}
+                colors={getCourseColors('red', 500)}
+            />
+        </div>
+    ),
 };
