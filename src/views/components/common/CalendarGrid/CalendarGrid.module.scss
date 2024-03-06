@@ -27,14 +27,8 @@
     display: flex;
 }
 
-.timeColumn {
-    display: flex;
-    min-height: 573px;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex: 1 0 0;
-    border-radius: var(--border-radius-none, 0px);
+.day {
+    gap: 5px;
 }
 
 .timeBlock {

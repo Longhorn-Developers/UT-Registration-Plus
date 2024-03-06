@@ -1,8 +1,9 @@
 import React from 'react';
 import styles from './CalendarGrid.module.scss';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
+import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 
-const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const daysOfWeek = Object.values(DAY_MAP);
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 const grid = Array.from({ length: 5 }, () =>
     Array.from({ length: 13 }, (_, columnIndex) => <CalendarCell key={columnIndex} />)
@@ -14,7 +15,10 @@ const grid = Array.from({ length: 5 }, () =>
  */
 const Calendar: React.FC = props => {
     return (
-        <div className={styles.calendar}>
+      <div className={styles.calendar}>
+        <div className={styles.dayLabelContainer}></div>
+        {daysOfWeek.map((day, dayIndex) => (
+          <div key={dayIndex} className={styles.day}>
             <div className={styles.dayLabelContainer}>
                 {/* Empty cell in the top-left corner */}
                 <div className={styles.day} />
