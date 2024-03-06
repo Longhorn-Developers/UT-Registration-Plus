@@ -3,7 +3,7 @@ import styles from './CalendarGrid.module.scss';
 import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
 
-const daysOfWeek = Object.values(DAY_MAP).filter(d => d != "Saturday" && d != "Sunday")
+const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['SAT', 'SUN'].includes(key));
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 const grid = Array.from({ length: 5 }, () =>
   Array.from({ length: 13 }, (_, columnIndex) => (
@@ -30,7 +30,7 @@ const Calendar: React.FC = (props) => {
           {hoursOfDay.map((hour) => (
             <div key={hour} className={styles.timeBlock}>
               <div className={styles.timeLabelContainer}>
-                <p>{hour % 12 === 0 ? 12 : hour % 12}:00 {hour < 12 ? 'AM' : 'PM'}</p>
+                <p>{hour % 12 === 0 ? 12 : hour % 12} {hour < 12 ? 'AM' : 'PM'}</p>
               </div>
             </div>
           ))}

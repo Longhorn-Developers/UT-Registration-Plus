@@ -4,13 +4,13 @@ import { Serialized } from 'chrome-extension-toolkit';
  * a map of the days of the week that a class is taught, and the corresponding abbreviation
  */
 export const DAY_MAP = {
-    M: 'Monday',
-    T: 'Tuesday',
-    W: 'Wednesday',
-    TH: 'Thursday',
-    F: 'Friday',
-    S: 'Saturday',
-    SU: 'Sunday',
+    MON: 'Monday',
+    TUE: 'Tuesday',
+    WED: 'Wednesday',
+    THU: 'Thursday',
+    FRI: 'Friday',
+    SAT: 'Saturday',
+    SUN: 'Sunday',
 } as const;
 
 /** A day of the week that a class is taught */
