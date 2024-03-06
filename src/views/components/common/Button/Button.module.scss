@@ -2,15 +2,18 @@
 @use 'src/views/styles/colors.module.scss';
 
 .button {
-    background-color: #000;
-    color: #fff;
-    padding: 10px;
+    padding: 0px 16px;
+    height: 40px;
     margin: 10px;
-    border-radius: 8px;
+    border-radius: 4px;
     border: none;
     cursor: pointer;
     transition: all 0.1s ease-in-out;
-    font-family: 'Inter';
+    font-family: 'Roboto';
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
 
     display: flex;
     align-items: center;
@@ -34,34 +37,19 @@
         }
     }
 
-    @each $color,
-        $value
-            in (
-                primary: colors.$burnt_orange,
-                secondary: colors.$charcoal,
-                tertiary: colors.$bluebonnet,
-                danger: colors.$speedway_brick,
-                warning: colors.$tangerine,
-                success: colors.$turtle_pond,
-                info: colors.$turquoise
-            )
-    {
-        &.#{$color} {
-            background-color: $value;
-            color: #fff;
+    &.filled {
+        background-color: var(--color-primary);
+        color: var(--color-secondary);
+    }
 
-            &:hover {
-                background-color: color.adjust($value, $lightness: 10%);
-            }
+    &.outline {
+        background-color: var(--color-secondary);
+        color: var(--color-primary);
+        border: 1px solid var(--color-primary);
+    }
 
-            &:focus-visible,
-            &:active {
-                background-color: color.adjust($value, $lightness: -10%);
-            }
-
-            &.disabled {
-                background-color: $value !important;
-            }
-        }
+    &.single {
+        background-color: var(--color-secondary);
+        color: var(--color-primary);
     }
 }
