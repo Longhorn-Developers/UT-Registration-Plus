@@ -1,10 +1,9 @@
 import React, {useRef} from 'react';
 import html2canvas from 'html2canvas';
 import { DAY_MAP } from 'src/shared/types/CourseMeeting';
-import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import { CalendarGridCourse } from 'src/views/hooks/useFlattenedCourseSchedule';
+import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 import CalendarCourseCell from '../CalendarCourseCell/CalendarCourseCell';
-import { Chip } from '../Chip/Chip';
 import styles from './CalendarGrid.module.scss';
 import calIcon from 'src/assets/icons/cal.svg';
 import pngIcon from 'src/assets/icons/png.svg';
@@ -78,15 +77,16 @@ function CalendarGrid({ courseCells, saturdayClass }: React.PropsWithChildren<Pr
                     ))}
                 </div>
             </div>
-            {/* {courseCells.map((Block: typeof CalendarCourseCell) => (
+            {courseCells.map((block: CalendarGridCourse) => (
                 <div
-                    key={`${Block}`}
+                    key={`${block}`}
                     style={{
-                        gridColumn: `1`,
-                        gridRow: `1`,
+                        gridColumn: `${block.calendarGridPoint.dayIndex}`,
+                        gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
                     }}
                 >
-                    <CalendarCourseCell courseDeptAndInstr={} />
+                    <CalendarCourseCell courseDeptAndInstr={block.componentProps.courseDeptAndInstr} 
+                                        status={block.componentProps.status} colors={block.componentProps.colors}/>
                 </div>
                 ))} */}
             <div className={styles.buttonContainer}>
