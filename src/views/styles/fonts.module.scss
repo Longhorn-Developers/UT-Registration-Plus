@@ -8,16 +8,6 @@
     }
 }
 
-@each $weight in '100' '300' '400' '500' '700' '900' {
-    @font-face {
-        font-family: 'Roboto';
-        src: url('@public/fonts/roboto-#{$weight}.woff2') format('woff2');
-        font-display: auto;
-        font-style: normal;
-        font-weight: #{$weight};
-    }
-}
-
 @font-face {
     font-family: 'Roboto Flex';
     src: url('@public/fonts/roboto-flex.woff2') format('woff2');
