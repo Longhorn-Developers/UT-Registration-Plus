@@ -75,11 +75,9 @@ export default function CalendarCourseCell({
                 >
                     {courseDeptAndInstr}
                 </Text>
-                {meeting && (
+                {timeAndLocation && (
                     <Text variant='h3-course' className='-mb-0.5'>
-                        {`${meeting.getTimeString({ separator: '–', capitalize: true })}${
-                            meeting.location ? ` – ${meeting.location.building}` : ''
-                        }`}
+                        {timeAndLocation}
                     </Text>
                 )}
             </div>
