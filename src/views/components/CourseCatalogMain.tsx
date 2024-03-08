@@ -66,18 +66,18 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
             {rows.map((row, i) => {
                 if (!row.course) {
                     // TODO: handle the course section headers
-                    return <></>;
                     // return <TableSubheading key={row.element.innerText + i.toString()} row={row} />;
                 }
                 return (
-                    <TableRow
-                        className='group'
-                        key={row.course.uniqueId}
-                        row={row}
-                        isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
-                        activeSchedule={activeSchedule}
-                        onClick={handleRowButtonClick(row.course)}
-                    />
+                    row.course && (
+                        <TableRow
+                            key={row.course.uniqueId}
+                            row={row}
+                            isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
+                            activeSchedule={activeSchedule}
+                            onClick={handleRowButtonClick(row.course)}
+                        />
+                    )
                 );
             })}
             {selectedCourse && (
