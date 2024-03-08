@@ -1,6 +1,6 @@
 import type { Course } from '@shared/types/Course';
 import type { Distribution, LetterGrade } from '@shared/types/Distribution';
-import { colors } from '@shared/util/themeColors';
+import { extendedColors } from '@shared/util/themeColors';
 import Spinner from '@views/components/common/Spinner/Spinner';
 import Text from '@views/components/common/Text/Text';
 import {
@@ -25,18 +25,18 @@ const DataStatus = {
 type DataStatusType = (typeof DataStatus)[keyof typeof DataStatus];
 
 const GRADE_COLORS = {
-    A: colors.gradeDistribution.a,
-    'A-': colors.gradeDistribution.aminus,
-    'B+': colors.gradeDistribution.bplus,
-    B: colors.gradeDistribution.b,
-    'B-': colors.gradeDistribution.bminus,
-    'C+': colors.gradeDistribution.cplus,
-    C: colors.gradeDistribution.c,
-    'C-': colors.gradeDistribution.cminus,
-    'D+': colors.gradeDistribution.dplus,
-    D: colors.gradeDistribution.d,
-    'D-': colors.gradeDistribution.dminus,
-    F: colors.gradeDistribution.f,
+    A: extendedColors.gradeDistribution.a,
+    'A-': extendedColors.gradeDistribution.aminus,
+    'B+': extendedColors.gradeDistribution.bplus,
+    B: extendedColors.gradeDistribution.b,
+    'B-': extendedColors.gradeDistribution.bminus,
+    'C+': extendedColors.gradeDistribution.cplus,
+    C: extendedColors.gradeDistribution.c,
+    'C-': extendedColors.gradeDistribution.cminus,
+    'D+': extendedColors.gradeDistribution.dplus,
+    D: extendedColors.gradeDistribution.d,
+    'D-': extendedColors.gradeDistribution.dminus,
+    F: extendedColors.gradeDistribution.f,
 } as const satisfies Record<LetterGrade, string>;
 
 /**
