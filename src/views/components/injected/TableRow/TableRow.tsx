@@ -9,7 +9,6 @@ import RowIcon from '~icons/material-symbols/bar-chart-rounded';
 import styles from './TableRow.module.scss';
 
 interface Props {
-    className: string;
     isSelected: boolean;
     row: ScrapedRow;
     onClick: (...args: any[]) => any;
@@ -20,7 +19,7 @@ interface Props {
  * This component is injected into each row of the course catalog table.
  * @returns a react portal to the new td in the column or null if the column has not been created yet.
  */
-export default function TableRow({ className, row, isSelected, activeSchedule, onClick }: Props): JSX.Element | null {
+export default function TableRow({ row, isSelected, activeSchedule, onClick }: Props): JSX.Element | null {
     const [container, setContainer] = useState<HTMLTableCellElement | null>(null);
 
     // the courses in the active schedule that conflict with the course for this row
