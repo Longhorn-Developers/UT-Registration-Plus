@@ -5,7 +5,6 @@ export interface IWeights {
     normal_weight: number;
 }
 
-
 /** A utility type that removes the _weight postfix from the variable names for weights */
 export type Weight = keyof IWeights extends `${infer U}_weight` ? U : never;
 
