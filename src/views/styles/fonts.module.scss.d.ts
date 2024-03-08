@@ -5,12 +5,6 @@ export interface IWeights {
     normal_weight: number;
 }
 
-/**
- * the type for all the size scss variables exported from fonts.module.scss
- */
-export interface ISizes {
-    medium_size: number;
-}
 
 /** A utility type that removes the _weight postfix from the variable names for weights */
 export type Weight = keyof IWeights extends `${infer U}_weight` ? U : never;
