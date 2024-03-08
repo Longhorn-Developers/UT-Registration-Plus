@@ -1,6 +1,7 @@
 import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
+import type { CourseColors } from '@shared/util/colors';
 import { tailwindColorways } from '@shared/util/storybook';
 import type { Meta, StoryObj } from '@storybook/react';
 import List from '@views/components/common/List/List';
@@ -9,13 +10,14 @@ import React from 'react';
 
 const numberOfCourses = 5;
 
+// TODO: move into utils
 /**
  * Generates an array of courses.
  *
  * @param count - The number of courses to generate.
  * @returns An array of generated courses.
  */
-export const GenerateCourses = count => {
+const generateCourses = (count: number): Course[] => {
     const courses = [];
 
     for (let i = 0; i < count; i++) {
@@ -67,10 +69,10 @@ export const GenerateCourses = count => {
     return courses;
 };
 
-const exampleCourses = GenerateCourses(numberOfCourses);
-const generateCourseBlocks = (exampleCourses, colors) =>
+const exampleCourses = generateCourses(numberOfCourses);
+const generateCourseBlocks = (exampleCourses: Course[], colors: CourseColors[]) =>
     exampleCourses.map((course, i) => <PopupCourseBlock key={course.uniqueId} course={course} colors={colors[i]} />);
-export const ExampleCourseBlocks = generateCourseBlocks(exampleCourses, tailwindColorways);
+const ExampleCourseBlocks = generateCourseBlocks(exampleCourses, tailwindColorways);
 
 const meta = {
     title: 'Components/Common/List',
