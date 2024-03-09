@@ -1,4 +1,3 @@
-import logoImage from '@assets/logo.png';
 import switchSchedule from '@pages/background/lib/switchSchedule';
 import { Status } from '@shared/types/Course';
 import { StatusIcon } from '@shared/util/icons';
@@ -17,6 +16,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
 import SettingsIcon from '~icons/material-symbols/settings';
+
+import { LogoIcon } from './common/LogoIcon';
 
 /**
  * Renders the main popup component.
@@ -66,8 +67,8 @@ export default function PopupMain(): JSX.Element {
         <ExtensionRoot>
             <div className='mx-auto max-w-sm rounded bg-white p-4 shadow-md'>
                 <div className='mb-2 flex items-center justify-between bg-white'>
-                    <div className='flex items-center'>
-                        <img src={logoImage} alt='Logo' className='mr-2 h-10 w-10.4' />
+                    <div className='flex items-center gap-2'>
+                        <LogoIcon />
                         <div>
                             <Text as='div' variant='h1-course' className='color-ut-burntorange'>
                                 UT Registration
@@ -133,7 +134,6 @@ export default function PopupMain(): JSX.Element {
                         draggableElements={activeSchedule?.courses.map((course, i) => (
                             <PopupCourseBlock key={course.uniqueId} course={course} colors={tailwindColorways[i]} />
                         ))}
-                        listWidth={350}
                         gap={12}
                     />
                 )}

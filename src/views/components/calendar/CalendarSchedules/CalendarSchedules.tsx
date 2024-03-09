@@ -71,7 +71,7 @@ export function CalendarSchedules() {
                 </div>
             </div>
             <div className='flex flex-col space-y-2.5'>
-                <List gap={10} draggableElements={scheduleComponents} listWidth={240} />
+                <List gap={10} draggableElements={scheduleComponents} />
                 <input
                     type='text'
                     placeholder='Enter new schedule'
