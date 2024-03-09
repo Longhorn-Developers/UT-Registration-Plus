@@ -1,8 +1,8 @@
-import calIcon from '@assets/logo.png';
 import { Status } from '@shared/types/Course';
 import { Button } from '@views/components/common/Button/Button';
 import CourseStatus from '@views/components/common/CourseStatus/CourseStatus';
 import Divider from '@views/components/common/Divider/Divider';
+import { LogoIcon } from '@views/components/common/LogoIcon';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
 import Text from '@views/components/common/Text/Text';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
@@ -34,7 +34,7 @@ export default function CalendarHeader(): JSX.Element {
                     <div className='flex gap-1'>
                         <Button className='self-center' variant='single' icon={MenuIcon} color='ut-gray' />
                         <div className='flex items-center gap-2'>
-                            <img src={calIcon} className='max-w-[48px] min-w-[48px]' alt='UT Registration Plus Logo' />
+                            <LogoIcon />
                             <div className='flex flex-col whitespace-nowrap'>
                                 <Text className='text-lg text-ut-burntorange font-medium'>UT Registration</Text>
                                 <Text className='text-lg text-ut-orange font-medium'>Plus</Text>
