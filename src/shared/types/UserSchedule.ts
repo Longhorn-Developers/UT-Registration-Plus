@@ -18,11 +18,13 @@ export class UserSchedule {
             this.name = name || '';
             this.hours = hours || 0;
         } else {
-            this.courses = coursesOrSchedule.courses.map(c => new Course(c));
-            this.name = coursesOrSchedule.name;
+            this.courses = coursesOrSchedule?.courses.map(c => new Course(c)) || [];
+            this.name = coursesOrSchedule?.name || 'new schedule';
             this.hours = 0;
-            for (const course of this.courses) {
-                this.hours += course.creditHours;
+            if (this.courses && this.courses.length > 0) {
+                for (const course of this.courses) {
+                    this.hours += course.creditHours;
+                }
             }
         }
     }

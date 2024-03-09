@@ -30,7 +30,7 @@ export default function PopupMain(): JSX.Element {
 
     useEffect(() => {
         function handleClickOutside(event) {
-            if (!popupRef.current.contains(event.target) && !toggleRef.current.contains(event.target)) {
+            if (!popupRef.current?.contains(event.target) && !toggleRef.current?.contains(event.target)) {
                 setIsPopupVisible(false);
             }
         }
