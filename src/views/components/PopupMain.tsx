@@ -1,4 +1,5 @@
 import logoImage from '@assets/logo.png';
+import switchSchedule from '@pages/background/lib/switchSchedule';
 import { Status } from '@shared/types/Course';
 import { StatusIcon } from '@shared/util/icons';
 import { tailwindColorways } from '@shared/util/storybook';
@@ -12,7 +13,6 @@ import useSchedules from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
-import switchSchedule from 'src/pages/background/lib/switchSchedule';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
