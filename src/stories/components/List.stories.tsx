@@ -83,7 +83,6 @@ const meta = {
     tags: ['autodocs'],
     argTypes: {
         draggableElements: { control: 'object' },
-        listWidth: { control: 'number' },
         gap: { control: 'number' },
     },
 } satisfies Meta<typeof List>;
@@ -94,7 +93,11 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     args: {
         draggableElements: ExampleCourseBlocks,
-        listWidth: 300,
         gap: 12,
     },
+    render: args => (
+        <div className='w-sm'>
+            <List {...args} />
+        </div>
+    ),
 };
