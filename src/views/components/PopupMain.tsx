@@ -114,7 +114,7 @@ export default function PopupMain(): JSX.Element {
                         {nonActiveSchedules.map(schedule => (
                             <div
                                 key={schedule.name}
-                                className='my-2 cursor-pointer border border-gray-300 rounded-md border-solid bg-white py-4 shadow-sm hover:bg-gray-100'
+                                className='my-2 cursor-pointer border border-gray-300 rounded-md border-solid bg-white p-2 shadow-sm hover:bg-gray-100'
                                 onClick={() => selectSchedule(schedule)}
                             >
                                 <Text as='div' variant='h1-course' className='color-ut-burntorange'>
