@@ -27,7 +27,7 @@ export function CalendarSchedules() {
     const [activeSchedule, schedules, activeIndex] = useSchedules();
     const [scheduleComponents, setScheduleComponents] = useState<JSX.Element[]>([]);
 
-    const handleKeyDown = (e) => {
+    const handleKeyDown = e => {
         if (e.code === 'Enter') {
             createSchedule(newSchedule);
             setNewSchedule('');
@@ -42,17 +42,20 @@ export function CalendarSchedules() {
         switchSchedule(schedules[index].name);
     };
 
-    useEffect(() =>
-        setScheduleComponents(schedules.map((schedule, index) => {
-            return (
-                <ScheduleListItem
-                    key={`${schedule.name}-${index}`} 
-                    index={index}
-                    name={schedule.name + activeIndex}
-                    onClick={() => selectItem(index)}
-                />
-            );
-        })), [schedules]);
+    useEffect(
+        () =>
+            setScheduleComponents(
+                schedules.map((schedule, index) => (
+                    <ScheduleListItem
+                        key={`${schedule.name}-${schedules}`}
+                        index={index}
+                        name={schedule.name}
+                        onClick={() => selectItem(index)}
+                    />
+                ))
+            ),
+        [schedules]
+    );
 
     return (
         <div className='items-center'>

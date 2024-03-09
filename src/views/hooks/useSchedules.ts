@@ -20,7 +20,7 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
             setSchedules(storedSchedules.map(s => new UserSchedule(s)));
             setActiveIndex(storedActiveIndex);
             setActiveSchedule(new UserSchedule(storedSchedules[storedActiveIndex]));
-    
+
             const initializable = UserScheduleStore.initialize();
 
             if (initializable) {
@@ -35,7 +35,7 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
                         return currentSchedules;
                     });
                 });
-    
+
                 return () => {
                     UserScheduleStore.removeListener(l1);
                     UserScheduleStore.removeListener(l2);
