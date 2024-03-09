@@ -25,7 +25,7 @@ const manifest = defineManifest(async () => ({
     name: `${packageJson.displayName ?? packageJson.name}${mode === 'development' ? ' (dev)' : ''}`,
     version: `${major}.${minor}.${patch}.${label}`,
     description: packageJson.description,
-    options_page: 'options.html',
+    options_page: 'src/pages/options/index.html',
     background: { service_worker: 'src/pages/background/background.ts' },
     permissions: ['storage', 'unlimitedStorage', 'background', 'scripting'],
     host_permissions: process.env.MODE === 'development' ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
