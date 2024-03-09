@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 
 import styles from './CalendarGrid.module.scss';
 
-const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
+const calendarGridDays = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 
 interface Props {
@@ -28,7 +28,6 @@ export default function CalendarGrid({
 }: React.PropsWithChildren<Props>): JSX.Element {
     const [grid, setGrid] = useState([]);
     // const calendarRef = useRef(null); // Create a ref for the calendar grid
-
     // Run once to create the grid on initial render. Should be replaced with useMemo when we start rendering based on saturdayClass prop
     useEffect(() => {
         for (let i = 0; i < 13; i++) {
@@ -54,13 +53,14 @@ export default function CalendarGrid({
             }
             grid.push(row);
         }
+        setGrid(grid);
     }, []);
 
     return (
         <div className={styles.calendarGrid}>
             {/* Displaying day labels */}
             <div className={styles.timeBlock} />
-            {daysOfWeek.map(day => (
+            {calendarGridDays.map(day => (
                 <div key={day} className={styles.day}>
                     {day}
                 </div>
