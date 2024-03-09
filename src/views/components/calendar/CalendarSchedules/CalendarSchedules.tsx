@@ -23,19 +23,12 @@ export type Props = {
  * @returns The rendered component.
  */
 export function CalendarSchedules() {
-    const [activeScheduleIndex, setActiveScheduleIndex] = useState(0);
     const [newSchedule, setNewSchedule] = useState('');
-    const [activeSchedule, schedules] = useSchedules();
+    const [activeSchedule, schedules, activeIndex] = useSchedules();
+    const [scheduleComponents, setScheduleComponents] = useState<JSX.Element[]>([]);
 
-    useEffect(() => {
-        const index = schedules.findIndex(schedule => schedule.name === activeSchedule.name);
-        if (index !== -1) {
-            setActiveScheduleIndex(index);
-        }
-    }, [activeSchedule, schedules]);
-
-    const handleKeyDown = event => {
-        if (event.code === 'Enter') {
+    const handleKeyDown = (e) => {
+        if (e.code === 'Enter') {
             createSchedule(newSchedule);
             setNewSchedule('');
         }
@@ -46,17 +39,20 @@ export function CalendarSchedules() {
     };
 
     const selectItem = (index: number) => {
-        setActiveScheduleIndex(index);
         switchSchedule(schedules[index].name);
     };
 
-    const scheduleComponents = schedules.map((schedule, index) => (
-        <ScheduleListItem
-            active={index === activeScheduleIndex}
-            name={schedule.name}
-            onClick={() => selectItem(index)}
-        />
-    ));
+    useEffect(() =>
+        setScheduleComponents(schedules.map((schedule, index) => {
+            return (
+                <ScheduleListItem
+                    key={`${schedule.name}-${index}`} 
+                    index={index}
+                    name={schedule.name + activeIndex}
+                    onClick={() => selectItem(index)}
+                />
+            );
+        })), [schedules]);
 
     return (
         <div className='items-center'>

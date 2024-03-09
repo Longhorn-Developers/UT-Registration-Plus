@@ -60,6 +60,7 @@ function Item({ provided, item, style, isDragging /* , gap */ }) {
 export default function List({ draggableElements, gap = 12 }: ListProps): JSX.Element {
     const [items, setItems] = useState(() => initial(0, draggableElements));
 
+    // TODO: handle deleting schedules in useEffect function while maintaining previous order
     useEffect(() => {
         setItems(prevItems => {
             const prevItemIds = prevItems.map(item => item.id);

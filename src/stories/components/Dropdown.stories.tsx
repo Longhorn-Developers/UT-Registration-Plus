@@ -151,7 +151,7 @@ export const Hidden: Story = {
         dummySchedules: schedules,
         dummyActiveIndex: 0,
         scheduleComponents: schedules.map((schedule, index) => (
-            <ScheduleListItem active={index === 0} name={schedule.name} />
+            <ScheduleListItem index={index} name={schedule.name} />
         )),
     },
 };
