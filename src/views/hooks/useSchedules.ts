@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
  */
 export default function useSchedules(): [active: UserSchedule | null, schedules: UserSchedule[]] {
     const [schedules, setSchedules] = useState<UserSchedule[]>([]);
-    const [activeIndex, setActiveIndex] = useState<number>(0);
     const [activeSchedule, setActiveSchedule] = useState<UserSchedule | null>(null);
 
     useEffect(() => {
