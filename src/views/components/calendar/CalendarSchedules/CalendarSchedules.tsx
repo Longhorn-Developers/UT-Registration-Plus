@@ -58,8 +58,6 @@ export function CalendarSchedules() {
         />
     ));
 
-    console.log('should not be unlimited rendering');
-
     return (
         <div className='items-center'>
             <div className='m0 m-b-2 w-full flex justify-between'>

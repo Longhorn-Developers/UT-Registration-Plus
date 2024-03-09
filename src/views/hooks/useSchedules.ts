@@ -20,27 +20,28 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
             setSchedules(storedSchedules.map(s => new UserSchedule(s)));
             setActiveIndex(storedActiveIndex);
             setActiveSchedule(new UserSchedule(storedSchedules[storedActiveIndex]));
-
+    
             const initializable = UserScheduleStore.initialize();
 
             if (initializable) {
                 const l1 = UserScheduleStore.listen('schedules', ({ newValue }) => {
                     setSchedules(newValue.map(s => new UserSchedule(s)));
-                    setActiveSchedule(new UserSchedule(newValue[activeIndex]));
                 });
 
                 const l2 = UserScheduleStore.listen('activeIndex', ({ newValue }) => {
                     setActiveIndex(newValue);
-                    setActiveSchedule(new UserSchedule(schedules[newValue]));
+                    setSchedules(currentSchedules => {
+                        setActiveSchedule(new UserSchedule(currentSchedules[newValue]));
+                        return currentSchedules;
+                    });
                 });
-
+    
                 return () => {
                     UserScheduleStore.removeListener(l1);
                     UserScheduleStore.removeListener(l2);
                 };
             }
         };
-
         fetchData();
     }, []);
 
