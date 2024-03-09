@@ -45,9 +45,8 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
             };
         };
 
-        const unsubListeners = setupListeners();
-
-        return unsubListeners;
+        const init = UserScheduleStore.initialize();
+        init.then(() => setupListeners()).catch(console.error);
     }, []);
 
     return [activeSchedule, schedules];
