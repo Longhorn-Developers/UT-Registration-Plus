@@ -4,7 +4,7 @@ import { getCourseColors } from '@shared/util/colors';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import CalendarCell from '@views/components/calendar/CalendarGridCell/CalendarGridCell';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styles from './CalendarGrid.module.scss';
 
@@ -26,11 +26,11 @@ export default function CalendarGrid({
     saturdayClass,
     setCourse,
 }: React.PropsWithChildren<Props>): JSX.Element {
-    //  const [grid, setGrid] = useState([]);
+    const [grid, setGrid] = useState([]);
     // const calendarRef = useRef(null); // Create a ref for the calendar grid
-    const grid = [];
 
-    // Run once to create the grid on initial render
+
+    // Run once to create the grid on initial render. Should be replaced with useMemo when we start rendering based on saturdayClass prop
     useEffect(() => {
         for (let i = 0; i < 13; i++) {
             const row = [];
@@ -51,7 +51,7 @@ export default function CalendarGrid({
                     gridColumn: `${k + 2}`,
                     gridRow: `${2 * i + 2} / ${2 * i + 4}`,
                 };
-                row.push(<CalendarCell key={k} styleProp={styleProp} />);
+                row.push(<CalendarCell key={k} styleProp={styleProp}/>);
             }
             grid.push(row);
         }
@@ -66,7 +66,7 @@ export default function CalendarGrid({
                     {day}
                 </div>
             ))}
-            {grid.map(row => row)}
+            {grid.map((row) => row)}
             {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} /> : null}
         </div>
     );
