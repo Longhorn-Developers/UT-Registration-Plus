@@ -29,7 +29,6 @@ export default function CalendarGrid({
     const [grid, setGrid] = useState([]);
     // const calendarRef = useRef(null); // Create a ref for the calendar grid
 
-
     // Run once to create the grid on initial render. Should be replaced with useMemo when we start rendering based on saturdayClass prop
     useEffect(() => {
         for (let i = 0; i < 13; i++) {
@@ -51,7 +50,7 @@ export default function CalendarGrid({
                     gridColumn: `${k + 2}`,
                     gridRow: `${2 * i + 2} / ${2 * i + 4}`,
                 };
-                row.push(<CalendarCell key={k} styleProp={styleProp}/>);
+                row.push(<CalendarCell key={k} styleProp={styleProp} />);
             }
             grid.push(row);
         }
@@ -66,7 +65,7 @@ export default function CalendarGrid({
                     {day}
                 </div>
             ))}
-            {grid.map((row) => row)}
+            {grid.map(row => row)}
             {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} /> : null}
         </div>
     );
