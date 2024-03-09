@@ -132,7 +132,6 @@ export default function PopupMain(): JSX.Element {
                         draggableElements={activeSchedule?.courses.map((course, i) => (
                             <PopupCourseBlock key={course.uniqueId} course={course} colors={tailwindColorways[i]} />
                         ))}
-                        listWidth={350}
                         gap={12}
                     />
                 )}
