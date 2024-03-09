@@ -58,10 +58,10 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
         return {
             courseCells: [] as CalendarGridCourse[],
             activeSchedule: new UserSchedule({
-                                courses: [],
-                                name: 'Something may have went wrong',
-                                hours: 0,
-                            })
+                courses: [],
+                name: 'Something may have went wrong',
+                hours: 0,
+            }),
         } satisfies FlattenedCourseSchedule;
     }
 
@@ -141,10 +141,7 @@ function processAsyncCourses({
 /**
  * Function to process each in-person class into its distinct meeting objects for calendar grid
  */
-function processInPersonMeetings(
-    meeting: CourseMeeting,
-    { courseDeptAndInstr, status, course }
-) {
+function processInPersonMeetings(meeting: CourseMeeting, { courseDeptAndInstr, status, course }) {
     const { days, startTime, endTime, location } = meeting;
     const midnightIndex = 1440;
     const normalizingTimeFactor = 720;
@@ -186,4 +183,3 @@ function sortCourses(a: CalendarGridCourse, b: CalendarGridCourse): number {
     }
     return endIndexA - endIndexB;
 }
-
