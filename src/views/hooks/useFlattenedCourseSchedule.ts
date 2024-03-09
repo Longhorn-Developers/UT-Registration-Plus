@@ -57,7 +57,11 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     if (!activeSchedule) {
         return {
             courseCells: [] as CalendarGridCourse[],
-            activeSchedule: new UserSchedule([], 'Something may have went wrong', 0),
+            activeSchedule: new UserSchedule({
+                                courses: [],
+                                name: 'Something may have went wrong',
+                                hours: 0,
+                            })
         } satisfies FlattenedCourseSchedule;
     }
 

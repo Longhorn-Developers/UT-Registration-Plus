@@ -7,13 +7,19 @@ import { CourseMeeting, DAY_MAP } from './CourseMeeting';
  * This represents the schedule for a course, which includes all the meeting times for the course, as well as helper functions for parsing, serializing, and deserializing the schedule
  */
 export class CourseSchedule {
-    meetings: CourseMeeting[] = [];
+    meetings: CourseMeeting[];
 
     constructor(courseSchedule?: Serialized<CourseSchedule>) {
+        this.meetings = [];
         if (!courseSchedule) {
             return;
         }
         Object.assign(this, courseSchedule);
+        let newMeetings = [];
+        for (let meeting of courseSchedule.meetings) {
+            newMeetings.push(new CourseMeeting(meeting));
+        }
+        this.meetings = newMeetings;
     }
 
     /**

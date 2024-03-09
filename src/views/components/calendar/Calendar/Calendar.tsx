@@ -46,7 +46,7 @@ export default function Calendar(): JSX.Element {
                 Check CalendarGrid.tsx and AccountForCourseConflicts for an example */}
             {course ? (
                 <CourseCatalogInjectedPopup
-                    course={ExampleCourse}
+                    course={course}
                     activeSchedule={activeSchedule}
                     onClose={() => setCourse(null)}
                 />
