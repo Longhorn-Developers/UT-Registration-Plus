@@ -47,15 +47,14 @@ const fixManifestOptionsPage = () => ({
     apply: 'build' as const,
     enforce: 'post' as const,
     generateBundle(_, bundle) {
-        // Find the manifest.json in the generated bundle
         for (const fileName of Object.keys(bundle)) {
             if (fileName.startsWith('assets/crx-manifest')) {
                 const chunk = bundle[fileName];
-                console.log(chunk.code);
                 chunk.code = chunk.code.replace(
                     /"options_page":"src\/pages\/options\/index.html"/,
                     `"options_page":"options.html"`
                 );
+                break;
             }
         }
     },
