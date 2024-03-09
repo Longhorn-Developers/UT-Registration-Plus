@@ -57,7 +57,7 @@ export default function PopupMain(): JSX.Element {
     ));
 
     const handleOpenOptions = async () => {
-        const url = chrome.runtime.getURL('/src/pages/options/index.html');
+        const url = chrome.runtime.getURL('/options.html');
         await openTabFromContentScript(url);
     };
 
