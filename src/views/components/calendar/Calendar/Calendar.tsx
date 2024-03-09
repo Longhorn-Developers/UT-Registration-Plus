@@ -42,8 +42,6 @@ export default function Calendar(): JSX.Element {
                     </div>
                 </div>
             </div>
-            {/* TODO: Doesn't work when exampleCourse is replaced with an actual course through setCourse.
-                Check CalendarGrid.tsx and AccountForCourseConflicts for an example */}
             {course ? (
                 <CourseCatalogInjectedPopup
                     course={ExampleCourse}

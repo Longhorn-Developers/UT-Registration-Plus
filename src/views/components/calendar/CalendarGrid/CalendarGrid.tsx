@@ -55,7 +55,7 @@ export default function CalendarGrid({
             }
             grid.push(row);
         }
-    });
+    }, []);
 
     return (
         <div className={styles.calendarGrid}>
