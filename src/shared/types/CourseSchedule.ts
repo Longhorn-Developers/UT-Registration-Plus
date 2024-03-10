@@ -10,16 +10,14 @@ export class CourseSchedule {
     meetings: CourseMeeting[];
 
     constructor(courseSchedule?: Serialized<CourseSchedule>) {
-        this.meetings = [];
         if (!courseSchedule) {
             return;
         }
         Object.assign(this, courseSchedule);
-        let newMeetings = [];
+        this.meetings = [];
         for (let meeting of courseSchedule.meetings) {
-            newMeetings.push(new CourseMeeting(meeting));
+            this.meetings.push(new CourseMeeting(meeting));
         }
-        this.meetings = newMeetings;
     }
 
     /**
