@@ -1,5 +1,4 @@
 import type { Course, ScrapedRow } from '@shared/types/Course';
-import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import AutoLoad from '@views/components/injected/AutoLoad/AutoLoad';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/RecruitmentBanner';
@@ -13,6 +12,8 @@ import getCourseTableRows from '@views/lib/getCourseTableRows';
 import type { SiteSupportType } from '@views/lib/getSiteSupport';
 import { populateSearchInputs } from '@views/lib/populateSearchInputs';
 import React, { useEffect, useState } from 'react';
+
+import ExtensionRootAlternate from './common/ExtensionRootAlternate/ExtensionRootAlternate';
 
 interface Props {
     support: Extract<SiteSupportType, 'COURSE_CATALOG_DETAILS' | 'COURSE_CATALOG_LIST'>;
@@ -60,7 +61,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
     }
 
     return (
-        <ExtensionRoot>
+        <ExtensionRootAlternate>
             <RecruitmentBanner />
             <TableHead>Plus</TableHead>
             {rows.map((row, i) => {
@@ -86,6 +87,6 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
                 />
             )}
             <AutoLoad addRows={addRows} />
-        </ExtensionRoot>
+        </ExtensionRootAlternate>
     );
 }
