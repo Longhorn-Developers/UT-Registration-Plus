@@ -42,6 +42,24 @@ const renameFile = (source: string, destination: string): Plugin => {
     };
 };
 
+const fixManifestOptionsPage = () => ({
+    name: 'fix-manifest-options-page',
+    apply: 'build' as const,
+    enforce: 'post' as const,
+    generateBundle(_, bundle) {
+        for (const fileName of Object.keys(bundle)) {
+            if (fileName.startsWith('assets/crx-manifest')) {
+                const chunk = bundle[fileName];
+                chunk.code = chunk.code.replace(
+                    /"options_page":"src\/pages\/options\/index.html"/,
+                    `"options_page":"options.html"`
+                );
+                break;
+            }
+        }
+    },
+});
+
 let config: ResolvedConfig;
 let server: ViteDevServer;
 
@@ -52,6 +70,7 @@ export default defineConfig({
         UnoCSS(),
         Icons({ compiler: 'jsx', jsx: 'react' }),
         crx({ manifest }),
+        fixManifestOptionsPage(),
         inspect(),
         {
             name: 'public-transform',
