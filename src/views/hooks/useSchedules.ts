@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
  */
 export default function useSchedules(): [active: UserSchedule | null, schedules: UserSchedule[]] {
     const [schedules, setSchedules] = useState<UserSchedule[]>([]);
-    const [activeIndex, setActiveIndex] = useState<number>(0);
     const [activeSchedule, setActiveSchedule] = useState<UserSchedule | null>(null);
 
     useEffect(() => {
@@ -18,31 +17,36 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
                 UserScheduleStore.get('activeIndex'),
             ]);
             setSchedules(storedSchedules.map(s => new UserSchedule(s)));
-            setActiveIndex(storedActiveIndex);
             setActiveSchedule(new UserSchedule(storedSchedules[storedActiveIndex]));
-
-            const initializable = UserScheduleStore.initialize();
-
-            if (initializable) {
-                const l1 = UserScheduleStore.listen('schedules', ({ newValue }) => {
-                    setSchedules(newValue.map(s => new UserSchedule(s)));
-                    setActiveSchedule(new UserSchedule(newValue[activeIndex]));
-                });
-
-                const l2 = UserScheduleStore.listen('activeIndex', ({ newValue }) => {
-                    setActiveIndex(newValue);
-                    setActiveSchedule(new UserSchedule(schedules[newValue]));
-                });
-
-                return () => {
-                    UserScheduleStore.removeListener(l1);
-                    UserScheduleStore.removeListener(l2);
-                };
-            }
         };
 
         fetchData();
-    }, [activeIndex, schedules]);
+
+        const setupListeners = () => {
+            const l1 = UserScheduleStore.listen('schedules', ({ newValue }) => {
+                setSchedules(newValue.map(s => new UserSchedule(s)));
+                setActiveSchedule(currentActive => {
+                    const newActiveIndex = newValue.findIndex(s => s.name === currentActive?.name);
+                    return new UserSchedule(newValue[newActiveIndex]);
+                });
+            });
+
+            const l2 = UserScheduleStore.listen('activeIndex', ({ newValue }) => {
+                setSchedules(currentSchedules => {
+                    setActiveSchedule(new UserSchedule(currentSchedules[newValue]));
+                    return currentSchedules;
+                });
+            });
+
+            return () => {
+                UserScheduleStore.removeListener(l1);
+                UserScheduleStore.removeListener(l2);
+            };
+        };
+
+        const init = UserScheduleStore.initialize();
+        init.then(() => setupListeners()).catch(console.error);
+    }, []);
 
     return [activeSchedule, schedules];
 }
