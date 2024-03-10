@@ -12,7 +12,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 export interface ListProps {
     draggableElements: any[]; // TODO: Will later define draggableElements based on what types
     // of components are draggable.
-    listWidth: number;
     gap: number; // Impacts the spacing between items in the list
 }
 
@@ -58,7 +57,7 @@ function Item({ provided, item, style, isDragging /* , gap */ }) {
  * @example
  * <List draggableElements={elements} />
  */
-export default function List({ draggableElements, listWidth, gap = 12 }: ListProps): JSX.Element {
+export default function List({ draggableElements, gap = 12 }: ListProps): JSX.Element {
     const [items, setItems] = useState(() => initial(0, draggableElements));
 
     useEffect(() => {
@@ -87,7 +86,7 @@ export default function List({ draggableElements, listWidth, gap = 12 }: ListPro
     );
 
     return (
-        <div style={{ overflow: 'hidden', width: listWidth }}>
+        <div style={{ overflow: 'hidden' }}>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable
                     droppableId='droppable'
@@ -114,12 +113,8 @@ export default function List({ draggableElements, listWidth, gap = 12 }: ListPro
                         );
                     }}
                 >
-                    {provided => (
-                        <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            style={{ width: `${listWidth}px`, marginBottom: `-${gap}px` }}
-                        >
+                    {(provided, snapshot) => (
+                        <div {...provided.droppableProps} ref={provided.innerRef} style={{ marginBottom: `-${gap}px` }}>
                             {items.map((item, index) => (
                                 <Draggable key={item.id} draggableId={item.id} index={index}>
                                     {draggableProvided => (

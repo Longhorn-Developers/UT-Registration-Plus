@@ -1,4 +1,3 @@
-import logoImage from '@assets/logo.png';
 import { Status } from '@shared/types/Course';
 import { StatusIcon } from '@shared/util/icons';
 import { tailwindColorways } from '@shared/util/storybook';
@@ -17,6 +16,8 @@ import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
 import SettingsIcon from '~icons/material-symbols/settings';
 
+import { LogoIcon } from './common/LogoIcon';
+
 /**
  * Renders the main popup component.
  * This component displays the main schedule, courses, and options buttons.
@@ -29,7 +30,7 @@ export default function PopupMain(): JSX.Element {
 
     useEffect(() => {
         function handleClickOutside(event) {
-            if (!popupRef.current.contains(event.target) && !toggleRef.current.contains(event.target)) {
+            if (!popupRef.current?.contains(event.target) && !toggleRef.current?.contains(event.target)) {
                 setIsPopupVisible(false);
             }
         }
@@ -57,7 +58,7 @@ export default function PopupMain(): JSX.Element {
     ));
 
     const handleOpenOptions = async () => {
-        const url = chrome.runtime.getURL('/src/pages/options/index.html');
+        const url = chrome.runtime.getURL('/options.html');
         await openTabFromContentScript(url);
     };
 
@@ -65,8 +66,8 @@ export default function PopupMain(): JSX.Element {
         <ExtensionRoot>
             <div className='mx-auto max-w-sm rounded bg-white p-4 shadow-md'>
                 <div className='mb-2 flex items-center justify-between bg-white'>
-                    <div className='flex items-center'>
-                        <img src={logoImage} alt='Logo' className='mr-2 h-10 w-10.4' />
+                    <div className='flex items-center gap-2'>
+                        <LogoIcon />
                         <div>
                             <Text as='div' variant='h1-course' className='color-ut-burntorange'>
                                 UT Registration
@@ -113,7 +114,7 @@ export default function PopupMain(): JSX.Element {
                         {nonActiveSchedules.map(schedule => (
                             <div
                                 key={schedule.name}
-                                className='my-2 cursor-pointer border border-gray-300 rounded-md border-solid bg-white py-4 shadow-sm hover:bg-gray-100'
+                                className='my-2 cursor-pointer border border-gray-300 rounded-md border-solid bg-white p-2 shadow-sm hover:bg-gray-100'
                                 onClick={() => selectSchedule(schedule)}
                             >
                                 <Text as='div' variant='h1-course' className='color-ut-burntorange'>
@@ -132,7 +133,6 @@ export default function PopupMain(): JSX.Element {
                         draggableElements={activeSchedule?.courses.map((course, i) => (
                             <PopupCourseBlock key={course.uniqueId} course={course} colors={tailwindColorways[i]} />
                         ))}
-                        listWidth={350}
                         gap={12}
                     />
                 )}
