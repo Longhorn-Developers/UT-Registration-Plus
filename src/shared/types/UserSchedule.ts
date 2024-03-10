@@ -14,7 +14,7 @@ export class UserSchedule {
         this.courses = schedule.courses.map(c => new Course(c));
         this.name = schedule.name;
         this.hours = 0;
-        for (const course of this.courses && courses.length > 0) {
+        for (const course of this.courses && this.courses.length > 0) {
             this.hours += course.creditHours;
         }
     }
