@@ -1,143 +1,77 @@
-import { Course, Status } from '@shared/types/Course';
-import { CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
-import { CourseSchedule } from '@shared/types/CourseSchedule';
-import Instructor from '@shared/types/Instructor';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import type { Meta, StoryObj } from '@storybook/react';
-import Dropdown from '@views/components/common/Dropdown/Dropdown';
+import List from '@views/components/common/List/List';
+import ScheduleDropdown from '@views/components/common/ScheduleDropdown/ScheduleDropdown';
 import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
+import useSchedules, { switchSchedule } from '@views/hooks/useSchedules';
 import type { Serialized } from 'chrome-extension-toolkit';
 import React from 'react';
 
-const meta: Meta<typeof Dropdown> = {
+import { exampleSchedule } from '../injected/mocked';
+
+const schedules: UserSchedule[] = new Array(10).fill(exampleSchedule).map(
+    (schedule: UserSchedule, index) =>
+        new UserSchedule({
+            ...schedule,
+            name: `Schedule ${index + 1}`,
+        })
+);
+
+UserScheduleStore.set(
+    'schedules',
+    schedules.reduce((acc, schedule) => {
+        acc.push(schedule);
+        return acc;
+    }, [] as Serialized<UserSchedule>[])
+);
+
+UserScheduleStore.set('activeIndex', 0);
+
+const meta: Meta<typeof ScheduleDropdown> = {
     title: 'Components/Common/Dropdown',
-    component: Dropdown,
+    component: ScheduleDropdown,
     parameters: {
         layout: 'centered',
     },
     tags: ['autodocs'],
     argTypes: {
-        dummySchedules: { control: 'object' },
-        dummyActiveIndex: { control: 'number' },
-        scheduleComponents: { control: 'object' },
+        defaultOpen: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        children: {
+            control: {
+                type: 'node',
+            },
+        },
     },
     render: (args: any) => (
         <div className='w-80'>
-            <Dropdown {...args} />
+            <ScheduleDropdown {...args}>
+                <List
+                    draggableElements={schedules.map((schedule, index) => {
+                        const [activeSchedule] = useSchedules();
+                        return (
+                            <ScheduleListItem
+                                active={activeSchedule?.name === schedule.name}
+                                name={schedule.name}
+                                onClick={() => {
+                                    switchSchedule(schedule.name);
+                                }}
+                            />
+                        );
+                    })}
+                    gap={10}
+                />
+            </ScheduleDropdown>
         </div>
     ),
-} satisfies Meta<typeof Dropdown>;
+} satisfies Meta<typeof ScheduleDropdown>;
 export default meta;
 
 type Story = StoryObj<typeof meta>;
-
-const schedules = [
-    new UserSchedule({
-        courses: [
-            new Course({
-                uniqueId: 123,
-                number: '311C',
-                fullName: "311C - Bevo's Default Course",
-                courseName: "Bevo's Default Course",
-                department: 'BVO',
-                creditHours: 3,
-                status: Status.WAITLISTED,
-                instructors: [new Instructor({ firstName: '', lastName: 'Bevo', fullName: 'Bevo' })],
-                isReserved: false,
-                url: '',
-                flags: [],
-                schedule: new CourseSchedule({
-                    meetings: [
-                        new CourseMeeting({
-                            days: [DAY_MAP.M, DAY_MAP.W, DAY_MAP.F],
-                            startTime: 480,
-                            endTime: 570,
-                            location: {
-                                building: 'UTC',
-                                room: '123',
-                            },
-                        }),
-                    ],
-                }),
-                instructionMode: 'In Person',
-                semester: {
-                    year: 2024,
-                    season: 'Fall',
-                },
-            }),
-        ],
-        name: 'Main Schedule',
-        hours: 0,
-    } as Serialized<UserSchedule>),
-    new UserSchedule({
-        courses: [
-            new Course({
-                uniqueId: 123,
-                number: '311C',
-                fullName: "311C - Bevo's Default Course",
-                courseName: "Bevo's Default Course",
-                department: 'BVO',
-                creditHours: 3,
-                status: Status.WAITLISTED,
-                instructors: [new Instructor({ firstName: '', lastName: 'Bevo', fullName: 'Bevo' })],
-                isReserved: false,
-                url: '',
-                flags: [],
-                schedule: new CourseSchedule({
-                    meetings: [
-                        new CourseMeeting({
-                            days: [DAY_MAP.M, DAY_MAP.W, DAY_MAP.F],
-                            startTime: 480,
-                            endTime: 570,
-                            location: {
-                                building: 'UTC',
-                                room: '123',
-                            },
-                        }),
-                    ],
-                }),
-                instructionMode: 'In Person',
-                semester: {
-                    year: 2024,
-                    season: 'Fall',
-                },
-            }),
-            new Course({
-                uniqueId: 123,
-                number: '311C',
-                fullName: "311C - Bevo's Default Course",
-                courseName: "Bevo's Default Course",
-                department: 'BVO',
-                creditHours: 3,
-                status: Status.WAITLISTED,
-                instructors: [new Instructor({ firstName: '', lastName: 'Bevo', fullName: 'Bevo' })],
-                isReserved: false,
-                url: '',
-                flags: [],
-                schedule: new CourseSchedule({
-                    meetings: [
-                        new CourseMeeting({
-                            days: [DAY_MAP.M, DAY_MAP.W, DAY_MAP.F],
-                            startTime: 480,
-                            endTime: 570,
-                            location: {
-                                building: 'UTC',
-                                room: '123',
-                            },
-                        }),
-                    ],
-                }),
-                instructionMode: 'In Person',
-                semester: {
-                    year: 2024,
-                    season: 'Fall',
-                },
-            }),
-        ],
-        name: 'Backup #3',
-        hours: 0,
-    } as Serialized<UserSchedule>),
-];
 
 export const Hidden: Story = {
     parameters: {
@@ -148,10 +82,12 @@ export const Hidden: Story = {
     },
 
     args: {
-        dummySchedules: schedules,
-        dummyActiveIndex: 0,
-        scheduleComponents: schedules.map((schedule, index) => (
-            <ScheduleListItem active={index === 0} name={schedule.name} />
-        )),
+        defaultOpen: false,
+    },
+};
+
+export const Visible: Story = {
+    args: {
+        defaultOpen: true,
     },
 };
