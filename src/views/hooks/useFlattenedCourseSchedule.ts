@@ -57,7 +57,11 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     if (!activeSchedule) {
         return {
             courseCells: [] as CalendarGridCourse[],
-            activeSchedule: new UserSchedule([], 'Something may have went wrong', 0),
+            activeSchedule: new UserSchedule({
+                courses: [],
+                name: 'Something may have went wrong',
+                hours: 0,
+            }),
         } satisfies FlattenedCourseSchedule;
     }
 
@@ -137,13 +141,11 @@ function processAsyncCourses({
 /**
  * Function to process each in-person class into its distinct meeting objects for calendar grid
  */
-function processInPersonMeetings(
-    { days, startTime, endTime, location }: CourseMeeting,
-    { courseDeptAndInstr, status, course }
-) {
+function processInPersonMeetings(meeting: CourseMeeting, { courseDeptAndInstr, status, course }) {
+    const { days, startTime, endTime, location } = meeting;
     const midnightIndex = 1440;
     const normalizingTimeFactor = 720;
-    const time = getTimeString({ separator: '-', capitalize: true }, startTime, endTime);
+    const time = meeting.getTimeString({ separator: '-', capitalize: true });
     const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
     let normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
     let normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
@@ -181,54 +183,3 @@ function sortCourses(a: CalendarGridCourse, b: CalendarGridCourse): number {
     }
     return endIndexA - endIndexB;
 }
-
-/**
- * Utility function also present in CourseMeeting object. Wasn't being found at runtime, so I copied it over.
- */
-function getTimeString(options: TimeStringOptions, startTime: number, endTime: number): string {
-    const startHour = Math.floor(startTime / 60);
-    const startMinute = startTime % 60;
-    const endHour = Math.floor(endTime / 60);
-    const endMinute = endTime % 60;
-
-    let startTimeString = '';
-    let endTimeString = '';
-
-    if (startHour === 0) {
-        startTimeString = '12';
-    } else if (startHour > 12) {
-        startTimeString = `${startHour - 12}`;
-    } else {
-        startTimeString = `${startHour}`;
-    }
-
-    startTimeString += startMinute === 0 ? ':00' : `:${startMinute}`;
-    startTimeString += startHour >= 12 ? 'pm' : 'am';
-
-    if (endHour === 0) {
-        endTimeString = '12';
-    } else if (endHour > 12) {
-        endTimeString = `${endHour - 12}`;
-    } else {
-        endTimeString = `${endHour}`;
-    }
-    endTimeString += endMinute === 0 ? ':00' : `:${endMinute}`;
-    endTimeString += endHour >= 12 ? 'pm' : 'am';
-
-    if (options.capitalize) {
-        startTimeString = startTimeString.toUpperCase();
-        endTimeString = endTimeString.toUpperCase();
-    }
-
-    return `${startTimeString} ${options.separator} ${endTimeString}`;
-}
-
-/**
- * Options to control the format of the time string
- */
-type TimeStringOptions = {
-    /** the separator between the start and end times */
-    separator: string;
-    /** capitalizes the AM/PM */
-    capitalize?: boolean;
-};

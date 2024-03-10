@@ -10,22 +10,12 @@ export class UserSchedule {
     name: string;
     hours: number;
 
-    constructor(schedule: Serialized<UserSchedule>);
-    constructor(courses: Course[], name: string, hours: number);
-    constructor(coursesOrSchedule: Course[] | Serialized<UserSchedule>, name?: string, hours?: number) {
-        if (Array.isArray(coursesOrSchedule)) {
-            this.courses = coursesOrSchedule;
-            this.name = name || '';
-            this.hours = hours || 0;
-        } else {
-            this.courses = coursesOrSchedule?.courses.map(c => new Course(c)) || [];
-            this.name = coursesOrSchedule?.name || 'new schedule';
-            this.hours = 0;
-            if (this.courses && this.courses.length > 0) {
-                for (const course of this.courses) {
-                    this.hours += course.creditHours;
-                }
-            }
+    constructor(schedule: Serialized<UserSchedule>) {
+        this.courses = schedule.courses.map(c => new Course(c));
+        this.name = schedule.name;
+        this.hours = 0;
+        for (const course of this.courses) {
+            this.hours += course.creditHours;
         }
     }
 
