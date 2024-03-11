@@ -33,7 +33,7 @@ interface HeadingAndActionProps {
  * Opens the calendar in a new tab.
  * @returns {Promise<void>} A promise that resolves when the tab is opened.
  */
-export const handleOpenCalendar = async (): Promise<void> => {
+export const handleOpenCalendar = async ({ uniqueId, course }: { uniqueId: number; course: Course }): Promise<void> => {
     const url = chrome.runtime.getURL('calendar.html');
     openNewTab({ url });
 };
