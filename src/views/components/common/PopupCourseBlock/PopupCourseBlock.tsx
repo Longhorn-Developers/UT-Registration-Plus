@@ -19,6 +19,7 @@ export interface PopupCourseBlockProps {
     course: Course;
     colors: CourseColors;
     dragHandleProps?: any;
+    onCourseClick: () => void; // What to do when block is clicked
 }
 
 /**
@@ -31,11 +32,14 @@ export default function PopupCourseBlock({
     course,
     colors,
     dragHandleProps,
+    onCourseClick,
 }: PopupCourseBlockProps): JSX.Element {
     // whiteText based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
 
-    const openCalendarAndInject = () => {};
+    const handleClick = () => {
+        onCourseClick();
+    };
 
     return (
         <div
@@ -67,6 +71,7 @@ export default function PopupCourseBlock({
                     <StatusIcon status={course.status} className='h-5 w-5' />
                 </div>
             )}
+            onClick={handleClick} // Attach click handler
         </div>
     );
 }
