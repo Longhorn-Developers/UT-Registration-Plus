@@ -6,6 +6,8 @@ import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
+import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
+import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
@@ -32,6 +34,8 @@ export default function PopupCourseBlock({
 }: PopupCourseBlockProps): JSX.Element {
     // whiteText based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
+
+    const openCalendarAndInject = () => {};
 
     return (
         <div
