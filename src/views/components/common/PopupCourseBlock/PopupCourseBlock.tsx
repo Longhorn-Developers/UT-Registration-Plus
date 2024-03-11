@@ -47,6 +47,7 @@ export default function PopupCourseBlock({
                 backgroundColor: colors.primaryColor,
             }}
             className={clsx('h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3', className)}
+            onClick={handleClick}
         >
             <div
                 style={{
@@ -71,7 +72,6 @@ export default function PopupCourseBlock({
                     <StatusIcon status={course.status} className='h-5 w-5' />
                 </div>
             )}
-            onClick={handleClick} // Attach click handler
         </div>
     );
 }
