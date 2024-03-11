@@ -26,12 +26,10 @@ export default function CalendarGrid({
     saturdayClass,
     setCourse,
 }: React.PropsWithChildren<Props>): JSX.Element {
-    //  const [grid, setGrid] = useState([]);
-    // const calendarRef = useRef(null); // Create a ref for the calendar grid
     const [grid, setGrid] = useState([]);
 
     useEffect(() => {
-        const newGrid = []; // Use a new local variable to construct the grid
+        const newGrid = [];
         for (let i = 0; i < 13; i++) {
             const row = [];
             let hour = hoursOfDay[i];
@@ -67,9 +65,7 @@ export default function CalendarGrid({
                     {day}
                 </div>
             ))}
-            {grid.map((row, rowIndex) => (
-                <React.Fragment key={rowIndex}>{row}</React.Fragment>
-            ))}
+            {grid.map(row => row)}
             {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} /> : null}
         </div>
     );
