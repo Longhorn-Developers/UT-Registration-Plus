@@ -8,6 +8,7 @@ import { Chip, flagMap } from '@views/components/common/Chip/Chip';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
+import { exampleCourse } from 'src/stories/injected/mocked';
 
 import Add from '~icons/material-symbols/add';
 import CalendarMonth from '~icons/material-symbols/calendar-month';
@@ -30,11 +31,23 @@ interface HeadingAndActionProps {
 }
 
 /**
- * Opens the calendar in a new tab.
+ * Opens the calendar in a new tab with parameters if needed for opening of injected popup
+ * @param uniqueId - The unique ID of the course
+ * @param course - Course to pass into the injected popup
  * @returns {Promise<void>} A promise that resolves when the tab is opened.
  */
 export const handleOpenCalendar = async ({ uniqueId, course }: { uniqueId: number; course: Course }): Promise<void> => {
-    const url = chrome.runtime.getURL(`calendar.html?uniqueId=${uniqueId}&course=${course}`);
+    if (uniqueId == null || course == null) {
+        // Handle null or undefined parameters with a placeholder for now
+        console.error('Parameters are null or undefined');
+        uniqueId = exampleCourse.uniqueId;
+        course = exampleCourse;
+    }
+    console.log('Parameter 1:', uniqueId);
+    console.log('Parameter 2:', course);
+    // const url = chrome.runtime.getURL(`calendar.html?uniqueId=${uniqueId}&course=${course}`);
+    // I just realized... can we make course a param? Isn't it an entire class?
+    const url = chrome.runtime.getURL(`calendar.html?uniqueId=${uniqueId}`);
     openNewTab({ url });
 };
 

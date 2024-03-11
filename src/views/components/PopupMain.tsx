@@ -140,7 +140,7 @@ export default function PopupMain(): JSX.Element {
                                 key={course.uniqueId}
                                 course={course}
                                 colors={tailwindColorways[i]}
-                                onCourseClick={handleOpenCalendar}
+                                onCourseClick={() => handleOpenCalendar({ uniqueId: course.uniqueId, course: course })}
                             />
                         ))}
                         gap={12}
