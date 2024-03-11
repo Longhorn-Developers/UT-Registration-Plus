@@ -28,7 +28,7 @@ const handleOpenOptions = async (): Promise<void> => {
  */
 export default function CalendarHeader(): JSX.Element {
     return (
-        <div className='min-h-79px min-w-672px w-full flex px-0 py-15'>
+        <div className='min-h-79px min-w-672px w-full flex px-0 py-5'>
             <div className='flex flex-row gap-20'>
                 <div className='flex gap-10'>
                     <div className='flex gap-1'>
