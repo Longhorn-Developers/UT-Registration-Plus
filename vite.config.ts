@@ -155,10 +155,6 @@ export default defineConfig({
                 target: 'http://localhost:5173',
                 rewrite: path => path.replace('calendar', 'src/pages/calendar/index'),
             },
-            '/options.html': {
-                target: 'http://localhost:5173',
-                rewrite: path => path.replace('options', 'src/pages/options/index'),
-            },
         },
     },
     build: {
@@ -166,7 +162,6 @@ export default defineConfig({
             input: {
                 debug: 'src/pages/debug/index.html',
                 calendar: 'src/pages/calendar/index.html',
-                options: 'src/pages/options/index.html',
             },
             // output: {
             //     entryFileNames: `[name].js`, // otherwise it will add the hash
