@@ -38,7 +38,7 @@ export default function PopupCourseBlock({
     const fontColor = pickFontColor(colors.primaryColor);
 
     const handleClick = () => {
-        onCourseClick();
+        onCourseClick?.();
     };
 
     return (
