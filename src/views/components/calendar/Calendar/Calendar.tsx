@@ -4,11 +4,13 @@ import CalendarGrid from '@views/components/calendar/CalendarGrid/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalenderHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules/CalendarSchedules';
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
+import TeamLinks from '@views/components/calendar/TeamLinks';
 import Divider from '@views/components/common/Divider/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import React, { useEffect, useRef, useState } from 'react';
 
+import styles from './Calendar.module.scss';
 /**
  * A reusable chip component that follows the design system of the extension.
  * @returns
@@ -57,14 +59,18 @@ export default function Calendar(): JSX.Element {
             <div className='pl-5'>
                 <CalendarHeader />
             </div>
-            <div className='flex flex-grow flex-row overflow-hidden pl-4'>
+            <div className={`flex flex-grow flex-row overflow-hidden pl-4 ${styles.scrollableSchedules}`}>
                 <div className='sidebar-style' style={{ width: sidebarWidth, padding: '10px 15px 5px 5px' }}>
-                    <div className='mb-4'>
+                    <div className={`mb-4 ${styles.scrollableLimit}`}>
                         <CalendarSchedules />
                     </div>
                     <Divider orientation='horizontal' size='100%' />
                     <div className='mt-4'>
                         <ImportantLinks />
+                    </div>
+                    <Divider orientation='horizontal' size='100%' />
+                    <div className='mt-4'>
+                        <TeamLinks />
                     </div>
                 </div>
                 <div className='flex flex-grow flex-col' style={calendarContainerStyle} ref={calendarRef}>
