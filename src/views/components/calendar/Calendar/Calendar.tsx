@@ -7,7 +7,7 @@ import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import Divider from '@views/components/common/Divider/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
-import React, { useEffect,useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * A reusable chip component that follows the design system of the extension.
