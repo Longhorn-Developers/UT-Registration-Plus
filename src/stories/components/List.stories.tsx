@@ -71,7 +71,9 @@ const generateCourses = (count: number): Course[] => {
 
 const exampleCourses = generateCourses(numberOfCourses);
 const generateCourseBlocks = (exampleCourses: Course[], colors: CourseColors[]) =>
-    exampleCourses.map((course, i) => <PopupCourseBlock key={course.uniqueId} course={course} colors={colors[i]} />);
+    exampleCourses.map((course, i) => (
+        <PopupCourseBlock key={course.uniqueId} course={course} colors={colors[i]} onCourseClick={() => {}} />
+    ));
 const ExampleCourseBlocks = generateCourseBlocks(exampleCourses, tailwindColorways);
 
 const meta = {

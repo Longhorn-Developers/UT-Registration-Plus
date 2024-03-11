@@ -45,6 +45,7 @@ export default function PopupCourseBlock({
         <div
             style={{
                 backgroundColor: colors.primaryColor,
+                cursor: 'pointer',
             }}
             className={clsx('h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3', className)}
             onClick={handleClick}

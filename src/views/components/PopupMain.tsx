@@ -54,7 +54,12 @@ export default function PopupMain(): JSX.Element {
     const nonActiveSchedules = schedules.filter(s => s.name !== activeSchedule.name);
 
     const draggableElements = activeSchedule?.courses.map((course, i) => (
-        <PopupCourseBlock key={course.uniqueId} course={course} colors={tailwindColorways[i]} />
+        <PopupCourseBlock
+            key={course.uniqueId}
+            course={course}
+            colors={tailwindColorways[i]}
+            onCourseClick={handleOpenCalendar}
+        />
     ));
 
     const handleOpenOptions = async () => {
