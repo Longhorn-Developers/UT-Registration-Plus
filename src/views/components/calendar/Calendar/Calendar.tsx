@@ -7,7 +7,7 @@ import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import Divider from '@views/components/common/Divider/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect,useRef, useState } from 'react';
 
 /**
  * A reusable chip component that follows the design system of the extension.
@@ -40,7 +40,7 @@ export default function Calendar(): JSX.Element {
             setSidebarWidth(newSidebarWidth);
         };
 
-        adjustLayout(); // Ensure this call is made after attaching the event listener to capture initial sizing correctly.
+        adjustLayout();
 
         window.addEventListener('resize', adjustLayout);
         return () => window.removeEventListener('resize', adjustLayout);
@@ -53,21 +53,21 @@ export default function Calendar(): JSX.Element {
     };
 
     return (
-        <div className='flex flex-col h-screen' style={{ width: 'calc(100% - 1rem)' }}>
+        <div className='h-screen flex flex-col' style={{ width: 'calc(100% - 1rem)' }}>
             <div className='pl-5'>
                 <CalendarHeader />
             </div>
-            <div className='flex flex-row flex-grow overflow-hidden pl-4'>
+            <div className='flex flex-grow flex-row overflow-hidden pl-4'>
                 <div className='sidebar-style' style={{ width: sidebarWidth, padding: '10px 15px 5px 5px' }}>
                     <div className='mb-4'>
                         <CalendarSchedules />
                     </div>
-                    <Divider orientation={'horizontal'} size={'100%'} />
+                    <Divider orientation='horizontal' size='100%' />
                     <div className='mt-4'>
                         <ImportantLinks />
                     </div>
                 </div>
-                <div className='flex-grow flex flex-col' style={calendarContainerStyle} ref={calendarRef}>
+                <div className='flex flex-grow flex-col' style={calendarContainerStyle} ref={calendarRef}>
                     <div className='flex-grow overflow-auto'>
                         <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                     </div>
