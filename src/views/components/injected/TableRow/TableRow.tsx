@@ -87,14 +87,14 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     return ReactDOM.createPortal(
         <div className='relative'>
             <button
-                className='bg-ut-burntorange w-6 h-6 items-center justify-center color-white! flex m1 rounded'
+                className='m1 h-6 w-6 flex items-center justify-center rounded bg-ut-burntorange color-white!'
                 onClick={onClick}
             >
                 <RowIcon color='ut-white' />
             </button>
             {conflicts.length > 0 && (
                 <ConflictsWithWarning
-                    className='group-hover:visible invisible text-white absolute left-13 top--3'
+                    className='invisible absolute left-13 top--3 text-white group-hover:visible'
                     conflicts={conflicts}
                 />
             )}

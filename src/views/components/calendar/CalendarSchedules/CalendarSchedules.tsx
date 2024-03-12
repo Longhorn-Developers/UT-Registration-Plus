@@ -1,10 +1,10 @@
+import { background } from '@shared/messages';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import List from '@views/components/common/List/List';
 import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
 import React, { useEffect, useState } from 'react';
-import { background } from 'src/shared/messages';
 
 import AddSchedule from '~icons/material-symbols/add';
 

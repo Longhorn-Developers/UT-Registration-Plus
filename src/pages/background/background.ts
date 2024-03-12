@@ -1,4 +1,6 @@
 import type { BACKGROUND_MESSAGES } from '@shared/messages';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import updateBadgeText from '@shared/util/updateBadgeText';
 import { MessageListener } from 'chrome-extension-toolkit';
 
 import onInstall from './events/onInstall';
@@ -8,8 +10,6 @@ import browserActionHandler from './handler/browserActionHandler';
 import CESHandler from './handler/CESHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
 import userScheduleHandler from './handler/userScheduleHandler';
-import { UserScheduleStore } from 'src/shared/storage/UserScheduleStore';
-import updateBadgeText from 'src/shared/util/updateBadgeText';
 
 onServiceWorkerAlive();
 

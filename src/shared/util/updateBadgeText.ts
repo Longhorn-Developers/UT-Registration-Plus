@@ -13,7 +13,14 @@ export const BADGE_LIMIT = 10;
  * @param value - The value to be displayed in the badge.
  */
 export default function updateBadgeText(value: number): void {
-    let badgeText = value > 0 ? (value > BADGE_LIMIT ? `${BADGE_LIMIT}+` : `${value}`) : '';
+    let badgeText = '';
+    if (value > 0) {
+        if (value > BADGE_LIMIT) {
+            badgeText = `${BADGE_LIMIT}+`;
+        } else {
+            badgeText = `${value}`;
+        }
+    }
     chrome.action.setBadgeText({ text: badgeText });
     flashBadgeColor();
 }
