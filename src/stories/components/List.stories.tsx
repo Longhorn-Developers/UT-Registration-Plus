@@ -25,6 +25,7 @@ const generateCourses = (count: number): Course[] => {
             courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',
             creditHours: 3,
             department: 'C S',
+            scrapedAt: Date.now(),
             description: [
                 'Problem solving and fundamental algorithms for various applications in science, business, and on the World Wide Web, and introductory programming in a modern object-oriented programming language.',
                 'Only one of the following may be counted: Computer Science 303E, 312, 312H. Credit for Computer Science 303E may not be earned after a student has received credit for Computer Science 314, or 314H. May not be counted toward a degree in computer science.',

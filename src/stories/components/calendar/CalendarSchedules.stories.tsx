@@ -61,6 +61,7 @@ const schedules = [
                     year: 2024,
                     season: 'Fall',
                 },
+                scrapedAt: Date.now(),
             }),
         ],
         name: 'Main Schedule',
@@ -98,6 +99,7 @@ const schedules = [
                     year: 2024,
                     season: 'Spring',
                 },
+                scrapedAt: Date.now(),
             }),
             new Course({
                 uniqueId: 123,
@@ -129,6 +131,7 @@ const schedules = [
                     year: 2024,
                     season: 'Fall',
                 },
+                scrapedAt: Date.now(),
             }),
         ],
         name: 'Backup #3',

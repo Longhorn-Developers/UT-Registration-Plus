@@ -55,6 +55,7 @@ export const Default: Story = {
                 year: 2024,
                 season: 'Spring',
             },
+            scrapedAt: Date.now(),
         }),
         meetingIdx: 0,
         color: 'red',
