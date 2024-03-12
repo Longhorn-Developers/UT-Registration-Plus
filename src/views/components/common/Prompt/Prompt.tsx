@@ -1,4 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
+import type { ReactElement } from 'react';
 import React from 'react';
 
 import type { Button } from '../Button/Button';
@@ -10,9 +11,9 @@ import type Text from '../Text/Text';
 export interface PromptDialogProps {
     isOpen: boolean;
     onClose: () => void;
-    title: React.ReactElement<typeof Text>;
-    content: React.ReactElement<typeof Text>;
-    children?: React.ReactElement<typeof Button>[];
+    title: ReactElement<typeof Text>;
+    content: ReactElement<typeof Text>;
+    children?: ReactElement<typeof Button>[];
 }
 
 /**
