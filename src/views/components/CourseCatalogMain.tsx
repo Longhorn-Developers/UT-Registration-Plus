@@ -5,7 +5,7 @@ import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalog
 import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from '@views/components/injected/TableHead';
 import TableRow from '@views/components/injected/TableRow/TableRow';
-import TableSubheading from '@views/components/injected/TableSubheading/TableSubheading';
+// import TableSubheading from '@views/components/injected/TableSubheading/TableSubheading';
 import { useKeyPress } from '@views/hooks/useKeyPress';
 import useSchedules from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
@@ -63,21 +63,18 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
         <ExtensionRoot>
             <RecruitmentBanner />
             <TableHead>Plus</TableHead>
-            {rows.map((row, i) => {
-                if (!row.course) {
-                    // TODO: handle the course section headers
-                    return <TableSubheading key={row.element.innerText + i.toString()} row={row} />;
-                }
-                return (
-                    <TableRow
-                        key={row.course.uniqueId}
-                        row={row}
-                        isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
-                        activeSchedule={activeSchedule}
-                        onClick={handleRowButtonClick(row.course)}
-                    />
-                );
-            })}
+            {rows.map(
+                row =>
+                    row.course && (
+                        <TableRow
+                            key={row.course.uniqueId}
+                            row={row}
+                            isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
+                            activeSchedule={activeSchedule}
+                            onClick={handleRowButtonClick(row.course)}
+                        />
+                    )
+            )}
             {selectedCourse && (
                 <CourseCatalogInjectedPopup
                     course={selectedCourse}

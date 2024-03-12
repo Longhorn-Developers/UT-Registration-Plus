@@ -72,16 +72,17 @@
 }
 
 .inActiveSchedule {
-    * {
+    > *:not(td:last-child) {
         color: colors.$turtle_pond !important;
         font-weight: bold !important;
     }
 }
 
-.isConflict {
-    * {
-        color: colors.$speedway_brick !important;
-        font-weight: normal !important;
-        text-decoration: line-through !important;
+// for the edge case where they have conflicting classes in their schedule
+.isConflict:not(.inActiveSchedule) {
+    > *:not(td:last-child) {
+        color: colors.$speedway_brick;
+        font-weight: normal;
+        text-decoration: line-through;
     }
 }

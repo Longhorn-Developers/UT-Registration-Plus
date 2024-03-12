@@ -1,11 +1,10 @@
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import { Button } from '@views/components/common/Button/Button';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-import AddIcon from '~icons/material-symbols/add-circle';
+import RowIcon from '~icons/material-symbols/bar-chart-rounded';
 
 import styles from './TableRow.module.scss';
 
@@ -30,8 +29,9 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     useEffect(() => {
         element.classList.add(styles.row);
+        element.classList.add('group');
         const portalContainer = document.createElement('td');
-        portalContainer.style.textAlign = 'right';
+        // portalContainer.style.textAlign = 'right';
         const lastTableCell = element.querySelector('td:last-child');
         lastTableCell!.after(portalContainer);
         setContainer(portalContainer);
@@ -85,16 +85,20 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     }
 
     return ReactDOM.createPortal(
-        <>
-            <Button
-                icon={AddIcon}
-                className={styles.rowButton}
-                color='ut-burntorange'
+        <div className='relative'>
+            <button
+                className='bg-ut-burntorange w-6 h-6 items-center justify-center color-white! flex m1 rounded'
                 onClick={onClick}
-                variant='single'
-            />
-            {conflicts.length > 0 && <ConflictsWithWarning className={styles.conflictTooltip} conflicts={conflicts} />}
-        </>,
+            >
+                <RowIcon color='ut-white' />
+            </button>
+            {conflicts.length > 0 && (
+                <ConflictsWithWarning
+                    className='group-hover:visible invisible text-white absolute left-13 top--3'
+                    conflicts={conflicts}
+                />
+            )}
+        </div>,
         container
     );
 }
