@@ -8,6 +8,8 @@ import browserActionHandler from './handler/browserActionHandler';
 import CESHandler from './handler/CESHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
 import userScheduleHandler from './handler/userScheduleHandler';
+import { UserScheduleStore } from 'src/shared/storage/UserScheduleStore';
+import updateBadgeText from 'src/shared/util/updateBadgeText';
 
 onServiceWorkerAlive();
 
@@ -37,3 +39,19 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
 });
 
 messageListener.listen();
+
+UserScheduleStore.listen('schedules', async schedules => {
+    const index = await UserScheduleStore.get('activeIndex');
+    const numCourses = schedules[index]?.courses?.length;
+    if (!numCourses) return;
+
+    updateBadgeText(numCourses);
+});
+
+UserScheduleStore.listen('activeIndex', async ({ newValue }) => {
+    const schedules = await UserScheduleStore.get('schedules');
+    const numCourses = schedules[newValue]?.courses?.length;
+    if (!numCourses) return;
+
+    updateBadgeText(numCourses);
+});
