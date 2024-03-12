@@ -1,5 +1,4 @@
-import createSchedule from '@pages/background/lib/createSchedule';
-import switchSchedule from '@pages/background/lib/switchSchedule';
+import { background } from '@shared/messages';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import List from '@views/components/common/List/List';
 import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
@@ -38,8 +37,9 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
 
     const handleKeyDown = event => {
         if (event.code === 'Enter') {
-            createSchedule(newSchedule);
-            setNewSchedule('');
+            background.createSchedule({ scheduleName: newSchedule }).then(() => {
+                setNewSchedule('');
+            });
         }
     };
 
@@ -48,8 +48,9 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
     };
 
     const selectItem = (index: number) => {
-        setActiveScheduleIndex(index);
-        switchSchedule(schedules[index].name);
+        background.switchSchedule({ scheduleName: schedules[index].name }).then(() => {
+            setActiveScheduleIndex(index);
+        });
     };
 
     const scheduleComponents = schedules.map((schedule, index) => (
