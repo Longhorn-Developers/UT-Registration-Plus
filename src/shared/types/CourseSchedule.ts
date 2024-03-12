@@ -10,14 +10,12 @@ export class CourseSchedule {
     meetings: CourseMeeting[] = [];
 
     constructor(courseSchedule?: Serialized<CourseSchedule>) {
-        if (!courseSchedule) {
+        if (!courseSchedule || courseSchedule.meetings === undefined) {
+            this.meetings = [];
             return;
         }
-        Object.assign(this, courseSchedule);
-        this.meetings = [];
-        for (let meeting of courseSchedule.meetings) {
-            this.meetings.push(new CourseMeeting(meeting));
-        }
+
+        this.meetings = courseSchedule.meetings.map(meeting => new CourseMeeting(meeting));
     }
 
     /**
