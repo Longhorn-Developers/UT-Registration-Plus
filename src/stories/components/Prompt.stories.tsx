@@ -5,7 +5,7 @@ import PromptDialog from '@views/components/common/Prompt/Prompt';
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
 
-const meta: Meta<typeof PromptDialog> = {
+const meta = {
     title: 'Components/Common/Prompt',
     component: PromptDialog,
     parameters: {
@@ -18,7 +18,7 @@ const meta: Meta<typeof PromptDialog> = {
         content: { control: 'object' },
         children: { control: 'object' },
     },
-};
+} satisfies Meta<typeof PromptDialog>;
 export default meta;
 
 const PromptDialogWithButton = ({ children, ...args }: PromptDialogProps) => {
