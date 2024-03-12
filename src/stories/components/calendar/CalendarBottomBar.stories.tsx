@@ -25,6 +25,7 @@ const exampleGovCourse: Course = new Course({
     schedule: {
         meetings: [],
     },
+    scrapedAt: Date.now(),
     semester: {
         code: '12345',
         season: 'Spring',
@@ -43,6 +44,7 @@ const examplePsyCourse: Course = new Course({
     flags: ['no flag for you >:)'],
     fullName: 'PSY 317L Yada yada',
     instructionMode: 'Online',
+    scrapedAt: Date.now(),
     instructors: [
         new Instructor({
             firstName: 'Bevo',
