@@ -36,9 +36,7 @@ export default defineConfig({
         presetWebFonts({
             provider: 'none',
             fonts: {
-                sans: {
-                    name: 'Roboto Flex',
-                },
+                sans: ['Roboto Flex', 'Roboto Flex Local'],
             },
         }),
     ],
