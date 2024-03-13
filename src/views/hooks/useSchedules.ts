@@ -40,12 +40,10 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
     useEffect(() => {
         const l1 = UserScheduleStore.listen('schedules', ({ newValue }) => {
             setSchedules(newValue.map(s => new UserSchedule(s)));
-            setActiveSchedule(new UserSchedule(newValue[activeIndex]));
         });
 
         const l2 = UserScheduleStore.listen('activeIndex', ({ newValue }) => {
             setActiveIndex(newValue);
-            setActiveSchedule(new UserSchedule(schedules[newValue]));
         });
 
         return () => {
