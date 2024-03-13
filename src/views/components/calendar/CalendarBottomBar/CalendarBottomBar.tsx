@@ -27,33 +27,34 @@ export default function CalendarBottomBar({ courses, calendarRef }: CalendarBott
     const displayCourses = courses && courses.length > 0;
 
     return (
-        <div className='w-full flex py-1.25'>
+        <div className='w-full flex py-1.25 pl-7.5 pr-6.25'>
             <div
-                className={`flex flex-grow items-center gap-3.75 ${displayCourses ? '' : 'py-7'} pl-7.5 pr-2.5 text-nowrap`}
+                className={clsx('flex flex-grow items-center gap-3.75 text-nowrap', {
+                    'py-7': !displayCourses,
+                })}
             >
-                {displayCourses ? (
+                {displayCourses && (
                     <>
-                        <Text variant='h4'>Async. and Other:</Text>
-                        <div className='h-14 inline-flex gap-2.5'>
+                        <Text variant='h4'>Other Classes:</Text>
+                        <div className='inline-flex gap-2.5'>
                             {courses.map(({ courseDeptAndInstr, status, colors, className }) => (
                                 <CalendarCourseBlock
                                     courseDeptAndInstr={courseDeptAndInstr}
                                     status={status}
                                     colors={colors}
                                     key={courseDeptAndInstr}
-                                    className={clsx(className, 'w-35!')}
+                                    className={clsx(className, 'w-35! h-15!')}
                                 />
                             ))}
                         </div>
                     </>
-                ) : null}
+                )}
             </div>
-            <div className='flex items-center pl-2.5 pr-7.5'>
-                {displayCourses ? <Divider orientation='vertical' size='1rem' className='mx-1.25' /> : null}
+            <div className='flex items-center'>
+                {displayCourses && <Divider orientation='vertical' size='1rem' className='mx-1.25' />}
                 <Button variant='single' color='ut-black' icon={CalendarMonthIcon} onClick={saveAsCal}>
                     Save as .CAL
                 </Button>
-                <Divider orientation='vertical' size='1rem' className='mx-1.25' />
                 <Button variant='single' color='ut-black' icon={ImageIcon} onClick={() => saveCalAsPng(calendarRef)}>
                     Save as .PNG
                 </Button>
