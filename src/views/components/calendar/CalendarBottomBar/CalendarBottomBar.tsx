@@ -24,11 +24,7 @@ type CalendarBottomBarProps = {
  * @returns {JSX.Element} The rendered bottom bar component.
  */
 export default function CalendarBottomBar({ courses, calendarRef }: CalendarBottomBarProps): JSX.Element {
-    const [displayCourses, setDisplayCourses] = React.useState(false);
-
-    useEffect(() => {
-        setDisplayCourses(courses && courses.length > 0);
-    }, [courses]);
+    const displayCourses = courses && courses.length > 0;
 
     return (
         <div className='w-full flex py-1.25'>
