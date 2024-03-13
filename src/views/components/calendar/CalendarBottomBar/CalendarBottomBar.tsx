@@ -51,7 +51,7 @@ export default function CalendarBottomBar({ courses, calendarRef }: CalendarBott
                 )}
             </div>
             <div className='flex items-center'>
-                <Divider orientation='vertical' size='1rem' className='mx-1.25' />
+                {displayCourses && <Divider orientation='vertical' size='1rem' className='mx-1.25' />}
                 <Button variant='single' color='ut-black' icon={CalendarMonthIcon} onClick={saveAsCal}>
                     Save as .CAL
                 </Button>
