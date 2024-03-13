@@ -1,11 +1,11 @@
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { tailwindColorways } from '@shared/util/storybook';
 import Divider from '@views/components/common/Divider/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List/List';
-import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import Text from '@views/components/common/Text/Text';
 import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
-import useSchedules, { switchSchedule } from '@views/hooks/useSchedules';
+import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import clsx from 'clsx';
 import React, { useState } from 'react';
@@ -16,6 +16,7 @@ import SettingsIcon from '~icons/material-symbols/settings';
 
 import CourseStatus from './common/CourseStatus/CourseStatus';
 import { LogoIcon } from './common/LogoIcon';
+import PopupCourseBlock from './common/PopupCourseBlock/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown/ScheduleDropdown';
 import ScheduleListItem from './common/ScheduleListItem/ScheduleListItem';
 
@@ -61,27 +62,53 @@ export default function PopupMain(): JSX.Element {
                 <div className='px-5 pb-2.5 pt-3.75'>
                     <ScheduleDropdown>
                         <List
-                            draggableElements={schedules.map((schedule, index) => (
+                            draggables={schedules}
+                            equalityCheck={(a, b) => a.name === b.name}
+                            onReordered={reordered => {
+                                const activeSchedule = getActiveSchedule();
+                                const activeIndex = reordered.findIndex(s => s.name === activeSchedule.name);
+
+                                // don't care about the promise
+                                UserScheduleStore.set('schedules', reordered);
+                                UserScheduleStore.set('activeIndex', activeIndex);
+                            }}
+                            gap={10}
+                        >
+                            {(schedule, handleProps) => (
                                 <ScheduleListItem
-                                    active={false}
                                     name={schedule.name}
                                     onClick={() => {
                                         switchSchedule(schedule.name);
                                     }}
+                                    dragHandleProps={handleProps}
                                 />
-                            ))}
-                            gap={10}
-                        />
+                            )}
+                        </List>
                     </ScheduleDropdown>
                 </div>
                 <div className='flex-1 self-stretch overflow-y-auto px-5'>
                     {activeSchedule?.courses?.length > 0 && (
                         <List
-                            draggableElements={activeSchedule?.courses.map((course, i) => (
-                                <PopupCourseBlock key={course.uniqueId} course={course} colors={tailwindColorways[i]} />
-                            ))}
+                            draggables={activeSchedule.courses.map((course, i) => ({
+                                course,
+                                colors: tailwindColorways[i],
+                            }))}
+                            onReordered={reordered => {
+                                activeSchedule.courses = reordered.map(c => c.course);
+                                replaceSchedule(getActiveSchedule(), activeSchedule);
+                            }}
+                            equalityCheck={(a, b) => a.course.uniqueId === b.course.uniqueId}
                             gap={10}
-                        />
+                        >
+                            {({ course, colors }, handleProps) => (
+                                <PopupCourseBlock
+                                    key={course.uniqueId}
+                                    course={course}
+                                    colors={colors}
+                                    dragHandleProps={handleProps}
+                                />
+                            )}
+                        </List>
                     )}
                 </div>
 

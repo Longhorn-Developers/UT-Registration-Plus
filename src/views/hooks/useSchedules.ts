@@ -39,10 +39,12 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
 
     useEffect(() => {
         const l1 = UserScheduleStore.listen('schedules', ({ newValue }) => {
-            setSchedules(newValue.map(s => new UserSchedule(s)));
+            schedulesCache = newValue.map(s => new UserSchedule(s));
+            setSchedules(schedulesCache);
         });
 
         const l2 = UserScheduleStore.listen('activeIndex', ({ newValue }) => {
+            activeIndexCache = newValue;
             setActiveIndex(newValue);
         });
 
@@ -55,9 +57,21 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
     // recompute active schedule on a schedule/index change
     useEffect(() => {
         setActiveSchedule(schedules[activeIndex]);
-    });
+    }, [activeIndex, schedules]);
 
     return [activeSchedule, schedules];
+}
+
+export function getActiveSchedule(): UserSchedule | null {
+    return schedulesCache[activeIndexCache] || null;
+}
+
+export async function replaceSchedule(oldSchedule: UserSchedule, newSchedule: UserSchedule) {
+    const schedules = await UserScheduleStore.get('schedules');
+    const oldIndex = schedules.findIndex(s => s.name === oldSchedule.name);
+    schedules[oldIndex] = newSchedule;
+    await UserScheduleStore.set('schedules', schedules);
+    console.log('schedule replaced');
 }
 
 /**

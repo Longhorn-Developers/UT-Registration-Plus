@@ -4,9 +4,9 @@ import type { Meta, StoryObj } from '@storybook/react';
 import List from '@views/components/common/List/List';
 import ScheduleDropdown from '@views/components/common/ScheduleDropdown/ScheduleDropdown';
 import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
-import useSchedules, { switchSchedule } from '@views/hooks/useSchedules';
+import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import type { Serialized } from 'chrome-extension-toolkit';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { exampleSchedule } from '../injected/mocked';
 
@@ -47,27 +47,45 @@ const meta: Meta<typeof ScheduleDropdown> = {
             },
         },
     },
-    render: (args: any) => (
-        <div className='w-80'>
-            <ScheduleDropdown {...args}>
-                <List
-                    draggableElements={schedules.map((schedule, index) => {
-                        const [activeSchedule] = useSchedules();
-                        return (
+    render: (args: any) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [activeSchedule, schedules] = useSchedules();
+
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+            console.log(activeSchedule);
+        }, [activeSchedule]);
+
+        return (
+            <div className='w-80'>
+                <ScheduleDropdown {...args}>
+                    <List
+                        draggables={schedules}
+                        equalityCheck={(a, b) => a.name === b.name}
+                        onReordered={reordered => {
+                            const activeSchedule = getActiveSchedule();
+                            const activeIndex = reordered.findIndex(s => s.name === activeSchedule.name);
+
+                            // don't care about the promise
+                            UserScheduleStore.set('schedules', reordered);
+                            UserScheduleStore.set('activeIndex', activeIndex);
+                        }}
+                        gap={10}
+                    >
+                        {(schedule, handleProps) => (
                             <ScheduleListItem
-                                active={activeSchedule?.name === schedule.name}
                                 name={schedule.name}
                                 onClick={() => {
                                     switchSchedule(schedule.name);
                                 }}
+                                dragHandleProps={handleProps}
                             />
-                        );
-                    })}
-                    gap={10}
-                />
-            </ScheduleDropdown>
-        </div>
-    ),
+                        )}
+                    </List>
+                </ScheduleDropdown>
+            </div>
+        );
+    },
 } satisfies Meta<typeof ScheduleDropdown>;
 export default meta;
 
