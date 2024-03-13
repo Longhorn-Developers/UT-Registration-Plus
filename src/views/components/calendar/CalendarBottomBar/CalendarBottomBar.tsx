@@ -3,7 +3,7 @@ import { Button } from '@views/components/common/Button/Button';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 import ImageIcon from '~icons/material-symbols/image';
@@ -24,24 +24,34 @@ type CalendarBottomBarProps = {
  * @returns {JSX.Element} The rendered bottom bar component.
  */
 export default function CalendarBottomBar({ courses, calendarRef }: CalendarBottomBarProps): JSX.Element {
+    const [displayCourses, setDisplayCourses] = React.useState(false);
+
+    useEffect(() => {
+        setDisplayCourses(courses && courses.length > 0);
+    }, [courses]);
+
     return (
         <div className='w-full flex py-1.25'>
-            <div className='flex flex-grow items-center gap-3.75 pl-7.5 pr-2.5'>
-                <Text variant='h4'>Async. and Other:</Text>
-                <div className='h-14 inline-flex gap-2.5'>
-                    {courses?.map(({ courseDeptAndInstr, status, colors, className }) => (
-                        <CalendarCourseBlock
-                            courseDeptAndInstr={courseDeptAndInstr}
-                            status={status}
-                            colors={colors}
-                            key={courseDeptAndInstr}
-                            className={clsx(className, 'w-35!')}
-                        />
-                    ))}
-                </div>
+            <div className='flex flex-grow items-center gap-3.75 pl-7.5 pr-2.5 text-nowrap'>
+                {displayCourses ? (
+                    <>
+                        <Text variant='h4'>Async. and Other:</Text>
+                        <div className='h-14 inline-flex gap-2.5'>
+                            {courses.map(({ courseDeptAndInstr, status, colors, className }) => (
+                                <CalendarCourseBlock
+                                    courseDeptAndInstr={courseDeptAndInstr}
+                                    status={status}
+                                    colors={colors}
+                                    key={courseDeptAndInstr}
+                                    className={clsx(className, 'w-35!')}
+                                />
+                            ))}
+                        </div>
+                    </>
+                ) : null}
             </div>
             <div className='flex items-center pl-2.5 pr-7.5'>
-                <Divider orientation='vertical' size='1rem' className='mx-1.25' />
+                {displayCourses ? <Divider orientation='vertical' size='1rem' className='mx-1.25' /> : null}
                 <Button variant='single' color='ut-black' icon={CalendarMonthIcon} onClick={saveAsCal}>
                     Save as .CAL
                 </Button>

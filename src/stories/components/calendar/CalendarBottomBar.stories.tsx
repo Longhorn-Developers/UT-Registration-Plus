@@ -102,3 +102,14 @@ export const Default: Story = {
         </div>
     ),
 };
+export const Empty: Story = {
+    args: {
+        courses: [],
+        calendarRef: { current: null },
+    },
+    render: props => (
+        <div className='outline-red outline w-292.5!'>
+            <CalendarBottomBar {...props} />
+        </div>
+    ),
+};
