@@ -28,7 +28,9 @@ export default function CalendarBottomBar({ courses, calendarRef }: CalendarBott
 
     return (
         <div className='w-full flex py-1.25'>
-            <div className='flex flex-grow items-center gap-3.75 pl-7.5 pr-2.5 text-nowrap'>
+            <div
+                className={`flex flex-grow items-center gap-3.75 ${displayCourses ? '' : 'py-7'} pl-7.5 pr-2.5 text-nowrap`}
+            >
                 {displayCourses ? (
                     <>
                         <Text variant='h4'>Async. and Other:</Text>
