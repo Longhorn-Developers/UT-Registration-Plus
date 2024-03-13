@@ -1,8 +1,8 @@
 import { colors } from '@shared/util/themeColors';
-import { Button } from '@views/components/common/Button/Button';
 import Divider from '@views/components/common/Divider/Divider';
 import React from 'react';
 
+import InvertColorsIcon from '~icons/material-symbols/invert-colors';
 import InvertColorsOffIcon from '~icons/material-symbols/invert-colors-off';
 
 import ColorPatch from './ColorPatch';
@@ -121,6 +121,8 @@ const hexCodeToShadeColorPatchInfo = new Map<string, ShadePatchInfo>(
  */
 export interface CourseCellColorPickerProps {
     setSelectedColor: React.Dispatch<React.SetStateAction<string | null>>;
+    isInvertColorsToggled: boolean;
+    setIsInvertColorsToggled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 /**
@@ -147,6 +149,8 @@ export interface CourseCellColorPickerProps {
  */
 const CourseCellColorPicker: React.FC<CourseCellColorPickerProps> = ({
     setSelectedColor: setFinalColor,
+    isInvertColorsToggled,
+    setIsInvertColorsToggled,
 }: CourseCellColorPickerProps): JSX.Element => {
     const [selectedBaseColorPatch, setSelectedBaseColorPatch] = React.useState<number>(-1);
     const [selectedShadeColorPatch, setSelectShadeColorPatch] = React.useState<number>(-1);
@@ -225,10 +229,19 @@ const CourseCellColorPicker: React.FC<CourseCellColorPickerProps> = ({
                     <HexColorEditor hexCode={hexCode} setHexCode={setHexCode} />
                 </div>
                 <DivWrapper>
-                    {/* TODO (achadaga): Not really sure what this button is actually supposed to do */}
-                    <Button className='h-[22px] w-[22px] p-0' variant='filled' color='ut-black' onClick={() => {}}>
-                        <InvertColorsOffIcon className='h-[14px] w-[14px]' />
-                    </Button>
+                    <button
+                        className='h-[22px] w-[22px] bg-ut-black p-0 transition-all duration-200 hover:scale-110 btn'
+                        onClick={() => {
+                            console.log('inverting colors');
+                            setIsInvertColorsToggled(prev => !prev);
+                        }}
+                    >
+                        {isInvertColorsToggled ? (
+                            <InvertColorsIcon className='h-[14px] w-[14px] color-white' />
+                        ) : (
+                            <InvertColorsOffIcon className='h-[14px] w-[14px] color-white' />
+                        )}
+                    </button>
                 </DivWrapper>
             </div>
             <Divider orientation='horizontal' size='100%' className='my-1' />

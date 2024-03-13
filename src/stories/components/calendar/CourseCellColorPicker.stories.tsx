@@ -13,7 +13,14 @@ type Story = StoryObj<typeof CourseCellColorPicker>;
 
 function CourseCellColorPickerWithState() {
     const [, setSelectedColor] = useState<ThemeColor | null>(null);
-    return <CourseCellColorPicker setSelectedColor={setSelectedColor} />;
+    const [isInvertColorsToggled, setIsInvertColorsToggled] = useState<boolean>(false);
+    return (
+        <CourseCellColorPicker
+            setSelectedColor={setSelectedColor}
+            isInvertColorsToggled={isInvertColorsToggled}
+            setIsInvertColorsToggled={setIsInvertColorsToggled}
+        />
+    );
 }
 
 export const Default: Story = {
