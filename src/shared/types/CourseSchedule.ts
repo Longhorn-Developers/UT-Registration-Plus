@@ -46,13 +46,12 @@ export class CourseSchedule {
                 .replaceAll('.', '')
                 .split('-')
                 .map(time => {
-                    const [hour, rest] = time.split(':');
-                    const [minute, ampm] = rest.split(' ');
+                    const [rawHour, rest] = time.split(':');
+                    const [rawMinute, ampm] = rest.split(' ');
+                    const hour = (rawHour === '12' ? 0 : Number(rawHour)) + (ampm === 'pm' ? 12 : 0);
+                    const minute = Number(rawMinute);
 
-                    if (ampm === 'pm') {
-                        return Number(hour) * 60 + Number(minute) + 12 * 60;
-                    }
-                    return Number(hour) * 60 + Number(minute);
+                    return hour * 60 + minute;
                 });
 
             const location = locLine.split(' ').filter(Boolean);
