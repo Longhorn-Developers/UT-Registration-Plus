@@ -21,7 +21,7 @@ export interface HexColorEditorProps {
  * @returns {JSX.Element} - the hex color editor component
  */
 const HexColorEditor: React.FC<HexColorEditorProps> = ({ hexCode, setHexCode }: HexColorEditorProps): JSX.Element => {
-    const baseColor = React.useMemo(() => getThemeColorHexByName('ut-gray'), []);
+    const baseColor = React.useMemo(() => getThemeColorHexByName('ut-gray').toLocaleLowerCase(), []);
     const previewColor = hexCode.length === 6 ? `#${hexCode}` : baseColor;
 
     return (
