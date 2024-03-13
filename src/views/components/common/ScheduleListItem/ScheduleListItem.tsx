@@ -10,7 +10,6 @@ import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
  */
 export type Props = {
     style?: React.CSSProperties;
-    active?: boolean;
     name: string;
     dragHandleProps?: Omit<React.HTMLAttributes<HTMLDivElement>, 'className'>;
     onClick?: React.DOMAttributes<HTMLDivElement>['onClick'];
@@ -22,7 +21,7 @@ export type Props = {
 export default function ScheduleListItem({ style, name, dragHandleProps, onClick }: Props): JSX.Element {
     const [activeSchedule] = useSchedules();
 
-    const isActive = useMemo(() => activeSchedule?.name === name, [activeSchedule, name]);
+    const isActive = useMemo(() => activeSchedule.name === name, [activeSchedule, name]);
 
     return (
         <div style={{ ...style }} className='items-center rounded bg-white'>

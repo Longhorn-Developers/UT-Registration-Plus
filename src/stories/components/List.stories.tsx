@@ -1,3 +1,4 @@
+import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd';
 import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
@@ -71,9 +72,10 @@ const generateCourses = (count: number): Course[] => {
 };
 
 const exampleCourses = generateCourses(numberOfCourses);
-const generateCourseBlocks = (exampleCourses: Course[], colors: CourseColors[]) =>
-    exampleCourses.map((course, i) => <PopupCourseBlock key={course.uniqueId} course={course} colors={colors[i]} />);
-const ExampleCourseBlocks = generateCourseBlocks(exampleCourses, tailwindColorways);
+const generateCourseBlocks = (
+    { course, colors }: { course: Course; colors: CourseColors },
+    dragHandleProps: DraggableProvidedDragHandleProps
+) => <PopupCourseBlock key={course.uniqueId} course={course} colors={colors} dragHandleProps={dragHandleProps} />;
 
 const meta = {
     title: 'Components/Common/List',
@@ -83,7 +85,6 @@ const meta = {
     },
     tags: ['autodocs'],
     argTypes: {
-        draggableElements: { control: 'object' },
         gap: { control: 'number' },
     },
 } satisfies Meta<typeof List>;
@@ -93,7 +94,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        draggableElements: ExampleCourseBlocks,
+        draggables: exampleCourses.map((course, i) => ({ course, colors: tailwindColorways[i] })),
+        children: generateCourseBlocks,
         gap: 12,
     },
     render: args => (
