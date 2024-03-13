@@ -3,7 +3,7 @@ import { Button } from '@views/components/common/Button/Button';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 import ImageIcon from '~icons/material-symbols/image';
