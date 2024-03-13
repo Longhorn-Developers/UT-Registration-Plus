@@ -38,7 +38,7 @@ const ColorPatch: React.FC<ColorPatchProps> = ({
             style={{ backgroundColor: color }}
             onClick={handleClick}
         >
-            {isSelected && <CheckIcon className='h-[20px] w-[20px] color-white' />}
+            {isSelected && <CheckIcon className='h-5 w-5 color-white' />}
         </button>
     );
 };
