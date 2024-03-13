@@ -30,7 +30,7 @@ const HexColorEditor: React.FC<HexColorEditorProps> = ({ hexCode, setHexCode }: 
                 style={{ backgroundColor: previewColor }}
                 className='h-[22px] w-[21px] flex items-center justify-center rounded-l-1 -m-[0.5px]'
             >
-                <TagIcon className='h-[16px] w-[16px] text-ut-white' />
+                <TagIcon className='h-[16px] w-[16px] text-color-white' />
             </div>
             <div className='flex flex-1 items-center justify-center p-[5px]'>
                 <input

@@ -17,7 +17,7 @@ interface Color {
 
 const colorPatchColors: Color[] = [
     {
-        baseColor: '#64748B',
+        baseColor: '#64748b',
         shades: ['#e2e8f0', '#cbd5e1', '#94a3b8', '#64748B', '#475569', '#334155'],
     },
     {
@@ -61,12 +61,12 @@ const colorPatchColors: Color[] = [
         shades: ['#99f6e4', '#5eead4', '#2dd4bf', '#14b8a6', '#0d9488', '#0f766e'],
     },
     {
-        baseColor: '#06B6D4',
-        shades: ['#a0f0ed', '#64d5f4', '#38bdf8', '#06B6D4', '#0891b2', '#0e7490'],
+        baseColor: '#06b6d4',
+        shades: ['#a5f3fc', '#67e8f9', '#22d3ee', '#06B6D4', '#0891b2', '#0e7490'],
     },
     {
-        baseColor: '#0EA5E9',
-        shades: ['#bae6fd', '#7dd3fc', '#38bdf8', '#0EA5E9', '#0284c7', '#0369a1'],
+        baseColor: '#0ea5e9',
+        shades: ['#bae6fd', '#7dd3fc', '#38bdf8', '#0ea5e9', '#0284c7', '#0369a1'],
     },
     {
         baseColor: '#3b82f6',
@@ -115,16 +115,6 @@ const hexCodeToShadeColorPatchInfo = new Map<string, ShadePatchInfo>(
         ])
     )
 );
-
-// const hexCodeShadeColorPatchToBaseColorPatchIndex = new Map(
-//     colorPatchColors.flatMap((color: Color, index: number) => color.shades.map((shade: string) => [shade, index]))
-// );
-
-// const hexCodeToShadeColorPatchIndex = new Map(
-//     colorPatchColors.flatMap((color: Color) =>
-//         color.shades.map((shade: string, shadeIndex: number) => [shade, shadeIndex])
-//     )
-// );
 
 /**
  * Props for the CourseCellColorPicker component.
@@ -177,7 +167,7 @@ const CourseCellColorPicker: React.FC<CourseCellColorPickerProps> = ({
     };
 
     React.useEffect(() => {
-        const hexCodeWithHash = `#${hexCode}`;
+        const hexCodeWithHash = `#${hexCode}`.toLocaleLowerCase();
         if (hexCodeToBaseColorPatchIndex.has(hexCodeWithHash)) {
             setSelectedBaseColorPatch(hexCodeToBaseColorPatchIndex.get(hexCodeWithHash));
             setSelectShadeColorPatch(3);
