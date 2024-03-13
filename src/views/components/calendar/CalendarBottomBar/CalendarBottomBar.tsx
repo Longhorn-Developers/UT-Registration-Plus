@@ -30,7 +30,7 @@ export default function CalendarBottomBar({ courses, calendarRef }: CalendarBott
         <div className='w-full flex py-1.25 pl-7.5 pr-6.25'>
             <div
                 className={clsx('flex flex-grow items-center gap-3.75 text-nowrap', {
-                    'py-7': !displayCourses,
+                    'py-7.5': !displayCourses,
                 })}
             >
                 {displayCourses && (
