@@ -160,13 +160,13 @@ const CourseCellColorPicker: React.FC<CourseCellColorPickerProps> = ({
 
     const handleSelectBaseColorPatch = (baseColorPatchIndex: number) => {
         let newHexCode = baseColorPatchIndex > -1 ? colorPatchColors[baseColorPatchIndex].baseColor : colors.ut.gray;
-        newHexCode = newHexCode.slice(1);
+        newHexCode = newHexCode.slice(1).toLocaleLowerCase();
         setHexCode(newHexCode);
     };
 
     const handleSelectShadeColorPatch = (shadeColorPatchIndex: number) => {
         let newHexCode = colorPatchColors[selectedBaseColorPatch].shades[shadeColorPatchIndex];
-        newHexCode = newHexCode.slice(1);
+        newHexCode = newHexCode.slice(1).toLocaleLowerCase();
         setHexCode(newHexCode);
     };
 
@@ -231,10 +231,7 @@ const CourseCellColorPicker: React.FC<CourseCellColorPickerProps> = ({
                 <DivWrapper>
                     <button
                         className='h-[22px] w-[22px] bg-ut-black p-0 transition-all duration-200 hover:scale-110 btn'
-                        onClick={() => {
-                            console.log('inverting colors');
-                            setIsInvertColorsToggled(prev => !prev);
-                        }}
+                        onClick={() => setIsInvertColorsToggled(prev => !prev)}
                     >
                         {isInvertColorsToggled ? (
                             <InvertColorsIcon className='h-[14px] w-[14px] color-white' />
