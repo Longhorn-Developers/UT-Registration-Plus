@@ -25,7 +25,7 @@ async function fetchData() {
 export default function useSchedules(): [active: UserSchedule | null, schedules: UserSchedule[]] {
     const [schedules, setSchedules] = useState<UserSchedule[]>(schedulesCache);
     const [activeIndex, setActiveIndex] = useState<number>(activeIndexCache);
-    const [activeSchedule, setActiveSchedule] = useState<UserSchedule | null>(null);
+    const [activeSchedule, setActiveSchedule] = useState<UserSchedule | null>(schedules[activeIndex]);
 
     if (initialLoad) {
         initialLoad = false;
