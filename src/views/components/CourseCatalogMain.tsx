@@ -24,10 +24,17 @@ interface Props {
 export default function CourseCatalogMain({ support }: Props): JSX.Element {
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+    const [showPopup, setShowPopup] = useState(false);
 
     useEffect(() => {
         populateSearchInputs();
     }, []);
+
+    useEffect(() => {
+        if (selectedCourse) {
+            setShowPopup(true);
+        }
+    }, [selectedCourse]);
 
     useEffect(() => {
         const tableRows = getCourseTableRows(document);
@@ -75,13 +82,13 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
                         />
                     )
             )}
-            {selectedCourse && (
-                <CourseCatalogInjectedPopup
-                    course={selectedCourse}
-                    activeSchedule={activeSchedule}
-                    onClose={handleClearSelectedCourse}
-                />
-            )}
+            <CourseCatalogInjectedPopup
+                course={selectedCourse}
+                activeSchedule={activeSchedule}
+                show={showPopup}
+                onClose={() => setShowPopup(false)}
+                afterLeave={handleClearSelectedCourse}
+            />
             <AutoLoad addRows={addRows} />
         </ExtensionRoot>
     );
