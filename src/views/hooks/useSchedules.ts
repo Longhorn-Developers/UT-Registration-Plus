@@ -15,17 +15,17 @@ async function fetchData() {
         UserScheduleStore.get('activeIndex'),
     ]);
     schedulesCache = storedSchedules.map(s => new UserSchedule(s));
-    activeIndexCache = storedActiveIndex;
+    activeIndexCache = storedActiveIndex >= 0 ? storedActiveIndex : 0;
 }
 
 /**
  * Custom hook that manages user schedules.
  * @returns A tuple containing the active schedule and an array of all schedules.
  */
-export default function useSchedules(): [active: UserSchedule | null, schedules: UserSchedule[]] {
+export default function useSchedules(): [active: UserSchedule, schedules: UserSchedule[]] {
     const [schedules, setSchedules] = useState<UserSchedule[]>(schedulesCache);
     const [activeIndex, setActiveIndex] = useState<number>(activeIndexCache);
-    const [activeSchedule, setActiveSchedule] = useState<UserSchedule | null>(schedules[activeIndex]);
+    const [activeSchedule, setActiveSchedule] = useState<UserSchedule>(schedules[activeIndex]);
 
     if (initialLoad) {
         initialLoad = false;
@@ -62,13 +62,16 @@ export default function useSchedules(): [active: UserSchedule | null, schedules:
     return [activeSchedule, schedules];
 }
 
-export function getActiveSchedule(): UserSchedule | null {
-    return schedulesCache[activeIndexCache] || null;
+export function getActiveSchedule(): UserSchedule {
+    return (
+        schedulesCache[activeIndexCache] || new UserSchedule({ courses: [], name: 'An error has occurred', hours: 0 })
+    );
 }
 
 export async function replaceSchedule(oldSchedule: UserSchedule, newSchedule: UserSchedule) {
     const schedules = await UserScheduleStore.get('schedules');
-    const oldIndex = schedules.findIndex(s => s.name === oldSchedule.name);
+    let oldIndex = schedules.findIndex(s => s.name === oldSchedule.name);
+    oldIndex = oldIndex !== -1 ? oldIndex : 0;
     schedules[oldIndex] = newSchedule;
     await UserScheduleStore.set('schedules', schedules);
     console.log('schedule replaced');
