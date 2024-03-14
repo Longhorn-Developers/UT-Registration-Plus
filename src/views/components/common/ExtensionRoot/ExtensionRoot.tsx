@@ -1,4 +1,4 @@
-import '@unocss/reset/tailwind-compat.css';
+// import '@unocss/reset/tailwind-compat.css';
 import 'uno.css';
 
 import React from 'react';

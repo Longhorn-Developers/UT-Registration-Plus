@@ -6,7 +6,6 @@ import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/Recr
 import TableHead from '@views/components/injected/TableHead';
 import TableRow from '@views/components/injected/TableRow/TableRow';
 // import TableSubheading from '@views/components/injected/TableSubheading/TableSubheading';
-import { useKeyPress } from '@views/hooks/useKeyPress';
 import useSchedules from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
@@ -54,11 +53,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
         setSelectedCourse(course);
     };
 
-    const handleClearSelectedCourse = () => {
-        setSelectedCourse(null);
-    };
-
-    useKeyPress('Escape', handleClearSelectedCourse);
+    // useKeyPress('Escape', handleClearSelectedCourse);
 
     const [activeSchedule] = useSchedules();
 
@@ -87,7 +82,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
                 activeSchedule={activeSchedule}
                 show={showPopup}
                 onClose={() => setShowPopup(false)}
-                afterLeave={handleClearSelectedCourse}
+                afterLeave={() => setSelectedCourse(null)}
             />
             <AutoLoad addRows={addRows} />
         </ExtensionRoot>

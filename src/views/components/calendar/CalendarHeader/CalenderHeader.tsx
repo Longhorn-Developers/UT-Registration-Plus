@@ -40,8 +40,8 @@ export default function CalendarHeader(): JSX.Element {
                         <div className='flex items-center gap-2'>
                             <LogoIcon />
                             <div className='flex flex-col whitespace-nowrap'>
-                                <Text className='text-lg text-ut-burntorange font-medium'>UT Registration</Text>
-                                <Text className='text-lg text-ut-orange font-medium'>Plus</Text>
+                                <Text className='text-lg! text-ut-burntorange font-medium!'>UT Registration</Text>
+                                <Text className='text-lg! text-ut-orange font-medium!'>Plus</Text>
                             </div>
                         </div>
                     </div>
@@ -52,7 +52,7 @@ export default function CalendarHeader(): JSX.Element {
                             totalHours={activeSchedule.hours}
                             totalCourses={activeSchedule.courses.length}
                         />
-                        <Text variant='h4' className='text-xs text-gray font-medium leading-normal'>
+                        <Text variant='h4' className='text-xs! text-gray font-medium! leading-normal!'>
                             LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                         </Text>
                     </div>

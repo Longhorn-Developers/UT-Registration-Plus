@@ -69,7 +69,7 @@ export default function CalendarCourseCell({
             >
                 <Text
                     variant='h1-course'
-                    className={clsx('leading-tight truncate', {
+                    className={clsx('leading-tight! truncate', {
                         '-my-0.8': timeAndLocation,
                         'text-wrap': !timeAndLocation,
                     })}

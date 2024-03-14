@@ -70,7 +70,7 @@ export default function Description({ course }: DescriptionProps): JSX.Element {
                                 <li key={line}>
                                     <Text
                                         variant='p'
-                                        className={clsx({ 'font-bold text-ut-burntorange': isKeywordPresent })}
+                                        className={clsx({ 'font-bold! text-ut-burntorange': isKeywordPresent })}
                                     >
                                         {line}
                                     </Text>
