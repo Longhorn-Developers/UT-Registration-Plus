@@ -12,6 +12,7 @@ export default async function removeCourse(scheduleName: string, course: Course)
     }
 
     activeSchedule.courses = activeSchedule.courses.filter(c => c.uniqueId !== course.uniqueId);
+    activeSchedule.updatedAt = Date.now();
 
     await UserScheduleStore.set('schedules', schedules);
 }

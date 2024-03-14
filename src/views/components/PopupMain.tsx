@@ -6,6 +6,7 @@ import List from '@views/components/common/List/List';
 import Text from '@views/components/common/Text/Text';
 import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
+import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import clsx from 'clsx';
 import React, { useState } from 'react';
@@ -120,7 +121,7 @@ export default function PopupMain(): JSX.Element {
                     </div>
                     <div className='inline-flex items-center self-center gap-1'>
                         <Text variant='mini' className='text-ut-gray'>
-                            DATA UPDATED ON: 12:00 AM 02/01/2024
+                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                         </Text>
                         <button
                             className='h-4 w-4 bg-transparent p-0 btn'

@@ -15,6 +15,7 @@ export const UserScheduleStore = createLocalStore<IUserScheduleStore>({
             courses: [],
             name: 'Schedule 1',
             hours: 0,
+            updatedAt: Date.now(),
         }),
     ],
     activeIndex: 0,
