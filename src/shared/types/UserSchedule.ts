@@ -12,7 +12,7 @@ export class UserSchedule {
     hours: number;
     /** Unix timestamp of when the schedule was last updated */
     updatedAt: number;
-    /** UUID for comparison purposes and ID purposes */
+    /** UUID for comparison and ID purposes */
     id: string;
 
     constructor(schedule: Serialized<UserSchedule>) {
