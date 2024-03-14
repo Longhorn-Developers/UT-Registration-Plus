@@ -12,5 +12,7 @@ export default async function clearCourses(scheduleName: string): Promise<void> 
         throw new Error(`Schedule ${scheduleName} does not exist`);
     }
     schedule.courses = [];
+    schedule.updatedAt = Date.now();
+
     await UserScheduleStore.set('schedules', schedules);
 }
