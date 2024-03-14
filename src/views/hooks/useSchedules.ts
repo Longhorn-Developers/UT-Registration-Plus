@@ -65,7 +65,7 @@ export default function useSchedules(): [active: UserSchedule, schedules: UserSc
 export function getActiveSchedule(): UserSchedule {
     return (
         schedulesCache[activeIndexCache] ||
-        new UserSchedule({ courses: [], name: 'An error has occurred', hours: 0, updatedAt: Date.now() })
+        new UserSchedule({ courses: [], name: 'An error has occurred', hours: 0, updatedAt: Date.now(), id: '' })
     );
 }
 

@@ -55,7 +55,7 @@ export const ClosedCourse: Story = {
             ...MikeScottCS314Course,
             status: Status.CLOSED,
         } as Course,
-        activeSchedule: new UserSchedule({ courses: [], name: '', hours: 0, updatedAt: Date.now() }),
+        activeSchedule: new UserSchedule({ courses: [], name: '', hours: 0, updatedAt: Date.now(), id: '' }),
     },
 };
 

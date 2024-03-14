@@ -58,6 +58,7 @@ export const exampleSchedule: UserSchedule = new UserSchedule({
     name: 'Example Schedule',
     hours: 3,
     updatedAt: Date.now(),
+    id: '',
 });
 
 export const bevoCourse: Course = new Course({
@@ -110,6 +111,7 @@ export const bevoScheule: UserSchedule = new UserSchedule({
     name: 'Bevo Schedule',
     hours: 3,
     updatedAt: Date.now(),
+    id: '',
 });
 
 export const MikeScottCS314Course: Course = new Course({
@@ -163,4 +165,5 @@ export const MikeScottCS314Schedule: UserSchedule = new UserSchedule({
     name: 'Mike Scott CS314 Schedule',
     hours: 3,
     updatedAt: Date.now(),
+    id: '',
 });

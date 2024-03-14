@@ -62,6 +62,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
                 name: 'Something may have went wrong',
                 hours: 0,
                 updatedAt: Date.now(),
+                id: '',
             }),
         } satisfies FlattenedCourseSchedule;
     }
