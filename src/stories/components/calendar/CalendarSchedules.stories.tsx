@@ -65,7 +65,8 @@ const schedules = [
             }),
         ],
         name: 'Main Schedule',
-        hours: 0, // Add the missing 'hours' property
+        hours: 0,
+        updatedAt: Date.now(),
     }),
     new UserSchedule({
         courses: [
@@ -135,7 +136,8 @@ const schedules = [
             }),
         ],
         name: 'Backup #3',
-        hours: 0, // Add the missing 'hours' property
+        hours: 0,
+        updatedAt: Date.now(),
     }),
 ];
 
