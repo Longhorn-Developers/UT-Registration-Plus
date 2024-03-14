@@ -22,7 +22,7 @@ async function fetchData() {
  * Custom hook that manages user schedules.
  * @returns A tuple containing the active schedule and an array of all schedules.
  */
-export default function useSchedules(): [active: UserSchedule | null, schedules: UserSchedule[]] {
+export default function useSchedules(): [active: UserSchedule, schedules: UserSchedule[]] {
     const [schedules, setSchedules] = useState<UserSchedule[]>(schedulesCache);
     const [activeIndex, setActiveIndex] = useState<number>(activeIndexCache);
     const [activeSchedule, setActiveSchedule] = useState<UserSchedule>(schedules[activeIndex]);
