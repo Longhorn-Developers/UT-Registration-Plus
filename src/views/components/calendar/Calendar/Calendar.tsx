@@ -4,7 +4,6 @@ import CalendarGrid from '@views/components/calendar/CalendarGrid/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalenderHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules/CalendarSchedules';
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
-import TeamLinks from '@views/components/calendar/TeamLinks';
 import Divider from '@views/components/common/Divider/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
@@ -19,6 +18,7 @@ export default function Calendar(): JSX.Element {
     const calendarRef = useRef<HTMLDivElement>(null);
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
     const [course, setCourse] = useState<Course | null>(null);
+    const [showPopup, setShowPopup] = useState(false);
     const [sidebarWidth, setSidebarWidth] = useState('20%');
     const [scale, setScale] = useState(1);
 
@@ -48,6 +48,10 @@ export default function Calendar(): JSX.Element {
         return () => window.removeEventListener('resize', adjustLayout);
     }, []);
 
+    useEffect(() => {
+        if (course) setShowPopup(true);
+    }, [course]);
+
     const calendarContainerStyle = {
         transform: `scale(${scale})`,
         transformOrigin: 'top left',
@@ -68,10 +72,6 @@ export default function Calendar(): JSX.Element {
                     <div className='mt-4'>
                         <ImportantLinks />
                     </div>
-                    <Divider orientation='horizontal' size='100%' />
-                    <div className='mt-4'>
-                        <TeamLinks />
-                    </div>
                 </div>
                 <div className='flex flex-grow flex-col' style={calendarContainerStyle} ref={calendarRef}>
                     <div className='flex-grow overflow-auto'>
@@ -80,13 +80,14 @@ export default function Calendar(): JSX.Element {
                     <CalendarBottomBar calendarRef={calendarRef} />
                 </div>
             </div>
-            {course ? (
-                <CourseCatalogInjectedPopup
-                    course={course}
-                    activeSchedule={activeSchedule}
-                    onClose={() => setCourse(null)}
-                />
-            ) : null}
+
+            <CourseCatalogInjectedPopup
+                course={course}
+                activeSchedule={activeSchedule}
+                onClose={() => setShowPopup(false)}
+                open={showPopup}
+                afterLeave={() => setCourse(null)}
+            />
         </div>
     );
 }
