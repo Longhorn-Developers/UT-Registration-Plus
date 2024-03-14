@@ -2,7 +2,7 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 
 /**
  * Renames a schedule with the specified name to a new name.
- * @param scheduleId - The name of the schedule to be renamed.
+ * @param scheduleId - The id of the schedule to be renamed.
  * @param newName - The new name for the schedule.
  * @returns A promise that resolves to a string if there is an error, or undefined if the schedule is renamed successfully.
  */
@@ -12,9 +12,9 @@ export default async function renameSchedule(scheduleId: string, newName: string
     if (scheduleIndex === -1) {
         return `Schedule ${scheduleId} does not exist`;
     }
-    if (schedules.find(schedule => schedule.name === newName)) {
-        return `Schedule ${newName} already exists`;
-    }
+    // if (schedules.find(schedule => schedule.name === newName)) {
+    //     return `Schedule ${newName} already exists`;
+    // }
 
     schedules[scheduleIndex].name = newName;
     schedules[scheduleIndex].updatedAt = Date.now();

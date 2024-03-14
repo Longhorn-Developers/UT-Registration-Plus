@@ -63,7 +63,7 @@ const meta: Meta<typeof ScheduleDropdown> = {
                 <ScheduleDropdown {...args}>
                     <List
                         draggables={schedules}
-                        equalityCheck={(a, b) => a.id === b.id}
+                        itemKey={s => s.id}
                         onReordered={reordered => {
                             const activeSchedule = getActiveSchedule();
                             const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
@@ -76,7 +76,7 @@ const meta: Meta<typeof ScheduleDropdown> = {
                     >
                         {(schedule, handleProps) => (
                             <ScheduleListItem
-                                name={schedule.name}
+                                schedule={schedule}
                                 onClick={() => {
                                     switchSchedule(schedule.id);
                                 }}

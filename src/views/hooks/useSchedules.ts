@@ -71,7 +71,7 @@ export function getActiveSchedule(): UserSchedule {
 
 export async function replaceSchedule(oldSchedule: UserSchedule, newSchedule: UserSchedule) {
     const schedules = await UserScheduleStore.get('schedules');
-    let oldIndex = schedules.findIndex(s => s.name === oldSchedule.name);
+    let oldIndex = schedules.findIndex(s => s.id === oldSchedule.id);
     oldIndex = oldIndex !== -1 ? oldIndex : 0;
     schedules[oldIndex] = newSchedule;
     await UserScheduleStore.set('schedules', schedules);

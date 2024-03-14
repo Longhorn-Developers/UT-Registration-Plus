@@ -64,7 +64,7 @@ export default function PopupMain(): JSX.Element {
                     <ScheduleDropdown>
                         <List
                             draggables={schedules}
-                            equalityCheck={(a, b) => a.id === b.id}
+                            itemKey={schedule => schedule.id}
                             onReordered={reordered => {
                                 console.log('reorederd');
                                 const activeSchedule = getActiveSchedule();
@@ -78,7 +78,7 @@ export default function PopupMain(): JSX.Element {
                         >
                             {(schedule, handleProps) => (
                                 <ScheduleListItem
-                                    name={schedule.name}
+                                    schedule={schedule}
                                     onClick={() => {
                                         switchSchedule(schedule.id);
                                     }}
@@ -99,7 +99,7 @@ export default function PopupMain(): JSX.Element {
                                 activeSchedule.courses = reordered.map(c => c.course);
                                 replaceSchedule(getActiveSchedule(), activeSchedule);
                             }}
-                            equalityCheck={(a, b) => a.course.uniqueId === b.course.uniqueId}
+                            itemKey={e => e.course.uniqueId}
                             gap={10}
                         >
                             {({ course, colors }, handleProps) => (

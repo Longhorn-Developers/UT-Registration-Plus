@@ -3,7 +3,7 @@ import type { Course } from '@shared/types/Course';
 
 /**
  * Adds a course to a user's schedule.
- * @param scheduleName - The id of the schedule to add the course to.
+ * @param scheduleId - The id of the schedule to add the course to.
  * @param course - The course to add.
  * @returns A promise that resolves to void.
  * @throws An error if the schedule is not found.

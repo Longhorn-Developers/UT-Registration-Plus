@@ -3,7 +3,7 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 /**
  * Switches the active schedule to the specified schedule name.
  * Throws an error if the schedule does not exist.
- * @param scheduleId - The name of the schedule to switch to.
+ * @param scheduleId - The id of the schedule to switch to.
  * @returns A Promise that resolves when the active schedule is successfully switched.
  */
 export default async function switchSchedule(scheduleId: string): Promise<void> {

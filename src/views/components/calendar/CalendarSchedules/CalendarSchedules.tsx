@@ -68,7 +68,7 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
                 <List
                     gap={10}
                     draggables={schedules}
-                    equalityCheck={(a, b) => a.id === b.id}
+                    itemKey={s => s.id}
                     onReordered={reordered => {
                         const activeSchedule = getActiveSchedule();
                         const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
@@ -80,7 +80,7 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
                 >
                     {(schedule, handleProps) => (
                         <ScheduleListItem
-                            name={schedule.name}
+                            schedule={schedule}
                             onClick={() => {
                                 switchSchedule(schedule.id);
                             }}

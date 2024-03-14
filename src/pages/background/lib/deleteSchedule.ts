@@ -3,7 +3,7 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 /**
  * Deletes a schedule with the specified name.
  *
- * @param scheduleId - The name of the schedule to delete.
+ * @param scheduleId - The id of the schedule to delete.
  * @returns A promise that resolves to a string if there is an error, or undefined if the schedule is deleted successfully.
  */
 export default async function deleteSchedule(scheduleId: string): Promise<string | undefined> {

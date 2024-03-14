@@ -16,13 +16,13 @@ export interface ListProps<T> {
     draggables: T[];
     children: (draggable: T, handleProps: DraggableProvidedDragHandleProps) => ReactElement;
     onReordered: (elements: T[]) => void;
-    equalityCheck?: (a: T, b: T) => boolean;
+    itemKey: (item: T) => React.Key;
     gap?: number; // Impacts the spacing between items in the list
 }
 
-function wrap<T>(draggableElements: T[]) {
-    return draggableElements.map((element, index) => ({
-        id: `id:${index}`,
+function wrap<T>(draggableElements: T[], keyTransform: ListProps<T>['itemKey']) {
+    return draggableElements.map(element => ({
+        id: keyTransform(element),
         content: element,
     }));
 }
@@ -70,20 +70,19 @@ function Item<T>(props: {
  * <List draggableElements={elements} />
  */
 function List<T>(props: ListProps<T>): JSX.Element {
-    const [items, setItems] = useState(wrap(props.draggables));
+    const [items, setItems] = useState(wrap(props.draggables, props.itemKey));
 
-    const equalityCheck = props.equalityCheck || ((a, b) => a === b);
     const transformFunction = props.children;
 
     useEffect(() => {
         // check if the draggables content has *actually* changed
         if (
             props.draggables.length === items.length &&
-            props.draggables.every((element, index) => equalityCheck(element, items[index].content))
+            props.draggables.every((element, index) => props.itemKey(element) === items[index].id)
         ) {
             return;
         }
-        setItems(wrap(props.draggables));
+        setItems(wrap(props.draggables, props.itemKey));
     }, [props.draggables]);
 
     const onDragEnd: OnDragEndResponder = useCallback(
@@ -139,7 +138,7 @@ function List<T>(props: ListProps<T>): JSX.Element {
                             style={{ marginBottom: `-${props.gap}px` }}
                         >
                             {items.map((item, index) => (
-                                <Draggable key={item.id} draggableId={item.id} index={index}>
+                                <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                                     {draggableProvided => (
                                         <div
                                             ref={draggableProvided.innerRef}
