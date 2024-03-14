@@ -31,6 +31,6 @@ export class UserSchedule {
     }
 
     generateID(): string {
-        return v4();
+        return uuid();
     }
 }
