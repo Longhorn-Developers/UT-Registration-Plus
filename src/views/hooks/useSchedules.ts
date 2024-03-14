@@ -14,7 +14,7 @@ async function fetchData() {
         UserScheduleStore.get('schedules'),
         UserScheduleStore.get('activeIndex'),
     ]);
-    schedulesCache = storedSchedules.map(s => new UserSchedule({...s, updatedAt: s.updatedAt || Date.now()}));
+    schedulesCache = storedSchedules.map(s => new UserSchedule(s));
     activeIndexCache = storedActiveIndex >= 0 ? storedActiveIndex : 0;
 }
 
@@ -64,7 +64,8 @@ export default function useSchedules(): [active: UserSchedule, schedules: UserSc
 
 export function getActiveSchedule(): UserSchedule {
     return (
-        schedulesCache[activeIndexCache] || new UserSchedule({ courses: [], name: 'An error has occurred', hours: 0, updatedAt: Date.now() })
+        schedulesCache[activeIndexCache] ||
+        new UserSchedule({ courses: [], name: 'An error has occurred', hours: 0, updatedAt: Date.now() })
     );
 }
 
