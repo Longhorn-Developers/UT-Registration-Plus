@@ -33,7 +33,7 @@ export default function CalendarHeader(): JSX.Element {
 
     return (
         <div className='min-h-79px min-w-672px w-full flex px-0 py-5'>
-            <div className='flex flex-row gap-20 w-full'>
+            <div className='w-full flex flex-row gap-20'>
                 <div className='flex gap-10'>
                     <div className='flex gap-1'>
                         <Button className='self-center' variant='single' icon={MenuIcon} color='ut-gray' />
@@ -57,7 +57,7 @@ export default function CalendarHeader(): JSX.Element {
                         </Text>
                     </div>
                 </div>
-                <div className='flex flex-row items-center justify-end space-x-8 ml-auto'>
+                <div className='ml-auto flex flex-row items-center justify-end space-x-8'>
                     <div className='flex flex-row space-x-4'>
                         <CourseStatus size='small' status={Status.WAITLISTED} />
                         <CourseStatus size='small' status={Status.CLOSED} />

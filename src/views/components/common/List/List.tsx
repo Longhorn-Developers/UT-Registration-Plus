@@ -75,13 +75,12 @@ function List<T>(props: ListProps<T>): JSX.Element {
 
     useEffect(() => {
         // check if the draggables content has *actually* changed
-        if (props.draggables.every((element, index) => equalityCheck(element, items[index].content))) {
-            console.log("List's draggables have not changed");
+        if (
+            props.draggables.length === items.length &&
+            props.draggables.every((element, index) => equalityCheck(element, items[index].content))
+        ) {
             return;
         }
-
-        console.log("List's draggables have changed, updating...");
-
         setItems(wrap(props.draggables));
     }, [props.draggables]);
 
