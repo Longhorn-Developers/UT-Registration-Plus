@@ -2,14 +2,14 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 
 /**
  * Clears the courses for a given schedule.
- * @param scheduleName - The name of the schedule.
+ * @param scheduleId - The name of the schedule.
  * @throws Error if the schedule does not exist.
  */
-export default async function clearCourses(scheduleName: string): Promise<void> {
+export default async function clearCourses(scheduleId: string): Promise<void> {
     const schedules = await UserScheduleStore.get('schedules');
-    const schedule = schedules.find(schedule => schedule.name === scheduleName);
+    const schedule = schedules.find(schedule => schedule.id === scheduleId);
     if (!schedule) {
-        throw new Error(`Schedule ${scheduleName} does not exist`);
+        throw new Error(`Schedule ${scheduleId} does not exist`);
     }
     schedule.courses = [];
     schedule.updatedAt = Date.now();

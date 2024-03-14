@@ -64,10 +64,11 @@ export default function PopupMain(): JSX.Element {
                     <ScheduleDropdown>
                         <List
                             draggables={schedules}
-                            equalityCheck={(a, b) => a.name === b.name}
+                            equalityCheck={(a, b) => a.id === b.id}
                             onReordered={reordered => {
+                                console.log('reorederd');
                                 const activeSchedule = getActiveSchedule();
-                                const activeIndex = reordered.findIndex(s => s.name === activeSchedule.name);
+                                const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
                                 // don't care about the promise
                                 UserScheduleStore.set('schedules', reordered);
@@ -79,7 +80,7 @@ export default function PopupMain(): JSX.Element {
                                 <ScheduleListItem
                                     name={schedule.name}
                                     onClick={() => {
-                                        switchSchedule(schedule.name);
+                                        switchSchedule(schedule.id);
                                     }}
                                     dragHandleProps={handleProps}
                                 />

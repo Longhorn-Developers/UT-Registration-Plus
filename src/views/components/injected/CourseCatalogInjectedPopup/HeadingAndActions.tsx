@@ -18,6 +18,7 @@ import Mood from '~icons/material-symbols/mood';
 import Remove from '~icons/material-symbols/remove';
 import Reviews from '~icons/material-symbols/reviews';
 
+// TODO: remove direct access for course modifications; use helpers
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
 interface HeadingAndActionProps {

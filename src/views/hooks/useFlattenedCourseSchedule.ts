@@ -59,6 +59,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
             courseCells: [] as CalendarGridCourse[],
             activeSchedule: new UserSchedule({
                 courses: [],
+                id: 'error',
                 name: 'Something may have went wrong',
                 hours: 0,
                 updatedAt: Date.now(),

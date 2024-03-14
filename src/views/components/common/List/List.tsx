@@ -3,6 +3,8 @@ import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import type { ReactElement } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
 
+import ExtensionRoot from '../ExtensionRoot/ExtensionRoot';
+
 /*
  * Ctrl + f dragHandleProps on PopupCourseBlock.tsx for example implementation of drag handle (two lines of code)
  */
@@ -123,7 +125,9 @@ function List<T>(props: ListProps<T>): JSX.Element {
                                     ...style,
                                 }}
                             >
-                                {transformFunction(items[rubric.source.index].content, provided.dragHandleProps)}
+                                <ExtensionRoot>
+                                    {transformFunction(items[rubric.source.index].content, provided.dragHandleProps)}
+                                </ExtensionRoot>
                             </Item>
                         );
                     }}

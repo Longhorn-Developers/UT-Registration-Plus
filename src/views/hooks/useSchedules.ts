@@ -65,7 +65,7 @@ export default function useSchedules(): [active: UserSchedule, schedules: UserSc
 export function getActiveSchedule(): UserSchedule {
     return (
         schedulesCache[activeIndexCache] ||
-        new UserSchedule({ courses: [], name: 'An error has occurred', hours: 0, updatedAt: Date.now() })
+        new UserSchedule({ courses: [], id: 'error', name: 'An error has occurred', hours: 0, updatedAt: Date.now() })
     );
 }
 
@@ -80,12 +80,12 @@ export async function replaceSchedule(oldSchedule: UserSchedule, newSchedule: Us
 
 /**
  * Switches the active schedule to the one with the specified name.
- * @param name - The name of the schedule to switch to.
+ * @param id - The id of the schedule to switch to.
  * @returns A promise that resolves when the active schedule has been switched.
  */
-export async function switchSchedule(name: string): Promise<void> {
+export async function switchSchedule(id: string): Promise<void> {
     console.log('Switching schedule...');
     const schedules = await UserScheduleStore.get('schedules');
-    const activeIndex = schedules.findIndex(s => s.name === name);
+    const activeIndex = schedules.findIndex(s => s.id === id);
     await UserScheduleStore.set('activeIndex', activeIndex);
 }

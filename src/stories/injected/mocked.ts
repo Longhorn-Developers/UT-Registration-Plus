@@ -55,6 +55,7 @@ export const exampleCourse: Course = new Course({
 
 export const exampleSchedule: UserSchedule = new UserSchedule({
     courses: [exampleCourse],
+    id: 'az372389blep',
     name: 'Example Schedule',
     hours: 3,
     updatedAt: Date.now(),
@@ -107,6 +108,7 @@ export const bevoCourse: Course = new Course({
 
 export const bevoScheule: UserSchedule = new UserSchedule({
     courses: [bevoCourse],
+    id: 'bevoshenanigans52',
     name: 'Bevo Schedule',
     hours: 3,
     updatedAt: Date.now(),
@@ -160,6 +162,7 @@ export const MikeScottCS314Course: Course = new Course({
 
 export const MikeScottCS314Schedule: UserSchedule = new UserSchedule({
     courses: [MikeScottCS314Course],
+    id: 'omgitsmikescott314',
     name: 'Mike Scott CS314 Schedule',
     hours: 3,
     updatedAt: Date.now(),

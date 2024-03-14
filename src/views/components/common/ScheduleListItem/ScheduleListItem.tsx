@@ -15,6 +15,7 @@ export type Props = {
     onClick?: React.DOMAttributes<HTMLDivElement>['onClick'];
 };
 
+// TODO: remove "name" in favor of "schedule" prop, and rewrite equality check from .name to .id
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */

@@ -8,9 +8,9 @@ import type { Course } from '@shared/types/Course';
  * @returns A promise that resolves to void.
  * @throws An error if the schedule is not found.
  */
-export default async function addCourse(scheduleName: string, course: Course): Promise<void> {
+export default async function addCourse(scheduleId: string, course: Course): Promise<void> {
     const schedules = await UserScheduleStore.get('schedules');
-    const activeSchedule = schedules.find(s => s.name === scheduleName);
+    const activeSchedule = schedules.find(s => s.id === scheduleId);
     if (!activeSchedule) {
         throw new Error('Schedule not found');
     }
