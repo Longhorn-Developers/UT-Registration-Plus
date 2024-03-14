@@ -9,11 +9,13 @@
 }
 
 @font-face {
-    font-family: 'Roboto Flex';
+    font-family: 'Roboto Flex Local';
     src: url('@public/fonts/roboto-flex.woff2') format('woff2');
     font-display: swap;
     font-style: normal;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@100..1000&display=swap');
 
 $medium_size: 16px;
 

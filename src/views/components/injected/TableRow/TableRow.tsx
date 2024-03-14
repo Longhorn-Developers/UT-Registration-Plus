@@ -1,6 +1,7 @@
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
+import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -85,20 +86,22 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     }
 
     return ReactDOM.createPortal(
-        <div className='relative'>
-            <button
-                className='m1 h-6 w-6 flex items-center justify-center rounded bg-ut-burntorange color-white!'
-                onClick={onClick}
-            >
-                <RowIcon color='ut-white' />
-            </button>
-            {conflicts.length > 0 && (
-                <ConflictsWithWarning
-                    className='invisible absolute left-13 top--3 text-white group-hover:visible'
-                    conflicts={conflicts}
-                />
-            )}
-        </div>,
+        <ExtensionRoot>
+            <div className='relative'>
+                <button
+                    className='m1 h-6 w-6 flex items-center justify-center rounded bg-ut-burntorange color-white!'
+                    onClick={onClick}
+                >
+                    <RowIcon color='ut-white' />
+                </button>
+                {conflicts.length > 0 && (
+                    <ConflictsWithWarning
+                        className='invisible absolute left-13 top--3 text-white group-hover:visible'
+                        conflicts={conflicts}
+                    />
+                )}
+            </div>
+        </ExtensionRoot>,
         container
     );
 }

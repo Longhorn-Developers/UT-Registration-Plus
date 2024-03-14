@@ -1,5 +1,15 @@
 @import 'src/views/styles/base.module.scss';
 
+@layer base {
+    .extensionRoot {
+        @import 'tailwind-compat';
+    }
+
+    span {
+        font-family: inherit;
+    }
+}
+
 .extensionRoot {
     @apply font-sans h-full;
     color: #303030;

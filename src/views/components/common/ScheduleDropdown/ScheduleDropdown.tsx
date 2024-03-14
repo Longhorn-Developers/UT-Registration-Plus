@@ -39,7 +39,7 @@ export default function ScheduleDropdown(props: Props) {
                                     </Text>
                                 </p>
                             </div>
-                            <Text className='text-2xl text-ut-burntorange font-normal'>
+                            <Text className='text-ut-burntorange text-2xl! font-normal!'>
                                 {open ? <DropdownArrowDown /> : <DropdownArrowUp />}
                             </Text>
                         </Disclosure.Button>
