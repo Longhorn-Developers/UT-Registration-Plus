@@ -16,6 +16,7 @@ export default async function addCourse(scheduleName: string, course: Course): P
     }
 
     activeSchedule.courses.push(course);
+    activeSchedule.updatedAt = Date.now();
 
     await UserScheduleStore.set('schedules', schedules);
 }
