@@ -1,5 +1,5 @@
 import type { Serialized } from 'chrome-extension-toolkit';
-import { v4 as uuid, v4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 import { Course } from './Course';
 
@@ -23,14 +23,10 @@ export class UserSchedule {
             this.hours += course.creditHours;
         }
         this.updatedAt = schedule.updatedAt;
-        this.id = this.generateID();
+        this.id = uuid();
     }
 
     containsCourse(course: Course): boolean {
         return this.courses.some(c => c.uniqueId === course.uniqueId);
-    }
-
-    generateID(): string {
-        return uuid();
     }
 }
