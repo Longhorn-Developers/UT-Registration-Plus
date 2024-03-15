@@ -35,6 +35,8 @@ export default function Calendar(): JSX.Element {
     const [scale, setScale] = useState(1);
 
     useEffect(() => {
+        if (!chrome?.runtime?.id) return;
+
         const listener = new MessageListener<CalendarTabMessages>({
             async openCoursePopup({ data, sendResponse }) {
                 const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
