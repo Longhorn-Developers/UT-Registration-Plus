@@ -93,7 +93,8 @@ function DevDashboard() {
     // listen for changes to the chrome storage to update the local storage state displayed in the dashboard
     useEffect(() => {
         const onChanged = (changes: chrome.storage.StorageChange, areaName: chrome.storage.AreaName) => {
-            let copy = {};
+            let copy: Record<string, any> = {};
+
             if (areaName === 'local') {
                 copy = { ...localStorage };
             } else if (areaName === 'sync') {
@@ -102,8 +103,8 @@ function DevDashboard() {
                 copy = { ...sessionStorage };
             }
 
-            Object.keys(changes).forEach(key => {
-                copy[key] = changes[key].newValue;
+            Object.keys(changes).forEach((key: string) => {
+                copy[key] = changes[key as keyof typeof changes].newValue;
             });
 
             if (areaName === 'local') {
@@ -125,7 +126,7 @@ function DevDashboard() {
     }, [localStorage, syncStorage, sessionStorage]);
 
     const handleEditStorage = (areaName: string) => (changes: Record<string, any>) => {
-        chrome.storage[areaName].set(changes);
+        (chrome.storage as any)[areaName].set(changes);
     };
 
     return (
@@ -145,4 +146,9 @@ function DevDashboard() {
     );
 }
 
-createRoot(document.getElementById('root')).render(<DevDashboard />);
+const rootElement = document.getElementById('root');
+if (rootElement) {
+    createRoot(rootElement).render(<DevDashboard />);
+} else {
+    throw new Error('No root element found');
+}
