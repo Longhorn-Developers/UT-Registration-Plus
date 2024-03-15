@@ -13,7 +13,6 @@ interface ColorPatchProps {
 }
 
 /**
- *
  * @param {ColorPatchProps} props - the props for the component
  * @param {string} props.color - the color to display as a hex string
  * @param {number} props.index - the index of this color patch in the parent color palette
@@ -22,25 +21,23 @@ interface ColorPatchProps {
  * is passed from the parent and updates the necessary parent state when this color patch is selected.
  * @returns {JSX.Element} - the color patch component
  */
-const ColorPatch: React.FC<ColorPatchProps> = ({
+export default function ColorPatch({
     color,
     index,
     selectedColor,
     handleSetSelectedColorPatch,
-}: ColorPatchProps): JSX.Element => {
+}: ColorPatchProps): JSX.Element {
     const isSelected = selectedColor === index;
     const handleClick = () => {
         handleSetSelectedColorPatch(isSelected ? -1 : index);
     };
     return (
         <button
-            className='h-[22px] w-[22px] p-0 transition-all duration-200 hover:scale-110 btn'
+            className='h-5.5 w-5.5 p-0 transition-all duration-200 hover:scale-110 btn'
             style={{ backgroundColor: color }}
             onClick={handleClick}
         >
             {isSelected && <CheckIcon className='h-5 w-5 color-white' />}
         </button>
     );
-};
-
-export default ColorPatch;
+}

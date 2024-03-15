@@ -25,18 +25,18 @@ const HexColorEditor: React.FC<HexColorEditorProps> = ({ hexCode, setHexCode }: 
     const previewColor = hexCode.length === 6 ? `#${hexCode}` : baseColor;
 
     return (
-        <div className='h-[22px] w-[74px] flex items-center border-[0.5px] border-ut-gray/50 rounded-1'>
+        <div className='h-5.5 w-18.5 flex items-center border-0.125 border-ut-gray/50 rounded-1'>
             <div
                 style={{ backgroundColor: previewColor }}
-                className='h-[22px] w-[21px] flex items-center justify-center rounded-l-1 -m-[0.5px]'
+                className='h-5.5 w-5.25 flex items-center justify-center rounded-l-1 -m-0.125'
             >
-                <TagIcon className='h-[16px] w-[16px] text-color-white' />
+                <TagIcon className='h-4 w-4 text-color-white' />
             </div>
-            <div className='flex flex-1 items-center justify-center p-[5px]'>
+            <div className='flex flex-1 items-center justify-center p-1.25'>
                 <input
                     type='text'
                     maxLength={6}
-                    className='box-border w-full border-none bg-transparent font-size-[11px] font-400 font-normal outline-none focus:outline-none'
+                    className='box-border w-full border-none bg-transparent font-size-2.75 font-400 font-normal outline-none focus:outline-none'
                     value={hexCode}
                     onChange={e => setHexCode(e.target.value)}
                 />
