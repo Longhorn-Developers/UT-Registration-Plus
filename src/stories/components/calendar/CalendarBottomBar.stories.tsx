@@ -25,6 +25,7 @@ const exampleGovCourse: Course = new Course({
     schedule: {
         meetings: [],
     },
+    scrapedAt: Date.now(),
     semester: {
         code: '12345',
         season: 'Spring',
@@ -43,6 +44,7 @@ const examplePsyCourse: Course = new Course({
     flags: ['no flag for you >:)'],
     fullName: 'PSY 317L Yada yada',
     instructionMode: 'Online',
+    scrapedAt: Date.now(),
     instructors: [
         new Instructor({
             firstName: 'Bevo',
@@ -92,6 +94,17 @@ export const Default: Story = {
                 status: examplePsyCourse.status,
             },
         ],
+        calendarRef: { current: null },
+    },
+    render: props => (
+        <div className='outline-red outline w-292.5!'>
+            <CalendarBottomBar {...props} />
+        </div>
+    ),
+};
+export const Empty: Story = {
+    args: {
+        courses: [],
         calendarRef: { current: null },
     },
     render: props => (

@@ -61,10 +61,12 @@ const schedules = [
                     year: 2024,
                     season: 'Fall',
                 },
+                scrapedAt: Date.now(),
             }),
         ],
         name: 'Main Schedule',
-        hours: 0, // Add the missing 'hours' property
+        hours: 0,
+        updatedAt: Date.now(),
     }),
     new UserSchedule({
         courses: [
@@ -98,6 +100,7 @@ const schedules = [
                     year: 2024,
                     season: 'Spring',
                 },
+                scrapedAt: Date.now(),
             }),
             new Course({
                 uniqueId: 123,
@@ -129,10 +132,12 @@ const schedules = [
                     year: 2024,
                     season: 'Fall',
                 },
+                scrapedAt: Date.now(),
             }),
         ],
         name: 'Backup #3',
-        hours: 0, // Add the missing 'hours' property
+        hours: 0,
+        updatedAt: Date.now(),
     }),
 ];
 

@@ -13,6 +13,7 @@ export default async function switchSchedule(scheduleName: string): Promise<void
     if (scheduleIndex === -1) {
         throw new Error(`Schedule ${scheduleName} does not exist`);
     }
+    schedules[scheduleIndex].updatedAt = Date.now();
 
     await UserScheduleStore.set('activeIndex', scheduleIndex);
 }

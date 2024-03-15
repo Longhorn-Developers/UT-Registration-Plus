@@ -1,3 +1,4 @@
+import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd';
 import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
@@ -25,6 +26,7 @@ const generateCourses = (count: number): Course[] => {
             courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',
             creditHours: 3,
             department: 'C S',
+            scrapedAt: Date.now(),
             description: [
                 'Problem solving and fundamental algorithms for various applications in science, business, and on the World Wide Web, and introductory programming in a modern object-oriented programming language.',
                 'Only one of the following may be counted: Computer Science 303E, 312, 312H. Credit for Computer Science 303E may not be earned after a student has received credit for Computer Science 314, or 314H. May not be counted toward a degree in computer science.',
@@ -70,11 +72,10 @@ const generateCourses = (count: number): Course[] => {
 };
 
 const exampleCourses = generateCourses(numberOfCourses);
-const generateCourseBlocks = (exampleCourses: Course[], colors: CourseColors[]) =>
-    exampleCourses.map((course, i) => (
-        <PopupCourseBlock key={course.uniqueId} course={course} colors={colors[i]} onCourseClick={() => {}} />
-    ));
-const ExampleCourseBlocks = generateCourseBlocks(exampleCourses, tailwindColorways);
+const generateCourseBlocks = (
+    { course, colors }: { course: Course; colors: CourseColors },
+    dragHandleProps: DraggableProvidedDragHandleProps
+) => <PopupCourseBlock key={course.uniqueId} course={course} colors={colors} dragHandleProps={dragHandleProps} />;
 
 const meta = {
     title: 'Components/Common/List',
@@ -84,7 +85,6 @@ const meta = {
     },
     tags: ['autodocs'],
     argTypes: {
-        draggableElements: { control: 'object' },
         gap: { control: 'number' },
     },
 } satisfies Meta<typeof List>;
@@ -94,7 +94,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        draggableElements: ExampleCourseBlocks,
+        draggables: exampleCourses.map((course, i) => ({ course, colors: tailwindColorways[i] })),
+        children: generateCourseBlocks,
         gap: 12,
     },
     render: args => (

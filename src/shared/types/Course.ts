@@ -73,11 +73,16 @@ export class Course {
     instructionMode: InstructionMode;
     /** Which semester is the course from */
     semester: Semester;
+    /** Unix timestamp of when the course was last scraped */
+    scrapedAt: number;
 
     constructor(course: Serialized<Course>) {
         Object.assign(this, course);
         this.schedule = new CourseSchedule(course.schedule);
         this.instructors = course.instructors.map(i => new Instructor(i));
+        if (!course.scrapedAt) {
+            this.scrapedAt = Date.now();
+        }
     }
 
     /**

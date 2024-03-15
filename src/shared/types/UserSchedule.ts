@@ -9,6 +9,8 @@ export class UserSchedule {
     courses: Course[];
     name: string;
     hours: number;
+    /** Unix timestamp of when the schedule was last updated */
+    updatedAt: number;
 
     constructor(schedule: Serialized<UserSchedule>) {
         this.courses = schedule.courses.map(c => new Course(c));
@@ -17,6 +19,7 @@ export class UserSchedule {
         for (const course of this.courses) {
             this.hours += course.creditHours;
         }
+        this.updatedAt = schedule.updatedAt;
     }
 
     containsCourse(course: Course): boolean {

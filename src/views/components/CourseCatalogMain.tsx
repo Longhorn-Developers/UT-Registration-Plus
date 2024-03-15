@@ -5,8 +5,7 @@ import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalog
 import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from '@views/components/injected/TableHead';
 import TableRow from '@views/components/injected/TableRow/TableRow';
-import TableSubheading from '@views/components/injected/TableSubheading/TableSubheading';
-import { useKeyPress } from '@views/hooks/useKeyPress';
+// import TableSubheading from '@views/components/injected/TableSubheading/TableSubheading';
 import useSchedules from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
@@ -24,10 +23,17 @@ interface Props {
 export default function CourseCatalogMain({ support }: Props): JSX.Element {
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+    const [showPopup, setShowPopup] = useState(false);
 
     useEffect(() => {
         populateSearchInputs();
     }, []);
+
+    useEffect(() => {
+        if (selectedCourse) {
+            setShowPopup(true);
+        }
+    }, [selectedCourse]);
 
     useEffect(() => {
         const tableRows = getCourseTableRows(document);
@@ -47,11 +53,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
         setSelectedCourse(course);
     };
 
-    const handleClearSelectedCourse = () => {
-        setSelectedCourse(null);
-    };
-
-    useKeyPress('Escape', handleClearSelectedCourse);
+    // useKeyPress('Escape', handleClearSelectedCourse);
 
     const [activeSchedule] = useSchedules();
 
@@ -63,28 +65,25 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
         <ExtensionRoot>
             <RecruitmentBanner />
             <TableHead>Plus</TableHead>
-            {rows.map((row, i) => {
-                if (!row.course) {
-                    // TODO: handle the course section headers
-                    return <TableSubheading key={row.element.innerText + i.toString()} row={row} />;
-                }
-                return (
-                    <TableRow
-                        key={row.course.uniqueId}
-                        row={row}
-                        isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
-                        activeSchedule={activeSchedule}
-                        onClick={handleRowButtonClick(row.course)}
-                    />
-                );
-            })}
-            {selectedCourse && (
-                <CourseCatalogInjectedPopup
-                    course={selectedCourse}
-                    activeSchedule={activeSchedule}
-                    onClose={handleClearSelectedCourse}
-                />
+            {rows.map(
+                row =>
+                    row.course && (
+                        <TableRow
+                            key={row.course.uniqueId}
+                            row={row}
+                            isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
+                            activeSchedule={activeSchedule}
+                            onClick={handleRowButtonClick(row.course)}
+                        />
+                    )
             )}
+            <CourseCatalogInjectedPopup
+                course={selectedCourse}
+                activeSchedule={activeSchedule}
+                show={showPopup}
+                onClose={() => setShowPopup(false)}
+                afterLeave={() => setSelectedCourse(null)}
+            />
             <AutoLoad addRows={addRows} />
         </ExtensionRoot>
     );

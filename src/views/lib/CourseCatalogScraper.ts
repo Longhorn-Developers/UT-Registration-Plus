@@ -92,6 +92,7 @@ export class CourseCatalogScraper {
                 instructors: this.getInstructors(row) as Instructor[],
                 description: this.getDescription(document),
                 semester: this.getSemester(),
+                scrapedAt: Date.now(),
             });
             courses.push({
                 element: row,

@@ -1,3 +1,4 @@
+import type { DraggableProvided, DraggableProvidedDragHandleProps, OnDragEndResponder } from '@hello-pangea/dnd';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import type { ReactElement } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -9,27 +10,30 @@ import React, { useCallback, useEffect, useState } from 'react';
 /**
  * Props for the List component.
  */
-export interface ListProps {
-    draggableElements: any[]; // TODO: Will later define draggableElements based on what types
-    // of components are draggable.
-    gap: number; // Impacts the spacing between items in the list
+export interface ListProps<T> {
+    draggables: T[];
+    children: (draggable: T, handleProps: DraggableProvidedDragHandleProps) => ReactElement;
+    onReordered: (elements: T[]) => void;
+    equalityCheck?: (a: T, b: T) => boolean;
+    gap?: number; // Impacts the spacing between items in the list
 }
 
-function initial(count: number, draggableElements: any[] = []) {
+function wrap<T>(draggableElements: T[]) {
     return draggableElements.map((element, index) => ({
-        id: `id:${index + count}`,
-        content: element as ReactElement,
+        id: `id:${index}`,
+        content: element,
     }));
 }
 
-function reorder(list: { id: string; content: ReactElement }[], startIndex: number, endIndex: number) {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-    return result;
+function reorder<T>(list: T[], startIndex: number, endIndex: number) {
+    const listCopy = [...list];
+
+    const [removed] = listCopy.splice(startIndex, 1);
+    listCopy.splice(endIndex, 0, removed);
+    return listCopy;
 }
 
-function getStyle({ provided, style /*  , isDragging, gap   */ }) {
+function getStyle(provided: DraggableProvided, style: React.CSSProperties) {
     const combined = {
         ...style,
         ...provided.draggableProps.style,
@@ -38,15 +42,21 @@ function getStyle({ provided, style /*  , isDragging, gap   */ }) {
     return combined;
 }
 
-function Item({ provided, item, style, isDragging /* , gap */ }) {
+function Item<T>(props: {
+    provided: DraggableProvided;
+    style: React.CSSProperties;
+    item: T;
+    isDragging: boolean;
+    children: React.ReactElement;
+}) {
     return (
         <div
-            {...provided.draggableProps}
-            ref={provided.innerRef}
-            style={getStyle({ provided, style /* , isDragging, gap   */ })}
-            className={`item ${isDragging ? 'is-dragging' : ''}`}
+            {...props.provided.draggableProps}
+            ref={props.provided.innerRef}
+            style={getStyle(props.provided, props.style)}
+            className={props.isDragging ? 'is-dragging' : ''}
         >
-            {React.cloneElement(item.content, { dragHandleProps: provided.dragHandleProps })}
+            {props.children}
         </div>
     );
 }
@@ -57,30 +67,33 @@ function Item({ provided, item, style, isDragging /* , gap */ }) {
  * @example
  * <List draggableElements={elements} />
  */
-export default function List({ draggableElements, gap = 12 }: ListProps): JSX.Element {
-    const [items, setItems] = useState(() => initial(0, draggableElements));
+function List<T>(props: ListProps<T>): JSX.Element {
+    const [items, setItems] = useState(wrap(props.draggables));
+
+    const equalityCheck = props.equalityCheck || ((a, b) => a === b);
+    const transformFunction = props.children;
 
     useEffect(() => {
-        setItems(prevItems => {
-            const prevItemIds = prevItems.map(item => item.id);
-            const newElements = draggableElements.filter((_, index) => !prevItemIds.includes(`id:${index}`));
-            const newItems = initial(prevItems.length, newElements);
-            return [...prevItems, ...newItems];
-        });
-    }, [draggableElements]);
-    const onDragEnd = useCallback(
+        // check if the draggables content has *actually* changed
+        if (
+            props.draggables.length === items.length &&
+            props.draggables.every((element, index) => equalityCheck(element, items[index].content))
+        ) {
+            return;
+        }
+        setItems(wrap(props.draggables));
+    }, [props.draggables]);
+
+    const onDragEnd: OnDragEndResponder = useCallback(
         result => {
-            if (!result.destination) {
-                return;
-            }
+            if (!result.destination) return;
+            if (result.source.index === result.destination.index) return;
 
-            if (result.source.index === result.destination.index) {
-                return;
-            }
+            // will reorder in place
+            const reordered = reorder(items, result.source.index, result.destination.index);
 
-            const newItems = reorder(items, result.source.index, result.destination.index);
-
-            setItems(newItems satisfies { id: string; content: React.ReactElement }[]);
+            setItems(reordered);
+            props.onReordered(reordered.map(item => item.content));
         },
         [items]
     );
@@ -107,14 +120,20 @@ export default function List({ draggableElements, gap = 12 }: ListProps): JSX.El
                                 isDragging={snapshot.isDragging}
                                 item={items[rubric.source.index]}
                                 style={{
-                                    style,
+                                    ...style,
                                 }}
-                            />
+                            >
+                                {transformFunction(items[rubric.source.index].content, provided.dragHandleProps)}
+                            </Item>
                         );
                     }}
                 >
                     {(provided, snapshot) => (
-                        <div {...provided.droppableProps} ref={provided.innerRef} style={{ marginBottom: `-${gap}px` }}>
+                        <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            style={{ marginBottom: `-${props.gap}px` }}
+                        >
                             {items.map((item, index) => (
                                 <Draggable key={item.id} draggableId={item.id} index={index}>
                                     {draggableProvided => (
@@ -124,12 +143,10 @@ export default function List({ draggableElements, gap = 12 }: ListProps): JSX.El
                                             style={{
                                                 ...draggableProvided.draggableProps.style,
                                                 // if last item, don't add margin
-                                                marginBottom: `${gap}px`,
+                                                marginBottom: `${props.gap}px`,
                                             }}
                                         >
-                                            {React.cloneElement(item.content, {
-                                                dragHandleProps: draggableProvided.dragHandleProps,
-                                            })}
+                                            {transformFunction(item.content, draggableProvided.dragHandleProps)}
                                         </div>
                                     )}
                                 </Draggable>
@@ -142,3 +159,5 @@ export default function List({ draggableElements, gap = 12 }: ListProps): JSX.El
         </div>
     );
 }
+
+export default React.memo(List) as typeof List;

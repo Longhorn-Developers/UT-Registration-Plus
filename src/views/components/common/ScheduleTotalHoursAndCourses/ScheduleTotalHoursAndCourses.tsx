@@ -26,9 +26,9 @@ export default function ScheduleTotalHoursAndCourses({
                 {`${scheduleName}: `}
             </Text>
             <Text variant='h3' as='div' className='flex flex-row items-center gap-2 text-theme-black'>
-                {totalHours} HOURS
+                {totalHours} {totalHours === 1 ? 'HOUR' : 'HOURS'}
                 <Text variant='h4' as='span' className='text-ut-black'>
-                    {totalCourses} courses
+                    {totalCourses} {totalCourses === 1 ? 'COURSE' : 'COURSES'}
                 </Text>
             </Text>
         </div>

@@ -17,6 +17,7 @@ export const exampleCourse: Course = new Course({
     flags: ['Quantitative Reasoning'],
     fullName: 'C S 303E ELEMS OF COMPTRS/PROGRAMMNG-WB',
     instructionMode: 'Online',
+    scrapedAt: Date.now(),
     instructors: [
         new Instructor({
             firstName: 'William',
@@ -56,6 +57,7 @@ export const exampleSchedule: UserSchedule = new UserSchedule({
     courses: [exampleCourse],
     name: 'Example Schedule',
     hours: 3,
+    updatedAt: Date.now(),
 });
 
 export const bevoCourse: Course = new Course({
@@ -100,12 +102,14 @@ export const bevoCourse: Course = new Course({
         year: 2024,
         season: 'Spring',
     },
+    scrapedAt: Date.now(),
 });
 
 export const bevoScheule: UserSchedule = new UserSchedule({
     courses: [bevoCourse],
     name: 'Bevo Schedule',
     hours: 3,
+    updatedAt: Date.now(),
 });
 
 export const MikeScottCS314Course: Course = new Course({
@@ -151,10 +155,12 @@ export const MikeScottCS314Course: Course = new Course({
         year: 2024,
         season: 'Spring',
     },
+    scrapedAt: Date.now(),
 });
 
 export const MikeScottCS314Schedule: UserSchedule = new UserSchedule({
     courses: [MikeScottCS314Course],
     name: 'Mike Scott CS314 Schedule',
     hours: 3,
+    updatedAt: Date.now(),
 });

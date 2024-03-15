@@ -24,24 +24,34 @@ type CalendarBottomBarProps = {
  * @returns {JSX.Element} The rendered bottom bar component.
  */
 export default function CalendarBottomBar({ courses, calendarRef }: CalendarBottomBarProps): JSX.Element {
+    const displayCourses = courses && courses.length > 0;
+
     return (
-        <div className='w-full flex py-1.25'>
-            <div className='flex flex-grow items-center gap-3.75 pl-7.5 pr-2.5'>
-                <Text variant='h4'>Async. and Other:</Text>
-                <div className='h-14 inline-flex gap-2.5'>
-                    {courses?.map(({ courseDeptAndInstr, status, colors, className }) => (
-                        <CalendarCourseBlock
-                            courseDeptAndInstr={courseDeptAndInstr}
-                            status={status}
-                            colors={colors}
-                            key={courseDeptAndInstr}
-                            className={clsx(className, 'w-35!')}
-                        />
-                    ))}
-                </div>
+        <div className='w-full flex py-1.25 pl-7.5 pr-6.25'>
+            <div
+                className={clsx('flex flex-grow items-center gap-3.75 text-nowrap', {
+                    'py-7.5': !displayCourses,
+                })}
+            >
+                {displayCourses && (
+                    <>
+                        <Text variant='h4'>Other Classes:</Text>
+                        <div className='inline-flex gap-2.5'>
+                            {courses.map(({ courseDeptAndInstr, status, colors, className }) => (
+                                <CalendarCourseBlock
+                                    courseDeptAndInstr={courseDeptAndInstr}
+                                    status={status}
+                                    colors={colors}
+                                    key={courseDeptAndInstr}
+                                    className={clsx(className, 'w-35! h-15!')}
+                                />
+                            ))}
+                        </div>
+                    </>
+                )}
             </div>
-            <div className='flex items-center pl-2.5 pr-7.5'>
-                <Divider orientation='vertical' size='1rem' className='mx-1.25' />
+            <div className='flex items-center'>
+                {displayCourses && <Divider orientation='vertical' size='1rem' className='mx-1.25' />}
                 <Button variant='single' color='ut-black' icon={CalendarMonthIcon} onClick={saveAsCal}>
                     Save as .CAL
                 </Button>

@@ -1,12 +1,16 @@
 @import 'src/views/styles/base.module.scss';
 
+@layer base {
+    .extensionRoot {
+        @import 'tailwind-compat';
+    }
+
+    span {
+        font-family: inherit;
+    }
+}
+
 .extensionRoot {
-    @apply font-sans;
+    @apply font-sans h-full;
     color: #303030;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    font-family: Inter, sans-serif;
-    font-weight: 300;
-    font-size: 14px;
-    line-height: 18px;
 }

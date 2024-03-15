@@ -106,7 +106,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             title: { text: 'Number of Students' },
         },
         chart: {
-            style: { fontFamily: 'Roboto Flex', fontWeight: '600' },
+            style: { fontFamily: 'Roboto Flex, Roboto Flex Local', fontWeight: '600' },
             spacingBottom: 25,
             spacingTop: 25,
             height: 250,

@@ -1,22 +1,25 @@
-import { Status } from '@shared/types/Course';
-import { StatusIcon } from '@shared/util/icons';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { tailwindColorways } from '@shared/util/storybook';
 import Divider from '@views/components/common/Divider/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List/List';
-import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import Text from '@views/components/common/Text/Text';
 import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
-import useSchedules, { switchSchedule } from '@views/hooks/useSchedules';
+import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
+import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import clsx from 'clsx';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
 import SettingsIcon from '~icons/material-symbols/settings';
 
+import CourseStatus from './common/CourseStatus/CourseStatus';
 import { LogoIcon } from './common/LogoIcon';
+import PopupCourseBlock from './common/PopupCourseBlock/PopupCourseBlock';
+import ScheduleDropdown from './common/ScheduleDropdown/ScheduleDropdown';
+import ScheduleListItem from './common/ScheduleListItem/ScheduleListItem';
 
 /**
  * Renders the main popup component.
@@ -24,43 +27,7 @@ import { LogoIcon } from './common/LogoIcon';
  */
 export default function PopupMain(): JSX.Element {
     const [activeSchedule, schedules] = useSchedules();
-    const [isPopupVisible, setIsPopupVisible] = useState(false);
-    const popupRef = useRef(null);
-    const toggleRef = useRef(null);
-
-    useEffect(() => {
-        function handleClickOutside(event) {
-            if (!popupRef.current?.contains(event.target) && !toggleRef.current?.contains(event.target)) {
-                setIsPopupVisible(false);
-            }
-        }
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    const handleClick = () => {
-        setIsPopupVisible(prev => !prev);
-    };
-
-    if (!activeSchedule || schedules.length === 0) {
-        return <ExtensionRoot>No active schedule available.</ExtensionRoot>;
-    }
-
-    const selectSchedule = async selectedSchedule => {
-        await switchSchedule(selectedSchedule.name);
-        handleClick();
-    };
-
-    const nonActiveSchedules = schedules.filter(s => s.name !== activeSchedule.name);
-
-    const draggableElements = activeSchedule?.courses.map((course, i) => (
-        <PopupCourseBlock
-            key={course.uniqueId}
-            course={course}
-            colors={tailwindColorways[i]}
-            onCourseClick={() => handleOpenCalendar({ uniqueId: course.uniqueId, course: course })}
-        />
-    ));
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const handleOpenOptions = async () => {
         const url = chrome.runtime.getURL('/options.html');
@@ -69,113 +36,106 @@ export default function PopupMain(): JSX.Element {
 
     return (
         <ExtensionRoot>
-            <div className='mx-auto max-w-sm rounded bg-white p-4 shadow-md'>
-                <div className='mb-2 flex items-center justify-between bg-white'>
-                    <div className='flex items-center gap-2'>
-                        <LogoIcon />
-                        <div>
-                            <Text as='div' variant='h1-course' className='color-ut-burntorange'>
-                                UT Registration
-                            </Text>
-                            <Text as='div' variant='h1-course' className='color-ut-orange'>
-                                Plus
-                            </Text>
-                        </div>
-                    </div>
-                    <div className='flex items-center'>
-                        <button className='rounded-lg bg-ut-burntorange p2' onClick={handleOpenCalendar}>
-                            <CalendarIcon className='text-white' />
-                        </button>
-                        <button className='bg-transparent btn' onClick={handleOpenOptions}>
-                            <SettingsIcon className='h-5 w-5 color-ut-black' />
-                        </button>
-                    </div>
-                </div>
-                <Divider orientation='horizontal' className='my-4' size='100%' />
-                <div
-                    ref={toggleRef}
-                    className='mb-4 flex items-center justify-between border border-ut-offwhite rounded p-2 text-left'
-                    onClick={handleClick}
-                    style={{ cursor: 'pointer' }}
-                >
-                    <div>
-                        <Text as='div' variant='h1-course' className='color-ut-burntorange'>
-                            {`${activeSchedule.name}`}:
-                        </Text>
-                        <div className='flex items-center justify-start gap2.5 color-ut-black'>
-                            <Text variant='h1'>{activeSchedule.hours} HOURS</Text>
-                            <Text variant='h2-course'>{activeSchedule.courses.length} Courses</Text>
-                        </div>
-                    </div>
-                    <div
-                        className={clsx(
-                            'ml-auto inline-block h-0 w-0 border-l-5 border-r-5 border-t-5 border-transparent border-ut-orange transition-transform duration-300 ease-in-out',
-                            { 'rotate-180': isPopupVisible }
-                        )}
-                    />
-                </div>
-                {isPopupVisible && (
-                    <div ref={popupRef}>
-                        {nonActiveSchedules.map(schedule => (
-                            <div
-                                key={schedule.name}
-                                className='my-2 cursor-pointer border border-gray-300 rounded-md border-solid bg-white p-2 shadow-sm hover:bg-gray-100'
-                                onClick={() => selectSchedule(schedule)}
-                            >
-                                <Text as='div' variant='h1-course' className='color-ut-burntorange'>
-                                    {schedule.name}:
-                                </Text>
-                                <div className='flex items-center justify-start gap2.5 color-ut-black'>
-                                    <Text variant='h1'>{schedule.hours} HOURS</Text>
-                                    <Text variant='h2-course'>{schedule.courses.length} Courses</Text>
-                                </div>
+            <div className='h-screen max-h-full flex flex-col bg-white'>
+                <div className='p-5 py-3.5'>
+                    <div className='flex items-center justify-between bg-white'>
+                        <div className='flex items-center gap-2'>
+                            <LogoIcon />
+                            <div className='flex flex-col'>
+                                <span className='text-lg text-ut-burntorange font-medium leading-[18px]'>
+                                    UT Registration
+                                    <br />
+                                </span>
+                                <span className='text-lg text-ut-orange font-medium leading-[18px]'>Plus</span>
                             </div>
-                        ))}
-                    </div>
-                )}
-                {!isPopupVisible && (
-                    <List
-                        draggableElements={activeSchedule?.courses.map((course, i) => (
-                            <PopupCourseBlock
-                                key={course.uniqueId}
-                                course={course}
-                                colors={tailwindColorways[i]}
-                                onCourseClick={() => handleOpenCalendar({ uniqueId: course.uniqueId, course: course })}
-                            />
-                        ))}
-                        gap={12}
-                    />
-                )}
-                <div className='mt-4 flex gap-2 border-t border-gray-200 p-4 text-xs'>
-                    <div className='flex items-center gap-1'>
-                        <div className='rounded bg-ut-black p-1px'>
-                            <StatusIcon status={Status.WAITLISTED} className='h-5 w-5 text-white' />
                         </div>
-                        <Text as='span' variant='mini'>
-                            WAITLISTED
-                        </Text>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                        <div className='rounded bg-ut-black p-1px'>
-                            <StatusIcon status={Status.CLOSED} className='h-5 w-5 text-white' />
+                        <div className='flex items-center gap-2.5'>
+                            <button className='bg-ut-burntorange px-2 py-1.25 btn' onClick={handleOpenCalendar}>
+                                <CalendarIcon className='size-6 text-white' />
+                            </button>
+                            <button className='bg-transparent px-2 py-1.25 btn' onClick={handleOpenOptions}>
+                                <SettingsIcon className='size-6 color-ut-black' />
+                            </button>
                         </div>
-                        <Text as='span' variant='mini'>
-                            CLOSED
-                        </Text>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                        <div className='rounded bg-ut-black p-1px'>
-                            <StatusIcon status={Status.CANCELLED} className='h-5 w-5 text-white' />
-                        </div>
-                        <Text as='span' variant='mini'>
-                            CANCELLED
-                        </Text>
                     </div>
                 </div>
-                <div className='mt-2 text-center text-xs'>
-                    <div className='inline-flex items-center justify-center text-ut-gray'>
-                        <Text variant='mini'>DATA UPDATED ON: 12:00 AM 02/01/2024</Text>
-                        <RefreshIcon className='ml-2 h-4 w-4 color-gray-600' />
+                <Divider orientation='horizontal' size='100%' />
+                <div className='px-5 pb-2.5 pt-3.75'>
+                    <ScheduleDropdown>
+                        <List
+                            draggables={schedules}
+                            equalityCheck={(a, b) => a.name === b.name}
+                            onReordered={reordered => {
+                                const activeSchedule = getActiveSchedule();
+                                const activeIndex = reordered.findIndex(s => s.name === activeSchedule.name);
+
+                                // don't care about the promise
+                                UserScheduleStore.set('schedules', reordered);
+                                UserScheduleStore.set('activeIndex', activeIndex);
+                            }}
+                            gap={10}
+                        >
+                            {(schedule, handleProps) => (
+                                <ScheduleListItem
+                                    name={schedule.name}
+                                    onClick={() => {
+                                        switchSchedule(schedule.name);
+                                    }}
+                                    dragHandleProps={handleProps}
+                                />
+                            )}
+                        </List>
+                    </ScheduleDropdown>
+                </div>
+                <div className='flex-1 self-stretch overflow-y-auto px-5'>
+                    {activeSchedule?.courses?.length > 0 && (
+                        <List
+                            draggables={activeSchedule.courses.map((course, i) => ({
+                                course,
+                                colors: tailwindColorways[i],
+                            }))}
+                            onReordered={reordered => {
+                                activeSchedule.courses = reordered.map(c => c.course);
+                                replaceSchedule(getActiveSchedule(), activeSchedule);
+                            }}
+                            equalityCheck={(a, b) => a.course.uniqueId === b.course.uniqueId}
+                            gap={10}
+                        >
+                            {({ course, colors }, handleProps) => (
+                                <PopupCourseBlock
+                                    key={course.uniqueId}
+                                    course={course}
+                                    colors={colors}
+                                    dragHandleProps={handleProps}
+                                    onCourseClick={() => handleOpenCalendar({ uniqueId: course.uniqueId, course: course })}
+                                />
+                            )}
+                        </List>
+                    )}
+                </div>
+
+                <div className='w-full flex flex-col items-center gap-1.25 p-5 pt-3.75'>
+                    <div className='flex gap-2.5'>
+                        <CourseStatus status='WAITLISTED' size='mini' />
+                        <CourseStatus status='CLOSED' size='mini' />
+                        <CourseStatus status='CANCELLED' size='mini' />
+                    </div>
+                    <div className='inline-flex items-center self-center gap-1'>
+                        <Text variant='mini' className='text-ut-gray'>
+                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                        </Text>
+                        <button
+                            className='h-4 w-4 bg-transparent p-0 btn'
+                            onClick={() => {
+                                setIsRefreshing(true);
+                            }}
+                        >
+                            <RefreshIcon
+                                className={clsx('h-4 w-4 text-ut-black animate-duration-800', {
+                                    'animate-spin': isRefreshing,
+                                })}
+                            />
+                        </button>
                     </div>
                 </div>
             </div>

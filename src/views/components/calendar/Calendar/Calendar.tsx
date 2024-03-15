@@ -4,56 +4,94 @@ import CalendarGrid from '@views/components/calendar/CalendarGrid/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalenderHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules/CalendarSchedules';
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
+import Divider from '@views/components/common/Divider/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
-import React, { useRef } from 'react';
-import { ExampleCourse } from 'src/stories/components/PopupCourseBlock.stories';
+import React, { useEffect, useRef, useState } from 'react';
 
+import styles from './Calendar.module.scss';
 /**
  * A reusable chip component that follows the design system of the extension.
  * @returns
  */
 export default function Calendar(): JSX.Element {
-    const calendarRef = useRef(null);
+    const calendarRef = useRef<HTMLDivElement>(null);
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
+    const [course, setCourse] = useState<Course | null>(null);
+    const [showPopup, setShowPopup] = useState(false);
+    const [sidebarWidth, setSidebarWidth] = useState('20%');
+    const [scale, setScale] = useState(1);
     const [course, setCourse] = React.useState<Course | null>(null);
     const courseParams = new URLSearchParams(window.location.search);
     const uniqueId = courseParams.get('uniqueId');
     // setCourse(courseParams.get('course')); Same thing as the comment in HeadingAndActions.tsx, how can we pass the course itself in? Or are some elements enough?
 
+    useEffect(() => {
+        const adjustLayout = () => {
+            const windowHeight = window.innerHeight;
+            const windowWidth = window.innerWidth;
+
+            const desiredCalendarHeight = 760;
+            const minSidebarWidthPixels = 230;
+
+            const scale = Math.min(1, windowHeight / desiredCalendarHeight);
+
+            const sidebarWidthPixels = Math.max(
+                windowWidth * scale - windowWidth + minSidebarWidthPixels,
+                minSidebarWidthPixels
+            );
+            const newSidebarWidth = `${(sidebarWidthPixels / windowWidth) * 100}%`;
+
+            setScale(scale);
+            setSidebarWidth(newSidebarWidth);
+        };
+
+        adjustLayout();
+
+        window.addEventListener('resize', adjustLayout);
+        return () => window.removeEventListener('resize', adjustLayout);
+    }, []);
+
+    useEffect(() => {
+        if (course) setShowPopup(true);
+    }, [course]);
+
+    const calendarContainerStyle = {
+        transform: `scale(${scale})`,
+        transformOrigin: 'top left',
+        marginTop: '-20px',
+    };
+
     return (
-        <div className='flex flex-col'>
-            <CalendarHeader
-            // TODO: implement props
-            // totalHours={activeSchedule.hours}
-            // scheduleName={activeSchedule.name}
-            // totalCourses={activeSchedule?.courses.length}
-            />
-            <div className='h-screen w-full flex flex-col md:flex-row'>
-                <div className='min-h-[30%] flex flex-col items-start gap-2.5 p-5 pl-7'>
-                    <div className='min-h-[30%]'>
+        <div className='h-screen flex flex-col' style={{ width: 'calc(100% - 1rem)' }}>
+            <div className='pl-5'>
+                <CalendarHeader />
+            </div>
+            <div className={`flex flex-grow flex-row overflow-hidden pl-4 ${styles.scrollableSchedules}`}>
+                <div className='sidebar-style' style={{ width: sidebarWidth, padding: '10px 15px 5px 5px' }}>
+                    <div className={`mb-4 ${styles.scrollableLimit}`}>
                         <CalendarSchedules />
                     </div>
-                    <ImportantLinks />
+                    <Divider orientation='horizontal' size='100%' />
+                    <div className='mt-4'>
+                        <ImportantLinks />
+                    </div>
                 </div>
-                <div className='flex flex-grow flex-col gap-4 overflow-hidden pr-12'>
-                    <div ref={calendarRef} className='flex-grow overflow-auto'>
+                <div className='flex flex-grow flex-col' style={calendarContainerStyle} ref={calendarRef}>
+                    <div className='flex-grow overflow-auto'>
                         <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                     </div>
-                    <div>
-                        <CalendarBottomBar calendarRef={calendarRef} />
-                    </div>
+                    <CalendarBottomBar calendarRef={calendarRef} />
                 </div>
             </div>
-            {/* TODO: Doesn't work when exampleCourse is replaced with an actual course through setCourse.
-                Check CalendarGrid.tsx and AccountForCourseConflicts for an example */}
-            {course ? (
-                <CourseCatalogInjectedPopup
-                    course={course}
-                    activeSchedule={activeSchedule}
-                    onClose={() => setCourse(null)}
-                />
-            ) : null}
+
+            <CourseCatalogInjectedPopup
+                course={course}
+                activeSchedule={activeSchedule}
+                onClose={() => setShowPopup(false)}
+                open={showPopup}
+                afterLeave={() => setCourse(null)}
+            />
         </div>
     );
 }

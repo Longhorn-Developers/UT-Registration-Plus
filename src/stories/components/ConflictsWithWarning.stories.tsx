@@ -44,6 +44,7 @@ export const ExampleCourse: Course = new Course({
     status: Status.WAITLISTED,
     uniqueId: 12345,
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+    scrapedAt: Date.now(),
 });
 export const ExampleCourse2: Course = new Course({
     courseName: 'PRINCIPLES OF COMPUTER SYSTEMS',
@@ -90,6 +91,7 @@ export const ExampleCourse2: Course = new Course({
     status: Status.WAITLISTED,
     uniqueId: 67890,
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+    scrapedAt: Date.now(),
 });
 
 const meta = {

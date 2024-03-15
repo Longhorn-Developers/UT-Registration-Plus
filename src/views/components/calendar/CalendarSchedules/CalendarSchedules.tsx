@@ -1,10 +1,10 @@
-import createSchedule from '@pages/background/lib/createSchedule';
-import switchSchedule from '@pages/background/lib/switchSchedule';
+import { background } from '@shared/messages';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import List from '@views/components/common/List/List';
 import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
 import Text from '@views/components/common/Text/Text';
-import useSchedules from '@views/hooks/useSchedules';
+import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import React, { useEffect, useState } from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
@@ -38,27 +38,15 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
 
     const handleKeyDown = event => {
         if (event.code === 'Enter') {
-            createSchedule(newSchedule);
-            setNewSchedule('');
+            background.createSchedule({ scheduleName: newSchedule }).then(() => {
+                setNewSchedule('');
+            });
         }
     };
 
     const handleScheduleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewSchedule(e.target.value);
     };
-
-    const selectItem = (index: number) => {
-        setActiveScheduleIndex(index);
-        switchSchedule(schedules[index].name);
-    };
-
-    const scheduleComponents = schedules.map((schedule, index) => (
-        <ScheduleListItem
-            active={index === activeScheduleIndex}
-            name={schedule.name}
-            onClick={() => selectItem(index)}
-        />
-    ));
 
     const fixBuildError = {
         dummySchedules,
@@ -77,7 +65,29 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
                 </div>
             </div>
             <div className='flex flex-col space-y-2.5'>
-                <List gap={10} draggableElements={scheduleComponents} />
+                <List
+                    gap={10}
+                    draggables={schedules}
+                    equalityCheck={(a, b) => a.name === b.name}
+                    onReordered={reordered => {
+                        const activeSchedule = getActiveSchedule();
+                        const activeIndex = reordered.findIndex(s => s.name === activeSchedule.name);
+
+                        // don't care about the promise
+                        UserScheduleStore.set('schedules', reordered);
+                        UserScheduleStore.set('activeIndex', activeIndex);
+                    }}
+                >
+                    {(schedule, handleProps) => (
+                        <ScheduleListItem
+                            name={schedule.name}
+                            onClick={() => {
+                                switchSchedule(schedule.name);
+                            }}
+                            dragHandleProps={handleProps}
+                        />
+                    )}
+                </List>
                 <input
                     type='text'
                     placeholder='Enter new schedule'

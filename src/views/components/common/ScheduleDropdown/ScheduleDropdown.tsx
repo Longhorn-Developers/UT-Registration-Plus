@@ -39,15 +39,16 @@ export default function ScheduleDropdown(props: Props) {
                                     </Text>
                                 </p>
                             </div>
-                            <Text className='text-2xl text-ut-burntorange font-normal'>
+                            <Text className='text-ut-burntorange text-2xl! font-normal!'>
                                 {open ? <DropdownArrowDown /> : <DropdownArrowUp />}
                             </Text>
                         </Disclosure.Button>
 
                         <Transition
-                            className='contain-paint max-h-55 origin-top overflow-auto transition-all duration-400 ease-out-expo'
+                            className='contain-paint max-h-55 origin-top overflow-auto transition-all duration-400 ease-in-out-expo'
                             enterFrom='transform scale-98 opacity-0 max-h-0!'
                             enterTo='transform scale-100 opacity-100 max-h-55'
+                            leave='ease-out-expo'
                             leaveFrom='transform scale-100 opacity-100 max-h-55'
                             leaveTo='transform scale-98 opacity-0 max-h-0!'
                         >

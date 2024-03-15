@@ -1,4 +1,6 @@
 import type { BACKGROUND_MESSAGES } from '@shared/messages';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import updateBadgeText from '@shared/util/updateBadgeText';
 import { MessageListener } from 'chrome-extension-toolkit';
 
 import onInstall from './events/onInstall';
@@ -37,3 +39,19 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
 });
 
 messageListener.listen();
+
+UserScheduleStore.listen('schedules', async schedules => {
+    const index = await UserScheduleStore.get('activeIndex');
+    const numCourses = schedules[index]?.courses?.length;
+    if (!numCourses) return;
+
+    updateBadgeText(numCourses);
+});
+
+UserScheduleStore.listen('activeIndex', async ({ newValue }) => {
+    const schedules = await UserScheduleStore.get('schedules');
+    const numCourses = schedules[newValue]?.courses?.length;
+    if (!numCourses) return;
+
+    updateBadgeText(numCourses);
+});

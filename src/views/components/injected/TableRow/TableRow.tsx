@@ -1,11 +1,11 @@
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import { Button } from '@views/components/common/Button/Button';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
+import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-import AddIcon from '~icons/material-symbols/add-circle';
+import RowIcon from '~icons/material-symbols/bar-chart-rounded';
 
 import styles from './TableRow.module.scss';
 
@@ -30,8 +30,9 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     useEffect(() => {
         element.classList.add(styles.row);
+        element.classList.add('group');
         const portalContainer = document.createElement('td');
-        portalContainer.style.textAlign = 'right';
+        // portalContainer.style.textAlign = 'right';
         const lastTableCell = element.querySelector('td:last-child');
         lastTableCell!.after(portalContainer);
         setContainer(portalContainer);
@@ -85,16 +86,22 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     }
 
     return ReactDOM.createPortal(
-        <>
-            <Button
-                icon={AddIcon}
-                className={styles.rowButton}
-                color='ut-burntorange'
-                onClick={onClick}
-                variant='single'
-            />
-            {conflicts.length > 0 && <ConflictsWithWarning className={styles.conflictTooltip} conflicts={conflicts} />}
-        </>,
+        <ExtensionRoot>
+            <div className='relative'>
+                <button
+                    className='m1 h-6 w-6 flex items-center justify-center rounded bg-ut-burntorange color-white!'
+                    onClick={onClick}
+                >
+                    <RowIcon color='ut-white' />
+                </button>
+                {conflicts.length > 0 && (
+                    <ConflictsWithWarning
+                        className='invisible absolute left-13 top--3 text-white group-hover:visible'
+                        conflicts={conflicts}
+                    />
+                )}
+            </div>
+        </ExtensionRoot>,
         container
     );
 }

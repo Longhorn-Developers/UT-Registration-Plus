@@ -56,30 +56,27 @@ export default function CalendarCourseCell({
 
     return (
         <div
-            className={clsx(
-                'h-full w-full flex justify-center rounded p-2 overflow-x-hidden cursor-default hover:cursor-pointer',
-                fontColor,
-                className
-            )}
+            className={clsx('h-full w-full flex justify-center rounded p-2 cursor-pointer', fontColor, className)}
             style={{
                 backgroundColor: colors.primaryColor,
             }}
             onClick={onClick}
         >
-            <div className='flex flex-1 flex-col gap-1 overflow-x-hidden'>
+            <div
+                className={clsx('flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full', {
+                    'self-center': !timeAndLocation,
+                })}
+            >
                 <Text
                     variant='h1-course'
-                    className={clsx('-my-0.8 leading-tight', {
-                        truncate: timeAndLocation,
+                    className={clsx('leading-tight! truncate', {
+                        '-my-0.8': timeAndLocation,
+                        'text-wrap': !timeAndLocation,
                     })}
                 >
                     {courseDeptAndInstr}
                 </Text>
-                {timeAndLocation && (
-                    <Text variant='h3-course' className='-mb-0.5'>
-                        {timeAndLocation}
-                    </Text>
-                )}
+                {timeAndLocation && <Text variant='h3-course'>{timeAndLocation}</Text>}
             </div>
             {rightIcon && (
                 <div

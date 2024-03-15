@@ -7,17 +7,15 @@ import { CourseMeeting, DAY_MAP } from './CourseMeeting';
  * This represents the schedule for a course, which includes all the meeting times for the course, as well as helper functions for parsing, serializing, and deserializing the schedule
  */
 export class CourseSchedule {
-    meetings: CourseMeeting[];
+    meetings: CourseMeeting[] = [];
 
     constructor(courseSchedule?: Serialized<CourseSchedule>) {
-        if (!courseSchedule) {
+        if (!courseSchedule || courseSchedule.meetings === undefined) {
+            this.meetings = [];
             return;
         }
-        Object.assign(this, courseSchedule);
-        this.meetings = [];
-        for (let meeting of courseSchedule.meetings) {
-            this.meetings.push(new CourseMeeting(meeting));
-        }
+
+        this.meetings = courseSchedule.meetings.map(meeting => new CourseMeeting(meeting));
     }
 
     /**
@@ -48,13 +46,12 @@ export class CourseSchedule {
                 .replaceAll('.', '')
                 .split('-')
                 .map(time => {
-                    const [hour, rest] = time.split(':');
-                    const [minute, ampm] = rest.split(' ');
+                    const [rawHour, rest] = time.split(':');
+                    const [rawMinute, ampm] = rest.split(' ');
+                    const hour = (rawHour === '12' ? 0 : Number(rawHour)) + (ampm === 'pm' ? 12 : 0);
+                    const minute = Number(rawMinute);
 
-                    if (ampm === 'pm') {
-                        return Number(hour) * 60 + Number(minute) + 12 * 60;
-                    }
-                    return Number(hour) * 60 + Number(minute);
+                    return hour * 60 + minute;
                 });
 
             const location = locLine.split(' ').filter(Boolean);
