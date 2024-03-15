@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import React, { useState } from 'react';
 
-import { bevoCourse, MikeScottCS314Course } from './mocked';
+import { bevoCourse, mikeScottCS314Course } from './mocked';
 
 const meta = {
     title: 'Components/Injected/CourseCatalogInjectedPopup',
@@ -27,14 +27,14 @@ type Story = StoryObj<typeof meta>;
 
 export const OpenCourse: Story = {
     args: {
-        course: MikeScottCS314Course,
+        course: mikeScottCS314Course,
     },
 };
 
 export const ClosedCourse: Story = {
     args: {
         course: {
-            ...MikeScottCS314Course,
+            ...mikeScottCS314Course,
             status: Status.CLOSED,
         } as Course,
     },
