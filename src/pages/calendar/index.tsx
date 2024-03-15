@@ -3,4 +3,9 @@ import { createRoot } from 'react-dom/client';
 
 import CalendarMain from './CalendarMain';
 
-createRoot(document.getElementById('root')).render(<CalendarMain />);
+const rootElement = document.getElementById('root');
+if (rootElement) {
+    createRoot(rootElement).render(<CalendarMain />);
+} else {
+    throw new Error('Could not find root element');
+}
