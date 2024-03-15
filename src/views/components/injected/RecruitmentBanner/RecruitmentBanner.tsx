@@ -29,10 +29,6 @@ export default function RecruitmentBanner(): JSX.Element {
         setContainer(container);
     }, []);
 
-    if (!container) {
-        return null;
-    }
-
     return createPortal(
         <div className={styles.container}>
             <Text color='white'>
@@ -47,7 +43,7 @@ export default function RecruitmentBanner(): JSX.Element {
                 !
             </Text>
         </div>,
-        container
+        container as Element
     );
 }
 

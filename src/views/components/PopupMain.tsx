@@ -1,3 +1,4 @@
+const defaultCourseColors = /* your color definition here */;
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { tailwindColorways } from '@shared/util/storybook';
 import Divider from '@views/components/common/Divider/Divider';
@@ -105,7 +106,7 @@ export default function PopupMain(): JSX.Element {
                                 <PopupCourseBlock
                                     key={course.uniqueId}
                                     course={course}
-                                    colors={colors}
+                                    colors={colors || defaultCourseColors}
                                     dragHandleProps={handleProps}
                                 />
                             )}

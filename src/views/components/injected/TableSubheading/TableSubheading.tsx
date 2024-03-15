@@ -15,10 +15,10 @@ export default function TableSubheading({ row }: Props): JSX.Element | null {
     const { element } = row;
 
     useEffect(() => {
-        element.classList.add(styles.subheader);
+        element.classList.add(styles.subheader!);
 
         return () => {
-            element.classList.remove(styles.subheader);
+            element.classList.remove(styles.subheader!);
         };
     }, [element]);
 
