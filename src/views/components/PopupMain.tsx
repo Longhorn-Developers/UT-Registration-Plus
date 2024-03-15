@@ -4,7 +4,10 @@ import Divider from '@views/components/common/Divider/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List/List';
 import Text from '@views/components/common/Text/Text';
-import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
+import {
+    handleOpenCalendar,
+    handleOpenCalendarWithCourse,
+} from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
@@ -107,7 +110,9 @@ export default function PopupMain(): JSX.Element {
                                     course={course}
                                     colors={colors}
                                     dragHandleProps={handleProps}
-                                    onCourseClick={() => handleOpenCalendar({ uniqueId: course.uniqueId, course })}
+                                    onCourseClick={() =>
+                                        handleOpenCalendarWithCourse({ uniqueId: course.uniqueId, course })
+                                    }
                                 />
                             )}
                         </List>
