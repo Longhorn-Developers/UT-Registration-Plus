@@ -7,7 +7,6 @@ import InvertColorsIcon from '~icons/material-symbols/invert-colors';
 import InvertColorsOffIcon from '~icons/material-symbols/invert-colors-off';
 
 import ColorPatch from './ColorPatch';
-import DivWrapper from './DivWrapper';
 import HexColorEditor from './HexColorEditor';
 import HuePicker from './HuePicker';
 
@@ -108,8 +107,6 @@ export default function CourseCellColorPicker({
     const [selectedBaseColorPatch, setSelectedBaseColorPatch] = React.useState<number>(-1);
     const [selectedShadeColorPatch, setSelectShadeColorPatch] = React.useState<number>(-1);
     const [hexCode, setHexCode] = React.useState<string>('');
-    const numColumns = 6;
-    const numFullRows = 3;
 
     const handleSelectBaseColorPatch = (baseColorPatchIndex: number) => {
         let newHexCode = baseColorPatchIndex > -1 ? colorPatchColors[baseColorPatchIndex].baseColor : colors.ut.gray;
@@ -142,65 +139,38 @@ export default function CourseCellColorPicker({
 
     return (
         <div className='inline-flex flex-col border border-1 border-ut-offwhite rounded-1 p-1.25'>
-            {Array.from({ length: numFullRows }, (_, rowIndex) => (
-                <div className='flex gap-0 flex-content-between' key={rowIndex}>
-                    {colorPatchColors.map((color: Color, index) => {
-                        if (index < rowIndex * numColumns || index >= (rowIndex + 1) * numColumns) {
-                            return null;
-                        }
-                        return (
-                            <DivWrapper key={color.baseColor}>
-                                <ColorPatch
-                                    color={color.baseColor}
-                                    index={index}
-                                    selectedColor={selectedBaseColorPatch}
-                                    handleSetSelectedColorPatch={handleSelectBaseColorPatch}
-                                />
-                            </DivWrapper>
-                        );
-                    })}
-                </div>
-            ))}
-            <div className='flex gap-0 flex-content-between'>
-                <DivWrapper>
+            <div className='grid grid-cols-6 gap-1'>
+                {colorPatchColors.map((color: Color, index) => (
                     <ColorPatch
-                        color={colorPatchColors[colorPatchColors.length - 2].baseColor}
-                        index={colorPatchColors.length - 2}
+                        color={color.baseColor}
+                        index={index}
                         selectedColor={selectedBaseColorPatch}
                         handleSetSelectedColorPatch={handleSelectBaseColorPatch}
                     />
-                </DivWrapper>
-                <DivWrapper>
-                    <ColorPatch
-                        color={colorPatchColors[colorPatchColors.length - 1].baseColor}
-                        index={colorPatchColors.length - 1}
-                        selectedColor={selectedBaseColorPatch}
-                        handleSetSelectedColorPatch={handleSelectBaseColorPatch}
-                    />
-                </DivWrapper>
-                <div className='flex items-center justify-center overflow-hidden p-0.5'>
+                ))}
+                <div className='col-span-3 flex items-center justify-center overflow-hidden'>
                     <HexColorEditor hexCode={hexCode} setHexCode={setHexCode} />
                 </div>
-                <DivWrapper>
-                    <button
-                        className='h-5.5 w-5.5 bg-ut-black p-0 transition-all duration-200 hover:scale-110 btn'
-                        onClick={() => setIsInvertColorsToggled(prev => !prev)}
-                    >
-                        {isInvertColorsToggled ? (
-                            <InvertColorsIcon className='h-3.5 w-3.5 color-white' />
-                        ) : (
-                            <InvertColorsOffIcon className='h-3.5 w-3.5 color-white' />
-                        )}
-                    </button>
-                </DivWrapper>
+                <button
+                    className='h-5.5 w-5.5 bg-ut-black p-0 transition-all duration-200 hover:scale-110 btn'
+                    onClick={() => setIsInvertColorsToggled(prev => !prev)}
+                >
+                    {isInvertColorsToggled ? (
+                        <InvertColorsIcon className='h-3.5 w-3.5 color-white' />
+                    ) : (
+                        <InvertColorsOffIcon className='h-3.5 w-3.5 color-white' />
+                    )}
+                </button>
             </div>
-            <Divider orientation='horizontal' size='100%' className='my-1' />
             {selectedBaseColorPatch !== -1 && (
-                <HuePicker
-                    shades={colorPatchColors[selectedBaseColorPatch].shades}
-                    selectedColor={selectedShadeColorPatch}
-                    setSelectedColor={handleSelectShadeColorPatch}
-                />
+                <>
+                    <Divider orientation='horizontal' size='100%' className='my-1' />
+                    <HuePicker
+                        shades={colorPatchColors[selectedBaseColorPatch].shades}
+                        selectedColor={selectedShadeColorPatch}
+                        setSelectedColor={handleSelectShadeColorPatch}
+                    />
+                </>
             )}
         </div>
     );

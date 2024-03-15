@@ -1,7 +1,6 @@
 import React from 'react';
 
 import ColorPatch from './ColorPatch';
-import DivWrapper from './DivWrapper';
 
 /**
  * Props for the HuePicker component
@@ -24,16 +23,14 @@ interface HuePickerProps {
 export default function HuePicker({ shades, selectedColor, setSelectedColor }: HuePickerProps): JSX.Element {
     const numColumns = 6;
     return (
-        <div className='flex gap-0 flex-content-between'>
+        <div className='grid grid-cols-6 gap-1'>
             {Array.from({ length: numColumns }, (_, index) => (
-                <DivWrapper key={shades[index]}>
-                    <ColorPatch
-                        color={shades[index]}
-                        index={index}
-                        selectedColor={selectedColor}
-                        handleSetSelectedColorPatch={setSelectedColor}
-                    />
-                </DivWrapper>
+                <ColorPatch
+                    color={shades[index]}
+                    index={index}
+                    selectedColor={selectedColor}
+                    handleSetSelectedColorPatch={setSelectedColor}
+                />
             ))}
         </div>
     );

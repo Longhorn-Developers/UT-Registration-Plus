@@ -25,22 +25,22 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
     const previewColor = hexCode.length === 6 ? `#${hexCode}` : baseColor;
 
     return (
-        <div className='h-5.5 w-18.5 flex items-center border border-ut-gray/50 rounded-1'>
+        <>
             <div
                 style={{ backgroundColor: previewColor }}
-                className='h-5.5 w-5.25 flex items-center justify-center rounded-l-1 -m-0.125'
+                className='h-5.5 w-5.25 flex items-center justify-center rounded-l-1'
             >
                 <TagIcon className='h-4 w-4 text-color-white' />
             </div>
-            <div className='flex flex-1 items-center justify-center p-1.25'>
+            <div className='h-5.5 w-[53px] flex flex-1 items-center justify-center border-b border-r border-t rounded-br rounded-tr p-1.25'>
                 <input
                     type='text'
                     maxLength={6}
-                    className='box-border w-full border-none bg-transparent font-size-2.75 font-normal outline-none focus:outline-none'
+                    className='w-full border-none bg-transparent font-size-2.75 font-normal outline-none focus:outline-none'
                     value={hexCode}
                     onChange={e => setHexCode(e.target.value)}
                 />
             </div>
-        </div>
+        </>
     );
 }
