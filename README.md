@@ -1,19 +1,21 @@
 # UT Registration Plus
 
-We've all been there. 20 tabs of Rate My Professor, Catalyst, and the UT Course Catalog open and you still don't know what classes to take.
-This extension tries to streamline most of the unnecessary steps and headaches of registering for classes at UT Austin.
+We've all been there. 20 tabs of Rate My Professor, Google Spreadsheet, and the UT Course Schedule open and you still don't know what classes to take.
+This extension, UT Registration Plus (UTRP), tries to streamline most of the unnecessary steps and headaches of registering for classes at UT Austin.
 
-- For each class on the UT Course Catalog it provides a "breakdown" popup, with quick and easy links to the RateMyProfessor and eCIS pages of the professor, as well as syllabi from when the professor taught the class in the past.
+- For each class in the UT Course Schedule site, UTRP provides a "breakdown" popup, with quick and easy links to the instructor's RateMyProfessor, Course Evaluation Survey (CES) and past syllabi.
 
-- Gets the course description and highlight the important information like prerequisites, restrictions, etc.
+- Shows the course description with highlighted information on prerequisites, restrictions, etc.
 
-- Shows an aggregate graph of the grade distributions for when the professor taught the class in the past.
+- Shows an aggregate and semesterly graph of the grade distributions for each course.
 
-- Gives you the ability to "Save Courses" and view them in the extension popup. This lets you see any schedule conflicts, and makes copy-pasting the unique code much easier when you're actually registering.
+- Gives you the ability to add "Add Course" and view them in the extension popup, a quick list of all the courses you have saved and an easy way to copy unique numbers.
 
 - Highlights and crosses-out what courses on the UT Course Catalog would conflict with your currently saved courses, making selecting courses that fit with your schedule so much easier.
 
-- Display's a weekly schedule based on your saved courses
+- Display's a weekly schedule based on your saved courses.
+
+- Give you the ability to create multiple schedules to plan for different scenarios.
 
 - ... and much more!
 
