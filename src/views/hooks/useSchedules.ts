@@ -3,8 +3,16 @@ import { UserSchedule } from '@shared/types/UserSchedule';
 import { useEffect, useState } from 'react';
 
 let schedulesCache = [];
-let activeIndexCache = 0;
+let activeIndexCache = -1;
 let initialLoad = true;
+
+const errorSchedule = new UserSchedule({
+    courses: [],
+    id: 'error',
+    name: 'An error has occurred',
+    hours: 0,
+    updatedAt: Date.now(),
+});
 
 /**
  * Fetches the user schedules from storage and sets the cached state.
@@ -25,7 +33,7 @@ async function fetchData() {
 export default function useSchedules(): [active: UserSchedule, schedules: UserSchedule[]] {
     const [schedules, setSchedules] = useState<UserSchedule[]>(schedulesCache);
     const [activeIndex, setActiveIndex] = useState<number>(activeIndexCache);
-    const [activeSchedule, setActiveSchedule] = useState<UserSchedule>(schedules[activeIndex]);
+    const [activeSchedule, setActiveSchedule] = useState<UserSchedule>(schedules[activeIndex] ?? errorSchedule);
 
     if (initialLoad) {
         initialLoad = false;
@@ -56,17 +64,14 @@ export default function useSchedules(): [active: UserSchedule, schedules: UserSc
 
     // recompute active schedule on a schedule/index change
     useEffect(() => {
-        setActiveSchedule(schedules[activeIndex]);
+        setActiveSchedule(schedules[activeIndex] ?? errorSchedule);
     }, [activeIndex, schedules]);
 
     return [activeSchedule, schedules];
 }
 
 export function getActiveSchedule(): UserSchedule {
-    return (
-        schedulesCache[activeIndexCache] ||
-        new UserSchedule({ courses: [], id: 'error', name: 'An error has occurred', hours: 0, updatedAt: Date.now() })
-    );
+    return schedulesCache[activeIndexCache] ?? errorSchedule;
 }
 
 export async function replaceSchedule(oldSchedule: UserSchedule, newSchedule: UserSchedule) {
