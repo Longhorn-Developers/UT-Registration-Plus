@@ -33,18 +33,30 @@ export default function Calendar(): JSX.Element {
     const [showPopup, setShowPopup] = useState(course !== null);
     const [sidebarWidth, setSidebarWidth] = useState('20%');
     const [scale, setScale] = useState(1);
-    const [calendarMessageListener] = useState<MessageListener<CalendarTabMessages>>(() => {
-        const listener = new MessageListener<CalendarTabMessages>({
-            async openCoursePopup({ data, sendResponse }) {
-                const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
-                if (course === undefined) return;
-                setCourse(course);
-                setShowPopup(true);
-                sendResponse(await chrome.tabs.getCurrent());
-            },
+    if (chrome && chrome.runtime) {
+        // needed since we can't use this section with Chromatic
+        // doesn't break the rule of hooks since it's a constant if statement
+
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [calendarMessageListener] = useState<MessageListener<CalendarTabMessages>>(() => {
+            const listener = new MessageListener<CalendarTabMessages>({
+                async openCoursePopup({ data, sendResponse }) {
+                    const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
+                    if (course === undefined) return;
+                    setCourse(course);
+                    setShowPopup(true);
+                    sendResponse(await chrome.tabs.getCurrent());
+                },
+            });
+            return listener;
         });
-        return listener;
-    });
+
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+            calendarMessageListener.listen();
+            return () => calendarMessageListener.unlisten();
+        }, [calendarMessageListener]);
+    }
 
     useEffect(() => {
         const adjustLayout = () => {
@@ -71,11 +83,6 @@ export default function Calendar(): JSX.Element {
         window.addEventListener('resize', adjustLayout);
         return () => window.removeEventListener('resize', adjustLayout);
     }, []);
-
-    useEffect(() => {
-        calendarMessageListener.listen();
-        return () => calendarMessageListener.unlisten();
-    }, [calendarMessageListener]);
 
     useEffect(() => {
         if (course) setShowPopup(true);
