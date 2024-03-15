@@ -21,7 +21,6 @@ export default function Calendar(): JSX.Element {
     const [showPopup, setShowPopup] = useState(false);
     const [sidebarWidth, setSidebarWidth] = useState('20%');
     const [scale, setScale] = useState(1);
-    const [course, setCourse] = React.useState<Course | null>(null);
     const courseParams = new URLSearchParams(window.location.search);
     const uniqueId = courseParams.get('uniqueId');
     // setCourse(courseParams.get('course')); Same thing as the comment in HeadingAndActions.tsx, how can we pass the course itself in? Or are some elements enough?
