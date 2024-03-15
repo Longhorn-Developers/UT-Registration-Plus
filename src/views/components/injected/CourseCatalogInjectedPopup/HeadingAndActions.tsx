@@ -36,7 +36,13 @@ interface HeadingAndActionProps {
  * @param course - Course to pass into the injected popup
  * @returns {Promise<void>} A promise that resolves when the tab is opened.
  */
-export const handleOpenCalendar = async ({ uniqueId, course }: { uniqueId: number; course: Course }): Promise<void> => {
+export const handleOpenCalendar = async ({
+    uniqueId,
+    course,
+}: {
+    uniqueId?: number;
+    course?: Course;
+}): Promise<void> => {
     if (uniqueId == null || course == null) {
         // Handle null or undefined parameters with a placeholder for now
         console.error('Parameters are null or undefined');
