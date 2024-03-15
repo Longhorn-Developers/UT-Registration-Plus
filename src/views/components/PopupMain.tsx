@@ -1,4 +1,3 @@
-const defaultCourseColors = /* your color definition here */;
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { tailwindColorways } from '@shared/util/storybook';
 import Divider from '@views/components/common/Divider/Divider';
@@ -21,6 +20,11 @@ import { LogoIcon } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown/ScheduleDropdown';
 import ScheduleListItem from './common/ScheduleListItem/ScheduleListItem';
+
+const defaultCourseColors = {
+    primaryColor: '#FFFFFF',
+    secondaryColor: '#000000',
+};
 
 /**
  * Renders the main popup component.
@@ -93,7 +97,7 @@ export default function PopupMain(): JSX.Element {
                         <List
                             draggables={activeSchedule.courses.map((course, i) => ({
                                 course,
-                                colors: tailwindColorways[i],
+                                colors: tailwindColorways[i] || defaultCourseColors,
                             }))}
                             onReordered={reordered => {
                                 activeSchedule.courses = reordered.map(c => c.course);
@@ -106,7 +110,7 @@ export default function PopupMain(): JSX.Element {
                                 <PopupCourseBlock
                                     key={course.uniqueId}
                                     course={course}
-                                    colors={colors || defaultCourseColors}
+                                    colors={colors}
                                     dragHandleProps={handleProps}
                                 />
                             )}
