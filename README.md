@@ -32,26 +32,18 @@ This extension tries to streamline most of the unnecessary steps and headaches o
 
 1. Clone this repo
 2. This project uses `pnpm` to manage and patch dependencies. Run `pnpm install` to configure the repository for building/development
+3. Using either of the methods listed below, the extension will build to the `dist/` directory.
 
-<details>
-<summary>Development Builds</summary>
+### Development Builds
 
 - Run `pnpm dev`
 
 > [!NOTE]
 > Injected content such as extension content on UT pages is not properly styled, and are missing class stylings. When developing for these pages, use `pnpm build -w` to build and watch for changes. This will ensure you are seeing an accurate representation of the extension.
-</details>
 
-<details>
-<summary>Production Builds</summary>
+### Production Builds
 
 - Run `pnpm build`
-
-</details>
-
-<br>
-
-The extension will build to the `dist/` directory.
 
 ## Development: Loading the Extension Manually
 
