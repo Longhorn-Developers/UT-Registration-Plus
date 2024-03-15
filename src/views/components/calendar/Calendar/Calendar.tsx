@@ -38,17 +38,6 @@ export default function Calendar(): JSX.Element {
         setCourse(course);
         setShowPopup(true);
     });
-    // const [calendarMessageListener] = useState<MessageListener<CalendarTabMessages>>(() => {
-    //     const listener = new MessageListener<CalendarTabMessages>({
-    //         openCoursePopup({ data }) {
-    //             const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
-    //             if (course === undefined) return;
-    //             setCourse(course);
-    //             setShowPopup(true);
-    //         },
-    //     });
-    //     return listener;
-    // });
 
     useEffect(() => {
         const adjustLayout = () => {
