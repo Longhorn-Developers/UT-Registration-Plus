@@ -21,11 +21,7 @@ interface HuePickerProps {
  * @param {React.Dispatch<React.SetStateAction<number>>} props.setSelectedColor - set state fn to control the selected color patch from parent
  * @returns {JSX.Element} - the hue picker component
  */
-const HuePicker: React.FC<HuePickerProps> = ({
-    shades,
-    selectedColor,
-    setSelectedColor,
-}: HuePickerProps): JSX.Element => {
+export default function HuePicker({ shades, selectedColor, setSelectedColor }: HuePickerProps): JSX.Element {
     const numColumns = 6;
     return (
         <div className='flex gap-0 flex-content-between'>
@@ -41,6 +37,4 @@ const HuePicker: React.FC<HuePickerProps> = ({
             ))}
         </div>
     );
-};
-
-export default HuePicker;
+}

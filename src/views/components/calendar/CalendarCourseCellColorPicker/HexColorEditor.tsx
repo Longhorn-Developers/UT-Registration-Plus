@@ -20,7 +20,7 @@ export interface HexColorEditorProps {
  * @param {React.Dispatch<React.SetStateAction<string>>} props.setHexCode - set state fn to control the hex color code from parent
  * @returns {JSX.Element} - the hex color editor component
  */
-const HexColorEditor: React.FC<HexColorEditorProps> = ({ hexCode, setHexCode }: HexColorEditorProps): JSX.Element => {
+export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorProps): JSX.Element {
     const baseColor = React.useMemo(() => getThemeColorHexByName('ut-gray'), []);
     const previewColor = hexCode.length === 6 ? `#${hexCode}` : baseColor;
 
@@ -43,6 +43,4 @@ const HexColorEditor: React.FC<HexColorEditorProps> = ({ hexCode, setHexCode }: 
             </div>
         </div>
     );
-};
-
-export default HexColorEditor;
+}
