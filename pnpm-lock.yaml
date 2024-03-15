@@ -23,8 +23,8 @@ dependencies:
     specifier: ^4.2.1
     version: 4.2.1(vite@5.1.4)
   chrome-extension-toolkit:
-    specifier: ^0.0.51
-    version: 0.0.51
+    specifier: ^0.0.54
+    version: 0.0.54
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
@@ -6215,8 +6215,8 @@ packages:
         optional: true
     dev: true
 
-  /chrome-extension-toolkit@0.0.51:
-    resolution: {integrity: sha512-XzOOE2+/aYG43bJOwuJT4oWcn80jBJr5mwGyrSzKKFoqALixT15AsPcfZId/UOoc4pIavu2XcHeJga6ng0m1jQ==}
+  /chrome-extension-toolkit@0.0.54:
+    resolution: {integrity: sha512-ux8v/PfWQIvO+EBbF+kDYq2z8Rnp5YZ7GwJxYX7R2a9owIEHJxiCUSJ82tOsiMQINF/31+t6QLG9equKNZUOlA==}
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)

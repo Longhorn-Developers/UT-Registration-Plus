@@ -7,6 +7,7 @@ import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import Divider from '@views/components/common/Divider/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
+import { useTabMessage } from '@views/hooks/useTabMessage';
 import React, { useEffect, useRef, useState } from 'react';
 
 import styles from './Calendar.module.scss';
@@ -17,13 +18,37 @@ import styles from './Calendar.module.scss';
 export default function Calendar(): JSX.Element {
     const calendarRef = useRef<HTMLDivElement>(null);
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
-    const [course, setCourse] = useState<Course | null>(null);
-    const [showPopup, setShowPopup] = useState(false);
+    const [course, setCourse] = useState<Course | null>(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const uniqueIdRaw = urlParams.get('uniqueId');
+        if (uniqueIdRaw === null) return null;
+        const uniqueId = Number(uniqueIdRaw);
+        const course = activeSchedule.courses.find(course => course.uniqueId === uniqueId);
+        if (course === undefined) return null;
+        urlParams.delete('uniqueId');
+        window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
+        return course;
+    });
+    const [showPopup, setShowPopup] = useState(course !== null);
     const [sidebarWidth, setSidebarWidth] = useState('20%');
     const [scale, setScale] = useState(1);
-    const courseParams = new URLSearchParams(window.location.search);
-    const uniqueId = courseParams.get('uniqueId');
-    // setCourse(courseParams.get('course')); Same thing as the comment in HeadingAndActions.tsx, how can we pass the course itself in? Or are some elements enough?
+    useTabMessage('openCoursePopup', ({ uniqueId }) => {
+        const course = activeSchedule.courses.find(course => course.uniqueId === uniqueId);
+        if (course === undefined) return;
+        setCourse(course);
+        setShowPopup(true);
+    });
+    // const [calendarMessageListener] = useState<MessageListener<CalendarTabMessages>>(() => {
+    //     const listener = new MessageListener<CalendarTabMessages>({
+    //         openCoursePopup({ data }) {
+    //             const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
+    //             if (course === undefined) return;
+    //             setCourse(course);
+    //             setShowPopup(true);
+    //         },
+    //     });
+    //     return listener;
+    // });
 
     useEffect(() => {
         const adjustLayout = () => {
