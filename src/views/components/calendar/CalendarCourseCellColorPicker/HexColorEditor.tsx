@@ -36,7 +36,7 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
                 <input
                     type='text'
                     maxLength={6}
-                    className='box-border w-full border-none bg-transparent font-size-2.75 font-400 font-normal outline-none focus:outline-none'
+                    className='box-border w-full border-none bg-transparent font-size-2.75 font-400 outline-none focus:outline-none'
                     value={hexCode}
                     onChange={e => setHexCode(e.target.value)}
                 />
