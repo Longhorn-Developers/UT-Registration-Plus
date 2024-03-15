@@ -107,7 +107,7 @@ export default function PopupMain(): JSX.Element {
                                     course={course}
                                     colors={colors}
                                     dragHandleProps={handleProps}
-                                    onCourseClick={() => handleOpenCalendar({ uniqueId: course.uniqueId, course: course })}
+                                    onCourseClick={() => handleOpenCalendar({ uniqueId: course.uniqueId, course })}
                                 />
                             )}
                         </List>
