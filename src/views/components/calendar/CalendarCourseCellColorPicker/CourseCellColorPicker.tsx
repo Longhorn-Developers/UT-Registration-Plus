@@ -85,17 +85,17 @@ export interface CourseCellColorPickerProps {
  *
  * @example
  * ```
- * const CourseCell = () => {
- *     const [selectedColor, setSelectedColor] = useState<string | null>(null);
- *     ...
- *     return (
- *      <div style={{ backgroundColor: selectedColor }}>
-           ...
- *         <CourseCellColorPicker setSelectedColor={setSelectedColor} />
- *     );
- * };
+ *   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+ *   const [isInvertColorsToggled, setIsInvertColorsToggled] = useState<boolean>(false);
+ *   return (
+ *       <CourseCellColorPicker
+ *           setSelectedColor={setSelectedColor}
+ *           isInvertColorsToggled={isInvertColorsToggled}
+ *           setIsInvertColorsToggled={setIsInvertColorsToggled}
+ *       />
+ *   );
  * ```
- * 
+ *
  * @returns {JSX.Element} - the color picker component that displays a color palette with a list of color patches.
  * This component is available when a user hovers over a course cell in their calendar to
  * color for the course cell. The user can set any valid hex color they want.
