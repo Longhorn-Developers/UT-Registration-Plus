@@ -27,6 +27,7 @@
     "dependencies": {
         "@headlessui/react": "^1.7.18",
         "@hello-pangea/dnd": "^16.5.0",
+        "@unocss/vite": "^0.58.6",
         "@vitejs/plugin-react": "^4.2.1",
         "chrome-extension-toolkit": "^0.0.51",
         "clsx": "^2.1.0",
@@ -103,7 +104,7 @@
         "react-devtools": "^5.0.0",
         "storybook": "^7.6.17",
         "typescript": "^5.3.3",
-        "unocss": "^0.58.5",
+        "unocss": "^0.58.6",
         "unocss-preset-primitives": "0.0.2-beta.0",
         "unplugin-icons": "^0.18.5",
         "vite": "^5.1.4",
@@ -112,7 +113,8 @@
     },
     "pnpm": {
         "patchedDependencies": {
-            "@crxjs/vite-plugin@2.0.0-beta.21": "patches/@crxjs__vite-plugin@2.0.0-beta.21.patch"
+            "@crxjs/vite-plugin@2.0.0-beta.21": "patches/@crxjs__vite-plugin@2.0.0-beta.21.patch",
+            "@unocss/vite@0.58.6": "patches/@unocss__vite@0.58.6.patch"
         },
         "overrides": {
             "es-module-lexer": "^1.4.1"
