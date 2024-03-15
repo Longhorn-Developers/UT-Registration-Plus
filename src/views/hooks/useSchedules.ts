@@ -3,8 +3,16 @@ import { UserSchedule } from '@shared/types/UserSchedule';
 import { useEffect, useState } from 'react';
 
 let schedulesCache = [];
-let activeIndexCache = 0;
+let activeIndexCache = -1;
 let initialLoad = true;
+
+const errorSchedule = new UserSchedule({
+    courses: [],
+    id: 'error',
+    name: 'An error has occurred',
+    hours: 0,
+    updatedAt: Date.now(),
+});
 
 /**
  * Fetches the user schedules from storage and sets the cached state.
@@ -25,7 +33,7 @@ async function fetchData() {
 export default function useSchedules(): [active: UserSchedule, schedules: UserSchedule[]] {
     const [schedules, setSchedules] = useState<UserSchedule[]>(schedulesCache);
     const [activeIndex, setActiveIndex] = useState<number>(activeIndexCache);
-    const [activeSchedule, setActiveSchedule] = useState<UserSchedule>(schedules[activeIndex]);
+    const [activeSchedule, setActiveSchedule] = useState<UserSchedule>(schedules[activeIndex] ?? errorSchedule);
 
     if (initialLoad) {
         initialLoad = false;
@@ -56,22 +64,19 @@ export default function useSchedules(): [active: UserSchedule, schedules: UserSc
 
     // recompute active schedule on a schedule/index change
     useEffect(() => {
-        setActiveSchedule(schedules[activeIndex]);
+        setActiveSchedule(schedules[activeIndex] ?? errorSchedule);
     }, [activeIndex, schedules]);
 
     return [activeSchedule, schedules];
 }
 
 export function getActiveSchedule(): UserSchedule {
-    return (
-        schedulesCache[activeIndexCache] ||
-        new UserSchedule({ courses: [], name: 'An error has occurred', hours: 0, updatedAt: Date.now() })
-    );
+    return schedulesCache[activeIndexCache] ?? errorSchedule;
 }
 
 export async function replaceSchedule(oldSchedule: UserSchedule, newSchedule: UserSchedule) {
     const schedules = await UserScheduleStore.get('schedules');
-    let oldIndex = schedules.findIndex(s => s.name === oldSchedule.name);
+    let oldIndex = schedules.findIndex(s => s.id === oldSchedule.id);
     oldIndex = oldIndex !== -1 ? oldIndex : 0;
     schedules[oldIndex] = newSchedule;
     await UserScheduleStore.set('schedules', schedules);
@@ -80,12 +85,12 @@ export async function replaceSchedule(oldSchedule: UserSchedule, newSchedule: Us
 
 /**
  * Switches the active schedule to the one with the specified name.
- * @param name - The name of the schedule to switch to.
+ * @param id - The id of the schedule to switch to.
  * @returns A promise that resolves when the active schedule has been switched.
  */
-export async function switchSchedule(name: string): Promise<void> {
+export async function switchSchedule(id: string): Promise<void> {
     console.log('Switching schedule...');
     const schedules = await UserScheduleStore.get('schedules');
-    const activeIndex = schedules.findIndex(s => s.name === name);
+    const activeIndex = schedules.findIndex(s => s.id === id);
     await UserScheduleStore.set('activeIndex', activeIndex);
 }

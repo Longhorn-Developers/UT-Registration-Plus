@@ -83,7 +83,6 @@ export default function Calendar(): JSX.Element {
 
             <CourseCatalogInjectedPopup
                 course={course}
-                activeSchedule={activeSchedule}
                 onClose={() => setShowPopup(false)}
                 open={showPopup}
                 afterLeave={() => setCourse(null)}

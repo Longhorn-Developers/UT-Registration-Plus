@@ -30,7 +30,7 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
     const [activeSchedule, schedules] = useSchedules();
 
     useEffect(() => {
-        const index = schedules.findIndex(schedule => schedule.name === activeSchedule.name);
+        const index = schedules.findIndex(schedule => schedule.id === activeSchedule.id);
         if (index !== -1) {
             setActiveScheduleIndex(index);
         }
@@ -68,10 +68,10 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
                 <List
                     gap={10}
                     draggables={schedules}
-                    equalityCheck={(a, b) => a.name === b.name}
+                    itemKey={s => s.id}
                     onReordered={reordered => {
                         const activeSchedule = getActiveSchedule();
-                        const activeIndex = reordered.findIndex(s => s.name === activeSchedule.name);
+                        const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
                         // don't care about the promise
                         UserScheduleStore.set('schedules', reordered);
@@ -80,9 +80,9 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
                 >
                     {(schedule, handleProps) => (
                         <ScheduleListItem
-                            name={schedule.name}
+                            schedule={schedule}
                             onClick={() => {
-                                switchSchedule(schedule.name);
+                                switchSchedule(schedule.id);
                             }}
                             dragHandleProps={handleProps}
                         />

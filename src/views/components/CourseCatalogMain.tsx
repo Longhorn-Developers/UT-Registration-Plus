@@ -79,7 +79,6 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
             )}
             <CourseCatalogInjectedPopup
                 course={selectedCourse}
-                activeSchedule={activeSchedule}
                 show={showPopup}
                 onClose={() => setShowPopup(false)}
                 afterLeave={() => setSelectedCourse(null)}

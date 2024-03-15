@@ -64,10 +64,10 @@ export default function PopupMain(): JSX.Element {
                     <ScheduleDropdown>
                         <List
                             draggables={schedules}
-                            equalityCheck={(a, b) => a.name === b.name}
+                            itemKey={schedule => schedule.id}
                             onReordered={reordered => {
                                 const activeSchedule = getActiveSchedule();
-                                const activeIndex = reordered.findIndex(s => s.name === activeSchedule.name);
+                                const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
                                 // don't care about the promise
                                 UserScheduleStore.set('schedules', reordered);
@@ -77,9 +77,9 @@ export default function PopupMain(): JSX.Element {
                         >
                             {(schedule, handleProps) => (
                                 <ScheduleListItem
-                                    name={schedule.name}
+                                    schedule={schedule}
                                     onClick={() => {
-                                        switchSchedule(schedule.name);
+                                        switchSchedule(schedule.id);
                                     }}
                                     dragHandleProps={handleProps}
                                 />
@@ -98,7 +98,7 @@ export default function PopupMain(): JSX.Element {
                                 activeSchedule.courses = reordered.map(c => c.course);
                                 replaceSchedule(getActiveSchedule(), activeSchedule);
                             }}
-                            equalityCheck={(a, b) => a.course.uniqueId === b.course.uniqueId}
+                            itemKey={e => e.course.uniqueId}
                             gap={10}
                         >
                             {({ course, colors }, handleProps) => (

@@ -4,9 +4,9 @@ import type { Course } from '@shared/types/Course';
 /**
  *
  */
-export default async function removeCourse(scheduleName: string, course: Course): Promise<void> {
+export default async function removeCourse(scheduleId: string, course: Course): Promise<void> {
     const schedules = await UserScheduleStore.get('schedules');
-    const activeSchedule = schedules.find(s => s.name === scheduleName);
+    const activeSchedule = schedules.find(s => s.id === scheduleId);
     if (!activeSchedule) {
         throw new Error('Schedule not found');
     }

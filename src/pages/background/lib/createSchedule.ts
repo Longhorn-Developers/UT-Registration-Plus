@@ -1,4 +1,5 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { generateRandomId } from '@shared/util/random';
 
 /**
  * Creates a new schedule with the given name
@@ -7,11 +8,12 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
  */
 export default async function createSchedule(scheduleName: string): Promise<string | undefined> {
     const schedules = await UserScheduleStore.get('schedules');
-    if (schedules.find(schedule => schedule.name === scheduleName)) {
-        return `Schedule ${scheduleName} already exists`;
-    }
+    // if (schedules.find(schedule => schedule.name === scheduleName)) {
+    //     return `Schedule ${scheduleName} already exists`;
+    // }
 
     schedules.push({
+        id: generateRandomId(),
         name: scheduleName,
         courses: [],
         hours: 0,
