@@ -66,7 +66,6 @@ export default function PopupMain(): JSX.Element {
                             draggables={schedules}
                             itemKey={schedule => schedule.id}
                             onReordered={reordered => {
-                                console.log('reorederd');
                                 const activeSchedule = getActiveSchedule();
                                 const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
