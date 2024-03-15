@@ -31,17 +31,26 @@ interface HeadingAndActionProps {
 }
 
 /**
+ * Opens the calendar in a new tab.
+ * @returns {Promise<void>} A promise that resolves when the tab is opened.
+ */
+export const handleOpenCalendar = async (): Promise<void> => {
+    const url = chrome.runtime.getURL('calendar.html');
+    openNewTab({ url });
+};
+
+/**
  * Opens the calendar in a new tab with parameters if needed for opening of injected popup
  * @param uniqueId - The unique ID of the course
  * @param course - Course to pass into the injected popup
  * @returns {Promise<void>} A promise that resolves when the tab is opened.
  */
-export const handleOpenCalendar = async ({
+export const handleOpenCalendarWithCourse = async ({
     uniqueId,
     course,
 }: {
-    uniqueId?: number;
-    course?: Course;
+    uniqueId: number;
+    course: Course;
 }): Promise<void> => {
     if (uniqueId == null || course == null) {
         // Handle null or undefined parameters with a placeholder for now
@@ -52,7 +61,6 @@ export const handleOpenCalendar = async ({
     console.log('Parameter 1:', uniqueId);
     console.log('Parameter 2:', course);
     // const url = chrome.runtime.getURL(`calendar.html?uniqueId=${uniqueId}&course=${course}`);
-    // I just realized... can we make course a param? Isn't it an entire class?
     const url = chrome.runtime.getURL(`calendar.html?uniqueId=${uniqueId}`);
     openNewTab({ url });
 };
