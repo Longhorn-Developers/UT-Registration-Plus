@@ -11,6 +11,8 @@ const dayToNumber = {
     Wednesday: 2,
     Thursday: 3,
     Friday: 4,
+    Saturday: 5,
+    Sunday: 6,
 } as const satisfies Record<string, number>;
 
 interface CalendarGridPoint {
@@ -104,7 +106,7 @@ function extractCourseInfo(course: Course) {
         instructors,
         schedule: { meetings },
     } = course;
-    const courseDeptAndInstr = `${department} ${instructors[0].lastName}`;
+    const courseDeptAndInstr = instructors[0] ? `${department} ${instructors[0].lastName}` : `${department}`;
     return { status, courseDeptAndInstr, meetings, course };
 }
 
@@ -143,12 +145,12 @@ function processAsyncCourses({
 /**
  * Function to process each in-person class into its distinct meeting objects for calendar grid
  */
-function processInPersonMeetings(meeting: CourseMeeting, { courseDeptAndInstr, status, course }) {
-    const { days, startTime, endTime, location } = meeting;
+function processInPersonMeetings(meeting: CourseMeeting, { courseDeptAndInstr, status, course }: any) {
+    const { days, startTime, endTime, location = { building: 'WB' } } = meeting;
     const midnightIndex = 1440;
     const normalizingTimeFactor = 720;
     const time = meeting.getTimeString({ separator: '-', capitalize: true });
-    const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
+    const timeAndLocation = `${time} - ${location.building}`;
     let normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
     let normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
     return days.map(day => ({

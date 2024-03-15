@@ -2,7 +2,7 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import { useEffect, useState } from 'react';
 
-let schedulesCache = [];
+let schedulesCache: UserSchedule[] = [];
 let activeIndexCache = -1;
 let initialLoad = true;
 

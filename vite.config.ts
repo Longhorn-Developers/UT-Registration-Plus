@@ -2,6 +2,7 @@
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
 import { resolve } from 'path';
+import type { OutputAsset, OutputBundle, OutputChunk } from 'rollup';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite';
@@ -26,9 +27,11 @@ window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 `;
 
+const isOutputChunk = (input: OutputAsset | OutputChunk): input is OutputChunk => 'code' in input;
+
 const renameFile = (source: string, destination: string): Plugin => {
     if (typeof source !== 'string' || typeof destination !== 'string') {
-        return;
+        throw new Error('Invalid arguments for renameFile');
     }
 
     return {
@@ -36,8 +39,11 @@ const renameFile = (source: string, destination: string): Plugin => {
         apply: 'build',
         enforce: 'post',
         generateBundle(options, bundle) {
-            if (!bundle[source]) return;
-            bundle[source].fileName = destination;
+            const file = bundle[source];
+            if (!file) return;
+            if (isOutputChunk(file)) {
+                file.fileName = destination;
+            }
         },
     };
 };
@@ -46,10 +52,11 @@ const fixManifestOptionsPage = () => ({
     name: 'fix-manifest-options-page',
     apply: 'build' as const,
     enforce: 'post' as const,
-    generateBundle(_, bundle) {
+    generateBundle(_: any, bundle: OutputBundle) {
         for (const fileName of Object.keys(bundle)) {
             if (fileName.startsWith('assets/crx-manifest')) {
-                const chunk = bundle[fileName];
+                const chunk = bundle[fileName] as OutputChunk;
+                if (!chunk) return;
                 chunk.code = chunk.code.replace(
                     /"options_page":"src\/pages\/options\/index.html"/,
                     `"options_page":"options.html"`

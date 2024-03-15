@@ -38,6 +38,7 @@
         "react": "^18.2.0",
         "react-devtools-core": "^5.0.0",
         "react-dom": "^18.2.0",
+        "rollup": "^4.13.0",
         "sass": "^1.71.1",
         "sql.js": "1.10.2"
     },
