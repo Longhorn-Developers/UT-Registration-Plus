@@ -34,27 +34,19 @@ interface HeadingAndActionProps {
  * Opens the calendar in a new tab.
  * @returns {Promise<Serialized<chrome.tabs.Tab>>} A promise that resolves when the tab is opened.
  */
-// eslint-disable-next-line arrow-body-style
-export const handleOpenCalendar = async (): Promise<Serialized<chrome.tabs.Tab>> => {
-    return background.openCalendarPageIfNotOpen({});
-};
+export const handleOpenCalendar = async (): Promise<Serialized<chrome.tabs.Tab>> =>
+    background.openCalendarPageIfNotOpen({});
 
 /**
  * Opens the calendar in a new tab with parameters if needed for opening of injected popup
  * @param uniqueId - The unique ID of the course
- * @param course - Course to pass into the injected popup
  * @returns {Promise<Serialized<chrome.tabs.Tab>>} A promise that resolves when the tab is opened.
  */
 export const handleOpenCalendarWithCourse = async ({
     uniqueId,
 }: {
     uniqueId: number;
-    course: Course;
-    // eslint-disable-next-line arrow-body-style
-}): Promise<Serialized<chrome.tabs.Tab>> => {
-    return background.openCalendarPageIfNotOpen({ uniqueId });
-    // return Promise.reject();
-};
+}): Promise<Serialized<chrome.tabs.Tab>> => background.openCalendarPageIfNotOpen({ uniqueId });
 
 /**
  * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.

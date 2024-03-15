@@ -4,8 +4,6 @@ import type { CourseColors } from '@shared/util/colors';
 import { pickFontColor } from '@shared/util/colors';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
-import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
-import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import clsx from 'clsx';
 import React from 'react';
 

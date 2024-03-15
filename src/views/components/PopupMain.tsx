@@ -53,7 +53,10 @@ export default function PopupMain(): JSX.Element {
                             </div>
                         </div>
                         <div className='flex items-center gap-2.5'>
-                            <button className='bg-ut-burntorange px-2 py-1.25 btn' onClick={handleOpenCalendar}>
+                            <button
+                                className='bg-ut-burntorange px-2 py-1.25 btn'
+                                onClick={() => handleOpenCalendar().then(() => window.close())}
+                            >
                                 <CalendarIcon className='size-6 text-white' />
                             </button>
                             <button className='bg-transparent px-2 py-1.25 btn' onClick={handleOpenOptions}>
@@ -111,7 +114,9 @@ export default function PopupMain(): JSX.Element {
                                     colors={colors}
                                     dragHandleProps={handleProps}
                                     onCourseClick={() =>
-                                        handleOpenCalendarWithCourse({ uniqueId: course.uniqueId, course })
+                                        handleOpenCalendarWithCourse({ uniqueId: course.uniqueId }).then(() =>
+                                            window.close()
+                                        )
                                     }
                                 />
                             )}
@@ -124,6 +129,7 @@ export default function PopupMain(): JSX.Element {
                         <CourseStatus status='WAITLISTED' size='mini' />
                         <CourseStatus status='CLOSED' size='mini' />
                         <CourseStatus status='CANCELLED' size='mini' />
+                        ``
                     </div>
                     <div className='inline-flex items-center self-center gap-1'>
                         <Text variant='mini' className='text-ut-gray'>

@@ -11,17 +11,19 @@ interface Props {
     testId?: string;
 }
 
-const tabInfoListener = new MessageListener<TabInfoMessages>({
-    getTabInfo: ({ sendResponse }) => {
-        console.log('getTabInfo');
-        sendResponse({
-            url: window.location.href,
-            title: document.title,
-        });
-    },
-});
+if (chrome && chrome.runtime) {
+    const tabInfoListener = new MessageListener<TabInfoMessages>({
+        getTabInfo: ({ sendResponse }) => {
+            console.log('getTabInfo');
+            sendResponse({
+                url: window.location.href,
+                title: document.title,
+            });
+        },
+    });
 
-tabInfoListener.listen();
+    tabInfoListener.listen();
+}
 
 /**
  * A wrapper component for the extension elements that adds some basic styling to them

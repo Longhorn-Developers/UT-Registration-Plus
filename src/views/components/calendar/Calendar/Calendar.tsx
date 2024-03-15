@@ -1,3 +1,4 @@
+import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import type { Course } from '@shared/types/Course';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid/CalendarGrid';
@@ -7,7 +8,7 @@ import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import Divider from '@views/components/common/Divider/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
-import { useTabMessage } from '@views/hooks/useTabMessage';
+import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useRef, useState } from 'react';
 
 import styles from './Calendar.module.scss';
@@ -32,11 +33,17 @@ export default function Calendar(): JSX.Element {
     const [showPopup, setShowPopup] = useState(course !== null);
     const [sidebarWidth, setSidebarWidth] = useState('20%');
     const [scale, setScale] = useState(1);
-    useTabMessage('openCoursePopup', ({ uniqueId }) => {
-        const course = activeSchedule.courses.find(course => course.uniqueId === uniqueId);
-        if (course === undefined) return;
-        setCourse(course);
-        setShowPopup(true);
+    const [calendarMessageListener] = useState<MessageListener<CalendarTabMessages>>(() => {
+        const listener = new MessageListener<CalendarTabMessages>({
+            async openCoursePopup({ data, sendResponse }) {
+                const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
+                if (course === undefined) return;
+                setCourse(course);
+                setShowPopup(true);
+                sendResponse(await chrome.tabs.getCurrent());
+            },
+        });
+        return listener;
     });
 
     useEffect(() => {
@@ -64,6 +71,11 @@ export default function Calendar(): JSX.Element {
         window.addEventListener('resize', adjustLayout);
         return () => window.removeEventListener('resize', adjustLayout);
     }, []);
+
+    useEffect(() => {
+        calendarMessageListener.listen();
+        return () => calendarMessageListener.unlisten();
+    }, [calendarMessageListener]);
 
     useEffect(() => {
         if (course) setShowPopup(true);
