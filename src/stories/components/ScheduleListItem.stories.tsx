@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import { UserSchedule } from '@shared/types/UserSchedule';
 import type { Meta, StoryObj } from '@storybook/react';
 import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
