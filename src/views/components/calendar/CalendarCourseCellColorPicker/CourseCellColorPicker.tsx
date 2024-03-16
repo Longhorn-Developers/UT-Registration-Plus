@@ -43,13 +43,9 @@ const colorPatchColors = new Map<string, string[]>(
     ])
 );
 
-console.log(colorPatchColors);
-
 const hexCodeToBaseColor = new Map<string, string>(
     Array.from(colorPatchColors.entries()).flatMap(([baseColor, shades]) => shades.map(shade => [shade, baseColor]))
 );
-
-console.log(hexCodeToBaseColor);
 
 /**
  * Props for the CourseCellColorPicker component.
