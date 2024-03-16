@@ -19,7 +19,7 @@ import styles from './Calendar.module.scss';
 export default function Calendar(): JSX.Element {
     const calendarRef = useRef<HTMLDivElement>(null);
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
-    const [course, setCourse] = useState<Course | null>((): JSX.Element | null => {
+    const [course, setCourse] = useState<Course | null>((): Course | null => {
         const urlParams = new URLSearchParams(window.location.search);
         const uniqueIdRaw = urlParams.get('uniqueId');
         if (uniqueIdRaw === null) return null;
