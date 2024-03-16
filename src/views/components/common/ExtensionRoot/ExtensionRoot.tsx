@@ -16,8 +16,6 @@ interface Props {
  */
 export default function ExtensionRoot(props: React.PropsWithChildren<Props>): JSX.Element {
     useEffect(() => {
-        if (!chrome?.runtime?.id) return;
-
         const tabInfoListener = new MessageListener<TabInfoMessages>({
             getTabInfo: ({ sendResponse }) => {
                 sendResponse({

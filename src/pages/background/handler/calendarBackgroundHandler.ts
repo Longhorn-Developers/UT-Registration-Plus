@@ -19,7 +19,7 @@ const getAllTabInfos = async () => {
 };
 
 const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
-    async openCalendarPageIfNotOpen({ data, sendResponse }) {
+    async switchToCalendarTab({ data, sendResponse }) {
         const { uniqueId } = data;
         const calendarUrl = chrome.runtime.getURL(`calendar.html`);
 
@@ -34,7 +34,7 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
         } else {
             const urlParams = new URLSearchParams();
             if (uniqueId !== undefined) urlParams.set('uniqueId', uniqueId.toString());
-            const url = `${calendarUrl}?${urlParams.toString()}`;
+            const url = `${calendarUrl}?${urlParams.toString()}`.replace(/\?$/, '');
             const tab = await openNewTab(url);
             sendResponse(tab);
         }

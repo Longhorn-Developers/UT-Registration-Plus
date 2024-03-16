@@ -34,8 +34,7 @@ interface HeadingAndActionProps {
  * Opens the calendar in a new tab.
  * @returns {Promise<Serialized<chrome.tabs.Tab>>} A promise that resolves when the tab is opened.
  */
-export const handleOpenCalendar = async (): Promise<Serialized<chrome.tabs.Tab>> =>
-    background.openCalendarPageIfNotOpen({});
+export const handleOpenCalendar = async (): Promise<Serialized<chrome.tabs.Tab>> => background.switchToCalendarTab({});
 
 /**
  * Opens the calendar in a new tab with parameters if needed for opening of injected popup
@@ -46,7 +45,7 @@ export const handleOpenCalendarWithCourse = async ({
     uniqueId,
 }: {
     uniqueId: number;
-}): Promise<Serialized<chrome.tabs.Tab>> => background.openCalendarPageIfNotOpen({ uniqueId });
+}): Promise<Serialized<chrome.tabs.Tab>> => background.switchToCalendarTab({ uniqueId });
 
 /**
  * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.

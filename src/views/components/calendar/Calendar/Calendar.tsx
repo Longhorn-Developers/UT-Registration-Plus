@@ -27,7 +27,8 @@ export default function Calendar(): JSX.Element {
         const course = activeSchedule.courses.find(course => course.uniqueId === uniqueId);
         if (course === undefined) return null;
         urlParams.delete('uniqueId');
-        window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
+        const newUrl = `${window.location.pathname}?${urlParams}`.replace(/\?$/, '');
+        window.history.replaceState({}, '', newUrl);
         return course;
     });
 
@@ -36,8 +37,6 @@ export default function Calendar(): JSX.Element {
     const [scale, setScale] = useState(1);
 
     useEffect(() => {
-        if (!chrome?.runtime?.id) return;
-
         const listener = new MessageListener<CalendarTabMessages>({
             async openCoursePopup({ data, sendResponse }) {
                 const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);

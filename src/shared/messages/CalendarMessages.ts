@@ -4,7 +4,7 @@ interface CalendarBackgroundMessages {
      *
      * @param data - The unique id of the course to open the calendar page for (optional)
      */
-    openCalendarPageIfNotOpen: (data: { uniqueId?: number }) => chrome.tabs.Tab;
+    switchToCalendarTab: (data: { uniqueId?: number }) => chrome.tabs.Tab;
 }
 
 interface CalendarTabMessages {
