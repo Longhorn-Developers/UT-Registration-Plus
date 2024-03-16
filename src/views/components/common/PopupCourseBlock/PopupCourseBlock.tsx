@@ -1,10 +1,10 @@
+import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/util/colors';
 import { pickFontColor } from '@shared/util/colors';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
-import { handleOpenCalendarWithCourse } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -35,17 +35,19 @@ export default function PopupCourseBlock({
     const fontColor = pickFontColor(colors.primaryColor);
 
     const handleClick = async () => {
-        await handleOpenCalendarWithCourse({ uniqueId: course.uniqueId });
+        await background.switchToCalendarTab({ uniqueId: course.uniqueId });
         window.close();
     };
 
     return (
-        <div
+        <button
             style={{
                 backgroundColor: colors.primaryColor,
-                cursor: 'pointer',
             }}
-            className={clsx('h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3', className)}
+            className={clsx(
+                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 cursor-pointer focusable text-left',
+                className
+            )}
             onClick={handleClick}
         >
             <div
@@ -71,6 +73,6 @@ export default function PopupCourseBlock({
                     <StatusIcon status={course.status} className='h-5 w-5' />
                 </div>
             )}
-        </div>
+        </button>
     );
 }

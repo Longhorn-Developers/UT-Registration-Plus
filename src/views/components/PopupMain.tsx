@@ -1,13 +1,10 @@
+import { background } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { tailwindColorways } from '@shared/util/storybook';
 import Divider from '@views/components/common/Divider/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List/List';
 import Text from '@views/components/common/Text/Text';
-import {
-    handleOpenCalendar,
-    handleOpenCalendarWithCourse,
-} from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
@@ -38,7 +35,7 @@ export default function PopupMain(): JSX.Element {
     };
 
     const handleCalendarOpenOnClick = async () => {
-        await handleOpenCalendar();
+        await background.switchToCalendarTab({});
         window.close();
     };
 

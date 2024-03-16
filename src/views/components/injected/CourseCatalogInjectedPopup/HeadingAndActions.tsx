@@ -7,7 +7,6 @@ import { Button } from '@views/components/common/Button/Button';
 import { Chip, flagMap } from '@views/components/common/Chip/Chip';
 import Divider from '@views/components/common/Divider/Divider';
 import Text from '@views/components/common/Text/Text';
-import type { Serialized } from 'chrome-extension-toolkit';
 import React from 'react';
 
 import Add from '~icons/material-symbols/add';
@@ -29,23 +28,6 @@ interface HeadingAndActionProps {
     /* The function to call when the popup should be closed */
     onClose: () => void;
 }
-
-/**
- * Opens the calendar in a new tab.
- * @returns {Promise<Serialized<chrome.tabs.Tab>>} A promise that resolves when the tab is opened.
- */
-export const handleOpenCalendar = async (): Promise<Serialized<chrome.tabs.Tab>> => background.switchToCalendarTab({});
-
-/**
- * Opens the calendar in a new tab with parameters if needed for opening of injected popup
- * @param uniqueId - The unique ID of the course
- * @returns {Promise<Serialized<chrome.tabs.Tab>>} A promise that resolves when the tab is opened.
- */
-export const handleOpenCalendarWithCourse = async ({
-    uniqueId,
-}: {
-    uniqueId: number;
-}): Promise<Serialized<chrome.tabs.Tab>> => background.switchToCalendarTab({ uniqueId });
 
 /**
  * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.
@@ -160,7 +142,12 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 </div>
             </div>
             <div className='my-3 flex flex-wrap items-center gap-[15px]'>
-                <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} onClick={handleOpenCalendar} />
+                <Button
+                    variant='filled'
+                    color='ut-burntorange'
+                    icon={CalendarMonth}
+                    onClick={() => background.switchToCalendarTab({})}
+                />
                 <Divider size='1.75rem' orientation='vertical' />
                 <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
                     RateMyProf
