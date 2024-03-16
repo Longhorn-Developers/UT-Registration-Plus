@@ -15,12 +15,16 @@ interface LinkItem {
 
 const links: LinkItem[] = [
     {
-        text: "Summer '24 Course Schedule",
-        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/',
+        text: "Fall '24 Course Schedule",
+        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20249/',
     },
     {
-        text: "Fall '24 Course Schedule",
-        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20236/',
+        text: "Summer '24 Course Schedule",
+        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20246/',
+    },
+    {
+        text: "Spring '24 Course Schedule",
+        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/',
     },
     {
         text: 'Registration Info Sheet',

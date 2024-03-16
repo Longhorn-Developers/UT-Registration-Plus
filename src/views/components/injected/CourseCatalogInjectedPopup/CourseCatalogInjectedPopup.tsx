@@ -1,7 +1,7 @@
 import type { Course } from '@shared/types/Course';
-import type { UserSchedule } from '@shared/types/UserSchedule';
 import type { DialogProps } from '@views/components/common/Dialog/Dialog';
 import Dialog from '@views/components/common/Dialog/Dialog';
+import useSchedules from '@views/hooks/useSchedules';
 import React from 'react';
 
 import Description from './Description';
@@ -10,7 +10,6 @@ import HeadingAndActions from './HeadingAndActions';
 
 export type CourseCatalogInjectedPopupProps = DialogProps & {
     course: Course;
-    activeSchedule: UserSchedule;
 };
 
 /**
@@ -23,15 +22,18 @@ export type CourseCatalogInjectedPopupProps = DialogProps & {
  * @param {Function} props.onClose - The function to close the popup.
  * @returns {JSX.Element} The CourseCatalogInjectedPopup component.
  */
-function CourseCatalogInjectedPopup({ course, activeSchedule, ...rest }: CourseCatalogInjectedPopupProps): JSX.Element {
+function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPopupProps): JSX.Element {
     const emptyRef = React.useRef<HTMLDivElement>(null);
+    const [activeSchedule] = useSchedules();
 
     return (
-        <Dialog className='max-w-[780px] px-6' {...rest} initialFocus={emptyRef}>
+        <Dialog className='max-w-[780px] overflow-y-hidden px-4' {...rest} initialFocus={emptyRef}>
             <div className='hidden' ref={emptyRef} />
             <HeadingAndActions course={course} onClose={rest.onClose as () => void} activeSchedule={activeSchedule} />
-            <Description course={course} />
-            <GradeDistribution course={course} />
+            <div className='overflow-y-auto px-2'>
+                <Description course={course} />
+                <GradeDistribution course={course} />
+            </div>
         </Dialog>
     );
 }

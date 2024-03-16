@@ -55,6 +55,7 @@ export const exampleCourse: Course = new Course({
 
 export const exampleSchedule: UserSchedule = new UserSchedule({
     courses: [exampleCourse],
+    id: 'az372389blep',
     name: 'Example Schedule',
     hours: 3,
     updatedAt: Date.now(),
@@ -105,14 +106,15 @@ export const bevoCourse: Course = new Course({
     scrapedAt: Date.now(),
 });
 
-export const bevoScheule: UserSchedule = new UserSchedule({
+export const bevoSchedule: UserSchedule = new UserSchedule({
     courses: [bevoCourse],
+    id: 'bevoshenanigans52',
     name: 'Bevo Schedule',
     hours: 3,
     updatedAt: Date.now(),
 });
 
-export const MikeScottCS314Course: Course = new Course({
+export const mikeScottCS314Course: Course = new Course({
     uniqueId: 50805,
     number: '314',
     fullName: 'C S 314 DATA STRUCTURES',
@@ -158,8 +160,9 @@ export const MikeScottCS314Course: Course = new Course({
     scrapedAt: Date.now(),
 });
 
-export const MikeScottCS314Schedule: UserSchedule = new UserSchedule({
-    courses: [MikeScottCS314Course],
+export const mikeScottCS314Schedule: UserSchedule = new UserSchedule({
+    courses: [mikeScottCS314Course],
+    id: 'omgitsmikescott314',
     name: 'Mike Scott CS314 Schedule',
     hours: 3,
     updatedAt: Date.now(),

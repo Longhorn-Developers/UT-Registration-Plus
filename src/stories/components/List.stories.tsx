@@ -96,6 +96,7 @@ export const Default: Story = {
     args: {
         draggables: exampleCourses.map((course, i) => ({ course, colors: tailwindColorways[i] })),
         children: generateCourseBlocks,
+        itemKey: (item: { course: Course }) => item.course.uniqueId,
         gap: 12,
     },
     render: args => (

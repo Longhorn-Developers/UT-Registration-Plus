@@ -25,28 +25,28 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
             <ExtensionRoot>
                 <Transition.Child
                     as={Fragment}
-                    enter='transition duration-300 ease-out'
+                    enter='transition duration-300 motion-reduce:duration-150 ease-out'
                     enterFrom='opacity-0'
                     enterTo='opacity-100'
                     leave='transition duration-150 ease-in delay-25'
                     leaveFrom='opacity-100'
                     leaveTo='opacity-0'
                 >
-                    <div className={clsx('fixed inset-0 z-50 bg-neutral-500/25')} />
+                    <div className={clsx('fixed inset-0 z-50 bg-slate-700/35')} />
                 </Transition.Child>
                 <Transition.Child
                     as={Fragment}
-                    enter='transition duration-400 ease-[cubic-bezier(0.15,0.3,0.2,1)]'
-                    enterFrom='transform scale-95 opacity-0'
-                    enterTo='transform scale-100 opacity-100'
-                    leave='transition duration-250 ease-[cubic-bezier(0.23,0.01,0.92,0.72)]'
-                    leaveFrom='transform scale-100 opacity-100'
-                    leaveTo='transform scale-95 opacity-0'
+                    enter='transition duration-375 motion-reduce:duration-0 ease-[cubic-bezier(0.05,0.4,0.2,1)]'
+                    enterFrom='transform-gpu scale-95 opacity-0'
+                    enterTo='transform-gpu scale-100 opacity-100'
+                    leave='transition duration-250 motion-reduce:duration-0 ease-[cubic-bezier(0.23,0.01,0.92,0.72)]'
+                    leaveFrom='transform-gpu scale-100 opacity-100'
+                    leaveTo='transform-gpu scale-95 opacity-0'
                 >
                     <div className='fixed inset-0 z-50 flex items-center justify-center'>
                         <HDialog.Panel
                             className={clsx(
-                                'z-99 max-h-[80vh] flex flex-col overflow-y-auto rounded bg-white shadow-xl',
+                                'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-ut-offwhite rounded-lg bg-white shadow-xl ml-[calc(100vw-100%)] mt-[calc(100vw-100%)]',
                                 className
                             )}
                         >

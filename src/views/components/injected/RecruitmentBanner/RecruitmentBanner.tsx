@@ -37,11 +37,11 @@ export default function RecruitmentBanner(): JSX.Element {
         <div className={styles.container}>
             <Text color='white'>
                 Interested in helping us develop UT Registration Plus? Check out our{' '}
-                <Link color='white' url={DISCORD_URL}>
+                <Link color='white' href={DISCORD_URL}>
                     Discord Server
                 </Link>{' '}
                 and{' '}
-                <Link color='white' url={GITHUB_URL}>
+                <Link color='white' href={GITHUB_URL}>
                     GitHub
                 </Link>
                 !

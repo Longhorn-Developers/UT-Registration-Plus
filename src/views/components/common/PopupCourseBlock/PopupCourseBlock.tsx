@@ -33,6 +33,7 @@ export default function PopupCourseBlock({
 }: PopupCourseBlockProps): JSX.Element {
     // whiteText based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
+    const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
 
     const handleClick = async () => {
         await background.switchToCalendarTab({ uniqueId: course.uniqueId });
@@ -60,7 +61,7 @@ export default function PopupCourseBlock({
                 <DragIndicatorIcon className='h-6 w-6 text-white' />
             </div>
             <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
-                <span className='px-0.5 font-450'>{course.uniqueId}</span> {course.department} {course.number} &ndash;{' '}
+                <span className='px-0.5 font-450'>{formattedUniqueId}</span> {course.department} {course.number} &ndash;{' '}
                 {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
             </Text>
             {course.status !== Status.OPEN && (

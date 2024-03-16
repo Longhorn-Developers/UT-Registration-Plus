@@ -1,3 +1,4 @@
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
@@ -10,7 +11,7 @@ import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
  */
 export type Props = {
     style?: React.CSSProperties;
-    name: string;
+    schedule: UserSchedule;
     dragHandleProps?: Omit<React.HTMLAttributes<HTMLDivElement>, 'className'>;
     onClick?: React.DOMAttributes<HTMLDivElement>['onClick'];
 };
@@ -18,10 +19,10 @@ export type Props = {
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
-export default function ScheduleListItem({ style, name, dragHandleProps, onClick }: Props): JSX.Element {
+export default function ScheduleListItem({ style, schedule, dragHandleProps, onClick }: Props): JSX.Element {
     const [activeSchedule] = useSchedules();
 
-    const isActive = useMemo(() => activeSchedule.name === name, [activeSchedule, name]);
+    const isActive = useMemo(() => activeSchedule.id === schedule.id, [activeSchedule, schedule]);
 
     return (
         <div style={{ ...style }} className='items-center rounded bg-white'>
@@ -42,7 +43,7 @@ export default function ScheduleListItem({ style, name, dragHandleProps, onClick
                                 }
                             )}
                         />
-                        <Text variant='p'>{name}</Text>
+                        <Text variant='p'>{schedule.name}</Text>
                     </div>
                 </div>
             </li>
