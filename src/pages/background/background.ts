@@ -7,6 +7,7 @@ import onInstall from './events/onInstall';
 import onServiceWorkerAlive from './events/onServiceWorkerAlive';
 import onUpdate from './events/onUpdate';
 import browserActionHandler from './handler/browserActionHandler';
+import calendarBackgroundHandler from './handler/calendarBackgroundHandler';
 import CESHandler from './handler/CESHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
 import userScheduleHandler from './handler/userScheduleHandler';
@@ -36,6 +37,7 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...tabManagementHandler,
     ...userScheduleHandler,
     ...CESHandler,
+    ...calendarBackgroundHandler,
 });
 
 messageListener.listen();

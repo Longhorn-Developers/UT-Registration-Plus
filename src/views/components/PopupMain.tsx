@@ -1,10 +1,10 @@
+import { background } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { tailwindColorways } from '@shared/util/storybook';
 import Divider from '@views/components/common/Divider/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List/List';
 import Text from '@views/components/common/Text/Text';
-import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
@@ -34,6 +34,11 @@ export default function PopupMain(): JSX.Element {
         await openTabFromContentScript(url);
     };
 
+    const handleCalendarOpenOnClick = async () => {
+        await background.switchToCalendarTab({});
+        window.close();
+    };
+
     return (
         <ExtensionRoot>
             <div className='h-screen max-h-full flex flex-col bg-white'>
@@ -50,7 +55,7 @@ export default function PopupMain(): JSX.Element {
                             </div>
                         </div>
                         <div className='flex items-center gap-2.5'>
-                            <button className='bg-ut-burntorange px-2 py-1.25 btn' onClick={handleOpenCalendar}>
+                            <button className='bg-ut-burntorange px-2 py-1.25 btn' onClick={handleCalendarOpenOnClick}>
                                 <CalendarIcon className='size-6 text-white' />
                             </button>
                             <button className='bg-transparent px-2 py-1.25 btn' onClick={handleOpenOptions}>

@@ -1,3 +1,4 @@
+import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/util/colors';
@@ -34,12 +35,21 @@ export default function PopupCourseBlock({
     const fontColor = pickFontColor(colors.primaryColor);
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
 
+    const handleClick = async () => {
+        await background.switchToCalendarTab({ uniqueId: course.uniqueId });
+        window.close();
+    };
+
     return (
-        <div
+        <button
             style={{
                 backgroundColor: colors.primaryColor,
             }}
-            className={clsx('h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3', className)}
+            className={clsx(
+                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 cursor-pointer focusable text-left',
+                className
+            )}
+            onClick={handleClick}
         >
             <div
                 style={{
@@ -64,6 +74,6 @@ export default function PopupCourseBlock({
                     <StatusIcon status={course.status} className='h-5 w-5' />
                 </div>
             )}
-        </div>
+        </button>
     );
 }

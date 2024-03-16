@@ -30,15 +30,6 @@ interface HeadingAndActionProps {
 }
 
 /**
- * Opens the calendar in a new tab.
- * @returns {Promise<void>} A promise that resolves when the tab is opened.
- */
-export const handleOpenCalendar = async (): Promise<void> => {
-    const url = chrome.runtime.getURL('calendar.html');
-    openNewTab({ url });
-};
-
-/**
  * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.
  *
  * @param str - The string to be capitalized.
@@ -174,7 +165,12 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 </div>
             </div>
             <div className='my-3 flex flex-wrap items-center gap-x-3.75 gap-y-2.5'>
-                <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} onClick={handleOpenCalendar} />
+                <Button
+                    variant='filled'
+                    color='ut-burntorange'
+                    icon={CalendarMonth}
+                    onClick={() => background.switchToCalendarTab({})}
+                />
                 <Divider size='1.75rem' orientation='vertical' />
                 <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
                     RateMyProf

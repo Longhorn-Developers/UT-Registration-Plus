@@ -1,3 +1,4 @@
+import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import type { Course } from '@shared/types/Course';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid/CalendarGrid';
@@ -7,6 +8,7 @@ import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import Divider from '@views/components/common/Divider/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
+import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useRef, useState } from 'react';
 
 import styles from './Calendar.module.scss';
@@ -17,10 +19,38 @@ import styles from './Calendar.module.scss';
 export default function Calendar(): JSX.Element {
     const calendarRef = useRef<HTMLDivElement>(null);
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
-    const [course, setCourse] = useState<Course | null>(null);
-    const [showPopup, setShowPopup] = useState(false);
+    const [course, setCourse] = useState<Course | null>((): Course | null => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const uniqueIdRaw = urlParams.get('uniqueId');
+        if (uniqueIdRaw === null) return null;
+        const uniqueId = Number(uniqueIdRaw);
+        const course = activeSchedule.courses.find(course => course.uniqueId === uniqueId);
+        if (course === undefined) return null;
+        urlParams.delete('uniqueId');
+        const newUrl = `${window.location.pathname}?${urlParams}`.replace(/\?$/, '');
+        window.history.replaceState({}, '', newUrl);
+        return course;
+    });
+
+    const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const [sidebarWidth, setSidebarWidth] = useState('20%');
     const [scale, setScale] = useState(1);
+
+    useEffect(() => {
+        const listener = new MessageListener<CalendarTabMessages>({
+            async openCoursePopup({ data, sendResponse }) {
+                const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
+                if (course === undefined) return;
+                setCourse(course);
+                setShowPopup(true);
+                sendResponse(await chrome.tabs.getCurrent());
+            },
+        });
+
+        listener.listen();
+
+        return () => listener.unlisten();
+    }, [activeSchedule.courses]);
 
     useEffect(() => {
         const adjustLayout = () => {

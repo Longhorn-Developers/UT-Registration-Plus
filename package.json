@@ -29,7 +29,7 @@
         "@hello-pangea/dnd": "^16.5.0",
         "@unocss/vite": "^0.58.6",
         "@vitejs/plugin-react": "^4.2.1",
-        "chrome-extension-toolkit": "^0.0.51",
+        "chrome-extension-toolkit": "^0.0.54",
         "clsx": "^2.1.0",
         "highcharts": "^11.3.0",
         "highcharts-react-official": "^3.2.1",
