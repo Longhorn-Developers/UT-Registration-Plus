@@ -61,6 +61,10 @@ export const saveAsCal = async () => {
 
     let icsString = 'BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nX-WR-CALNAME:My Schedule\n';
 
+    if (!schedule) {
+        throw new Error('No schedule found');
+    }
+
     schedule.courses.forEach(course => {
         course.schedule.meetings.forEach(meeting => {
             const { startTime, endTime, days, location } = meeting;
@@ -85,7 +89,7 @@ export const saveAsCal = async () => {
             icsString += `DTEND:${endDate}\n`;
             icsString += `RRULE:FREQ=WEEKLY;BYDAY=${icsDays}\n`;
             icsString += `SUMMARY:${course.fullName}\n`;
-            icsString += `LOCATION:${location.building} ${location.room}\n`;
+            icsString += `LOCATION:${location?.building ?? ''} ${location?.room ?? ''}\n`;
             icsString += `END:VEVENT\n`;
         });
     });
