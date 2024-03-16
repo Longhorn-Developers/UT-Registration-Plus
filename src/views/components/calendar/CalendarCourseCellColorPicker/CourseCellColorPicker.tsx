@@ -1,4 +1,4 @@
-import { colors } from '@shared/util/themeColors';
+import { getThemeColorHexByName } from '@shared/util/themeColors';
 import Divider from '@views/components/common/Divider/Divider';
 import React from 'react';
 import { theme } from 'unocss/preset-mini';
@@ -8,7 +8,6 @@ import InvertColorsOffIcon from '~icons/material-symbols/invert-colors-off';
 
 import ColorPatch from './ColorPatch';
 import HexColorEditor from './HexColorEditor';
-import HuePicker from './HuePicker';
 
 const baseColors = [
     'slate',
@@ -33,40 +32,24 @@ const baseColors = [
     'rose',
 ];
 
-interface Color {
-    baseColor: string;
-    shades: string[];
-}
-
 const BaseColorNum = 500;
 const StartingShadeIndex = 200;
 const ShadeIncrement = 100;
 
-const colorPatchColors: Color[] = baseColors.map((baseColor: string) => {
-    const shades = Array.from(
-        { length: 6 },
-        (_, index) => theme.colors[baseColor][StartingShadeIndex + ShadeIncrement * index]
-    );
-    return { baseColor: theme.colors[baseColor][BaseColorNum], shades };
-});
-
-const hexCodeToBaseColorPatchIndex = new Map(
-    colorPatchColors.map((color: Color, index: number) => [color.baseColor, index])
+const colorPatchColors = new Map<string, string[]>(
+    baseColors.map((baseColor: string) => [
+        theme.colors[baseColor][BaseColorNum],
+        Array.from({ length: 6 }, (_, index) => theme.colors[baseColor][StartingShadeIndex + ShadeIncrement * index]),
+    ])
 );
 
-interface ShadePatchInfo {
-    baseColorPatchIndex: number;
-    shadeColorPatchIndex: number;
-}
+console.log(colorPatchColors);
 
-const hexCodeToShadeColorPatchInfo = new Map<string, ShadePatchInfo>(
-    colorPatchColors.flatMap((color: Color, baseColorPatchIndex: number) =>
-        color.shades.map((shade: string, shadeColorPatchIndex: number) => [
-            shade,
-            { baseColorPatchIndex, shadeColorPatchIndex },
-        ])
-    )
+const hexCodeToBaseColor = new Map<string, string>(
+    Array.from(colorPatchColors.entries()).flatMap(([baseColor, shades]) => shades.map(shade => [shade, baseColor]))
 );
+
+console.log(hexCodeToBaseColor);
 
 /**
  * Props for the CourseCellColorPicker component.
@@ -80,6 +63,8 @@ export interface CourseCellColorPickerProps {
 /**
  * @param {CourseCellColorPickerProps} props - the props for the component
  * @param {React.Dispatch<React.SetStateAction<string | null>>} props.setSelectedColor - set state function passed down from the parent component
+ * @param {boolean} props.isInvertColorsToggled - boolean state passed down from the parent component that indicates whether the color picker is in invert colors mode
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsInvertColorsToggled - set state function passed down from the parent component to set invert colors mode
  * that will be called when a color is selected. The user can set any valid hex color they want.
  *
  * @example
@@ -104,48 +89,29 @@ export default function CourseCellColorPicker({
     isInvertColorsToggled,
     setIsInvertColorsToggled,
 }: CourseCellColorPickerProps): JSX.Element {
-    const [selectedBaseColorPatch, setSelectedBaseColorPatch] = React.useState<number>(-1);
-    const [selectedShadeColorPatch, setSelectShadeColorPatch] = React.useState<number>(-1);
-    const [hexCode, setHexCode] = React.useState<string>('');
+    // hexCode mirrors contents of HexColorEditor which has no hash prefix
+    const [hexCode, setHexCode] = React.useState<string>(
+        getThemeColorHexByName('ut-gray').slice(1).toLocaleLowerCase()
+    );
+    const hexCodeWithHash = `#${hexCode}`;
+    const selectedBaseColor = hexCodeToBaseColor.get(hexCodeWithHash);
 
-    const handleSelectBaseColorPatch = (baseColorPatchIndex: number) => {
-        let newHexCode = baseColorPatchIndex > -1 ? colorPatchColors[baseColorPatchIndex].baseColor : colors.ut.gray;
-        newHexCode = newHexCode.slice(1).toLocaleLowerCase();
-        setHexCode(newHexCode);
-    };
-
-    const handleSelectShadeColorPatch = (shadeColorPatchIndex: number) => {
-        let newHexCode = colorPatchColors[selectedBaseColorPatch].shades[shadeColorPatchIndex];
-        newHexCode = newHexCode.slice(1).toLocaleLowerCase();
-        setHexCode(newHexCode);
+    const handleSelectColorPatch = (baseColor: string) => {
+        setHexCode(baseColor.slice(1).toLocaleLowerCase());
     };
 
     React.useEffect(() => {
-        const hexCodeWithHash = `#${hexCode}`.toLocaleLowerCase();
-        if (hexCodeToBaseColorPatchIndex.has(hexCodeWithHash)) {
-            setSelectedBaseColorPatch(hexCodeToBaseColorPatchIndex.get(hexCodeWithHash));
-            setSelectShadeColorPatch(3);
-        } else if (hexCodeToShadeColorPatchInfo.has(hexCodeWithHash)) {
-            const { baseColorPatchIndex, shadeColorPatchIndex } = hexCodeToShadeColorPatchInfo.get(hexCodeWithHash);
-            setSelectedBaseColorPatch(baseColorPatchIndex);
-            setSelectShadeColorPatch(shadeColorPatchIndex);
-        } else if (selectedBaseColorPatch !== -1) {
-            setSelectedBaseColorPatch(-1);
-            setSelectShadeColorPatch(-1);
-        }
-
         setFinalColor(hexCodeWithHash);
-    }, [hexCode, selectedBaseColorPatch, setFinalColor]);
+    }, [hexCodeWithHash, setFinalColor]);
 
     return (
         <div className='inline-flex flex-col border border-1 border-ut-offwhite rounded-1 p-1.25'>
             <div className='grid grid-cols-6 gap-1'>
-                {colorPatchColors.map((color: Color, index) => (
+                {Array.from(colorPatchColors.keys()).map(baseColor => (
                     <ColorPatch
-                        color={color.baseColor}
-                        index={index}
-                        selectedColor={selectedBaseColorPatch}
-                        handleSetSelectedColorPatch={handleSelectBaseColorPatch}
+                        color={baseColor}
+                        isSelected={baseColor === selectedBaseColor}
+                        handleSetSelectedColor={handleSelectColorPatch}
                     />
                 ))}
                 <div className='col-span-3 flex items-center justify-center overflow-hidden'>
@@ -162,14 +128,20 @@ export default function CourseCellColorPicker({
                     )}
                 </button>
             </div>
-            {selectedBaseColorPatch !== -1 && (
+            {hexCodeToBaseColor.has(hexCodeWithHash) && (
                 <>
                     <Divider orientation='horizontal' size='100%' className='my-1' />
-                    <HuePicker
-                        shades={colorPatchColors[selectedBaseColorPatch].shades}
-                        selectedColor={selectedShadeColorPatch}
-                        setSelectedColor={handleSelectShadeColorPatch}
-                    />
+                    <div className='grid grid-cols-6 gap-1'>
+                        {colorPatchColors
+                            .get(selectedBaseColor)
+                            ?.map(shadeColor => (
+                                <ColorPatch
+                                    color={shadeColor}
+                                    isSelected={shadeColor === hexCodeWithHash}
+                                    handleSetSelectedColor={handleSelectColorPatch}
+                                />
+                            ))}
+                    </div>
                 </>
             )}
         </div>

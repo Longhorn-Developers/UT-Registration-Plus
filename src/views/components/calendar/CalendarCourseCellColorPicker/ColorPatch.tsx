@@ -1,3 +1,4 @@
+import { getThemeColorHexByName } from '@shared/util/themeColors';
 import React from 'react';
 
 import CheckIcon from '~icons/material-symbols/check';
@@ -7,29 +8,23 @@ import CheckIcon from '~icons/material-symbols/check';
  */
 interface ColorPatchProps {
     color: string;
-    index: number;
-    selectedColor: number;
-    handleSetSelectedColorPatch: (colorPatchIndex: number) => void;
+    isSelected: boolean;
+    handleSetSelectedColor: (color: string) => void;
 }
 
 /**
- * @param {ColorPatchProps} props - the props for the component
- * @param {string} props.color - the color to display as a hex string
- * @param {number} props.index - the index of this color patch in the parent color palette
- * @param {number} props.selectedColor - the index of the selected color patch in the parent color palette
- * @param {(colorPatchIndex: number) => void} props.handleSetSelectedColorPatch - fn called when a color patch is selected. This function
- * is passed from the parent and updates the necessary parent state when this color patch is selected.
- * @returns {JSX.Element} - the color patch component
+ * Renders a color patch square used in the CalendarCourseCellColorPicker component.
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.color - The color value (as a hex string with a hash prefix) to display in the patch.
+ * @param {boolean} props.isSelected - Indicates whether the patch is selected.
+ * @param {Function} props.handleSetSelectedColor - Function from parent component to control selection state of a patch.
+ *                                                  color is a hex string with a hash prefix.
+ * @returns {JSX.Element} The rendered color patch button.
  */
-export default function ColorPatch({
-    color,
-    index,
-    selectedColor,
-    handleSetSelectedColorPatch,
-}: ColorPatchProps): JSX.Element {
-    const isSelected = selectedColor === index;
+export default function ColorPatch({ color, isSelected, handleSetSelectedColor }: ColorPatchProps): JSX.Element {
     const handleClick = () => {
-        handleSetSelectedColorPatch(isSelected ? -1 : index);
+        handleSetSelectedColor(isSelected ? getThemeColorHexByName('ut-gray') : color);
     };
     return (
         <button
