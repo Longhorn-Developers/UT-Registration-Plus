@@ -37,6 +37,16 @@ export default function PopupMain(): JSX.Element {
         await openTabFromContentScript(url);
     };
 
+    const handleCalendarOpenOnClick = async () => {
+        await handleOpenCalendar();
+        window.close();
+    };
+
+    const handleOpenCalendarWithCourseOnClick = async (uniqueId: number) => {
+        await handleOpenCalendarWithCourse({ uniqueId });
+        window.close();
+    };
+
     return (
         <ExtensionRoot>
             <div className='h-screen max-h-full flex flex-col bg-white'>
@@ -53,10 +63,7 @@ export default function PopupMain(): JSX.Element {
                             </div>
                         </div>
                         <div className='flex items-center gap-2.5'>
-                            <button
-                                className='bg-ut-burntorange px-2 py-1.25 btn'
-                                onClick={() => handleOpenCalendar().then(() => window.close())}
-                            >
+                            <button className='bg-ut-burntorange px-2 py-1.25 btn' onClick={handleCalendarOpenOnClick}>
                                 <CalendarIcon className='size-6 text-white' />
                             </button>
                             <button className='bg-transparent px-2 py-1.25 btn' onClick={handleOpenOptions}>
@@ -113,11 +120,7 @@ export default function PopupMain(): JSX.Element {
                                     course={course}
                                     colors={colors}
                                     dragHandleProps={handleProps}
-                                    onCourseClick={() =>
-                                        handleOpenCalendarWithCourse({ uniqueId: course.uniqueId }).then(() =>
-                                            window.close()
-                                        )
-                                    }
+                                    onCourseClick={() => handleOpenCalendarWithCourseOnClick(course.uniqueId)}
                                 />
                             )}
                         </List>
