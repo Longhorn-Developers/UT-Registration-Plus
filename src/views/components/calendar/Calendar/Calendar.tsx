@@ -31,7 +31,7 @@ export default function Calendar(): JSX.Element {
         return course;
     });
 
-    const [showPopup, setShowPopup] = useState(course !== null);
+    const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const [sidebarWidth, setSidebarWidth] = useState('20%');
     const [scale, setScale] = useState(1);
 
