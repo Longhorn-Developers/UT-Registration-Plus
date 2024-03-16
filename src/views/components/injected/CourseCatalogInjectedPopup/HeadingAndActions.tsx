@@ -131,8 +131,11 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                         </Text>
                     )}
                     <div className='flex-content-centr flex gap-1'>
-                        {flags.map(flag => (
-                            <Chip key={flagMap[flag]} label={flagMap[flag]} />
+                        {flags.map((flag: string) => (
+                            <Chip
+                                key={flagMap[flag as keyof typeof flagMap]}
+                                label={flagMap[flag as keyof typeof flagMap]}
+                            />
                         ))}
                     </div>
                 </div>
