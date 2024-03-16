@@ -97,13 +97,13 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
         subtitle: { text: undefined },
         legend: { enabled: false },
         xAxis: {
-            title: { text: 'Grade' },
+            title: { text: 'Grades' },
             categories: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F'],
             crosshair: true,
         },
         yAxis: {
             min: 0,
-            title: { text: 'Number of Students' },
+            title: { text: 'Students' },
         },
         chart: {
             style: { fontFamily: 'Roboto Flex, Roboto Flex Local', fontWeight: '600' },
