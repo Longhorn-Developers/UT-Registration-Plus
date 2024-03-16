@@ -21,7 +21,7 @@ type Props = {
  * This component is responsible for loading the next page of courses when the user scrolls to the bottom of the page.
  * @returns
  */
-export default function AutoLoad({ addRows }: Props): JSX.Element {
+export default function AutoLoad({ addRows }: Props): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const [status, setStatus] = useState<AutoLoadStatusType>(AutoLoadStatus.IDLE);
 
