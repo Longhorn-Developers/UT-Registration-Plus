@@ -9,7 +9,7 @@ import styles from './Card.module.scss';
 export type Props = {
     style?: React.CSSProperties;
     className?: string;
-    onClick?: (...args) => void;
+    onClick?: (...args: any[]) => void;
     children?: React.ReactNode;
     testId?: string;
 };
