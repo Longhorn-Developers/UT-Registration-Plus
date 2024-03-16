@@ -52,9 +52,9 @@ export type ThemeColor = NestedKeys<typeof colors>;
  * @type {Record<ThemeColor, string>}
  */
 export const colorsFlattened = Object.entries(colors).reduce(
-    (acc, [prefix, group]) => {
+    (acc: Record<ThemeColor, string>, [prefix, group]) => {
         for (const [name, hex] of Object.entries(group)) {
-            acc[`${prefix}-${name}`] = hex;
+            acc[`${prefix}-${name}` as ThemeColor] = hex;
         }
         return acc;
     },
@@ -66,8 +66,14 @@ export const colorsFlattened = Object.entries(colors).reduce(
  * @param hex The hexadecimal color code to convert.
  * @returns An array representing the RGB color values.
  */
-export const hexToRgb = (hex: string) =>
-    hex.match(/[0-9a-f]{2}/gi).map(partialHex => parseInt(partialHex, 16)) as [number, number, number];
+export const hexToRgb = (hex: string) => {
+    const match = hex.match(/[0-9a-f]{2}/gi);
+    if (!match) {
+        throw new Error(`Invalid hex color code: ${hex}`);
+    } else {
+        return match.map(partialHex => parseInt(partialHex, 16)) as [number, number, number];
+    }
+};
 
 /**
  * Represents the flattened RGB values of the colors.
