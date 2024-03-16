@@ -36,7 +36,7 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
         }
     }, [activeSchedule, schedules]);
 
-    const handleKeyDown = event => {
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.code === 'Enter') {
             background.createSchedule({ scheduleName: newSchedule }).then(() => {
                 setNewSchedule('');
