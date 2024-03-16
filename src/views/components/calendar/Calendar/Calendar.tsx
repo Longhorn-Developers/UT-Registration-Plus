@@ -19,7 +19,7 @@ import styles from './Calendar.module.scss';
 export default function Calendar(): JSX.Element {
     const calendarRef = useRef<HTMLDivElement>(null);
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
-    const [course, setCourse] = useState<Course | null>(() => {
+    const [course, setCourse] = useState<Course | null>((): JSX.Element | null => {
         const urlParams = new URLSearchParams(window.location.search);
         const uniqueIdRaw = urlParams.get('uniqueId');
         if (uniqueIdRaw === null) return null;
@@ -30,6 +30,7 @@ export default function Calendar(): JSX.Element {
         window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
         return course;
     });
+
     const [showPopup, setShowPopup] = useState(course !== null);
     const [sidebarWidth, setSidebarWidth] = useState('20%');
     const [scale, setScale] = useState(1);
