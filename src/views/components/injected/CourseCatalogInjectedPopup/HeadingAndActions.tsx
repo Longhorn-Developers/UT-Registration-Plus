@@ -58,6 +58,7 @@ const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slic
 export default function HeadingAndActions({ course, activeSchedule, onClose }: HeadingAndActionProps): JSX.Element {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
+    const formattedUniqueId = uniqueId.toString().padStart(5, '0');
 
     const getInstructorFullName = (instructor: Instructor) => {
         const { firstName, lastName } = instructor;
@@ -68,7 +69,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     const instructorString = instructors.map(getInstructorFullName).join(', ');
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(uniqueId.toString());
+        navigator.clipboard.writeText(formattedUniqueId);
     };
 
     const handleOpenRateMyProf = async () => {
@@ -118,7 +119,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                         ({department} {courseNumber})
                     </Text>
                     <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
-                        {uniqueId}
+                        {formattedUniqueId}
                     </Button>
                     <button className='bg-transparent p-0 btn' onClick={onClose}>
                         <CloseIcon className='h-7 w-7' />
