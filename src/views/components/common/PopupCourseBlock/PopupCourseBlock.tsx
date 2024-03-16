@@ -4,6 +4,7 @@ import type { CourseColors } from '@shared/util/colors';
 import { pickFontColor } from '@shared/util/colors';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
+import { handleOpenCalendarWithCourse } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -17,7 +18,6 @@ export interface PopupCourseBlockProps {
     course: Course;
     colors: CourseColors;
     dragHandleProps?: any;
-    onCourseClick: () => void; // What to do when block is clicked
 }
 
 /**
@@ -30,13 +30,13 @@ export default function PopupCourseBlock({
     course,
     colors,
     dragHandleProps,
-    onCourseClick,
 }: PopupCourseBlockProps): JSX.Element {
     // whiteText based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
 
-    const handleClick = () => {
-        onCourseClick?.();
+    const handleClick = async () => {
+        await handleOpenCalendarWithCourse({ uniqueId: course.uniqueId });
+        window.close();
     };
 
     return (

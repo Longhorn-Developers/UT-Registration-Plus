@@ -42,11 +42,6 @@ export default function PopupMain(): JSX.Element {
         window.close();
     };
 
-    const handleOpenCalendarWithCourseOnClick = async (uniqueId: number) => {
-        await handleOpenCalendarWithCourse({ uniqueId });
-        window.close();
-    };
-
     return (
         <ExtensionRoot>
             <div className='h-screen max-h-full flex flex-col bg-white'>
@@ -120,7 +115,6 @@ export default function PopupMain(): JSX.Element {
                                     course={course}
                                     colors={colors}
                                     dragHandleProps={handleProps}
-                                    onCourseClick={() => handleOpenCalendarWithCourseOnClick(course.uniqueId)}
                                 />
                             )}
                         </List>

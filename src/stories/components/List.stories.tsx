@@ -75,15 +75,7 @@ const exampleCourses = generateCourses(numberOfCourses);
 const generateCourseBlocks = (
     { course, colors }: { course: Course; colors: CourseColors },
     dragHandleProps: DraggableProvidedDragHandleProps
-) => (
-    <PopupCourseBlock
-        key={course.uniqueId}
-        course={course}
-        colors={colors}
-        dragHandleProps={dragHandleProps}
-        onCourseClick={() => {}}
-    />
-);
+) => <PopupCourseBlock key={course.uniqueId} course={course} colors={colors} dragHandleProps={dragHandleProps} />;
 
 const meta = {
     title: 'Components/Common/List',

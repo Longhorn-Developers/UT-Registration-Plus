@@ -103,15 +103,10 @@ export const Variants: Story = {
 };
 
 export const AllColors: Story = {
-    render: props => (
+    render: () => (
         <div className='grid grid-flow-col grid-cols-2 grid-rows-9 max-w-2xl w-90vw gap-x-4 gap-y-2'>
-            {tailwindColorways.map((color, i) => (
-                <PopupCourseBlock
-                    key={color.primaryColor}
-                    course={ExampleCourse}
-                    colors={color}
-                    onCourseClick={() => {}}
-                />
+            {tailwindColorways.map(color => (
+                <PopupCourseBlock key={color.primaryColor} course={ExampleCourse} colors={color} />
             ))}
         </div>
     ),
