@@ -3,18 +3,21 @@ import 'uno.css';
 
 import type TabInfoMessages from '@shared/messages/TabInfoMessages';
 import { MessageListener } from 'chrome-extension-toolkit';
+import clsx from 'clsx';
 import React, { useEffect } from 'react';
 
 import styles from './ExtensionRoot.module.scss';
 
 interface Props {
     testId?: string;
+    className?: string;
 }
 
 /**
  * A wrapper component for the extension elements that adds some basic styling to them
  */
 export default function ExtensionRoot(props: React.PropsWithChildren<Props>): JSX.Element {
+    // TODO: move out of ExtensionRoot
     useEffect(() => {
         const tabInfoListener = new MessageListener<TabInfoMessages>({
             getTabInfo: ({ sendResponse }) => {
@@ -31,7 +34,7 @@ export default function ExtensionRoot(props: React.PropsWithChildren<Props>): JS
     }, []);
 
     return (
-        <div className={styles.extensionRoot} data-testid={props.testId}>
+        <div className={clsx(styles.extensionRoot, props.className)} data-testid={props.testId}>
             {props.children}
         </div>
     );

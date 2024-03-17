@@ -56,7 +56,11 @@ export default function CalendarCourseCell({
 
     return (
         <div
-            className={clsx('h-full w-full flex justify-center rounded p-2 cursor-pointer', fontColor, className)}
+            className={clsx(
+                'h-full min-w-full w-0 flex justify-center rounded p-2 cursor-pointer',
+                fontColor,
+                className
+            )}
             style={{
                 backgroundColor: colors.primaryColor,
             }}

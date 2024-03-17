@@ -8,7 +8,7 @@ import React from 'react';
  */
 export default function CalendarMain() {
     return (
-        <ExtensionRoot>
+        <ExtensionRoot className='h-full w-full'>
             <Calendar />
         </ExtensionRoot>
     );

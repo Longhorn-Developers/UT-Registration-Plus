@@ -16,7 +16,7 @@ import RefreshIcon from '~icons/material-symbols/refresh';
 import SettingsIcon from '~icons/material-symbols/settings';
 
 import CourseStatus from './common/CourseStatus/CourseStatus';
-import { LogoIcon } from './common/LogoIcon';
+import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown/ScheduleDropdown';
 import ScheduleListItem from './common/ScheduleListItem/ScheduleListItem';
@@ -44,16 +44,7 @@ export default function PopupMain(): JSX.Element {
             <div className='h-screen max-h-full flex flex-col bg-white'>
                 <div className='p-5 py-3.5'>
                     <div className='flex items-center justify-between bg-white'>
-                        <div className='flex items-center gap-2'>
-                            <LogoIcon />
-                            <div className='flex flex-col'>
-                                <span className='text-lg text-ut-burntorange font-medium leading-[18px]'>
-                                    UT Registration
-                                    <br />
-                                </span>
-                                <span className='text-lg text-ut-orange font-medium leading-[18px]'>Plus</span>
-                            </div>
-                        </div>
+                        <SmallLogo />
                         <div className='flex items-center gap-2.5'>
                             <button className='bg-ut-burntorange px-2 py-1.25 btn' onClick={handleCalendarOpenOnClick}>
                                 <CalendarIcon className='size-6 text-white' />
@@ -126,7 +117,7 @@ export default function PopupMain(): JSX.Element {
                     </div>
                     <div className='inline-flex items-center self-center gap-1'>
                         <Text variant='mini' className='text-ut-gray'>
-                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                            DATA UPDATED ON: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                         </Text>
                         <button
                             className='h-4 w-4 bg-transparent p-0 btn'

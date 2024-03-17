@@ -52,7 +52,7 @@ export default function ImportantLinks({ className }: Props): JSX.Element {
                 <a
                     key={link.text}
                     href={link.url}
-                    className='flex items-center gap-0.5 text-ut-burntorange'
+                    className='flex items-center gap-0.5 text-ut-burntorange underline-offset-2 hover:underline'
                     target='_blank'
                     rel='noreferrer'
                 >
