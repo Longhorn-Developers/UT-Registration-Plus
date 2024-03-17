@@ -2,6 +2,7 @@ import type { InstructionMode, ScrapedRow, Semester, StatusType } from '@shared/
 import { Course, Status } from '@shared/types/Course';
 import { CourseSchedule } from '@shared/types/CourseSchedule';
 import Instructor from '@shared/types/Instructor';
+import { getCourseColors } from '@shared/util/colors';
 import type { SiteSupportType } from '@views/lib/getSiteSupport';
 
 /**
@@ -93,6 +94,7 @@ export class CourseCatalogScraper {
                 description: this.getDescription(document),
                 semester: this.getSemester(),
                 scrapedAt: Date.now(),
+                colors: getCourseColors('emerald', 500),
             });
             courses.push({
                 element: row,

@@ -1,5 +1,4 @@
 import type { Course } from '@shared/types/Course';
-import { getCourseColors } from '@shared/util/colors';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
@@ -120,11 +119,8 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
         });
     });
 
-    //  Part of TODO: block.course is definitely a course object
-    //  console.log(courseCells);
-
     return courseCells.map((block, i) => {
-        const { courseDeptAndInstr, timeAndLocation, status, colors } = courseCells[i].componentProps;
+        const { courseDeptAndInstr, timeAndLocation, status } = courseCells[i].componentProps;
 
         return (
             <div
@@ -141,8 +137,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                     courseDeptAndInstr={courseDeptAndInstr}
                     timeAndLocation={timeAndLocation}
                     status={status}
-                    //  TODO: Change to block.componentProps.colors when colors are integrated to the rest of the project
-                    colors={getCourseColors('emerald', 500) /*  block.componentProps.colors */}
+                    colors={block.course.colors}
                     onClick={() => setCourse(block.course)}
                 />
             </div>
