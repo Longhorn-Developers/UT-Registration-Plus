@@ -28,15 +28,15 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [editorValue, setEditorValue] = useState(schedule.name);
 
     const editorRef = React.useRef<HTMLInputElement>(null);
+    const { current: editor } = editorRef;
     useEffect(() => {
         setEditorValue(schedule.name);
 
-        const editor = editorRef.current;
         if (isEditing && editor) {
             editor.focus();
             editor.setSelectionRange(0, editor.value.length);
         }
-    }, [isEditing]);
+    }, [isEditing, schedule.name, editor]);
 
     const isActive = useMemo(() => activeSchedule.id === schedule.id, [activeSchedule, schedule]);
 
