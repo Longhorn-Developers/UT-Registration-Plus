@@ -42,7 +42,7 @@ export default function CalendarHeader(): JSX.Element {
                 />
                 <div className='flex items-center gap-1'>
                     <Text variant='mini' className='text-ut-gray'>
-                        DATA UPDATED ON: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                        LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                     </Text>
                     <button className='inline-block h-4 w-4 bg-transparent p-0 btn'>
                         <RefreshIcon className='h-4 w-4 animate-duration-800 text-ut-black' />

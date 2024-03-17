@@ -31,9 +31,10 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     useEffect(() => {
         setEditorValue(schedule.name);
 
-        if (isEditing && editorRef.current) {
-            editorRef.current.focus();
-            editorRef.current.setSelectionRange(0, editorRef.current.value.length);
+        const editor = editorRef.current;
+        if (isEditing && editor) {
+            editor.focus();
+            editor.setSelectionRange(0, editor.value.length);
         }
     }, [isEditing]);
 

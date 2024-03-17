@@ -46,7 +46,11 @@ function makeGridRow(row: number, cols: number): JSX.Element {
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  * @param props
  */
-export default function CalendarGrid({ courseCells, saturdayClass, setCourse }: React.PropsWithChildren<Props>): JSX.Element {
+export default function CalendarGrid({
+    courseCells,
+    saturdayClass, // TODO: implement/move away from props
+    setCourse,
+}: React.PropsWithChildren<Props>): JSX.Element {
     return (
         <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto_repeat(26,1fr)] h-full'>
             {/* Displaying day labels */}

@@ -1,7 +1,7 @@
 import type { SVGProps } from 'react';
 import React from 'react';
 
-export function LogoIcon(props: SVGProps<SVGSVGElement>) {
+export function LogoIcon(props: SVGProps<SVGSVGElement>): JSX.Element {
     return (
         <svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg' {...props}>
             <circle cx='20' cy='20' r='20' fill='#BF5700' />
@@ -12,7 +12,7 @@ export function LogoIcon(props: SVGProps<SVGSVGElement>) {
     );
 }
 
-export function SmallLogo() {
+export function SmallLogo(): JSX.Element {
     return (
         <div className='flex items-center gap-2'>
             <LogoIcon />
@@ -24,7 +24,7 @@ export function SmallLogo() {
     );
 }
 
-export function LargeLogo() {
+export function LargeLogo(): JSX.Element {
     return (
         <div className='flex items-center gap-2'>
             <LogoIcon className='h-12 w-12' />
