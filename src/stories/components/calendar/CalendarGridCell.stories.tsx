@@ -10,9 +10,13 @@ const meta = {
         layout: 'centered',
         tags: ['autodocs'],
     },
+    args: {
+        row: 0,
+        col: 0,
+    },
 } satisfies Meta<typeof CalendarCell>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// export const Default: Story = {};
+export const Default: Story = {};
