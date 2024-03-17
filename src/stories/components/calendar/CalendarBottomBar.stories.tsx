@@ -34,6 +34,7 @@ const exampleGovCourse: Course = new Course({
     status: Status.OPEN,
     uniqueId: 12345,
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+    colors: getCourseColors('red', 500),
 });
 
 const examplePsyCourse: Course = new Course({
@@ -65,6 +66,7 @@ const examplePsyCourse: Course = new Course({
     status: Status.CLOSED,
     uniqueId: 12346,
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+    colors: getCourseColors('blue', 500),
 });
 
 const meta = {

@@ -2,6 +2,7 @@ import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import { CourseSchedule } from '@shared/types/CourseSchedule';
 import Instructor from '@shared/types/Instructor';
+import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
 import CalendarCourse from '@views/components/calendar/CalendarCourseBlock/CalendarCourseMeeting';
 
@@ -15,7 +16,6 @@ const meta = {
     argTypes: {
         course: { control: 'object' },
         meetingIdx: { control: 'number' },
-        color: { control: 'color' },
         rightIcon: { control: 'object' },
     },
 } satisfies Meta<typeof CalendarCourse>;
@@ -56,8 +56,8 @@ export const Default: Story = {
                 season: 'Spring',
             },
             scrapedAt: Date.now(),
+            colors: getCourseColors('emerald', 500),
         }),
         meetingIdx: 0,
-        color: 'red',
     },
 };

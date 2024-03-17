@@ -2,6 +2,7 @@ import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import { UserSchedule } from '@shared/types/UserSchedule';
+import { getCourseColors } from '@shared/util/colors';
 
 export const exampleCourse: Course = new Course({
     courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',
@@ -51,6 +52,7 @@ export const exampleCourse: Course = new Course({
     status: Status.OPEN,
     uniqueId: 12345,
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+    colors: getCourseColors('blue', 500),
 });
 
 export const exampleSchedule: UserSchedule = new UserSchedule({
@@ -104,6 +106,7 @@ export const bevoCourse: Course = new Course({
         season: 'Spring',
     },
     scrapedAt: Date.now(),
+    colors: getCourseColors('green', 500),
 });
 
 export const bevoSchedule: UserSchedule = new UserSchedule({
@@ -158,6 +161,7 @@ export const mikeScottCS314Course: Course = new Course({
         season: 'Spring',
     },
     scrapedAt: Date.now(),
+    colors: getCourseColors('orange', 500),
 });
 
 export const mikeScottCS314Schedule: UserSchedule = new UserSchedule({
