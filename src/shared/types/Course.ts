@@ -76,7 +76,7 @@ export class Course {
     semester: Semester;
     /** Unix timestamp of when the course was last scraped */
     scrapedAt: number;
-    /** The colors of the schedule */
+    /** The colors of the course when displayed */
     colors: CourseColors;
 
     constructor(course: Serialized<Course>) {
