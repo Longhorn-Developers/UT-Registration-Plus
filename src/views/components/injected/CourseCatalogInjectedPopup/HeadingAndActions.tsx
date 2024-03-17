@@ -103,10 +103,10 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
         <div className='w-full px-2 pb-3 pt-6 text-ut-black'>
             <div className='flex flex-col'>
                 <div className='flex items-center gap-1'>
-                    <Text variant='h1' as='h1' className='truncate text-theme-black'>
+                    <Text variant='h1' className='truncate text-theme-black'>
                         {courseName}
                     </Text>
-                    <Text variant='h1' as='h2' className='flex-1 whitespace-nowrap'>
+                    <Text variant='h1' className='flex-1 whitespace-nowrap text-theme-black'>
                         ({department} {courseNumber})
                     </Text>
                     <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>

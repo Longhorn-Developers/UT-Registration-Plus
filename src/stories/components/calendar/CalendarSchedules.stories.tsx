@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules/CalendarSchedules';
-import React from 'react';
 
 const meta = {
     title: 'Components/Calendar/CalendarSchedules',
@@ -9,11 +8,6 @@ const meta = {
         layout: 'centered',
         tags: ['autodocs'],
     },
-    render: args => (
-        <div>
-            <CalendarSchedules {...args} />
-        </div>
-    ),
 } satisfies Meta<typeof CalendarSchedules>;
 
 export default meta;

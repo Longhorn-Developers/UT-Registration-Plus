@@ -1,6 +1,6 @@
 import type { PropsOf, ReactTag } from '@headlessui/react/dist/types';
 import clsx from 'clsx';
-import type { ElementType, ReactNode } from 'react';
+import type { ElementType, ReactNode, Ref } from 'react';
 import React from 'react';
 
 import styles from './Text.module.scss';
@@ -13,6 +13,7 @@ type CleanProps<TTag extends ReactTag, TOmitableProps extends PropertyKey = neve
 type OurProps<TTag extends ReactTag> = {
     as?: TTag;
     children?: ReactNode;
+    ref?: React.ForwardedRef<React.ElementRef<TTag>>;
 };
 
 type AsProps<TTag extends ReactTag, TOverrides = {}> = CleanProps<TTag, keyof TOverrides> & OurProps<TTag> & TOverrides;
@@ -36,14 +37,14 @@ export type TextProps<TTag extends ElementType = 'span'> = PropsOf<TTag>['classN
 /**
  * A reusable Text component with props that build on top of the design system for the extension
  */
-export default function Text<TTag extends ElementType = 'span'>({
-    as,
-    className,
-    variant,
-    ...rest
-}: TextProps<TTag>): JSX.Element {
+function Text<TTag extends ElementType = 'span'>(
+    { as, className, variant, ...rest }: TextProps<TTag>,
+    ref: Ref<HTMLElement>
+): JSX.Element {
     const Comp = as || 'span';
     const mergedClassName = clsx(styles.text, styles[variant || 'p'], className);
 
-    return <Comp className={mergedClassName} {...rest} />;
+    return <Comp className={mergedClassName} {...rest} ref={ref} />;
 }
+
+export default React.forwardRef(Text) as typeof Text;

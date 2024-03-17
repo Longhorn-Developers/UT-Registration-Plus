@@ -46,7 +46,7 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                     <div className='fixed inset-0 z-50 flex items-center justify-center'>
                         <HDialog.Panel
                             className={clsx(
-                                'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-ut-offwhite rounded-lg bg-white shadow-xl ml-[calc(100vw-100%)] mt-[calc(100vw-100%)]',
+                                'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-solid border-ut-offwhite rounded bg-white shadow-xl ml-[calc(100vw-100%)] mt-[calc(100vw-100%)]',
                                 className
                             )}
                         >

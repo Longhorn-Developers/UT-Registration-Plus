@@ -11,7 +11,6 @@ import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSched
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useRef, useState } from 'react';
 
-import styles from './Calendar.module.scss';
 /**
  * A reusable chip component that follows the design system of the extension.
  * @returns
@@ -33,8 +32,6 @@ export default function Calendar(): JSX.Element {
     });
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
-    const [sidebarWidth, setSidebarWidth] = useState('20%');
-    const [scale, setScale] = useState(1);
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
@@ -53,58 +50,20 @@ export default function Calendar(): JSX.Element {
     }, [activeSchedule.courses]);
 
     useEffect(() => {
-        const adjustLayout = () => {
-            const windowHeight = window.innerHeight;
-            const windowWidth = window.innerWidth;
-
-            const desiredCalendarHeight = 760;
-            const minSidebarWidthPixels = 230;
-
-            const scale = Math.min(1, windowHeight / desiredCalendarHeight);
-
-            const sidebarWidthPixels = Math.max(
-                windowWidth * scale - windowWidth + minSidebarWidthPixels,
-                minSidebarWidthPixels
-            );
-            const newSidebarWidth = `${(sidebarWidthPixels / windowWidth) * 100}%`;
-
-            setScale(scale);
-            setSidebarWidth(newSidebarWidth);
-        };
-
-        adjustLayout();
-
-        window.addEventListener('resize', adjustLayout);
-        return () => window.removeEventListener('resize', adjustLayout);
-    }, []);
-
-    useEffect(() => {
         if (course) setShowPopup(true);
     }, [course]);
 
-    const calendarContainerStyle = {
-        transform: `scale(${scale})`,
-        transformOrigin: 'top left',
-        marginTop: '-20px',
-    };
-
     return (
-        <div className='h-screen flex flex-col' style={{ width: 'calc(100% - 1rem)' }}>
-            <div className='pl-5'>
-                <CalendarHeader />
-            </div>
-            <div className={`flex flex-grow flex-row overflow-hidden pl-4 ${styles.scrollableSchedules}`}>
-                <div className='sidebar-style' style={{ width: sidebarWidth, padding: '10px 15px 5px 5px' }}>
-                    <div className={`mb-4 ${styles.scrollableLimit}`}>
-                        <CalendarSchedules />
-                    </div>
-                    <Divider orientation='horizontal' size='100%' />
-                    <div className='mt-4'>
-                        <ImportantLinks />
-                    </div>
+        <div className='h-full w-full flex flex-col'>
+            <CalendarHeader />
+            <div className='h-full flex flex-grow overflow-hidden pl-7.5'>
+                <div className='overflow-auto py-5'>
+                    <CalendarSchedules />
+                    <Divider orientation='horizontal' size='100%' className='my-5' />
+                    <ImportantLinks />
                 </div>
-                <div className='flex flex-grow flex-col' style={calendarContainerStyle} ref={calendarRef}>
-                    <div className='flex-grow overflow-auto'>
+                <div className='flex flex-grow flex-col' ref={calendarRef}>
+                    <div className='flex-grow overflow-auto px-4 pt-6.5'>
                         <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                     </div>
                     <CalendarBottomBar calendarRef={calendarRef} />
