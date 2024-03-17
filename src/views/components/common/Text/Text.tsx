@@ -25,14 +25,15 @@ type Variant = (typeof variants)[number];
 /**
  * Props for the Text component.
  */
-export type TextProps<TTag extends ElementType = 'span'> = PropsOf<TTag>['className'] extends string
-    ? AsProps<
-          TTag,
-          {
-              variant?: Variant;
-          }
-      >
-    : never;
+export type TextProps<TTag extends ElementType = 'span'> =
+    NonNullable<PropsOf<TTag>['className']> extends string
+        ? AsProps<
+              TTag,
+              {
+                  variant?: Variant;
+              }
+          >
+        : never;
 
 /**
  * A reusable Text component with props that build on top of the design system for the extension
@@ -47,4 +48,4 @@ function Text<TTag extends ElementType = 'span'>(
     return <Comp className={mergedClassName} {...rest} ref={ref} />;
 }
 
-export default React.forwardRef(Text) as typeof Text;
+export default React.forwardRef(Text) as <TTag extends ElementType = 'span'>(props: TextProps<TTag>) => JSX.Element;
