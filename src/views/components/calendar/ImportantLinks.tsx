@@ -15,12 +15,16 @@ interface LinkItem {
 
 const links: LinkItem[] = [
     {
-        text: "Summer '24 Course Schedule",
-        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/',
+        text: "Fall '24 Course Schedule",
+        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20249/',
     },
     {
-        text: "Fall '24 Course Schedule",
-        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20236/',
+        text: "Summer '24 Course Schedule",
+        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20246/',
+    },
+    {
+        text: "Spring '24 Course Schedule",
+        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/',
     },
     {
         text: 'Registration Info Sheet',
@@ -48,7 +52,7 @@ export default function ImportantLinks({ className }: Props): JSX.Element {
                 <a
                     key={link.text}
                     href={link.url}
-                    className='flex items-center gap-0.5 text-ut-burntorange'
+                    className='flex items-center gap-0.5 text-ut-burntorange underline-offset-2 hover:underline'
                     target='_blank'
                     rel='noreferrer'
                 >

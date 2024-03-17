@@ -1,3 +1,4 @@
+import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/util/colors';
@@ -32,13 +33,23 @@ export default function PopupCourseBlock({
 }: PopupCourseBlockProps): JSX.Element {
     // whiteText based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
+    const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
+
+    const handleClick = async () => {
+        await background.switchToCalendarTab({ uniqueId: course.uniqueId });
+        window.close();
+    };
 
     return (
-        <div
+        <button
             style={{
                 backgroundColor: colors.primaryColor,
             }}
-            className={clsx('h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3', className)}
+            className={clsx(
+                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 cursor-pointer focusable text-left',
+                className
+            )}
+            onClick={handleClick}
         >
             <div
                 style={{
@@ -50,7 +61,7 @@ export default function PopupCourseBlock({
                 <DragIndicatorIcon className='h-6 w-6 text-white' />
             </div>
             <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
-                <span className='px-0.5 font-450'>{course.uniqueId}</span> {course.department} {course.number} &ndash;{' '}
+                <span className='px-0.5 font-450'>{formattedUniqueId}</span> {course.department} {course.number} &ndash;{' '}
                 {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
             </Text>
             {course.status !== Status.OPEN && (
@@ -63,6 +74,6 @@ export default function PopupCourseBlock({
                     <StatusIcon status={course.status} className='h-5 w-5' />
                 </div>
             )}
-        </div>
+        </button>
     );
 }

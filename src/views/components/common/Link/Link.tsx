@@ -7,31 +7,28 @@ import React from 'react';
 
 import styles from './Link.module.scss';
 
-type Props = Omit<TextProps, 'span'> & {
-    url?: string;
+type Props = TextProps<'a'> & {
+    href?: string;
     disabled?: boolean;
-    title?: string;
 };
 
 /**
  * A reusable Text component with props that build on top of the design system for the extension
  */
 export default function Link(props: PropsWithChildren<Props>): JSX.Element {
-    let passedProps = {
-        ...props,
-    };
-    const { url } = props;
+    let { className, href, ...passedProps } = props;
 
-    if (url && !props.onClick) {
-        passedProps.onClick = () => background.openNewTab({ url });
+    if (href && !props.onClick) {
+        passedProps.onClick = () => background.openNewTab({ url: href });
     }
-    const isDisabled = props.disabled || (!url && !props.onClick);
+    const isDisabled = props.disabled || (!href && !props.onClick);
 
     return (
         <Text
             color='bluebonnet'
             {...passedProps}
-            as='span'
+            as='a'
+            tabIndex={isDisabled ? -1 : 0}
             className={clsx(
                 styles.link,
                 {

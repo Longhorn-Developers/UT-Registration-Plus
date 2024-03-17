@@ -10,7 +10,7 @@ export default defineConfig({
     rules: [
         [
             'btn-transition',
-            { transition: 'color 180ms, border-color 150ms, background-color 150ms, box-shadow 100ms, transform 50ms' },
+            { transition: 'color 180ms, border-color 150ms, background-color 150ms, box-shadow 0ms, transform 50ms' },
         ],
         [
             'ring-offset-0',
@@ -21,7 +21,8 @@ export default defineConfig({
     ],
     shortcuts: {
         focusable: 'outline-none ring-blue-500/50 dark:ring-blue-400/60 ring-0 focus-visible:ring-4',
-        btn: 'h-10 w-auto flex cursor-pointer justify-center items-center gap-2 rounded-1 px-4 py-0 text-4.5 btn-transition btn-transition disabled:(cursor-not-allowed opacity-50) active:enabled:scale-96 focusable',
+        btn: 'h-10 w-auto flex cursor-pointer justify-center items-center gap-2 rounded-1 px-4 py-0 text-4.5 btn-transition disabled:(cursor-not-allowed opacity-50) active:enabled:scale-96 focusable',
+        link: 'text-ut-burntorange underline underline-offset-2 hover:text-ut-orange focus-visible:text-ut-orange focusable btn-transition ease-out-expo',
     },
     theme: {
         easing: {

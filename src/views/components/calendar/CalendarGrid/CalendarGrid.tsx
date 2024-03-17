@@ -1,14 +1,13 @@
 import type { Course } from '@shared/types/Course';
-import { DAY_MAP } from '@shared/types/CourseMeeting';
 import { getCourseColors } from '@shared/util/colors';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
-import CalendarCell from '@views/components/calendar/CalendarGridCell/CalendarGridCell';
+import Text from '@views/components/common/Text/Text';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import styles from './CalendarGrid.module.scss';
+import CalendarCell from '../CalendarGridCell/CalendarGridCell';
 
-const daysOfWeek = Object.keys(DAY_MAP).filter(key => !['S', 'SU'].includes(key));
+const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 
 interface Props {
@@ -17,55 +16,60 @@ interface Props {
     setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 }
 
+function CalendarHour(hour: number) {
+    return (
+        <div className='grid-row-span-2 pr-2'>
+            <Text variant='small' className='inline-block w-full text-right -translate-y-2.25'>
+                {(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}
+            </Text>
+        </div>
+    );
+}
+
+function makeGridRow(row: number, cols: number): JSX.Element {
+    const hour = hoursOfDay[row];
+
+    return (
+        <>
+            {CalendarHour(hour)}
+            <div className='grid-row-span-2 w-4 border-b border-r border-gray-300' />
+            {[...Array(cols).keys()].map(col => (
+                <CalendarCell key={`${row}${col}`} row={row} col={col} />
+            ))}
+        </>
+    );
+}
+
+// TODO: add Saturday class support
+
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  * @param props
  */
 export default function CalendarGrid({
     courseCells,
-    saturdayClass,
+    saturdayClass, // TODO: implement/move away from props
     setCourse,
 }: React.PropsWithChildren<Props>): JSX.Element {
-    const [grid, setGrid] = useState([]);
-
-    useEffect(() => {
-        const newGrid = [];
-        for (let i = 0; i < 13; i++) {
-            const row = [];
-            let hour = hoursOfDay[i];
-            let styleProp = {
-                gridColumn: '1',
-                gridRow: `${2 * i + 2}`,
-            };
-            row.push(
-                <div key={hour} className={styles.timeBlock} style={styleProp}>
-                    <div className={styles.timeLabelContainer}>
-                        <p>{(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}</p>
-                    </div>
-                </div>
-            );
-            for (let k = 0; k < 5; k++) {
-                styleProp = {
-                    gridColumn: `${k + 2}`,
-                    gridRow: `${2 * i + 2} / ${2 * i + 4}`,
-                };
-                row.push(<CalendarCell key={k} styleProp={styleProp} />);
-            }
-            newGrid.push(row);
-        }
-        setGrid(newGrid);
-    }, []);
-
     return (
-        <div className={styles.calendarGrid}>
+        <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto_repeat(26,1fr)] h-full'>
             {/* Displaying day labels */}
-            <div className={styles.timeBlock} />
+            <div />
+            <div className='w-4 border-b border-r border-gray-300' />
             {daysOfWeek.map(day => (
-                <div key={day} className={styles.day}>
-                    {day}
+                <div className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5'>
+                    <Text key={day} variant='small' className='text text-center text-ut-burntorange' as='div'>
+                        {day}
+                    </Text>
                 </div>
             ))}
-            {grid.map(row => row)}
+            {[...Array(13).keys()].map(i => makeGridRow(i, 5))}
+            {CalendarHour(21)}
+            {Array(6)
+                .fill(1)
+                .map(() => (
+                    <div className='h-4 flex items-end justify-center border-r border-gray-300' />
+                ))}
             {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} /> : null}
         </div>
     );
@@ -76,6 +80,7 @@ interface AccountForCourseConflictsProps {
     setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 }
 
+// TODO: Possibly refactor to be more concise
 function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce((acc, cell: CalendarGridCourse) => {
@@ -123,7 +128,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
 
         return (
             <div
-                key={`${block}`}
+                key={`${JSON.stringify(block)}`}
                 style={{
                     gridColumn: `${block.calendarGridPoint.dayIndex + 2}`,
                     gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,

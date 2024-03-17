@@ -1,22 +1,13 @@
-import { background } from '@shared/messages';
+import createSchedule from '@pages/background/lib/createSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import type { UserSchedule } from '@shared/types/UserSchedule';
+import { Button } from '@views/components/common/Button/Button';
 import List from '@views/components/common/List/List';
 import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
 import Text from '@views/components/common/Text/Text';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
-
-/**
- * Props for the CalendarSchedules component.
- */
-export type Props = {
-    style?: React.CSSProperties;
-    dummySchedules?: UserSchedule[];
-    dummyActiveIndex?: number;
-};
 
 /**
  * Renders a component that displays a list of schedules.
@@ -55,14 +46,17 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
     console.log(fixBuildError);
 
     return (
-        <div style={{ ...style }} className='items-center'>
+        <div className='min-w-full w-0 items-center'>
             <div className='m0 m-b-2 w-full flex justify-between'>
                 <Text variant='h3'>MY SCHEDULES</Text>
-                <div className='cursor-pointer items-center justify-center btn-transition -ml-1.5 hover:text-zinc-400'>
-                    <Text variant='h3'>
-                        <AddSchedule />
-                    </Text>
-                </div>
+                <Button
+                    variant='single'
+                    color='theme-black'
+                    className='h-fit p-0 btn'
+                    onClick={() => createSchedule('New Schedule')}
+                >
+                    <AddSchedule className='h-6 w-6' />
+                </Button>
             </div>
             <div className='flex flex-col space-y-2.5'>
                 <List
@@ -88,13 +82,6 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
                         />
                     )}
                 </List>
-                <input
-                    type='text'
-                    placeholder='Enter new schedule'
-                    value={newSchedule}
-                    onChange={handleScheduleInputChange}
-                    onKeyDown={handleKeyDown}
-                />
             </div>
         </div>
     );

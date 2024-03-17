@@ -1,11 +1,11 @@
 import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
-import { Status } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { Button } from '@views/components/common/Button/Button';
 import { Chip, flagMap } from '@views/components/common/Chip/Chip';
 import Divider from '@views/components/common/Divider/Divider';
+import Link from '@views/components/common/Link/Link';
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
 
@@ -30,15 +30,6 @@ interface HeadingAndActionProps {
 }
 
 /**
- * Opens the calendar in a new tab.
- * @returns {Promise<void>} A promise that resolves when the tab is opened.
- */
-export const handleOpenCalendar = async (): Promise<void> => {
-    const url = chrome.runtime.getURL('calendar.html');
-    openNewTab({ url });
-};
-
-/**
  * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.
  *
  * @param str - The string to be capitalized.
@@ -58,6 +49,7 @@ const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slic
 export default function HeadingAndActions({ course, activeSchedule, onClose }: HeadingAndActionProps): JSX.Element {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
+    const formattedUniqueId = uniqueId.toString().padStart(5, '0');
 
     const getInstructorFullName = (instructor: Instructor) => {
         const { firstName, lastName } = instructor;
@@ -65,10 +57,11 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
         return `${capitalizeString(firstName)} ${capitalizeString(lastName)}`;
     };
 
-    const instructorString = instructors.map(getInstructorFullName).join(', ');
+    const getBuildingUrl = (building: string) =>
+        `https://utdirect.utexas.edu/apps/campus/buildings/nlogon/maps/UTM/${building}`;
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(uniqueId.toString());
+        navigator.clipboard.writeText(formattedUniqueId);
     };
 
     const handleOpenRateMyProf = async () => {
@@ -107,27 +100,38 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     };
 
     return (
-        <div className='w-full pb-3 pt-6'>
+        <div className='w-full px-2 pb-3 pt-6 text-ut-black'>
             <div className='flex flex-col'>
                 <div className='flex items-center gap-1'>
-                    <Text variant='h1' className='truncate'>
+                    <Text variant='h1' className='truncate text-theme-black'>
                         {courseName}
                     </Text>
-                    <Text variant='h1' className='flex-1 whitespace-nowrap'>
-                        {' '}
+                    <Text variant='h1' className='flex-1 whitespace-nowrap text-theme-black'>
                         ({department} {courseNumber})
                     </Text>
                     <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
-                        {uniqueId}
+                        {formattedUniqueId}
                     </Button>
-                    <button className='bg-transparent p-0 btn' onClick={onClose}>
+                    <button className='bg-transparent p-0 text-theme-black btn' onClick={onClose}>
                         <CloseIcon className='h-7 w-7' />
                     </button>
                 </div>
-                <div className='flex gap-2 flex-content-center'>
-                    {instructorString.length > 0 && (
-                        <Text variant='h4' className='inline-flex items-center justify-center'>
-                            with {instructorString}
+                <div className='flex items-center gap-2'>
+                    {instructors.length > 0 && (
+                        <Text variant='h4' as='p' className='items-center justify-center'>
+                            with{' '}
+                            {instructors
+                                .map(instructor => (
+                                    <Link
+                                        key={instructor.fullName}
+                                        variant='h4'
+                                        href={instructor.getDirectoryUrl()}
+                                        className='link'
+                                    >
+                                        {getInstructorFullName(instructor)}
+                                    </Link>
+                                ))
+                                .flatMap((el, i) => (i === 0 ? [el] : [', ', el]))}
                         </Text>
                     )}
                     <div className='flex-content-centr flex gap-1'>
@@ -139,22 +143,37 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                         ))}
                     </div>
                 </div>
-                <div className='flex flex-col'>
+                <div className='mt-1 flex flex-col'>
                     {schedule.meetings.map(meeting => {
                         const daysString = meeting.getDaysString({ format: 'long', separator: 'long' });
                         const timeString = meeting.getTimeString({ separator: ' to ', capitalize: false });
-                        const locationString = meeting.location ? ` in ${meeting.location.building}` : '';
                         return (
-                            <Text key={daysString + timeString + locationString} variant='h4'>
+                            <Text key={daysString + timeString + meeting.location.building} variant='h4' as='p'>
                                 {daysString} {timeString}
-                                {locationString}
+                                {meeting.location && (
+                                    <>
+                                        {' in '}
+                                        <Link
+                                            href={getBuildingUrl(meeting.location.building)}
+                                            className='link'
+                                            variant='h4'
+                                        >
+                                            {meeting.location.building}
+                                        </Link>
+                                    </>
+                                )}
                             </Text>
                         );
                     })}
                 </div>
             </div>
-            <div className='my-3 flex flex-wrap items-center gap-[15px]'>
-                <Button variant='filled' color='ut-burntorange' icon={CalendarMonth} onClick={handleOpenCalendar} />
+            <div className='my-3 flex flex-wrap items-center gap-x-3.75 gap-y-2.5'>
+                <Button
+                    variant='filled'
+                    color='ut-burntorange'
+                    icon={CalendarMonth}
+                    onClick={() => background.switchToCalendarTab({})}
+                />
                 <Divider size='1.75rem' orientation='vertical' />
                 <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
                     RateMyProf
@@ -167,8 +186,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 </Button>
                 <Button
                     variant='filled'
-                    disabled={course.status !== Status.OPEN}
-                    color={!courseAdded ? 'ut-green' : 'ut-red'}
+                    color={!courseAdded ? 'ut-green' : 'theme-red'}
                     icon={!courseAdded ? Add : Remove}
                     onClick={handleAddOrRemoveCourse}
                 >
