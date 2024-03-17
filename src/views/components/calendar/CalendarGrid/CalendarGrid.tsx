@@ -16,7 +16,7 @@ interface Props {
     setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 }
 
-function CalendarHour(hour: number) {
+function CalendarHour({ hour }: { hour: number }) {
     return (
         <div className='grid-row-span-2 pr-2'>
             <Text variant='small' className='inline-block w-full text-right -translate-y-2.25'>
@@ -31,7 +31,7 @@ function makeGridRow(row: number, cols: number): JSX.Element {
 
     return (
         <>
-            {CalendarHour(hour)}
+            <CalendarHour hour={hour} />
             <div className='grid-row-span-2 w-4 border-b border-r border-gray-300' />
             {[...Array(cols).keys()].map(col => (
                 <CalendarCell key={`${row}${col}`} row={row} col={col} />
@@ -64,7 +64,7 @@ export default function CalendarGrid({
                 </div>
             ))}
             {[...Array(13).keys()].map(i => makeGridRow(i, 5))}
-            {CalendarHour(21)}
+            <CalendarHour hour={21} />
             {Array(6)
                 .fill(1)
                 .map(() => (
@@ -130,7 +130,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
             <div
                 key={`${JSON.stringify(block)}`}
                 style={{
-                    gridColumn: `${block.calendarGridPoint.dayIndex + 2}`,
+                    gridColumn: `${block.calendarGridPoint.dayIndex + 3}`,
                     gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
                     width: `calc(100% / ${block.totalColumns})`,
                     marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`,
