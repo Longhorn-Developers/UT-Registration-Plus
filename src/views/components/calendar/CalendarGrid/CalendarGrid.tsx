@@ -26,7 +26,7 @@ function CalendarHour({ hour }: { hour: number }) {
 }
 
 function makeGridRow(row: number, cols: number): JSX.Element {
-    const hour = hoursOfDay[row];
+    const hour = hoursOfDay[row]!;
 
     return (
         <>
@@ -83,14 +83,17 @@ interface AccountForCourseConflictsProps {
 // TODO: Deal with react strict mode (wacky movements)
 function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
     //  Groups by dayIndex to identify overlaps
-    const days = courseCells.reduce((acc, cell: CalendarGridCourse) => {
-        const { dayIndex } = cell.calendarGridPoint;
-        if (!acc[dayIndex]) {
-            acc[dayIndex] = [];
-        }
-        acc[dayIndex].push(cell);
-        return acc;
-    }, {});
+    const days = courseCells.reduce(
+        (acc, cell: CalendarGridCourse) => {
+            const { dayIndex } = cell.calendarGridPoint;
+            if (acc[dayIndex] === undefined) {
+                acc[dayIndex] = [];
+            }
+            acc[dayIndex]!.push(cell);
+            return acc;
+        },
+        {} as Record<number, CalendarGridCourse[]>
+    );
 
     // Check for overlaps within each day and adjust gridColumnIndex and totalColumns
     Object.values(days).forEach((dayCells: CalendarGridCourse[]) => {
