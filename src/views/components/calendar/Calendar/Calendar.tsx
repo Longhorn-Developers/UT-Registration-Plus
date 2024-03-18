@@ -12,7 +12,7 @@ import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useRef, useState } from 'react';
 
 /**
- * A reusable chip component that follows the design system of the extension.
+ * A component combining the various calendar subcomponents into one main calendar component displaying the student's schedule-related information and more
  * @returns
  */
 export default function Calendar(): JSX.Element {
