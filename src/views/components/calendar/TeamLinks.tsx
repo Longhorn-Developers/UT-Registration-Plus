@@ -8,6 +8,26 @@ type Props = {
     className?: string;
 };
 
+interface LinkItem {
+    text: string;
+    url: string;
+}
+
+const links: LinkItem[] = [
+    {
+        text: 'Feedback Form',
+        url: '#',
+    },
+    {
+        text: 'Apply to Longhorn Developers',
+        url: '#',
+    },
+    {
+        text: 'Become a Beta Tester',
+        url: '#',
+    },
+];
+
 /**
  * The "From The Team" section of the calendar website
  * @returns
@@ -15,36 +35,19 @@ type Props = {
 export default function TeamLinks({ className }: Props): JSX.Element {
     return (
         <article className={clsx(className, 'flex flex-col gap-2')}>
-            <Text variant='h3'>From The Team</Text>
-            <a
-                href='options.html'
-                className='flex items-center gap-0.5 text-ut-burntorange'
-                target='_blank'
-                rel='noreferrer'
-            >
-                <Text variant='p'>Credits – Meet the team!</Text>
-                <OutwardArrowIcon className='h-3 w-3' />
-            </a>
-            {/* TODO: ADD THE LINK HERE */}
-            <a
-                href='application-link'
-                className='flex items-center gap-0.5 text-ut-burntorange'
-                target='_blank'
-                rel='noreferrer'
-            >
-                <Text variant='p'>Apply to Longhorn Developers</Text>
-                <OutwardArrowIcon className='h-3 w-3' />
-            </a>
-            {/* TODO: ADD THE LINK HERE */}
-            <a
-                href='beta_tester-link'
-                className='flex items-center gap-0.5 text-ut-burntorange'
-                target='_blank'
-                rel='noreferrer'
-            >
-                <Text variant='p'>Become a Beta Tester</Text>
-                <OutwardArrowIcon className='h-3 w-3' />
-            </a>
+            <Text variant='h3'>From the Team</Text>
+            {links.map(link => (
+                <a
+                    key={link.text}
+                    href={link.url}
+                    className='flex items-center gap-0.5 text-ut-burntorange underline-offset-2 hover:underline'
+                    target='_blank'
+                    rel='noreferrer'
+                >
+                    <Text variant='p'>{link.text}</Text>
+                    <OutwardArrowIcon className='h-3 w-3' />
+                </a>
+            ))}
         </article>
     );
 }

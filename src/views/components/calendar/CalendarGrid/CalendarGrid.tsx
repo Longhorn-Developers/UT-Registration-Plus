@@ -57,7 +57,7 @@ export default function CalendarGrid({
             <div className='w-4 border-b border-r border-gray-300' />
             {daysOfWeek.map(day => (
                 <div className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5'>
-                    <Text key={day} variant='small' className='text text-center text-ut-burntorange' as='div'>
+                    <Text key={day} variant='small' className='text-center text-ut-burntorange' as='div'>
                         {day}
                     </Text>
                 </div>
@@ -80,6 +80,7 @@ interface AccountForCourseConflictsProps {
 }
 
 // TODO: Possibly refactor to be more concise
+// TODO: Deal with react strict mode (wacky movements)
 function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce((acc, cell: CalendarGridCourse) => {
