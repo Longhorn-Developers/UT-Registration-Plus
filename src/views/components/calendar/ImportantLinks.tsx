@@ -48,7 +48,7 @@ export default function ImportantLinks({ className }: Props): JSX.Element {
     return (
         <article className={clsx(className, 'flex flex-col gap-2')}>
             <Text variant='h3'>Useful Links</Text>
-            {links.map((link, index) => (
+            {links.map(link => (
                 <a
                     key={link.text}
                     href={link.url}

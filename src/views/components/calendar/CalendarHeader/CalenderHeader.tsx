@@ -22,19 +22,23 @@ const handleOpenOptions = async (): Promise<void> => {
     await openTabFromContentScript(url);
 };
 
+interface CalendarHeaderProps {
+    onSidebarToggle?: () => void;
+}
+
 /**
  * Renders the header component for the calendar.
  * @returns The JSX element representing the calendar header.
  */
-export default function CalendarHeader(): JSX.Element {
+export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const [activeSchedule] = useSchedules();
 
     return (
-        <div className='flex items-center gap-5 border-b px-7 py-4'>
-            <Button variant='single' icon={MenuIcon} color='ut-gray' />
+        <div className='flex items-center gap-5 border-b border-ut-offwhite px-7 py-4'>
+            <Button variant='single' icon={MenuIcon} color='ut-gray' onClick={onSidebarToggle} />
             <LargeLogo />
-            <Divider className='mx-4 self-center' size='2.5rem' orientation='vertical' />
-            <div className='flex-grow'>
+            <Divider className='mx-2 self-center md:mx-4' size='2.5rem' orientation='vertical' />
+            <div className='flex-1'>
                 <ScheduleTotalHoursAndCourses
                     scheduleName={activeSchedule.name}
                     totalHours={activeSchedule.hours}
@@ -42,14 +46,14 @@ export default function CalendarHeader(): JSX.Element {
                 />
                 <div className='flex items-center gap-1'>
                     <Text variant='mini' className='text-ut-gray'>
-                        LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                        DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                     </Text>
                     <button className='inline-block h-4 w-4 bg-transparent p-0 btn'>
                         <RefreshIcon className='h-4 w-4 animate-duration-800 text-ut-black' />
                     </button>
                 </div>
             </div>
-            <div className='flex flex-row items-center justify-end gap-6'>
+            <div className='hidden flex-row items-center justify-end gap-6 lg:flex'>
                 <CourseStatus size='small' status={Status.WAITLISTED} />
                 <CourseStatus size='small' status={Status.CLOSED} />
                 <CourseStatus size='small' status={Status.CANCELLED} />

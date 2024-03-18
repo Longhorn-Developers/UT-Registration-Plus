@@ -23,6 +23,8 @@ export default defineConfig({
         focusable: 'outline-none ring-blue-500/50 dark:ring-blue-400/60 ring-0 focus-visible:ring-4',
         btn: 'h-10 w-auto flex cursor-pointer justify-center items-center gap-2 rounded-1 px-4 py-0 text-4.5 btn-transition disabled:(cursor-not-allowed opacity-50) active:enabled:scale-96 focusable',
         link: 'text-ut-burntorange underline underline-offset-2 hover:text-ut-orange focus-visible:text-ut-orange focusable btn-transition ease-out-expo',
+        linkanimate:
+            'relative cursor-pointer transition duration-100 ease-out after:(absolute left-0.4 right-0.4 h-2px scale-x-95 bg-ut-orange opacity-0 transition duration-250 ease-out-expo content-empty -bottom-0.75 -translate-y-0.5) active:scale-95 hover:text-ut-orange focus-visible:text-ut-orange hover:after:(opacity-100) !hover:after:translate-y-0 !hover:after:scale-x-100',
     },
     theme: {
         easing: {

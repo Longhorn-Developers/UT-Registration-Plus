@@ -11,6 +11,9 @@ import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSched
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useRef, useState } from 'react';
 
+import CalendarFooter from '../CalendarFooter';
+import TeamLinks from '../TeamLinks';
+
 /**
  * A reusable chip component that follows the design system of the extension.
  * @returns
@@ -32,6 +35,7 @@ export default function Calendar(): JSX.Element {
     });
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
+    const [showSidebar, setShowSidebar] = useState<boolean>(true);
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
@@ -55,15 +59,26 @@ export default function Calendar(): JSX.Element {
 
     return (
         <div className='h-full w-full flex flex-col'>
-            <CalendarHeader />
-            <div className='h-full flex flex-grow overflow-hidden pl-7.5'>
-                <div className='overflow-auto py-5'>
-                    <CalendarSchedules />
-                    <Divider orientation='horizontal' size='100%' className='my-5' />
-                    <ImportantLinks />
-                </div>
-                <div className='flex flex-grow flex-col' ref={calendarRef}>
-                    <div className='flex-grow overflow-auto px-4 pt-6.5'>
+            <CalendarHeader
+                onSidebarToggle={() => {
+                    setShowSidebar(!showSidebar);
+                }}
+            />
+            <div className='h-full flex overflow-auto pl-3'>
+                {showSidebar && (
+                    <div className='h-full flex flex-col justify-between pb-5 pl-4.5'>
+                        <div className='mb-3 h-full min-w-fit flex flex-col overflow-auto pb-2 pr-4 pt-5'>
+                            <CalendarSchedules />
+                            <Divider orientation='horizontal' size='100%' className='my-5' />
+                            <ImportantLinks />
+                            <Divider orientation='horizontal' size='100%' className='my-5' />
+                            <TeamLinks />
+                        </div>
+                        <CalendarFooter />
+                    </div>
+                )}
+                <div className='h-full min-w-3xl flex flex-grow flex-col overflow-y-auto' ref={calendarRef}>
+                    <div className='min-h-3xl flex-grow overflow-auto pl-2 pr-4 pt-2xl'>
                         <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                     </div>
                     <CalendarBottomBar calendarRef={calendarRef} />

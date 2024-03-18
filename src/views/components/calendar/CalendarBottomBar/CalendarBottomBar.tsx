@@ -35,7 +35,7 @@ export default function CalendarBottomBar({ courses, calendarRef }: CalendarBott
             >
                 {displayCourses && (
                     <>
-                        <Text variant='h4'>Other Classes:</Text>
+                        <Text variant='h4'>Async/Other:</Text>
                         <div className='inline-flex gap-2.5'>
                             {courses.map(({ courseDeptAndInstr, status, colors, className }) => (
                                 <CalendarCourseBlock
