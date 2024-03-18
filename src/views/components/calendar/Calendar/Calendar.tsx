@@ -12,8 +12,8 @@ import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useRef, useState } from 'react';
 
 /**
- * A component combining the various calendar subcomponents into one main calendar component displaying the student's schedule-related information and more
- * @returns
+ * Calendar page component
+ * @returns A calendar page
  */
 export default function Calendar(): JSX.Element {
     const calendarRef = useRef<HTMLDivElement>(null);
