@@ -1,5 +1,4 @@
 import type { Course } from '@shared/types/Course';
-import { getCourseColors } from '@shared/util/colors';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
@@ -16,7 +15,7 @@ interface Props {
     setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 }
 
-function CalendarHour(hour: number) {
+function CalendarHour({ hour }: { hour: number }) {
     return (
         <div className='grid-row-span-2 pr-2'>
             <Text variant='small' className='inline-block w-full text-right -translate-y-2.25'>
@@ -31,7 +30,7 @@ function makeGridRow(row: number, cols: number): JSX.Element {
 
     return (
         <>
-            {CalendarHour(hour)}
+            <CalendarHour hour={hour} />
             <div className='grid-row-span-2 w-4 border-b border-r border-gray-300' />
             {[...Array(cols).keys()].map(col => (
                 <CalendarCell key={`${row}${col}`} row={row} col={col} />
@@ -58,13 +57,13 @@ export default function CalendarGrid({
             <div className='w-4 border-b border-r border-gray-300' />
             {daysOfWeek.map(day => (
                 <div className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5'>
-                    <Text key={day} variant='small' className='text text-center text-ut-burntorange' as='div'>
+                    <Text key={day} variant='small' className='text-center text-ut-burntorange' as='div'>
                         {day}
                     </Text>
                 </div>
             ))}
             {[...Array(13).keys()].map(i => makeGridRow(i, 5))}
-            {CalendarHour(21)}
+            <CalendarHour hour={21} />
             {Array(6)
                 .fill(1)
                 .map(() => (
@@ -81,6 +80,7 @@ interface AccountForCourseConflictsProps {
 }
 
 // TODO: Possibly refactor to be more concise
+// TODO: Deal with react strict mode (wacky movements)
 function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce((acc, cell: CalendarGridCourse) => {
@@ -120,17 +120,14 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
         });
     });
 
-    //  Part of TODO: block.course is definitely a course object
-    //  console.log(courseCells);
-
     return courseCells.map((block, i) => {
-        const { courseDeptAndInstr, timeAndLocation, status, colors } = courseCells[i].componentProps;
+        const { courseDeptAndInstr, timeAndLocation, status } = courseCells[i].componentProps;
 
         return (
             <div
                 key={`${JSON.stringify(block)}`}
                 style={{
-                    gridColumn: `${block.calendarGridPoint.dayIndex + 2}`,
+                    gridColumn: `${block.calendarGridPoint.dayIndex + 3}`,
                     gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
                     width: `calc(100% / ${block.totalColumns})`,
                     marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`,
@@ -141,8 +138,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                     courseDeptAndInstr={courseDeptAndInstr}
                     timeAndLocation={timeAndLocation}
                     status={status}
-                    //  TODO: Change to block.componentProps.colors when colors are integrated to the rest of the project
-                    colors={getCourseColors('emerald', 500) /*  block.componentProps.colors */}
+                    colors={block.course.colors}
                     onClick={() => setCourse(block.course)}
                 />
             </div>

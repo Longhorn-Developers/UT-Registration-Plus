@@ -49,6 +49,7 @@
         "@commitlint/types": "^19.0.3",
         "@crxjs/vite-plugin": "2.0.0-beta.21",
         "@iconify-json/material-symbols": "^1.1.73",
+        "@iconify-json/ri": "^1.1.20",
         "@storybook/addon-designs": "^7.0.9",
         "@storybook/addon-essentials": "^7.6.17",
         "@storybook/addon-links": "^7.6.17",

@@ -1,6 +1,5 @@
 import { background } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { tailwindColorways } from '@shared/util/storybook';
 import Divider from '@views/components/common/Divider/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List/List';
@@ -91,22 +90,19 @@ export default function PopupMain(): JSX.Element {
                 <div className='flex-1 self-stretch overflow-y-auto px-5'>
                     {activeSchedule?.courses?.length > 0 && (
                         <List
-                            draggables={activeSchedule.courses.map((course, i) => ({
-                                course,
-                                colors: tailwindColorways[i] || defaultCourseColors,
-                            }))}
+                            draggables={activeSchedule.courses}
                             onReordered={reordered => {
-                                activeSchedule.courses = reordered.map(c => c.course);
+                                activeSchedule.courses = reordered;
                                 replaceSchedule(getActiveSchedule(), activeSchedule);
                             }}
-                            itemKey={e => e.course.uniqueId}
+                            itemKey={e => e.uniqueId}
                             gap={10}
                         >
-                            {({ course, colors }, handleProps) => (
+                            {(course, handleProps) => (
                                 <PopupCourseBlock
                                     key={course.uniqueId}
                                     course={course}
-                                    colors={colors}
+                                    colors={course.colors}
                                     dragHandleProps={handleProps}
                                 />
                             )}
@@ -122,7 +118,7 @@ export default function PopupMain(): JSX.Element {
                     </div>
                     <div className='inline-flex items-center self-center gap-1'>
                         <Text variant='mini' className='text-ut-gray'>
-                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                            DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                         </Text>
                         <button
                             className='h-4 w-4 bg-transparent p-0 btn'

@@ -21,13 +21,13 @@ export default function ScheduleTotalHoursAndCourses({
     totalCourses,
 }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div className='min-w-64 flex items-center gap-2.5 whitespace-nowrap'>
-            <Text className='text-ut-burntorange uppercase' variant='h1' as='span'>
+        <div className='min-w-full w-0 flex items-center gap-2.5 whitespace-nowrap'>
+            <Text className='truncate text-ut-burntorange uppercase' variant='h1' as='span'>
                 {`${scheduleName}: `}
             </Text>
             <Text variant='h3' as='div' className='flex flex-row items-center gap-2 text-theme-black'>
                 {totalHours} {totalHours === 1 ? 'Hour' : 'Hours'}
-                <Text variant='h4' as='span' className='text-ut-black capitalize'>
+                <Text variant='h4' as='span' className='hidden text-ut-black capitalize sm:inline'>
                     {totalCourses} {totalCourses === 1 ? 'Course' : 'Courses'}
                 </Text>
             </Text>

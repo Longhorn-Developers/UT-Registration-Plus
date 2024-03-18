@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import type { SVGProps } from 'react';
 import React from 'react';
 
@@ -12,24 +13,24 @@ export function LogoIcon(props: SVGProps<SVGSVGElement>): JSX.Element {
     );
 }
 
-export function SmallLogo(): JSX.Element {
+export function SmallLogo({ className }: { className?: string }): JSX.Element {
     return (
-        <div className='flex items-center gap-2'>
+        <div className={clsx('flex items-center gap-2', className)}>
             <LogoIcon />
             <div className='flex flex-col text-lg font-medium leading-[1em]'>
-                <p className='text-ut-burntorange'>UT Registration</p>
+                <p className='text-nowrap text-ut-burntorange'>UT Registration</p>
                 <p className='text-ut-orange'>Plus</p>
             </div>
         </div>
     );
 }
 
-export function LargeLogo(): JSX.Element {
+export function LargeLogo({ className }: { className?: string }): JSX.Element {
     return (
-        <div className='flex items-center gap-2'>
+        <div className={clsx('flex items-center gap-2', className)}>
             <LogoIcon className='h-12 w-12' />
-            <div className='flex flex-col text-[1.35rem] font-medium leading-[1em]'>
-                <p className='text-ut-burntorange'>UT Registration</p>
+            <div className='hidden flex-col text-[1.35rem] font-medium leading-[1em] md:flex'>
+                <p className='text-nowrap text-ut-burntorange'>UT Registration</p>
                 <p className='text-ut-orange'>Plus</p>
             </div>
         </div>

@@ -54,6 +54,7 @@ export const ExampleCourse: Course = new Course({
     status: Status.WAITLISTED,
     uniqueId: 12345,
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+    colors: getCourseColors('cyan', 500),
 });
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export

@@ -2,7 +2,6 @@ import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd';
 import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
-import type { CourseColors } from '@shared/util/colors';
 import { tailwindColorways } from '@shared/util/storybook';
 import type { Meta, StoryObj } from '@storybook/react';
 import List from '@views/components/common/List/List';
@@ -63,6 +62,7 @@ const generateCourses = (count: number): Course[] => {
             status: Status.WAITLISTED,
             uniqueId: 12345 + i, // Make uniqueId different for each course
             url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+            colors: tailwindColorways[i],
         });
 
         courses.push(course);
@@ -72,10 +72,9 @@ const generateCourses = (count: number): Course[] => {
 };
 
 const exampleCourses = generateCourses(numberOfCourses);
-const generateCourseBlocks = (
-    { course, colors }: { course: Course; colors: CourseColors },
-    dragHandleProps: DraggableProvidedDragHandleProps
-) => <PopupCourseBlock key={course.uniqueId} course={course} colors={colors} dragHandleProps={dragHandleProps} />;
+const generateCourseBlocks = (course: Course, dragHandleProps: DraggableProvidedDragHandleProps) => (
+    <PopupCourseBlock key={course.uniqueId} course={course} colors={course.colors} dragHandleProps={dragHandleProps} />
+);
 
 const meta = {
     title: 'Components/Common/List',
@@ -94,9 +93,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        draggables: exampleCourses.map((course, i) => ({ course, colors: tailwindColorways[i] })),
+        draggables: exampleCourses,
         children: generateCourseBlocks,
-        itemKey: (item: { course: Course }) => item.course.uniqueId,
+        itemKey: (item: Course) => item.uniqueId,
         gap: 12,
     },
     render: args => (

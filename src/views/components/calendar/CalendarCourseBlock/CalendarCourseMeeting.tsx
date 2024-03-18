@@ -12,8 +12,6 @@ export interface CalendarCourseMeetingProps {
     course: Course;
     /* index into course meeting array to display */
     meetingIdx?: number;
-    /** The background color for the course. */
-    color: string;
     /** The icon to display on the right side of the course. This is optional. */
     rightIcon?: React.ReactNode;
 }
@@ -22,12 +20,11 @@ export interface CalendarCourseMeetingProps {
  * `CalendarCourseMeeting` is a functional component that displays a course meeting.
  *
  * @example
- * <CalendarCourseMeeting course={course} meeting={meeting} color="red" rightIcon={<Icon />} />
+ * <CalendarCourseMeeting course={course} meeting={meeting} rightIcon={<Icon />} />
  */
 export default function CalendarCourseMeeting({
     course,
     meetingIdx,
-    color,
     rightIcon,
 }: CalendarCourseMeetingProps): JSX.Element | null {
     let meeting: CourseMeeting | null | undefined =

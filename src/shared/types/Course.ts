@@ -1,3 +1,4 @@
+import { type CourseColors, getCourseColors } from '@shared/util/colors';
 import type { Serialized } from 'chrome-extension-toolkit';
 
 import type { CourseMeeting } from './CourseMeeting';
@@ -75,6 +76,8 @@ export class Course {
     semester: Semester;
     /** Unix timestamp of when the course was last scraped */
     scrapedAt: number;
+    /** The colors of the course when displayed */
+    colors: CourseColors;
 
     constructor(course: Serialized<Course>) {
         Object.assign(this, course);
@@ -83,6 +86,7 @@ export class Course {
         if (!course.scrapedAt) {
             this.scrapedAt = Date.now();
         }
+        this.colors = course.colors ? structuredClone(course.colors) : getCourseColors('emerald', 500);
     }
 
     /**

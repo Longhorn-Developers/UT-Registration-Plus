@@ -48,7 +48,9 @@ export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: P
     return (
         <div className='min-w-full w-0 items-center'>
             <div className='m0 m-b-2 w-full flex justify-between'>
-                <Text variant='h3'>MY SCHEDULES</Text>
+                <Text variant='h3' className='text-nowrap'>
+                    MY SCHEDULES
+                </Text>
                 <Button
                     variant='single'
                     color='theme-black'

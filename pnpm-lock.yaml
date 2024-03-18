@@ -84,6 +84,9 @@ devDependencies:
   '@iconify-json/material-symbols':
     specifier: ^1.1.73
     version: 1.1.73
+  '@iconify-json/ri':
+    specifier: ^1.1.20
+    version: 1.1.20
   '@storybook/addon-designs':
     specifier: ^7.0.9
     version: 7.0.9(@storybook/addon-docs@7.6.17)(@storybook/addons@7.6.17)(@storybook/components@7.6.17)(@storybook/manager-api@7.6.17)(@storybook/preview-api@7.6.17)(@storybook/theming@7.6.17)(react-dom@18.2.0)(react@18.2.0)
@@ -2340,6 +2343,12 @@ packages:
 
   /@iconify-json/material-symbols@1.1.73:
     resolution: {integrity: sha512-3ioEMQvxUR0eWg3jCxeydowS7xlqJzUHqeKJg29Z5HN15ZBYniQhHYrDCRpmFjopgwxox9OIsoonBiBSLV4EMA==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/ri@1.1.20:
+    resolution: {integrity: sha512-yScIGjLFBCJKWKskQTWRjNI2Awoq+VRDkRxEsCQvSfdz41n+xkRtFG2K6J1OVI90ClRHfjFC8VJ2+WzxxyFjTQ==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
