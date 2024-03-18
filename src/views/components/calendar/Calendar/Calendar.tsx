@@ -13,7 +13,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * Calendar page component
- * @returns A calendar page
  */
 export default function Calendar(): JSX.Element {
     const calendarRef = useRef<HTMLDivElement>(null);
