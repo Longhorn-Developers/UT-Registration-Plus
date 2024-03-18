@@ -31,7 +31,10 @@ function reorder<T>(list: T[], startIndex: number, endIndex: number) {
     const listCopy = [...list];
 
     const [removed] = listCopy.splice(startIndex, 1);
-    listCopy.splice(endIndex, 0, removed);
+    if (removed) {
+        listCopy.splice(endIndex, 0, removed);
+    }
+
     return listCopy;
 }
 
@@ -69,34 +72,34 @@ function Item<T>(props: {
  * @example
  * <List draggableElements={elements} />
  */
-function List<T>(props: ListProps<T>): JSX.Element {
-    const [items, setItems] = useState(wrap(props.draggables, props.itemKey));
+function List<T>({ draggables, children, onReordered, itemKey, gap }: ListProps<T>): JSX.Element {
+    const [items, setItems] = useState(wrap(draggables, itemKey));
 
-    const transformFunction = props.children;
+    const transformFunction = children;
 
     useEffect(() => {
         // check if the draggables content has *actually* changed
         if (
-            props.draggables.length === items.length &&
-            props.draggables.every((element, index) => props.itemKey(element) === items[index].id)
+            draggables.length === items.length &&
+            draggables.every((element, index) => itemKey(element) === items[index]?.id)
         ) {
             return;
         }
-        setItems(wrap(props.draggables, props.itemKey));
-    }, [props.draggables]);
+        setItems(wrap(draggables, itemKey));
+    }, [draggables, itemKey, items]);
 
     const onDragEnd: OnDragEndResponder = useCallback(
-        result => {
-            if (!result.destination) return;
-            if (result.source.index === result.destination.index) return;
+        ({ destination, source }) => {
+            if (!destination) return;
+            if (source.index === destination.index) return;
 
             // will reorder in place
-            const reordered = reorder(items, result.source.index, result.destination.index);
+            const reordered = reorder(items, source.index, destination.index);
 
             setItems(reordered);
-            props.onReordered(reordered.map(item => item.content));
+            onReordered(reordered.map(item => item.content));
         },
-        [items]
+        [items, onReordered]
     );
 
     return (
@@ -112,7 +115,9 @@ function List<T>(props: ListProps<T>): JSX.Element {
                         if (snapshot.isDragging && transform) {
                             let [, , y] = transform.match(/translate\(([-\d]+)px, ([-\d]+)px\)/) || [];
 
-                            style.transform = `translate3d(0px, ${y}px, 0px)`; // Apply constrained y value
+                            if (style) {
+                                style.transform = `translate3d(0px, ${y}px, 0px)`; // Apply constrained y value
+                            }
                         }
 
                         return (
@@ -131,25 +136,21 @@ function List<T>(props: ListProps<T>): JSX.Element {
                         );
                     }}
                 >
-                    {(provided, snapshot) => (
-                        <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            style={{ marginBottom: `-${props.gap}px` }}
-                        >
+                    {provided => (
+                        <div {...provided.droppableProps} ref={provided.innerRef} style={{ marginBottom: `-${gap}px` }}>
                             {items.map((item, index) => (
                                 <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
-                                    {draggableProvided => (
+                                    {({ innerRef, draggableProps, dragHandleProps }) => (
                                         <div
-                                            ref={draggableProvided.innerRef}
-                                            {...draggableProvided.draggableProps}
+                                            ref={innerRef}
+                                            {...draggableProps}
                                             style={{
-                                                ...draggableProvided.draggableProps.style,
+                                                ...draggableProps.style,
                                                 // if last item, don't add margin
-                                                marginBottom: `${props.gap}px`,
+                                                marginBottom: `${gap}px`,
                                             }}
                                         >
-                                            {transformFunction(item.content, draggableProvided.dragHandleProps)}
+                                            {transformFunction(item.content, dragHandleProps)}
                                         </div>
                                     )}
                                 </Draggable>
