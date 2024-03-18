@@ -16,23 +16,24 @@ export const flagMap = {
 
 interface Props {
     label: Flag;
+    tooltip: String;
 }
 
 /**
  * A reusable chip component that follows the design system of the extension.
  * @returns
  */
-export function Chip({ label }: React.PropsWithChildren<Props>): JSX.Element {
+
+export function Chip({ label }: Props): JSX.Element {
     return (
-        <Text
-            as='div'
-            variant='h4'
-            className='min-w-5 inline-flex items-center justify-center gap-2.5 rounded-lg px-1.5 py-0.5'
-            style={{
-                backgroundColor: '#FFD600',
-            }}
-        >
-            {label}
-        </Text>
+        <div className='relative inline-block'>
+            <span className='rounded-lg bg-yellow-500 px-2 py-1 text-white text-sm font-medium cursor-pointer'>
+                {label}
+            </span>
+            {/* Tooltip */}
+            <span className='absolute bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 pointer-events-none bottom-full left-1/2 transform -translate-x-1/2 transition-opacity duration-300 ease-in-out group-hover:opacity-100'>
+                {label}
+            </span>
+        </div>
     );
 }
