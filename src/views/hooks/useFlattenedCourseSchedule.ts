@@ -21,9 +21,9 @@ interface CalendarGridPoint {
     endIndex: number;
 }
 
-interface componentProps {
-    calendarCourseCellProps: CalendarCourseCellProps;
-}
+// interface componentProps {
+//     calendarCourseCellProps: CalendarCourseCellProps;
+// }
 
 /**
  * Return type of useFlattenedCourseSchedule
@@ -37,6 +37,9 @@ export interface CalendarGridCourse {
     totalColumns?: number;
 }
 
+/**
+ * Represents a flattened course schedule.
+ */
 export interface FlattenedCourseSchedule {
     courseCells: CalendarGridCourse[];
     activeSchedule?: UserSchedule;
@@ -98,15 +101,16 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     } satisfies FlattenedCourseSchedule;
 }
 
-// Helper function to extract and format basic course information
+/**
+ * Function to extract and format basic course information
+ */
 function extractCourseInfo(course: Course) {
     const {
         status,
-        department,
-        instructors,
         schedule: { meetings },
     } = course;
     const courseDeptAndInstr = `${course.department} ${course.number} – ${course.instructors[0].lastName}`;
+
     return { status, courseDeptAndInstr, meetings, course };
 }
 

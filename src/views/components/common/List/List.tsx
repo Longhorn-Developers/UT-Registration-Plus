@@ -69,21 +69,21 @@ function Item<T>(props: {
  * @example
  * <List draggableElements={elements} />
  */
-function List<T>(props: ListProps<T>): JSX.Element {
-    const [items, setItems] = useState(wrap(props.draggables, props.itemKey));
+function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<T>): JSX.Element {
+    const [items, setItems] = useState(wrap(draggables, itemKey));
 
-    const transformFunction = props.children;
+    const transformFunction = children;
 
     useEffect(() => {
         // check if the draggables content has *actually* changed
         if (
-            props.draggables.length === items.length &&
-            props.draggables.every((element, index) => props.itemKey(element) === items[index].id)
+            draggables.length === items.length &&
+            draggables.every((element, index) => itemKey(element) === items[index].id)
         ) {
             return;
         }
-        setItems(wrap(props.draggables, props.itemKey));
-    }, [props.draggables]);
+        setItems(wrap(draggables, itemKey));
+    }, [draggables, itemKey, items]);
 
     const onDragEnd: OnDragEndResponder = useCallback(
         result => {
@@ -94,9 +94,9 @@ function List<T>(props: ListProps<T>): JSX.Element {
             const reordered = reorder(items, result.source.index, result.destination.index);
 
             setItems(reordered);
-            props.onReordered(reordered.map(item => item.content));
+            onReordered(reordered.map(item => item.content));
         },
-        [items]
+        [items, onReordered]
     );
 
     return (
@@ -131,12 +131,8 @@ function List<T>(props: ListProps<T>): JSX.Element {
                         );
                     }}
                 >
-                    {(provided, snapshot) => (
-                        <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            style={{ marginBottom: `-${props.gap}px` }}
-                        >
+                    {provided => (
+                        <div {...provided.droppableProps} ref={provided.innerRef} style={{ marginBottom: `-${gap}px` }}>
                             {items.map((item, index) => (
                                 <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                                     {draggableProvided => (
@@ -146,7 +142,7 @@ function List<T>(props: ListProps<T>): JSX.Element {
                                             style={{
                                                 ...draggableProvided.draggableProps.style,
                                                 // if last item, don't add margin
-                                                marginBottom: `${props.gap}px`,
+                                                marginBottom: `${gap}px`,
                                             }}
                                         >
                                             {transformFunction(item.content, draggableProvided.dragHandleProps)}
