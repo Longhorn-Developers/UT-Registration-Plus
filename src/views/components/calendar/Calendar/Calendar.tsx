@@ -77,8 +77,8 @@ export default function Calendar(): JSX.Element {
                         <CalendarFooter />
                     </div>
                 )}
-                <div className='h-full min-w-3xl flex flex-grow flex-col overflow-y-auto' ref={calendarRef}>
-                    <div className='min-h-2xl flex-grow overflow-auto pl-2 pr-4 pt-2xl'>
+                <div className='h-full min-w-4xl flex flex-grow flex-col overflow-y-auto' ref={calendarRef}>
+                    <div className='min-h-2xl flex-grow overflow-auto pl-2 pr-4 pt-6'>
                         <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                     </div>
                     <CalendarBottomBar calendarRef={calendarRef} />

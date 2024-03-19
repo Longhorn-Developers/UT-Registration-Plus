@@ -198,7 +198,6 @@ module.exports = {
         'import/extensions': 'off',
         'no-restricted-syntax': [
             'error',
-            'ForInStatement',
             'LabeledStatement',
             'WithStatement',
             {

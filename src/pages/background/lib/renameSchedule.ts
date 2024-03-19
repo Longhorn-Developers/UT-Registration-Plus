@@ -17,7 +17,7 @@ export default async function renameSchedule(scheduleId: string, newName: string
     // }
 
     schedules[scheduleIndex].name = newName;
-    schedules[scheduleIndex].updatedAt = Date.now();
+    // schedules[scheduleIndex].updatedAt = Date.now();
 
     await UserScheduleStore.set('schedules', schedules);
     return undefined;
