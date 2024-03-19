@@ -1,3 +1,4 @@
+import type { HexColor } from '../types/Color';
 import type { ThemeColor } from '../types/ThemeColors';
 import { colors } from '../types/ThemeColors';
 import { hexToRGB } from './colors';
@@ -21,7 +22,7 @@ export const colorsFlattened = Object.entries(colors).reduce(
  * @type {Record<ThemeColor, ReturnType<typeof hexToRgb>>}
  */
 const colorsFlattenedRgb = Object.fromEntries(
-    Object.entries(colorsFlattened).map(([name, hex]) => [name, hexToRGB])
+    Object.entries(colorsFlattened).map(([name, hex]) => [name, hexToRGB(hex as HexColor)])
 ) as Record<ThemeColor, ReturnType<typeof hexToRGB>>;
 
 /**

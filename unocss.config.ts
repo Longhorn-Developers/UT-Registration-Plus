@@ -4,7 +4,7 @@ import transformerDirectives from '@unocss/transformer-directives';
 import transformerVariantGroup from '@unocss/transformer-variant-group';
 import { defineConfig } from 'unocss';
 
-import { colors } from './src/shared/util/themeColors';
+import { colors } from './src/shared/types/ThemeColors';
 
 export default defineConfig({
     rules: [

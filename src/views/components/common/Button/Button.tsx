@@ -1,4 +1,4 @@
-import type { ThemeColor } from '@shared/util/themeColors';
+import type { ThemeColor } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/themeColors';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
