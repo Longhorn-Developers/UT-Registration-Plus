@@ -4,13 +4,35 @@ import { theme } from 'unocss/preset-mini';
 import type { Course } from '../types/Course';
 import type { UserSchedule } from '../types/UserSchedule';
 
-export type HexColor = string;
+/**
+ * Represents a hexadecimal color value.
+ */
+export type HexColor = `#${string}${string}${string}${string}${string}${string}` | `#${string}${string}${string}`;
+
+/**
+ * Represents an RGB color value.
+ */
 export type RGB = [r: number, g: number, b: number];
+
+/**
+ * Represents a Lab color value.
+ */
 export type Lab = [l: number, a: number, b: number];
-// Tailwind colorway type: only the colors that have objects as values in the theme.colors object
+
+/**
+ * Represents a Tailwind colorway: a colorway is a key in the theme.colors object that has an object as its value.
+ */
 export type TWColorway = {
     [K in keyof typeof theme.colors]: (typeof theme.colors)[K] extends Record<string, unknown> ? K : never;
 }[keyof typeof theme.colors];
+
+/**
+ * Checks if a string is a valid hexadecimal color value.
+ *
+ * @param color - The color string to check.
+ * @returns A boolean indicating if the color is a valid hexadecimal color value.
+ */
+export const isHexColor = (color: string): color is HexColor => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
 
 /**
  * Represents the colors for a course.
@@ -26,20 +48,45 @@ export const useableColorways = Object.keys(theme.colors)
     .slice(0, 17) as TWColorway[];
 
 /**
+ * Converts a hexadecimal color value to RGB format.
+ *
+ * @param hexColor - The hexadecimal color value.
+ * @returns An array containing the RGB values.
+ */
+export function hexToRGB(hexColor: HexColor): [number, number, number] {
+    // hex is a 3 or 6 digit hex string starting with #
+    const parsedHex = hexColor.startsWith('#') ? hexColor.substring(1) : hexColor;
+
+    let r: number;
+    let g: number;
+    let b: number;
+
+    if (parsedHex.length === 3) {
+        r = parseInt(parsedHex[0] + parsedHex[0], 16);
+        g = parseInt(parsedHex[1] + parsedHex[1], 16);
+        b = parseInt(parsedHex[2] + parsedHex[2], 16);
+    } else if (parsedHex.length === 6) {
+        r = parseInt(parsedHex.substring(0, 2), 16);
+        g = parseInt(parsedHex.substring(2, 4), 16);
+        b = parseInt(parsedHex.substring(4, 6), 16);
+    } else {
+        throw new Error('Invalid hex color format');
+    }
+
+    return [r, g, b];
+}
+
+/**
  * Calculates the luminance of a given hexadecimal color.
  *
  * @param hex - The hexadecimal color value.
  * @returns The luminance value between 0 and 1.
  */
 export function getLuminance(hex: HexColor): number {
-    let r = parseInt(hex.substring(1, 3), 16);
-    let g = parseInt(hex.substring(3, 5), 16);
-    let b = parseInt(hex.substring(5, 7), 16);
-
-    [r, g, b] = [r, g, b].map(color => {
+    const [r, g, b] = hexToRGB(hex).map(color => {
         let c = color / 255;
 
-        c = c > 0.03928 ? ((c + 0.055) / 1.055) ** 2.4 : (c /= 12.92);
+        c = c > 0.03928 ? ((c + 0.055) / 1.055) ** 2.4 : c / 12.92;
 
         return c;
     });
@@ -47,7 +94,13 @@ export function getLuminance(hex: HexColor): number {
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-// calculates contrast ratio between two hex strings
+/**
+ * Calculates the contrast ratio between two colors.
+ *
+ * @param hex1 - The first color.
+ * @param hex2 - The second color.
+ * @returns The contrast ratio between the two colors.
+ */
 function contrastRatioPair(hex1: HexColor, hex2: HexColor) {
     const lum1 = getLuminance(hex1);
     const lum2 = getLuminance(hex2);
@@ -56,7 +109,7 @@ function contrastRatioPair(hex1: HexColor, hex2: HexColor) {
 }
 
 /**
- * Generate a tailwind classname for the font color based on the background color
+ * Generate a Tailwind classname for the font color based on the background color
  * @param bgColor the hex color of the background
  */
 export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' {
@@ -70,41 +123,59 @@ const colorwayIndexes = {
     orange: 400,
     indigo: 400,
     sky: 600,
-};
+} as const satisfies Record<string, number>;
+
 /**
- * Get primary and secondary colors from a tailwind colorway
- * @param colorway the tailwind colorway ex. "emerald"
+ * Get primary and secondary colors from a Tailwind colorway
+ * @param colorway the Tailwind colorway ex. "emerald"
  */
-export function getCourseColors(colorway: TWColorway, index?: number, offset = 200): CourseColors {
+export function getCourseColors(colorway: TWColorway, index?: number, offset: number = 200): CourseColors {
     if (index === undefined) {
         // eslint-disable-next-line no-param-reassign
         index = colorway in colorwayIndexes ? colorwayIndexes[colorway] : 500;
     }
 
     return {
-        primaryColor: theme.colors[colorway][index] as string,
-        secondaryColor: theme.colors[colorway][index + offset] as string,
-    };
+        primaryColor: theme.colors[colorway][index],
+        secondaryColor: theme.colors[colorway][index + offset],
+    } satisfies CourseColors;
 }
 
+/**
+ * Get the Tailwind colorway from a given color.
+ *
+ * @param color - The hexadecimal color value.
+ * @returns The Tailwind colorway.
+ */
 export function getColorwayFromColor(color: HexColor): TWColorway {
     for (const colorway of useableColorways) {
         if (Object.values(theme.colors[colorway]).includes(color)) {
             return colorway as TWColorway;
         }
     }
+
     // not a direct match, get the closest color
     let closestColor = '';
     let closestDistance = Infinity;
 
     for (const colorway of useableColorways) {
         for (const [shade, shadeColor] of Object.entries(theme.colors[colorway])) {
+            // type guard
+            if (!isHexColor(shadeColor)) {
+                continue;
+            }
+
             const distance = oklabDistance(srgbToOKlab(hexToRgb(shadeColor)), srgbToOKlab(hexToRgb(color)));
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestColor = shade;
             }
         }
+    }
+
+    // type guard
+    if (!isHexColor(closestColor)) {
+        throw new Error("closestColor isn't a valid hex color");
     }
 
     return getColorwayFromColor(closestColor);
