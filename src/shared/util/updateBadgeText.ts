@@ -1,4 +1,4 @@
-import { colors } from './themeColors';
+import { colors } from '../types/ThemeColors';
 import { MILLISECOND } from './time';
 
 /** How long should we flash the badge when it changes value */

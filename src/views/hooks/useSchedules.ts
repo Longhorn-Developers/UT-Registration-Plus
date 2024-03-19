@@ -70,10 +70,19 @@ export default function useSchedules(): [active: UserSchedule, schedules: UserSc
     return [activeSchedule, schedules];
 }
 
+/**
+ * Returns the active schedule.
+ * @returns The active schedule.
+ */
 export function getActiveSchedule(): UserSchedule {
     return schedulesCache[activeIndexCache] ?? errorSchedule;
 }
 
+/**
+ * Replaces the old schedule with the new schedule.
+ * @param oldSchedule - The old schedule to be replaced.
+ * @param newSchedule - The new schedule to replace the old schedule.
+ */
 export async function replaceSchedule(oldSchedule: UserSchedule, newSchedule: UserSchedule) {
     const schedules = await UserScheduleStore.get('schedules');
     let oldIndex = schedules.findIndex(s => s.id === oldSchedule.id);
