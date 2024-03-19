@@ -75,7 +75,7 @@ export const saveAsCal = async () => {
             console.log(icsDays);
 
             // Assuming course has date started and ended, adapt as necessary
-            const year = new Date().getFullYear(); // Example year, adapt accordingly
+            // const year = new Date().getFullYear(); // Example year, adapt accordingly
             // Example event date, adapt startDate according to your needs
             const startDate = `20240101T${formattedStartTime}`;
             const endDate = `20240101T${formattedEndTime}`;

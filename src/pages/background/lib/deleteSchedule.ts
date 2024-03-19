@@ -14,10 +14,10 @@ export default async function deleteSchedule(scheduleId: string): Promise<string
 
     const scheduleIndex = schedules.findIndex(schedule => schedule.id === scheduleId);
     if (scheduleIndex === -1) {
-        return `Schedule ${scheduleId} does not exist`;
+        throw new Error(`Schedule ${scheduleId} does not exist`);
     }
     if (scheduleIndex === activeIndex) {
-        return 'Cannot delete active schedule';
+        throw new Error('Cannot delete active schedule');
     }
 
     if (scheduleIndex < activeIndex) {

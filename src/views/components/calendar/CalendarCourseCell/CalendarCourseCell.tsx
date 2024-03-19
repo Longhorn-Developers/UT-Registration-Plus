@@ -1,6 +1,6 @@
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
-import type { CourseColors } from '@shared/util/colors';
+import type { CourseColors } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
@@ -51,7 +51,7 @@ export default function CalendarCourseCell({
         rightIcon = <CancelledIcon className='h-5 w-5' />;
     }
 
-    // whiteText based on secondaryColor
+    // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
 
     return (
@@ -73,14 +73,19 @@ export default function CalendarCourseCell({
             >
                 <Text
                     variant='h1-course'
+                    as='p'
                     className={clsx('leading-tight! truncate', {
-                        '-my-0.8': timeAndLocation,
+                        '-mt-0.8 -mb-0.2': timeAndLocation,
                         'text-wrap': !timeAndLocation,
                     })}
                 >
                     {courseDeptAndInstr}
                 </Text>
-                {timeAndLocation && <Text variant='h3-course'>{timeAndLocation}</Text>}
+                {timeAndLocation && (
+                    <Text variant='h3-course' as='p'>
+                        {timeAndLocation}
+                    </Text>
+                )}
             </div>
             {rightIcon && (
                 <div
