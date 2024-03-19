@@ -71,7 +71,7 @@ export const useableColorways = Object.keys(theme.colors)
  * Generate a Tailwind classname for the font color based on the background color
  * @param bgColor the hex color of the background
  */
-export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' {
+export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 'text-theme-black' {
     const coefficients = [0.2126729, 0.7151522, 0.072175];
 
     const flipYs = 0.342; // based on APCA™ 0.98G middle contrast BG color
@@ -79,7 +79,11 @@ export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' {
     const trc = 2.4; // 2.4 exponent for emulating actual monitor perception
     let Ys = hexToRGB(bgColor).reduce((acc, c, i) => acc + (c / 255.0) ** trc * coefficients[i], 0);
 
-    return Ys < flipYs ? 'text-white' : 'text-black';
+    if (Ys < flipYs) {
+        return 'text-white';
+    }
+
+    return Ys < 0.365 ? 'text-black' : 'text-theme-black';
 }
 
 /**

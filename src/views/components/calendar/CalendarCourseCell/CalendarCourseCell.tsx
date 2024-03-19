@@ -73,14 +73,19 @@ export default function CalendarCourseCell({
             >
                 <Text
                     variant='h1-course'
+                    as='p'
                     className={clsx('leading-tight! truncate', {
-                        '-my-0.8': timeAndLocation,
+                        '-mt-0.8 -mb-0.2': timeAndLocation,
                         'text-wrap': !timeAndLocation,
                     })}
                 >
                     {courseDeptAndInstr}
                 </Text>
-                {timeAndLocation && <Text variant='h3-course'>{timeAndLocation}</Text>}
+                {timeAndLocation && (
+                    <Text variant='h3-course' as='p'>
+                        {timeAndLocation}
+                    </Text>
+                )}
             </div>
             {rightIcon && (
                 <div
