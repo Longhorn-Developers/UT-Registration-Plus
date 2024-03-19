@@ -15,6 +15,11 @@ export type HexColor = `#${string}${string}${string}${string}${string}${string}`
 export type RGB = [r: number, g: number, b: number];
 
 /**
+ * Represents a linear sRGB color value.
+ */
+export type sRGB = [r: number, g: number, b: number];
+
+/**
  * Represents a Lab color value.
  */
 export type Lab = [l: number, a: number, b: number];
@@ -48,64 +53,18 @@ export const useableColorways = Object.keys(theme.colors)
     .slice(0, 17) as TWColorway[];
 
 /**
- * Converts a hexadecimal color value to RGB format.
- *
- * @param hexColor - The hexadecimal color value.
- * @returns An array containing the RGB values.
- */
-export function hexToRGB(hexColor: HexColor): [number, number, number] {
-    // hex is a 3 or 6 digit hex string starting with #
-    const parsedHex = hexColor.startsWith('#') ? hexColor.substring(1) : hexColor;
-
-    let r: number;
-    let g: number;
-    let b: number;
-
-    if (parsedHex.length === 3) {
-        r = parseInt(parsedHex[0] + parsedHex[0], 16);
-        g = parseInt(parsedHex[1] + parsedHex[1], 16);
-        b = parseInt(parsedHex[2] + parsedHex[2], 16);
-    } else if (parsedHex.length === 6) {
-        r = parseInt(parsedHex.substring(0, 2), 16);
-        g = parseInt(parsedHex.substring(2, 4), 16);
-        b = parseInt(parsedHex.substring(4, 6), 16);
-    } else {
-        throw new Error('Invalid hex color format');
-    }
-
-    return [r, g, b];
-}
-
-/**
- * Calculates the luminance of a given hexadecimal color.
+ * Converts a hexadecimal color value to RGB format. (adapted from https://stackoverflow.com/a/5624139/8022866)
  *
  * @param hex - The hexadecimal color value.
- * @returns The luminance value between 0 and 1.
+ * @returns An array containing the RGB values.
  */
-export function getLuminance(hex: HexColor): number {
-    const [r, g, b] = hexToRGB(hex).map(color => {
-        let c = color / 255;
+function hexToRGB(hex: HexColor): RGB {
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    const parsedHex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
 
-        c = c > 0.03928 ? ((c + 0.055) / 1.055) ** 2.4 : c / 12.92;
-
-        return c;
-    });
-
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
-
-/**
- * Calculates the contrast ratio between two colors.
- *
- * @param hex1 - The first color.
- * @param hex2 - The second color.
- * @returns The contrast ratio between the two colors.
- */
-function contrastRatioPair(hex1: HexColor, hex2: HexColor) {
-    const lum1 = getLuminance(hex1);
-    const lum2 = getLuminance(hex2);
-
-    return (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(parsedHex);
+    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
 }
 
 /**
@@ -113,15 +72,25 @@ function contrastRatioPair(hex1: HexColor, hex2: HexColor) {
  * @param bgColor the hex color of the background
  */
 export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' {
-    return contrastRatioPair(bgColor, '#606060') > contrastRatioPair(bgColor, '#ffffff') ? 'text-black' : 'text-white';
+    const coefficients = [0.2126729, 0.7151522, 0.072175];
+
+    const flipYs = 0.342; // based on APCA™ 0.98G middle contrast BG color
+
+    const trc = 2.4; // 2.4 exponent for emulating actual monitor perception
+    let Ys = hexToRGB(bgColor).reduce((acc, c, i) => acc + (c / 255.0) ** trc * coefficients[i], 0);
+
+    return Ys < flipYs ? 'text-white' : 'text-black';
 }
 
+/**
+ * Adjusted colorway indexes for better *quality*
+ */
 const colorwayIndexes = {
-    pink: 300,
     yellow: 300,
+    amber: 400,
+    emerald: 400,
     lime: 400,
     orange: 400,
-    indigo: 400,
     sky: 600,
 } as const satisfies Record<string, number>;
 
@@ -129,7 +98,7 @@ const colorwayIndexes = {
  * Get primary and secondary colors from a Tailwind colorway
  * @param colorway the Tailwind colorway ex. "emerald"
  */
-export function getCourseColors(colorway: TWColorway, index?: number, offset: number = 200): CourseColors {
+export function getCourseColors(colorway: TWColorway, index?: number, offset: number = 300): CourseColors {
     if (index === undefined) {
         // eslint-disable-next-line no-param-reassign
         index = colorway in colorwayIndexes ? colorwayIndexes[colorway] : 500;
@@ -165,7 +134,7 @@ export function getColorwayFromColor(color: HexColor): TWColorway {
                 continue;
             }
 
-            const distance = oklabDistance(srgbToOKlab(hexToRgb(shadeColor)), srgbToOKlab(hexToRgb(color)));
+            const distance = oklabDistance(rgbToOKlab(hexToRGB(shadeColor)), rgbToOKlab(hexToRGB(color)));
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestColor = shade;
@@ -264,23 +233,25 @@ export function getUnusedColor(
     return getCourseColors('emerald', index, offset);
 }
 
-// (adapted from https://stackoverflow.com/a/5624139/8022866)
-function hexToRgb(hex: HexColor): RGB {
-    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-    let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    const parsedHex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
-
-    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(parsedHex);
-    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
+// OKLab helper functions (https://github.com/bottosson/bottosson.github.io/blob/master/misc/colorpicker/colorconversion.js)
+function srgbTransferFunction(a: number): number {
+    return a <= 0.0031308 ? 12.92 * a : 1.055 * a ** 0.4166666666666667 - 0.055;
 }
 
-// OKLab helper functions (https://github.com/bottosson/bottosson.github.io/blob/master/misc/colorpicker/colorconversion.js)
+function srgbTransferFunctionInv(a: number): number {
+    return a > 0.04045 ? ((a + 0.055) / 1.055) ** 2.4 : a / 12.92;
+}
+
+function rgbToSrgb(rgb: RGB): sRGB {
+    return rgb.map(c => srgbTransferFunctionInv(c / 255)) as sRGB;
+}
+
 /**
  * Convert an RGB color to the OKLab color space
  * @param rgb the RGB color
  * @returns the color in the OKLab color space
  */
-function srgbToOKlab([r, g, b]: RGB): Lab {
+function srgbToOKlab([r, g, b]: sRGB): Lab {
     let l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
     let m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
     let s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
@@ -294,6 +265,10 @@ function srgbToOKlab([r, g, b]: RGB): Lab {
         1.9779984951 * lc - 2.428592205 * mc + 0.4505937099 * sc,
         0.0259040371 * lc + 0.7827717662 * mc - 0.808675766 * sc,
     ];
+}
+
+function rgbToOKlab(rgb: RGB): Lab {
+    return srgbToOKlab(rgbToSrgb(rgb));
 }
 
 /**

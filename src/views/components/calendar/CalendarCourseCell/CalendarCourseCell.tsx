@@ -51,7 +51,7 @@ export default function CalendarCourseCell({
         rightIcon = <CancelledIcon className='h-5 w-5' />;
     }
 
-    // whiteText based on secondaryColor
+    // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
 
     return (

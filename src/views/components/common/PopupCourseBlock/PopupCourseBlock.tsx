@@ -31,7 +31,7 @@ export default function PopupCourseBlock({
     colors,
     dragHandleProps,
 }: PopupCourseBlockProps): JSX.Element {
-    // whiteText based on secondaryColor
+    // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
 
