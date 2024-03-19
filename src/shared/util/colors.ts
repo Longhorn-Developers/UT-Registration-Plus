@@ -7,7 +7,7 @@ import type { UserSchedule } from '../types/UserSchedule';
 /**
  * Represents a hexadecimal color value.
  */
-export type HexColor = `#${string}${string}${string}${string}${string}${string}` | `#${string}${string}${string}`;
+export type HexColor = `#${string}`;
 
 /**
  * Represents an RGB color value.
@@ -40,19 +40,6 @@ export type TWColorway = {
 export const isHexColor = (color: string): color is HexColor => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
 
 /**
- * Represents the colors for a course.
- */
-export interface CourseColors {
-    primaryColor: HexColor;
-    secondaryColor: HexColor;
-}
-
-export const useableColorways = Object.keys(theme.colors)
-    // check that the color is a colorway (is an object)
-    .filter(color => typeof theme.colors[color] === 'object')
-    .slice(0, 17) as TWColorway[];
-
-/**
  * Converts a hexadecimal color value to RGB format. (adapted from https://stackoverflow.com/a/5624139/8022866)
  *
  * @param hex - The hexadecimal color value.
@@ -66,6 +53,19 @@ function hexToRGB(hex: HexColor): RGB {
     let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(parsedHex);
     return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
 }
+
+/**
+ * Represents the colors for a course.
+ */
+export interface CourseColors {
+    primaryColor: HexColor;
+    secondaryColor: HexColor;
+}
+
+export const useableColorways = Object.keys(theme.colors)
+    // check that the color is a colorway (is an object)
+    .filter(color => typeof theme.colors[color] === 'object')
+    .slice(0, 17) as TWColorway[];
 
 /**
  * Generate a Tailwind classname for the font color based on the background color
