@@ -15,8 +15,7 @@ import CalendarFooter from '../CalendarFooter';
 import TeamLinks from '../TeamLinks';
 
 /**
- * A reusable chip component that follows the design system of the extension.
- * @returns
+ * Calendar page component
  */
 export default function Calendar(): JSX.Element {
     const calendarRef = useRef<HTMLDivElement>(null);
