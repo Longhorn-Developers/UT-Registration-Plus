@@ -1,43 +1,12 @@
 import type { Serialized } from 'chrome-extension-toolkit';
 import { theme } from 'unocss/preset-mini';
 
+import type { HexColor, Lab, RGB, sRGB } from '../types/Color';
+import { isHexColor } from '../types/Color';
 import type { Course } from '../types/Course';
+import type { CourseColors, TWColorway } from '../types/ThemeColors';
+import { colorwayIndexes } from '../types/ThemeColors';
 import type { UserSchedule } from '../types/UserSchedule';
-
-/**
- * Represents a hexadecimal color value.
- */
-export type HexColor = `#${string}`;
-
-/**
- * Represents an RGB color value.
- */
-export type RGB = [r: number, g: number, b: number];
-
-/**
- * Represents a linear sRGB color value.
- */
-export type sRGB = [r: number, g: number, b: number];
-
-/**
- * Represents a Lab color value.
- */
-export type Lab = [l: number, a: number, b: number];
-
-/**
- * Represents a Tailwind colorway: a colorway is a key in the theme.colors object that has an object as its value.
- */
-export type TWColorway = {
-    [K in keyof typeof theme.colors]: (typeof theme.colors)[K] extends Record<string, unknown> ? K : never;
-}[keyof typeof theme.colors];
-
-/**
- * Checks if a string is a valid hexadecimal color value.
- *
- * @param color - The color string to check.
- * @returns A boolean indicating if the color is a valid hexadecimal color value.
- */
-export const isHexColor = (color: string): color is HexColor => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
 
 /**
  * Converts a hexadecimal color value to RGB format. (adapted from https://stackoverflow.com/a/5624139/8022866)
@@ -45,21 +14,13 @@ export const isHexColor = (color: string): color is HexColor => /^#([A-Fa-f0-9]{
  * @param hex - The hexadecimal color value.
  * @returns An array containing the RGB values.
  */
-function hexToRGB(hex: HexColor): RGB {
+export function hexToRGB(hex: HexColor): RGB {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-    let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    const parsedHex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    let shorthandRegex: RegExp = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    const parsedHex: string = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
 
-    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(parsedHex);
+    let result: RegExpExecArray = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(parsedHex);
     return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
-}
-
-/**
- * Represents the colors for a course.
- */
-export interface CourseColors {
-    primaryColor: HexColor;
-    secondaryColor: HexColor;
 }
 
 export const useableColorways = Object.keys(theme.colors)
@@ -85,18 +46,6 @@ export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 
 
     return Ys < 0.365 ? 'text-black' : 'text-theme-black';
 }
-
-/**
- * Adjusted colorway indexes for better *quality*
- */
-const colorwayIndexes = {
-    yellow: 300,
-    amber: 400,
-    emerald: 400,
-    lime: 400,
-    orange: 400,
-    sky: 600,
-} as const satisfies Record<string, number>;
 
 /**
  * Get primary and secondary colors from a Tailwind colorway
