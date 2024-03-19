@@ -1,7 +1,9 @@
+import type { HexColor } from '@shared/types/Color';
 import type { Course, StatusType } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
-import type { UserSchedule } from '@shared/types/UserSchedule';
-import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
+import { colors } from '@shared/types/ThemeColors';
+import { UserSchedule } from '@shared/types/UserSchedule';
+import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 
 import useSchedules from './useSchedules';
 
