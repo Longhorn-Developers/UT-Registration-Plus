@@ -131,8 +131,8 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                     gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
                     width: `calc(100% / ${block.totalColumns})`,
                     marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`,
-                    padding: '0px 10px 4px 0px',
                 }}
+                className='pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-1.25'
             >
                 <CalendarCourseCell
                     courseDeptAndInstr={courseDeptAndInstr}

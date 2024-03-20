@@ -105,8 +105,8 @@ export const saveCalAsPng = () => {
     rootNode.style.zIndex = '1000';
     rootNode.style.top = '-10000px';
     rootNode.style.left = '-10000px';
-    rootNode.style.width = '1440px';
-    rootNode.style.height = '931px';
+    rootNode.style.width = '1165px';
+    rootNode.style.height = '754px';
     document.body.appendChild(rootNode);
 
     const clonedNode = document.querySelector('#root').cloneNode(true) as HTMLDivElement;
