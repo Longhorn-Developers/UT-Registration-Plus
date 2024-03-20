@@ -13,17 +13,15 @@ import CalendarCourseBlock from '../CalendarCourseCell/CalendarCourseCell';
 
 type CalendarBottomBarProps = {
     courses?: CalendarCourseCellProps[];
-    calendarRef: React.RefObject<HTMLDivElement>;
 };
 
 /**
  * Renders the bottom bar of the calendar component.
  *
  * @param {Object[]} courses - The list of courses to display in the calendar.
- * @param {React.RefObject} calendarRef - The reference to the calendar component.
  * @returns {JSX.Element} The rendered bottom bar component.
  */
-export default function CalendarBottomBar({ courses, calendarRef }: CalendarBottomBarProps): JSX.Element {
+export default function CalendarBottomBar({ courses }: CalendarBottomBarProps): JSX.Element {
     const displayCourses = courses && courses.length > 0;
 
     return (
@@ -50,13 +48,13 @@ export default function CalendarBottomBar({ courses, calendarRef }: CalendarBott
                     </>
                 )}
             </div>
-            <div className='flex items-center'>
+            <div className='screenshot-hidden flex items-center'>
                 {displayCourses && <Divider orientation='vertical' size='1rem' className='mx-1.25' />}
                 <Button variant='single' color='ut-black' icon={CalendarMonthIcon} onClick={saveAsCal}>
                     Save as .CAL
                 </Button>
                 <Divider orientation='vertical' size='1rem' className='mx-1.25' />
-                <Button variant='single' color='ut-black' icon={ImageIcon} onClick={() => saveCalAsPng(calendarRef)}>
+                <Button variant='single' color='ut-black' icon={ImageIcon} onClick={() => saveCalAsPng()}>
                     Save as .PNG
                 </Button>
             </div>

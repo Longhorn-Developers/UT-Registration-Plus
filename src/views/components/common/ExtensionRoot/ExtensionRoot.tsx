@@ -34,7 +34,10 @@ export default function ExtensionRoot(props: React.PropsWithChildren<Props>): JS
     }, []);
 
     return (
-        <div className={clsx(styles.extensionRoot, props.className)} data-testid={props.testId}>
+        <div
+            className={clsx(styles.extensionRoot, 'group/screenshot_hidden', props.className)}
+            data-testid={props.testId}
+        >
             {props.children}
         </div>
     );

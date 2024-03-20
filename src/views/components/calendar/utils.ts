@@ -98,17 +98,40 @@ export const saveAsCal = async () => {
 /**
  * Saves the calendar as a PNG image.
  */
-export const saveCalAsPng = (calendarRef: React.RefObject<HTMLDivElement>) => {
-    if (calendarRef.current) {
-        toPng(calendarRef.current, { cacheBust: true })
-            .then(dataUrl => {
+export const saveCalAsPng = () => {
+    const rootNode = document.createElement('div');
+    rootNode.style.backgroundColor = 'white';
+    rootNode.style.position = 'fixed';
+    rootNode.style.zIndex = '1000';
+    rootNode.style.top = '-10000px';
+    rootNode.style.left = '-10000px';
+    rootNode.style.width = '1440px';
+    rootNode.style.height = '931px';
+    document.body.appendChild(rootNode);
+
+    const clonedNode = document.querySelector('#root').cloneNode(true) as HTMLDivElement;
+    clonedNode.style.backgroundColor = 'white';
+    (clonedNode.firstChild as HTMLDivElement).classList.add('screenshot-in-progress');
+
+    return new Promise<void>((resolve, reject) => {
+        requestAnimationFrame(async () => {
+            rootNode.appendChild(clonedNode);
+
+            try {
+                const dataUrl = await toPng(clonedNode, {
+                    cacheBust: true,
+                });
                 const link = document.createElement('a');
                 link.download = 'my-calendar.png';
                 link.href = dataUrl;
                 link.click();
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    }
+            } catch (e: unknown) {
+                console.error(e);
+                reject(e);
+            } finally {
+                document.body.removeChild(rootNode);
+                resolve();
+            }
+        });
+    });
 };
