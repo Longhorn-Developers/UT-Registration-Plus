@@ -25,7 +25,6 @@ export default defineConfig({
         link: 'text-ut-burntorange underline underline-offset-2 hover:text-ut-orange focus-visible:text-ut-orange focusable btn-transition ease-out-expo',
         linkanimate:
             'relative cursor-pointer transition duration-100 ease-out after:(absolute left-0.4 right-0.4 h-2px scale-x-95 bg-ut-orange opacity-0 transition duration-250 ease-out-expo content-empty -bottom-0.75 -translate-y-0.5) active:scale-95 hover:text-ut-orange focus-visible:text-ut-orange hover:after:(opacity-100) !hover:after:translate-y-0 !hover:after:scale-x-100',
-        'screenshot-hidden': 'group-[.screenshot-in-progress]/screenshot_hidden:hidden!',
     },
     theme: {
         easing: {
@@ -34,7 +33,16 @@ export default defineConfig({
         },
         colors,
     },
-
+    variants: [
+        matcher => {
+            const search = 'screenshot:';
+            if (!matcher.startsWith(search)) return matcher;
+            return {
+                matcher: matcher.slice(search.length),
+                selector: s => `.screenshot-in-progress ${s}`,
+            };
+        },
+    ],
     presets: [
         presetUno(),
         presetWebFonts({

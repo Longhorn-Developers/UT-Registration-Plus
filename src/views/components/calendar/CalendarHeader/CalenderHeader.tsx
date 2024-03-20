@@ -40,7 +40,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                 icon={MenuIcon}
                 color='ut-gray'
                 onClick={onSidebarToggle}
-                className='screenshot-hidden'
+                className='screenshot:hidden'
             />
             <LargeLogo />
             <Divider className='mx-2 self-center md:mx-4' size='2.5rem' orientation='vertical' />
@@ -50,7 +50,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                     totalHours={activeSchedule.hours}
                     totalCourses={activeSchedule.courses.length}
                 />
-                <div className='screenshot-hidden flex items-center gap-1'>
+                <div className='screenshot:hidden flex items-center gap-1'>
                     <Text variant='mini' className='text-ut-gray'>
                         DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                     </Text>
@@ -59,7 +59,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                     </button>
                 </div>
             </div>
-            <div className='screenshot-hidden hidden flex-row items-center justify-end gap-6 lg:flex'>
+            <div className='screenshot:hidden hidden flex-row items-center justify-end gap-6 lg:flex'>
                 <CourseStatus size='small' status={Status.WAITLISTED} />
                 <CourseStatus size='small' status={Status.CLOSED} />
                 <CourseStatus size='small' status={Status.CANCELLED} />

@@ -9,7 +9,7 @@ import Divider from '@views/components/common/Divider/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import { MessageListener } from 'chrome-extension-toolkit';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CalendarFooter from '../CalendarFooter';
 import TeamLinks from '../TeamLinks';
@@ -64,7 +64,7 @@ export default function Calendar(): JSX.Element {
             />
             <div className='h-full flex overflow-auto pl-3'>
                 {showSidebar && (
-                    <div className='screenshot-hidden h-full flex flex-none flex-col justify-between pb-5 pl-4.5'>
+                    <div className='screenshot:hidden h-full flex flex-none flex-col justify-between pb-5 pl-4.5'>
                         <div className='mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pr-4 pt-5'>
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' className='my-5' />
