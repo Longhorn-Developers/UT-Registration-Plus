@@ -29,6 +29,8 @@ function JSONEditor(props: JSONEditorProps) {
             setIsEditing(false);
         } catch (e) {
             console.error(e);
+
+            // eslint-disable-next-line no-alert
             alert('Invalid JSON');
         }
     };

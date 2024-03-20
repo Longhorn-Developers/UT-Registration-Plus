@@ -1,4 +1,4 @@
-import type { ThemeColor } from '@shared/util/themeColors';
+import type { ThemeColor } from '@shared/types/ThemeColors';
 import type { Meta, StoryObj } from '@storybook/react';
 import CourseCellColorPicker from '@views/components/calendar/CalendarCourseCellColorPicker/CourseCellColorPicker';
 import React, { useState } from 'react';

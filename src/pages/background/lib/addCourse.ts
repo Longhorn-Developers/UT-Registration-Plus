@@ -1,5 +1,6 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Course } from '@shared/types/Course';
+import { getUnusedColor } from '@shared/util/colors';
 
 /**
  * Adds a course to a user's schedule.
@@ -15,6 +16,7 @@ export default async function addCourse(scheduleId: string, course: Course): Pro
         throw new Error('Schedule not found');
     }
 
+    course.colors = getUnusedColor(activeSchedule, course);
     activeSchedule.courses.push(course);
     activeSchedule.updatedAt = Date.now();
 

@@ -8,6 +8,9 @@ import Description from './Description';
 import GradeDistribution from './GradeDistribution';
 import HeadingAndActions from './HeadingAndActions';
 
+/**
+ * Props for the CourseCatalogInjectedPopup component.
+ */
 export type CourseCatalogInjectedPopupProps = DialogProps & {
     course: Course;
 };

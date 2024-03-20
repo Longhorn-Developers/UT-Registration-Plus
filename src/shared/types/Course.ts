@@ -1,9 +1,10 @@
-import { type CourseColors, getCourseColors } from '@shared/util/colors';
+import { getCourseColors } from '@shared/util/colors';
 import type { Serialized } from 'chrome-extension-toolkit';
 
 import type { CourseMeeting } from './CourseMeeting';
 import { CourseSchedule } from './CourseSchedule';
 import Instructor from './Instructor';
+import type { CourseColors } from './ThemeColors';
 
 /**
  * Whether the class is taught online, in person, or a hybrid of the two

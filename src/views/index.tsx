@@ -5,7 +5,6 @@ import CourseCatalogMain from './components/CourseCatalogMain';
 import PopupMain from './components/PopupMain';
 import getSiteSupport, { SiteSupport } from './lib/getSiteSupport';
 import render from './lib/react';
-import colors from './styles/colors.module.scss';
 
 const support = getSiteSupport(window.location.href);
 console.log('support:', support);

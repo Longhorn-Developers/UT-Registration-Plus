@@ -72,7 +72,7 @@ function Item<T>(props: {
  * @example
  * <List draggableElements={elements} />
  */
-function List<T>({ draggables, children, onReordered, itemKey, gap }: ListProps<T>): JSX.Element {
+function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<T>): JSX.Element {
     const [items, setItems] = useState(wrap(draggables, itemKey));
 
     const transformFunction = children;
@@ -81,7 +81,7 @@ function List<T>({ draggables, children, onReordered, itemKey, gap }: ListProps<
         // check if the draggables content has *actually* changed
         if (
             draggables.length === items.length &&
-            draggables.every((element, index) => itemKey(element) === items[index]?.id)
+            draggables.every((element, index) => itemKey(element) === items[index].id)
         ) {
             return;
         }

@@ -13,11 +13,8 @@ export default async function renameSchedule(scheduleId: string, newName: string
         return `Schedule ${scheduleId} does not exist`;
     }
 
-    const scheduleToUpdate = schedules[scheduleIndex];
-    if (scheduleToUpdate) {
-        scheduleToUpdate.name = newName;
-        scheduleToUpdate.updatedAt = Date.now();
-    }
+    schedules[scheduleIndex].name = newName;
+    // schedules[scheduleIndex].updatedAt = Date.now();
 
     await UserScheduleStore.set('schedules', schedules);
     return undefined;

@@ -15,8 +15,7 @@ import CalendarFooter from '../CalendarFooter';
 import TeamLinks from '../TeamLinks';
 
 /**
- * A reusable chip component that follows the design system of the extension.
- * @returns
+ * Calendar page component
  */
 export default function Calendar(): JSX.Element {
     const calendarRef = useRef<HTMLDivElement>(null);
@@ -77,8 +76,8 @@ export default function Calendar(): JSX.Element {
                         <CalendarFooter />
                     </div>
                 )}
-                <div className='h-full min-w-3xl flex flex-grow flex-col overflow-y-auto' ref={calendarRef}>
-                    <div className='min-h-2xl flex-grow overflow-auto pl-2 pr-4 pt-2xl'>
+                <div className='h-full min-w-4xl flex flex-grow flex-col overflow-y-auto' ref={calendarRef}>
+                    <div className='min-h-2xl flex-grow overflow-auto pl-2 pr-4 pt-6'>
                         <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                     </div>
                     <CalendarBottomBar calendarRef={calendarRef} />
