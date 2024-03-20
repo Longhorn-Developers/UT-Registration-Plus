@@ -54,7 +54,7 @@ export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 
     }
 
     // coefficients and rgb are both 3 elements long, so this is safe
-    let Ys = rgb.reduce((acc, c, i) => acc + (c / 255.0) ** trc * coefficients[i as 0 | 1 | 2], 0);
+    let Ys = rgb.reduce((acc, c, i) => acc + (c / 255.0) ** trc * coefficients[i]!, 0);
 
     if (Ys < flipYs) {
         return 'text-white';
