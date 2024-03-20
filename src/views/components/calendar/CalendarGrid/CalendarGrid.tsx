@@ -132,7 +132,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                     width: `calc(100% / ${block.totalColumns})`,
                     marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`,
                 }}
-                className='pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-1.25'
+                className='pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5'
             >
                 <CalendarCourseCell
                     courseDeptAndInstr={courseDeptAndInstr}

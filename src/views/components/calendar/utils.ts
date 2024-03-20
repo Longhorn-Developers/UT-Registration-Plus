@@ -120,6 +120,10 @@ export const saveCalAsPng = () => {
             try {
                 const dataUrl = await toPng(clonedNode, {
                     cacheBust: true,
+                    canvasWidth: 1165 * 2,
+                    canvasHeight: 754 * 2,
+                    skipAutoScale: true,
+                    pixelRatio: 2,
                 });
                 const link = document.createElement('a');
                 link.download = 'my-calendar.png';
