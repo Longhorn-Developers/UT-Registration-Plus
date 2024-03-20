@@ -14,18 +14,27 @@ import type { UserSchedule } from '../types/UserSchedule';
  * @param hex - The hexadecimal color value.
  * @returns An array containing the RGB values.
  */
-export function hexToRGB(hex: HexColor): RGB {
+export function hexToRGB(hex: HexColor): RGB | null {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
     let shorthandRegex: RegExp = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     const parsedHex: string = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
 
-    let result: RegExpExecArray = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(parsedHex);
-    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
+    let result: RegExpExecArray | null = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(parsedHex);
+
+    if (!result) {
+        return null;
+    }
+
+    if (!result[1] || !result[2] || !result[3]) {
+        return null;
+    }
+
+    return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)];
 }
 
 export const useableColorways = Object.keys(theme.colors)
     // check that the color is a colorway (is an object)
-    .filter(color => typeof theme.colors[color] === 'object')
+    .filter(color => typeof theme.colors[color as keyof typeof theme.colors] === 'object')
     .slice(0, 17) as TWColorway[];
 
 /**
@@ -33,12 +42,19 @@ export const useableColorways = Object.keys(theme.colors)
  * @param bgColor the hex color of the background
  */
 export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 'text-theme-black' {
-    const coefficients = [0.2126729, 0.7151522, 0.072175];
+    const coefficients = [0.2126729, 0.7151522, 0.072175] as const;
 
     const flipYs = 0.342; // based on APCA™ 0.98G middle contrast BG color
 
     const trc = 2.4; // 2.4 exponent for emulating actual monitor perception
-    let Ys = hexToRGB(bgColor).reduce((acc, c, i) => acc + (c / 255.0) ** trc * coefficients[i], 0);
+    const rgb = hexToRGB(bgColor);
+
+    if (!rgb || rgb.length !== 3) {
+        return 'text-black';
+    }
+
+    // coefficients and rgb are both 3 elements long, so this is safe
+    let Ys = rgb.reduce((acc, c, i) => acc + (c / 255.0) ** trc * coefficients[i as 0 | 1 | 2], 0);
 
     if (Ys < flipYs) {
         return 'text-white';
@@ -54,12 +70,17 @@ export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 
 export function getCourseColors(colorway: TWColorway, index?: number, offset: number = 300): CourseColors {
     if (index === undefined) {
         // eslint-disable-next-line no-param-reassign
-        index = colorway in colorwayIndexes ? colorwayIndexes[colorway] : 500;
+        index = colorway in colorwayIndexes ? colorwayIndexes[colorway as keyof typeof colorwayIndexes] : 500;
     }
 
+    type themeColors = typeof theme.colors;
+    type themeColorsColorway = themeColors[TWColorway];
+
     return {
-        primaryColor: theme.colors[colorway][index],
-        secondaryColor: theme.colors[colorway][index + offset],
+        primaryColor: theme.colors[colorway as keyof themeColors][index as keyof themeColorsColorway] as HexColor,
+        secondaryColor: theme.colors[colorway as keyof themeColors][
+            (index + offset) as keyof themeColorsColorway
+        ] as HexColor,
     } satisfies CourseColors;
 }
 
@@ -87,7 +108,12 @@ export function getColorwayFromColor(color: HexColor): TWColorway {
                 continue;
             }
 
-            const distance = oklabDistance(rgbToOKlab(hexToRGB(shadeColor)), rgbToOKlab(hexToRGB(color)));
+            const shadeColorRGB = hexToRGB(shadeColor);
+            if (!shadeColorRGB) {
+                continue;
+            }
+
+            const distance = oklabDistance(rgbToOKlab(shadeColorRGB), rgbToOKlab(shadeColorRGB));
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestColor = shade;
@@ -149,6 +175,11 @@ export function getUnusedColor(
         if (sameDepartment.length > 0) {
             // check to see if any adjacent colorways are available
             const centerCourse = sameDepartment[Math.floor(Math.random() * sameDepartment.length)];
+
+            if (!centerCourse) {
+                throw new Error('centerCourse is undefined');
+            }
+
             let nextColorway = getNextColorway(centerCourse.colorway);
             let prevColorway = getPreviousColorway(centerCourse.colorway);
 
@@ -175,11 +206,23 @@ export function getUnusedColor(
 
         if (shortenedColorways.size > 0) {
             // TODO: make this go by 3's to leave future spaces open
-            const randomColorway = Array.from(shortenedColorways)[Math.floor(Math.random() * shortenedColorways.size)];
+            const randomColorway: TWColorway | undefined =
+                Array.from(shortenedColorways)[Math.floor(Math.random() * shortenedColorways.size)];
+
+            if (!randomColorway) {
+                throw new Error('randomColorway is undefined');
+            }
+
             return getCourseColors(randomColorway, index, offset);
         }
         // no colorways are at least 2 indexes away from any used colors, just get a random colorway
-        const randomColorway = Array.from(availableColorways)[Math.floor(Math.random() * availableColorways.size)];
+        const randomColorway: TWColorway | undefined =
+            Array.from(availableColorways)[Math.floor(Math.random() * availableColorways.size)];
+
+        if (!randomColorway) {
+            throw new Error('randomColorway is undefined');
+        }
+
         return getCourseColors(randomColorway, index, offset);
     }
     // TODO: get just a random color idk
