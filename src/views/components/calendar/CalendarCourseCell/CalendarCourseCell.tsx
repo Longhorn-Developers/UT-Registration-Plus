@@ -57,7 +57,11 @@ export default function CalendarCourseCell({
     return (
         <div
             className={clsx(
-                'h-full min-w-full w-0 flex justify-center rounded p-2 cursor-pointer',
+                'h-full w-0 flex justify-center rounded p-2 cursor-pointer screenshot:p-1.5',
+                {
+                    'min-w-full': timeAndLocation,
+                    'w-full': !timeAndLocation,
+                },
                 fontColor,
                 className
             )}
