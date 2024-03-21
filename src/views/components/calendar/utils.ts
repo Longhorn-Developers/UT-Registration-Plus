@@ -106,8 +106,10 @@ export const saveCalAsPng = (calendarRef: React.RefObject<HTMLDivElement>) => {
     if (calendarRef.current) {
         toPng(calendarRef.current, { cacheBust: true })
             .then(dataUrl => {
-                const blob: Blob = new Blob([dataUrl], { type: MIMEType.IMAGE });
-                downloadBlob(blob, 'my-calendar.png');
+                const link = document.createElement('a');
+                link.download = 'my-calendar.png';
+                link.href = dataUrl;
+                link.click();
             })
             .catch(err => {
                 console.error(err);
