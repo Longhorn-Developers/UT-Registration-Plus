@@ -4,8 +4,8 @@ import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import { tailwindColorways } from '@shared/util/storybook';
 import type { Meta, StoryObj } from '@storybook/react';
-import List from '@views/components/common/List/List';
-import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
+import List from '@views/components/common/List';
+import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import React from 'react';
 
 const numberOfCourses = 5;

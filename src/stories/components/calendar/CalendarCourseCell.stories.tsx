@@ -1,8 +1,8 @@
 import { Status } from '@shared/types/Course';
 import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
-import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
-import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
+import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import React from 'react';
 
 import { ExampleCourse } from '../PopupCourseBlock.stories';

@@ -1,6 +1,6 @@
 import { Status } from '@shared/types/Course';
 import type { Meta, StoryObj } from '@storybook/react';
-import CourseStatus from '@views/components/common/CourseStatus/CourseStatus';
+import CourseStatus from '@views/components/common/CourseStatus';
 import React from 'react';
 
 const meta = {

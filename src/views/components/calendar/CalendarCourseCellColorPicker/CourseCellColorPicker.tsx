@@ -1,6 +1,6 @@
 import type { ThemeColor, TWIndex } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
-import Divider from '@views/components/common/Divider/Divider';
+import Divider from '@views/components/common/Divider';
 import React from 'react';
 import { theme } from 'unocss/preset-mini';
 

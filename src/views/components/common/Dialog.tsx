@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import type { PropsWithChildren } from 'react';
 import React, { Fragment } from 'react';
 
-import ExtensionRoot from '../ExtensionRoot/ExtensionRoot';
+import ExtensionRoot from './ExtensionRoot/ExtensionRoot';
 
 export interface _DialogProps {
     className?: string;

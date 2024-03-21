@@ -1,4 +1,4 @@
-import Link from '@views/components/common/Link/Link';
+import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';

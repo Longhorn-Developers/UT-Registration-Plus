@@ -2,8 +2,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import type { ReactElement } from 'react';
 import React from 'react';
 
-import type { Button } from '../Button/Button';
-import type Text from '../Text/Text';
+import type { Button } from './Button';
+import type Text from './Text/Text';
 
 /**
  * Props for the PromptDialog component.

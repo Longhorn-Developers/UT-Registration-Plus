@@ -1,8 +1,8 @@
 import createSchedule from '@pages/background/lib/createSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { Button } from '@views/components/common/Button/Button';
-import List from '@views/components/common/List/List';
-import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
+import { Button } from '@views/components/common/Button';
+import List from '@views/components/common/List';
+import ScheduleListItem from '@views/components/common/ScheduleListItem';
 import Text from '@views/components/common/Text/Text';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import React from 'react';

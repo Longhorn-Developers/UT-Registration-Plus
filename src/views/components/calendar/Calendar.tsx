@@ -1,18 +1,18 @@
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import type { Course } from '@shared/types/Course';
-import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar/CalendarBottomBar';
-import CalendarGrid from '@views/components/calendar/CalendarGrid/CalendarGrid';
-import CalendarHeader from '@views/components/calendar/CalendarHeader/CalenderHeader';
-import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules/CalendarSchedules';
+import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
+import CalendarGrid from '@views/components/calendar/CalendarGrid';
+import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
+import CalendarHeader from '@views/components/calendar/CalenderHeader';
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
-import Divider from '@views/components/common/Divider/Divider';
+import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useRef, useState } from 'react';
 
-import CalendarFooter from '../CalendarFooter';
-import TeamLinks from '../TeamLinks';
+import CalendarFooter from './CalendarFooter';
+import TeamLinks from './TeamLinks';
 
 /**
  * Calendar page component
