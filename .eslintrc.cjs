@@ -9,6 +9,7 @@ module.exports = {
     ignorePatterns: ['*.html', 'tsconfig.json'],
     extends: [
         'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
         'plugin:react/recommended',
         'plugin:react-hooks/recommended',
         'plugin:storybook/recommended',
@@ -164,7 +165,7 @@ module.exports = {
                 ],
             },
         ],
-        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-explicit-any': 'error',
         '@typescript-eslint/no-unused-vars': 'warn',
         '@typescript-eslint/naming-convention': 'off',
         '@typescript-eslint/space-before-function-paren': 'off',
