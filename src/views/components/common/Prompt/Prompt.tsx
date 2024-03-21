@@ -27,7 +27,7 @@ export interface PromptDialogProps {
 function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialogProps) {
     return (
         <Transition appear show={isOpen} as={React.Fragment}>
-            <Dialog as='div' onClose={onClose} className='relative z-50'>
+            <Dialog as='div' onClose={onClose} className='relative z-5 font-sans'>
                 <Transition.Child
                     as={React.Fragment}
                     enter='ease-out duration-200'
