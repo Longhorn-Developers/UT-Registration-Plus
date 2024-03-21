@@ -4,7 +4,7 @@ import { theme } from 'unocss/preset-mini';
 import type { HexColor, Lab, RGB, sRGB } from '../types/Color';
 import { isHexColor } from '../types/Color';
 import type { Course } from '../types/Course';
-import type { CourseColors, TWColorway, TWIndexes } from '../types/ThemeColors';
+import type { CourseColors, TWColorway, TWIndex } from '../types/ThemeColors';
 import { colorwayIndexes } from '../types/ThemeColors';
 import type { UserSchedule } from '../types/UserSchedule';
 
@@ -65,8 +65,8 @@ export function getCourseColors(colorway: TWColorway, index?: number, offset: nu
     }
 
     return {
-        primaryColor: theme.colors[colorway][index as TWIndexes] as HexColor,
-        secondaryColor: theme.colors[colorway][(index + offset) as TWIndexes] as HexColor,
+        primaryColor: theme.colors[colorway][index as TWIndex] as HexColor,
+        secondaryColor: theme.colors[colorway][(index + offset) as TWIndex] as HexColor,
     };
 }
 

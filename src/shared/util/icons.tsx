@@ -12,7 +12,7 @@ import CancelledIcon from '~icons/material-symbols/warning';
  * @param props.status status
  * @returns the icon component
  */
-export function StatusIcon(props: SVGProps<SVGSVGElement> & { status: StatusType }): JSX.Element | undefined {
+export function StatusIcon(props: SVGProps<SVGSVGElement> & { status: StatusType }): JSX.Element | null {
     const { status, ...rest } = props;
 
     switch (props.status) {
@@ -23,6 +23,6 @@ export function StatusIcon(props: SVGProps<SVGSVGElement> & { status: StatusType
         case Status.CANCELLED:
             return <CancelledIcon {...rest} />;
         default:
-            return undefined;
+            return null;
     }
 }

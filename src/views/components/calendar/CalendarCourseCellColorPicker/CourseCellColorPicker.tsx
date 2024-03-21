@@ -1,8 +1,7 @@
-import type { ThemeColor } from '@shared/types/ThemeColors';
+import type { ThemeColor, TWIndex } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import Divider from '@views/components/common/Divider/Divider';
 import React from 'react';
-import { satisfies } from 'semver';
 import { theme } from 'unocss/preset-mini';
 
 import InvertColorsIcon from '~icons/material-symbols/invert-colors';
@@ -34,20 +33,16 @@ const baseColors = [
     'rose',
 ] as const;
 
-type BaseColorKeys = keyof typeof theme.colors & (typeof baseColors)[number];
-type ColorWeights = keyof (typeof theme.colors)[BaseColorKeys];
-
-const BaseColorNum: ColorWeights = 500;
-const StartingShadeIndex: ColorWeights = 200;
+const BaseColorNum: TWIndex = 500;
+const StartingShadeIndex: TWIndex = 200;
 const ShadeIncrement = 100;
 
 const colorPatchColors = new Map<string, string[]>(
     baseColors.map(baseColor => [
-        theme.colors[baseColor as BaseColorKeys][BaseColorNum],
+        theme.colors[baseColor][BaseColorNum],
         Array.from(
             { length: 6 },
-            (_, index) =>
-                theme.colors[baseColor as BaseColorKeys][(StartingShadeIndex + ShadeIncrement * index) as ColorWeights]
+            (_, index) => theme.colors[baseColor][(StartingShadeIndex + ShadeIncrement * index) as TWIndex]
         ),
     ])
 );

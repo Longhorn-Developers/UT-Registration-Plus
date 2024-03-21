@@ -20,11 +20,6 @@ import PopupCourseBlock from './common/PopupCourseBlock/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown/ScheduleDropdown';
 import ScheduleListItem from './common/ScheduleListItem/ScheduleListItem';
 
-const defaultCourseColors = {
-    primaryColor: '#FFFFFF',
-    secondaryColor: '#000000',
-};
-
 /**
  * Renders the main popup component.
  * This component displays the main schedule, courses, and options buttons.

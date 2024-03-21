@@ -5,15 +5,9 @@ import List from '@views/components/common/List/List';
 import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
 import Text from '@views/components/common/Text/Text';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
-
-interface Props {
-    style?: React.CSSProperties;
-    dummySchedules?: unknown[];
-    dummyActiveIndex?: number;
-}
 
 /**
  * Renders a component that displays a list of schedules.
@@ -21,35 +15,8 @@ interface Props {
  * @param props - The component props.
  * @returns The rendered component.
  */
-export function CalendarSchedules({ style, dummySchedules, dummyActiveIndex }: Props) {
-    const [activeScheduleIndex, setActiveScheduleIndex] = useState<number>(0);
-    // const [newSchedule, setNewSchedule] = useState('');
-    const [activeSchedule, schedules] = useSchedules();
-
-    useEffect(() => {
-        const index = schedules.findIndex(schedule => schedule.id === activeSchedule.id);
-        if (index !== -1) {
-            setActiveScheduleIndex(index);
-        }
-    }, [activeSchedule, schedules]);
-
-    // const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    //     if (event.code === 'Enter') {
-    //         background.createSchedule({ scheduleName: newSchedule }).then(() => {
-    //             setNewSchedule('');
-    //         });
-    //     }
-    // };
-
-    // const handleScheduleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     setNewSchedule(e.target.value);
-    // };
-
-    const fixBuildError = {
-        dummySchedules,
-        dummyActiveIndex,
-    };
-    console.log(fixBuildError);
+export function CalendarSchedules() {
+    const [, schedules] = useSchedules();
 
     return (
         <div className='min-w-full w-0 items-center'>

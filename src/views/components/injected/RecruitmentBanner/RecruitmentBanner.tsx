@@ -14,7 +14,7 @@ const RECRUIT_FROM_DEPARTMENTS = ['C S', 'ECE', 'MIS', 'CSE', 'EE', 'ITD'];
  * This adds a new column to the course catalog table header.
  * @returns a react portal to the new column or null if the column has not been created yet.
  */
-export default function RecruitmentBanner(): JSX.Element | undefined {
+export default function RecruitmentBanner(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -30,7 +30,7 @@ export default function RecruitmentBanner(): JSX.Element | undefined {
     }, []);
 
     if (!container) {
-        return;
+        return null;
     }
 
     return createPortal(

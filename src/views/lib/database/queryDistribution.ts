@@ -20,13 +20,7 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
 
     let row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
     res.columns.forEach((col, i) => {
-        const columnName = col as keyof CourseSQLRow;
-        if (columnName in row) {
-            const value = res.values[0]?.[i];
-            if (value !== undefined) {
-                row[columnName] = value as never;
-            }
-        }
+        row[col as keyof CourseSQLRow] = res.values[0]![i]! as never;
     });
 
     const distribution: Distribution = {
@@ -101,13 +95,7 @@ export async function querySemesterDistribution(course: Course, semester: Semest
 
     let row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
     res.columns.forEach((col, i) => {
-        const columnName = col as keyof CourseSQLRow;
-        if (columnName in row) {
-            const value = res.values[0]?.[i];
-            if (value !== undefined) {
-                row[columnName] = value as never;
-            }
-        }
+        row[col as keyof CourseSQLRow] = res.values[0]![i]! as never;
     });
 
     const distribution: Distribution = {

@@ -134,7 +134,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                 .flatMap((el, i) => (i === 0 ? [el] : [', ', el]))}
                         </Text>
                     )}
-                    <div className='flex-content-centr flex gap-1'>
+                    <div className='flex items-center gap-1'>
                         {flags.map((flag: string) => (
                             <Chip
                                 key={flagMap[flag as keyof typeof flagMap]}

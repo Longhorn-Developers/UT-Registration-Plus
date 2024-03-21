@@ -22,8 +22,6 @@ export default function Calendar(): JSX.Element {
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
 
     const [course, setCourse] = useState<Course | null>((): Course | null => {
-        if (!activeSchedule) return null;
-
         const urlParams = new URLSearchParams(window.location.search);
         const uniqueIdRaw = urlParams.get('uniqueId');
         if (uniqueIdRaw === null) return null;
@@ -45,15 +43,13 @@ export default function Calendar(): JSX.Element {
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
             async openCoursePopup({ data, sendResponse }) {
-                if (!activeSchedule) return;
-
                 const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
                 if (course === undefined) return;
 
                 setCourse(course);
                 setShowPopup(true);
 
-                const currentTab: chrome.tabs.Tab | undefined = await chrome.tabs.getCurrent();
+                const currentTab = await chrome.tabs.getCurrent();
                 if (currentTab === undefined) return;
                 sendResponse(currentTab);
             },
