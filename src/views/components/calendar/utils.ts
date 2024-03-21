@@ -1,9 +1,9 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import MIMEType from '@shared/types/MIMEType';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import downloadBlob from '@shared/util/downloadBlob';
 import type { Serialized } from 'chrome-extension-toolkit';
 import { toPng } from 'html-to-image';
-import MIMEType from 'src/shared/types/MIMEType';
-import downloadBlob from 'src/shared/util/downloadBlob';
 
 export const CAL_MAP = {
     Sunday: 'SU',
