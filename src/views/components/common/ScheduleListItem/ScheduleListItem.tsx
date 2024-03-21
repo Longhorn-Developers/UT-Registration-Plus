@@ -36,7 +36,9 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [editorValue, setEditorValue] = useState(schedule.name);
     const [isOpen, setIsOpen] = React.useState(false);
     const deleteTitle = <Text variant='h2'>Are you sure?</Text>;
-    const deleteContent = <Text variant='p'>Deleting {schedule.name} is permanent and will remove all added courses and schedules.</Text>;
+    const deleteContent = (
+        <Text variant='p'>Deleting {schedule.name} is permanent and will remove all added courses and schedules.</Text>
+    );
     const deleteChildren = [
         <Button key='yes' variant='single' color='ut-burntorange'>
             Yes
@@ -44,7 +46,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         <Button key='no' variant='single' color='ut-burntorange' onClick={() => setIsOpen(false)}>
             No
         </Button>,
-    ]
+    ];
 
     const editorRef = React.useRef<HTMLInputElement>(null);
     const { current: editor } = editorRef;
@@ -70,7 +72,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
 
     const handleDelete = () => {
         if (isActive) {
-            
+            // TODO: Show can't delete active schedule message
         } else {
             setIsOpen(true);
             deleteSchedule(schedule.id);
@@ -122,7 +124,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                     <div>
                         <Menu as='div'>
                             <Menu.Button as='div'>
-                                <MoreActionsIcon className='invisible h-5 w-5 cursor-pointer rounded text-blueGray btn-transition group-hover:visible hover:border-blueGray hover:bg-blueGray hover:bg-opacity-25' />
+                                <MoreActionsIcon className='h-5 w-5 cursor-pointer rounded text-blueGray btn-transition hover:visible hover:border-blueGray hover:bg-blueGray hover:bg-opacity-25' />
                             </Menu.Button>
                             <Transition
                                 enter='transition ease-out duration-100'
@@ -131,6 +133,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                 leave='transition ease-in duration-75'
                                 leaveFrom='transform opacity-100 scale-100'
                                 leaveTo='transform opacity-0 scale-95'
+                                className='fixed z-1'
                             >
                                 <Menu.Items
                                     as='div'
@@ -156,7 +159,12 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                                 className={`block px-4 py-1 ${active ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}
                                             >
                                                 Delete
-                                                <PromptDialog isOpen={isOpen} onClose={() => setIsOpen(false)} title={deleteTitle} content={deleteContent}>
+                                                <PromptDialog
+                                                    isOpen={isOpen}
+                                                    onClose={() => setIsOpen(false)}
+                                                    title={deleteTitle}
+                                                    content={deleteContent}
+                                                >
                                                     {deleteChildren}
                                                 </PromptDialog>
                                             </Text>
