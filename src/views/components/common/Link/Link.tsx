@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import type { PropsWithChildren } from 'react';
 import React from 'react';
 
-
 type Props = TextProps<'a'> & {
     href?: string;
     disabled?: boolean;
