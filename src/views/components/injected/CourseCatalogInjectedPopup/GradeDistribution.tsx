@@ -96,8 +96,8 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             }
         };
 
-        fetchInitialData();
-    }, [course]);
+    //     fetchInitialData();
+    // }, [course]);
 
     const handleSelectSemester = (event: ChangeEvent<HTMLSelectElement>) => {
         setSemester(event.target.value);
@@ -178,7 +178,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             {
                 type: 'column',
                 name: 'Grades',
-                data: chartData,
+                // data: chartData,
             },
         ],
     };
@@ -234,7 +234,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                                         {semester}
                                     </option>
                                 ))}
-                        </select>
+                        </select> */}
                     </div>
                     <HighchartsReact ref={ref} highcharts={Highcharts} options={chartOptions} />
                 </>
