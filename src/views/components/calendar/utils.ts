@@ -2,7 +2,7 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import type { Serialized } from 'chrome-extension-toolkit';
-import { toPng } from 'html-to-image';
+import { toBlob } from 'html-to-image';
 
 export const CAL_MAP = {
     Sunday: 'SU',
@@ -111,17 +111,14 @@ export const saveCalAsPng = () => {
             rootNode.appendChild(clonedNode);
 
             try {
-                const dataUrl = await toPng(clonedNode, {
+                const screenshotBlob = await toBlob(clonedNode, {
                     cacheBust: true,
                     canvasWidth: 1165 * 2,
                     canvasHeight: 754 * 2,
                     skipAutoScale: true,
                     pixelRatio: 2,
                 });
-                const link = document.createElement('a');
-                link.download = 'my-calendar.png';
-                link.href = dataUrl;
-                link.click();
+                downloadBlob(screenshotBlob, 'IMAGE', 'my-calendar.png');
             } catch (e: unknown) {
                 console.error(e);
                 reject(e);
