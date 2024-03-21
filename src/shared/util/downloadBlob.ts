@@ -1,4 +1,5 @@
-import MIMEType, { MIMETypeKey } from '../types/MIMEType';
+import type { MIMETypeKey } from '../types/MIMEType';
+import MIMEType from '../types/MIMEType';
 
 /**
  * Downloads a blob by creating a temporary URL and triggering a download.
