@@ -111,7 +111,7 @@ function extractCourseInfo(course: Course) {
         status,
         schedule: { meetings },
     } = course;
-    const courseDeptAndInstr = `${course.department} ${course.number} – ${course.instructors[0].lastName}`;
+    const courseDeptAndInstr = `${course.department} ${course.number} – ${course.instructors[0]?.lastName}`;
 
     return { status, courseDeptAndInstr, meetings, course };
 }
