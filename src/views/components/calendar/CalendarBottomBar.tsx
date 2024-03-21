@@ -54,7 +54,12 @@ export default function CalendarBottomBar({ courses }: CalendarBottomBarProps): 
                     Save as .CAL
                 </Button>
                 <Divider orientation='vertical' size='1rem' className='mx-1.25' />
-                <Button variant='single' color='ut-black' icon={ImageIcon} onClick={() => saveCalAsPng()}>
+                <Button
+                    variant='single'
+                    color='ut-black'
+                    icon={ImageIcon}
+                    onClick={() => requestAnimationFrame(() => saveCalAsPng())}
+                >
                     Save as .PNG
                 </Button>
             </div>
