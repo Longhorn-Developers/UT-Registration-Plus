@@ -12,4 +12,6 @@ const MIMEType = {
     ANY: '*/*',
 } as const satisfies Record<string, string>;
 
+export type MIMETypeKey = keyof typeof MIMEType;
+
 export default MIMEType;

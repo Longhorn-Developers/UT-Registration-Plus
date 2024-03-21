@@ -1,9 +1,8 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import MIMEType from '@shared/types/MIMEType';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import downloadBlob from '@shared/util/downloadBlob';
 import type { Serialized } from 'chrome-extension-toolkit';
 import { toPng } from 'html-to-image';
+import { downloadBlob } from 'src/shared/util/downloadBlob';
 
 export const CAL_MAP = {
     Sunday: 'SU',
@@ -39,15 +38,15 @@ export const formatToHHMMSS = (minutes: number) => {
     return `${hours}${mins}00`;
 };
 
-/**
- * Downloads an ICS file with the given data.
- *
- * @param data - The data to be included in the ICS file.
- */
-const downloadICS = async (data: BlobPart) => {
-    const blob: Blob = new Blob([data], { type: MIMEType.CALENDAR });
-    await downloadBlob(blob, 'schedule.ics');
-};
+// /**
+//  * Downloads an ICS file with the given data.
+//  *
+//  * @param data - The data to be included in the ICS file.
+//  */
+// const downloadICS = async (data: BlobPart) => {
+//     const blob: Blob = new Blob([data], { type: MIMEType.CALENDAR });
+//     await downloadBlob(blob, 'schedule.ics');
+// };
 
 /**
  * Saves the current schedule as a calendar file in the iCalendar format (ICS).
@@ -94,7 +93,7 @@ export const saveAsCal = async () => {
 
     icsString += 'END:VCALENDAR';
 
-    downloadICS(icsString);
+    downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
 };
 
 /**
