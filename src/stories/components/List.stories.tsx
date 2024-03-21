@@ -4,6 +4,7 @@ import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import { tailwindColorways } from '@shared/util/storybook';
 import type { Meta, StoryObj } from '@storybook/react';
+import type { ListProps } from '@views/components/common/List/List';
 import List from '@views/components/common/List/List';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import React from 'react';
@@ -62,7 +63,7 @@ const generateCourses = (count: number): Course[] => {
             status: Status.WAITLISTED,
             uniqueId: 12345 + i, // Make uniqueId different for each course
             url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
-            colors: tailwindColorways[i],
+            colors: tailwindColorways[i]!,
         });
 
         courses.push(course);
@@ -72,8 +73,21 @@ const generateCourses = (count: number): Course[] => {
 };
 
 const exampleCourses = generateCourses(numberOfCourses);
-const generateCourseBlocks = (course: Course, dragHandleProps: DraggableProvidedDragHandleProps) => (
-    <PopupCourseBlock key={course.uniqueId} course={course} colors={course.colors} dragHandleProps={dragHandleProps} />
+// const generateCourseBlocks = (course: Course, dragHandleProps: DraggableProvidedDragHandleProps) => (
+//     <PopupCourseBlock
+//         key={course.uniqueId}
+//         course={course}
+//         colors={course.colors}
+//         dragHandleProps={dragHandleProps}
+//     />
+// );
+const generateCourseBlocks = (draggable: unknown, handleProps: DraggableProvidedDragHandleProps) => (
+    <PopupCourseBlock
+        key={(draggable as Course).uniqueId}
+        course={draggable as Course}
+        colors={(draggable as Course).colors}
+        dragHandleProps={handleProps}
+    />
 );
 
 const meta = {
@@ -95,7 +109,7 @@ export const Default: Story = {
     args: {
         draggables: exampleCourses,
         children: generateCourseBlocks,
-        itemKey: (item: Course) => item.uniqueId,
+        itemKey: (item: unknown) => (item as Course).uniqueId,
         gap: 12,
     },
     render: args => (
