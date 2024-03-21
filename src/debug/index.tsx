@@ -10,9 +10,8 @@ const manifest = chrome.runtime.getManifest();
  * @param {string} areaName - The name of the storage area.
  * @returns {Function} - A function that accepts changes and sets them in the storage.
  */
-const handleEditStorage = (areaName: string) => (changes: Record<string, unknown>) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (chrome.storage as any)[areaName].set(changes);
+const handleEditStorage = (areaName: 'local' | 'sync' | 'session') => (changes: Record<string, unknown>) => {
+    chrome.storage[areaName].set(changes);
 };
 
 interface JSONEditorProps {

@@ -1,3 +1,4 @@
+import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd';
 import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
@@ -17,8 +18,7 @@ export interface PopupCourseBlockProps {
     className?: string;
     course: Course;
     colors: CourseColors;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dragHandleProps?: any;
+    dragHandleProps?: DraggableProvidedDragHandleProps;
 }
 
 /**
