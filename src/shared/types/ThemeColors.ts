@@ -42,7 +42,7 @@ export const extendedColors = {
 } as const;
 
 type NestedKeys<T> = {
-    [K in keyof T]: T[K] extends Record<string, any> ? `${string & K}-${string & keyof T[K]}` : never;
+    [K in keyof T]: T[K] extends Record<string, unknown> ? `${string & K}-${string & keyof T[K]}` : never;
 }[keyof T];
 
 /**

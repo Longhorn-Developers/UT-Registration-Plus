@@ -16,7 +16,9 @@ type OurProps<TTag extends ReactTag> = {
     ref?: React.ForwardedRef<React.ElementRef<TTag>>;
 };
 
-type AsProps<TTag extends ReactTag, TOverrides = {}> = CleanProps<TTag, keyof TOverrides> & OurProps<TTag> & TOverrides;
+type AsProps<TTag extends ReactTag, TOverrides = object> = CleanProps<TTag, keyof TOverrides> &
+    OurProps<TTag> &
+    TOverrides;
 
 const variants = ['mini', 'small', 'p', 'h4', 'h3-course', 'h3', 'h2-course', 'h2', 'h1-course', 'h1'] as const;
 

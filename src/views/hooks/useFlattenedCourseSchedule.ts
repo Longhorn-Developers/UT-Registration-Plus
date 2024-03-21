@@ -92,7 +92,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
             }
 
             return meetings.flatMap((meeting: CourseMeeting) =>
-                processInPersonMeetings(meeting, { courseDeptAndInstr, status, course })
+                processInPersonMeetings(meeting, courseDeptAndInstr, status, course)
             );
         })
         .sort(sortCourses);
@@ -151,7 +151,12 @@ function processAsyncCourses({
 /**
  * Function to process each in-person class into its distinct meeting objects for calendar grid
  */
-function processInPersonMeetings(meeting: CourseMeeting, { courseDeptAndInstr, status, course }: any) {
+function processInPersonMeetings(
+    meeting: CourseMeeting,
+    courseDeptAndInstr: string,
+    status: StatusType,
+    course: Course
+) {
     const { days, startTime, endTime, location = { building: 'WB' } } = meeting;
     const midnightIndex = 1440;
     const normalizingTimeFactor = 720;

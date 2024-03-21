@@ -9,7 +9,7 @@ import DropdownArrowUp from '~icons/material-symbols/arrow-drop-up';
 /**
  * Props for the Dropdown component.
  */
-export type Props = {
+export type ScheduleDropdownProps = {
     defaultOpen?: boolean;
     children: React.ReactNode;
 };
@@ -17,7 +17,7 @@ export type Props = {
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
-export default function ScheduleDropdown(props: Props) {
+export default function ScheduleDropdown(props: ScheduleDropdownProps) {
     const [activeSchedule] = useSchedules();
 
     return (

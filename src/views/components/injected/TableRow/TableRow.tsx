@@ -12,7 +12,7 @@ import styles from './TableRow.module.scss';
 interface Props {
     isSelected: boolean;
     row: ScrapedRow;
-    onClick: (...args: any[]) => any;
+    onClick: (...args: unknown[]) => unknown;
     activeSchedule?: UserSchedule;
 }
 

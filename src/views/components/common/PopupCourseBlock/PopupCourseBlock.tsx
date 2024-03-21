@@ -17,6 +17,7 @@ export interface PopupCourseBlockProps {
     className?: string;
     course: Course;
     colors: CourseColors;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dragHandleProps?: any;
 }
 

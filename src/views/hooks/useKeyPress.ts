@@ -5,7 +5,7 @@ import { useEffect } from 'react';
  * @param key the key to listen for
  * @param callback the callback to call when the key is pressed
  */
-export function useKeyPress(key: string, callback: (...args: any[]) => void): void {
+export function useKeyPress(key: string, callback: (...args: unknown[]) => void): void {
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === key) {
