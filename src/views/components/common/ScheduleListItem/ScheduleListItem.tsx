@@ -1,3 +1,5 @@
+import { Menu, Transition } from '@headlessui/react';
+import createSchedule from '@pages/background/lib/createSchedule';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -6,8 +8,8 @@ import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import XIcon from '~icons/material-symbols/close';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
+import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
 /**
  * Props for the ScheduleListItem component.
@@ -33,6 +35,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         setEditorValue(schedule.name);
 
         if (isEditing && editor) {
+            console.log('focusing');
             editor.focus();
             editor.setSelectionRange(0, editor.value.length);
         }
@@ -45,7 +48,6 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
             schedule.name = editorValue.trim();
             renameSchedule(schedule.id, schedule.name);
         }
-
         setIsEditing(false);
     };
 
@@ -92,10 +94,48 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                         )}
                     </div>
                     <div>
-                        <XIcon
-                            className='invisible h-5 w-5 text-ut-red group-hover:visible'
-                            onClick={() => deleteSchedule(schedule.id)}
-                        />
+                        <Menu as='div'>
+                            <Menu.Button as='div'>
+                                <MoreActionsIcon className='invisible h-5 w-5 cursor-pointer rounded text-blueGray btn-transition group-hover:visible hover:border-blueGray hover:bg-blueGray hover:bg-opacity-25' />
+                            </Menu.Button>
+                            <Transition
+                                enter='transition ease-out duration-100'
+                                enterFrom='transform opacity-0 scale-95'
+                                enterTo='transform opacity-100 scale-100'
+                                leave='transition ease-in duration-75'
+                                leaveFrom='transform opacity-100 scale-100'
+                                leaveTo='transform opacity-0 scale-95'
+                            >
+                                <Menu.Items
+                                    as='div'
+                                    className='absolute right-0 mt-2 w-30 border border-gray-200 rounded bg-white py-1 text-black shadow-lg'
+                                >
+                                    <Menu.Item as='div' onClick={() => setIsEditing(true)}>
+                                        {({ active }) => (
+                                            <Text className={`block px-4 py-1 ${active ? 'bg-gray-100' : ''}`}>
+                                                Rename
+                                            </Text>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item as='div' onClick={() => createSchedule(schedule.name)}>
+                                        {({ active }) => (
+                                            <Text className={`block px-4 py-1 ${active ? 'bg-gray-100' : ''}`}>
+                                                Duplicate
+                                            </Text>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item as='div' onClick={() => deleteSchedule(schedule.id)}>
+                                        {({ active }) => (
+                                            <Text
+                                                className={`block px-4 py-1 ${active ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}
+                                            >
+                                                Delete
+                                            </Text>
+                                        )}
+                                    </Menu.Item>
+                                </Menu.Items>
+                            </Transition>
+                        </Menu>
                     </div>
                 </div>
             </li>
