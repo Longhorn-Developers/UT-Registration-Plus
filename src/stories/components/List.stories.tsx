@@ -4,7 +4,6 @@ import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import { tailwindColorways } from '@shared/util/storybook';
 import type { Meta, StoryObj } from '@storybook/react';
-import type { ListProps } from '@views/components/common/List/List';
 import List from '@views/components/common/List/List';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
 import React from 'react';
@@ -73,21 +72,8 @@ const generateCourses = (count: number): Course[] => {
 };
 
 const exampleCourses = generateCourses(numberOfCourses);
-// const generateCourseBlocks = (course: Course, dragHandleProps: DraggableProvidedDragHandleProps) => (
-//     <PopupCourseBlock
-//         key={course.uniqueId}
-//         course={course}
-//         colors={course.colors}
-//         dragHandleProps={dragHandleProps}
-//     />
-// );
-const generateCourseBlocks = (draggable: unknown, handleProps: DraggableProvidedDragHandleProps) => (
-    <PopupCourseBlock
-        key={(draggable as Course).uniqueId}
-        course={draggable as Course}
-        colors={(draggable as Course).colors}
-        dragHandleProps={handleProps}
-    />
+const generateCourseBlocks = (course: Course, dragHandleProps: DraggableProvidedDragHandleProps) => (
+    <PopupCourseBlock key={course.uniqueId} course={course} colors={course.colors} dragHandleProps={dragHandleProps} />
 );
 
 const meta = {
@@ -100,16 +86,16 @@ const meta = {
     argTypes: {
         gap: { control: 'number' },
     },
-} satisfies Meta<typeof List>;
+} satisfies Meta<typeof List<Course>>;
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<Meta<typeof List<Course>>>;
 
 export const Default: Story = {
     args: {
         draggables: exampleCourses,
         children: generateCourseBlocks,
-        itemKey: (item: unknown) => (item as Course).uniqueId,
+        itemKey: item => item.uniqueId,
         gap: 12,
     },
     render: args => (

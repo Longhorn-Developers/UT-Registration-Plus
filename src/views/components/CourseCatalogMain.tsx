@@ -53,15 +53,9 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
         setSelectedCourse(course);
     };
 
-    // useKeyPress('Escape', handleClearSelectedCourse);
-
     const [activeSchedule] = useSchedules();
 
     if (!activeSchedule) {
-        return null;
-    }
-
-    if (!selectedCourse) {
         return null;
     }
 
@@ -82,7 +76,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
                     )
             )}
             <CourseCatalogInjectedPopup
-                course={selectedCourse}
+                course={selectedCourse!} // always defined when showPopup is true
                 show={showPopup}
                 onClose={() => setShowPopup(false)}
                 afterLeave={() => setSelectedCourse(null)}

@@ -4,7 +4,7 @@ import { theme } from 'unocss/preset-mini';
 import type { HexColor, Lab, RGB, sRGB } from '../types/Color';
 import { isHexColor } from '../types/Color';
 import type { Course } from '../types/Course';
-import type { CourseColors, TWColorway } from '../types/ThemeColors';
+import type { CourseColors, TWColorway, TWIndexes } from '../types/ThemeColors';
 import { colorwayIndexes } from '../types/ThemeColors';
 import type { UserSchedule } from '../types/UserSchedule';
 
@@ -14,22 +14,16 @@ import type { UserSchedule } from '../types/UserSchedule';
  * @param hex - The hexadecimal color value.
  * @returns An array containing the RGB values.
  */
-export function hexToRGB(hex: HexColor): RGB | null {
+export function hexToRGB(hex: HexColor): RGB | undefined {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-    let shorthandRegex: RegExp = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    const parsedHex: string = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    const parsedHex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
 
-    let result: RegExpExecArray | null = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(parsedHex);
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(parsedHex);
 
-    if (!result) {
-        return null;
-    }
+    if (!result || !(result.length > 3)) return undefined;
 
-    if (!result[1] || !result[2] || !result[3]) {
-        return null;
-    }
-
-    return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)];
+    return [parseInt(result[1]!, 16), parseInt(result[2]!, 16), parseInt(result[3]!, 16)];
 }
 
 export const useableColorways = Object.keys(theme.colors)
@@ -48,10 +42,7 @@ export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 
 
     const trc = 2.4; // 2.4 exponent for emulating actual monitor perception
     const rgb = hexToRGB(bgColor);
-
-    if (!rgb || rgb.length !== 3) {
-        return 'text-black';
-    }
+    if (!rgb) throw new Error('bgColor: Invalid hex.');
 
     // coefficients and rgb are both 3 elements long, so this is safe
     let Ys = rgb.reduce((acc, c, i) => acc + (c / 255.0) ** trc * coefficients[i]!, 0);
@@ -73,15 +64,10 @@ export function getCourseColors(colorway: TWColorway, index?: number, offset: nu
         index = colorway in colorwayIndexes ? colorwayIndexes[colorway as keyof typeof colorwayIndexes] : 500;
     }
 
-    type themeColors = typeof theme.colors;
-    type themeColorsColorway = themeColors[TWColorway];
-
     return {
-        primaryColor: theme.colors[colorway as keyof themeColors][index as keyof themeColorsColorway] as HexColor,
-        secondaryColor: theme.colors[colorway as keyof themeColors][
-            (index + offset) as keyof themeColorsColorway
-        ] as HexColor,
-    } satisfies CourseColors;
+        primaryColor: theme.colors[colorway][index as TWIndexes] as HexColor,
+        secondaryColor: theme.colors[colorway][(index + offset) as TWIndexes] as HexColor,
+    };
 }
 
 /**
@@ -174,11 +160,7 @@ export function getUnusedColor(
 
         if (sameDepartment.length > 0) {
             // check to see if any adjacent colorways are available
-            const centerCourse = sameDepartment[Math.floor(Math.random() * sameDepartment.length)];
-
-            if (!centerCourse) {
-                throw new Error('centerCourse is undefined');
-            }
+            const centerCourse = sameDepartment[Math.floor(Math.random() * sameDepartment.length)]!;
 
             let nextColorway = getNextColorway(centerCourse.colorway);
             let prevColorway = getPreviousColorway(centerCourse.colorway);
@@ -206,12 +188,7 @@ export function getUnusedColor(
 
         if (shortenedColorways.size > 0) {
             // TODO: make this go by 3's to leave future spaces open
-            const randomColorway: TWColorway | undefined =
-                Array.from(shortenedColorways)[Math.floor(Math.random() * shortenedColorways.size)];
-
-            if (!randomColorway) {
-                throw new Error('randomColorway is undefined');
-            }
+            const randomColorway = Array.from(shortenedColorways)[Math.floor(Math.random() * shortenedColorways.size)]!;
 
             return getCourseColors(randomColorway, index, offset);
         }

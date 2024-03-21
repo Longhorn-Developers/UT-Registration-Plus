@@ -154,9 +154,4 @@ function DevDashboard() {
     );
 }
 
-const rootElement = document.getElementById('root');
-if (rootElement) {
-    createRoot(rootElement).render(<DevDashboard />);
-} else {
-    throw new Error('No root element found');
-}
+createRoot(document.getElementById('root')!).render(<DevDashboard />);

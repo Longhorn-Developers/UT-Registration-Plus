@@ -14,10 +14,7 @@ export default async function switchSchedule(scheduleId: string): Promise<void> 
         throw new Error(`Schedule ${scheduleId} does not exist`);
     }
 
-    const scheduleToUpdate = schedules[scheduleIndex];
-    if (scheduleToUpdate) {
-        scheduleToUpdate.updatedAt = Date.now();
-    }
+    schedules[scheduleIndex]!.updatedAt = Date.now();
 
     await UserScheduleStore.set('activeIndex', scheduleIndex);
 }

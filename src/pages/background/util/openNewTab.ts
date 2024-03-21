@@ -1,4 +1,4 @@
-type TabWithId = Omit<chrome.tabs.Tab, 'id'> & { id: number };
+export type TabWithId = Omit<chrome.tabs.Tab, 'id'> & { id: number };
 
 /**
  * This is a helper function that opens a new tab in the current window, and focuses the window
