@@ -36,7 +36,6 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         setEditorValue(schedule.name);
 
         if (isEditing && editor) {
-            console.log('focusing');
             editor.focus();
             editor.setSelectionRange(0, editor.value.length);
         }
@@ -46,7 +45,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
 
     const handleBlur = async () => {
         if (editorValue.trim() !== '' && editorValue.trim() !== schedule.name) {
-            schedule.name = await renameSchedule(schedule.id, editorValue.trim());
+            schedule.name = (await renameSchedule(schedule.id, editorValue.trim())) as string;
         }
         setIsEditing(false);
     };
@@ -106,7 +105,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                 portal
                             >
                                 <Menu.Button className='bg-white'>
-                                    <MoreActionsIcon className='invisible h-5 w-5 cursor-pointer rounded text-blueGray btn-transition btn-transition group-hover:visible group-hover:border-blueGray group-hover:bg-blueGray group-hover:bg-opacity-25 focusable' />
+                                    <MoreActionsIcon className='invisible h-5 w-5 cursor-pointer rounded text-blueGray btn-transition group-hover:visible group-hover:border-blueGray group-hover:bg-blueGray group-hover:bg-opacity-25 focusable' />
                                 </Menu.Button>
 
                                 <Menu.Items className='w-30 rounded bg-white py-1 text-black shadow-lg'>

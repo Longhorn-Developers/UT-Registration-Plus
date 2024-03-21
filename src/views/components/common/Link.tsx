@@ -19,7 +19,7 @@ export default function Link(props: PropsWithChildren<Props>): JSX.Element {
     if (href && !props.onClick) {
         passedProps.onClick = e => {
             e.preventDefault();
-            background.openNewTab({ url: href });
+            background.openNewTab({ url: href as string });
         };
     }
     const isDisabled = props.disabled || (!href && !props.onClick);
