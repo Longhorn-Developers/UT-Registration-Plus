@@ -124,7 +124,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
     });
 
     return courseCells.map((block, i) => {
-        const { courseDeptAndInstr, timeAndLocation, status } = courseCells[i].componentProps;
+        const { courseDeptAndInstr, timeAndLocation, status } = courseCells[i]!.componentProps;
 
         return (
             <div
@@ -132,8 +132,8 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                 style={{
                     gridColumn: `${block.calendarGridPoint.dayIndex + 3}`,
                     gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
-                    width: `calc(100% / ${block.totalColumns})`,
-                    marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`,
+                    width: `calc(100% / ${block.totalColumns ?? 1})`,
+                    marginLeft: `calc(100% * ${((block.gridColumnStart ?? 0) - 1) / (block.totalColumns ?? 1)})`,
                     padding: '0px 10px 4px 0px',
                 }}
             >
