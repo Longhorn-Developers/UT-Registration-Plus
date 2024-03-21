@@ -32,7 +32,7 @@ export default function Link(props: PropsWithChildren<Props>): JSX.Element {
             className={clsx(
                 styles.link,
                 {
-                    [styles.disabled]: isDisabled,
+                    [styles.disabled!]: isDisabled,
                 },
                 props.className
             )}
