@@ -15,10 +15,10 @@ export default async function renameSchedule(scheduleId: string, newName: string
         return `Schedule ${scheduleId} does not exist`;
     }
 
-    // eslint-disable-next-line no-param-reassign
-    newName = await handleDuplicate(newName);
 
-    schedules[scheduleIndex].name = newName;
+    const updatedName = await handleDuplicate(newName);
+
+    schedules[scheduleIndex].name = updatedName;
     schedules[scheduleIndex].updatedAt = Date.now();
 
     await UserScheduleStore.set('schedules', schedules);

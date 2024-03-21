@@ -13,11 +13,11 @@ export default async function createSchedule(scheduleName: string): Promise<stri
     // Duplicate schedule found, we need to append a number to the end of the schedule name
 
     // eslint-disable-next-line no-param-reassign
-    scheduleName = await handleDuplicate(scheduleName);
+    const updatedName = await handleDuplicate(scheduleName);
 
     schedules.push({
         id: generateRandomId(),
-        name: scheduleName,
+        name: updatedName,
         courses: [],
         hours: 0,
         updatedAt: Date.now(),

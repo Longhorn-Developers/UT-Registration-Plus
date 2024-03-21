@@ -4,7 +4,6 @@ import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import handleDuplicate from '@pages/background/lib/handleDuplicate';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import PromptDialog from '@views/components/common/Prompt/Prompt';
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
@@ -14,6 +13,7 @@ import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
 import { Button } from '../Button/Button';
+import Dialog from '../Dialog/Dialog';
 
 /**
  * Props for the ScheduleListItem component.
@@ -34,23 +34,41 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [editorValue, setEditorValue] = useState(schedule.name);
     const [showDeletePrompt, setShowDeletePrompt] = React.useState(false);
     const [showActiveDeletePrompt, setShowActiveDeletePrompt] = React.useState(false);
-    const deleteTitle = <Text>Are you sure?</Text>;
-    // eslint-disable-next-line react/no-unescaped-entities
-    const deleteContent = <Text>Deleting "{schedule.name}" is permanent and will delete its related courses.</Text>;
+    const deleteTitle = <Text variant='h2'>Are you sure?</Text>;
+    const deleteContent = (
+        <Text variant='p'>
+            Deleting
+            <Text variant='p' className='text-ut-burntorange'>
+                {' '}
+                {schedule.name}{' '}
+            </Text>
+            is permanent and will remove all added courses from that schedule.
+        </Text>
+    );
     const deleteChildren = [
         <Button
-            key='yes'
+            key='cancel'
             variant='single'
-            color='ut-burntorange'
+            color='ut-offwhite'
             onClick={() => {
                 deleteSchedule(schedule.id);
                 setShowDeletePrompt(false);
             }}
         >
-            Yes
+            <Text variant='h4' className='text-ut-black'>
+                Cancel
+            </Text>
         </Button>,
-        <Button key='no' variant='single' color='ut-burntorange' onClick={() => setShowDeletePrompt(false)}>
-            No
+        <Button
+            color='ut-red'
+            key='no'
+            variant='single'
+            className='rounded-e py-4'
+            onClick={() => setShowDeletePrompt(false)}
+        >
+            <Text variant='h4' className='text-white'>
+                Delete Permanently
+            </Text>
         </Button>,
     ];
 
@@ -60,7 +78,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         <Button key='ok' variant='single' color='ut-burntorange' onClick={() => setShowActiveDeletePrompt(false)}>
             Ok
         </Button>,
-    ];
+    ];  
 
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
@@ -178,22 +196,22 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                 </Menu.Items>
                             </Transition>
                         </Menu>
-                        <PromptDialog
-                            isOpen={showDeletePrompt}
+                        <Dialog
+                            show={showDeletePrompt}
                             onClose={() => setShowDeletePrompt(false)}
                             title={deleteTitle}
-                            content={deleteContent}
+                            description={deleteContent}
                         >
                             {deleteChildren}
-                        </PromptDialog>
-                        <PromptDialog
-                            isOpen={showActiveDeletePrompt}
+                        </Dialog>
+                        <Dialog
+                            show={showActiveDeletePrompt}
                             onClose={() => setShowActiveDeletePrompt(false)}
                             title={activeDeleteTitle}
-                            content={activeDeleteContent}
+                            description={activeDeleteContent}
                         >
                             {activeDeleteChildren}
-                        </PromptDialog>
+                        </Dialog>
                     </div>
                 </div>
             </li>

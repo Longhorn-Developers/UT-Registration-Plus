@@ -20,8 +20,8 @@ export default async function handleDuplicate(scheduleName: string): Promise<str
     let index = 1;
 
     // Trim ending number
-    let baseName = scheduleName.replace(regex, '');
-    let newName = `${baseName}`;
+    const baseName = scheduleName.replace(regex, '');
+    let newName = baseName;
 
     // Increment until an unused index is found
     // eslint-disable-next-line @typescript-eslint/no-loop-func
