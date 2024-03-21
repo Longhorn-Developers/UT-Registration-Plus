@@ -1,9 +1,9 @@
 import { Status } from '@shared/types/Course';
-import { Button } from '@views/components/common/Button/Button';
-import CourseStatus from '@views/components/common/CourseStatus/CourseStatus';
-import Divider from '@views/components/common/Divider/Divider';
+import { Button } from '@views/components/common/Button';
+import CourseStatus from '@views/components/common/CourseStatus';
+import Divider from '@views/components/common/Divider';
 import { LargeLogo } from '@views/components/common/LogoIcon';
-import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
+import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';

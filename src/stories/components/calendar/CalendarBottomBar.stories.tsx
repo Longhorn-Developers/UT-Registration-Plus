@@ -2,7 +2,7 @@ import { Course, Status } from '@shared/types/Course';
 import Instructor from '@shared/types/Instructor';
 import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
-import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar/CalendarBottomBar';
+import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import React from 'react';
 
 const exampleGovCourse: Course = new Course({
@@ -87,12 +87,12 @@ export const Default: Story = {
         courses: [
             {
                 colors: getCourseColors('pink', 200),
-                courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0].lastName}`,
+                courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
                 status: exampleGovCourse.status,
             },
             {
                 colors: getCourseColors('slate', 500),
-                courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0].lastName}`,
+                courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
                 status: examplePsyCourse.status,
             },
         ],

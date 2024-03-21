@@ -5,8 +5,6 @@ import clsx from 'clsx';
 import type { PropsWithChildren } from 'react';
 import React from 'react';
 
-import styles from './Link.module.scss';
-
 type Props = TextProps<'a'> & {
     href?: string;
     disabled?: boolean;
@@ -19,7 +17,10 @@ export default function Link(props: PropsWithChildren<Props>): JSX.Element {
     let { className, href, ...passedProps } = props;
 
     if (href && !props.onClick) {
-        passedProps.onClick = () => background.openNewTab({ url: href });
+        passedProps.onClick = e => {
+            e.preventDefault();
+            background.openNewTab({ url: href });
+        };
     }
     const isDisabled = props.disabled || (!href && !props.onClick);
 
@@ -28,11 +29,13 @@ export default function Link(props: PropsWithChildren<Props>): JSX.Element {
             color='bluebonnet'
             {...passedProps}
             as='a'
+            aria-disabled={isDisabled}
+            href={!isDisabled ? href : undefined}
             tabIndex={isDisabled ? -1 : 0}
             className={clsx(
-                styles.link,
                 {
-                    [styles.disabled]: isDisabled,
+                    'underline cursor-pointer': !isDisabled,
+                    'cursor-not-allowed color-ut-gray': isDisabled,
                 },
                 props.className
             )}

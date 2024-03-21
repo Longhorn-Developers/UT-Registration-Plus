@@ -1,6 +1,6 @@
 import { colorsFlattened } from '@shared/util/themeColors';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from '@views/components/common/Button/Button';
+import { Button } from '@views/components/common/Button';
 import React from 'react';
 
 import AddIcon from '~icons/material-symbols/add';

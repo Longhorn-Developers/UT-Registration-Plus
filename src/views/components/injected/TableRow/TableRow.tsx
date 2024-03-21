@@ -1,6 +1,6 @@
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
+import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -12,7 +12,7 @@ import styles from './TableRow.module.scss';
 interface Props {
     isSelected: boolean;
     row: ScrapedRow;
-    onClick: (...args: any[]) => any;
+    onClick: (...args: unknown[]) => unknown;
     activeSchedule?: UserSchedule;
 }
 
@@ -29,7 +29,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     const { element, course } = row;
 
     useEffect(() => {
-        element.classList.add(styles.row);
+        element.classList.add(styles.row!);
         element.classList.add('group');
         const portalContainer = document.createElement('td');
         // portalContainer.style.textAlign = 'right';
@@ -39,12 +39,12 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
         return () => {
             portalContainer.remove();
-            element.classList.remove(styles.row);
+            element.classList.remove(styles.row!);
         };
     }, [element]);
 
     useEffect(() => {
-        element.classList[isSelected ? 'add' : 'remove'](styles.selectedRow);
+        element.classList[isSelected ? 'add' : 'remove'](styles.selectedRow!);
     }, [isSelected, element.classList]);
 
     useEffect(() => {
@@ -52,10 +52,10 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
         const isInSchedule = activeSchedule.containsCourse(course);
 
-        element.classList[isInSchedule ? 'add' : 'remove'](styles.inActiveSchedule);
+        element.classList[isInSchedule ? 'add' : 'remove'](styles.inActiveSchedule!);
 
         return () => {
-            element.classList.remove(styles.inActiveSchedule);
+            element.classList.remove(styles.inActiveSchedule!);
         };
     }, [activeSchedule, course, element.classList]);
 
@@ -72,11 +72,11 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             }
         }
 
-        element.classList[conflicts.length ? 'add' : 'remove'](styles.isConflict);
+        element.classList[conflicts.length ? 'add' : 'remove'](styles.isConflict!);
         setConflicts(conflicts);
 
         return () => {
-            element.classList.remove(styles.isConflict);
+            element.classList.remove(styles.isConflict!);
             setConflicts([]);
         };
     }, [activeSchedule, course, element.classList]);

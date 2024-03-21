@@ -1,12 +1,29 @@
-import Calendar from '@views/components/calendar/Calendar/Calendar';
+import type TabInfoMessages from '@shared/messages/TabInfoMessages';
+import Calendar from '@views/components/calendar/Calendar';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
-import React from 'react';
+import { MessageListener } from 'chrome-extension-toolkit';
+import React, { useEffect } from 'react';
 
 /**
  * Calendar page
  * @returns entire page
  */
 export default function CalendarMain() {
+    useEffect(() => {
+        const tabInfoListener = new MessageListener<TabInfoMessages>({
+            getTabInfo: ({ sendResponse }) => {
+                sendResponse({
+                    url: window.location.href,
+                    title: document.title,
+                });
+            },
+        });
+
+        tabInfoListener.listen();
+
+        return () => tabInfoListener.unlisten();
+    }, []);
+
     return (
         <ExtensionRoot className='h-full w-full'>
             <Calendar />

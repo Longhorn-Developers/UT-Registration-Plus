@@ -1,34 +1,38 @@
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import type { Course } from '@shared/types/Course';
-import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar/CalendarBottomBar';
-import CalendarGrid from '@views/components/calendar/CalendarGrid/CalendarGrid';
-import CalendarHeader from '@views/components/calendar/CalendarHeader/CalenderHeader';
-import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules/CalendarSchedules';
+import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
+import CalendarGrid from '@views/components/calendar/CalendarGrid';
+import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
+import CalendarHeader from '@views/components/calendar/CalenderHeader';
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
-import Divider from '@views/components/common/Divider/Divider';
+import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useState } from 'react';
 
-import CalendarFooter from '../CalendarFooter';
-import TeamLinks from '../TeamLinks';
+import CalendarFooter from './CalendarFooter';
+import TeamLinks from './TeamLinks';
 
 /**
  * Calendar page component
  */
 export default function Calendar(): JSX.Element {
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
+
     const [course, setCourse] = useState<Course | null>((): Course | null => {
         const urlParams = new URLSearchParams(window.location.search);
         const uniqueIdRaw = urlParams.get('uniqueId');
         if (uniqueIdRaw === null) return null;
+
         const uniqueId = Number(uniqueIdRaw);
         const course = activeSchedule.courses.find(course => course.uniqueId === uniqueId);
         if (course === undefined) return null;
+
         urlParams.delete('uniqueId');
         const newUrl = `${window.location.pathname}?${urlParams}`.replace(/\?$/, '');
         window.history.replaceState({}, '', newUrl);
+
         return course;
     });
 
@@ -40,16 +44,20 @@ export default function Calendar(): JSX.Element {
             async openCoursePopup({ data, sendResponse }) {
                 const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
                 if (course === undefined) return;
+
                 setCourse(course);
                 setShowPopup(true);
-                sendResponse(await chrome.tabs.getCurrent());
+
+                const currentTab = await chrome.tabs.getCurrent();
+                if (currentTab === undefined) return;
+                sendResponse(currentTab);
             },
         });
 
         listener.listen();
 
         return () => listener.unlisten();
-    }, [activeSchedule.courses]);
+    }, [activeSchedule]);
 
     useEffect(() => {
         if (course) setShowPopup(true);
@@ -84,7 +92,7 @@ export default function Calendar(): JSX.Element {
             </div>
 
             <CourseCatalogInjectedPopup
-                course={course}
+                course={course!} // always defined when showPopup is true
                 onClose={() => setShowPopup(false)}
                 open={showPopup}
                 afterLeave={() => setCourse(null)}

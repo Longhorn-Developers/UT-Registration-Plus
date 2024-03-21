@@ -1,4 +1,7 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import type { UserSchedule } from '@shared/types/UserSchedule';
+import { downloadBlob } from '@shared/util/downloadBlob';
+import type { Serialized } from 'chrome-extension-toolkit';
 import { toPng } from 'html-to-image';
 
 export const CAL_MAP = {
@@ -13,9 +16,9 @@ export const CAL_MAP = {
 
 /**
  * Retrieves the schedule from the UserScheduleStore based on the active index.
- * @returns {Promise<any>} A promise that resolves to the retrieved schedule.
+ * @returns A promise that resolves to the retrieved schedule.
  */
-const getSchedule = async () => {
+const getSchedule = async (): Promise<Serialized<UserSchedule> | undefined> => {
     const schedules = await UserScheduleStore.get('schedules');
     const activeIndex = await UserScheduleStore.get('activeIndex');
     const schedule = schedules[activeIndex];
@@ -36,22 +39,6 @@ export const formatToHHMMSS = (minutes: number) => {
 };
 
 /**
- * Downloads an ICS file with the given data.
- *
- * @param data - The data to be included in the ICS file.
- */
-const downloadICS = (data: BlobPart) => {
-    const blob: Blob = new Blob([data], { type: 'text/calendar' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'schedule.ics';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-};
-
-/**
  * Saves the current schedule as a calendar file in the iCalendar format (ICS).
  * Fetches the current active schedule and converts it into an ICS string.
  * Downloads the ICS file to the user's device.
@@ -60,6 +47,10 @@ export const saveAsCal = async () => {
     const schedule = await getSchedule(); // Assumes this fetches the current active schedule
 
     let icsString = 'BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nX-WR-CALNAME:My Schedule\n';
+
+    if (!schedule) {
+        throw new Error('No schedule found');
+    }
 
     schedule.courses.forEach(course => {
         course.schedule.meetings.forEach(meeting => {
@@ -85,18 +76,20 @@ export const saveAsCal = async () => {
             icsString += `DTEND:${endDate}\n`;
             icsString += `RRULE:FREQ=WEEKLY;BYDAY=${icsDays}\n`;
             icsString += `SUMMARY:${course.fullName}\n`;
-            icsString += `LOCATION:${location.building} ${location.room}\n`;
+            icsString += `LOCATION:${location?.building ?? ''} ${location?.room ?? ''}\n`;
             icsString += `END:VEVENT\n`;
         });
     });
 
     icsString += 'END:VCALENDAR';
 
-    downloadICS(icsString);
+    downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
 };
 
 /**
  * Saves the calendar as a PNG image.
+ *
+ * @param calendarRef - The reference to the calendar component.
  */
 export const saveCalAsPng = () => {
     const rootNode = document.createElement('div');
@@ -109,7 +102,7 @@ export const saveCalAsPng = () => {
     rootNode.style.height = '754px';
     document.body.appendChild(rootNode);
 
-    const clonedNode = document.querySelector('#root').cloneNode(true) as HTMLDivElement;
+    const clonedNode = document.querySelector('#root')!.cloneNode(true) as HTMLDivElement;
     clonedNode.style.backgroundColor = 'white';
     (clonedNode.firstChild as HTMLDivElement).classList.add('screenshot-in-progress');
 

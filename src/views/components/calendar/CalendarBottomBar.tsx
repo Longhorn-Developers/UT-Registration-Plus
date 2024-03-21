@@ -1,6 +1,6 @@
 import { saveAsCal, saveCalAsPng } from '@views/components/calendar/utils';
-import { Button } from '@views/components/common/Button/Button';
-import Divider from '@views/components/common/Divider/Divider';
+import { Button } from '@views/components/common/Button';
+import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
@@ -8,8 +8,8 @@ import React from 'react';
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 import ImageIcon from '~icons/material-symbols/image';
 
-import type { CalendarCourseCellProps } from '../CalendarCourseCell/CalendarCourseCell';
-import CalendarCourseBlock from '../CalendarCourseCell/CalendarCourseCell';
+import type { CalendarCourseCellProps } from './CalendarCourseCell';
+import CalendarCourseBlock from './CalendarCourseCell';
 
 type CalendarBottomBarProps = {
     courses?: CalendarCourseCellProps[];

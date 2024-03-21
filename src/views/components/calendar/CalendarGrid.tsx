@@ -1,10 +1,10 @@
 import type { Course } from '@shared/types/Course';
-import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React from 'react';
 
-import CalendarCell from '../CalendarGridCell/CalendarGridCell';
+import CalendarCell from './CalendarGridCell';
 
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
@@ -26,7 +26,7 @@ function CalendarHour({ hour }: { hour: number }) {
 }
 
 function makeGridRow(row: number, cols: number): JSX.Element {
-    const hour = hoursOfDay[row];
+    const hour = hoursOfDay[row]!;
 
     return (
         <>
@@ -83,14 +83,17 @@ interface AccountForCourseConflictsProps {
 // TODO: Deal with react strict mode (wacky movements)
 function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
     //  Groups by dayIndex to identify overlaps
-    const days = courseCells.reduce((acc, cell: CalendarGridCourse) => {
-        const { dayIndex } = cell.calendarGridPoint;
-        if (!acc[dayIndex]) {
-            acc[dayIndex] = [];
-        }
-        acc[dayIndex].push(cell);
-        return acc;
-    }, {});
+    const days = courseCells.reduce(
+        (acc, cell: CalendarGridCourse) => {
+            const { dayIndex } = cell.calendarGridPoint;
+            if (acc[dayIndex] === undefined) {
+                acc[dayIndex] = [];
+            }
+            acc[dayIndex]!.push(cell);
+            return acc;
+        },
+        {} as Record<number, CalendarGridCourse[]>
+    );
 
     // Check for overlaps within each day and adjust gridColumnIndex and totalColumns
     Object.values(days).forEach((dayCells: CalendarGridCourse[]) => {
@@ -121,7 +124,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
     });
 
     return courseCells.map((block, i) => {
-        const { courseDeptAndInstr, timeAndLocation, status } = courseCells[i].componentProps;
+        const { courseDeptAndInstr, timeAndLocation, status } = courseCells[i]!.componentProps;
 
         return (
             <div
@@ -129,8 +132,8 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                 style={{
                     gridColumn: `${block.calendarGridPoint.dayIndex + 3}`,
                     gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
-                    width: `calc(100% / ${block.totalColumns})`,
-                    marginLeft: `calc(100% * ${(block.gridColumnStart - 1) / block.totalColumns})`,
+                    width: `calc(100% / ${block.totalColumns ?? 1})`,
+                    marginLeft: `calc(100% * ${((block.gridColumnStart ?? 0) - 1) / (block.totalColumns ?? 1)})`,
                 }}
                 className='pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5'
             >
