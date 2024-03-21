@@ -4,6 +4,8 @@ import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import type { PromptDialogProps } from '@views/components/common/Prompt/Prompt';
+import PromptDialog from '@views/components/common/Prompt/Prompt';
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
@@ -11,6 +13,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 import MoreActionsIcon from '~icons/material-symbols/more-vert';
+
+import { Button } from '../Button/Button';
 
 /**
  * Props for the ScheduleListItem component.
@@ -20,6 +24,7 @@ export type Props = {
     schedule: UserSchedule;
     dragHandleProps?: Omit<React.HTMLAttributes<HTMLDivElement>, 'className'>;
     onClick?: React.DOMAttributes<HTMLDivElement>['onClick'];
+    Popup?: React.ComponentType<PromptDialogProps>;
 };
 
 /**
@@ -29,6 +34,17 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
+    const [isOpen, setIsOpen] = React.useState(false);
+    const deleteTitle = <Text variant='h2'>Are you sure?</Text>;
+    const deleteContent = <Text variant='p'>Deleting {schedule.name} is permanent and will remove all added courses and schedules.</Text>;
+    const deleteChildren = [
+        <Button key='yes' variant='single' color='ut-burntorange'>
+            Yes
+        </Button>,
+        <Button key='no' variant='single' color='ut-burntorange' onClick={() => setIsOpen(false)}>
+            No
+        </Button>,
+    ]
 
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
@@ -48,6 +64,15 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
             schedule.name = (await renameSchedule(schedule.id, editorValue.trim())) as string;
         }
         setIsEditing(false);
+    };
+
+    const handleDelete = () => {
+        if (isActive) {
+            
+        } else {
+            setIsOpen(true);
+            deleteSchedule(schedule.id);
+        }
     };
 
     return (
@@ -123,12 +148,15 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                             </Text>
                                         )}
                                     </Menu.Item>
-                                    <Menu.Item as='div' onClick={() => deleteSchedule(schedule.id)}>
+                                    <Menu.Item as='div' onClick={() => handleDelete()}>
                                         {({ active }) => (
                                             <Text
                                                 className={`block px-4 py-1 ${active ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}
                                             >
                                                 Delete
+                                                <PromptDialog isOpen={isOpen} onClose={() => setIsOpen(false)} title={deleteTitle} content={deleteContent}>
+                                                    {deleteChildren}
+                                                </PromptDialog>
                                             </Text>
                                         )}
                                     </Menu.Item>
