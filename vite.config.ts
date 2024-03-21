@@ -40,9 +40,7 @@ const renameFile = (source: string, destination: string): Plugin => {
         generateBundle(options, bundle) {
             const file = bundle[source];
             if (!file) return;
-            if (isOutputChunk(file)) {
-                file.fileName = destination;
-            }
+            file.fileName = destination;
         },
     };
 };
@@ -135,6 +133,7 @@ export default defineConfig({
                 return code;
             },
         },
+        renameFile('src/pages/debug/index.html', 'debug.html'),
         renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
     ],
