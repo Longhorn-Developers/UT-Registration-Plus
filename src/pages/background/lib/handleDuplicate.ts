@@ -16,7 +16,6 @@ export default async function handleDuplicate(scheduleName: string): Promise<str
     }
 
     // Regex matches strings of the form: " (int)"
-    // eslint-disable-next-line no-useless-escape
     const regex = / \((\d+)\)[^(]*$/;
     let index = 1;
 

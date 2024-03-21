@@ -32,17 +32,33 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
-    const [isOpen, setIsOpen] = React.useState(false);
-    const deleteTitle = <Text variant='h2'>Are you sure?</Text>;
-    const deleteContent = (
-        <Text variant='p'>Deleting {schedule.name} is permanent and will remove all added courses and schedules.</Text>
-    );
+    const [showDeletePrompt, setShowDeletePrompt] = React.useState(false);
+    const [showActiveDeletePrompt, setShowActiveDeletePrompt] = React.useState(false);
+    const deleteTitle = <Text>Are you sure?</Text>;
+    // eslint-disable-next-line react/no-unescaped-entities
+    const deleteContent = <Text>Deleting "{schedule.name}" is permanent and will delete its related courses.</Text>;
     const deleteChildren = [
-        <Button key='yes' variant='single' color='ut-burntorange'>
+        <Button
+            key='yes'
+            variant='single'
+            color='ut-burntorange'
+            onClick={() => {
+                deleteSchedule(schedule.id);
+                setShowDeletePrompt(false);
+            }}
+        >
             Yes
         </Button>,
-        <Button key='no' variant='single' color='ut-burntorange' onClick={() => setIsOpen(false)}>
+        <Button key='no' variant='single' color='ut-burntorange' onClick={() => setShowDeletePrompt(false)}>
             No
+        </Button>,
+    ];
+
+    const activeDeleteTitle = <Text>Invalid action!</Text>;
+    const activeDeleteContent = <Text>Deleting the active schedule is disallowed.</Text>;
+    const activeDeleteChildren = [
+        <Button key='ok' variant='single' color='ut-burntorange' onClick={() => setShowActiveDeletePrompt(false)}>
+            Ok
         </Button>,
     ];
 
@@ -65,10 +81,6 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
             renameSchedule(schedule.id, schedule.name);
         }
         setIsEditing(false);
-    };
-
-    const handleDelete = () => {
-        deleteSchedule(schedule.id);
     };
 
     return (
@@ -146,26 +158,43 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                             </Text>
                                         )}
                                     </Menu.Item>
-                                    <Menu.Item as='div' onClick={() => handleDelete()}>
+                                    <Menu.Item
+                                        as='div'
+                                        onClick={() => {
+                                            if (isActive) {
+                                                setShowActiveDeletePrompt(true);
+                                            } else {
+                                                setShowDeletePrompt(true);
+                                            }
+                                        }}
+                                    >
                                         {({ active }) => (
                                             <Text
                                                 className={`block px-4 py-1 ${active ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}
                                             >
                                                 Delete
-                                                <PromptDialog
-                                                    isOpen={isOpen}
-                                                    onClose={() => setIsOpen(false)}
-                                                    title={deleteTitle}
-                                                    content={deleteContent}
-                                                >
-                                                    {deleteChildren}
-                                                </PromptDialog>
                                             </Text>
                                         )}
                                     </Menu.Item>
                                 </Menu.Items>
                             </Transition>
                         </Menu>
+                        <PromptDialog
+                            isOpen={showDeletePrompt}
+                            onClose={() => setShowDeletePrompt(false)}
+                            title={deleteTitle}
+                            content={deleteContent}
+                        >
+                            {deleteChildren}
+                        </PromptDialog>
+                        <PromptDialog
+                            isOpen={showActiveDeletePrompt}
+                            onClose={() => setShowActiveDeletePrompt(false)}
+                            title={activeDeleteTitle}
+                            content={activeDeleteContent}
+                        >
+                            {activeDeleteChildren}
+                        </PromptDialog>
                     </div>
                 </div>
             </li>
