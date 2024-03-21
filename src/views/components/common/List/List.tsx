@@ -81,7 +81,7 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
         // check if the draggables content has *actually* changed
         if (
             draggables.length === items.length &&
-            draggables.every((element, index) => itemKey(element) === items[index].id)
+            draggables.every((element, index) => itemKey(element) === items[index]?.id)
         ) {
             return;
         }
