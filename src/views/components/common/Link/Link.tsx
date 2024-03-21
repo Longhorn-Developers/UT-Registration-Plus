@@ -16,7 +16,8 @@ type Props = TextProps<'a'> & {
  * A reusable Text component with props that build on top of the design system for the extension
  */
 export default function Link(props: PropsWithChildren<Props>): JSX.Element {
-    let { className, href, ...passedProps } = props;
+    let { className, ...passedProps } = props;
+    const { href } = props;
 
     if (href && !props.onClick) {
         passedProps.onClick = () => background.openNewTab({ url: href });
