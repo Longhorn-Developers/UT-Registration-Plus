@@ -36,6 +36,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         setEditorValue(schedule.name);
 
         if (isEditing && editor) {
+            console.log('focusing');
             editor.focus();
             editor.setSelectionRange(0, editor.value.length);
         }
