@@ -2,6 +2,8 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import type { Serialized } from 'chrome-extension-toolkit';
 import { toPng } from 'html-to-image';
+import MIMEType from 'src/shared/types/MIMEType';
+import downloadBlob from 'src/shared/util/downloadBlob';
 
 export const CAL_MAP = {
     Sunday: 'SU',
@@ -42,15 +44,9 @@ export const formatToHHMMSS = (minutes: number) => {
  *
  * @param data - The data to be included in the ICS file.
  */
-const downloadICS = (data: BlobPart) => {
-    const blob: Blob = new Blob([data], { type: 'text/calendar' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'schedule.ics';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+const downloadICS = async (data: BlobPart) => {
+    const blob: Blob = new Blob([data], { type: MIMEType.CALENDAR });
+    await downloadBlob(blob, 'schedule.ics');
 };
 
 /**
@@ -103,15 +99,15 @@ export const saveAsCal = async () => {
 
 /**
  * Saves the calendar as a PNG image.
+ *
+ * @param calendarRef - The reference to the calendar component.
  */
 export const saveCalAsPng = (calendarRef: React.RefObject<HTMLDivElement>) => {
     if (calendarRef.current) {
         toPng(calendarRef.current, { cacheBust: true })
             .then(dataUrl => {
-                const link = document.createElement('a');
-                link.download = 'my-calendar.png';
-                link.href = dataUrl;
-                link.click();
+                const blob: Blob = new Blob([dataUrl], { type: MIMEType.IMAGE });
+                downloadBlob(blob, 'my-calendar.png');
             })
             .catch(err => {
                 console.error(err);

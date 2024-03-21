@@ -8,6 +8,7 @@ const MIMEType = {
     IMAGE: 'image/*',
     AUDIO: 'audio/*',
     VIDEO: 'video/*',
+    CALENDAR: 'text/calendar',
     ANY: '*/*',
 } as const satisfies Record<string, string>;
 
