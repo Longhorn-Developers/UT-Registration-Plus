@@ -9,6 +9,12 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
  */
 export default async function handleDuplicate(scheduleName: string): Promise<string> {
     const schedules = await UserScheduleStore.get('schedules');
+
+    // No point in checking for duplicates if the name is unique
+    if (schedules.find(schedule => schedule.name === scheduleName) === undefined) {
+        return scheduleName;
+    }
+
     // Regex matches strings of the form: " (int)"
     // eslint-disable-next-line no-useless-escape
     const regex = / \((\d+)\)[^(]*$/;
@@ -16,9 +22,9 @@ export default async function handleDuplicate(scheduleName: string): Promise<str
 
     // Trim ending number
     let baseName = scheduleName.replace(regex, '');
-    let newName = `${baseName} (${index})`;
+    let newName = `${baseName}`;
 
-    // Loop until an unused index is found.
+    // Increment until an unused index is found
     // eslint-disable-next-line @typescript-eslint/no-loop-func
     while (schedules.find(schedule => schedule.name === newName)) {
         newName = `${baseName} (${++index})`;

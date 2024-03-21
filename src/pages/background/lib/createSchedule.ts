@@ -11,10 +11,9 @@ import handleDuplicate from './handleDuplicate';
 export default async function createSchedule(scheduleName: string): Promise<string | undefined> {
     const schedules = await UserScheduleStore.get('schedules');
     // Duplicate schedule found, we need to append a number to the end of the schedule name
-    if (schedules.find(schedule => schedule.name === scheduleName)) {
-        // eslint-disable-next-line no-param-reassign
-        scheduleName = await handleDuplicate(scheduleName);
-    }
+
+    // eslint-disable-next-line no-param-reassign
+    scheduleName = await handleDuplicate(scheduleName);
 
     schedules.push({
         id: generateRandomId(),

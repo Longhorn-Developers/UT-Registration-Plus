@@ -1,6 +1,7 @@
 import { Menu, Transition } from '@headlessui/react';
 import createSchedule from '@pages/background/lib/createSchedule';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
+import handleDuplicate from '@pages/background/lib/handleDuplicate';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
@@ -43,9 +44,9 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
 
     const isActive = useMemo(() => activeSchedule.id === schedule.id, [activeSchedule, schedule]);
 
-    const handleBlur = () => {
-        if (editorValue.trim() !== '') {
-            schedule.name = editorValue.trim();
+    const handleBlur = async () => {
+        if (editorValue.trim() !== '' && editorValue.trim() !== schedule.name) {
+            schedule.name = await handleDuplicate(editorValue.trim());
             renameSchedule(schedule.id, schedule.name);
         }
         setIsEditing(false);

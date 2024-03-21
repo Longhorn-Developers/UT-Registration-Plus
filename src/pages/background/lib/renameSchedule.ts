@@ -1,5 +1,7 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 
+import handleDuplicate from './handleDuplicate';
+
 /**
  * Renames a schedule with the specified name to a new name.
  * @param scheduleId - The id of the schedule to be renamed.
@@ -12,9 +14,9 @@ export default async function renameSchedule(scheduleId: string, newName: string
     if (scheduleIndex === -1) {
         return `Schedule ${scheduleId} does not exist`;
     }
-    // if (schedules.find(schedule => schedule.name === newName)) {
-    //     return `Schedule ${newName} already exists`;
-    // }
+
+    // eslint-disable-next-line no-param-reassign
+    newName = await handleDuplicate(newName);
 
     schedules[scheduleIndex].name = newName;
     schedules[scheduleIndex].updatedAt = Date.now();
