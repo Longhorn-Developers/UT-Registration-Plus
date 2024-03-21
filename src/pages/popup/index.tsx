@@ -6,7 +6,11 @@ import { createRoot } from 'react-dom/client';
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
-    createRoot(rootElement).render(<PopupMain />);
+    createRoot(rootElement).render(
+        <React.StrictMode>
+            <PopupMain />
+        </React.StrictMode>
+    );
 } else {
     throw new Error('Could not find root element');
 }
