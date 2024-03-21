@@ -97,7 +97,7 @@ export default function Calendar(): JSX.Element {
             </div>
 
             <CourseCatalogInjectedPopup
-                course={course}
+                course={course!} // always defined when showPopup is true
                 onClose={() => setShowPopup(false)}
                 open={showPopup}
                 afterLeave={() => setCourse(null)}

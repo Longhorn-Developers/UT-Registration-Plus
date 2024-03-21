@@ -21,7 +21,7 @@ export type DialogProps = _DialogProps & Omit<TransitionRootProps<typeof HDialog
  * A reusable popup component that can be used to display content on the page
  */
 export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Element {
-    const { children, className, open, onTransitionEnd, ...rest } = props;
+    const { children, className, open, ...rest } = props;
 
     return (
         <Transition show={open} as={HDialog} {...rest}>

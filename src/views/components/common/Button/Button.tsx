@@ -63,7 +63,7 @@ export function Button({
             disabled={disabled}
             onClick={disabled ? undefined : onClick}
         >
-            {icon && <Icon className='h-6 w-6' />}
+            {Icon && <Icon className='h-6 w-6' />}
             {!isIconOnly && (
                 <Text variant='h4' className='translate-y-0.08'>
                     {children}
