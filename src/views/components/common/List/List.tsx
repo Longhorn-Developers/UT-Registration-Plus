@@ -130,7 +130,7 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
                                 }}
                             >
                                 <ExtensionRoot>
-                                    {transformFunction(items[rubric.source.index].content, provided.dragHandleProps)}
+                                    {transformFunction(items[rubric.source.index]!.content, provided.dragHandleProps!)}
                                 </ExtensionRoot>
                             </Item>
                         );
@@ -150,7 +150,12 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
                                                 marginBottom: `${gap}px`,
                                             }}
                                         >
-                                            {transformFunction(item.content, dragHandleProps)}
+                                            {
+                                                transformFunction(
+                                                    item.content,
+                                                    dragHandleProps!
+                                                ) /* always exists; only doesn't when "isDragDisabled" is set */
+                                            }
                                         </div>
                                     )}
                                 </Draggable>
