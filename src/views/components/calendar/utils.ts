@@ -38,16 +38,6 @@ export const formatToHHMMSS = (minutes: number) => {
     return `${hours}${mins}00`;
 };
 
-// /**
-//  * Downloads an ICS file with the given data.
-//  *
-//  * @param data - The data to be included in the ICS file.
-//  */
-// const downloadICS = async (data: BlobPart) => {
-//     const blob: Blob = new Blob([data], { type: MIMEType.CALENDAR });
-//     await downloadBlob(blob, 'schedule.ics');
-// };
-
 /**
  * Saves the current schedule as a calendar file in the iCalendar format (ICS).
  * Fetches the current active schedule and converts it into an ICS string.
