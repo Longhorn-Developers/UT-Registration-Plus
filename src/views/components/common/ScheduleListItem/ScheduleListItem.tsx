@@ -4,7 +4,6 @@ import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import handleDuplicate from '@pages/background/lib/handleDuplicate';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import type { PromptDialogProps } from '@views/components/common/Prompt/Prompt';
 import PromptDialog from '@views/components/common/Prompt/Prompt';
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
@@ -24,7 +23,6 @@ export type Props = {
     schedule: UserSchedule;
     dragHandleProps?: Omit<React.HTMLAttributes<HTMLDivElement>, 'className'>;
     onClick?: React.DOMAttributes<HTMLDivElement>['onClick'];
-    Popup?: React.ComponentType<PromptDialogProps>;
 };
 
 /**
@@ -54,7 +52,6 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         setEditorValue(schedule.name);
 
         if (isEditing && editor) {
-            console.log('focusing');
             editor.focus();
             editor.setSelectionRange(0, editor.value.length);
         }
@@ -71,12 +68,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     };
 
     const handleDelete = () => {
-        if (isActive) {
-            // TODO: Show can't delete active schedule message
-        } else {
-            setIsOpen(true);
-            deleteSchedule(schedule.id);
-        }
+        deleteSchedule(schedule.id);
     };
 
     return (
@@ -100,6 +92,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                         />
                         {isEditing && (
                             <Text
+                                autoFocus
                                 variant='p'
                                 as='input'
                                 className='mr-1 flex-1 px-0.5 outline-blue-500 -ml-0.5'
