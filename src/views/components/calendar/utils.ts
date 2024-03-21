@@ -118,6 +118,11 @@ export const saveCalAsPng = () => {
                     skipAutoScale: true,
                     pixelRatio: 2,
                 });
+
+                if (!screenshotBlob) {
+                    throw new Error('Failed to create screenshot');
+                }
+
                 downloadBlob(screenshotBlob, 'IMAGE', 'my-calendar.png');
             } catch (e: unknown) {
                 console.error(e);
