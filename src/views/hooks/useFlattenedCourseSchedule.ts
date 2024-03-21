@@ -3,7 +3,7 @@ import type { Course, StatusType } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import { colors } from '@shared/types/ThemeColors';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 
 import useSchedules from './useSchedules';
 

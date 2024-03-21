@@ -3,7 +3,7 @@ import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import type { ReactElement } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import ExtensionRoot from '../ExtensionRoot/ExtensionRoot';
+import ExtensionRoot from './ExtensionRoot/ExtensionRoot';
 
 /*
  * Ctrl + f dragHandleProps on PopupCourseBlock.tsx for example implementation of drag handle (two lines of code)

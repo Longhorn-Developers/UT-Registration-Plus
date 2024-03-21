@@ -3,7 +3,7 @@ import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
-import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
+import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
 
 export const ExampleCourse: Course = new Course({
     courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',

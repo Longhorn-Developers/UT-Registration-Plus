@@ -1,6 +1,6 @@
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
+import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
