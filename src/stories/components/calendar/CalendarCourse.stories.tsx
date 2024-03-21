@@ -16,7 +16,6 @@ const meta = {
     argTypes: {
         course: { control: 'object' },
         meetingIdx: { control: 'number' },
-        rightIcon: { control: 'object' },
     },
 } satisfies Meta<typeof CalendarCourse>;
 export default meta;

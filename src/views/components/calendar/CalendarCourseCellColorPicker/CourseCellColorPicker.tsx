@@ -1,3 +1,4 @@
+import type { ThemeColor, TWIndex } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import Divider from '@views/components/common/Divider/Divider';
 import React from 'react';
@@ -30,16 +31,19 @@ const baseColors = [
     'fuchsia',
     'pink',
     'rose',
-];
+] as const;
 
-const BaseColorNum = 500;
-const StartingShadeIndex = 200;
+const BaseColorNum: TWIndex = 500;
+const StartingShadeIndex: TWIndex = 200;
 const ShadeIncrement = 100;
 
 const colorPatchColors = new Map<string, string[]>(
-    baseColors.map((baseColor: string) => [
+    baseColors.map(baseColor => [
         theme.colors[baseColor][BaseColorNum],
-        Array.from({ length: 6 }, (_, index) => theme.colors[baseColor][StartingShadeIndex + ShadeIncrement * index]),
+        Array.from(
+            { length: 6 },
+            (_, index) => theme.colors[baseColor][(StartingShadeIndex + ShadeIncrement * index) as TWIndex]
+        ),
     ])
 );
 
@@ -51,7 +55,7 @@ const hexCodeToBaseColor = new Map<string, string>(
  * Props for the CourseCellColorPicker component.
  */
 export interface CourseCellColorPickerProps {
-    setSelectedColor: React.Dispatch<React.SetStateAction<string | null>>;
+    setSelectedColor: React.Dispatch<React.SetStateAction<ThemeColor | null>>;
     isInvertColorsToggled: boolean;
     setIsInvertColorsToggled: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -89,7 +93,7 @@ export default function CourseCellColorPicker({
     const [hexCode, setHexCode] = React.useState<string>(
         getThemeColorHexByName('ut-gray').slice(1).toLocaleLowerCase()
     );
-    const hexCodeWithHash = `#${hexCode}`;
+    const hexCodeWithHash = `#${hexCode}` as ThemeColor;
     const selectedBaseColor = hexCodeToBaseColor.get(hexCodeWithHash);
 
     const handleSelectColorPatch = (baseColor: string) => {
@@ -124,7 +128,7 @@ export default function CourseCellColorPicker({
                     )}
                 </button>
             </div>
-            {hexCodeToBaseColor.has(hexCodeWithHash) && (
+            {selectedBaseColor && (
                 <>
                     <Divider orientation='horizontal' size='100%' className='my-1' />
                     <div className='grid grid-cols-6 gap-1'>

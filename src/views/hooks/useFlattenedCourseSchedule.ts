@@ -2,7 +2,7 @@ import type { HexColor } from '@shared/types/Color';
 import type { Course, StatusType } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import { colors } from '@shared/types/ThemeColors';
-import { UserSchedule } from '@shared/types/UserSchedule';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 
 import useSchedules from './useSchedules';
@@ -13,6 +13,8 @@ const dayToNumber = {
     Wednesday: 2,
     Thursday: 3,
     Friday: 4,
+    Saturday: 5,
+    Sunday: 6,
 } as const satisfies Record<string, number>;
 
 interface CalendarGridPoint {
@@ -42,7 +44,7 @@ export interface CalendarGridCourse {
  */
 export interface FlattenedCourseSchedule {
     courseCells: CalendarGridCourse[];
-    activeSchedule?: UserSchedule;
+    activeSchedule: UserSchedule;
 }
 
 /**
@@ -59,46 +61,22 @@ export const convertMinutesToIndex = (minutes: number): number => Math.floor((mi
 export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const [activeSchedule] = useSchedules();
 
-    if (!activeSchedule) {
-        return {
-            courseCells: [] as CalendarGridCourse[],
-            activeSchedule: new UserSchedule({
-                courses: [],
-                id: 'error',
-                name: 'Something may have went wrong',
-                hours: 0,
-                updatedAt: Date.now(),
-            }),
-        } satisfies FlattenedCourseSchedule;
-    }
-
-    if (activeSchedule.courses.length === 0) {
-        return {
-            courseCells: [] as CalendarGridCourse[],
-            activeSchedule,
-        } satisfies FlattenedCourseSchedule;
-    }
-
-    const { courses, name, hours } = activeSchedule;
-
-    const processedCourses = courses
-        .flatMap((course: Course) => {
+    const processedCourses = activeSchedule.courses
+        .flatMap(course => {
             const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
 
             if (meetings.length === 0) {
                 return processAsyncCourses({ courseDeptAndInstr, status, course });
             }
 
-            return meetings.flatMap((meeting: CourseMeeting) =>
-                processInPersonMeetings(meeting, { courseDeptAndInstr, status, course })
-            );
+            return meetings.flatMap(meeting => processInPersonMeetings(meeting, courseDeptAndInstr, status, course));
         })
         .sort(sortCourses);
 
     return {
-        courseCells: processedCourses as CalendarGridCourse[],
-        activeSchedule: { name, courses, hours } as UserSchedule,
-    } satisfies FlattenedCourseSchedule;
+        courseCells: processedCourses,
+        activeSchedule,
+    };
 }
 
 /**
@@ -109,7 +87,7 @@ function extractCourseInfo(course: Course) {
         status,
         schedule: { meetings },
     } = course;
-    const courseDeptAndInstr = `${course.department} ${course.number} – ${course.instructors[0].lastName}`;
+    const courseDeptAndInstr = `${course.department} ${course.number} – ${course.instructors[0]?.lastName}`;
 
     return { status, courseDeptAndInstr, meetings, course };
 }
@@ -149,12 +127,17 @@ function processAsyncCourses({
 /**
  * Function to process each in-person class into its distinct meeting objects for calendar grid
  */
-function processInPersonMeetings(meeting: CourseMeeting, { courseDeptAndInstr, status, course }) {
+function processInPersonMeetings(
+    meeting: CourseMeeting,
+    courseDeptAndInstr: string,
+    status: StatusType,
+    course: Course
+) {
     const { days, startTime, endTime, location } = meeting;
     const midnightIndex = 1440;
     const normalizingTimeFactor = 720;
     const time = meeting.getTimeString({ separator: '-', capitalize: true });
-    const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
+    const timeAndLocation = `${time}${location ? ` - ${location.building}` : ''}`;
     const normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
     const normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
 

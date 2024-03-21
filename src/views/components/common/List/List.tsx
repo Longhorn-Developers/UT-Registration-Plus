@@ -31,7 +31,10 @@ function reorder<T>(list: T[], startIndex: number, endIndex: number) {
     const listCopy = [...list];
 
     const [removed] = listCopy.splice(startIndex, 1);
-    listCopy.splice(endIndex, 0, removed);
+    if (removed) {
+        listCopy.splice(endIndex, 0, removed);
+    }
+
     return listCopy;
 }
 
@@ -78,7 +81,7 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
         // check if the draggables content has *actually* changed
         if (
             draggables.length === items.length &&
-            draggables.every((element, index) => itemKey(element) === items[index].id)
+            draggables.every((element, index) => itemKey(element) === items[index]?.id)
         ) {
             return;
         }
@@ -86,12 +89,12 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
     }, [draggables, itemKey, items]);
 
     const onDragEnd: OnDragEndResponder = useCallback(
-        result => {
-            if (!result.destination) return;
-            if (result.source.index === result.destination.index) return;
+        ({ destination, source }) => {
+            if (!destination) return;
+            if (source.index === destination.index) return;
 
             // will reorder in place
-            const reordered = reorder(items, result.source.index, result.destination.index);
+            const reordered = reorder(items, source.index, destination.index);
 
             setItems(reordered);
             onReordered(reordered.map(item => item.content));
@@ -125,7 +128,7 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
                                 }}
                             >
                                 <ExtensionRoot>
-                                    {transformFunction(items[rubric.source.index].content, provided.dragHandleProps)}
+                                    {transformFunction(items[rubric.source.index]!.content, provided.dragHandleProps!)}
                                 </ExtensionRoot>
                             </Item>
                         );
@@ -135,17 +138,22 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
                         <div {...provided.droppableProps} ref={provided.innerRef} style={{ marginBottom: `-${gap}px` }}>
                             {items.map((item, index) => (
                                 <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
-                                    {draggableProvided => (
+                                    {({ innerRef, draggableProps, dragHandleProps }) => (
                                         <div
-                                            ref={draggableProvided.innerRef}
-                                            {...draggableProvided.draggableProps}
+                                            ref={innerRef}
+                                            {...draggableProps}
                                             style={{
-                                                ...draggableProvided.draggableProps.style,
+                                                ...draggableProps.style,
                                                 // if last item, don't add margin
                                                 marginBottom: `${gap}px`,
                                             }}
                                         >
-                                            {transformFunction(item.content, draggableProvided.dragHandleProps)}
+                                            {
+                                                transformFunction(
+                                                    item.content,
+                                                    dragHandleProps!
+                                                ) /* always exists; only doesn't when "isDragDisabled" is set */
+                                            }
                                         </div>
                                     )}
                                 </Draggable>

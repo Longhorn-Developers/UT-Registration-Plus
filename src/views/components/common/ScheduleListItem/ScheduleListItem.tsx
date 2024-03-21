@@ -59,7 +59,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                 <div className='group flex flex-1 items-center overflow-x-hidden'>
                     <div
                         className='flex flex-grow items-center gap-1.5 overflow-x-hidden'
-                        onClick={(...e) => !isEditing && onClick(...e)}
+                        onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         <div
                             className={clsx(

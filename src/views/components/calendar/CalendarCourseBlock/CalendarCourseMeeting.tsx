@@ -1,5 +1,4 @@
 import type { Course } from '@shared/types/Course';
-import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import React from 'react';
 
 import styles from './CalendarCourseMeeting.module.scss';
@@ -12,28 +11,27 @@ export interface CalendarCourseMeetingProps {
     course: Course;
     /* index into course meeting array to display */
     meetingIdx?: number;
-    /** The icon to display on the right side of the course. This is optional. */
-    rightIcon?: React.ReactNode;
 }
 
 /**
  * `CalendarCourseMeeting` is a functional component that displays a course meeting.
  *
  * @example
- * <CalendarCourseMeeting course={course} meeting={meeting} rightIcon={<Icon />} />
+ * <CalendarCourseMeeting course={course} meeting={meeting} />
  */
-export default function CalendarCourseMeeting({
-    course,
-    meetingIdx,
-    rightIcon,
-}: CalendarCourseMeetingProps): JSX.Element {
-    let meeting: CourseMeeting | null = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : null;
+export default function CalendarCourseMeeting({ course, meetingIdx }: CalendarCourseMeetingProps): JSX.Element | null {
+    let meeting = meetingIdx !== undefined ? course.schedule.meetings[meetingIdx] : undefined;
+
+    if (!meeting) {
+        return null;
+    }
+
     return (
         <div className={styles.component}>
             <div className={styles.content}>
                 <div className={styles['course-detail']}>
                     <div className={styles.course}>
-                        {course.department} {course.number} - {course.instructors[0].lastName}
+                        {course.department} {course.number} - {course.instructors[0]?.lastName}
                     </div>
                     <div className={styles['time-and-location']}>
                         {`${meeting.getTimeString({ separator: '-', capitalize: true })}${

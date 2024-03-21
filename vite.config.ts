@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react-swc';
 import { resolve } from 'path';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
-import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite';
+import type { Plugin, ResolvedConfig, Rollup, ViteDevServer } from 'vite';
 import { defineConfig } from 'vite';
 import inspect from 'vite-plugin-inspect';
 
@@ -26,9 +26,11 @@ window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 `;
 
+const isOutputChunk = (input: Rollup.OutputAsset | Rollup.OutputChunk): input is Rollup.OutputChunk => 'code' in input;
+
 const renameFile = (source: string, destination: string): Plugin => {
     if (typeof source !== 'string' || typeof destination !== 'string') {
-        return;
+        throw new Error('Invalid arguments for renameFile');
     }
 
     return {
@@ -36,25 +38,30 @@ const renameFile = (source: string, destination: string): Plugin => {
         apply: 'build',
         enforce: 'post',
         generateBundle(options, bundle) {
-            if (!bundle[source]) return;
-            bundle[source].fileName = destination;
+            const file = bundle[source];
+            if (!file) return;
+            file.fileName = destination;
         },
     };
 };
 
-const fixManifestOptionsPage = () => ({
+const fixManifestOptionsPage = (): Plugin => ({
     name: 'fix-manifest-options-page',
-    apply: 'build' as const,
-    enforce: 'post' as const,
+    apply: 'build',
+    enforce: 'post',
     generateBundle(_, bundle) {
         for (const fileName of Object.keys(bundle)) {
             if (fileName.startsWith('assets/crx-manifest')) {
                 const chunk = bundle[fileName];
-                chunk.code = chunk.code.replace(
-                    /"options_page":"src\/pages\/options\/index.html"/,
-                    `"options_page":"options.html"`
-                );
-                break;
+                if (!chunk) continue;
+
+                if (isOutputChunk(chunk)) {
+                    chunk.code = chunk.code.replace(
+                        /"options_page":"src\/pages\/options\/index.html"/,
+                        `"options_page":"options.html"`
+                    );
+                    return;
+                }
             }
         }
     },
@@ -126,6 +133,7 @@ export default defineConfig({
                 return code;
             },
         },
+        renameFile('src/pages/debug/index.html', 'debug.html'),
         renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
     ],

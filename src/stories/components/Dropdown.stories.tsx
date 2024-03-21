@@ -3,6 +3,7 @@ import { UserSchedule } from '@shared/types/UserSchedule';
 import { generateRandomId } from '@shared/util/random';
 import type { Meta, StoryObj } from '@storybook/react';
 import List from '@views/components/common/List/List';
+import type { ScheduleDropdownProps } from '@views/components/common/ScheduleDropdown/ScheduleDropdown';
 import ScheduleDropdown from '@views/components/common/ScheduleDropdown/ScheduleDropdown';
 import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
@@ -49,7 +50,7 @@ const meta: Meta<typeof ScheduleDropdown> = {
             },
         },
     },
-    render: (args: any) => {
+    render: (args: ScheduleDropdownProps) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const [activeSchedule, schedules] = useSchedules();
 

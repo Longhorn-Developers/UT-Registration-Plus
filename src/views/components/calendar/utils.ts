@@ -1,4 +1,6 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import type { UserSchedule } from '@shared/types/UserSchedule';
+import type { Serialized } from 'chrome-extension-toolkit';
 import { toPng } from 'html-to-image';
 
 export const CAL_MAP = {
@@ -13,9 +15,9 @@ export const CAL_MAP = {
 
 /**
  * Retrieves the schedule from the UserScheduleStore based on the active index.
- * @returns {Promise<any>} A promise that resolves to the retrieved schedule.
+ * @returns A promise that resolves to the retrieved schedule.
  */
-const getSchedule = async () => {
+const getSchedule = async (): Promise<Serialized<UserSchedule> | undefined> => {
     const schedules = await UserScheduleStore.get('schedules');
     const activeIndex = await UserScheduleStore.get('activeIndex');
     const schedule = schedules[activeIndex];
@@ -61,6 +63,10 @@ export const saveAsCal = async () => {
 
     let icsString = 'BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nX-WR-CALNAME:My Schedule\n';
 
+    if (!schedule) {
+        throw new Error('No schedule found');
+    }
+
     schedule.courses.forEach(course => {
         course.schedule.meetings.forEach(meeting => {
             const { startTime, endTime, days, location } = meeting;
@@ -85,7 +91,7 @@ export const saveAsCal = async () => {
             icsString += `DTEND:${endDate}\n`;
             icsString += `RRULE:FREQ=WEEKLY;BYDAY=${icsDays}\n`;
             icsString += `SUMMARY:${course.fullName}\n`;
-            icsString += `LOCATION:${location.building} ${location.room}\n`;
+            icsString += `LOCATION:${location?.building ?? ''} ${location?.room ?? ''}\n`;
             icsString += `END:VEVENT\n`;
         });
     });
