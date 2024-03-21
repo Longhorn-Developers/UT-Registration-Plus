@@ -12,11 +12,8 @@ export default async function renameSchedule(scheduleId: string, newName: string
     if (scheduleIndex === -1) {
         return `Schedule ${scheduleId} does not exist`;
     }
-    // if (schedules.find(schedule => schedule.name === newName)) {
-    //     return `Schedule ${newName} already exists`;
-    // }
 
-    schedules[scheduleIndex].name = newName;
+    schedules[scheduleIndex]!.name = newName;
     // schedules[scheduleIndex].updatedAt = Date.now();
 
     await UserScheduleStore.set('schedules', schedules);

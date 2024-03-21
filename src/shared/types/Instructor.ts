@@ -5,9 +5,9 @@ import type { Serialized } from 'chrome-extension-toolkit';
  * A type representing an instructor for a course (who teaches it)
  */
 export default class Instructor {
-    fullName: string;
-    firstName: string;
-    lastName: string;
+    fullName?: string;
+    firstName?: string;
+    lastName?: string;
     middleInitial?: string;
 
     constructor(instructor: Serialized<Instructor>) {
@@ -53,16 +53,16 @@ export default class Instructor {
             return capitalize(str);
         };
 
-        if (format === 'abbr') {
+        if (format === 'abbr' && firstName && lastName && firstName[0]) {
             return `${process(firstName[0])}. ${process(lastName)}`;
         }
-        if (format === 'full_name') {
+        if (format === 'full_name' && fullName) {
             return process(fullName);
         }
-        if (format === 'first_last') {
+        if (format === 'first_last' && firstName && lastName) {
             return `${process(firstName)} ${process(lastName)}`;
         }
-        if (format === 'last') {
+        if (format === 'last' && lastName) {
             return process(lastName);
         }
 

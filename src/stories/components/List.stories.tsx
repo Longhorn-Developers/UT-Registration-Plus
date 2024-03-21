@@ -62,7 +62,7 @@ const generateCourses = (count: number): Course[] => {
             status: Status.WAITLISTED,
             uniqueId: 12345 + i, // Make uniqueId different for each course
             url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
-            colors: tailwindColorways[i],
+            colors: tailwindColorways[i]!,
         });
 
         courses.push(course);
@@ -86,16 +86,16 @@ const meta = {
     argTypes: {
         gap: { control: 'number' },
     },
-} satisfies Meta<typeof List>;
+} satisfies Meta<typeof List<Course>>;
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<Meta<typeof List<Course>>>;
 
 export const Default: Story = {
     args: {
         draggables: exampleCourses,
         children: generateCourseBlocks,
-        itemKey: (item: Course) => item.uniqueId,
+        itemKey: item => item.uniqueId,
         gap: 12,
     },
     render: args => (

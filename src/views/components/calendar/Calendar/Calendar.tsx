@@ -20,16 +20,20 @@ import TeamLinks from '../TeamLinks';
 export default function Calendar(): JSX.Element {
     const calendarRef = useRef<HTMLDivElement>(null);
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
+
     const [course, setCourse] = useState<Course | null>((): Course | null => {
         const urlParams = new URLSearchParams(window.location.search);
         const uniqueIdRaw = urlParams.get('uniqueId');
         if (uniqueIdRaw === null) return null;
+
         const uniqueId = Number(uniqueIdRaw);
         const course = activeSchedule.courses.find(course => course.uniqueId === uniqueId);
         if (course === undefined) return null;
+
         urlParams.delete('uniqueId');
         const newUrl = `${window.location.pathname}?${urlParams}`.replace(/\?$/, '');
         window.history.replaceState({}, '', newUrl);
+
         return course;
     });
 
@@ -41,16 +45,20 @@ export default function Calendar(): JSX.Element {
             async openCoursePopup({ data, sendResponse }) {
                 const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
                 if (course === undefined) return;
+
                 setCourse(course);
                 setShowPopup(true);
-                sendResponse(await chrome.tabs.getCurrent());
+
+                const currentTab = await chrome.tabs.getCurrent();
+                if (currentTab === undefined) return;
+                sendResponse(currentTab);
             },
         });
 
         listener.listen();
 
         return () => listener.unlisten();
-    }, [activeSchedule.courses]);
+    }, [activeSchedule]);
 
     useEffect(() => {
         if (course) setShowPopup(true);
@@ -85,7 +93,7 @@ export default function Calendar(): JSX.Element {
             </div>
 
             <CourseCatalogInjectedPopup
-                course={course}
+                course={course!} // always defined when showPopup is true
                 onClose={() => setShowPopup(false)}
                 open={showPopup}
                 afterLeave={() => setCourse(null)}

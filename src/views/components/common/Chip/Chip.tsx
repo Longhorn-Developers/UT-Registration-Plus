@@ -31,7 +31,7 @@ export function Chip({ label }: React.PropsWithChildren<Props>): JSX.Element {
             style={{
                 backgroundColor: '#FFD600',
             }}
-            title={Object.keys(flagMap).find(key => flagMap[key] === label)}
+            title={Object.entries(flagMap).find(([full, short]) => short === label)![0]}
         >
             {label}
         </Text>

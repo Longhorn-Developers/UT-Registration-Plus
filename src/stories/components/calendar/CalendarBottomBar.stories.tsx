@@ -87,12 +87,12 @@ export const Default: Story = {
         courses: [
             {
                 colors: getCourseColors('pink', 200),
-                courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0].lastName}`,
+                courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
                 status: exampleGovCourse.status,
             },
             {
                 colors: getCourseColors('slate', 500),
-                courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0].lastName}`,
+                courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
                 status: examplePsyCourse.status,
             },
         ],

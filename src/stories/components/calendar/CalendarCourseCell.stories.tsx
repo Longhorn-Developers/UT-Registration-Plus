@@ -1,6 +1,7 @@
 import { Status } from '@shared/types/Course';
 import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
+import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
 import React from 'react';
 
@@ -20,7 +21,7 @@ const meta = {
         timeAndLocation: { control: { type: 'text' } },
         colors: { control: { type: 'object' } },
     },
-    render: (args: any) => (
+    render: (args: CalendarCourseCellProps) => (
         <div className='w-45'>
             <CalendarCourseCell {...args} />
         </div>
@@ -29,7 +30,7 @@ const meta = {
         courseDeptAndInstr: ExampleCourse.department,
         className: ExampleCourse.number,
         status: ExampleCourse.status,
-        timeAndLocation: ExampleCourse.schedule.meetings[0].getTimeString({ separator: '-' }),
+        timeAndLocation: ExampleCourse.schedule.meetings[0]!.getTimeString({ separator: '-' }),
 
         colors: getCourseColors('emerald', 500),
     },

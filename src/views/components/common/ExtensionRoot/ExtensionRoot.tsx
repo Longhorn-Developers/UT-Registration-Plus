@@ -34,8 +34,10 @@ export default function ExtensionRoot(props: React.PropsWithChildren<Props>): JS
     }, []);
 
     return (
-        <div className={clsx(styles.extensionRoot, props.className)} data-testid={props.testId}>
-            {props.children}
-        </div>
+        <React.StrictMode>
+            <div className={clsx(styles.extensionRoot, props.className)} data-testid={props.testId}>
+                {props.children}
+            </div>
+        </React.StrictMode>
     );
 }
