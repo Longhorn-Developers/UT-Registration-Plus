@@ -1,8 +1,8 @@
 import { background } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import Divider from '@views/components/common/Divider/Divider';
+import Divider from '@views/components/common/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
-import List from '@views/components/common/List/List';
+import List from '@views/components/common/List';
 import Text from '@views/components/common/Text/Text';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
@@ -14,11 +14,11 @@ import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
 import SettingsIcon from '~icons/material-symbols/settings';
 
-import CourseStatus from './common/CourseStatus/CourseStatus';
+import CourseStatus from './common/CourseStatus';
 import { SmallLogo } from './common/LogoIcon';
-import PopupCourseBlock from './common/PopupCourseBlock/PopupCourseBlock';
-import ScheduleDropdown from './common/ScheduleDropdown/ScheduleDropdown';
-import ScheduleListItem from './common/ScheduleListItem/ScheduleListItem';
+import PopupCourseBlock from './common/PopupCourseBlock';
+import ScheduleDropdown from './common/ScheduleDropdown';
+import ScheduleListItem from './common/ScheduleListItem';
 
 /**
  * Renders the main popup component.

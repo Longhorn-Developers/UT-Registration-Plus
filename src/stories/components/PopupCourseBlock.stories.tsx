@@ -4,7 +4,7 @@ import Instructor from '@shared/types/Instructor';
 import { getCourseColors } from '@shared/util/colors';
 import { tailwindColorways } from '@shared/util/storybook';
 import type { Meta, StoryObj } from '@storybook/react';
-import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
+import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import React from 'react';
 
 /**

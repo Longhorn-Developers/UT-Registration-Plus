@@ -1,7 +1,7 @@
 import { Status } from '@shared/types/Course';
 import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
-import CalendarGrid from '@views/components/calendar/CalendarGrid/CalendarGrid';
+import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 
 import { ExampleCourse } from '../PopupCourseBlock.stories';

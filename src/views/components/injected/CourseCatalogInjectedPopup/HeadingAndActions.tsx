@@ -2,10 +2,10 @@ import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import { Button } from '@views/components/common/Button/Button';
-import { Chip, flagMap } from '@views/components/common/Chip/Chip';
-import Divider from '@views/components/common/Divider/Divider';
-import Link from '@views/components/common/Link/Link';
+import { Button } from '@views/components/common/Button';
+import { Chip, flagMap } from '@views/components/common/Chip';
+import Divider from '@views/components/common/Divider';
+import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
 

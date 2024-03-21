@@ -1,10 +1,10 @@
 import type { Course } from '@shared/types/Course';
-import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React from 'react';
 
-import CalendarCell from '../CalendarGridCell/CalendarGridCell';
+import CalendarCell from './CalendarGridCell';
 
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);

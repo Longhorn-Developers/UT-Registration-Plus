@@ -1,6 +1,6 @@
 import type { Course } from '@shared/types/Course';
-import type { DialogProps } from '@views/components/common/Dialog/Dialog';
-import Dialog from '@views/components/common/Dialog/Dialog';
+import type { DialogProps } from '@views/components/common/Dialog';
+import Dialog from '@views/components/common/Dialog';
 import useSchedules from '@views/hooks/useSchedules';
 import React from 'react';
 
