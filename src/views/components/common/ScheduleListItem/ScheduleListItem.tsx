@@ -1,13 +1,19 @@
+import { Menu, Transition } from '@headlessui/react';
+import createSchedule from '@pages/background/lib/createSchedule';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
+import handleDuplicate from '@pages/background/lib/handleDuplicate';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import PromptDialog from '@views/components/common/Prompt/Prompt';
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import XIcon from '~icons/material-symbols/close';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
+import MoreActionsIcon from '~icons/material-symbols/more-vert';
+
+import { Button } from '../Button/Button';
 
 /**
  * Props for the ScheduleListItem component.
@@ -26,6 +32,35 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
+    const [showDeletePrompt, setShowDeletePrompt] = React.useState(false);
+    const [showActiveDeletePrompt, setShowActiveDeletePrompt] = React.useState(false);
+    const deleteTitle = <Text>Are you sure?</Text>;
+    // eslint-disable-next-line react/no-unescaped-entities
+    const deleteContent = <Text>Deleting "{schedule.name}" is permanent and will delete its related courses.</Text>;
+    const deleteChildren = [
+        <Button
+            key='yes'
+            variant='single'
+            color='ut-burntorange'
+            onClick={() => {
+                deleteSchedule(schedule.id);
+                setShowDeletePrompt(false);
+            }}
+        >
+            Yes
+        </Button>,
+        <Button key='no' variant='single' color='ut-burntorange' onClick={() => setShowDeletePrompt(false)}>
+            No
+        </Button>,
+    ];
+
+    const activeDeleteTitle = <Text>Invalid action!</Text>;
+    const activeDeleteContent = <Text>Deleting the active schedule is disallowed.</Text>;
+    const activeDeleteChildren = [
+        <Button key='ok' variant='single' color='ut-burntorange' onClick={() => setShowActiveDeletePrompt(false)}>
+            Ok
+        </Button>,
+    ];
 
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
@@ -41,12 +76,11 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
 
     const isActive = useMemo(() => activeSchedule.id === schedule.id, [activeSchedule, schedule]);
 
-    const handleBlur = () => {
-        if (editorValue.trim() !== '') {
-            schedule.name = editorValue.trim();
+    const handleBlur = async () => {
+        if (editorValue.trim() !== '' && editorValue.trim() !== schedule.name) {
+            schedule.name = await handleDuplicate(editorValue.trim());
             renameSchedule(schedule.id, schedule.name);
         }
-
         setIsEditing(false);
     };
 
@@ -71,6 +105,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                         />
                         {isEditing && (
                             <Text
+                                autoFocus
                                 variant='p'
                                 as='input'
                                 className='mr-1 flex-1 px-0.5 outline-blue-500 -ml-0.5'
@@ -93,10 +128,74 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                         )}
                     </div>
                     <div>
-                        <XIcon
-                            className='invisible h-5 w-5 text-ut-red group-hover:visible'
-                            onClick={() => deleteSchedule(schedule.id)}
-                        />
+                        <Menu as='div'>
+                            <Menu.Button as='div'>
+                                <MoreActionsIcon className='h-5 w-5 cursor-pointer rounded text-blueGray btn-transition hover:visible hover:border-blueGray hover:bg-blueGray hover:bg-opacity-25' />
+                            </Menu.Button>
+                            <Transition
+                                enter='transition ease-out duration-100'
+                                enterFrom='transform opacity-0 scale-95'
+                                enterTo='transform opacity-100 scale-100'
+                                leave='transition ease-in duration-75'
+                                leaveFrom='transform opacity-100 scale-100'
+                                leaveTo='transform opacity-0 scale-95'
+                                className='fixed z-1'
+                            >
+                                <Menu.Items
+                                    as='div'
+                                    className='absolute right-0 mt-2 w-30 border border-gray-200 rounded bg-white py-1 text-black shadow-lg'
+                                >
+                                    <Menu.Item as='div' onClick={() => setIsEditing(true)}>
+                                        {({ active }) => (
+                                            <Text className={`block px-4 py-1 ${active ? 'bg-gray-100' : ''}`}>
+                                                Rename
+                                            </Text>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item as='div' onClick={() => createSchedule(schedule.name)}>
+                                        {({ active }) => (
+                                            <Text className={`block px-4 py-1 ${active ? 'bg-gray-100' : ''}`}>
+                                                Duplicate
+                                            </Text>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        as='div'
+                                        onClick={() => {
+                                            if (isActive) {
+                                                setShowActiveDeletePrompt(true);
+                                            } else {
+                                                setShowDeletePrompt(true);
+                                            }
+                                        }}
+                                    >
+                                        {({ active }) => (
+                                            <Text
+                                                className={`block px-4 py-1 ${active ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}
+                                            >
+                                                Delete
+                                            </Text>
+                                        )}
+                                    </Menu.Item>
+                                </Menu.Items>
+                            </Transition>
+                        </Menu>
+                        <PromptDialog
+                            isOpen={showDeletePrompt}
+                            onClose={() => setShowDeletePrompt(false)}
+                            title={deleteTitle}
+                            content={deleteContent}
+                        >
+                            {deleteChildren}
+                        </PromptDialog>
+                        <PromptDialog
+                            isOpen={showActiveDeletePrompt}
+                            onClose={() => setShowActiveDeletePrompt(false)}
+                            title={activeDeleteTitle}
+                            content={activeDeleteContent}
+                        >
+                            {activeDeleteChildren}
+                        </PromptDialog>
                     </div>
                 </div>
             </li>
