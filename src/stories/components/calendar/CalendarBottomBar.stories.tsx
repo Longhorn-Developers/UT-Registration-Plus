@@ -96,7 +96,6 @@ export const Default: Story = {
                 status: examplePsyCourse.status,
             },
         ],
-        calendarRef: { current: null },
     },
     render: props => (
         <div className='outline-red outline w-292.5!'>
@@ -107,7 +106,6 @@ export const Default: Story = {
 export const Empty: Story = {
     args: {
         courses: [],
-        calendarRef: { current: null },
     },
     render: props => (
         <div className='outline-red outline w-292.5!'>

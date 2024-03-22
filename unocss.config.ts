@@ -33,7 +33,16 @@ export default defineConfig({
         },
         colors,
     },
-
+    variants: [
+        matcher => {
+            const search = 'screenshot:';
+            if (!matcher.startsWith(search)) return matcher;
+            return {
+                matcher: matcher.slice(search.length),
+                selector: s => `.screenshot-in-progress ${s}`,
+            };
+        },
+    ],
     presets: [
         presetUno(),
         presetWebFonts({

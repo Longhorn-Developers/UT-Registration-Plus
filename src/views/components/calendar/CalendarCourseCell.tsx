@@ -93,7 +93,7 @@ export default function CalendarCourseCell({
             </div>
             {rightIcon && (
                 <div
-                    className='h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white'
+                    className='h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white screenshot:hidden'
                     style={{
                         backgroundColor: colors.secondaryColor,
                     }}
