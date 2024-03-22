@@ -61,9 +61,8 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
         Other: row.Other,
     };
 
-    // the db file for some reason has duplicate semesters, so we use a set to remove duplicates
+    // get unique semesters from the data
     const rawSemesters = res.values.reduce((acc, cur) => acc.add(cur[0] as string), new Set<string>());
-    console.log({ rawSemesters });
 
     const semesters: Semester[] = [];
 
