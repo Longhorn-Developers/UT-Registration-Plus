@@ -1,7 +1,7 @@
 {
     "name": "ut-registration-plus",
     "displayName": "UT Registration Plus",
-    "version": "0.0.1",
+    "version": "2.0.0-beta1",
     "description": "The UT Registration Plus extension is a Chrome extension that allows students to easily register for classes at The University of Texas at Austin.",
     "private": true,
     "homepage": "sriramhariharan.com",

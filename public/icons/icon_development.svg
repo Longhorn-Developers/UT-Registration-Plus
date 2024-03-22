@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Development" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #fff;
+        stroke-width: 70.06px;
+      }
+
+      .cls-2 {
+        fill: #bf2178;
+      }
+
+      .cls-2, .cls-3 {
+        stroke-width: 0px;
+      }
+
+      .cls-3 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <rect class="cls-2" x="0" width="1024" height="1024"/>
+  <g>
+    <circle class="cls-1" cx="512" cy="512" r="362"/>
+    <rect class="cls-3" x="466.29" y="283.46" width="91.41" height="457.07"/>
+    <rect class="cls-3" x="283.46" y="466.29" width="457.07" height="91.41"/>
+  </g>
+</svg>
