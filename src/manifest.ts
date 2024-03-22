@@ -9,7 +9,7 @@ const [major, minor, patch, label = '0'] = packageJson.version
     // split into version parts
     .split(/[.-]/);
 
-const isBeta = process.env.BETA?.length > 0;
+const isBeta = !!process.env.BETA;
 const mode = isBeta ? 'beta' : process.env.NODE_ENV;
 
 if (isBeta && process.env.NODE_ENV !== 'production') throw new Error('Cannot have beta non-production build');
