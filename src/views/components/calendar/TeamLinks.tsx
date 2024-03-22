@@ -24,7 +24,7 @@ const links: LinkItem[] = [
     },
     {
         text: 'Become a Beta Tester',
-        url: '#',
+        url: 'https://discord.gg/bVh9g6VFwB',
     },
 ];
 
