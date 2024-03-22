@@ -194,7 +194,9 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             {status === DataStatus.FOUND && (
                 <>
                     <div className='flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
-                        <Text variant='small'>Grade Distribution for {course.department} {course.number}</Text>
+                        <Text variant='small'>
+                            Grade Distribution for {course.department} {course.number}
+                        </Text>
                         {/* <select
                             className='flex items-center py-1 px-1 gap-1 border border rounded-1 border-solid'
                             onChange={handleSelectSemester}
