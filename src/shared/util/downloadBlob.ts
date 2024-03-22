@@ -18,7 +18,6 @@ export function downloadBlob(blobPart: BlobPart, type: MIMETypeKey, fileName: st
         link.download = fileName;
 
         link.addEventListener('click', () => {
-            URL.revokeObjectURL(url);
             resolve();
         });
         link.addEventListener('error', () => {
@@ -26,5 +25,6 @@ export function downloadBlob(blobPart: BlobPart, type: MIMETypeKey, fileName: st
             reject(new Error('Download failed'));
         });
         link.click();
+        URL.revokeObjectURL(url);
     });
 }

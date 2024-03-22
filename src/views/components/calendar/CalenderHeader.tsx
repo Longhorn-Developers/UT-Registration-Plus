@@ -35,16 +35,22 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
 
     return (
         <div className='flex items-center gap-5 border-b border-ut-offwhite px-7 py-4'>
-            <Button variant='single' icon={MenuIcon} color='ut-gray' onClick={onSidebarToggle} />
+            <Button
+                variant='single'
+                icon={MenuIcon}
+                color='ut-gray'
+                onClick={onSidebarToggle}
+                className='screenshot:hidden'
+            />
             <LargeLogo />
             <Divider className='mx-2 self-center md:mx-4' size='2.5rem' orientation='vertical' />
-            <div className='flex-1'>
+            <div className='flex-1 screenshot:transform-origin-left screenshot:scale-120'>
                 <ScheduleTotalHoursAndCourses
                     scheduleName={activeSchedule.name}
                     totalHours={activeSchedule.hours}
                     totalCourses={activeSchedule.courses.length}
                 />
-                <div className='flex items-center gap-1'>
+                <div className='flex items-center gap-1 screenshot:hidden'>
                     <Text variant='mini' className='text-ut-gray'>
                         DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                     </Text>
@@ -53,7 +59,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                     </button>
                 </div>
             </div>
-            <div className='hidden flex-row items-center justify-end gap-6 lg:flex'>
+            <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
                 <CourseStatus size='small' status={Status.WAITLISTED} />
                 <CourseStatus size='small' status={Status.CLOSED} />
                 <CourseStatus size='small' status={Status.CANCELLED} />
