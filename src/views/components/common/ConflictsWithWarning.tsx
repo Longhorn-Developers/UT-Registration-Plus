@@ -29,7 +29,10 @@ export default function ConflictsWithWarning({ className, conflicts }: Conflicts
             <div>Conflicts With:</div>
             {conflicts.map(course => (
                 <div>
-                    <Text as='strong' variant='mini' className="!font-bold">{course.department} {course.number}</Text> ({course.uniqueId})
+                    <Text as='strong' variant='mini' className='!font-bold'>
+                        {course.department} {course.number}
+                    </Text>{' '}
+                    ({course.uniqueId})
                 </div>
             ))}
         </Text>
