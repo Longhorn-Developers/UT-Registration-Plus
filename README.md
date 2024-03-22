@@ -47,6 +47,11 @@ This extension, UT Registration Plus (UTRP), tries to streamline most of the unn
 
 - Run `pnpm build`
 
+<details>
+<summary>Beta builds</summary>
+Use `BETA=true pnpm build` to build a beta build.
+</details>
+
 ## Development: Loading the Extension Manually
 
 Open [chrome://extensions](chrome://extensions), ensure you have 'Developer Mode' enabled, and click 'Load unpacked'.
