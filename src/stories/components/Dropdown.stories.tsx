@@ -1,9 +1,11 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { UserSchedule } from '@shared/types/UserSchedule';
+import { generateRandomId } from '@shared/util/random';
 import type { Meta, StoryObj } from '@storybook/react';
-import List from '@views/components/common/List/List';
-import ScheduleDropdown from '@views/components/common/ScheduleDropdown/ScheduleDropdown';
-import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
+import List from '@views/components/common/List';
+import type { ScheduleDropdownProps } from '@views/components/common/ScheduleDropdown';
+import ScheduleDropdown from '@views/components/common/ScheduleDropdown';
+import ScheduleListItem from '@views/components/common/ScheduleListItem';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import type { Serialized } from 'chrome-extension-toolkit';
 import React, { useEffect } from 'react';
@@ -14,6 +16,7 @@ const schedules: UserSchedule[] = new Array(10).fill(exampleSchedule).map(
     (schedule: UserSchedule, index) =>
         new UserSchedule({
             ...schedule,
+            id: generateRandomId(),
             name: `Schedule ${index + 1}`,
         })
 );
@@ -47,7 +50,7 @@ const meta: Meta<typeof ScheduleDropdown> = {
             },
         },
     },
-    render: (args: any) => {
+    render: (args: ScheduleDropdownProps) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const [activeSchedule, schedules] = useSchedules();
 
@@ -61,10 +64,10 @@ const meta: Meta<typeof ScheduleDropdown> = {
                 <ScheduleDropdown {...args}>
                     <List
                         draggables={schedules}
-                        equalityCheck={(a, b) => a.name === b.name}
+                        itemKey={s => s.id}
                         onReordered={reordered => {
                             const activeSchedule = getActiveSchedule();
-                            const activeIndex = reordered.findIndex(s => s.name === activeSchedule.name);
+                            const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
                             // don't care about the promise
                             UserScheduleStore.set('schedules', reordered);
@@ -74,9 +77,9 @@ const meta: Meta<typeof ScheduleDropdown> = {
                     >
                         {(schedule, handleProps) => (
                             <ScheduleListItem
-                                name={schedule.name}
+                                schedule={schedule}
                                 onClick={() => {
-                                    switchSchedule(schedule.name);
+                                    switchSchedule(schedule.id);
                                 }}
                                 dragHandleProps={handleProps}
                             />

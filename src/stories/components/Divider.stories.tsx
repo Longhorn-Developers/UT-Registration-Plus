@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from '@views/components/common/Button/Button';
-import Divider from '@views/components/common/Divider/Divider';
+import { Button } from '@views/components/common/Button';
+import Divider from '@views/components/common/Divider';
 import React from 'react';
 
 import AddIcon from '~icons/material-symbols/add';

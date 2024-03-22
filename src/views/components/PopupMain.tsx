@@ -1,10 +1,9 @@
+import { background } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { tailwindColorways } from '@shared/util/storybook';
-import Divider from '@views/components/common/Divider/Divider';
+import Divider from '@views/components/common/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
-import List from '@views/components/common/List/List';
+import List from '@views/components/common/List';
 import Text from '@views/components/common/Text/Text';
-import { handleOpenCalendar } from '@views/components/injected/CourseCatalogInjectedPopup/HeadingAndActions';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
@@ -15,11 +14,11 @@ import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
 import SettingsIcon from '~icons/material-symbols/settings';
 
-import CourseStatus from './common/CourseStatus/CourseStatus';
-import { LogoIcon } from './common/LogoIcon';
-import PopupCourseBlock from './common/PopupCourseBlock/PopupCourseBlock';
-import ScheduleDropdown from './common/ScheduleDropdown/ScheduleDropdown';
-import ScheduleListItem from './common/ScheduleListItem/ScheduleListItem';
+import CourseStatus from './common/CourseStatus';
+import { SmallLogo } from './common/LogoIcon';
+import PopupCourseBlock from './common/PopupCourseBlock';
+import ScheduleDropdown from './common/ScheduleDropdown';
+import ScheduleListItem from './common/ScheduleListItem';
 
 /**
  * Renders the main popup component.
@@ -34,23 +33,19 @@ export default function PopupMain(): JSX.Element {
         await openTabFromContentScript(url);
     };
 
+    const handleCalendarOpenOnClick = async () => {
+        await background.switchToCalendarTab({});
+        window.close();
+    };
+
     return (
         <ExtensionRoot>
             <div className='h-screen max-h-full flex flex-col bg-white'>
                 <div className='p-5 py-3.5'>
                     <div className='flex items-center justify-between bg-white'>
-                        <div className='flex items-center gap-2'>
-                            <LogoIcon />
-                            <div className='flex flex-col'>
-                                <span className='text-lg text-ut-burntorange font-medium leading-[18px]'>
-                                    UT Registration
-                                    <br />
-                                </span>
-                                <span className='text-lg text-ut-orange font-medium leading-[18px]'>Plus</span>
-                            </div>
-                        </div>
+                        <SmallLogo />
                         <div className='flex items-center gap-2.5'>
-                            <button className='bg-ut-burntorange px-2 py-1.25 btn' onClick={handleOpenCalendar}>
+                            <button className='bg-ut-burntorange px-2 py-1.25 btn' onClick={handleCalendarOpenOnClick}>
                                 <CalendarIcon className='size-6 text-white' />
                             </button>
                             <button className='bg-transparent px-2 py-1.25 btn' onClick={handleOpenOptions}>
@@ -64,10 +59,10 @@ export default function PopupMain(): JSX.Element {
                     <ScheduleDropdown>
                         <List
                             draggables={schedules}
-                            equalityCheck={(a, b) => a.name === b.name}
+                            itemKey={schedule => schedule.id}
                             onReordered={reordered => {
                                 const activeSchedule = getActiveSchedule();
-                                const activeIndex = reordered.findIndex(s => s.name === activeSchedule.name);
+                                const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
                                 // don't care about the promise
                                 UserScheduleStore.set('schedules', reordered);
@@ -77,9 +72,9 @@ export default function PopupMain(): JSX.Element {
                         >
                             {(schedule, handleProps) => (
                                 <ScheduleListItem
-                                    name={schedule.name}
+                                    schedule={schedule}
                                     onClick={() => {
-                                        switchSchedule(schedule.name);
+                                        switchSchedule(schedule.id);
                                     }}
                                     dragHandleProps={handleProps}
                                 />
@@ -90,22 +85,19 @@ export default function PopupMain(): JSX.Element {
                 <div className='flex-1 self-stretch overflow-y-auto px-5'>
                     {activeSchedule?.courses?.length > 0 && (
                         <List
-                            draggables={activeSchedule.courses.map((course, i) => ({
-                                course,
-                                colors: tailwindColorways[i],
-                            }))}
+                            draggables={activeSchedule.courses}
                             onReordered={reordered => {
-                                activeSchedule.courses = reordered.map(c => c.course);
+                                activeSchedule.courses = reordered;
                                 replaceSchedule(getActiveSchedule(), activeSchedule);
                             }}
-                            equalityCheck={(a, b) => a.course.uniqueId === b.course.uniqueId}
+                            itemKey={e => e.uniqueId}
                             gap={10}
                         >
-                            {({ course, colors }, handleProps) => (
+                            {(course, handleProps) => (
                                 <PopupCourseBlock
                                     key={course.uniqueId}
                                     course={course}
-                                    colors={colors}
+                                    colors={course.colors}
                                     dragHandleProps={handleProps}
                                 />
                             )}
@@ -121,7 +113,7 @@ export default function PopupMain(): JSX.Element {
                     </div>
                     <div className='inline-flex items-center self-center gap-1'>
                         <Text variant='mini' className='text-ut-gray'>
-                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                            DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                         </Text>
                         <button
                             className='h-4 w-4 bg-transparent p-0 btn'

@@ -2,6 +2,7 @@ import type { InstructionMode, ScrapedRow, Semester, StatusType } from '@shared/
 import { Course, Status } from '@shared/types/Course';
 import { CourseSchedule } from '@shared/types/CourseSchedule';
 import Instructor from '@shared/types/Instructor';
+import { getCourseColors } from '@shared/util/colors';
 import type { SiteSupportType } from '@views/lib/getSiteSupport';
 
 /**
@@ -93,6 +94,7 @@ export class CourseCatalogScraper {
                 description: this.getDescription(document),
                 semester: this.getSemester(),
                 scrapedAt: Date.now(),
+                colors: getCourseColors('emerald', 500),
             });
             courses.push({
                 element: row,
@@ -163,7 +165,7 @@ export class CourseCatalogScraper {
             .filter(Boolean);
 
         return names.map(fullName => {
-            const [lastName, rest] = fullName.split(',').map(s => s.trim());
+            const [lastName, rest = ''] = fullName.split(',').map(s => s.trim());
             const [firstName, middleInitial] = rest.split(' ');
 
             return new Instructor({
@@ -332,13 +334,11 @@ export class CourseCatalogScraper {
         const schedule = new CourseSchedule();
 
         for (let i = 0; i < dayLines.length; i += 1) {
-            schedule.meetings.push(
-                CourseSchedule.parse(
-                    dayLines[i].textContent || '',
-                    hourLines[i].textContent || '',
-                    locLines[i].textContent || ''
-                )
-            );
+            const dayText = dayLines[i]?.textContent || '';
+            const hourText = hourLines[i]?.textContent || '';
+            const locationText = locLines[i]?.textContent || '';
+
+            schedule.meetings.push(CourseSchedule.parse(dayText, hourText, locationText));
         }
 
         return schedule;

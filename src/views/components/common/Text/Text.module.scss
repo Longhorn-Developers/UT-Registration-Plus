@@ -1,67 +1,72 @@
 @use 'src/views/styles/colors.module.scss';
 @use 'src/views/styles/fonts.module.scss';
 
-@layer theme {
-    .text {
-        font-family: 'Roboto Flex', sans-serif;
-        line-height: normal;
-        font-style: normal;
-    }
+.text {
+    line-height: normal;
+    font-style: normal;
+}
 
-    .mini {
-        font-size: 0.79rem;
-        font-weight: 500;
-    }
+.mini {
+    font-size: 0.79rem;
+    font-weight: 500;
+    letter-spacing: 0;
+}
 
-    .small {
-        font-size: 0.88875rem;
-        font-weight: 500;
-    }
+.small {
+    font-size: 0.88875rem;
+    font-weight: 500;
+    letter-spacing: 0;
+}
 
-    .p {
-        font-size: 1rem;
-        font-weight: 400;
-        letter-spacing: 0.025rem;
-    }
+.p {
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+}
 
-    .h4 {
-        font-size: 1.125rem;
-        font-weight: 500;
-    }
+.h4 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    letter-spacing: 0;
+}
 
-    .h3-course {
-        font-size: 0.6875rem;
-        font-weight: 400;
-        line-height: 100%; /* 0.6875rem */
-    }
+.h3-course {
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 100%; /* 0.6875rem */
+}
 
-    .h3 {
-        font-size: 1.26563rem;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
+.h3 {
+    font-size: 1.26563rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0;
+}
 
-    .h2-course {
-        font-size: 1rem;
-        font-weight: 500;
-        letter-spacing: 0.03125rem;
-        text-transform: capitalize;
-    }
+.h2-course {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.03125em;
+    text-transform: capitalize;
+}
 
-    .h2 {
-        font-size: 1.42375rem;
-        font-weight: 500;
-    }
+.h2 {
+    font-size: 1.42375rem;
+    font-weight: 500;
+    letter-spacing: 0;
+}
 
-    .h1-course {
-        font-size: 1rem;
-        font-weight: 600;
-        text-transform: capitalize;
-    }
+.h1-course {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    letter-spacing: 0;
+}
 
-    .h1 {
-        font-size: 1.60188rem;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
+.h1 {
+    font-size: 1.60188rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0;
 }

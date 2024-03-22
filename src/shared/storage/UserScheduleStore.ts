@@ -1,6 +1,8 @@
 import { UserSchedule } from '@shared/types/UserSchedule';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
+import { generateRandomId } from '../util/random';
+
 interface IUserScheduleStore {
     schedules: UserSchedule[];
     activeIndex: number;
@@ -13,6 +15,7 @@ export const UserScheduleStore = createLocalStore<IUserScheduleStore>({
     schedules: [
         new UserSchedule({
             courses: [],
+            id: generateRandomId(),
             name: 'Schedule 1',
             hours: 0,
             updatedAt: Date.now(),

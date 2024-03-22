@@ -56,26 +56,24 @@ export default function Description({ course }: DescriptionProps): JSX.Element {
     return (
         <>
             {status === LoadStatus.ERROR && (
-                <Text color='theme-red'>Please refresh the page and log back in using your UT EID and password</Text>
+                <Text color='theme-red'>Please refresh the page and log back in using your UT EID and password.</Text>
             )}
             {/* TODO (achadaga): would be nice to have a new spinner here */}
             {status === LoadStatus.LOADING && <Spinner />}
             {status === LoadStatus.DONE && (
-                <ul className='my-[5px] space-y-1.5 children:marker:text-ut-burntorange'>
+                <ul className='ml-6 mt-1.5 list-disc list-outside space-y-1.5'>
                     {description.map(line => {
                         const isKeywordPresent = keywords.some(keyword => line.toLowerCase().includes(keyword));
                         return (
-                            <div key={line} className='flex gap-2'>
-                                <span className='text-ut-burntorange'>•</span>
-                                <li key={line}>
-                                    <Text
-                                        variant='p'
-                                        className={clsx({ 'font-bold text-ut-burntorange': isKeywordPresent })}
-                                    >
-                                        {line}
-                                    </Text>
-                                </li>
-                            </div>
+                            <li
+                                key={line}
+                                className={clsx({
+                                    'children:font-bold! text-ut-burntorange marker:text-ut-burntorange':
+                                        isKeywordPresent,
+                                })}
+                            >
+                                <Text variant='p'>{line}</Text>
+                            </li>
                         );
                     })}
                 </ul>

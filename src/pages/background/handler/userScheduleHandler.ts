@@ -11,25 +11,25 @@ import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
     addCourse({ data, sendResponse }) {
-        addCourse(data.scheduleName, new Course(data.course)).then(sendResponse);
+        addCourse(data.scheduleId, new Course(data.course)).then(sendResponse);
     },
     removeCourse({ data, sendResponse }) {
-        removeCourse(data.scheduleName, new Course(data.course)).then(sendResponse);
+        removeCourse(data.scheduleId, new Course(data.course)).then(sendResponse);
     },
     clearCourses({ data, sendResponse }) {
-        clearCourses(data.scheduleName).then(sendResponse);
+        clearCourses(data.scheduleId).then(sendResponse);
     },
     switchSchedule({ data, sendResponse }) {
-        switchSchedule(data.scheduleName).then(sendResponse);
+        switchSchedule(data.scheduleId).then(sendResponse);
     },
     createSchedule({ data, sendResponse }) {
         createSchedule(data.scheduleName).then(sendResponse);
     },
     deleteSchedule({ data, sendResponse }) {
-        deleteSchedule(data.scheduleName).then(sendResponse);
+        deleteSchedule(data.scheduleId).then(sendResponse);
     },
     renameSchedule({ data, sendResponse }) {
-        renameSchedule(data.scheduleName, data.newName).then(sendResponse);
+        renameSchedule(data.scheduleId, data.newName).then(sendResponse);
     },
 };
 

@@ -1,7 +1,9 @@
+import type { HexColor } from '@shared/types/Color';
 import type { Course, StatusType } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
-import { UserSchedule } from '@shared/types/UserSchedule';
-import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell/CalendarCourseCell';
+import { colors } from '@shared/types/ThemeColors';
+import type { UserSchedule } from '@shared/types/UserSchedule';
+import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 
 import useSchedules from './useSchedules';
 
@@ -11,6 +13,8 @@ const dayToNumber = {
     Wednesday: 2,
     Thursday: 3,
     Friday: 4,
+    Saturday: 5,
+    Sunday: 6,
 } as const satisfies Record<string, number>;
 
 interface CalendarGridPoint {
@@ -19,9 +23,9 @@ interface CalendarGridPoint {
     endIndex: number;
 }
 
-interface componentProps {
-    calendarCourseCellProps: CalendarCourseCellProps;
-}
+// interface componentProps {
+//     calendarCourseCellProps: CalendarCourseCellProps;
+// }
 
 /**
  * Return type of useFlattenedCourseSchedule
@@ -35,9 +39,12 @@ export interface CalendarGridCourse {
     totalColumns?: number;
 }
 
+/**
+ * Represents a flattened course schedule.
+ */
 export interface FlattenedCourseSchedule {
     courseCells: CalendarGridCourse[];
-    activeSchedule?: UserSchedule;
+    activeSchedule: UserSchedule;
 }
 
 /**
@@ -54,56 +61,34 @@ export const convertMinutesToIndex = (minutes: number): number => Math.floor((mi
 export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const [activeSchedule] = useSchedules();
 
-    if (!activeSchedule) {
-        return {
-            courseCells: [] as CalendarGridCourse[],
-            activeSchedule: new UserSchedule({
-                courses: [],
-                name: 'Something may have went wrong',
-                hours: 0,
-                updatedAt: Date.now(),
-            }),
-        } satisfies FlattenedCourseSchedule;
-    }
-
-    if (activeSchedule.courses.length === 0) {
-        return {
-            courseCells: [] as CalendarGridCourse[],
-            activeSchedule,
-        } satisfies FlattenedCourseSchedule;
-    }
-
-    const { courses, name, hours } = activeSchedule;
-
-    const processedCourses = courses
-        .flatMap((course: Course) => {
+    const processedCourses = activeSchedule.courses
+        .flatMap(course => {
             const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
 
             if (meetings.length === 0) {
                 return processAsyncCourses({ courseDeptAndInstr, status, course });
             }
 
-            return meetings.flatMap((meeting: CourseMeeting) =>
-                processInPersonMeetings(meeting, { courseDeptAndInstr, status, course })
-            );
+            return meetings.flatMap(meeting => processInPersonMeetings(meeting, courseDeptAndInstr, status, course));
         })
         .sort(sortCourses);
 
     return {
-        courseCells: processedCourses as CalendarGridCourse[],
-        activeSchedule: { name, courses, hours } as UserSchedule,
-    } satisfies FlattenedCourseSchedule;
+        courseCells: processedCourses,
+        activeSchedule,
+    };
 }
 
-// Helper function to extract and format basic course information
+/**
+ * Function to extract and format basic course information
+ */
 function extractCourseInfo(course: Course) {
     const {
         status,
-        department,
-        instructors,
         schedule: { meetings },
     } = course;
-    const courseDeptAndInstr = `${department} ${instructors[0].lastName}`;
+    const courseDeptAndInstr = `${course.department} ${course.number} – ${course.instructors[0]?.lastName}`;
+
     return { status, courseDeptAndInstr, meetings, course };
 }
 
@@ -130,8 +115,8 @@ function processAsyncCourses({
                 courseDeptAndInstr,
                 status,
                 colors: {
-                    primaryColor: 'ut-gray',
-                    secondaryColor: 'ut-gray',
+                    primaryColor: colors.ut.gray as HexColor,
+                    secondaryColor: colors.ut.gray as HexColor,
                 },
             },
             course,
@@ -142,14 +127,20 @@ function processAsyncCourses({
 /**
  * Function to process each in-person class into its distinct meeting objects for calendar grid
  */
-function processInPersonMeetings(meeting: CourseMeeting, { courseDeptAndInstr, status, course }) {
+function processInPersonMeetings(
+    meeting: CourseMeeting,
+    courseDeptAndInstr: string,
+    status: StatusType,
+    course: Course
+) {
     const { days, startTime, endTime, location } = meeting;
     const midnightIndex = 1440;
     const normalizingTimeFactor = 720;
     const time = meeting.getTimeString({ separator: '-', capitalize: true });
-    const timeAndLocation = `${time} - ${location ? location.building : 'WB'}`;
-    let normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
-    let normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
+    const timeAndLocation = `${time}${location ? ` - ${location.building}` : ''}`;
+    const normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
+    const normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
+
     return days.map(day => ({
         calendarGridPoint: {
             dayIndex: dayToNumber[day],
@@ -161,8 +152,8 @@ function processInPersonMeetings(meeting: CourseMeeting, { courseDeptAndInstr, s
             timeAndLocation,
             status,
             colors: {
-                primaryColor: 'ut-orange',
-                secondaryColor: 'ut-orange',
+                primaryColor: colors.ut.orange as HexColor,
+                secondaryColor: colors.ut.orange as HexColor,
             },
         },
         course,

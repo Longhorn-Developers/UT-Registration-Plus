@@ -20,7 +20,7 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
 
     let row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
     res.columns.forEach((col, i) => {
-        row[res.columns[i]] = res.values[0][i];
+        row[col as keyof CourseSQLRow] = res.values[0]![i]! as never;
     });
 
     const distribution: Distribution = {
@@ -48,6 +48,9 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
 
     rawSemesters.forEach((sem: string) => {
         const [season, year] = sem.split(' ');
+        if (!season || !year) {
+            throw new Error('Season is undefined');
+        }
         semesters.push({ year: parseInt(year, 10), season: season as Semester['season'] });
     });
 
@@ -92,7 +95,7 @@ export async function querySemesterDistribution(course: Course, semester: Semest
 
     let row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
     res.columns.forEach((col, i) => {
-        row[res.columns[i]] = res.values[0][i];
+        row[col as keyof CourseSQLRow] = res.values[0]![i]! as never;
     });
 
     const distribution: Distribution = {
