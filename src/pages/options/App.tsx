@@ -1,14 +1,16 @@
+import { Fragment } from 'react';
+import React from 'react';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import Link from '@views/components/common/Link';
-import React from 'react';
+import Options from 'src/views/components/options/Options';
 
-/**
- *
- */
 export default function App() {
     return (
-        <ExtensionRoot>
-            <div className='text-base'>
+        <Fragment>
+            <ExtensionRoot className='h-full w-full'>
+                <Options />
+            </ExtensionRoot>
+            <div className='text-base fixed bottom-0 w-full'>
                 <div className='font-serif'>
                     <i>&ldquo;Real powerusers modify the sourcecode instead of using settings&rdquo;</i> - doprz
                 </div>
@@ -30,6 +32,6 @@ export default function App() {
                     {import.meta.env.VITE_BETA_BUILD ? 'beta' : ''}
                 </p>
             </div>
-        </ExtensionRoot>
+        </Fragment>
     );
 }
