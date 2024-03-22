@@ -128,7 +128,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             labels: {
                 style: {
                     fontSize: '0.80rem',
-                    fontWeight: '400', // Figma is technically 400, but 500 matches more closely to the render
+                    fontWeight: '400',
                     color: '#333F48',
                     lineHeight: '100%',
                     fontStyle: 'normal',
@@ -194,7 +194,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             {status === DataStatus.FOUND && (
                 <>
                     <div className='flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
-                        <Text variant='small'>{`Grade Distribution for ${course.department} ${course.number}`}</Text>
+                        <Text variant='small'>Grade Distribution for {course.department} {course.number}</Text>
                         {/* <select
                             className='flex items-center py-1 px-1 gap-1 border border rounded-1 border-solid'
                             onChange={handleSelectSemester}
