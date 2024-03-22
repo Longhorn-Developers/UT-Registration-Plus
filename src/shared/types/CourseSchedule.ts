@@ -38,7 +38,7 @@ export class CourseSchedule {
                     if (char === 'S' && nextChar === 'U') {
                         day += nextChar;
                     }
-                    return DAY_MAP[day];
+                    return DAY_MAP[day as keyof typeof DAY_MAP];
                 })
                 .filter(Boolean) as Day[];
 
@@ -47,7 +47,7 @@ export class CourseSchedule {
                 .split('-')
                 .map(time => {
                     const [rawHour, rest] = time.split(':');
-                    const [rawMinute, ampm] = rest.split(' ');
+                    const [rawMinute, ampm] = rest?.split(' ') ?? ['', ''];
                     const hour = (rawHour === '12' ? 0 : Number(rawHour)) + (ampm === 'pm' ? 12 : 0);
                     const minute = Number(rawMinute);
 
@@ -56,17 +56,27 @@ export class CourseSchedule {
 
             const location = locLine.split(' ').filter(Boolean);
 
+            if (startTime === undefined || endTime === undefined) {
+                throw new Error('Failed to parse time');
+            }
+
+            if (startTime >= endTime) {
+                throw new Error('Start time must be before end time');
+            }
+
+            if (location === undefined) {
+                throw new Error('Failed to parse location');
+            }
+
             return new CourseMeeting({
                 days,
                 startTime,
                 endTime,
-                location: location.length
-                    ? {
-                          building: location[0],
-                          room: location[1],
-                      }
-                    : undefined,
-            });
+                location: {
+                    building: location[0] ?? '',
+                    room: location[1] ?? '',
+                },
+            } satisfies Serialized<CourseMeeting>);
         } catch (e) {
             throw new Error(`Failed to parse schedule: ${dayLine} ${timeLine} ${locLine}`);
         }

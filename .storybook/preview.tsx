@@ -141,6 +141,29 @@ globalThis.chrome = {
             },
         },
     },
+    runtime: {
+        id: 'fake-id',
+        getManifest(): chrome.runtime.Manifest {
+            return {
+                manifest_version: 3,
+                name: 'fake-name',
+                version: '0.0.0',
+            };
+        },
+        onMessage: {
+            /**
+             * Registers an event listener callback to an event.
+             * @param callback Called when an event occurs. The parameters of this function depend on the type of event.
+             */
+            addListener<T extends Function>(callback: T) {},
+
+            /**
+             * Deregisters an event listener callback from an event.
+             * @param callback Listener that shall be unregistered.
+             */
+            removeListener<T extends Function>(callback: T) {},
+        },
+    },
 } as typeof chrome;
 
 export default preview;

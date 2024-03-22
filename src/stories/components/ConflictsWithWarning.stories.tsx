@@ -1,8 +1,9 @@
 import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
+import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
-import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning/ConflictsWithWarning';
+import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
 
 export const ExampleCourse: Course = new Course({
     courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',
@@ -45,6 +46,7 @@ export const ExampleCourse: Course = new Course({
     uniqueId: 12345,
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
     scrapedAt: Date.now(),
+    colors: getCourseColors('blue', 500),
 });
 export const ExampleCourse2: Course = new Course({
     courseName: 'PRINCIPLES OF COMPUTER SYSTEMS',
@@ -92,6 +94,7 @@ export const ExampleCourse2: Course = new Course({
     uniqueId: 67890,
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
     scrapedAt: Date.now(),
+    colors: getCourseColors('yellow', 500),
 });
 
 const meta = {

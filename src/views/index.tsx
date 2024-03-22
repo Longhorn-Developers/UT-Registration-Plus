@@ -5,7 +5,6 @@ import CourseCatalogMain from './components/CourseCatalogMain';
 import PopupMain from './components/PopupMain';
 import getSiteSupport, { SiteSupport } from './lib/getSiteSupport';
 import render from './lib/react';
-import colors from './styles/colors.module.scss';
 
 const support = getSiteSupport(window.location.href);
 console.log('support:', support);
@@ -46,8 +45,5 @@ onContextInvalidated(() => {
     div.id = 'context-invalidated-container';
     document.body.appendChild(div);
 
-    render(
-        <ContextInvalidated fontFamily='monospace' color={colors.white} backgroundColor={colors.burnt_orange} />,
-        div
-    );
+    render(<ContextInvalidated className='bg-ut-burntorange text-white font-mono' />, div);
 });

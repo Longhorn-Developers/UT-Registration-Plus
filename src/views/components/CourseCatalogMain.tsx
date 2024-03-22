@@ -6,7 +6,6 @@ import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/Recr
 import TableHead from '@views/components/injected/TableHead';
 import TableRow from '@views/components/injected/TableRow/TableRow';
 // import TableSubheading from '@views/components/injected/TableSubheading/TableSubheading';
-import { useKeyPress } from '@views/hooks/useKeyPress';
 import useSchedules from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
@@ -21,7 +20,7 @@ interface Props {
 /**
  * This is the top level react component orchestrating the course catalog page.
  */
-export default function CourseCatalogMain({ support }: Props): JSX.Element {
+export default function CourseCatalogMain({ support }: Props): JSX.Element | null {
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
     const [showPopup, setShowPopup] = useState(false);
@@ -54,12 +53,6 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
         setSelectedCourse(course);
     };
 
-    const handleClearSelectedCourse = () => {
-        setSelectedCourse(null);
-    };
-
-    useKeyPress('Escape', handleClearSelectedCourse);
-
     const [activeSchedule] = useSchedules();
 
     if (!activeSchedule) {
@@ -83,11 +76,10 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
                     )
             )}
             <CourseCatalogInjectedPopup
-                course={selectedCourse}
-                activeSchedule={activeSchedule}
+                course={selectedCourse!} // always defined when showPopup is true
                 show={showPopup}
                 onClose={() => setShowPopup(false)}
-                afterLeave={handleClearSelectedCourse}
+                afterLeave={() => setSelectedCourse(null)}
             />
             <AutoLoad addRows={addRows} />
         </ExtensionRoot>

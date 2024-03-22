@@ -1,5 +1,6 @@
 import type { Serialized } from 'chrome-extension-toolkit';
 
+import { generateRandomId } from '../util/random';
 import { Course } from './Course';
 
 /**
@@ -7,6 +8,7 @@ import { Course } from './Course';
  */
 export class UserSchedule {
     courses: Course[];
+    id: string;
     name: string;
     hours: number;
     /** Unix timestamp of when the schedule was last updated */
@@ -14,12 +16,10 @@ export class UserSchedule {
 
     constructor(schedule: Serialized<UserSchedule>) {
         this.courses = schedule.courses.map(c => new Course(c));
+        this.id = schedule.id ?? generateRandomId();
         this.name = schedule.name;
-        this.hours = 0;
-        for (const course of this.courses) {
-            this.hours += course.creditHours;
-        }
-        this.updatedAt = schedule.updatedAt;
+        this.hours = this.courses.reduce((acc, c) => acc + c.creditHours, 0);
+        this.updatedAt = schedule.updatedAt ?? 0;
     }
 
     containsCourse(course: Course): boolean {

@@ -4,7 +4,7 @@ import Instructor from '@shared/types/Instructor';
 import { getCourseColors } from '@shared/util/colors';
 import { tailwindColorways } from '@shared/util/storybook';
 import type { Meta, StoryObj } from '@storybook/react';
-import PopupCourseBlock from '@views/components/common/PopupCourseBlock/PopupCourseBlock';
+import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import React from 'react';
 
 /**
@@ -54,6 +54,7 @@ export const ExampleCourse: Course = new Course({
     status: Status.WAITLISTED,
     uniqueId: 12345,
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+    colors: getCourseColors('cyan', 500),
 });
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
@@ -103,9 +104,9 @@ export const Variants: Story = {
 };
 
 export const AllColors: Story = {
-    render: props => (
+    render: () => (
         <div className='grid grid-flow-col grid-cols-2 grid-rows-9 max-w-2xl w-90vw gap-x-4 gap-y-2'>
-            {tailwindColorways.map((color, i) => (
+            {tailwindColorways.map(color => (
                 <PopupCourseBlock key={color.primaryColor} course={ExampleCourse} colors={color} />
             ))}
         </div>

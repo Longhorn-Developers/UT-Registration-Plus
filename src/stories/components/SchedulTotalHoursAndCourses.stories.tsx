@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses/ScheduleTotalHoursAndCourses';
+import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
 
 const meta = {
     title: 'Components/Common/ScheduleTotalHoursAndCourses',

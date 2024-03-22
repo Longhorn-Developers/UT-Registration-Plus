@@ -1,6 +1,6 @@
 import type { Course } from '@shared/types/Course';
 import type { Distribution, LetterGrade } from '@shared/types/Distribution';
-import { extendedColors } from '@shared/util/themeColors';
+import { extendedColors } from '@shared/types/ThemeColors';
 import Spinner from '@views/components/common/Spinner/Spinner';
 import Text from '@views/components/common/Text/Text';
 import {
@@ -53,40 +53,41 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
     const [status, setStatus] = React.useState<DataStatusType>(DataStatus.LOADING);
     const ref = React.useRef<HighchartsReact.RefObject>(null);
 
-    const chartData = React.useMemo(() => {
-        if (status === DataStatus.FOUND && distributions[semester]) {
-            return Object.entries(distributions[semester]).map(([grade, count]) => ({
-                y: count,
-                color: GRADE_COLORS[grade as LetterGrade],
-            }));
-        }
-        return Array(12).fill(0);
-    }, [distributions, semester, status]);
+    // const chartData = React.useMemo(() => {
+    //     if (status === DataStatus.FOUND && distributions[semester]) {
+    //         return Object.entries(distributions[semester]).map(([grade, count]) => ({
+    //             y: count,
+    //             color: GRADE_COLORS[grade as LetterGrade],
+    //         }));
+    //     }
+    //     return Array(12).fill(0);
+    // }, [distributions, semester, status]);
+    // const chartData: unknown[] = [];
 
-    React.useEffect(() => {
-        const fetchInitialData = async () => {
-            try {
-                const [aggregateDist, semesters] = await queryAggregateDistribution(course);
-                const initialDistributions: Record<string, Distribution> = { Aggregate: aggregateDist };
-                const semesterPromises = semesters.map(semester => querySemesterDistribution(course, semester));
-                const semesterDistributions = await Promise.all(semesterPromises);
-                semesters.forEach((semester, i) => {
-                    initialDistributions[`${semester.season} ${semester.year}`] = semesterDistributions[i];
-                });
-                setDistributions(initialDistributions);
-                setStatus(DataStatus.FOUND);
-            } catch (e) {
-                console.error(e);
-                if (e instanceof NoDataError) {
-                    setStatus(DataStatus.NOT_FOUND);
-                } else {
-                    setStatus(DataStatus.ERROR);
-                }
-            }
-        };
+    // React.useEffect(() => {
+    //     const fetchInitialData = async () => {
+    //         try {
+    //             const [aggregateDist, semesters] = await queryAggregateDistribution(course);
+    //             const initialDistributions: Record<string, Distribution> = { Aggregate: aggregateDist };
+    //             const semesterPromises = semesters.map(semester => querySemesterDistribution(course, semester));
+    //             const semesterDistributions = await Promise.all(semesterPromises);
+    //             semesters.forEach((semester, i) => {
+    //                 initialDistributions[`${semester.season} ${semester.year}`] = semesterDistributions[i];
+    //             });
+    //             setDistributions(initialDistributions);
+    //             setStatus(DataStatus.FOUND);
+    //         } catch (e) {
+    //             console.error(e);
+    //             if (e instanceof NoDataError) {
+    //                 setStatus(DataStatus.NOT_FOUND);
+    //             } else {
+    //                 setStatus(DataStatus.ERROR);
+    //             }
+    //         }
+    //     };
 
-        fetchInitialData();
-    }, [course]);
+    //     fetchInitialData();
+    // }, [course]);
 
     const handleSelectSemester = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSemester(event.target.value);
@@ -97,16 +98,16 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
         subtitle: { text: undefined },
         legend: { enabled: false },
         xAxis: {
-            title: { text: 'Grade' },
+            title: { text: 'Grades' },
             categories: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F'],
             crosshair: true,
         },
         yAxis: {
             min: 0,
-            title: { text: 'Number of Students' },
+            title: { text: 'Students' },
         },
         chart: {
-            style: { fontFamily: 'Roboto Flex', fontWeight: '600' },
+            style: { fontFamily: 'Roboto Flex, Roboto Flex Local', fontWeight: '600' },
             spacingBottom: 25,
             spacingTop: 25,
             height: 250,
@@ -129,7 +130,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             {
                 type: 'column',
                 name: 'Grades',
-                data: chartData,
+                // data: chartData,
             },
         ],
     };
@@ -156,7 +157,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                 <>
                     <div className='w-full flex items-center justify-center gap-[12px]'>
                         <Text variant='p'>Grade distribution for {`${course.department} ${course.number}`}</Text>
-                        <select
+                        {/* <select
                             className='border border rounded-[4px] border-solid px-[12px] py-[8px]'
                             onChange={handleSelectSemester}
                         >
@@ -180,7 +181,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                                         {semester}
                                     </option>
                                 ))}
-                        </select>
+                        </select> */}
                     </div>
                     <HighchartsReact ref={ref} highcharts={Highcharts} options={chartOptions} />
                 </>

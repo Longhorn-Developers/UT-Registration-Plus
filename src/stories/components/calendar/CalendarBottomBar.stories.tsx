@@ -2,7 +2,7 @@ import { Course, Status } from '@shared/types/Course';
 import Instructor from '@shared/types/Instructor';
 import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
-import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar/CalendarBottomBar';
+import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import React from 'react';
 
 const exampleGovCourse: Course = new Course({
@@ -34,6 +34,7 @@ const exampleGovCourse: Course = new Course({
     status: Status.OPEN,
     uniqueId: 12345,
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+    colors: getCourseColors('red', 500),
 });
 
 const examplePsyCourse: Course = new Course({
@@ -65,6 +66,7 @@ const examplePsyCourse: Course = new Course({
     status: Status.CLOSED,
     uniqueId: 12346,
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+    colors: getCourseColors('blue', 500),
 });
 
 const meta = {
@@ -85,16 +87,15 @@ export const Default: Story = {
         courses: [
             {
                 colors: getCourseColors('pink', 200),
-                courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0].lastName}`,
+                courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
                 status: exampleGovCourse.status,
             },
             {
                 colors: getCourseColors('slate', 500),
-                courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0].lastName}`,
+                courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
                 status: examplePsyCourse.status,
             },
         ],
-        calendarRef: { current: null },
     },
     render: props => (
         <div className='outline-red outline w-292.5!'>
@@ -105,7 +106,6 @@ export const Default: Story = {
 export const Empty: Story = {
     args: {
         courses: [],
-        calendarRef: { current: null },
     },
     render: props => (
         <div className='outline-red outline w-292.5!'>

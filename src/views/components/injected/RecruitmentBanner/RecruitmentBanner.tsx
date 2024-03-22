@@ -1,4 +1,4 @@
-import Link from '@views/components/common/Link/Link';
+import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -14,7 +14,7 @@ const RECRUIT_FROM_DEPARTMENTS = ['C S', 'ECE', 'MIS', 'CSE', 'EE', 'ITD'];
  * This adds a new column to the course catalog table header.
  * @returns a react portal to the new column or null if the column has not been created yet.
  */
-export default function RecruitmentBanner(): JSX.Element {
+export default function RecruitmentBanner(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -37,11 +37,11 @@ export default function RecruitmentBanner(): JSX.Element {
         <div className={styles.container}>
             <Text color='white'>
                 Interested in helping us develop UT Registration Plus? Check out our{' '}
-                <Link color='white' url={DISCORD_URL}>
+                <Link color='white' href={DISCORD_URL}>
                     Discord Server
                 </Link>{' '}
                 and{' '}
-                <Link color='white' url={GITHUB_URL}>
+                <Link color='white' href={GITHUB_URL}>
                     GitHub
                 </Link>
                 !
