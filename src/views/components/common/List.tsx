@@ -86,7 +86,7 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
             return;
         }
         setItems(wrap(draggables, itemKey));
-    }, [draggables, itemKey, items]);
+    }, [draggables]);
 
     const onDragEnd: OnDragEndResponder = useCallback(
         ({ destination, source }) => {
@@ -99,7 +99,7 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
             setItems(reordered);
             onReordered(reordered.map(item => item.content));
         },
-        [items, onReordered]
+        [items]
     );
 
     return (
