@@ -8,15 +8,19 @@ import type { Plugin, ResolvedConfig, Rollup, ViteDevServer } from 'vite';
 import { defineConfig } from 'vite';
 import inspect from 'vite-plugin-inspect';
 
+import packageJson from './package.json';
 import manifest from './src/manifest';
 
 const root = resolve(__dirname, 'src');
 const pagesDir = resolve(root, 'pages');
 const assetsDir = resolve(root, 'assets');
-const outDir = resolve(__dirname, 'dist');
 const publicDir = resolve(__dirname, 'public');
 
-const isDev = process.env.NODE_ENV === 'development';
+const isBeta = !!process.env.BETA;
+if (isBeta) {
+    process.env.VITE_BETA_BUILD = 'true';
+}
+process.env.VITE_PACKAGE_VERSION = packageJson.version;
 
 export const preambleCode = `
 import RefreshRuntime from "__BASE__@react-refresh"
