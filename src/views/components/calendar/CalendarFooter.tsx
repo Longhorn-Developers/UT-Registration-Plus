@@ -17,10 +17,10 @@ export default function CalendarFooter(): JSX.Element {
                 <Link className='linkanimate' href='#'>
                     <InstagramIcon className='h-6 w-6' />
                 </Link>
-                <Link className='linkanimate' href='#'>
+                <Link className='linkanimate' href='https://discord.gg/bVh9g6VFwB'>
                     <DiscordIcon className='h-6 w-6' />
                 </Link>
-                <Link className='linkanimate' href='#'>
+                <Link className='linkanimate' href='https://github.com/Longhorn-Developers/UT-Registration-Plus'>
                     <GithubIcon className='h-6 w-6' />
                 </Link>
             </div>
