@@ -129,10 +129,29 @@ export async function querySemesterDistribution(course: Course, semester: Semest
         throw new NoDataError(course);
     }
 
-    let row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
-    res.columns.forEach((col, i) => {
-        row[col as keyof CourseSQLRow] = res.values[0]![i]! as never;
-    });
+    const row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
+    for (let i = 0; i < res.columns.length; i++) {
+        const col = res.columns[i] as keyof CourseSQLRow;
+        switch (col) {
+            case 'A':
+            case 'A_Minus':
+            case 'B_Plus':
+            case 'B':
+            case 'B_Minus':
+            case 'C_Plus':
+            case 'C':
+            case 'C_Minus':
+            case 'D_Plus':
+            case 'D':
+            case 'D_Minus':
+            case 'F':
+            case 'Other':
+                row[col] = res.values.reduce((acc, cur) => acc + (cur[i] as number), 0) as never;
+                break;
+            default:
+                row[col] = res.columns[i]![0]! as never;
+        }
+    }
 
     const distribution: Distribution = {
         A: row.A,
