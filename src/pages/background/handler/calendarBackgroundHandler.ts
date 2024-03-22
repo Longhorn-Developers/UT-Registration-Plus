@@ -1,21 +1,21 @@
+import type { TabWithId } from '@background/util/openNewTab';
 import openNewTab from '@background/util/openNewTab';
 import { tabs } from '@shared/messages';
 import type { CalendarBackgroundMessages } from '@shared/messages/CalendarMessages';
 import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const getAllTabInfos = async () => {
-    const openTabs = await chrome.tabs.query({});
+    const openTabs = (await chrome.tabs.query({})).filter((tab): tab is TabWithId => tab.id !== undefined);
     const results = await Promise.allSettled(openTabs.map(tab => tabs.getTabInfo(undefined, tab.id)));
+
+    type TabInfo = PromiseFulfilledResult<Awaited<ReturnType<typeof tabs.getTabInfo>>>;
     return results
         .map((result, index) => ({ result, index }))
-        .filter(({ result }) => result.status === 'fulfilled')
-        .map(({ result, index }) => {
-            if (result.status !== 'fulfilled') throw new Error('Will never happen, typescript dumb');
-            return {
-                ...result.value,
-                tab: openTabs[index],
-            };
-        });
+        .filter((el): el is { result: TabInfo; index: number } => el.result.status === 'fulfilled')
+        .map(({ result, index }) => ({
+            ...result.value,
+            tab: openTabs[index]!,
+        }));
 };
 
 const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
@@ -25,17 +25,21 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
 
         const allTabs = await getAllTabInfos();
 
-        const openCalendarTabInfo = allTabs.find(tab => tab.url.startsWith(calendarUrl));
+        const openCalendarTabInfo = allTabs.find(tab => tab.url?.startsWith(calendarUrl));
 
         if (openCalendarTabInfo !== undefined) {
-            chrome.tabs.update(openCalendarTabInfo.tab.id, { active: true });
-            if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, openCalendarTabInfo.tab.id);
+            const tabid = openCalendarTabInfo.tab.id;
+
+            chrome.tabs.update(tabid, { active: true });
+            if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, tabid);
+
             sendResponse(openCalendarTabInfo.tab);
         } else {
             const urlParams = new URLSearchParams();
             if (uniqueId !== undefined) urlParams.set('uniqueId', uniqueId.toString());
             const url = `${calendarUrl}?${urlParams.toString()}`.replace(/\?$/, '');
             const tab = await openNewTab(url);
+
             sendResponse(tab);
         }
     },

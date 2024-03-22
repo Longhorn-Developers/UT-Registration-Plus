@@ -44,7 +44,7 @@ messageListener.listen();
 
 UserScheduleStore.listen('schedules', async schedules => {
     const index = await UserScheduleStore.get('activeIndex');
-    const numCourses = schedules[index]?.courses?.length;
+    const numCourses = schedules.newValue[index]?.courses?.length;
     if (!numCourses) return;
 
     updateBadgeText(numCourses);

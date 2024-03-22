@@ -11,7 +11,7 @@ const CESHandler: MessageHandler<CESMessage> = {
             const instructorFirstAndLastName = [instructorFirstName, instructorLastName];
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },
-                func: (...instructorFirstAndLastName: String[]) => {
+                func: (...instructorFirstAndLastName: string[]) => {
                     const inputElement = document.getElementById(
                         'ctl00_ContentPlaceHolder1_ViewList_tbxValue'
                     ) as HTMLInputElement | null;

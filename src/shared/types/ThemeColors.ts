@@ -42,7 +42,7 @@ export const extendedColors = {
 } as const;
 
 type NestedKeys<T> = {
-    [K in keyof T]: T[K] extends Record<string, any> ? `${string & K}-${string & keyof T[K]}` : never;
+    [K in keyof T]: T[K] extends Record<string, unknown> ? `${string & K}-${string & keyof T[K]}` : never;
 }[keyof T];
 
 /**
@@ -56,6 +56,7 @@ export type ThemeColor = NestedKeys<typeof colors>;
 export type TWColorway = {
     [K in keyof typeof theme.colors]: (typeof theme.colors)[K] extends Record<string, unknown> ? K : never;
 }[keyof typeof theme.colors];
+export type TWIndex = keyof (typeof theme.colors)[TWColorway];
 
 /**
  * Represents the colors for a course.

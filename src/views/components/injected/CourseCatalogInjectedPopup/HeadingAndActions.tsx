@@ -2,10 +2,10 @@ import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import { Button } from '@views/components/common/Button/Button';
-import { Chip, flagMap } from '@views/components/common/Chip/Chip';
-import Divider from '@views/components/common/Divider/Divider';
-import Link from '@views/components/common/Link/Link';
+import { Button } from '@views/components/common/Button';
+import { Chip, flagMap } from '@views/components/common/Chip';
+import Divider from '@views/components/common/Divider';
+import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
 
@@ -52,7 +52,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
 
     const getInstructorFullName = (instructor: Instructor) => {
-        const { firstName, lastName } = instructor;
+        const { firstName = '', lastName = '' } = instructor;
         if (firstName === '') return capitalizeString(lastName);
         return `${capitalizeString(firstName)} ${capitalizeString(lastName)}`;
     };
@@ -76,7 +76,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
 
     const handleOpenCES = async () => {
         const openTabs = instructors.map(instructor => {
-            let { firstName, lastName } = instructor;
+            let { firstName = '', lastName = '' } = instructor;
             firstName = capitalizeString(firstName);
             lastName = capitalizeString(lastName);
             return openCESPage({ instructorFirstName: firstName, instructorLastName: lastName });
@@ -134,9 +134,12 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                 .flatMap((el, i) => (i === 0 ? [el] : [', ', el]))}
                         </Text>
                     )}
-                    <div className='flex gap-1'>
-                        {flags.map(flag => (
-                            <Chip key={flagMap[flag]} label={flagMap[flag]} />
+                    <div className='flex items-center gap-1'>
+                        {flags.map((flag: string) => (
+                            <Chip
+                                key={flagMap[flag as keyof typeof flagMap]}
+                                label={flagMap[flag as keyof typeof flagMap]}
+                            />
                         ))}
                     </div>
                 </div>
@@ -145,7 +148,11 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                         const daysString = meeting.getDaysString({ format: 'long', separator: 'long' });
                         const timeString = meeting.getTimeString({ separator: ' to ', capitalize: false });
                         return (
-                            <Text key={daysString + timeString + meeting.location.building} variant='h4' as='p'>
+                            <Text
+                                key={daysString + timeString + (meeting.location?.building ?? '')}
+                                variant='h4'
+                                as='p'
+                            >
                                 {daysString} {timeString}
                                 {meeting.location && (
                                     <>

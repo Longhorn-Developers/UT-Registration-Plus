@@ -4,9 +4,19 @@ import { createRoot } from 'react-dom/client';
 
 const manifest = chrome.runtime.getManifest();
 
+/**
+ * Handles editing the storage for a specific area.
+ *
+ * @param {string} areaName - The name of the storage area.
+ * @returns {Function} - A function that accepts changes and sets them in the storage.
+ */
+const handleEditStorage = (areaName: 'local' | 'sync' | 'session') => (changes: Record<string, unknown>) => {
+    chrome.storage[areaName].set(changes);
+};
+
 interface JSONEditorProps {
-    data: any;
-    onChange: (updates: any) => void;
+    data: unknown;
+    onChange: ReturnType<typeof handleEditStorage>;
 }
 
 function JSONEditor(props: JSONEditorProps) {
@@ -64,9 +74,9 @@ function JSONEditor(props: JSONEditorProps) {
 // ));
 
 function DevDashboard() {
-    const [localStorage, setLocalStorage] = React.useState<any>({});
-    const [syncStorage, setSyncStorage] = React.useState<any>({});
-    const [sessionStorage, setSessionStorage] = React.useState<any>({});
+    const [localStorage, setLocalStorage] = React.useState<Record<string, unknown>>({});
+    const [syncStorage, setSyncStorage] = React.useState<Record<string, unknown>>({});
+    const [sessionStorage, setSessionStorage] = React.useState<Record<string, unknown>>({});
 
     useEffect(() => {
         const onVisibilityChange = () => {
@@ -95,7 +105,8 @@ function DevDashboard() {
     // listen for changes to the chrome storage to update the local storage state displayed in the dashboard
     useEffect(() => {
         const onChanged = (changes: chrome.storage.StorageChange, areaName: chrome.storage.AreaName) => {
-            let copy = {};
+            let copy: Record<string, unknown> = {};
+
             if (areaName === 'local') {
                 copy = { ...localStorage };
             } else if (areaName === 'sync') {
@@ -104,8 +115,8 @@ function DevDashboard() {
                 copy = { ...sessionStorage };
             }
 
-            Object.keys(changes).forEach(key => {
-                copy[key] = changes[key].newValue;
+            Object.keys(changes).forEach((key: string) => {
+                copy[key] = changes[key as keyof typeof changes].newValue;
             });
 
             if (areaName === 'local') {
@@ -126,10 +137,6 @@ function DevDashboard() {
         };
     }, [localStorage, syncStorage, sessionStorage]);
 
-    const handleEditStorage = (areaName: string) => (changes: Record<string, any>) => {
-        chrome.storage[areaName].set(changes);
-    };
-
     return (
         <div>
             <h1>
@@ -147,4 +154,4 @@ function DevDashboard() {
     );
 }
 
-createRoot(document.getElementById('root')).render(<DevDashboard />);
+createRoot(document.getElementById('root')!).render(<DevDashboard />);

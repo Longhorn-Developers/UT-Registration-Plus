@@ -20,7 +20,7 @@ interface Props {
 /**
  * This is the top level react component orchestrating the course catalog page.
  */
-export default function CourseCatalogMain({ support }: Props): JSX.Element {
+export default function CourseCatalogMain({ support }: Props): JSX.Element | null {
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
     const [showPopup, setShowPopup] = useState(false);
@@ -53,8 +53,6 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
         setSelectedCourse(course);
     };
 
-    // useKeyPress('Escape', handleClearSelectedCourse);
-
     const [activeSchedule] = useSchedules();
 
     if (!activeSchedule) {
@@ -78,7 +76,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element {
                     )
             )}
             <CourseCatalogInjectedPopup
-                course={selectedCourse}
+                course={selectedCourse!} // always defined when showPopup is true
                 show={showPopup}
                 onClose={() => setShowPopup(false)}
                 afterLeave={() => setSelectedCourse(null)}

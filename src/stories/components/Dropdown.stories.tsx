@@ -2,9 +2,10 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import { generateRandomId } from '@shared/util/random';
 import type { Meta, StoryObj } from '@storybook/react';
-import List from '@views/components/common/List/List';
-import ScheduleDropdown from '@views/components/common/ScheduleDropdown/ScheduleDropdown';
-import ScheduleListItem from '@views/components/common/ScheduleListItem/ScheduleListItem';
+import List from '@views/components/common/List';
+import type { ScheduleDropdownProps } from '@views/components/common/ScheduleDropdown';
+import ScheduleDropdown from '@views/components/common/ScheduleDropdown';
+import ScheduleListItem from '@views/components/common/ScheduleListItem';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import type { Serialized } from 'chrome-extension-toolkit';
 import React, { useEffect } from 'react';
@@ -49,7 +50,7 @@ const meta: Meta<typeof ScheduleDropdown> = {
             },
         },
     },
-    render: (args: any) => {
+    render: (args: ScheduleDropdownProps) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const [activeSchedule, schedules] = useSchedules();
 

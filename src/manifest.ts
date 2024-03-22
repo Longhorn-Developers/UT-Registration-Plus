@@ -9,7 +9,12 @@ const [major, minor, patch, label = '0'] = packageJson.version
     // split into version parts
     .split(/[.-]/);
 
-const mode = process.env.NODE_ENV;
+const isBeta = !!process.env.BETA;
+const mode = isBeta ? 'beta' : process.env.NODE_ENV;
+
+if (isBeta && process.env.NODE_ENV !== 'production') throw new Error('Cannot have beta non-production build');
+// eslint-disable-next-line no-nested-ternary
+const nameSuffix = isBeta ? ' (beta)' : mode === 'development' ? ' (dev)' : '';
 
 const HOST_PERMISSIONS: string[] = [
     '*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*',
@@ -22,7 +27,7 @@ const HOST_PERMISSIONS: string[] = [
 
 const manifest = defineManifest(async () => ({
     manifest_version: 3,
-    name: `${packageJson.displayName ?? packageJson.name}${mode === 'development' ? ' (dev)' : ''}`,
+    name: `${packageJson.displayName ?? packageJson.name}${nameSuffix}`,
     version: `${major}.${minor}.${patch}.${label}`,
     description: packageJson.description,
     options_page: 'src/pages/options/index.html',

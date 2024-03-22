@@ -41,11 +41,16 @@ This extension, UT Registration Plus (UTRP), tries to streamline most of the unn
 - Run `pnpm dev`
 
 > [!NOTE]
-> Injected content such as extension content on UT pages is not properly styled, and are missing class stylings. When developing for these pages, use `pnpm build -w` to build and watch for changes. This will ensure you are seeing an accurate representation of the extension.
+> Injected content such as extension content on UT pages is not properly styled, and are missing class stylings. When developing for these pages, use `NODE_ENV='development' pnpm run dev build --mode development -w` to build and watch for changes. This will ensure you are seeing an accurate representation of the extension.
 
 ### Production Builds
 
 - Run `pnpm build`
+
+<details>
+<summary>Beta builds</summary>
+Use `BETA=true pnpm build` to build a beta build.
+</details>
 
 ## Development: Loading the Extension Manually
 

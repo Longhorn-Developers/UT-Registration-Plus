@@ -4,7 +4,7 @@ import DiscordIcon from '~icons/ri/discord-line';
 import GithubIcon from '~icons/ri/github-fill';
 import InstagramIcon from '~icons/ri/instagram-line';
 
-import Link from '../common/Link/Link';
+import Link from '../common/Link';
 
 /**
  * The footer section of the calendar's sidebar
