@@ -102,7 +102,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                 y: 20,
                 style: {
                     fontSize: '0.6875rem',
-                    fontWeight: '500', 
+                    fontWeight: '500',
                     letterSpacing: '0',
                     lineHeight: 'normal',
                     fontStyle: 'normal',
