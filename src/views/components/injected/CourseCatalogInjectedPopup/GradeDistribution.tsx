@@ -177,7 +177,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                                     if (year1 !== year2) {
                                         return parseInt(year2 as string, 10) - parseInt(year1 as string, 10);
                                     }
-                                    return season1 === 'Fall' ? 1 : -1;
+                                    return season1 === 'Fall' ? -1 : 1;
                                 })
                                 .map(semester => (
                                     <option key={semester} value={semester}>
