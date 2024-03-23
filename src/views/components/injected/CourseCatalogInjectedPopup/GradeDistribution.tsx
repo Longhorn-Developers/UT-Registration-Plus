@@ -61,7 +61,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                 color: GRADE_COLORS[grade as LetterGrade],
             }));
         }
-        return Array(12).fill(0);
+        return Array(13).fill(0);
     }, [distributions, semester, status]);
 
     React.useEffect(() => {
@@ -107,7 +107,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
         legend: { enabled: false },
         xAxis: {
             title: { text: 'Grades' },
-            categories: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F'],
+            categories: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F', 'Other'],
             crosshair: true,
         },
         yAxis: {
