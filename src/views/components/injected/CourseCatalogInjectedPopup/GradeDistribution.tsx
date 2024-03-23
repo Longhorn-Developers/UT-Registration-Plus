@@ -37,6 +37,7 @@ const GRADE_COLORS = {
     D: extendedColors.gradeDistribution.d,
     'D-': extendedColors.gradeDistribution.dminus,
     F: extendedColors.gradeDistribution.f,
+    Other: extendedColors.gradeDistribution.other,
 } as const satisfies Record<LetterGrade, string>;
 
 /**
@@ -55,7 +56,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
 
     const chartData = React.useMemo(() => {
         if (status === DataStatus.FOUND && distributions[semester]) {
-            return Object.entries(distributions[semester]).map(([grade, count]) => ({
+            return Object.entries(distributions[semester]!).map(([grade, count]) => ({
                 y: count,
                 color: GRADE_COLORS[grade as LetterGrade],
             }));
@@ -72,6 +73,11 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                 const semesterDistributions = await Promise.allSettled(semesterPromises);
                 semesters.forEach((semester, i) => {
                     const distributionResult = semesterDistributions[i];
+
+                    if (!distributionResult) {
+                        throw new Error('Distribution result is undefined');
+                    }
+
                     if (distributionResult.status === 'fulfilled') {
                         initialDistributions[`${semester.season} ${semester.year}`] = distributionResult.value;
                     }
