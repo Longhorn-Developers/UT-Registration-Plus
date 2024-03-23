@@ -3,6 +3,13 @@ import type { CourseSQLRow, Distribution } from '@shared/types/Distribution';
 
 import { initializeDB } from './initializeDB';
 
+const allTables = [
+    'grade_distributions_2019_2020',
+    'grade_distributions_2020_2021',
+    'grade_distributions_2021_2022',
+    'grade_distributions_2022_2023',
+] as const;
+
 /**
  * fetches the aggregate distribution of grades for a given course from the course db, and the semesters that we have data for
  * @param course the course to fetch the distribution for
@@ -18,31 +25,49 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
         throw new NoDataError(course);
     }
 
-    let row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
-    res.columns.forEach((col, i) => {
-        row[col as keyof CourseSQLRow] = res.values[0]![i]! as never;
-    });
+    const row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
+    for (let i = 0; i < res.columns.length; i++) {
+        const col = res.columns[i] as keyof CourseSQLRow;
+        switch (col) {
+            case 'A':
+            case 'A_Minus':
+            case 'B_Plus':
+            case 'B':
+            case 'B_Minus':
+            case 'C_Plus':
+            case 'C':
+            case 'C_Minus':
+            case 'D_Plus':
+            case 'D':
+            case 'D_Minus':
+            case 'F':
+            case 'Other':
+                row[col] = res.values.reduce((acc, cur) => acc + (cur[i] as number), 0) as never;
+                break;
+            default:
+                row[col] = res.columns[i]![0]! as never;
+        }
+    }
 
     const distribution: Distribution = {
-        A: row.a2,
-        'A-': row.a3,
-        'B+': row.b1,
-        B: row.b2,
-        'B-': row.b3,
-        'C+': row.c1,
-        C: row.c2,
-        'C-': row.c3,
-        'D+': row.d1,
-        D: row.d2,
-        'D-': row.d3,
-        F: row.f,
+        A: row.A,
+        'A-': row.A_Minus,
+        'B+': row.B_Plus,
+        B: row.B,
+        'B-': row.B_Minus,
+        'C+': row.C_Plus,
+        C: row.C,
+        'C-': row.C_Minus,
+        'D+': row.D_Plus,
+        D: row.D,
+        'D-': row.D_Minus,
+        F: row.F,
+        Other: row.Other,
     };
 
-    // the db file for some reason has duplicate semesters, so we use a set to remove duplicates
-    const rawSemesters = new Set<string>();
-    row.semesters.split(',').forEach((sem: string) => {
-        rawSemesters.add(sem);
-    });
+    // get unique semesters from the data
+    const rawSemesters = res.values.reduce((acc, cur) => acc.add(cur[0] as string), new Set<string>());
+    console.log({ rawSemesters });
 
     const semesters: Semester[] = [];
 
@@ -64,15 +89,15 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
  * @returns a SQL query string
  */
 function generateQuery(course: Course, semester: Semester | null): string {
-    const profName = course.instructors[0]?.fullName;
+    // const profName = course.instructors[0]?.fullName;
+    // eslint-disable-next-line no-nested-ternary
+    const yearDelta = semester ? (semester.season === 'Fall' ? 0 : -1) : 0;
 
     const query = `
-        select * from ${semester ? 'grades' : 'agg'}
-        where dept like '%${course.department}%'
-        ${profName ? `and prof like '%${profName}%'` : ''}
-        and course_nbr like '%${course.number}%'
-        ${semester ? `and sem like '%${semester.season} ${semester.year}%'` : ''}
-        order by a1+a2+a3+b1+b2+b3+c1+c2+c3+d1+d2+d3+f desc
+        select * from ${semester ? `grade_distributions_${semester.year + yearDelta}_${semester.year + yearDelta + 1}` : `(select * from ${allTables.join(' union all select * from ')})`}
+        where Department_Code = '${course.department}'
+        and Course_Number = '${course.number}'
+        ${semester ? `and Semester = '${semester.season} ${semester.year}'` : ''}
     `;
 
     return query;
@@ -98,22 +123,21 @@ export async function querySemesterDistribution(course: Course, semester: Semest
         row[col as keyof CourseSQLRow] = res.values[0]![i]! as never;
     });
 
-    const distribution: Distribution = {
-        A: row.a2,
-        'A-': row.a3,
-        'B+': row.b1,
-        B: row.b2,
-        'B-': row.b3,
-        'C+': row.c1,
-        C: row.c2,
-        'C-': row.c3,
-        'D+': row.d1,
-        D: row.d2,
-        'D-': row.d3,
-        F: row.f,
-    };
-
-    return distribution;
+    return {
+        A: row.A,
+        'A-': row.A_Minus,
+        'B+': row.B_Plus,
+        B: row.B,
+        'B-': row.B_Minus,
+        'C+': row.C_Plus,
+        C: row.C,
+        'C-': row.C_Minus,
+        'D+': row.D_Plus,
+        D: row.D,
+        'D-': row.D_Minus,
+        F: row.F,
+        Other: row.Other,
+    } satisfies Distribution;
 }
 
 /**
