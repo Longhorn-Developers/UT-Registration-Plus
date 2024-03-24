@@ -3,6 +3,7 @@ import type { CourseSQLRow, Distribution } from '@shared/types/Distribution';
 
 import { initializeDB } from './initializeDB';
 
+// TODO: in the future let's maybe refactor this to be reactive to the items in the db rather than being explicit
 const allTables = [
     'grade_distributions_2019_2020',
     'grade_distributions_2020_2021',
@@ -136,7 +137,7 @@ export async function querySemesterDistribution(course: Course, semester: Semest
         'D-': row.D_Minus,
         F: row.F,
         Other: row.Other,
-    } satisfies Distribution;
+    };
 }
 
 /**

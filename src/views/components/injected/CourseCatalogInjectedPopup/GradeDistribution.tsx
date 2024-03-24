@@ -10,7 +10,8 @@ import {
 } from '@views/lib/database/queryDistribution';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import React from 'react';
+import type { ChangeEvent } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 interface GradeDistributionProps {
     course: Course;
@@ -50,12 +51,12 @@ const GRADE_COLORS = {
  * @returns {JSX.Element} The grade distribution chart component.
  */
 export default function GradeDistribution({ course }: GradeDistributionProps): JSX.Element {
-    const [semester, setSemester] = React.useState('Aggregate');
-    const [distributions, setDistributions] = React.useState<Record<string, Distribution>>({});
-    const [status, setStatus] = React.useState<DataStatusType>(DataStatus.LOADING);
-    const ref = React.useRef<HighchartsReact.RefObject>(null);
+    const [semester, setSemester] = useState('Aggregate');
+    const [distributions, setDistributions] = useState<Record<string, Distribution>>({});
+    const [status, setStatus] = useState<DataStatusType>(DataStatus.LOADING);
+    const ref = useRef<HighchartsReact.RefObject>(null);
 
-    const chartData = React.useMemo(() => {
+    const chartData = useMemo(() => {
         if (status === DataStatus.FOUND && distributions[semester]) {
             return Object.entries(distributions[semester]!).map(([grade, count]) => ({
                 y: count,
@@ -65,7 +66,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
         return Array(13).fill(0);
     }, [distributions, semester, status]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const fetchInitialData = async () => {
             try {
                 const [aggregateDist, semesters] = await queryAggregateDistribution(course);
@@ -98,7 +99,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
         fetchInitialData();
     }, [course]);
 
-    const handleSelectSemester = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleSelectSemester = (event: ChangeEvent<HTMLSelectElement>) => {
         setSemester(event.target.value);
     };
 
