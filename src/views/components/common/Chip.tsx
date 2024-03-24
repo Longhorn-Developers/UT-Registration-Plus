@@ -9,7 +9,7 @@ export const flagMap = {
     Writing: 'WR',
     'Quantitative Reasoning': 'QR',
     'Global Cultures': 'GC',
-    'Cultural Diversity in the United States': 'CD',
+    'Cultural Diversity': 'CD',
     Ethics: 'E',
     'Independent Inquiry': 'II',
 } as const satisfies Record<string, Flag>;
@@ -23,6 +23,8 @@ interface Props {
  * @returns
  */
 export function Chip({ label }: React.PropsWithChildren<Props>): JSX.Element {
+    const longFlagName = Object.entries(flagMap).find(([full, short]) => short === label)?.[0] ?? label;
+
     return (
         <Text
             as='div'
@@ -31,7 +33,7 @@ export function Chip({ label }: React.PropsWithChildren<Props>): JSX.Element {
             style={{
                 backgroundColor: '#FFD600',
             }}
-            title={Object.entries(flagMap).find(([full, short]) => short === label)![0]}
+            title={`${longFlagName} flag`}
         >
             {label}
         </Text>

@@ -23,12 +23,17 @@ export default function ConflictsWithWarning({ className, conflicts }: Conflicts
             variant='mini'
             className={clsx(
                 className,
-                'min-w-21 w-21 flex flex-col items-start gap-2.5 rounded bg-[#AF2E2D] p-2.5 text-white'
+                'min-w-21 w-21 flex flex-col items-start gap-2.5 rounded bg-theme-red p-2.5 text-white'
             )}
         >
             <div>Conflicts With:</div>
             {conflicts.map(course => (
-                <div>{`${course.department} ${course.number} (${course.uniqueId})`}</div>
+                <div>
+                    <Text as='strong' variant='mini' className='font-bold!'>
+                        {course.department} {course.number}
+                    </Text>{' '}
+                    ({course.uniqueId})
+                </div>
             ))}
         </Text>
     );

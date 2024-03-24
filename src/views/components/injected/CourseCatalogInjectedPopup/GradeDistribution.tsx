@@ -22,6 +22,7 @@ const DataStatus = {
     NOT_FOUND: 'NOT_FOUND',
     ERROR: 'ERROR',
 } as const satisfies Record<string, string>;
+
 type DataStatusType = (typeof DataStatus)[keyof typeof DataStatus];
 
 const GRADE_COLORS = {
@@ -106,13 +107,51 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
         subtitle: { text: undefined },
         legend: { enabled: false },
         xAxis: {
-            title: { text: 'Grades' },
+            labels: {
+                y: 20,
+                style: {
+                    fontSize: '0.6875rem',
+                    fontWeight: '500',
+                    letterSpacing: '0',
+                    lineHeight: 'normal',
+                    fontStyle: 'normal',
+                },
+            },
+            title: {
+                text: 'Grades',
+                style: {
+                    color: '#333F48',
+                    fontSize: '0.80rem',
+                    fontWeight: '400',
+                },
+            },
             categories: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F', 'Other'],
+            tickInterval: 1,
+            tickWidth: 1.5,
+            tickLength: 10,
+            tickColor: '#9CADB7',
             crosshair: true,
+            lineColor: '#9CADB7',
         },
         yAxis: {
+            labels: {
+                style: {
+                    fontSize: '0.80rem',
+                    fontWeight: '400',
+                    color: '#333F48',
+                    lineHeight: '100%',
+                    fontStyle: 'normal',
+                },
+            },
             min: 0,
-            title: { text: 'Students' },
+            title: {
+                text: 'Students',
+                style: {
+                    color: '#333F48',
+                    fontSize: '0.80rem',
+                    fontWeight: '400',
+                },
+            },
         },
         chart: {
             style: { fontFamily: 'Roboto Flex, Roboto Flex Local', fontWeight: '600' },
@@ -163,8 +202,10 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             {status === DataStatus.ERROR && <Text variant='p'>Error fetching grade distribution data</Text>}
             {status === DataStatus.FOUND && (
                 <>
-                    <div className='w-full flex items-center justify-center gap-[12px]'>
-                        <Text variant='p'>Grade distribution for {`${course.department} ${course.number}`}</Text>
+                    <div className='flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
+                        <Text variant='small'>
+                            Grade Distribution for {course.department} {course.number}
+                        </Text>
                         <select
                             className='border border rounded-[4px] border-solid px-[12px] py-[8px]'
                             onChange={handleSelectSemester}
