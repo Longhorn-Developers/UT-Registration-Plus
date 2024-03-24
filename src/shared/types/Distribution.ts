@@ -1,10 +1,7 @@
-import { PointOptionsObject } from 'highcharts';
-
-import { Semester } from './Course';
 /**
  * Each of the possible letter grades that can be given in a course
  */
-export type LetterGrade = 'A' | 'A-' | 'B' | 'B+' | 'B-' | 'C' | 'C+' | 'C-' | 'D' | 'D+' | 'D-' | 'F';
+export type LetterGrade = 'A' | 'A-' | 'B' | 'B+' | 'B-' | 'C' | 'C+' | 'C-' | 'D' | 'D+' | 'D-' | 'F' | 'Other';
 
 /**
  * A distribution of grades for a course,
@@ -18,23 +15,24 @@ export type Distribution = {
  * This is a object-ified version of a row in the SQL table that is used to store the distribution data.
  */
 export type CourseSQLRow = {
-    sem?: string;
-    prof?: string;
-    dept?: string;
-    course_nbr?: string;
-    course_name?: string;
-    a1?: number;
-    a2?: number;
-    a3?: number;
-    b1?: number;
-    b2?: number;
-    b3?: number;
-    c1?: number;
-    c2?: number;
-    c3?: number;
-    d1?: number;
-    d2?: number;
-    d3?: number;
-    f?: number;
-    semesters?: string;
+    Semester: string;
+    Section: number;
+    Department: string;
+    Department_Code: string;
+    Course_Number: string;
+    Course_Title: string;
+    Course_Full_Title: string;
+    A: number;
+    A_Minus: number;
+    B_Plus: number;
+    B: number;
+    B_Minus: number;
+    C_Plus: number;
+    C: number;
+    C_Minus: number;
+    D_Plus: number;
+    D: number;
+    D_Minus: number;
+    F: number;
+    Other: number;
 };
