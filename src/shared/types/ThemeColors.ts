@@ -38,6 +38,7 @@ export const extendedColors = {
         d: '#DC2626',
         dminus: '#B91C1C',
         f: '#B91C1C',
+        other: '#6B7280',
     },
 } as const;
 

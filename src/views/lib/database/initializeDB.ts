@@ -1,4 +1,4 @@
-import DB_FILE_URL from '@public/database/grades.db?url';
+import DB_FILE_URL from '@public/database/grade_distributions.db?url';
 import initSqlJs from 'sql.js/dist/sql-wasm';
 import WASM_FILE_URL from 'sql.js/dist/sql-wasm.wasm?url';
 // import WASM_FILE_URL from '../../../../public/database/sql-wasm.wasm?url';

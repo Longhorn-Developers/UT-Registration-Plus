@@ -10,7 +10,8 @@ import {
 } from '@views/lib/database/queryDistribution';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import React from 'react';
+import type { ChangeEvent } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 interface GradeDistributionProps {
     course: Course;
@@ -22,6 +23,7 @@ const DataStatus = {
     NOT_FOUND: 'NOT_FOUND',
     ERROR: 'ERROR',
 } as const satisfies Record<string, string>;
+
 type DataStatusType = (typeof DataStatus)[keyof typeof DataStatus];
 
 const GRADE_COLORS = {
@@ -37,6 +39,7 @@ const GRADE_COLORS = {
     D: extendedColors.gradeDistribution.d,
     'D-': extendedColors.gradeDistribution.dminus,
     F: extendedColors.gradeDistribution.f,
+    Other: extendedColors.gradeDistribution.other,
 } as const satisfies Record<LetterGrade, string>;
 
 /**
@@ -48,48 +51,55 @@ const GRADE_COLORS = {
  * @returns {JSX.Element} The grade distribution chart component.
  */
 export default function GradeDistribution({ course }: GradeDistributionProps): JSX.Element {
-    const [semester, setSemester] = React.useState('Aggregate');
-    const [distributions, setDistributions] = React.useState<Record<string, Distribution>>({});
-    const [status, setStatus] = React.useState<DataStatusType>(DataStatus.LOADING);
-    const ref = React.useRef<HighchartsReact.RefObject>(null);
+    const [semester, setSemester] = useState('Aggregate');
+    const [distributions, setDistributions] = useState<Record<string, Distribution>>({});
+    const [status, setStatus] = useState<DataStatusType>(DataStatus.LOADING);
+    const ref = useRef<HighchartsReact.RefObject>(null);
 
-    // const chartData = React.useMemo(() => {
-    //     if (status === DataStatus.FOUND && distributions[semester]) {
-    //         return Object.entries(distributions[semester]).map(([grade, count]) => ({
-    //             y: count,
-    //             color: GRADE_COLORS[grade as LetterGrade],
-    //         }));
-    //     }
-    //     return Array(12).fill(0);
-    // }, [distributions, semester, status]);
-    // const chartData: unknown[] = [];
+    const chartData = useMemo(() => {
+        if (status === DataStatus.FOUND && distributions[semester]) {
+            return Object.entries(distributions[semester]!).map(([grade, count]) => ({
+                y: count,
+                color: GRADE_COLORS[grade as LetterGrade],
+            }));
+        }
+        return Array(13).fill(0);
+    }, [distributions, semester, status]);
 
-    // React.useEffect(() => {
-    //     const fetchInitialData = async () => {
-    //         try {
-    //             const [aggregateDist, semesters] = await queryAggregateDistribution(course);
-    //             const initialDistributions: Record<string, Distribution> = { Aggregate: aggregateDist };
-    //             const semesterPromises = semesters.map(semester => querySemesterDistribution(course, semester));
-    //             const semesterDistributions = await Promise.all(semesterPromises);
-    //             semesters.forEach((semester, i) => {
-    //                 initialDistributions[`${semester.season} ${semester.year}`] = semesterDistributions[i];
-    //             });
-    //             setDistributions(initialDistributions);
-    //             setStatus(DataStatus.FOUND);
-    //         } catch (e) {
-    //             console.error(e);
-    //             if (e instanceof NoDataError) {
-    //                 setStatus(DataStatus.NOT_FOUND);
-    //             } else {
-    //                 setStatus(DataStatus.ERROR);
-    //             }
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchInitialData = async () => {
+            try {
+                const [aggregateDist, semesters] = await queryAggregateDistribution(course);
+                const initialDistributions: Record<string, Distribution> = { Aggregate: aggregateDist };
+                const semesterPromises = semesters.map(semester => querySemesterDistribution(course, semester));
+                const semesterDistributions = await Promise.allSettled(semesterPromises);
+                semesters.forEach((semester, i) => {
+                    const distributionResult = semesterDistributions[i];
 
-    //     fetchInitialData();
-    // }, [course]);
+                    if (!distributionResult) {
+                        throw new Error('Distribution result is undefined');
+                    }
 
-    const handleSelectSemester = (event: React.ChangeEvent<HTMLSelectElement>) => {
+                    if (distributionResult.status === 'fulfilled') {
+                        initialDistributions[`${semester.season} ${semester.year}`] = distributionResult.value;
+                    }
+                });
+                setDistributions(initialDistributions);
+                setStatus(DataStatus.FOUND);
+            } catch (e) {
+                console.error(e);
+                if (e instanceof NoDataError) {
+                    setStatus(DataStatus.NOT_FOUND);
+                } else {
+                    setStatus(DataStatus.ERROR);
+                }
+            }
+        };
+
+        fetchInitialData();
+    }, [course]);
+
+    const handleSelectSemester = (event: ChangeEvent<HTMLSelectElement>) => {
         setSemester(event.target.value);
     };
 
@@ -116,7 +126,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     fontWeight: '400',
                 },
             },
-            categories: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F'],
+            categories: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F', 'Other'],
             tickInterval: 1,
             tickWidth: 1.5,
             tickLength: 10,
@@ -168,7 +178,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             {
                 type: 'column',
                 name: 'Grades',
-                // data: chartData,
+                data: chartData,
             },
         ],
     };
@@ -197,8 +207,8 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                         <Text variant='small'>
                             Grade Distribution for {course.department} {course.number}
                         </Text>
-                        {/* <select
-                            className='flex items-center py-1 px-1 gap-1 border border rounded border-solid'
+                        <select
+                            className='border border rounded-[4px] border-solid px-[12px] py-[8px]'
                             onChange={handleSelectSemester}
                         >
                             {Object.keys(distributions)
@@ -209,19 +219,22 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                                     if (k2 === 'Aggregate') {
                                         return 1;
                                     }
+
                                     const [season1, year1] = k1.split(' ');
                                     const [, year2] = k2.split(' ');
+
                                     if (year1 !== year2) {
-                                        return parseInt(year2, 10) - parseInt(year1, 10);
+                                        return parseInt(year2 as string, 10) - parseInt(year1 as string, 10);
                                     }
-                                    return season1 === 'Fall' ? 1 : -1;
+
+                                    return season1 === 'Fall' ? -1 : 1;
                                 })
                                 .map(semester => (
                                     <option key={semester} value={semester}>
                                         {semester}
                                     </option>
                                 ))}
-                        </select> */}
+                        </select>
                     </div>
                     <HighchartsReact ref={ref} highcharts={Highcharts} options={chartOptions} />
                 </>
