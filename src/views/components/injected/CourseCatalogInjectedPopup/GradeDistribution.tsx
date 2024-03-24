@@ -198,7 +198,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                             Grade Distribution for {course.department} {course.number}
                         </Text>
                         {/* <select
-                            className='flex items-center py-1 px-1 gap-1 border border rounded-1 border-solid'
+                            className='flex items-center py-1 px-1 gap-1 border border rounded border-solid'
                             onChange={handleSelectSemester}
                         >
                             {Object.keys(distributions)
