@@ -15,10 +15,10 @@ export const colors = {
         gray: '#9CADB7',
         offwhite: '#D6D2C4',
         concrete: '#95A5A6',
-        red: '#BF0000', //   Not sure if this should be here, but it's used for remove course, and add course is ut-green
+        red: '#B91C1C', //   Not sure if this should be here, but it's used for remove course, and add course is ut-green
     },
     theme: {
-        red: '#AF2E2D',
+        red: '#BF0000',
         black: '#1A2024',
     },
 } as const satisfies Record<string, Record<string, string>>;
