@@ -51,7 +51,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                     totalCourses={activeSchedule.courses.length}
                 />
                 <div className='flex items-center gap-1 screenshot:hidden'>
-                    <Text variant='mini' className='text-ut-gray'>
+                    <Text variant='mini' className='text-ut-gray font-normal'>
                         DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                     </Text>
                     <button className='inline-block h-4 w-4 bg-transparent p-0 btn'>
