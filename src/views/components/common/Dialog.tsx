@@ -10,6 +10,7 @@ export interface _DialogProps {
     className?: string;
     title?: JSX.Element;
     description?: JSX.Element;
+    initialFocusHidden?: boolean;
 }
 
 /**
@@ -21,7 +22,12 @@ export type DialogProps = _DialogProps & Omit<TransitionRootProps<typeof HDialog
  * A reusable popup component that can be used to display content on the page
  */
 export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Element {
-    const { children, className, open, ...rest } = props;
+    const { children, className, open, initialFocusHidden, ...rest } = props;
+    const initialFocusHiddenRef = React.useRef<HTMLDivElement>(null);
+
+    if (initialFocusHidden) {
+        rest.initialFocus = initialFocusHiddenRef;
+    }
 
     return (
         <Transition show={open} as={HDialog} {...rest}>
@@ -53,8 +59,11 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                                 className
                             )}
                         >
-                            {props.title && <HDialog.Title>{props.title}</HDialog.Title>}
-                            {props.description && <HDialog.Description>{props.description}</HDialog.Description>}
+                            {initialFocusHidden && <div className='hidden' ref={initialFocusHiddenRef} />}
+                            {props.title && <HDialog.Title as={Fragment}>{props.title}</HDialog.Title>}
+                            {props.description && (
+                                <HDialog.Description as={Fragment}>{props.description}</HDialog.Description>
+                            )}
                             {children}
                         </HDialog.Panel>
                     </div>
