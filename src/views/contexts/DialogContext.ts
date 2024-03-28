@@ -1,9 +1,10 @@
+import type { ReactNode } from 'react';
 import { createContext, useContext } from 'react';
 
 /**
  * Close wrapper
  */
-export type CloseWrapper<T> = (onClose: () => void) => T;
+export type CloseWrapper<T> = (close: () => void) => T;
 
 /**
  * Information about a dialog.
@@ -12,6 +13,8 @@ export interface DialogInfo {
     title?: JSX.Element;
     description?: JSX.Element;
     buttons?: JSX.Element | CloseWrapper<JSX.Element>;
+    showFocus?: boolean;
+    onClose?: () => void;
 }
 
 /**
