@@ -24,7 +24,8 @@ type CalendarBottomBarProps = {
  * @returns {JSX.Element} The rendered bottom bar component.
  */
 export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBottomBarProps): JSX.Element {
-    const displayCourses = courseCells && courseCells.length > 0;
+    const asyncCourseCells = courseCells?.filter(block => block.async);
+    const displayCourses = asyncCourseCells && asyncCourseCells.length > 0;
 
     return (
         <div className='w-full flex py-1.25 pl-7.5 pr-6.25'>
@@ -37,21 +38,19 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                     <>
                         <Text variant='h4'>Async/Other:</Text>
                         <div className='inline-flex gap-2.5'>
-                            {courseCells
-                                .filter(block => block.async)
-                                .map(block => {
-                                    const { courseDeptAndInstr, status, colors, className } = block.componentProps;
-                                    return (
-                                        <CalendarCourseBlock
-                                            courseDeptAndInstr={courseDeptAndInstr}
-                                            status={status}
-                                            colors={colors}
-                                            key={courseDeptAndInstr}
-                                            className={clsx(className, 'w-35! h-15!')}
-                                            onClick={() => setCourse(block.course)}
-                                        />
-                                    );
-                                })}
+                            {asyncCourseCells.map(block => {
+                                const { courseDeptAndInstr, status, colors, className } = block.componentProps;
+                                return (
+                                    <CalendarCourseBlock
+                                        courseDeptAndInstr={courseDeptAndInstr}
+                                        status={status}
+                                        colors={colors}
+                                        key={courseDeptAndInstr}
+                                        className={clsx(className, 'w-35! h-15!')}
+                                        onClick={() => setCourse(block.course)}
+                                    />
+                                );
+                            })}
                         </div>
                     </>
                 )}

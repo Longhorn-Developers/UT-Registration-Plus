@@ -125,8 +125,8 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
 
     return courseCells
         .filter(block => !block.async)
-        .map((block, i) => {
-            const { courseDeptAndInstr, timeAndLocation, status } = courseCells[i]!.componentProps;
+        .map(block => {
+            const { courseDeptAndInstr, timeAndLocation, status } = block.componentProps;
 
             return (
                 <div
