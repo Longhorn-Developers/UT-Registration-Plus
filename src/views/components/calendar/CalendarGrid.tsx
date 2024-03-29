@@ -123,28 +123,30 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
         });
     });
 
-    return courseCells.map((block, i) => {
-        const { courseDeptAndInstr, timeAndLocation, status } = courseCells[i]!.componentProps;
+    return courseCells
+        .filter(block => !block.async)
+        .map((block, i) => {
+            const { courseDeptAndInstr, timeAndLocation, status } = courseCells[i]!.componentProps;
 
-        return (
-            <div
-                key={`${JSON.stringify(block)}`}
-                style={{
-                    gridColumn: `${block.calendarGridPoint.dayIndex + 3}`,
-                    gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
-                    width: `calc(100% / ${block.totalColumns ?? 1})`,
-                    marginLeft: `calc(100% * ${((block.gridColumnStart ?? 0) - 1) / (block.totalColumns ?? 1)})`,
-                }}
-                className='pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5'
-            >
-                <CalendarCourseCell
-                    courseDeptAndInstr={courseDeptAndInstr}
-                    timeAndLocation={timeAndLocation}
-                    status={status}
-                    colors={block.course.colors}
-                    onClick={() => setCourse(block.course)}
-                />
-            </div>
-        );
-    });
+            return (
+                <div
+                    key={`${JSON.stringify(block)}`}
+                    style={{
+                        gridColumn: `${block.calendarGridPoint.dayIndex + 3}`,
+                        gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
+                        width: `calc(100% / ${block.totalColumns ?? 1})`,
+                        marginLeft: `calc(100% * ${((block.gridColumnStart ?? 0) - 1) / (block.totalColumns ?? 1)})`,
+                    }}
+                    className='pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5'
+                >
+                    <CalendarCourseCell
+                        courseDeptAndInstr={courseDeptAndInstr}
+                        timeAndLocation={timeAndLocation}
+                        status={status}
+                        colors={block.course.colors}
+                        onClick={() => setCourse(block.course)}
+                    />
+                </div>
+            );
+        });
 }

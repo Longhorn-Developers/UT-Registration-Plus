@@ -34,6 +34,7 @@ export interface CalendarGridCourse {
     calendarGridPoint: CalendarGridPoint;
     componentProps: CalendarCourseCellProps;
     course: Course;
+    async: boolean;
     gridColumnStart?: number;
     gridColumnEnd?: number;
     totalColumns?: number;
@@ -107,19 +108,17 @@ function processAsyncCourses({
     return [
         {
             calendarGridPoint: {
-                dayIndex: 0,
-                startIndex: 0,
-                endIndex: 0,
+                dayIndex: -1,
+                startIndex: -1,
+                endIndex: -1,
             },
             componentProps: {
                 courseDeptAndInstr,
                 status,
-                colors: {
-                    primaryColor: colors.ut.gray as HexColor,
-                    secondaryColor: colors.ut.gray as HexColor,
-                },
+                colors: course.colors,
             },
             course,
+            async: true as boolean,
         },
     ] satisfies CalendarGridCourse[];
 }
@@ -151,12 +150,10 @@ function processInPersonMeetings(
             courseDeptAndInstr,
             timeAndLocation,
             status,
-            colors: {
-                primaryColor: colors.ut.orange as HexColor,
-                secondaryColor: colors.ut.orange as HexColor,
-            },
+            colors: course.colors,
         },
         course,
+        async: false,
     })) satisfies CalendarGridCourse[];
 }
 
