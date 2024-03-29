@@ -1,7 +1,5 @@
-import type { HexColor } from '@shared/types/Color';
 import type { Course, StatusType } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
-import { colors } from '@shared/types/ThemeColors';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 
@@ -63,7 +61,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const [activeSchedule] = useSchedules();
 
     const processedCourses = activeSchedule.courses
-        .flatMap(course => {
+        .flatMap<CalendarGridCourse>(course => {
             const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
 
             if (meetings.length === 0) {
@@ -118,7 +116,7 @@ function processAsyncCourses({
                 colors: course.colors,
             },
             course,
-            async: true as boolean,
+            async: true,
         },
     ] satisfies CalendarGridCourse[];
 }
