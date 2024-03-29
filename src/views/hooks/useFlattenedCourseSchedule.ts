@@ -1,7 +1,5 @@
-import type { HexColor } from '@shared/types/Color';
 import type { Course, StatusType } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
-import { colors } from '@shared/types/ThemeColors';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 
@@ -34,6 +32,7 @@ export interface CalendarGridCourse {
     calendarGridPoint: CalendarGridPoint;
     componentProps: CalendarCourseCellProps;
     course: Course;
+    async: boolean;
     gridColumnStart?: number;
     gridColumnEnd?: number;
     totalColumns?: number;
@@ -103,25 +102,23 @@ function processAsyncCourses({
     courseDeptAndInstr: string;
     status: StatusType;
     course: Course;
-}) {
+}): CalendarGridCourse[] {
     return [
         {
             calendarGridPoint: {
-                dayIndex: 0,
-                startIndex: 0,
-                endIndex: 0,
+                dayIndex: -1,
+                startIndex: -1,
+                endIndex: -1,
             },
             componentProps: {
                 courseDeptAndInstr,
                 status,
-                colors: {
-                    primaryColor: colors.ut.gray as HexColor,
-                    secondaryColor: colors.ut.gray as HexColor,
-                },
+                colors: course.colors,
             },
             course,
+            async: true,
         },
-    ] satisfies CalendarGridCourse[];
+    ];
 }
 
 /**
@@ -132,7 +129,7 @@ function processInPersonMeetings(
     courseDeptAndInstr: string,
     status: StatusType,
     course: Course
-) {
+): CalendarGridCourse[] {
     const { days, startTime, endTime, location } = meeting;
     const midnightIndex = 1440;
     const normalizingTimeFactor = 720;
@@ -151,13 +148,11 @@ function processInPersonMeetings(
             courseDeptAndInstr,
             timeAndLocation,
             status,
-            colors: {
-                primaryColor: colors.ut.orange as HexColor,
-                secondaryColor: colors.ut.orange as HexColor,
-            },
+            colors: course.colors,
         },
         course,
-    })) satisfies CalendarGridCourse[];
+        async: false,
+    }));
 }
 
 /**

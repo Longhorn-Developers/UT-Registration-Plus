@@ -35,6 +35,7 @@ const testData: CalendarGridCourse[] = [
             colors: getCourseColors('emerald', 500),
         },
         course: ExampleCourse,
+        async: false,
     },
     {
         calendarGridPoint: {
@@ -49,6 +50,7 @@ const testData: CalendarGridCourse[] = [
             colors: getCourseColors('emerald', 500),
         },
         course: ExampleCourse,
+        async: false,
     },
     {
         calendarGridPoint: {
@@ -63,6 +65,7 @@ const testData: CalendarGridCourse[] = [
             colors: getCourseColors('emerald', 500),
         },
         course: ExampleCourse,
+        async: false,
     },
     {
         calendarGridPoint: {
@@ -77,6 +80,7 @@ const testData: CalendarGridCourse[] = [
             colors: getCourseColors('emerald', 500),
         },
         course: ExampleCourse,
+        async: false,
     },
     {
         calendarGridPoint: {
@@ -91,6 +95,7 @@ const testData: CalendarGridCourse[] = [
             colors: getCourseColors('emerald', 500),
         },
         course: ExampleCourse,
+        async: false,
     },
     {
         calendarGridPoint: {
@@ -105,6 +110,7 @@ const testData: CalendarGridCourse[] = [
             colors: getCourseColors('emerald', 500),
         },
         course: ExampleCourse,
+        async: false,
     },
     {
         calendarGridPoint: {
@@ -119,6 +125,7 @@ const testData: CalendarGridCourse[] = [
             colors: getCourseColors('emerald', 500),
         },
         course: ExampleCourse,
+        async: false,
     },
 ];
 
