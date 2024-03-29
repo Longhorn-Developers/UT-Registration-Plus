@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DiscordIcon from '~icons/ri/discord-line';
+import DiscordIcon from '~icons/bi/discord';
 import GithubIcon from '~icons/ri/github-fill';
 import InstagramIcon from '~icons/ri/instagram-line';
 
