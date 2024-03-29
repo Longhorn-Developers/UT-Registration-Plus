@@ -61,7 +61,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const [activeSchedule] = useSchedules();
 
     const processedCourses = activeSchedule.courses
-        .flatMap<CalendarGridCourse>(course => {
+        .flatMap(course => {
             const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
 
             if (meetings.length === 0) {
@@ -102,7 +102,7 @@ function processAsyncCourses({
     courseDeptAndInstr: string;
     status: StatusType;
     course: Course;
-}) {
+}): CalendarGridCourse[] {
     return [
         {
             calendarGridPoint: {
@@ -118,7 +118,7 @@ function processAsyncCourses({
             course,
             async: true,
         },
-    ] satisfies CalendarGridCourse[];
+    ];
 }
 
 /**
@@ -129,7 +129,7 @@ function processInPersonMeetings(
     courseDeptAndInstr: string,
     status: StatusType,
     course: Course
-) {
+): CalendarGridCourse[] {
     const { days, startTime, endTime, location } = meeting;
     const midnightIndex = 1440;
     const normalizingTimeFactor = 720;
@@ -152,7 +152,7 @@ function processInPersonMeetings(
         },
         course,
         async: false,
-    })) satisfies CalendarGridCourse[];
+    }));
 }
 
 /**
