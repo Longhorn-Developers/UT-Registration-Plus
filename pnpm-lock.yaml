@@ -78,6 +78,9 @@ devDependencies:
   '@crxjs/vite-plugin':
     specifier: 2.0.0-beta.21
     version: 2.0.0-beta.21(patch_hash=xq4uab3o3kbvv4gixvawl2aj5q)
+  '@iconify-json/bi':
+    specifier: ^1.1.23
+    version: 1.1.23
   '@iconify-json/material-symbols':
     specifier: ^1.1.73
     version: 1.1.73
@@ -2340,6 +2343,12 @@ packages:
 
   /@humanwhocodes/object-schema@2.0.2:
     resolution: {integrity: sha512-6EwiSjwWYP7pTckG6I5eyFANjPhmPjUX9JRLUSfNPC7FX7zK9gyZAfUEaECL6ALTpGX5AjnBq3C9XmVWPitNpw==}
+    dev: true
+
+  /@iconify-json/bi@1.1.23:
+    resolution: {integrity: sha512-1te+g9ZzI+PU1Lv6Xerd3XPXf4DE6g3TvDL2buIopTAfrauPHyXCHPFQMrzoQVNrVPCpN3rv3vBtJMPyBwJ9IA==}
+    dependencies:
+      '@iconify/types': 2.0.0
     dev: true
 
   /@iconify-json/material-symbols@1.1.73:
