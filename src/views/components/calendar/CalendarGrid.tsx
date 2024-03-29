@@ -6,7 +6,6 @@ import React from 'react';
 
 import CalendarCell from './CalendarGridCell';
 
-const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 
 interface Props {
@@ -50,8 +49,11 @@ export default function CalendarGrid({
     saturdayClass, // TODO: implement/move away from props
     setCourse,
 }: React.PropsWithChildren<Props>): JSX.Element {
+    const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI', ...(saturdayClass ? ['SAT'] : [])];
+    const cols = saturdayClass ? 6 : 5;
+
     return (
-        <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto_repeat(26,1fr)] h-full'>
+        <div className={`grid grid-cols-[auto_auto_repeat(${cols},1fr)] grid-rows-[auto_repeat(26,1fr)] h-full`}>
             {/* Displaying day labels */}
             <div />
             <div className='w-4 border-b border-r border-gray-300' />
@@ -62,9 +64,9 @@ export default function CalendarGrid({
                     </Text>
                 </div>
             ))}
-            {[...Array(13).keys()].map(i => makeGridRow(i, 5))}
+            {[...Array(13).keys()].map(i => makeGridRow(i, cols))}
             <CalendarHour hour={21} />
-            {Array(6)
+            {Array(cols + 1)
                 .fill(1)
                 .map(() => (
                     <div className='h-4 flex items-end justify-center border-r border-gray-300' />

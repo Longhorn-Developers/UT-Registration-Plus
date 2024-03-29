@@ -133,6 +133,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
+        saturdayClass: false,
+        courseCells: testData,
+    },
+};
+
+export const Saturday: Story = {
+    args: {
         saturdayClass: true,
         courseCells: testData,
     },
