@@ -5,7 +5,7 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
  * Assumes that each schedule has a unique name.
  * @param scheduleName the name of the schedule to handle duplication for
  * @param schedules the list of UserSchedules to find existing names
- * @returns the new name for the schedule, of the form "scheduleName (int)"
+ * @returns the new name for the schedule, of the form `{baseName}({index})`
  */
 export default async function handleDuplicate(scheduleName: string): Promise<string> {
     const schedules = await UserScheduleStore.get('schedules');
@@ -15,13 +15,17 @@ export default async function handleDuplicate(scheduleName: string): Promise<str
         return scheduleName;
     }
 
-    // Regex matches strings of the form: "(int)"
-    const regex = /\s+\((\d+)\)\s*$/;
-    let index = 1;
+    // Regex matches strings of the form: "Schedule" and "(1)" at the end of the string
+    const regex = /^(.+?)(\(\d+\))?$/;
 
-    // Trim ending number
-    const baseName = scheduleName.replace(regex, '');
-    let newName = baseName;
+    // Extract base name and existing index
+    const match = scheduleName.match(regex);
+    const baseName = match[1] || scheduleName;
+
+    // Extract number from parentheses and increment
+    let index = match[2] ? parseInt(match[2].slice(1, -1), 10) + 1 : 1;
+
+    let newName = `${baseName}(${index})`;
 
     // Increment until an unused index is found
     // eslint-disable-next-line @typescript-eslint/no-loop-func
