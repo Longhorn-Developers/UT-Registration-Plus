@@ -1,8 +1,7 @@
-import { Float } from '@headlessui-float/react';
 import { Menu } from '@headlessui/react';
-import createSchedule from '@pages/background/lib/createSchedule';
+import { Float } from '@headlessui-float/react';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
-import handleDuplicate from '@pages/background/lib/handleDuplicate';
+import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
@@ -46,8 +45,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
 
     const handleBlur = async () => {
         if (editorValue.trim() !== '' && editorValue.trim() !== schedule.name) {
-            schedule.name = await handleDuplicate(editorValue.trim());
-            renameSchedule(schedule.id, schedule.name);
+            schedule.name = await renameSchedule(schedule.id, editorValue.trim());
         }
         setIsEditing(false);
     };
@@ -118,7 +116,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                             </Text>
                                         )}
                                     </Menu.Item>
-                                    <Menu.Item as='div' onClick={() => createSchedule(schedule.name)}>
+                                    <Menu.Item as='div' onClick={() => duplicateSchedule(schedule.name)}>
                                         {({ active }) => (
                                             <Text className={`block px-4 py-1 ${active ? 'bg-gray-100' : ''}`}>
                                                 Duplicate
