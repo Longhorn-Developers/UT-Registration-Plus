@@ -15,8 +15,8 @@ export default async function handleDuplicate(scheduleName: string): Promise<str
         return scheduleName;
     }
 
-    // Regex matches strings of the form: " (int)"
-    const regex = / \((\d+)\)[^(]*$/;
+    // Regex matches strings of the form: "(int)"
+    const regex = /\s+\((\d+)\)\s*$/;
     let index = 1;
 
     // Trim ending number
@@ -26,7 +26,7 @@ export default async function handleDuplicate(scheduleName: string): Promise<str
     // Increment until an unused index is found
     // eslint-disable-next-line @typescript-eslint/no-loop-func
     while (schedules.find(schedule => schedule.name === newName)) {
-        newName = `${baseName} (${++index})`;
+        newName = `${baseName}(${++index})`;
     }
 
     return newName;

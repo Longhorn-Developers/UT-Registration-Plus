@@ -1,4 +1,5 @@
-import { Menu, Transition } from '@headlessui/react';
+import { Float } from '@headlessui-float/react';
+import { Menu } from '@headlessui/react';
 import createSchedule from '@pages/background/lib/createSchedule';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import handleDuplicate from '@pages/background/lib/handleDuplicate';
@@ -11,9 +12,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 import MoreActionsIcon from '~icons/material-symbols/more-vert';
-
-import { Button } from '../Button/Button';
-import Dialog from '../Dialog/Dialog';
 
 /**
  * Props for the ScheduleListItem component.
@@ -32,53 +30,6 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
-    const [showDeletePrompt, setShowDeletePrompt] = React.useState(false);
-    const [showActiveDeletePrompt, setShowActiveDeletePrompt] = React.useState(false);
-    const deleteTitle = <Text variant='h2'>Are you sure?</Text>;
-    const deleteContent = (
-        <Text variant='p'>
-            Deleting
-            <Text variant='p' className='text-ut-burntorange'>
-                {' '}
-                {schedule.name}{' '}
-            </Text>
-            is permanent and will remove all added courses from that schedule.
-        </Text>
-    );
-    const deleteChildren = [
-        <Button
-            key='cancel'
-            variant='single'
-            color='ut-offwhite'
-            onClick={() => {
-                deleteSchedule(schedule.id);
-                setShowDeletePrompt(false);
-            }}
-        >
-            <Text variant='h4' className='text-ut-black'>
-                Cancel
-            </Text>
-        </Button>,
-        <Button
-            color='ut-red'
-            key='no'
-            variant='single'
-            className='rounded-e py-4'
-            onClick={() => setShowDeletePrompt(false)}
-        >
-            <Text variant='h4' className='text-white'>
-                Delete Permanently
-            </Text>
-        </Button>,
-    ];
-
-    const activeDeleteTitle = <Text>Invalid action!</Text>;
-    const activeDeleteContent = <Text>Deleting the active schedule is disallowed.</Text>;
-    const activeDeleteChildren = [
-        <Button key='ok' variant='single' color='ut-burntorange' onClick={() => setShowActiveDeletePrompt(false)}>
-            Ok
-        </Button>,
-    ];  
 
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
@@ -144,23 +95,22 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                         )}
                     </div>
                     <div>
-                        <Menu as='div'>
-                            <Menu.Button as='div'>
-                                <MoreActionsIcon className='h-5 w-5 cursor-pointer rounded text-blueGray btn-transition hover:visible hover:border-blueGray hover:bg-blueGray hover:bg-opacity-25' />
-                            </Menu.Button>
-                            <Transition
+                        <Menu>
+                            <Float
                                 enter='transition ease-out duration-100'
                                 enterFrom='transform opacity-0 scale-95'
                                 enterTo='transform opacity-100 scale-100'
                                 leave='transition ease-in duration-75'
                                 leaveFrom='transform opacity-100 scale-100'
                                 leaveTo='transform opacity-0 scale-95'
-                                className='fixed z-1'
+                                placement='bottom-end'
+                                portal
                             >
-                                <Menu.Items
-                                    as='div'
-                                    className='absolute right-0 mt-2 w-30 border border-gray-200 rounded bg-white py-1 text-black shadow-lg'
-                                >
+                                <Menu.Button className='bg-white'>
+                                    <MoreActionsIcon className='invisible h-5 w-5 cursor-pointer rounded text-blueGray btn-transition btn-transition group-hover:visible group-hover:border-blueGray group-hover:bg-blueGray group-hover:bg-opacity-25 focusable' />
+                                </Menu.Button>
+
+                                <Menu.Items className='w-30 rounded bg-white py-1 text-black shadow-lg'>
                                     <Menu.Item as='div' onClick={() => setIsEditing(true)}>
                                         {({ active }) => (
                                             <Text className={`block px-4 py-1 ${active ? 'bg-gray-100' : ''}`}>
@@ -175,16 +125,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                             </Text>
                                         )}
                                     </Menu.Item>
-                                    <Menu.Item
-                                        as='div'
-                                        onClick={() => {
-                                            if (isActive) {
-                                                setShowActiveDeletePrompt(true);
-                                            } else {
-                                                setShowDeletePrompt(true);
-                                            }
-                                        }}
-                                    >
+                                    <Menu.Item as='div' onClick={() => deleteSchedule(schedule.id)}>
                                         {({ active }) => (
                                             <Text
                                                 className={`block px-4 py-1 ${active ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}
@@ -194,24 +135,8 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                         )}
                                     </Menu.Item>
                                 </Menu.Items>
-                            </Transition>
+                            </Float>
                         </Menu>
-                        <Dialog
-                            show={showDeletePrompt}
-                            onClose={() => setShowDeletePrompt(false)}
-                            title={deleteTitle}
-                            description={deleteContent}
-                        >
-                            {deleteChildren}
-                        </Dialog>
-                        <Dialog
-                            show={showActiveDeletePrompt}
-                            onClose={() => setShowActiveDeletePrompt(false)}
-                            title={activeDeleteTitle}
-                            description={activeDeleteContent}
-                        >
-                            {activeDeleteChildren}
-                        </Dialog>
                     </div>
                 </div>
             </li>
