@@ -1,5 +1,5 @@
-import { Float } from '@headlessui-float/react';
 import { Menu } from '@headlessui/react';
+import { Float } from '@headlessui-float/react';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
