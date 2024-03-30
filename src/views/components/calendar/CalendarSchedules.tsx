@@ -5,7 +5,7 @@ import List from '@views/components/common/List';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
 import Text from '@views/components/common/Text/Text';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import React from 'react';
+import React, { useRef } from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
 
