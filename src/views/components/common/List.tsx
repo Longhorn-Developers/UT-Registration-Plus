@@ -115,7 +115,7 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
                         if (snapshot.isDragging && transform) {
                             let [, , y] = transform.match(/translate\(([-\d]+)px, ([-\d]+)px\)/) || [];
 
-                            style.transform = `translate3d(0px, ${y}px, 0px)`; // Apply constrained y value
+                            style!.transform = `translate3d(0px, ${y}px, 0px)`; // Apply constrained y value
                         }
 
                         return (

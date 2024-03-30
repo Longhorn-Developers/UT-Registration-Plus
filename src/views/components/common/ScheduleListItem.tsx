@@ -33,7 +33,6 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
         const editor = editorRef.current;
-
         setEditorValue(schedule.name);
 
         if (isEditing && editor) {
