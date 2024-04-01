@@ -8,17 +8,21 @@ import handleDuplicate from './handleDuplicate';
  * @param scheduleName the name of the schedule to create
  * @returns undefined if successful, otherwise an error message
  */
-export default async function createSchedule(scheduleName: string): Promise<string | undefined> {
+export default async function duplicateSchedule(scheduleName: string): Promise<string | undefined> {
     const schedules = await UserScheduleStore.get('schedules');
+    const schedule = schedules.find(schedule => schedule.name === scheduleName);
 
-    // Duplicate schedule found, we need to append a number to the end of the schedule name
+    if (schedule === undefined) {
+        throw new Error(`Schedule ${scheduleName} does not exist`);
+    }
+
     const updatedName = await handleDuplicate(scheduleName);
 
     schedules.push({
         id: generateRandomId(),
         name: updatedName,
-        courses: [],
-        hours: 0,
+        courses: JSON.parse(JSON.stringify(schedule.courses)),
+        hours: schedule.hours,
         updatedAt: Date.now(),
     });
 
