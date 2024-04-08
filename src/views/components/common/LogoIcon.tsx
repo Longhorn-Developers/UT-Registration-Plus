@@ -30,7 +30,7 @@ export function SmallLogo({ className }: { className?: string }): JSX.Element {
             <LogoIcon />
             <div className='flex flex-col text-lg font-medium leading-[1em]'>
                 <p className='text-nowrap text-ut-burntorange'>UT Registration</p>
-                <p className='text-ut-orange'>
+                <p className='text-ut-burntorange'>
                     Plus{' '}
                     <span className='text-xs'>
                         {import.meta.env.VITE_BETA_BUILD ? `(${import.meta.env.VITE_PACKAGE_VERSION})` : ''}
@@ -53,7 +53,7 @@ export function LargeLogo({ className }: { className?: string }): JSX.Element {
             <LogoIcon className='h-12 w-12' />
             <div className='hidden flex-col text-[1.35rem] font-medium leading-[1em] md:flex screenshot:flex'>
                 <p className='text-nowrap text-ut-burntorange'>UT Registration</p>
-                <p className='text-ut-orange'>
+                <p className='text-ut-burntorange'>
                     Plus{' '}
                     <span className='text-sm'>
                         {import.meta.env.VITE_BETA_BUILD ? `(${import.meta.env.VITE_PACKAGE_VERSION})` : ''}

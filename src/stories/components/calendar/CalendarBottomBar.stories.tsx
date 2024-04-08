@@ -84,18 +84,29 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        courses: [
+        courseCells: [
             {
-                colors: getCourseColors('pink', 200),
-                courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
-                status: exampleGovCourse.status,
+                async: true,
+                calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
+                componentProps: {
+                    colors: getCourseColors('pink', 200),
+                    courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
+                    status: exampleGovCourse.status,
+                },
+                course: exampleGovCourse,
             },
             {
-                colors: getCourseColors('slate', 500),
-                courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
-                status: examplePsyCourse.status,
+                async: true,
+                calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
+                componentProps: {
+                    colors: getCourseColors('slate', 500),
+                    courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
+                    status: examplePsyCourse.status,
+                },
+                course: examplePsyCourse,
             },
         ],
+        setCourse: () => {},
     },
     render: props => (
         <div className='outline-red outline w-292.5!'>
@@ -105,7 +116,7 @@ export const Default: Story = {
 };
 export const Empty: Story = {
     args: {
-        courses: [],
+        courseCells: [],
     },
     render: props => (
         <div className='outline-red outline w-292.5!'>

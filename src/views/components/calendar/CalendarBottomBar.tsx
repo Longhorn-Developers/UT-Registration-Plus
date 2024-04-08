@@ -1,18 +1,20 @@
+import type { Course } from '@shared/types/Course';
 import { saveAsCal, saveCalAsPng } from '@views/components/calendar/utils';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
+import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
 import React from 'react';
 
 import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
 import ImageIcon from '~icons/material-symbols/image';
 
-import type { CalendarCourseCellProps } from './CalendarCourseCell';
 import CalendarCourseBlock from './CalendarCourseCell';
 
 type CalendarBottomBarProps = {
-    courses?: CalendarCourseCellProps[];
+    courseCells?: CalendarGridCourse[];
+    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 };
 
 /**
@@ -21,8 +23,9 @@ type CalendarBottomBarProps = {
  * @param {Object[]} courses - The list of courses to display in the calendar.
  * @returns {JSX.Element} The rendered bottom bar component.
  */
-export default function CalendarBottomBar({ courses }: CalendarBottomBarProps): JSX.Element {
-    const displayCourses = courses && courses.length > 0;
+export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBottomBarProps): JSX.Element {
+    const asyncCourseCells = courseCells?.filter(block => block.async);
+    const displayCourses = asyncCourseCells && asyncCourseCells.length > 0;
 
     return (
         <div className='w-full flex py-1.25 pl-7.5 pr-6.25'>
@@ -35,15 +38,19 @@ export default function CalendarBottomBar({ courses }: CalendarBottomBarProps): 
                     <>
                         <Text variant='h4'>Async/Other:</Text>
                         <div className='inline-flex gap-2.5'>
-                            {courses.map(({ courseDeptAndInstr, status, colors, className }) => (
-                                <CalendarCourseBlock
-                                    courseDeptAndInstr={courseDeptAndInstr}
-                                    status={status}
-                                    colors={colors}
-                                    key={courseDeptAndInstr}
-                                    className={clsx(className, 'w-35! h-15!')}
-                                />
-                            ))}
+                            {asyncCourseCells.map(block => {
+                                const { courseDeptAndInstr, status, colors, className } = block.componentProps;
+                                return (
+                                    <CalendarCourseBlock
+                                        courseDeptAndInstr={courseDeptAndInstr}
+                                        status={status}
+                                        colors={colors}
+                                        key={courseDeptAndInstr}
+                                        className={clsx(className, 'w-35! h-15!')}
+                                        onClick={() => setCourse(block.course)}
+                                    />
+                                );
+                            })}
                         </div>
                     </>
                 )}
