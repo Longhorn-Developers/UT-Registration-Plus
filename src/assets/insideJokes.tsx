@@ -1,4 +1,4 @@
-const utAustinQuotes: string[] = [
+const minecraftSplashTextJokes: string[] = [
     "You can't fail classes you're not in, that's for sure.",
     'Steer clear of O-Chem, unless you fancy a challenge.',
     'Rec Sports fills up fast, even before the sun reaches its peak.',
@@ -9,7 +9,7 @@ const utAustinQuotes: string[] = [
     "The year is 2055 and Welch still isn't finished.",
     'Motivation dropping faster than ur GPA',
     'No Work Happens On PCL 5th Floor.',
-    'Sophomore But Freshman By Credit.',
+    'I may be a sophomore in name, but my credit count screams freshman!',
     'Pain is temporary, GPA is forever.',
     "You've Yee'd Your Last Haw.",
     'lol everything is already waitlisted.',
@@ -17,7 +17,7 @@ const utAustinQuotes: string[] = [
     'It\'s ${moment().format("h:mm")} and OU Still Sucks.',
     'TeXAs iS BaCK GuYZ',
     'mAke iT yOuR tExAs',
-    "'Academically Challenged'",
+    'Academically Challenged',
     'Does McCombs teach Parseltongue?',
     'Feel bad if you say Wampus.',
     'No Cruce Enfrente Del Bus.',
@@ -32,9 +32,12 @@ const utAustinQuotes: string[] = [
     'HOW BOUT A NICE CUP OF LIBER TEA',
     "It's called the quiet floor of the PCL for a reason",
     'Whose car is this and why is it attempting to enter Welch?',
-    "'I really like one of my TAs and I wanna ask her out after this semester ends'",
+    'I really like one of my TAs and I wanna ask her out after this semester ends',
     'CaN YoU aSk OuT a tA aFtEr tHe SeMeStEr Is oVeR AnD gRaDeS ArE DoNe?',
     "The Block of Butter incident of '22",
+    "Arrows of Christ vs Church of Scientology was the crossover we didn't know we needed",
+    'THE WALK SIGN IS ON TO CROSS GUADALUPE AND 21ST',
+    'Days since last GDC door alarm: 0',
 ];
 
-export default utAustinQuotes;
+export default minecraftSplashTextJokes;
