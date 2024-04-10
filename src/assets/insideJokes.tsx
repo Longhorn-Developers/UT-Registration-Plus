@@ -14,7 +14,6 @@ const minecraftSplashTextJokes: string[] = [
     "You've Yee'd Your Last Haw.",
     'lol everything is already waitlisted.',
     "At Least You're Not At A&M.",
-    'It\'s ${moment().format("h:mm")} and OU Still Sucks.',
     'TeXAs iS BaCK GuYZ',
     'mAke iT yOuR tExAs',
     'Academically Challenged',
