@@ -37,6 +37,19 @@ const minecraftSplashTextJokes: string[] = [
     "Arrows of Christ vs Church of Scientology was the crossover we didn't know we needed",
     'THE WALK SIGN IS ON TO CROSS GUADALUPE AND 21ST',
     'Days since last GDC door alarm: 0',
+    "Finding a parking spot is like winning the lottery... if the lottery required parallel parking skills.",
+    "The squirrels are more ambitious than most freshmen during finals week.",
+    "The line at the on-campus Starbucks is longer than your course waitlist.",
+    "The weather changes more often than your class schedule.",
+    "'Sorry, the PCL is full' is the most heartbreaking message you'll ever receive.",
+    "Getting to class on time is like navigating a maze of construction zones.",
+    "'studying' often means refreshing Canvas every five minutes to see if the professor posted lecture slides.",
+    "'I'll just skip this lecture' often turns into a semester-long habit.",
+    "The libraries are full of students pretending to study but actually napping with their eyes open.",
+    "The 'campus loop' refers to both the bus route and the endless cycle of trying to find your way around campus.",
+    "The squirrels have mastered the art of begging for food better than most students during finals week.",
+    "'going for a run' often means 'running to get food from food trucks'.",
+    "The struggle to fit all your classes into one schedule is as real as the struggle to fit all your groceries into a mini-fridge.",
 ];
 
 export default minecraftSplashTextJokes;
