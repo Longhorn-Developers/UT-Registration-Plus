@@ -87,10 +87,8 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     const handleOpenPastSyllabi = async () => {
         for (const instructor of instructors) {
             let { firstName = '', lastName = '' } = instructor;
-            // firstName = capitalizeString(firstName);
-            // lastName = capitalizeString(lastName);
-            firstName = 'William';
-            lastName = 'Young';
+            firstName = capitalizeString(firstName);
+            lastName = capitalizeString(lastName);
             const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=&unique=&instructor_first=${firstName}&instructor_last=${lastName}&course_type=In+Residence&search=Search`;
             openNewTab({ url });
         }
@@ -131,7 +129,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                     <Link
                                         key={instructor.fullName}
                                         variant='h4'
-                                        href={instructor.getDirectoryUrl()}
+                                        href={`https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=&unique=&instructor_first=${instructor.firstName}&instructor_last=${instructor.lastName}&course_type=In+Residence&search=Search`}
                                         className='link'
                                     >
                                         {getInstructorFullName(instructor)}
