@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { createContext, useContext } from 'react';
 
 /**
@@ -13,7 +12,7 @@ export interface DialogInfo {
     title?: JSX.Element;
     description?: JSX.Element;
     buttons?: JSX.Element | CloseWrapper<JSX.Element>;
-    showFocus?: boolean;
+    initialFocusHidden?: boolean;
     onClose?: () => void;
 }
 

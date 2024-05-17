@@ -117,7 +117,6 @@ const NestedDialogsInnerComponent = () => {
                     </Button>
                 </>
             ),
-            showFocus: true,
         });
     };
 
