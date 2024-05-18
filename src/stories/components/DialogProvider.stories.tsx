@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@views/components/common/Button';
-import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
+import DialogProvider, { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import Text from '@views/components/common/Text/Text';
-import { useDialog } from '@views/contexts/DialogContext';
 import React, { useState } from 'react';
 
 import MaterialSymbolsExpandAllRoundedIcon from '~icons/material-symbols/expand-all-rounded';
@@ -31,12 +30,12 @@ export const Default: Story = {
 };
 
 const InnerComponent = () => {
-    const showDialog = useDialog();
+    const showDialog = usePrompt();
 
     const myShow = () => {
         showDialog({
-            title: <h1>Dialog Title</h1>,
-            description: <p>Dialog Description</p>,
+            title: 'Dialog Title',
+            description: 'Dialog Description',
             // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <Button variant='outline' color='ut-red' onClick={close}>
@@ -64,15 +63,16 @@ export const FiveDialogs: Story = {
 };
 
 const FiveDialogsInnerComponent = () => {
-    const showDialog = useDialog();
+    const showDialog = usePrompt();
 
     const myShow = () => {
         for (let i = 0; i < 5; i++) {
             setTimeout(
                 () =>
                     showDialog({
-                        title: <h1>Dialog #{i}</h1>,
-                        description: <p>Dialog Description</p>,
+                        title: `Dialog #${i}`,
+                        description:
+                            'Deleting Main Schedule is permanent and will remove all added courses from that schedule.',
                         // eslint-disable-next-line react/no-unstable-nested-components
                         buttons: close => (
                             <Button variant='outline' color='ut-red' onClick={close}>
@@ -102,12 +102,12 @@ export const NestedDialogs: Story = {
 };
 
 const NestedDialogsInnerComponent = () => {
-    const showDialog = useDialog();
+    const showDialog = usePrompt();
 
     const myShow = () => {
         showDialog({
-            title: <h1>Dialog Title</h1>,
-            description: <p>Dialog Description</p>,
+            title: 'Dialog Title',
+            description: 'Dialog Description',
             // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <>
@@ -137,13 +137,13 @@ export const DialogWithOnClose: Story = {
 };
 
 const DialogWithOnCloseInnerComponent = () => {
-    const showDialog = useDialog();
+    const showDialog = usePrompt();
     const [timesClosed, setTimesClosed] = useState(0);
 
     const myShow = () => {
         showDialog({
-            title: <h1>Dialog Title</h1>,
-            description: <p>Dialog Description</p>,
+            title: 'Dialog Title',
+            description: 'Dialog Description',
             // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <Button variant='outline' color='ut-red' onClick={close}>

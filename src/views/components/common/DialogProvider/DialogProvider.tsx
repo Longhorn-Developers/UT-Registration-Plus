@@ -1,11 +1,18 @@
-import type { CloseWrapper, ShowDialogFn } from '@views/contexts/DialogContext';
-import { DialogContext } from '@views/contexts/DialogContext';
+import type { CloseWrapper, DialogInfo, ShowDialogFn } from '@views/contexts/DialogContext';
+import { DialogContext, useDialog } from '@views/contexts/DialogContext';
 import type { ReactNode } from 'react';
 import React, { useCallback, useRef, useState } from 'react';
 
 import Dialog from '../Dialog';
+import Text from '../Text/Text';
 
 type DialogElement = (show: boolean) => ReactNode;
+export interface PromptInfo extends Omit<DialogInfo, 'buttons' | 'className' | 'title' | 'description'> {
+    title: JSX.Element | string;
+    description: JSX.Element | string;
+    onClose?: () => void;
+    buttons: NonNullable<DialogInfo['buttons']>;
+}
 
 function unwrapCloseWrapper<T>(obj: T | CloseWrapper<T>, close: () => void): T {
     if (typeof obj === 'function') {
@@ -15,6 +22,27 @@ function unwrapCloseWrapper<T>(obj: T | CloseWrapper<T>, close: () => void): T {
     return obj;
 }
 
+export function usePrompt(): (info: PromptInfo) => void {
+    const showDialog = useDialog();
+
+    return (info: PromptInfo) => {
+        showDialog({
+            ...info,
+            title: (
+                <Text variant='h2' as='h1'>
+                    {info.title}
+                </Text>
+            ),
+            description: (
+                <Text variant='p' as='p'>
+                    {info.description}
+                </Text>
+            ),
+            className: 'max-w-[400px] flex flex-col gap-3 p-6.25',
+        });
+    };
+}
+
 // Unique ID counter is safe to be global
 let nextId = 1;
 
@@ -22,9 +50,7 @@ let nextId = 1;
  * Allows descendant to show dialogs via a function, handling animations and stacking.
  */
 export default function DialogProvider(props: { children: ReactNode }): JSX.Element {
-    const [dialogQueue, setDialogQueue] = useState<DialogElement[]>([]);
-    const dialogQueueRef = useRef() as React.MutableRefObject<DialogElement[]>;
-    dialogQueueRef.current = dialogQueue;
+    const dialogQueue = useRef<DialogElement[]>([]);
     const [openDialog, setOpenDialog] = useState<DialogElement | undefined>();
     const openRef = useRef<typeof openDialog>();
     openRef.current = openDialog;
@@ -44,9 +70,9 @@ export default function DialogProvider(props: { children: ReactNode }): JSX.Elem
         const onLeave = () => {
             setOpenDialog(undefined);
 
-            if (dialogQueueRef.current.length > 0) {
-                setOpenDialog(dialogQueueRef.current[0]);
-                setDialogQueue(prev => prev.slice(1));
+            if (dialogQueue.current.length > 0) {
+                const newOpen = dialogQueue.current.pop();
+                setOpenDialog(() => newOpen);
                 setIsOpen(true);
             }
 
@@ -63,16 +89,17 @@ export default function DialogProvider(props: { children: ReactNode }): JSX.Elem
                 appear
                 show={show}
                 initialFocusHidden={infoUnwrapped.initialFocusHidden}
+                className={infoUnwrapped.className}
             >
-                {buttons}
+                <div className='w-full flex justify-end gap-2.5'>{buttons}</div>
             </Dialog>
         );
 
         if (openRef.current) {
-            setDialogQueue(prev => [openRef.current!, ...prev]);
+            dialogQueue.current.push(openRef.current);
         }
 
-        setOpenDialog(dialogElement);
+        setOpenDialog(() => dialogElement);
         setIsOpen(true);
     }, []);
 

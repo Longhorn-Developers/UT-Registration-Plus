@@ -11,6 +11,7 @@ export type CloseWrapper<T> = (close: () => void) => T;
 export interface DialogInfo {
     title?: JSX.Element;
     description?: JSX.Element;
+    className?: string;
     buttons?: JSX.Element | CloseWrapper<JSX.Element>;
     initialFocusHidden?: boolean;
     onClose?: () => void;
