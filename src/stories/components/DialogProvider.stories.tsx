@@ -38,7 +38,7 @@ const InnerComponent = () => {
             description: 'Dialog Description',
             // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
-                <Button variant='outline' color='ut-red' onClick={close}>
+                <Button variant='filled' color='ut-burntorange' onClick={close}>
                     Close
                 </Button>
             ),
@@ -75,7 +75,7 @@ const FiveDialogsInnerComponent = () => {
                             'Deleting Main Schedule is permanent and will remove all added courses from that schedule.',
                         // eslint-disable-next-line react/no-unstable-nested-components
                         buttons: close => (
-                            <Button variant='outline' color='ut-red' onClick={close}>
+                            <Button variant='filled' color='ut-burntorange' onClick={close}>
                                 Close
                             </Button>
                         ),
@@ -112,7 +112,7 @@ const NestedDialogsInnerComponent = () => {
             buttons: close => (
                 <>
                     <NestedDialogsInnerComponent />
-                    <Button variant='outline' color='ut-red' onClick={close}>
+                    <Button variant='filled' color='ut-burntorange' onClick={close}>
                         Close
                     </Button>
                 </>
@@ -146,7 +146,7 @@ const DialogWithOnCloseInnerComponent = () => {
             description: 'Dialog Description',
             // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
-                <Button variant='outline' color='ut-red' onClick={close}>
+                <Button variant='filled' color='ut-burntorange' onClick={close}>
                     Close
                 </Button>
             ),

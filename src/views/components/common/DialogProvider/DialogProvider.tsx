@@ -22,6 +22,9 @@ function unwrapCloseWrapper<T>(obj: T | CloseWrapper<T>, close: () => void): T {
     return obj;
 }
 
+/**
+ * Hook to show prompt with default stylings.
+ */
 export function usePrompt(): (info: PromptInfo) => void {
     const showDialog = useDialog();
 
@@ -29,16 +32,16 @@ export function usePrompt(): (info: PromptInfo) => void {
         showDialog({
             ...info,
             title: (
-                <Text variant='h2' as='h1'>
+                <Text variant='h2' as='h1' className='text-theme-black'>
                     {info.title}
                 </Text>
             ),
             description: (
-                <Text variant='p' as='p'>
+                <Text variant='p' as='p' className='text-ut-black'>
                     {info.description}
                 </Text>
             ),
-            className: 'max-w-[400px] flex flex-col gap-3 p-6.25',
+            className: 'max-w-[400px] flex flex-col gap-2.5 p-6.25',
         });
     };
 }
@@ -91,7 +94,7 @@ export default function DialogProvider(props: { children: ReactNode }): JSX.Elem
                 initialFocusHidden={infoUnwrapped.initialFocusHidden}
                 className={infoUnwrapped.className}
             >
-                <div className='w-full flex justify-end gap-2.5'>{buttons}</div>
+                <div className='mt-0.75 w-full flex justify-end gap-2.5'>{buttons}</div>
             </Dialog>
         );
 
