@@ -1,4 +1,4 @@
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, Transition, TransitionChild } from '@headlessui/react';
 import type { ReactElement } from 'react';
 import React from 'react';
 
@@ -28,7 +28,7 @@ function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialo
     return (
         <Transition appear show={isOpen} as={React.Fragment}>
             <Dialog as='div' onClose={onClose} className='relative z-50'>
-                <Transition.Child
+                <TransitionChild
                     as={React.Fragment}
                     enter='ease-out duration-200'
                     enterFrom='opacity-0'
@@ -38,9 +38,9 @@ function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialo
                     leaveTo='opacity-0'
                 >
                     <div className='fixed inset-0 bg-black bg-opacity-50' aria-hidden='true' />
-                </Transition.Child>
+                </TransitionChild>
 
-                <Transition.Child
+                <TransitionChild
                     as={React.Fragment}
                     enter='ease-out duration-200'
                     enterFrom='opacity-0 scale-95'
@@ -56,7 +56,7 @@ function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialo
                             <div className='flex items-center justify-end gap-2'>{children}</div>
                         </Dialog.Panel>
                     </div>
-                </Transition.Child>
+                </TransitionChild>
             </Dialog>
         </Transition>
     );

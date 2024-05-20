@@ -91,7 +91,6 @@ export default function DialogProvider(props: { children: ReactNode }): JSX.Elem
                 description={infoUnwrapped.description}
                 appear
                 show={show}
-                initialFocusHidden={infoUnwrapped.initialFocusHidden}
                 className={infoUnwrapped.className}
             >
                 <div className='mt-0.75 w-full flex justify-end gap-2.5'>{buttons}</div>
