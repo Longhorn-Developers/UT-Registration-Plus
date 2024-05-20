@@ -13,7 +13,6 @@ export interface DialogInfo {
     description?: JSX.Element;
     className?: string;
     buttons?: JSX.Element | CloseWrapper<JSX.Element>;
-    initialFocusHidden?: boolean;
     onClose?: () => void;
 }
 

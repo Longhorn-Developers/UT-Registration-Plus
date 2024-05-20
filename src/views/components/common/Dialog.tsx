@@ -1,5 +1,12 @@
 import type { TransitionRootProps } from '@headlessui/react';
-import { Dialog as HDialog, Transition } from '@headlessui/react';
+import {
+    Description,
+    Dialog as HDialog,
+    DialogPanel,
+    DialogTitle,
+    Transition,
+    TransitionChild,
+} from '@headlessui/react';
 import clsx from 'clsx';
 import type { PropsWithChildren } from 'react';
 import React, { Fragment } from 'react';
@@ -10,7 +17,6 @@ export interface _DialogProps {
     className?: string;
     title?: JSX.Element;
     description?: JSX.Element;
-    initialFocusHidden?: boolean;
 }
 
 /**
@@ -22,17 +28,12 @@ export type DialogProps = _DialogProps & Omit<TransitionRootProps<typeof HDialog
  * A reusable popup component that can be used to display content on the page
  */
 export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Element {
-    const { children, className, open, initialFocusHidden, ...rest } = props;
-    const initialFocusHiddenRef = React.useRef<HTMLDivElement>(null);
-
-    if (initialFocusHidden) {
-        rest.initialFocus = initialFocusHiddenRef;
-    }
+    const { children, className, open, ...rest } = props;
 
     return (
         <Transition show={open} as={HDialog} {...rest}>
             <ExtensionRoot>
-                <Transition.Child
+                <TransitionChild
                     as={Fragment}
                     enter='transition duration-300 motion-reduce:duration-150 ease-out'
                     enterFrom='opacity-0'
@@ -42,8 +43,8 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                     leaveTo='opacity-0'
                 >
                     <div className={clsx('fixed inset-0 z-50 bg-slate-700/35')} />
-                </Transition.Child>
-                <Transition.Child
+                </TransitionChild>
+                <TransitionChild
                     as={Fragment}
                     enter='transition duration-375 motion-reduce:duration-0 ease-[cubic-bezier(0.05,0.4,0.2,1)]'
                     enterFrom='transform-gpu scale-95 opacity-0'
@@ -53,21 +54,18 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                     leaveTo='transform-gpu scale-95 opacity-0'
                 >
                     <div className='fixed inset-0 z-50 flex items-center justify-center'>
-                        <HDialog.Panel
+                        <DialogPanel
                             className={clsx(
                                 'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-solid border-ut-offwhite rounded bg-white shadow-xl ml-[calc(100vw-100%)] mt-[calc(100vw-100%)]',
                                 className
                             )}
                         >
-                            {initialFocusHidden && <div className='hidden' ref={initialFocusHiddenRef} />}
-                            {props.title && <HDialog.Title as={Fragment}>{props.title}</HDialog.Title>}
-                            {props.description && (
-                                <HDialog.Description as={Fragment}>{props.description}</HDialog.Description>
-                            )}
+                            {props.title && <DialogTitle as={Fragment}>{props.title}</DialogTitle>}
+                            {props.description && <Description as={Fragment}>{props.description}</Description>}
                             {children}
-                        </HDialog.Panel>
+                        </DialogPanel>
                     </div>
-                </Transition.Child>
+                </TransitionChild>
             </ExtensionRoot>
         </Transition>
     );

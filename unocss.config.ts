@@ -10,7 +10,7 @@ export default defineConfig({
     rules: [
         [
             'btn-transition',
-            { transition: 'color 180ms, border-color 150ms, background-color 150ms, box-shadow 0ms, transform 50ms' },
+            { transition: 'color 180ms, border-color 150ms, background-color 150ms, box-shadow 50ms, transform 50ms' },
         ],
         [
             'ring-offset-0',
