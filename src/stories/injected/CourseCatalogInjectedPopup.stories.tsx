@@ -15,7 +15,7 @@ const meta = {
     },
     tags: ['autodocs'],
     render(args) {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+         
         const [isOpen, setIsOpen] = useState(args.open);
 
         return <CourseCatalogInjectedPopup {...args} open={isOpen} onClose={() => setIsOpen(false)} />;

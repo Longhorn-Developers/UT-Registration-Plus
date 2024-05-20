@@ -117,6 +117,7 @@ export const Default: Story = {
 export const Empty: Story = {
     args: {
         courseCells: [],
+        setCourse: () => {},
     },
     render: props => (
         <div className='outline-red outline w-292.5!'>
