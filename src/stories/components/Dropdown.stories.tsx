@@ -38,18 +38,6 @@ const meta: Meta<typeof ScheduleDropdown> = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-    argTypes: {
-        defaultOpen: {
-            control: {
-                type: 'boolean',
-            },
-        },
-        children: {
-            control: {
-                type: 'node',
-            },
-        },
-    },
     render: (args: ScheduleDropdownProps) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const [activeSchedule, schedules] = useSchedules();

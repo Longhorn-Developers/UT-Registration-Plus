@@ -12,13 +12,6 @@ const meta = {
     parameters: {
         layout: 'centered',
     },
-    argTypes: {
-        schedule: {
-            control: {
-                type: 'UserSchedule',
-            },
-        },
-    },
     args: {
         schedule: exampleSchedule,
     },

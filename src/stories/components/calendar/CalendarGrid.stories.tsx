@@ -135,5 +135,6 @@ export const Default: Story = {
     args: {
         saturdayClass: true,
         courseCells: testData,
+        setCourse: () => {},
     },
 };
