@@ -23,7 +23,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Active: Story = {
     render(args) {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+         
         const [activeSchedule] = useSchedules();
 
         return (

@@ -39,10 +39,10 @@ const meta: Meta<typeof ScheduleDropdown> = {
     },
     tags: ['autodocs'],
     render: (args: ScheduleDropdownProps) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+         
         const [activeSchedule, schedules] = useSchedules();
 
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+         
         useEffect(() => {
             console.log(activeSchedule);
         }, [activeSchedule]);
