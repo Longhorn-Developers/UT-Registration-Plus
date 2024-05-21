@@ -23,7 +23,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Active: Story = {
     render(args) {
-         
         const [activeSchedule] = useSchedules();
 
         return (

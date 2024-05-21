@@ -39,10 +39,8 @@ const meta: Meta<typeof ScheduleDropdown> = {
     },
     tags: ['autodocs'],
     render: (args: ScheduleDropdownProps) => {
-         
         const [activeSchedule, schedules] = useSchedules();
 
-         
         useEffect(() => {
             console.log(activeSchedule);
         }, [activeSchedule]);
