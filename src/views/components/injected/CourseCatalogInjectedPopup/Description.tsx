@@ -56,7 +56,7 @@ export default function Description({ course }: DescriptionProps): JSX.Element {
     return (
         <>
             {status === LoadStatus.ERROR && (
-                <Text className='text-theme-red !font-bold'>
+                <Text className='text-theme-red font-bold!'>
                     Please refresh the page and log back in using your UT EID and password.
                 </Text>
             )}
