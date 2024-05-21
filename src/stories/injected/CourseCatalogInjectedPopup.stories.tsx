@@ -15,7 +15,6 @@ const meta = {
     },
     tags: ['autodocs'],
     render(args) {
-         
         const [isOpen, setIsOpen] = useState(args.open);
 
         return <CourseCatalogInjectedPopup {...args} open={isOpen} onClose={() => setIsOpen(false)} />;
