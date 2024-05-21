@@ -52,7 +52,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
-    const { isInCalendar } = useCalendar();
+    const isInCalendar = useCalendar();
 
     const getInstructorFullName = (instructor: Instructor) => {
         const { firstName = '', lastName = '' } = instructor;

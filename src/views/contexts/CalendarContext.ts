@@ -1,18 +1,9 @@
 import { createContext, useContext } from 'react';
 
 /**
- * Data for the calendar.
- */
-export type CalendarData = {
-    isInCalendar: boolean;
-};
-
-/**
  * Context for the calendar.
  */
-export const CalendarContext = createContext<CalendarData>({
-    isInCalendar: false,
-});
+export const CalendarContext = createContext(false);
 
 /**
  * @returns The calendar context.

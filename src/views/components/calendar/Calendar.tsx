@@ -7,11 +7,10 @@ import CalendarHeader from '@views/components/calendar/CalenderHeader';
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
-import type { CalendarData } from '@views/contexts/CalendarContext';
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import { MessageListener } from 'chrome-extension-toolkit';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CalendarFooter from './CalendarFooter';
 import TeamLinks from './TeamLinks';
@@ -65,10 +64,8 @@ export default function Calendar(): JSX.Element {
         if (course) setShowPopup(true);
     }, [course]);
 
-    const contextValue = useMemo<CalendarData>(() => ({ isInCalendar: true }), []);
-
     return (
-        <CalendarContext.Provider value={contextValue}>
+        <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
                 <CalendarHeader
                     onSidebarToggle={() => {
