@@ -184,7 +184,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
     };
 
     return (
-        <div className='pb-[25px] pt-[12px]'>
+        <div className='pt-3'>
             {/* TODO (achadaga): again would be nice to have an updated spinner */}
             {status === DataStatus.LOADING && <Spinner />}
             {status === DataStatus.NOT_FOUND && (
@@ -208,7 +208,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                             Grade Distribution for {course.department} {course.number}
                         </Text>
                         <select
-                            className='border border rounded-[4px] border-solid px-[12px] py-[8px]'
+                            className='border border rounded border-solid px-3 py-2'
                             onChange={handleSelectSemester}
                         >
                             {Object.keys(distributions)
