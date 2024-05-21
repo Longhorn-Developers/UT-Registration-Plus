@@ -56,7 +56,9 @@ export default function Description({ course }: DescriptionProps): JSX.Element {
     return (
         <>
             {status === LoadStatus.ERROR && (
-                <Text color='theme-red'>Please refresh the page and log back in using your UT EID and password.</Text>
+                <Text className='text-theme-red !font-bold'>
+                    Please refresh the page and log back in using your UT EID and password.
+                </Text>
             )}
             {/* TODO (achadaga): would be nice to have a new spinner here */}
             {status === LoadStatus.LOADING && <Spinner />}
