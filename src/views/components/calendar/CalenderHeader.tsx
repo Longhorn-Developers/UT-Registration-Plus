@@ -34,7 +34,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
     const [activeSchedule] = useSchedules();
 
     return (
-        <div className='overflow-y-hidden flex items-center gap-5 overflow-x-auto border-b border-ut-offwhite px-7 py-4'>
+        <div className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
             <Button
                 variant='single'
                 icon={MenuIcon}

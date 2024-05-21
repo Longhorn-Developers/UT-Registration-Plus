@@ -72,8 +72,8 @@ export default function Calendar(): JSX.Element {
             />
             <div className='h-full flex overflow-auto pl-3'>
                 {showSidebar && (
-                    <div className='h-full flex flex-none flex-col justify-between pb-5 pl-4.5 screenshot:hidden'>
-                        <div className='mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pr-4 pt-5'>
+                    <div className='h-full flex flex-none flex-col justify-between pb-5 screenshot:hidden'>
+                        <div className='mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pr-4 pl-4.5 pt-5'>
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' className='my-5' />
                             <ImportantLinks />

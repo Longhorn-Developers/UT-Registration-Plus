@@ -97,6 +97,7 @@ export const Default: Story = {
         children: generateCourseBlocks,
         itemKey: item => item.uniqueId,
         gap: 12,
+        onReordered: () => {},
     },
     render: args => (
         <div className='w-sm'>
