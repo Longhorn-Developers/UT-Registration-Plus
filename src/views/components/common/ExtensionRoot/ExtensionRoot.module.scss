@@ -14,3 +14,24 @@
     @apply font-sans h-full;
     color: #303030;
 }
+
+::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    border: 3px solid #fff;
+    border-radius: 7px;
+    min-height: 40px;
+    box-shadow: none;
+    background: rgb(218, 220, 224);
+}
+:hover::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(189, 193, 198);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: rgb(128, 134, 139);
+}
