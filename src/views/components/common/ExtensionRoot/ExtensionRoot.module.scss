@@ -13,4 +13,8 @@
 .extensionRoot {
     @apply font-sans h-full;
     color: #303030;
+
+    [data-rfd-drag-handle-context-id=':r1:'] {
+        cursor: move;
+    }
 }
