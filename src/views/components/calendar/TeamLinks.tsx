@@ -14,17 +14,17 @@ interface LinkItem {
 }
 
 const links: LinkItem[] = [
-    {
-        text: 'Feedback Form',
-        url: '#',
-    },
-    {
-        text: 'Apply to Longhorn Developers',
-        url: '#',
-    },
+    // {
+    //     text: 'Feedback Form',
+    //     url: '#',
+    // },
+    // {
+    //     text: 'Apply to Longhorn Developers',
+    //     url: '#',
+    // },
     {
         text: 'Become a Beta Tester',
-        url: 'https://discord.gg/bVh9g6VFwB',
+        url: 'https://forms.gle/Y9dmQAb1yzW5PRg48',
     },
 ];
 
