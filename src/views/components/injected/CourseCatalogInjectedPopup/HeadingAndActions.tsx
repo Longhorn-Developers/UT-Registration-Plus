@@ -104,7 +104,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     };
 
     return (
-        <div className='w-full px-2 pb-3 pt-6 text-ut-black'>
+        <div className='w-full px-2 pb-3 pt-5 text-ut-black'>
             <div className='flex flex-col'>
                 <div className='flex items-center gap-1'>
                     <Text variant='h1' className='truncate text-theme-black'>
