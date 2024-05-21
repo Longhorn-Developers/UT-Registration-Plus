@@ -34,7 +34,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
     const [activeSchedule] = useSchedules();
 
     return (
-        <div className='flex items-center gap-5 border-b border-ut-offwhite px-7 py-4'>
+        <div className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
             <Button
                 variant='single'
                 icon={MenuIcon}
@@ -51,7 +51,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                     totalCourses={activeSchedule.courses.length}
                 />
                 <div className='flex items-center gap-1 screenshot:hidden'>
-                    <Text variant='mini' className='text-ut-gray font-normal'>
+                    <Text variant='mini' className='text-nowrap text-ut-gray font-normal'>
                         DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                     </Text>
                     <button className='inline-block h-4 w-4 bg-transparent p-0 btn'>

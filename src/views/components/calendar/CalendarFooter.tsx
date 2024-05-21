@@ -12,7 +12,7 @@ import Link from '../common/Link';
  */
 export default function CalendarFooter(): JSX.Element {
     return (
-        <footer className='min-w-full w-0 space-y-2'>
+        <footer className='min-w-full w-0 pl-4.5 space-y-2'>
             <div className='flex gap-2'>
                 <Link className='linkanimate' href='#'>
                     <InstagramIcon className='h-6 w-6' />
