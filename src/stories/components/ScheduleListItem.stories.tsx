@@ -12,13 +12,6 @@ const meta = {
     parameters: {
         layout: 'centered',
     },
-    argTypes: {
-        schedule: {
-            control: {
-                type: 'UserSchedule',
-            },
-        },
-    },
     args: {
         schedule: exampleSchedule,
     },
@@ -30,7 +23,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Active: Story = {
     render(args) {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         const [activeSchedule] = useSchedules();
 
         return (

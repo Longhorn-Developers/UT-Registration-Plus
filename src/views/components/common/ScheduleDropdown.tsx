@@ -1,4 +1,4 @@
-import { Disclosure, Transition } from '@headlessui/react';
+import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from '@headlessui/react';
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
 import React from 'react';
@@ -25,7 +25,7 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
             <Disclosure defaultOpen={props.defaultOpen}>
                 {({ open }) => (
                     <>
-                        <Disclosure.Button className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left'>
+                        <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left'>
                             <div className='flex-1'>
                                 <Text as='div' variant='h4' className='mb-1 w-100% text-ut-burntorange'>
                                     {(activeSchedule ? activeSchedule.name : 'Schedule').toUpperCase()}:
@@ -42,9 +42,10 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
                             <Text className='text-ut-burntorange text-2xl! font-normal!'>
                                 {open ? <DropdownArrowDown /> : <DropdownArrowUp />}
                             </Text>
-                        </Disclosure.Button>
+                        </DisclosureButton>
 
                         <Transition
+                            as='div'
                             className='contain-paint max-h-55 origin-top overflow-auto transition-all duration-400 ease-in-out-expo'
                             enterFrom='transform scale-98 opacity-0 max-h-0!'
                             enterTo='transform scale-100 opacity-100 max-h-55'
@@ -52,7 +53,7 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
                             leaveFrom='transform scale-100 opacity-100 max-h-55'
                             leaveTo='transform scale-98 opacity-0 max-h-0!'
                         >
-                            <Disclosure.Panel className='px-3.5 pb-2.5 pt-2'>{props.children}</Disclosure.Panel>
+                            <DisclosurePanel className='px-3.5 pb-2.5 pt-2'>{props.children}</DisclosurePanel>
                         </Transition>
                     </>
                 )}

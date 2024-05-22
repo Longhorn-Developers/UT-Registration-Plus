@@ -12,15 +12,15 @@ import Link from '../common/Link';
  */
 export default function CalendarFooter(): JSX.Element {
     return (
-        <footer className='min-w-full w-0 space-y-2'>
+        <footer className='min-w-full w-0 pl-4.5 space-y-2'>
             <div className='flex gap-2'>
-                <Link className='linkanimate' href='#'>
+                <Link className='linkanimate' href='https://www.instagram.com/longhorndevelopers'>
                     <InstagramIcon className='h-6 w-6' />
                 </Link>
-                <Link className='linkanimate' href='https://discord.gg/bVh9g6VFwB'>
+                <Link className='linkanimate' href='https://discord.gg/7pQDBGdmb7'>
                     <DiscordIcon className='h-6 w-6' />
                 </Link>
-                <Link className='linkanimate' href='https://github.com/Longhorn-Developers/UT-Registration-Plus'>
+                <Link className='linkanimate' href='https://github.com/Longhorn-Developers'>
                     <GithubIcon className='h-6 w-6' />
                 </Link>
             </div>

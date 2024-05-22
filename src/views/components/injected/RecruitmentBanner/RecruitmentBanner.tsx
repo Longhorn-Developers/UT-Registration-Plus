@@ -5,8 +5,8 @@ import { createPortal } from 'react-dom';
 
 import styles from './RecruitmentBanner.module.scss';
 
-const DISCORD_URL = 'https://discord.gg/qjcvgyVJbT';
-const GITHUB_URL = 'https://github.com/sghsri/UT-Registration-Plus';
+const DISCORD_URL = 'https://discord.gg/7pQDBGdmb7';
+const GITHUB_URL = 'https://github.com/Longhorn-Developers/UT-Registration-Plus';
 
 const RECRUIT_FROM_DEPARTMENTS = ['C S', 'ECE', 'MIS', 'CSE', 'EE', 'ITD'];
 

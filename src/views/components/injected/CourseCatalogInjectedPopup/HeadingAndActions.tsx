@@ -7,6 +7,7 @@ import { Chip, flagMap } from '@views/components/common/Chip';
 import Divider from '@views/components/common/Divider';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
+import { useCalendar } from '@views/contexts/CalendarContext';
 import React from 'react';
 
 import Add from '~icons/material-symbols/add';
@@ -15,6 +16,7 @@ import CloseIcon from '~icons/material-symbols/close';
 import Copy from '~icons/material-symbols/content-copy';
 import Description from '~icons/material-symbols/description';
 import Mood from '~icons/material-symbols/mood';
+import OpenNewIcon from '~icons/material-symbols/open-in-new';
 import Remove from '~icons/material-symbols/remove';
 import Reviews from '~icons/material-symbols/reviews';
 
@@ -50,6 +52,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
+    const isInCalendar = useCalendar();
 
     const getInstructorFullName = (instructor: Instructor) => {
         const { firstName = '', lastName = '' } = instructor;
@@ -85,9 +88,13 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     };
 
     const handleOpenPastSyllabi = async () => {
-        // not specific to professor
-        const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=${courseName}&unique=&instructor_first=&instructor_last=&course_type=In+Residence&search=Search`;
-        openNewTab({ url });
+        for (const instructor of instructors) {
+            let { firstName = '', lastName = '' } = instructor;
+            firstName = capitalizeString(firstName);
+            lastName = capitalizeString(lastName);
+            const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=&unique=&instructor_first=${firstName}&instructor_last=${lastName}&course_type=In+Residence&search=Search`;
+            openNewTab({ url });
+        }
     };
 
     const handleAddOrRemoveCourse = async () => {
@@ -100,7 +107,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     };
 
     return (
-        <div className='w-full px-2 pb-3 pt-6 text-ut-black'>
+        <div className='w-full px-2 pb-3 pt-5 text-ut-black'>
             <div className='flex flex-col'>
                 <div className='flex items-center gap-1'>
                     <Text variant='h1' className='truncate text-theme-black'>
@@ -175,8 +182,16 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 <Button
                     variant='filled'
                     color='ut-burntorange'
-                    icon={CalendarMonth}
-                    onClick={() => background.switchToCalendarTab({})}
+                    icon={isInCalendar ? OpenNewIcon : CalendarMonth}
+                    onClick={() => {
+                        if (isInCalendar) {
+                            openNewTab({
+                                url: course.url,
+                            });
+                        } else {
+                            background.switchToCalendarTab({});
+                        }
+                    }}
                 />
                 <Divider size='1.75rem' orientation='vertical' />
                 <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>

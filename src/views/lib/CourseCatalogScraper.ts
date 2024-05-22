@@ -122,11 +122,27 @@ export class CourseCatalogScraper {
 
     /**
      * Gets how many credit hours the course is worth
-     * @param number the course number, CS 314H
+     * @param courseNumber the course number, CS 314H
      * @return the number of credit hours the course is worth
      */
-    getCreditHours(number: string): number {
-        return Number(number.split('')[0]);
+    getCreditHours(courseNumber: string): number {
+        let creditHours = Number(courseNumber.split('')[0]);
+        const lastChar = courseNumber.slice(-1);
+
+        // eslint-disable-next-line default-case
+        switch (lastChar) {
+            case 'A':
+            case 'B':
+                creditHours /= 2;
+                break;
+            case 'X':
+            case 'Y':
+            case 'Z':
+                creditHours /= 3;
+                break;
+        }
+
+        return creditHours;
     }
 
     /**

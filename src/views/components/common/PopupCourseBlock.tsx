@@ -42,12 +42,12 @@ export default function PopupCourseBlock({
     };
 
     return (
-        <button
+        <div
             style={{
                 backgroundColor: colors.primaryColor,
             }}
             className={clsx(
-                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 cursor-pointer focusable text-left',
+                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left',
                 className
             )}
             onClick={handleClick}
@@ -56,7 +56,7 @@ export default function PopupCourseBlock({
                 style={{
                     backgroundColor: colors.secondaryColor,
                 }}
-                className='flex cursor-move items-center self-stretch rounded rounded-r-0'
+                className='flex items-center self-stretch rounded rounded-r-0 cursor-move!'
                 {...dragHandleProps}
             >
                 <DragIndicatorIcon className='h-6 w-6 text-white' />
@@ -75,6 +75,6 @@ export default function PopupCourseBlock({
                     <StatusIcon status={course.status} className='h-5 w-5' />
                 </div>
             )}
-        </button>
+        </div>
     );
 }
