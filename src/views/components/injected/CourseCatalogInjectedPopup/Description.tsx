@@ -1,5 +1,5 @@
 import type { Course } from '@shared/types/Course';
-import Spinner from '@views/components/common/Spinner/Spinner';
+import Spinner from '@views/components/common/Spinner';
 import Text from '@views/components/common/Text/Text';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import { SiteSupport } from '@views/lib/getSiteSupport';
