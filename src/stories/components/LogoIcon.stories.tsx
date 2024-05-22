@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { SmallLogo, LargeLogo } from '@views/components/common/LogoIcon';
+import { LargeLogo, SmallLogo } from '@views/components/common/LogoIcon';
 import React from 'react';
 
 const meta = {
