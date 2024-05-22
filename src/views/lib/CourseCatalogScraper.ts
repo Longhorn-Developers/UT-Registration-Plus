@@ -112,10 +112,10 @@ export class CourseCatalogScraper {
      * @returns an array of the course name , department, and number
      */
     separateCourseName(courseFullName: string): [courseName: string, department: string, number: string] {
-        const courseNumberIndex = courseFullName.search(/\d/);
-        const department = courseFullName.substring(0, courseNumberIndex).trim();
-        const number = courseFullName.substring(courseNumberIndex, courseFullName.indexOf(' ', courseNumberIndex)).trim();
-        const courseName = courseFullName.substring(courseFullName.indexOf(' ', courseNumberIndex)).trim();
+        let courseNumberIndex = courseFullName.search(/\d/);
+        let department = courseFullName.substring(0, courseNumberIndex).trim();
+        let number = courseFullName.substring(courseNumberIndex, courseFullName.indexOf(' ', courseNumberIndex)).trim();
+        let courseName = courseFullName.substring(courseFullName.indexOf(' ', courseNumberIndex)).trim();
 
         return [courseName, department, number];
     }
