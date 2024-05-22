@@ -1,11 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import Spinner from '@views/components/common/Spinner/Spinner';
+import Spinner from '@views/components/common/Spinner';
 
 const meta = {
     title: 'Components/Common/Spinner',
     component: Spinner,
     tags: ['autodocs'],
-    argTypes: {},
+    parameters: {
+        layout: 'centered',
+    },
 } satisfies Meta<typeof Spinner>;
 
 export default meta;
