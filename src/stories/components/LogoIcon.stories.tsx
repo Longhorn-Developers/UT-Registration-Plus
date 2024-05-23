@@ -12,9 +12,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Small: Story = {
-    args: {
-        className: '',
-    },
 };
 
 export const Large: Story = {
