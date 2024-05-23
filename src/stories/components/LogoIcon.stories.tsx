@@ -6,9 +6,6 @@ const meta = {
     title: 'Components/Common/Logo',
     component: SmallLogo,
     tags: ['autodocs'],
-    argTypes: {
-        className: { control: 'text' },
-    },
 } satisfies Meta<typeof SmallLogo>;
 
 export default meta;
