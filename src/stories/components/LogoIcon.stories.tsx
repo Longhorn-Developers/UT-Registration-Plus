@@ -16,7 +16,4 @@ export const Small: Story = {
 
 export const Large: Story = {
     render: args => <LargeLogo {...args} />,
-    args: {
-        className: '',
-    },
 };
