@@ -52,13 +52,14 @@ const GRADE_COLORS = {
  */
 export default function GradeDistribution({ course }: GradeDistributionProps): JSX.Element {
     const [semester, setSemester] = useState('Aggregate');
-    const [distributions, setDistributions] = useState<Record<string, Distribution>>({});
+    type Distributions = Record<string, { data: Distribution; instructorIncluded: boolean }>;
+    const [distributions, setDistributions] = useState<Distributions>({});
     const [status, setStatus] = useState<DataStatusType>(DataStatus.LOADING);
     const ref = useRef<HighchartsReact.RefObject>(null);
 
     const chartData = useMemo(() => {
         if (status === DataStatus.FOUND && distributions[semester]) {
-            return Object.entries(distributions[semester]!).map(([grade, count]) => ({
+            return Object.entries(distributions[semester]!.data).map(([grade, count]) => ({
                 y: count,
                 color: GRADE_COLORS[grade as LetterGrade],
             }));
@@ -69,8 +70,11 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
-                const [aggregateDist, semesters] = await queryAggregateDistribution(course);
-                const initialDistributions: Record<string, Distribution> = { Aggregate: aggregateDist };
+                const [aggregateDist, semesters, instructorIncludedAggregate] =
+                    await queryAggregateDistribution(course);
+                const initialDistributions: Distributions = {
+                    Aggregate: { data: aggregateDist, instructorIncluded: instructorIncludedAggregate },
+                };
                 const semesterPromises = semesters.map(semester => querySemesterDistribution(course, semester));
                 const semesterDistributions = await Promise.allSettled(semesterPromises);
                 semesters.forEach((semester, i) => {
@@ -81,7 +85,11 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     }
 
                     if (distributionResult.status === 'fulfilled') {
-                        initialDistributions[`${semester.season} ${semester.year}`] = distributionResult.value;
+                        const [distribution, instructorIncluded] = distributionResult.value;
+                        initialDistributions[`${semester.season} ${semester.year}`] = {
+                            data: distribution,
+                            instructorIncluded,
+                        };
                     }
                 });
                 setDistributions(initialDistributions);
@@ -236,6 +244,14 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                                 ))}
                         </select>
                     </div>
+                    {distributions[semester] && !distributions[semester]!.instructorIncluded && (
+                        <div className='mt-3 flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
+                            <Text variant='mini' className='text-theme-red italic!'>
+                                Instructor-specific data is not available for this course
+                                {semester !== 'Aggregate' && ` for ${semester}`}, showing course-wide data instead
+                            </Text>
+                        </div>
+                    )}
                     <HighchartsReact ref={ref} highcharts={Highcharts} options={chartOptions} />
                 </>
             )}
