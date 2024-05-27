@@ -52,9 +52,8 @@ const GRADE_COLORS = {
  */
 export default function GradeDistribution({ course }: GradeDistributionProps): JSX.Element {
     const [semester, setSemester] = useState('Aggregate');
-    const [distributions, setDistributions] = useState<
-        Record<string, { data: Distribution; instructorIncluded: boolean }>
-    >({});
+    type Distributions = Record<string, { data: Distribution; instructorIncluded: boolean }>;
+    const [distributions, setDistributions] = useState<Distributions>({});
     const [status, setStatus] = useState<DataStatusType>(DataStatus.LOADING);
     const ref = useRef<HighchartsReact.RefObject>(null);
 
@@ -73,7 +72,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             try {
                 const [aggregateDist, semesters, instructorIncludedAggregate] =
                     await queryAggregateDistribution(course);
-                const initialDistributions: Record<string, { data: Distribution; instructorIncluded: boolean }> = {
+                const initialDistributions: Distributions = {
                     Aggregate: { data: aggregateDist, instructorIncluded: instructorIncludedAggregate },
                 };
                 const semesterPromises = semesters.map(semester => querySemesterDistribution(course, semester));
