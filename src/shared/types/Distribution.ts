@@ -22,6 +22,8 @@ export type CourseSQLRow = {
     Course_Number: string;
     Course_Title: string;
     Course_Full_Title: string;
+    Instructor_First: string | null;
+    Instructor_Last: string | null;
     A: number;
     A_Minus: number;
     B_Plus: number;
