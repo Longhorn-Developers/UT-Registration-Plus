@@ -132,7 +132,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                     <Link
                                         key={instructor.fullName}
                                         variant='h4'
-                                        href={instructor.getDirectoryUrl()}
+                                        href={`https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&course_title=&unique=&instructor_first=${instructor.firstName}&instructor_last=${instructor.lastName}&course_type=In+Residence&search=Search`}
                                         className='link'
                                     >
                                         {getInstructorFullName(instructor)}
