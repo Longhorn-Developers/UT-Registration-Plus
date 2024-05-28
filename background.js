@@ -27,7 +27,7 @@ async function onStartup() {
 
     updateBadge(true);
     
-    await loadDataBase(); //Not working yet, see function notes
+    await loadDataBase(); 
 
     getCurrentSemesters()
     getCurrentDepartments();
@@ -477,7 +477,7 @@ function executeQuery(query, sendResponse) {
 }
 
 
-////Currently not working: XMLHttpRequest is outdated. Find a way to post to web sql (or other source, mongodb?) using fetch
+
 
 /* Load the database*/
 async function loadDataBase() {
