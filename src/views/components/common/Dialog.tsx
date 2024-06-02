@@ -1,9 +1,9 @@
 import type { TransitionRootProps } from '@headlessui/react';
 import {
     Description,
-    Dialog as HDialog,
     DialogPanel,
     DialogTitle,
+    Dialog as HDialog,
     Transition,
     TransitionChild,
 } from '@headlessui/react';
@@ -44,19 +44,19 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                 >
                     <div className={clsx('fixed inset-0 z-50 bg-slate-700/35')} />
                 </TransitionChild>
-                <TransitionChild
-                    as={Fragment}
-                    enter='transition duration-375 motion-reduce:duration-0 ease-[cubic-bezier(0.05,0.4,0.2,1)]'
-                    enterFrom='transform-gpu scale-95 opacity-0'
-                    enterTo='transform-gpu scale-100 opacity-100'
-                    leave='transition duration-250 motion-reduce:duration-0 ease-[cubic-bezier(0.23,0.01,0.92,0.72)]'
-                    leaveFrom='transform-gpu scale-100 opacity-100'
-                    leaveTo='transform-gpu scale-95 opacity-0'
-                >
-                    <div className='fixed inset-0 z-50 flex items-center justify-center'>
+                <div className='fixed inset-0 z-50 flex items-center justify-center'>
+                    <TransitionChild
+                        as={Fragment}
+                        enter='transition duration-375 motion-reduce:duration-0 ease-[cubic-bezier(0.05,0.4,0.2,1)]'
+                        enterFrom='transform-gpu scale-95 opacity-0'
+                        enterTo='transform-gpu scale-100 opacity-100'
+                        leave='transition duration-250 motion-reduce:duration-0 ease-[cubic-bezier(0.23,0.01,0.92,0.72)]'
+                        leaveFrom='transform-gpu scale-100 opacity-100'
+                        leaveTo='transform-gpu scale-95 opacity-0'
+                    >
                         <DialogPanel
                             className={clsx(
-                                'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-solid border-ut-offwhite rounded bg-white shadow-xl ml-[calc(100vw-100%)] mt-[calc(100vw-100%)]',
+                                'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-solid border-ut-offwhite rounded bg-white shadow-xl ml-[calc(100vw-100%)]',
                                 className
                             )}
                         >
@@ -64,8 +64,8 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                             {props.description && <Description as={Fragment}>{props.description}</Description>}
                             {children}
                         </DialogPanel>
-                    </div>
-                </TransitionChild>
+                    </TransitionChild>
+                </div>
             </ExtensionRoot>
         </Transition>
     );
