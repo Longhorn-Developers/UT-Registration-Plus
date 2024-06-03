@@ -1,9 +1,9 @@
 import type { TransitionRootProps } from '@headlessui/react';
 import {
     Description,
+    Dialog as HDialog,
     DialogPanel,
     DialogTitle,
-    Dialog as HDialog,
     Transition,
     TransitionChild,
 } from '@headlessui/react';
