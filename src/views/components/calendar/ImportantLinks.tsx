@@ -38,6 +38,10 @@ const links: LinkItem[] = [
         text: 'Degree Audit',
         url: 'https://utdirect.utexas.edu/apps/degree/audits/',
     },
+    {
+        text: 'My Registered Courses',
+        url: 'https://utdirect.utexas.edu/registration/classlist.WBX',
+    },
 ];
 
 /**
