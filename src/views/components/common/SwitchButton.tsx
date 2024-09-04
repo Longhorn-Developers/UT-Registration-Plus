@@ -15,7 +15,7 @@ const SwitchButton: React.FC = () => {
             checked={enabled}
             onChange={setEnabled}
             className={`${enabled ? 'bg-[#579D42]' : 'bg-gray-400'} 
-          relative inline-flex items-center h-8 w-12 rounded-full transition-colors ease-in-out duration-200`}
+          relative inline-flex items-center h-8 w-13 rounded-full transition-colors ease-in-out duration-200`}
         >
             <span
                 className={`${enabled ? 'translate-x-6' : 'translate-x-1'} 
