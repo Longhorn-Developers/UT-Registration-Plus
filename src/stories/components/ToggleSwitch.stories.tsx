@@ -15,6 +15,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        isChecked: true, // The SwitchButton will start in the "checked" state
+        isChecked: true,
     },
 };
