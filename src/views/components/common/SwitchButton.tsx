@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import { Switch } from '@headlessui/react';
+import React, { useEffect,useState } from 'react';
 
 type ToggleSwitchProps = {
     isChecked?: boolean;
