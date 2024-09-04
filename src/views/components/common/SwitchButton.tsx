@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { Switch } from '@headlessui/react';
+import { useEffect } from 'react';
 
 interface ToggleSwitchProps {
-    label: string;
+    // label: string;
     isChecked: boolean;
-    onChange: (checked: boolean) => void;
+    // onChange: (checked: boolean) => void;
 }
 
-const SwitchButton: React.FC = () => {
+const SwitchButton: React.FC<ToggleSwitchProps> = ({ isChecked = true }) => {
     const [enabled, setEnabled] = useState(true);
+
+    useEffect(() => {
+        setEnabled(isChecked);
+    }, [isChecked]);
 
     return (
         <Switch
