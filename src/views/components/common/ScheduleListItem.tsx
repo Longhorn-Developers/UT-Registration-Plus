@@ -12,6 +12,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
+import { Button } from './Button';
+import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
+
 /**
  * Props for the ScheduleListItem component.
  */
@@ -93,51 +96,103 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                         )}
                     </div>
                     <div>
-                        <Menu>
-                            <Float
-                                enter='transition ease-out duration-100'
-                                enterFrom='transform opacity-0 scale-95'
-                                enterTo='transform opacity-100 scale-100'
-                                leave='transition ease-in duration-75'
-                                leaveFrom='transform opacity-100 scale-100'
-                                leaveTo='transform opacity-0 scale-95'
-                                placement='bottom-end'
-                                portal
-                            >
-                                <MenuButton className='bg-white'>
-                                    <MoreActionsIcon className='invisible h-5 w-5 cursor-pointer rounded text-blueGray btn-transition group-hover:visible group-hover:border-blueGray group-hover:bg-blueGray group-hover:bg-opacity-25 focusable' />
-                                </MenuButton>
+                        <DialogProvider>
+                            <Menu>
+                                <Float
+                                    enter='transition ease-out duration-100'
+                                    enterFrom='transform opacity-0 scale-95'
+                                    enterTo='transform opacity-100 scale-100'
+                                    leave='transition ease-in duration-75'
+                                    leaveFrom='transform opacity-100 scale-100'
+                                    leaveTo='transform opacity-0 scale-95'
+                                    placement='bottom-end'
+                                    portal
+                                >
+                                    <MenuButton className='bg-white'>
+                                        <MoreActionsIcon className='invisible h-5 w-5 cursor-pointer rounded text-blueGray btn-transition group-hover:visible group-hover:border-blueGray group-hover:bg-blueGray group-hover:bg-opacity-25 focusable' />
+                                    </MenuButton>
 
-                                <MenuItems className='w-30 rounded bg-white py-1 text-black shadow-lg'>
-                                    <MenuItem as='div' onClick={() => setIsEditing(true)}>
-                                        {({ focus }) => (
-                                            <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>
-                                                Rename
-                                            </Text>
+                                    <MenuItems className='w-30 cursor-pointer rounded bg-white py-1 text-black shadow-lg'>
+                                        <MenuItem as='div' onClick={() => setIsEditing(true)}>
+                                            {({ focus }) => (
+                                                <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>
+                                                    Rename
+                                                </Text>
+                                            )}
+                                        </MenuItem>
+                                        <MenuItem as='div' onClick={() => duplicateSchedule(schedule.name)}>
+                                            {({ focus }) => (
+                                                <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>
+                                                    Duplicate
+                                                </Text>
+                                            )}
+                                        </MenuItem>
+                                        {schedule.id === activeSchedule.id ? (
+                                            <DeleteActiveScheduleError schedule={schedule} />
+                                        ) : (
+                                            <ConfirmDelete schedule={schedule} />
                                         )}
-                                    </MenuItem>
-                                    <MenuItem as='div' onClick={() => duplicateSchedule(schedule.name)}>
-                                        {({ focus }) => (
-                                            <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>
-                                                Duplicate
-                                            </Text>
-                                        )}
-                                    </MenuItem>
-                                    <MenuItem as='div' onClick={() => deleteSchedule(schedule.id)}>
-                                        {({ focus }) => (
-                                            <Text
-                                                className={`block px-4 py-1 ${focus ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}
-                                            >
-                                                Delete
-                                            </Text>
-                                        )}
-                                    </MenuItem>
-                                </MenuItems>
-                            </Float>
-                        </Menu>
+                                    </MenuItems>
+                                </Float>
+                            </Menu>
+                        </DialogProvider>
                     </div>
                 </div>
             </li>
         </div>
     );
 }
+
+const ConfirmDelete = ({ schedule }: { schedule: UserSchedule }) => {
+    const showDialog = usePrompt();
+
+    const myShow = () => {
+        showDialog({
+            title: `Are you sure you want to delete ${schedule.name}?`,
+            description: `Deleting "${schedule.name}" will remove it from your schedules list permanently.`,
+            // eslint-disable-next-line react/no-unstable-nested-components
+            buttons: close => (
+                <>
+                    <Button variant='outline' color='ut-red' onClick={() => deleteSchedule(schedule.id)}>
+                        Yes
+                    </Button>
+                    <Button variant='outline' color='ut-burntorange' onClick={close}>
+                        No
+                    </Button>
+                </>
+            ),
+        });
+    };
+
+    return (
+        <MenuItem as='div' onClick={myShow}>
+            {({ focus }) => (
+                <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}>Delete</Text>
+            )}
+        </MenuItem>
+    );
+};
+
+const DeleteActiveScheduleError = ({ schedule }: { schedule: UserSchedule }) => {
+    const showDialog = usePrompt();
+
+    const myShow = () => {
+        showDialog({
+            title: `Unable to delete active schedule.`,
+            description: `Deleting active schedule "${schedule.name}" is not allowed. If possible, switch to another schedule and try again.`,
+            // eslint-disable-next-line react/no-unstable-nested-components
+            buttons: close => (
+                <Button variant='outline' color='ut-burntorange' onClick={close}>
+                    Close
+                </Button>
+            ),
+        });
+    };
+    return (
+        <MenuItem as='div' onClick={myShow}>
+            {({ focus }) => (
+                <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}>Delete</Text>
+            )}
+        </MenuItem>
+    );
+};
