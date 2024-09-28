@@ -1,6 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { Float } from '@headlessui-float/react';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
+import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
@@ -115,7 +116,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                             </Text>
                                         )}
                                     </MenuItem>
-                                    <MenuItem as='div'>
+                                    <MenuItem as='div' onClick={() => duplicateSchedule(schedule.name)}>
                                         {({ focus }) => (
                                             <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>
                                                 Duplicate
