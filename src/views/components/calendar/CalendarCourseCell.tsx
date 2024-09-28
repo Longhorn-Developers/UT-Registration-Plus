@@ -75,6 +75,7 @@ export default function CalendarCourseCell({
                     'self-center': !timeAndLocation,
                 })}
             >
+                // Note that overflow-hidden is the duct tape holding this all together
                 <Text
                     variant='h1-course'
                     as='p'
