@@ -26,6 +26,8 @@
     "dependencies": {
         "@headlessui/react": "^2.0.3",
         "@hello-pangea/dnd": "^16.5.0",
+        "@paypal/paypal-js": "^8.1.2",
+        "@paypal/react-paypal-js": "^8.7.0",
         "@unocss/vite": "^0.58.6",
         "@vitejs/plugin-react": "^4.2.1",
         "chrome-extension-toolkit": "^0.0.54",
