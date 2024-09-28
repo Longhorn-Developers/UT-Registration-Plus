@@ -53,6 +53,7 @@ export default function CalendarCourseCell({
 
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
+    // Note that overflow-hidden is the duct tape holding this all together
 
     return (
         <div
@@ -71,11 +72,10 @@ export default function CalendarCourseCell({
             onClick={onClick}
         >
             <div
-                className={clsx('flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full', {
+                className={clsx('flex flex-1 flex-col gap-0.25 overflow-clip max-h-full', {
                     'self-center': !timeAndLocation,
                 })}
             >
-                // Note that overflow-hidden is the duct tape holding this all together
                 <Text
                     variant='h1-course'
                     as='p'
