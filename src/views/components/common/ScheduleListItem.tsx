@@ -1,3 +1,5 @@
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { Float } from '@headlessui-float/react';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -6,8 +8,8 @@ import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import XIcon from '~icons/material-symbols/close';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
+import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
 /**
  * Props for the ScheduleListItem component.
@@ -30,7 +32,6 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
         const editor = editorRef.current;
-
         setEditorValue(schedule.name);
 
         if (isEditing && editor) {
@@ -41,12 +42,10 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
 
     const isActive = useMemo(() => activeSchedule.id === schedule.id, [activeSchedule, schedule]);
 
-    const handleBlur = () => {
-        if (editorValue.trim() !== '') {
-            schedule.name = editorValue.trim();
-            renameSchedule(schedule.id, schedule.name);
+    const handleBlur = async () => {
+        if (editorValue.trim() !== '' && editorValue.trim() !== schedule.name) {
+            schedule.name = (await renameSchedule(schedule.id, editorValue.trim())) as string;
         }
-
         setIsEditing(false);
     };
 
@@ -93,10 +92,48 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                         )}
                     </div>
                     <div>
-                        <XIcon
-                            className='invisible h-5 w-5 text-ut-red group-hover:visible'
-                            onClick={() => deleteSchedule(schedule.id)}
-                        />
+                        <Menu>
+                            <Float
+                                enter='transition ease-out duration-100'
+                                enterFrom='transform opacity-0 scale-95'
+                                enterTo='transform opacity-100 scale-100'
+                                leave='transition ease-in duration-75'
+                                leaveFrom='transform opacity-100 scale-100'
+                                leaveTo='transform opacity-0 scale-95'
+                                placement='bottom-end'
+                                portal
+                            >
+                                <MenuButton className='bg-white'>
+                                    <MoreActionsIcon className='invisible h-5 w-5 cursor-pointer rounded text-blueGray btn-transition group-hover:visible group-hover:border-blueGray group-hover:bg-blueGray group-hover:bg-opacity-25 focusable' />
+                                </MenuButton>
+
+                                <MenuItems className='w-30 rounded bg-white py-1 text-black shadow-lg'>
+                                    <MenuItem as='div' onClick={() => setIsEditing(true)}>
+                                        {({ focus }) => (
+                                            <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>
+                                                Rename
+                                            </Text>
+                                        )}
+                                    </MenuItem>
+                                    <MenuItem as='div'>
+                                        {({ focus }) => (
+                                            <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>
+                                                Duplicate
+                                            </Text>
+                                        )}
+                                    </MenuItem>
+                                    <MenuItem as='div' onClick={() => deleteSchedule(schedule.id)}>
+                                        {({ focus }) => (
+                                            <Text
+                                                className={`block px-4 py-1 ${focus ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}
+                                            >
+                                                Delete
+                                            </Text>
+                                        )}
+                                    </MenuItem>
+                                </MenuItems>
+                            </Float>
+                        </Menu>
                     </div>
                 </div>
             </li>

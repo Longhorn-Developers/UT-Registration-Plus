@@ -24,6 +24,7 @@
         "prepare": "husky"
     },
     "dependencies": {
+        "@headlessui-float/react": "^0.15.0",
         "@headlessui/react": "^2.0.3",
         "@hello-pangea/dnd": "^16.5.0",
         "@unocss/vite": "^0.58.6",
