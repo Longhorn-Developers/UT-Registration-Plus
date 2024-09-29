@@ -19,6 +19,7 @@ import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown';
 import ScheduleListItem from './common/ScheduleListItem';
+import { toggleIcons } from '@shared/util/experimental';
 
 /**
  * Renders the main popup component.
@@ -107,9 +108,13 @@ export default function PopupMain(): JSX.Element {
 
                 <div className='w-full flex flex-col items-center gap-1.25 p-5 pt-3.75'>
                     <div className='flex gap-2.5'>
-                        {/* <CourseStatus status='WAITLISTED' size='mini' />
-                        <CourseStatus status='CLOSED' size='mini' />
-                        <CourseStatus status='CANCELLED' size='mini' /> */}
+                        {toggleIcons && (
+                            <>
+                                <CourseStatus status='WAITLISTED' size='mini' />
+                                <CourseStatus status='CLOSED' size='mini' />
+                                <CourseStatus status='CANCELLED' size='mini' />
+                            </>
+                        )}
                     </div>
                     <div className='inline-flex items-center self-center gap-1'>
                         <Text variant='mini' className='text-ut-gray !font-normal'>
