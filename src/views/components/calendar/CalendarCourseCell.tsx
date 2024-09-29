@@ -43,13 +43,13 @@ export default function CalendarCourseCell({
     onClick,
 }: CalendarCourseCellProps): JSX.Element {
     let rightIcon: React.ReactNode | null = null;
-    if (status === Status.WAITLISTED) {
-        rightIcon = <WaitlistIcon className='h-5 w-5' />;
-    } else if (status === Status.CLOSED) {
-        rightIcon = <ClosedIcon className='h-5 w-5' />;
-    } else if (status === Status.CANCELLED) {
-        rightIcon = <CancelledIcon className='h-5 w-5' />;
-    }
+    // if (status === Status.WAITLISTED) {
+    //     rightIcon = <WaitlistIcon className='h-5 w-5' />;
+    // } else if (status === Status.CLOSED) {
+    //     rightIcon = <ClosedIcon className='h-5 w-5' />;
+    // } else if (status === Status.CANCELLED) {
+    //     rightIcon = <CancelledIcon className='h-5 w-5' />;
+    // }
 
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
