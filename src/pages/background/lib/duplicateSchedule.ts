@@ -18,13 +18,17 @@ export default async function duplicateSchedule(scheduleName: string): Promise<s
 
     const updatedName = await handleDuplicate(scheduleName);
 
-    schedules.push({
+    const dupSchedule = {
         id: generateRandomId(),
         name: updatedName,
         courses: JSON.parse(JSON.stringify(schedule.courses)),
         hours: schedule.hours,
         updatedAt: Date.now(),
-    });
+    } satisfies typeof schedule;
+
+    schedules.push(dupSchedule);
+
+
 
     await UserScheduleStore.set('schedules', schedules);
     return undefined;
