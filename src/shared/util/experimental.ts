@@ -1,8 +1,3 @@
-export const toggleIcons: boolean = false;
-// export function enableIcons() {
-//     toggleIcons = true;
-// }
-
-// export function disableIcons() {
-//     toggleIcons = false;
-// }
+export const enableCourseStatusChips: boolean = false;
+export const constenableSettingsPage: boolean = false;
+export const enableCourseRefreshing: boolean = false;
