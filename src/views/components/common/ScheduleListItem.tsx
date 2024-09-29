@@ -1,6 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { Float } from '@headlessui-float/react';
-import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -12,8 +11,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
-import { Button } from './Button';
-import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
+import DialogProvider from './DialogProvider/DialogProvider';
+import { ConfirmDelete, DeleteActiveScheduleError } from './DialogProvider/ScheduleListItemDialogProviders';
 
 /**
  * Props for the ScheduleListItem component.
@@ -142,57 +141,3 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         </div>
     );
 }
-
-const ConfirmDelete = ({ schedule }: { schedule: UserSchedule }) => {
-    const showDialog = usePrompt();
-
-    const myShow = () => {
-        showDialog({
-            title: `Are you sure you want to delete ${schedule.name}?`,
-            description: `Deleting "${schedule.name}" will remove it from your schedules list permanently.`,
-            // eslint-disable-next-line react/no-unstable-nested-components
-            buttons: close => (
-                <>
-                    <Button variant='outline' color='ut-red' onClick={() => deleteSchedule(schedule.id)}>
-                        Yes
-                    </Button>
-                    <Button variant='outline' color='ut-burntorange' onClick={close}>
-                        No
-                    </Button>
-                </>
-            ),
-        });
-    };
-
-    return (
-        <MenuItem as='div' onClick={myShow}>
-            {({ focus }) => (
-                <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}>Delete</Text>
-            )}
-        </MenuItem>
-    );
-};
-
-const DeleteActiveScheduleError = ({ schedule }: { schedule: UserSchedule }) => {
-    const showDialog = usePrompt();
-
-    const myShow = () => {
-        showDialog({
-            title: `Unable to delete active schedule.`,
-            description: `Deleting active schedule "${schedule.name}" is not allowed. If possible, switch to another schedule and try again.`,
-            // eslint-disable-next-line react/no-unstable-nested-components
-            buttons: close => (
-                <Button variant='outline' color='ut-burntorange' onClick={close}>
-                    Close
-                </Button>
-            ),
-        });
-    };
-    return (
-        <MenuItem as='div' onClick={myShow}>
-            {({ focus }) => (
-                <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}>Delete</Text>
-            )}
-        </MenuItem>
-    );
-};
