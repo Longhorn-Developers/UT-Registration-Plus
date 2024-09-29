@@ -1,5 +1,6 @@
 import { background } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { enableCourseStatusChips } from '@shared/util/experimental';
 import Divider from '@views/components/common/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List';
@@ -107,9 +108,13 @@ export default function PopupMain(): JSX.Element {
 
                 <div className='w-full flex flex-col items-center gap-1.25 p-5 pt-3.75'>
                     <div className='flex gap-2.5'>
-                        <CourseStatus status='WAITLISTED' size='mini' />
-                        <CourseStatus status='CLOSED' size='mini' />
-                        <CourseStatus status='CANCELLED' size='mini' />
+                        {enableCourseStatusChips && (
+                            <>
+                                <CourseStatus status='WAITLISTED' size='mini' />
+                                <CourseStatus status='CLOSED' size='mini' />
+                                <CourseStatus status='CANCELLED' size='mini' />
+                            </>
+                        )}
                     </div>
                     <div className='inline-flex items-center self-center gap-1'>
                         <Text variant='mini' className='text-ut-gray !font-normal'>

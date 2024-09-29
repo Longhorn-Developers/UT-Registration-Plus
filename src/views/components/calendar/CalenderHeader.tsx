@@ -1,4 +1,5 @@
 import { Status } from '@shared/types/Course';
+import { enableCourseStatusChips } from '@shared/util/experimental';
 import { Button } from '@views/components/common/Button';
 import CourseStatus from '@views/components/common/CourseStatus';
 import Divider from '@views/components/common/Divider';
@@ -60,9 +61,13 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                 </div>
             </div>
             <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
-                <CourseStatus size='small' status={Status.WAITLISTED} />
-                <CourseStatus size='small' status={Status.CLOSED} />
-                <CourseStatus size='small' status={Status.CANCELLED} />
+                {enableCourseStatusChips && (
+                    <>
+                        <CourseStatus status='WAITLISTED' size='mini' />
+                        <CourseStatus status='CLOSED' size='mini' />
+                        <CourseStatus status='CANCELLED' size='mini' />
+                    </>
+                )}
 
                 {/* <Button variant='single' icon={UndoIcon} color='ut-black' />
                     <Button variant='single' icon={RedoIcon} color='ut-black' /> */}
