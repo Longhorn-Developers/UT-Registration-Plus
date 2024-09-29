@@ -72,14 +72,14 @@ export default function CalendarCourseCell({
             onClick={onClick}
         >
             <div
-                className={clsx('flex flex-1 flex-col gap-0.25 overflow-clip max-h-full', {
+                className={clsx('flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full', {
                     'self-center': !timeAndLocation,
                 })}
             >
                 <Text
                     variant='h1-course'
                     as='p'
-                    className={clsx('leading-tight! truncate', {
+                    className={clsx('leading-tight! truncate overflow-clip', {
                         '-mb-0.2': timeAndLocation,
                         'text-wrap': !timeAndLocation,
                     })}
