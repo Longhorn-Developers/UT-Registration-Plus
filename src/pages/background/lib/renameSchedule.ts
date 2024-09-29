@@ -15,9 +15,13 @@ export default async function renameSchedule(scheduleId: string, newName: string
     if (scheduleIndex === -1) {
         return undefined;
     }
+    const schedule = schedules[scheduleIndex];
+    if (schedule === undefined) {
+        return undefined;
+    }
 
     // if old name is of the form `{baseName}{index}` and newName === baseName, do nothing.
-    const oldName = schedules[scheduleIndex]?.name;
+    const oldName = schedule.name;
     const regex = /^(.+?)(\(\d+\))?$/;
     const match = oldName?.match(regex);
     const baseName = match?.[1] ?? '';
@@ -29,8 +33,8 @@ export default async function renameSchedule(scheduleId: string, newName: string
 
     const updatedName = await handleDuplicate(newName);
 
-    schedules[scheduleIndex]!.name = updatedName;
-    schedules[scheduleIndex]!.updatedAt = Date.now();
+    schedule.name = updatedName;
+    schedule.updatedAt = Date.now();
 
     await UserScheduleStore.set('schedules', schedules);
     return newName;
