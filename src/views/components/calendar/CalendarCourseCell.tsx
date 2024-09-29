@@ -53,6 +53,7 @@ export default function CalendarCourseCell({
 
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
+    // Note that overflow-hidden is the duct tape holding this all together
 
     return (
         <div
@@ -78,8 +79,8 @@ export default function CalendarCourseCell({
                 <Text
                     variant='h1-course'
                     as='p'
-                    className={clsx('leading-tight! truncate', {
-                        '-mt-0.8 -mb-0.2': timeAndLocation,
+                    className={clsx('leading-tight! truncate overflow-clip', {
+                        '-mb-0.2': timeAndLocation,
                         'text-wrap': !timeAndLocation,
                     })}
                 >
