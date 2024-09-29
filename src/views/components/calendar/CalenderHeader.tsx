@@ -9,6 +9,7 @@ import useSchedules from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
+import { toggleIcons } from 'src/shared/util/experimental';
 
 import MenuIcon from '~icons/material-symbols/menu';
 import RefreshIcon from '~icons/material-symbols/refresh';
@@ -60,9 +61,13 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                 </div>
             </div>
             <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
-                <CourseStatus size='small' status={Status.WAITLISTED} />
-                <CourseStatus size='small' status={Status.CLOSED} />
-                <CourseStatus size='small' status={Status.CANCELLED} />
+                {toggleIcons && (
+                    <>
+                        <CourseStatus status='WAITLISTED' size='mini' />
+                        <CourseStatus status='CLOSED' size='mini' />
+                        <CourseStatus status='CANCELLED' size='mini' />
+                    </>
+                )}
 
                 {/* <Button variant='single' icon={UndoIcon} color='ut-black' />
                     <Button variant='single' icon={RedoIcon} color='ut-black' /> */}
