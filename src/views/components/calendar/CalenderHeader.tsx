@@ -1,4 +1,5 @@
 import { Status } from '@shared/types/Course';
+import { toggleIcons } from '@shared/util/experimental';
 import { Button } from '@views/components/common/Button';
 import CourseStatus from '@views/components/common/CourseStatus';
 import Divider from '@views/components/common/Divider';
@@ -9,7 +10,6 @@ import useSchedules from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
-import { toggleIcons } from 'src/shared/util/experimental';
 
 import MenuIcon from '~icons/material-symbols/menu';
 import RefreshIcon from '~icons/material-symbols/refresh';

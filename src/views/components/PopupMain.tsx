@@ -1,5 +1,6 @@
 import { background } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { toggleIcons } from '@shared/util/experimental';
 import Divider from '@views/components/common/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List';
@@ -19,7 +20,6 @@ import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown';
 import ScheduleListItem from './common/ScheduleListItem';
-import { toggleIcons } from '@shared/util/experimental';
 
 /**
  * Renders the main popup component.
