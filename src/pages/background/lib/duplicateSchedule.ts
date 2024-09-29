@@ -28,8 +28,6 @@ export default async function duplicateSchedule(scheduleName: string): Promise<s
 
     schedules.push(dupSchedule);
 
-
-
     await UserScheduleStore.set('schedules', schedules);
     return undefined;
 }
