@@ -49,6 +49,12 @@ const splashText: string[] = [
     'The squirrels have mastered the art of begging for food better than most students during finals week.',
     "'going for a run' often means 'running to get food from food trucks'.",
     'The struggle to fit all your classes into one schedule is as real as the struggle to fit all your groceries into a mini-fridge.',
+    'We got UTRPv2 before GTA 6',
+    'Veer was here',
+    'Officially part of the SEC',
+    'Finally resolved the UTRP Hackathon issues of 2024',
+    'Planner is now adquired by Plus',
+    'Longhorn-Developers is the best UT Student Org',
 ];
 
 export default splashText;
