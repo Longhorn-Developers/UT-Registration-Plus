@@ -93,11 +93,16 @@ export default function PopupMain(): JSX.Element {
                         </List>
                     </ScheduleDropdown>
                 </div>
-                <div className='inline-flex items-center self-center gap-1'>
-                    <Text variant='h4' className='text-center text-ut-gray !font-normal'>
-                        {funny}
-                    </Text>
-                </div>
+                {activeSchedule?.courses?.length === 0 && (
+                    <div className='flex flex-col items-center self-center gap-1 py-2'>
+                        <Text variant='h4' className='text-center text-ut-gray !font-normal'>
+                            {funny}
+                        </Text>
+                        <Text variant='p' className='text-center text-black '>
+                            (No courses added)
+                        </Text>
+                    </div>
+                )}
                 <div className='flex-1 self-stretch overflow-y-auto px-5'>
                     {activeSchedule?.courses?.length > 0 && (
                         <List

@@ -40,7 +40,7 @@ const splashText: string[] = [
     'The squirrels are more ambitious than most freshmen during finals week.',
     'The line at the on-campus Starbucks is longer than your course waitlist.',
     'The weather changes more often than your class schedule.',
-    "'Sorry, the PCL is full' is the most heartbreaking message you'll ever receive.",
+    'Mmm... Brutalist architecture...',
     'Getting to class on time is like navigating a maze of construction zones.',
     "'studying' often means refreshing Canvas every five minutes to see if the professor posted lecture slides.",
     "'I'll just skip this lecture' often turns into a semester-long habit.",
