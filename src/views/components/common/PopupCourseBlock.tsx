@@ -8,6 +8,7 @@ import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
+import { enableCourseStatusChips } from 'src/shared/util/experimental';
 
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
@@ -65,7 +66,7 @@ export default function PopupCourseBlock({
                 <span className='px-0.5 font-450'>{formattedUniqueId}</span> {course.department} {course.number} &ndash;{' '}
                 {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
             </Text>
-            {course.status !== Status.OPEN && (
+            {enableCourseStatusChips && course.status !== Status.OPEN && (
                 <div
                     style={{
                         backgroundColor: colors.secondaryColor,
