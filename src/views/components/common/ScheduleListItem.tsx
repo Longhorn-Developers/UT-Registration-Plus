@@ -30,6 +30,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
     const [error, setError] = useState<string | undefined>(undefined);
+    const [lastErrorMessage, setLastErrorMessage] = useState<string | undefined>(undefined);
 
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
@@ -55,7 +56,10 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     };
 
     const onDelete = () => {
-        deleteSchedule(schedule.id).catch(e => setError(e.message));
+        deleteSchedule(schedule.id).catch(e => {
+            setError(e.message);
+            setLastErrorMessage(e.message);
+        });
     };
 
     return (
@@ -68,7 +72,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                         Something Went Wrong
                     </Text>
                 }
-                content={<Text variant='p'>{error}</Text>}
+                content={<Text variant='p'>{error || lastErrorMessage}</Text>}
                 // eslint-disable-next-line react/no-children-prop
                 children={[
                     <Button key='yes' variant='filled' color='ut-black' onClick={() => setError(undefined)}>
