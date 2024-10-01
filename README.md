@@ -149,5 +149,5 @@ This project leverages several powerful open-source tools and libraries. Special
 - Storybook
 - Semantic-Release
 
-[UT Registration Planner](https://github.com/doprz/UT-Registration-Planner)'s was archived and it's developer joined UT Registration Plus in 2023
+- [UT Registration Planner](https://github.com/doprz/UT-Registration-Planner)'s was archived and it's developer joined UT Registration Plus in 2023
 - [Longhorn Developers](https://github.com/Longhorn-Developers) organization was created in 2024 for further development of UTRP and other student-led projects.
