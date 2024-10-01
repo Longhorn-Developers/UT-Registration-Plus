@@ -1,3 +1,5 @@
+import 'react-loading-skeleton/dist/skeleton.css';
+
 import type { ScrapedRow } from '@shared/types/Course';
 import useInfiniteScroll from '@views/hooks/useInfiniteScroll';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
@@ -10,6 +12,7 @@ import {
 } from '@views/lib/loadNextCourseCatalogPage';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import Skeleton from 'react-loading-skeleton';
 
 import styles from './AutoLoad.module.scss';
 
@@ -61,14 +64,10 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
     return createPortal(
         <div>
             {status !== AutoLoadStatus.ERROR && (
-                <div
-                    style={{
-                        height: '500px',
-                        backgroundColor: '#f4f4f4',
-                    }}
-                >
-                    {/* <Spinner />
-                    <h2>Loading Next Page...</h2> */}
+                <div className=''>
+                    {Array.from({ length: 8 }).map((_, i) => (
+                        <Skeleton style={{ marginBottom: 30 }} height={40} />
+                    ))}
                 </div>
             )}
             {status === AutoLoadStatus.ERROR && (
