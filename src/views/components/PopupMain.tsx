@@ -10,7 +10,7 @@ import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import clsx from 'clsx';
-import React, { useEffect,useState  } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
