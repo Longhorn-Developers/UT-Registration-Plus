@@ -115,7 +115,6 @@ export default function PopupMain(): JSX.Element {
                         </List>
                     )}
                 </div>
-                {funny}
                 <div className='w-full flex flex-col items-center gap-1.25 p-5 pt-3.75'>
                     <div className='flex gap-2.5'>
                         {enableCourseStatusChips && (
@@ -145,6 +144,11 @@ export default function PopupMain(): JSX.Element {
                             </button>
                         </div>
                     )}
+                </div>
+                <div className='inline-flex items-center self-center gap-1'>
+                    <Text variant='mini' className='text-ut-gray !font-normal'>
+                        {funny}
+                    </Text>
                 </div>
             </div>
         </ExtensionRoot>
