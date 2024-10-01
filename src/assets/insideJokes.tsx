@@ -57,6 +57,10 @@ const splashText: string[] = [
     'A pen and paper is old fashioned, but sometimes old ways are best',
     'A heart is like bedrock, destroyable only by cheating',
     'You may not rest now, there are Canvas assignments nearby',
+    '60k+ users!',
+    'Almost Turing complete',
+    'Have you had your coffee yet?',
+    '#BF5700',
 ];
 
 export default splashText;
