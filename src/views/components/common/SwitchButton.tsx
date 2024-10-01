@@ -6,7 +6,16 @@ type ToggleSwitchProps = {
     onChange?: (checked: boolean) => void;
 };
 
-const SwitchButton: React.FC<ToggleSwitchProps> = ({ isChecked = true, onChange }) => {
+/**
+ * A custom switch button component.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {boolean} [props.isChecked=true] - The initial checked state of the switch button.
+ * @param {Function} props.onChange - The callback function to be called when the switch button is toggled.
+ * @returns {JSX.Element} The rendered SwitchButton component.
+ */
+const SwitchButton = ({ isChecked = true, onChange }: ToggleSwitchProps): JSX.Element => {
     const [enabled, setEnabled] = useState(isChecked);
 
     useEffect(() => {
@@ -16,7 +25,7 @@ const SwitchButton: React.FC<ToggleSwitchProps> = ({ isChecked = true, onChange 
     const handleChange = (checked: boolean) => {
         setEnabled(checked);
         if (onChange) {
-            onChange;
+            onChange(checked);
         }
     };
 
@@ -24,11 +33,11 @@ const SwitchButton: React.FC<ToggleSwitchProps> = ({ isChecked = true, onChange 
         <Switch
             checked={enabled}
             onChange={handleChange}
-            className={`${enabled ? 'bg-[#579D42]' : 'bg-gray-400'} 
+            className={`${enabled ? 'bg-[#579D42]' : 'bg-gray-400'}
           relative inline-flex items-center h-8 w-13 rounded-full transition-colors ease-in-out duration-200`}
         >
             <span
-                className={`${enabled ? 'translate-x-6' : 'translate-x-1'} 
+                className={`${enabled ? 'translate-x-6' : 'translate-x-1'}
             inline-block w-6 h-6 transform bg-white rounded-full transition-transform ease-in-out duration-200`}
             />
         </Switch>
