@@ -1,6 +1,6 @@
 import { background } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { enableCourseStatusChips } from '@shared/util/experimental';
+import { enableCourseRefreshing, enableCourseStatusChips } from '@shared/util/experimental';
 import Divider from '@views/components/common/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List';
@@ -116,23 +116,25 @@ export default function PopupMain(): JSX.Element {
                             </>
                         )}
                     </div>
-                    <div className='inline-flex items-center self-center gap-1'>
-                        <Text variant='mini' className='text-ut-gray !font-normal'>
-                            DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
-                        </Text>
-                        <button
-                            className='h-4 w-4 bg-transparent p-0 btn'
-                            onClick={() => {
-                                setIsRefreshing(true);
-                            }}
-                        >
-                            <RefreshIcon
-                                className={clsx('h-4 w-4 text-ut-black animate-duration-800', {
-                                    'animate-spin': isRefreshing,
-                                })}
-                            />
-                        </button>
-                    </div>
+                    {enableCourseRefreshing && (
+                        <div className='inline-flex items-center self-center gap-1'>
+                            <Text variant='mini' className='text-ut-gray !font-normal'>
+                                DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                            </Text>
+                            <button
+                                className='h-4 w-4 bg-transparent p-0 btn'
+                                onClick={() => {
+                                    setIsRefreshing(true);
+                                }}
+                            >
+                                <RefreshIcon
+                                    className={clsx('h-4 w-4 text-ut-black animate-duration-800', {
+                                        'animate-spin': isRefreshing,
+                                    })}
+                                />
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </ExtensionRoot>
