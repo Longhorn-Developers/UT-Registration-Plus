@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import React from 'react';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import Link from '@views/components/common/Link';
-import Options from 'src/views/components/options/Options';
+import Options from '@views/components/options/Options';
 
 export default function App() {
     return (
