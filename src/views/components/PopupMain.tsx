@@ -1,3 +1,4 @@
+import splashText from '@assets/insideJokes';
 import { background } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { enableCourseRefreshing, enableCourseStatusChips } from '@shared/util/experimental';
@@ -9,7 +10,7 @@ import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { useEffect,useState  } from 'react';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
@@ -20,8 +21,6 @@ import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown';
 import ScheduleListItem from './common/ScheduleListItem';
-import splashText from 'src/assets/insideJokes';
-import { useEffect } from 'react';
 
 /**
  * Renders the main popup component.
@@ -94,11 +93,11 @@ export default function PopupMain(): JSX.Element {
                     </ScheduleDropdown>
                 </div>
                 {activeSchedule?.courses?.length === 0 && (
-                    <div className='flex flex-col items-center self-center gap-1 py-2 px-2'>
+                    <div className='flex flex-col items-center self-center gap-1 px-2 py-2'>
                         <Text variant='small' className='text-center text-ut-gray !font-normal'>
                             {funny}
                         </Text>
-                        <Text variant='p' className='text-center text-black '>
+                        <Text variant='p' className='text-center text-black'>
                             (No courses added)
                         </Text>
                     </div>
