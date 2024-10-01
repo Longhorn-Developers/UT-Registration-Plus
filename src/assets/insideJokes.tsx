@@ -36,7 +36,7 @@ const splashText: string[] = [
     'Days since last GDC door alarm: 0',
     'Pay attention. Might learn something.',
     'Long ago, apartment rates stayed together in harmony. Then, everything changed when American Campus Communities Inc attacked.',
-    'The squirrels are more ambitious than most freshmen during finals week.',
+    'Roll for Initiative!',
     'The line at the on-campus Starbucks is longer than your course waitlist.',
     'The weather changes more often than your class schedule.',
     'Mmm... Brutalist architecture...',
