@@ -4,11 +4,11 @@ import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
+import { enableCourseStatusChips } from '@shared/util/experimental';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
-import { enableCourseStatusChips } from 'src/shared/util/experimental';
 
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
