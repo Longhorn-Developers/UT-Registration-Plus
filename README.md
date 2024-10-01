@@ -36,7 +36,7 @@ Contributions are welcome and encouraged! To contribute, please follow these ste
 
 1. Fork the repository
 2. Create a new branch (`git checkout -b feature/your-feature`)
-3. Make your changes and ensure the code follows the linting and formatting rules (`bun run lint` and `bun run format`)
+3. Make your changes and ensure the code follows the linting and formatting rules (`pnpm run lint` and `pnpm run prettier`)
 4. Commit your changes following the **Conventional Commits** specification
 5. Push to the branch (`git push origin feature/your-feature`)
 6. Open a Pull Request
