@@ -9,6 +9,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import XIcon from '~icons/material-symbols/close';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
+import { Button } from './Button';
+import PromptDialog from './Prompt';
+
 /**
  * Props for the ScheduleListItem component.
  */
@@ -26,6 +29,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
+    const [error, setError] = useState<string | undefined>(undefined);
 
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
@@ -50,8 +54,28 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         setIsEditing(false);
     };
 
+    const onDelete = () => {
+        deleteSchedule(schedule.id).catch(e => setError(e.message));
+    };
+
     return (
         <div className='rounded bg-white'>
+            <PromptDialog
+                isOpen={!!error}
+                onClose={() => setError(undefined)}
+                title={
+                    <Text className='text-red' variant='h4'>
+                        Something Went Wrong
+                    </Text>
+                }
+                content={<Text variant='p'>{error}</Text>}
+                // eslint-disable-next-line react/no-children-prop
+                children={[
+                    <Button key='yes' variant='filled' color='ut-black' onClick={() => setError(undefined)}>
+                        I understand
+                    </Button>,
+                ]}
+            />
             <li className='w-full flex cursor-pointer items-center text-ut-burntorange'>
                 <div className='h-full cursor-move focusable' {...dragHandleProps}>
                     <DragIndicatorIcon className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
@@ -93,10 +117,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                         )}
                     </div>
                     <div>
-                        <XIcon
-                            className='invisible h-5 w-5 text-ut-red group-hover:visible'
-                            onClick={() => deleteSchedule(schedule.id)}
-                        />
+                        <XIcon className='invisible h-5 w-5 text-ut-red group-hover:visible' onClick={onDelete} />
                     </div>
                 </div>
             </li>
