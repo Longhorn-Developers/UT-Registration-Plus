@@ -148,5 +148,7 @@ This project leverages several powerful open-source tools and libraries. Special
 - Prettier
 - Storybook
 - Semantic-Release
-- [UT Registration Planner](https://github.com/doprz/UT-Registration-Planner)
-- [Longhorn Developers](https://github.com/Longhorn-Developers)
+- UT Registration Plus v1 with @sghsri as the original author for creating the foundation of UTRP and impacting thousands of UT students positively via his Chrome Extension
+- [UT Registration Planner](https://github.com/doprz/UT-Registration-Planner) was archived and it's developer @doprz joined UT Registration Plus in 2023
+- [Longhorn Developers](https://github.com/Longhorn-Developers) organization was created in 2024 for further development of UTRP and other student-led projects.
+- All UTRP devs, beta testers, and anyone who helped support this project
