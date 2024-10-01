@@ -20,6 +20,8 @@ import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown';
 import ScheduleListItem from './common/ScheduleListItem';
+import splashText from 'src/assets/insideJokes';
+import { useEffect } from 'react';
 
 /**
  * Renders the main popup component.
@@ -28,6 +30,14 @@ import ScheduleListItem from './common/ScheduleListItem';
 export default function PopupMain(): JSX.Element {
     const [activeSchedule, schedules] = useSchedules();
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [funny, setFunny] = useState<string>('');
+
+    useEffect(() => {
+        const randomIndex = Math.floor(Math.random() * splashText.length);
+        setFunny(
+            splashText[randomIndex] ?? 'If you are seeing this, something has gone horribly wrong behind the scenes.'
+        );
+    }, []);
 
     const handleOpenOptions = async () => {
         const url = chrome.runtime.getURL('/options.html');
@@ -105,7 +115,7 @@ export default function PopupMain(): JSX.Element {
                         </List>
                     )}
                 </div>
-
+                {funny}
                 <div className='w-full flex flex-col items-center gap-1.25 p-5 pt-3.75'>
                     <div className='flex gap-2.5'>
                         {enableCourseStatusChips && (
