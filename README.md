@@ -148,6 +148,11 @@ This project leverages several powerful open-source tools and libraries. Special
 - Prettier
 - Storybook
 - Semantic-Release
+- [chrome-extension-toolkit](https://github.com/sghsri/chrome-extension-toolkit)
+- [UT_Grade_Parser](https://github.com/doprz/UT_Grade_Parser)
+- [eslint-plugin-import-essentials](https://github.com/doprz/eslint-plugin-import-essentials)
+- Figma designs by @IsaDavRod
+- Custom pnpm patches by @Razboy20
 - UT Registration Plus v1 with @sghsri as the original author for creating the foundation of UTRP and impacting thousands of UT students positively via his Chrome Extension
 - [UT Registration Planner](https://github.com/doprz/UT-Registration-Planner) was archived and it's developer @doprz joined UT Registration Plus in 2023
 - [Longhorn Developers](https://github.com/Longhorn-Developers) organization was created in 2024 for further development of UTRP and other student-led projects.
