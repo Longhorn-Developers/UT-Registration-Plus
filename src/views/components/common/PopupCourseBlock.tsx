@@ -4,6 +4,7 @@ import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
+import { enableCourseStatusChips } from '@shared/util/experimental';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
@@ -65,7 +66,7 @@ export default function PopupCourseBlock({
                 <span className='px-0.5 font-450'>{formattedUniqueId}</span> {course.department} {course.number} &ndash;{' '}
                 {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
             </Text>
-            {course.status !== Status.OPEN && (
+            {enableCourseStatusChips && course.status !== Status.OPEN && (
                 <div
                     style={{
                         backgroundColor: colors.secondaryColor,
