@@ -80,9 +80,9 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                 <div className='h-full cursor-move focusable' {...dragHandleProps}>
                     <DragIndicatorIcon className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
                 </div>
-                <div className='group relative flex flex-1 items-center'>
+                <div className='group relative flex flex-1 items-center overflow-x-hidden'>
                     <div
-                        className='flex flex-grow items-center gap-1.5'
+                        className='flex flex-grow items-center gap-1.5 overflow-x-hidden'
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         <div
@@ -97,7 +97,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                             <Text
                                 variant='p'
                                 as='input'
-                                className='flex-1 px-0.5 outline-blue-500 -ml-0.5'
+                                className='max-w-[160px] flex-1 px-0.5 outline-blue-500 -ml-0.5'
                                 value={editorValue}
                                 onChange={e => setEditorValue(e.target.value)}
                                 onKeyDown={e => {
