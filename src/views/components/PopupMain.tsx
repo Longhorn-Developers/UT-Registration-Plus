@@ -1,3 +1,4 @@
+import splashText from '@assets/insideJokes';
 import { background } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { enableCourseRefreshing, enableCourseStatusChips } from '@shared/util/experimental';
@@ -9,7 +10,7 @@ import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import RefreshIcon from '~icons/material-symbols/refresh';
@@ -28,6 +29,14 @@ import ScheduleListItem from './common/ScheduleListItem';
 export default function PopupMain(): JSX.Element {
     const [activeSchedule, schedules] = useSchedules();
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [funny, setFunny] = useState<string>('');
+
+    useEffect(() => {
+        const randomIndex = Math.floor(Math.random() * splashText.length);
+        setFunny(
+            splashText[randomIndex] ?? 'If you are seeing this, something has gone horribly wrong behind the scenes.'
+        );
+    }, []);
 
     const handleOpenOptions = async () => {
         const url = chrome.runtime.getURL('/options.html');
@@ -83,6 +92,16 @@ export default function PopupMain(): JSX.Element {
                         </List>
                     </ScheduleDropdown>
                 </div>
+                {activeSchedule?.courses?.length === 0 && (
+                    <div className='flex flex-col items-center self-center gap-1 px-2 py-2'>
+                        <Text variant='small' className='text-center text-ut-gray !font-normal'>
+                            {funny}
+                        </Text>
+                        <Text variant='small' className='text-center text-black'>
+                            (No courses added)
+                        </Text>
+                    </div>
+                )}
                 <div className='flex-1 self-stretch overflow-y-auto px-5'>
                     {activeSchedule?.courses?.length > 0 && (
                         <List
@@ -105,7 +124,6 @@ export default function PopupMain(): JSX.Element {
                         </List>
                     )}
                 </div>
-
                 <div className='w-full flex flex-col items-center gap-1.25 p-5 pt-3.75'>
                     <div className='flex gap-2.5'>
                         {enableCourseStatusChips && (
