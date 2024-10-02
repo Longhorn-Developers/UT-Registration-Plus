@@ -97,7 +97,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                             <Text
                                 variant='p'
                                 as='input'
-                                className='max-w-[160px] flex-1 px-0.5 outline-blue-500 -ml-0.5'
+                                className='mr-1 flex-1 px-0.5 outline-blue-500 -ml-0.5'
                                 value={editorValue}
                                 onChange={e => setEditorValue(e.target.value)}
                                 onKeyDown={e => {
@@ -116,7 +116,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                             </Text>
                         )}
                     </div>
-                    <div className='flex flex-grow justify-end'>
+                    <div className='self-end'>
                         <XIcon className='invisible h-5 w-5 text-ut-red group-hover:visible' onClick={onDelete} />
                     </div>
                 </div>
