@@ -1,9 +1,9 @@
 import type TabInfoMessages from '@shared/messages/TabInfoMessages';
 import Calendar from '@views/components/calendar/Calendar';
+import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect } from 'react';
-import DialogProvider from 'src/views/components/common/DialogProvider/DialogProvider';
 
 /**
  * Calendar page

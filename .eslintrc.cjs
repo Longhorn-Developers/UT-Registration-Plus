@@ -100,7 +100,12 @@ module.exports = {
         'import/no-cycle': 'off',
         'import/no-extraneous-dependencies': 'off',
         'react/jsx-props-no-spreading': 'off',
-        'react/jsx-no-useless-fragment': 'allowExpressions',
+        'react/jsx-no-useless-fragment': [
+            'error',
+            {
+                allowExpressions: true,
+            },
+        ],
         'keyword-spacing': [
             'error',
             {
