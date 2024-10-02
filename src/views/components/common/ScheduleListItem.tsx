@@ -97,7 +97,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                             <Text
                                 variant='p'
                                 as='input'
-                                className='mr-1 flex-1 px-0.5 outline-blue-500 -ml-0.5'
+                                className='mr-1 w-full flex-1 px-0.5 outline-blue-500 -ml-0.5'
                                 value={editorValue}
                                 onChange={e => setEditorValue(e.target.value)}
                                 onKeyDown={e => {
