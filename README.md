@@ -28,6 +28,15 @@
 -   Semantic-Release
 -   Custom Messaging & Storage Wrappers
 
+## VSCode Extensions
+
+We recommend using the following VSCode extensions to improve your development experience:
+
+-   **[ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)**: For identifying and fixing linting issues.
+-   **[Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)**: For automatic code formatting.
+-   **[Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)**: For Tailwind CSS class autocomplete and IntelliSense.
+-   **[UnoCSS](https://marketplace.visualstudio.com/items?itemName=antfu.unocss)**: For better support with UnoCSS utilities.
+
 ## Contributing
 
 Contributions are welcome and encouraged! To get started:
@@ -176,5 +185,3 @@ Special thanks to the developers and contributors behind these amazing tools and
 -   [UT Registration Planner](https://github.com/doprz/UT-Registration-Planner) was archived, and its developer @doprz joined UT Registration Plus in 2023
 -   [Longhorn Developers](https://github.com/Longhorn-Developers) organization, established in 2024, fosters further development of UTRP and other student-led projects.
 -   The UTRP devs, beta testers, and all supporters of the project!
-
----
