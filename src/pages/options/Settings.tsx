@@ -1,9 +1,16 @@
+import { getCourseColors } from '@shared/util/colors';
+import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { SmallLogo } from '@views/components/common/LogoIcon';
+import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import SwitchButton from '@views/components/common/SwitchButton';
 import React, { useCallback, useEffect, useState } from 'react';
+import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
+
+import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
+import RefreshIcon from '~icons/material-symbols/refresh';
 
 import App from './DevMode';
 
@@ -82,7 +89,7 @@ export default function SettingsPage() {
                     <div className='flex items-center'>
                         <SmallLogo className='pr-4' />
                         <Divider size='2rem' orientation='vertical' />
-                        <h1 className='pl-4 text-2xl text-ut-burntorange font-bold'>UTRP SETTINGS & CREDITS PAGE</h1>
+                        <h1 className='pl-4 text-xl text-ut-burntorange font-bold'>UTRP SETTINGS & CREDITS PAGE</h1>
                     </div>
                     <img src='/path-to-LD-icon.png' alt='LD Icon' className='h-10 w-10' />
                 </header>
@@ -91,27 +98,46 @@ export default function SettingsPage() {
                     <div className='mr-4 w-1/2'>
                         <section className='mb-8'>
                             <h2 className='mb-4 text-xl text-ut-black font-semibold'>CUSTOMIZATION OPTIONS</h2>
-                            <div className='space-y-4'>
-                                <div className='flex items-center justify-between'>
-                                    <div>
-                                        <h3 className='text-ut-burntorange font-semibold'>Show Course Status</h3>
-                                        <p className='text-sm text-gray-600'>
-                                            Shows an indicator for waitlisted, cancelled, and closed courses.
-                                        </p>
+                            <div className='flex space-x-4'>
+                                <div className='w-1/2 space-y-4'>
+                                    <div className='flex items-center justify-between'>
+                                        <div className='max-w-xs'>
+                                            <h3 className='text-ut-burntorange font-semibold'>Show Course Status</h3>
+                                            <p className='text-sm text-gray-600'>
+                                                Shows an indicator for waitlisted, cancelled, and closed courses.
+                                            </p>
+                                        </div>
+                                        <SwitchButton isChecked={showCourseStatus} onChange={setShowCourseStatus} />
                                     </div>
-                                    <SwitchButton isChecked={showCourseStatus} onChange={setShowCourseStatus} />
+                                    <Divider size='auto' orientation='horizontal' />
+                                    <div className='flex items-center justify-between'>
+                                        <div className='max-w-xs'>
+                                            <h3 className='text-ut-burntorange font-semibold'>
+                                                Show Time & Location in Popup
+                                            </h3>
+                                            <p className='text-sm text-gray-600'>
+                                                Shows the course&apos;s time and location in the extension&apos;s popup.
+                                            </p>
+                                        </div>
+                                        <SwitchButton isChecked={showTimeLocation} onChange={setShowTimeLocation} />
+                                    </div>
                                 </div>
-                                <Divider size='auto' orientation='horizontal' />
-                                <div className='flex items-center justify-between'>
-                                    <div>
-                                        <h3 className='text-ut-burntorange font-semibold'>
-                                            Show Time & Location in Popup
-                                        </h3>
-                                        <p className='text-sm text-gray-600'>
-                                            Shows the course&apos;s time and location in the extension&apos;s popup.
-                                        </p>
+                                <div className='o w-1/2 inline-flex flex-col items-start justify-start rounded-xl bg-ut-gray/10'>
+                                    <div className='m-2 inline-flex items-center self-stretch justify-end gap-2.5'>
+                                        <div className='text-center text-sm text-ut-gray font-medium'>Preview</div>
                                     </div>
-                                    <SwitchButton isChecked={showTimeLocation} onChange={setShowTimeLocation} />
+                                    <div className='flex flex-col self-stretch px-5 pb-5 space-y-2'>
+                                        <CalendarCourseCell
+                                            colors={getCourseColors('orange')}
+                                            courseDeptAndInstr={ExampleCourse.department}
+                                            className={ExampleCourse.number}
+                                            status={ExampleCourse.status}
+                                            timeAndLocation={ExampleCourse.schedule.meetings[0]!.getTimeString({
+                                                separator: '-',
+                                            })}
+                                        />
+                                        <PopupCourseBlock colors={getCourseColors('orange')} course={ExampleCourse} />
+                                    </div>
                                 </div>
                             </div>
                         </section>
@@ -122,7 +148,7 @@ export default function SettingsPage() {
                             <h2 className='mb-4 text-xl text-ut-black font-semibold'>ADVANCED SETTINGS</h2>
                             <div className='space-y-4'>
                                 <div className='flex items-center justify-between'>
-                                    <div>
+                                    <div className='max-w-xs'>
                                         <h3 className='text-ut-burntorange font-semibold'>Refresh Data</h3>
                                         <p className='text-sm text-gray-600'>
                                             Refreshes waitlist, course status, and other info with the latest data from
@@ -132,6 +158,7 @@ export default function SettingsPage() {
                                     <Button
                                         variant='outline'
                                         color='ut-black'
+                                        icon={RefreshIcon}
                                         onClick={() => console.log('Refresh clicked')}
                                     >
                                         Refresh
@@ -141,7 +168,7 @@ export default function SettingsPage() {
                                 <Divider size='auto' orientation='horizontal' />
 
                                 <div className='flex items-center justify-between'>
-                                    <div>
+                                    <div className='max-w-xs'>
                                         <h3 className='text-ut-burntorange font-semibold'>Course Conflict Highlight</h3>
                                         <p className='text-sm text-gray-600'>
                                             Adds a red strikethrough to courses that have conflicting times.
@@ -153,7 +180,7 @@ export default function SettingsPage() {
                                 <Divider size='auto' orientation='horizontal' />
 
                                 <div className='flex items-center justify-between'>
-                                    <div>
+                                    <div className='max-w-xs'>
                                         <h3 className='text-ut-burntorange font-semibold'>
                                             Load All Courses in Course Schedule
                                         </h3>
@@ -168,7 +195,7 @@ export default function SettingsPage() {
                                 <Divider size='auto' orientation='horizontal' />
 
                                 <div className='flex items-center justify-between'>
-                                    <div>
+                                    <div className='max-w-xs'>
                                         <h3 className='text-ut-burntorange font-semibold'>Reset All Data</h3>
                                         <p className='text-sm text-gray-600'>
                                             Erases all schedules and courses you have.
@@ -177,6 +204,7 @@ export default function SettingsPage() {
                                     <Button
                                         variant='outline'
                                         color='ut-red'
+                                        icon={DeleteForeverIcon}
                                         onClick={() => console.log('Erase clicked')}
                                     >
                                         Erase All
