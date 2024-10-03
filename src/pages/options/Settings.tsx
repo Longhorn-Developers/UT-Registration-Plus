@@ -87,107 +87,127 @@ export default function SettingsPage() {
                     <img src='/path-to-LD-icon.png' alt='LD Icon' className='h-10 w-10' />
                 </header>
 
-                <section className='mb-8'>
-                    <h2 className='mb-4 text-xl text-ut-black font-semibold'>CUSTOMIZATION OPTIONS</h2>
-                    <div className='space-y-4'>
-                        <div className='flex items-center justify-between'>
-                            <div>
-                                <h3 className='text-ut-burntorange font-semibold'>Show Course Status</h3>
-                                <p className='text-sm text-gray-600'>
-                                    Shows an indicator for waitlisted, cancelled, and closed courses.
-                                </p>
+                <div className='flex'>
+                    <div className='mr-4 w-1/2'>
+                        <section className='mb-8'>
+                            <h2 className='mb-4 text-xl text-ut-black font-semibold'>CUSTOMIZATION OPTIONS</h2>
+                            <div className='space-y-4'>
+                                <div className='flex items-center justify-between'>
+                                    <div>
+                                        <h3 className='text-ut-burntorange font-semibold'>Show Course Status</h3>
+                                        <p className='text-sm text-gray-600'>
+                                            Shows an indicator for waitlisted, cancelled, and closed courses.
+                                        </p>
+                                    </div>
+                                    <SwitchButton isChecked={showCourseStatus} onChange={setShowCourseStatus} />
+                                </div>
+                                <Divider size='auto' orientation='horizontal' />
+                                <div className='flex items-center justify-between'>
+                                    <div>
+                                        <h3 className='text-ut-burntorange font-semibold'>
+                                            Show Time & Location in Popup
+                                        </h3>
+                                        <p className='text-sm text-gray-600'>
+                                            Shows the course&apos;s time and location in the extension&apos;s popup.
+                                        </p>
+                                    </div>
+                                    <SwitchButton isChecked={showTimeLocation} onChange={setShowTimeLocation} />
+                                </div>
                             </div>
-                            <SwitchButton isChecked={showCourseStatus} onChange={setShowCourseStatus} />
-                        </div>
+                        </section>
+
                         <Divider size='auto' orientation='horizontal' />
-                        <div className='flex items-center justify-between'>
-                            <div>
-                                <h3 className='text-ut-burntorange font-semibold'>Show Time & Location in Popup</h3>
-                                <p className='text-sm text-gray-600'>
-                                    Shows the course&apos;s time and location in the extension&apos;s popup.
-                                </p>
+
+                        <section className='my-8'>
+                            <h2 className='mb-4 text-xl text-ut-black font-semibold'>ADVANCED SETTINGS</h2>
+                            <div className='space-y-4'>
+                                <div className='flex items-center justify-between'>
+                                    <div>
+                                        <h3 className='text-ut-burntorange font-semibold'>Refresh Data</h3>
+                                        <p className='text-sm text-gray-600'>
+                                            Refreshes waitlist, course status, and other info with the latest data from
+                                            UT&apos;s site.
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant='outline'
+                                        color='ut-black'
+                                        onClick={() => console.log('Refresh clicked')}
+                                    >
+                                        Refresh
+                                    </Button>
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div>
+                                        <h3 className='text-ut-burntorange font-semibold'>Course Conflict Highlight</h3>
+                                        <p className='text-sm text-gray-600'>
+                                            Adds a red strikethrough to courses that have conflicting times.
+                                        </p>
+                                    </div>
+                                    <SwitchButton isChecked={highlightConflicts} onChange={setHighlightConflicts} />
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div>
+                                        <h3 className='text-ut-burntorange font-semibold'>
+                                            Load All Courses in Course Schedule
+                                        </h3>
+                                        <p className='text-sm text-gray-600'>
+                                            Loads all courses in the Course Schedule site by scrolling, instead of using
+                                            next/prev page buttons.
+                                        </p>
+                                    </div>
+                                    <SwitchButton isChecked={loadAllCourses} onChange={setLoadAllCourses} />
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div>
+                                        <h3 className='text-ut-burntorange font-semibold'>Reset All Data</h3>
+                                        <p className='text-sm text-gray-600'>
+                                            Erases all schedules and courses you have.
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant='outline'
+                                        color='ut-red'
+                                        onClick={() => console.log('Erase clicked')}
+                                    >
+                                        Erase All
+                                    </Button>
+                                </div>
                             </div>
-                            <SwitchButton isChecked={showTimeLocation} onChange={setShowTimeLocation} />
-                        </div>
+                        </section>
+
+                        <Divider size='auto' orientation='horizontal' />
+
+                        <section className='my-8'>
+                            <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
+                                Dev Mode
+                            </h2>
+                        </section>
                     </div>
-                </section>
 
-                <Divider size='auto' orientation='horizontal' />
-
-                <section className='mb-8'>
-                    <h2 className='mb-4 text-xl text-ut-black font-semibold'>ADVANCED SETTINGS</h2>
-                    <div className='space-y-4'>
-                        <div className='flex items-center justify-between'>
-                            <div>
-                                <h3 className='text-ut-burntorange font-semibold'>Refresh Data</h3>
-                                <p className='text-sm text-gray-600'>
-                                    Refreshes waitlist, course status, and other info with the latest data from
-                                    UT&apos;s site.
-                                </p>
+                    <section className='ml-4 w-1/2'>
+                        <section>
+                            <h2 className='mb-4 text-xl text-ut-black font-semibold'>MEET THE TEAM BEHIND UTRP V2</h2>
+                            <div className='grid grid-cols-2 gap-4 md:grid-cols-4 sm:grid-cols-3'>
+                                {teamMembers.map(member => (
+                                    <div key={member.name} className='text-center'>
+                                        <h3 className='text-ut-burntorange font-semibold'>{member.name}</h3>
+                                        <p className='text-sm text-gray-600'>{member.role}</p>
+                                    </div>
+                                ))}
                             </div>
-                            <Button variant='outline' color='ut-black' onClick={() => console.log('Refresh clicked')}>
-                                Refresh
-                            </Button>
-                        </div>
-
-                        <Divider size='auto' orientation='horizontal' />
-
-                        <div className='flex items-center justify-between'>
-                            <div>
-                                <h3 className='text-ut-burntorange font-semibold'>Course Conflict Highlight</h3>
-                                <p className='text-sm text-gray-600'>
-                                    Adds a red strikethrough to courses that have conflicting times.
-                                </p>
-                            </div>
-                            <SwitchButton isChecked={highlightConflicts} onChange={setHighlightConflicts} />
-                        </div>
-
-                        <Divider size='auto' orientation='horizontal' />
-
-                        <div className='flex items-center justify-between'>
-                            <div>
-                                <h3 className='text-ut-burntorange font-semibold'>
-                                    Load All Courses in Course Schedule
-                                </h3>
-                                <p className='text-sm text-gray-600'>
-                                    Loads all courses in the Course Schedule site by scrolling, instead of using
-                                    next/prev page buttons.
-                                </p>
-                            </div>
-                            <SwitchButton isChecked={loadAllCourses} onChange={setLoadAllCourses} />
-                        </div>
-
-                        <Divider size='auto' orientation='horizontal' />
-
-                        <div className='flex items-center justify-between'>
-                            <div>
-                                <h3 className='text-ut-burntorange font-semibold'>Reset All Data</h3>
-                                <p className='text-sm text-gray-600'>Erases all schedules and courses you have.</p>
-                            </div>
-                            <Button variant='outline' color='ut-red' onClick={() => console.log('Erase clicked')}>
-                                Erase All
-                            </Button>
-                        </div>
-                    </div>
-                </section>
-
-                <section>
-                    <h2 className='mb-4 text-xl text-ut-black font-semibold'>MEET THE TEAM BEHIND UTRP V2</h2>
-                    <div className='grid grid-cols-2 gap-4 md:grid-cols-4 sm:grid-cols-3'>
-                        {teamMembers.map(member => (
-                            <div key={member.name} className='text-center'>
-                                <h3 className='text-ut-burntorange font-semibold'>{member.name}</h3>
-                                <p className='text-sm text-gray-600'>{member.role}</p>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                <section className='mb-8'>
-                    <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
-                        Dev Mode
-                    </h2>
-                </section>
+                        </section>
+                    </section>
+                </div>
             </div>
         </ExtensionRoot>
     );
