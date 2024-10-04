@@ -56,9 +56,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         setIsEditing(false);
     };
 
-    const onDelete = () => {
-        deleteSchedule(schedule.id).catch(e => setError(e.message));
-    };
+    const onDelete = () => {};
 
     useEffect(() => {
         if (error) {
