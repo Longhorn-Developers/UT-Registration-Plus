@@ -312,12 +312,6 @@ export default function SettingsPage() {
                                         <Text variant='small' className='text-ut-gray !font-normal'>
                                             DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                                         </Text>
-                                        <button
-                                            className='h-4 w-4 bg-transparent p-0 btn'
-                                            onClick={() => {
-                                                setIsRefreshing(true);
-                                            }}
-                                        />
                                     </div>
                                     <Text
                                         variant='h2-course'
