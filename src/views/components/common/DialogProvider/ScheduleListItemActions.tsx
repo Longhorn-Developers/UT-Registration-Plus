@@ -51,7 +51,7 @@ export const ConfirmDelete = ({ schedule }: { schedule: UserSchedule }) => {
             {({ focus }) => (
                 <Text
                     variant='small'
-                    className={`block px-3 py-2 ${focus ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}
+                    className={`block px-2 py-2 ${focus ? 'bg-gray-100 text-red-600 rounded' : 'text-red-600'}`}
                 >
                     Delete
                 </Text>
@@ -93,7 +93,7 @@ export const DeleteActiveScheduleError = ({ schedule }: { schedule: UserSchedule
             {({ focus }) => (
                 <Text
                     variant='small'
-                    className={`block px-3 py-2 ${focus ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}
+                    className={`block px-2 py-2 ${focus ? 'bg-gray-100 text-red-600 rounded' : 'text-red-600'}`}
                 >
                     Delete
                 </Text>
