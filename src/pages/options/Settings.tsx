@@ -1,4 +1,7 @@
+import type { IOptionsStore } from '@shared/storage/OptionsStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import { getCourseColors } from '@shared/util/colors';
+import { enableCourseStatusChips } from '@shared/util/experimental';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
@@ -13,12 +16,35 @@ import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 import RefreshIcon from '~icons/material-symbols/refresh';
 
 import App from './DevMode';
+import Preview from './Preview';
 
 interface TeamMember {
     name: string;
     role: string;
 }
 
+const teamMembers = [
+    { name: 'Sriram Hariharan', role: 'Founder' },
+    { name: 'Elie Soloveichik', role: 'Senior Software Engineer' },
+    { name: 'Diego Perez', role: 'Senior Software Engineer' },
+    { name: 'Lukas Zenick', role: 'Senior Software Engineer' },
+    { name: 'Isaiah Rodriguez', role: 'Chief Design Officer' },
+    { name: 'Som Gupta', role: 'Lead Software Engineer' },
+    { name: 'Abhinav Chadaga', role: 'Software Engineer' },
+    { name: 'Samuel Gunter', role: 'Software Engineer' },
+    { name: 'Casey Charleston', role: 'Software Engineer' },
+    { name: 'Dhruv Arora', role: 'Software Engineer' },
+    { name: 'Derek Chen', role: 'Software Engineer' },
+    { name: 'Vinson Zheng', role: 'Software Engineer' },
+    { name: 'Vivek Malle', role: 'Software Engineer' },
+] as const satisfies TeamMember[];
+
+/**
+ * Custom hook for enabling developer mode.
+ *
+ * @param targetCount - The target count to activate developer mode.
+ * @returns A tuple containing a boolean indicating if developer mode is active and a function to increment the count.
+ */
 const useDevMode = (targetCount: number): [boolean, () => void] => {
     const [count, setCount] = useState(0);
     const [active, setActive] = useState(false);
@@ -49,34 +75,46 @@ const useDevMode = (targetCount: number): [boolean, () => void] => {
 };
 
 /**
+ * Initializes the settings by retrieving the values from the OptionsStore.
+ * @returns {Promise<IOptionsStore>} A promise that resolves to an object satisfying the IOptionsStore interface.
+ */
+const initSettings = async () =>
+    ({
+        enableCourseStatusChips: await OptionsStore.get('enableCourseStatusChips'),
+        enableTimeAndLocationInPopup: await OptionsStore.get('enableTimeAndLocationInPopup'),
+        enableHighlightConflicts: await OptionsStore.get('enableHighlightConflicts'),
+        enableScrollToLoad: await OptionsStore.get('enableScrollToLoad'),
+    }) satisfies IOptionsStore;
+
+/**
  * Renders the settings page for the UTRP (UT Registration Plus) extension.
  * Allows customization options and displays credits for the development team.
  *
  * @returns The JSX element representing the settings page.
  */
 export default function SettingsPage() {
-    const [showCourseStatus, setShowCourseStatus] = useState(true);
-    const [showTimeLocation, setShowTimeLocation] = useState(true);
-    const [highlightConflicts, setHighlightConflicts] = useState(true);
-    const [loadAllCourses, setLoadAllCourses] = useState(true);
+    const [showCourseStatus, setShowCourseStatus] = useState<boolean>(false);
+    const [showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
+    const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
+    const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
+
+    useEffect(() => {
+        initSettings().then(
+            ({
+                enableCourseStatusChips,
+                enableTimeAndLocationInPopup,
+                enableHighlightConflicts,
+                enableScrollToLoad,
+            }) => {
+                setShowCourseStatus(enableCourseStatusChips);
+                setShowTimeLocation(enableTimeAndLocationInPopup);
+                setHighlightConflicts(enableHighlightConflicts);
+                setLoadAllCourses(enableScrollToLoad);
+            }
+        );
+    }, []);
 
     const [devMode, toggleDevMode] = useDevMode(10);
-
-    const teamMembers = [
-        { name: 'Sriram Hariharan', role: 'Founder' },
-        { name: 'Elie Soloveichik', role: 'Senior Software Engineer' },
-        { name: 'Diego Perez', role: 'Senior Software Engineer' },
-        { name: 'Lukas Zenick', role: 'Senior Software Engineer' },
-        { name: 'Isaiah Rodriguez', role: 'Chief Design Officer' },
-        { name: 'Som Gupta', role: 'Lead Software Engineer' },
-        { name: 'Abhinav Chadaga', role: 'Software Engineer' },
-        { name: 'Samuel Gunter', role: 'Software Engineer' },
-        { name: 'Casey Charleston', role: 'Software Engineer' },
-        { name: 'Dhruv Arora', role: 'Software Engineer' },
-        { name: 'Derek Chen', role: 'Software Engineer' },
-        { name: 'Vinson Zheng', role: 'Software Engineer' },
-        { name: 'Vivek Malle', role: 'Software Engineer' },
-    ] as const satisfies TeamMember[];
 
     if (devMode) {
         return <App />;
@@ -91,7 +129,7 @@ export default function SettingsPage() {
                         <Divider size='2rem' orientation='vertical' />
                         <h1 className='pl-4 text-xl text-ut-burntorange font-bold'>UTRP SETTINGS & CREDITS PAGE</h1>
                     </div>
-                    <img src='/path-to-LD-icon.png' alt='LD Icon' className='h-10 w-10' />
+                    <img src='/src/assets/LD-icon.png' alt='LD Icon' className='h-10 w-10 rounded-lg' />
                 </header>
 
                 <div className='flex'>
@@ -107,9 +145,17 @@ export default function SettingsPage() {
                                                 Shows an indicator for waitlisted, cancelled, and closed courses.
                                             </p>
                                         </div>
-                                        <SwitchButton isChecked={showCourseStatus} onChange={setShowCourseStatus} />
+                                        <SwitchButton
+                                            isChecked={showCourseStatus}
+                                            onChange={() => {
+                                                setShowCourseStatus(!showCourseStatus);
+                                                OptionsStore.set('enableCourseStatusChips', !showCourseStatus);
+                                            }}
+                                        />
                                     </div>
+
                                     <Divider size='auto' orientation='horizontal' />
+
                                     <div className='flex items-center justify-between'>
                                         <div className='max-w-xs'>
                                             <h3 className='text-ut-burntorange font-semibold'>
@@ -119,26 +165,27 @@ export default function SettingsPage() {
                                                 Shows the course&apos;s time and location in the extension&apos;s popup.
                                             </p>
                                         </div>
-                                        <SwitchButton isChecked={showTimeLocation} onChange={setShowTimeLocation} />
-                                    </div>
-                                </div>
-                                <div className='o w-1/2 inline-flex flex-col items-start justify-start rounded-xl bg-ut-gray/10'>
-                                    <div className='m-2 inline-flex items-center self-stretch justify-end gap-2.5'>
-                                        <div className='text-center text-sm text-ut-gray font-medium'>Preview</div>
-                                    </div>
-                                    <div className='flex flex-col self-stretch px-5 pb-5 space-y-2'>
-                                        <CalendarCourseCell
-                                            colors={getCourseColors('orange')}
-                                            courseDeptAndInstr={ExampleCourse.department}
-                                            className={ExampleCourse.number}
-                                            status={ExampleCourse.status}
-                                            timeAndLocation={ExampleCourse.schedule.meetings[0]!.getTimeString({
-                                                separator: '-',
-                                            })}
+                                        <SwitchButton
+                                            isChecked={showTimeLocation}
+                                            onChange={() => {
+                                                setShowTimeLocation(!showTimeLocation);
+                                                OptionsStore.set('enableTimeAndLocationInPopup', !showTimeLocation);
+                                            }}
                                         />
-                                        <PopupCourseBlock colors={getCourseColors('orange')} course={ExampleCourse} />
                                     </div>
                                 </div>
+                                <Preview>
+                                    <CalendarCourseCell
+                                        colors={getCourseColors('orange')}
+                                        courseDeptAndInstr={ExampleCourse.department}
+                                        className={ExampleCourse.number}
+                                        status={ExampleCourse.status}
+                                        timeAndLocation={ExampleCourse.schedule.meetings[0]!.getTimeString({
+                                            separator: '-',
+                                        })}
+                                    />
+                                    <PopupCourseBlock colors={getCourseColors('orange')} course={ExampleCourse} />
+                                </Preview>
                             </div>
                         </section>
 
@@ -146,70 +193,98 @@ export default function SettingsPage() {
 
                         <section className='my-8'>
                             <h2 className='mb-4 text-xl text-ut-black font-semibold'>ADVANCED SETTINGS</h2>
-                            <div className='space-y-4'>
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>Refresh Data</h3>
-                                        <p className='text-sm text-gray-600'>
-                                            Refreshes waitlist, course status, and other info with the latest data from
-                                            UT&apos;s site.
-                                        </p>
+                            <div className='flex space-x-4'>
+                                <div className='w-1/2 space-y-4'>
+                                    <div className='flex items-center justify-between'>
+                                        <div className='max-w-xs'>
+                                            <h3 className='text-ut-burntorange font-semibold'>Refresh Data</h3>
+                                            <p className='text-sm text-gray-600'>
+                                                Refreshes waitlist, course status, and other info with the latest data
+                                                from UT&apos;s site.
+                                            </p>
+                                        </div>
+                                        <Button
+                                            variant='outline'
+                                            color='ut-black'
+                                            icon={RefreshIcon}
+                                            onClick={() => console.log('Refresh clicked')}
+                                        >
+                                            Refresh
+                                        </Button>
                                     </div>
-                                    <Button
-                                        variant='outline'
-                                        color='ut-black'
-                                        icon={RefreshIcon}
-                                        onClick={() => console.log('Refresh clicked')}
-                                    >
-                                        Refresh
-                                    </Button>
-                                </div>
 
-                                <Divider size='auto' orientation='horizontal' />
+                                    <Divider size='auto' orientation='horizontal' />
 
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>Course Conflict Highlight</h3>
-                                        <p className='text-sm text-gray-600'>
-                                            Adds a red strikethrough to courses that have conflicting times.
-                                        </p>
+                                    <div className='flex items-center justify-between'>
+                                        <div className='max-w-xs'>
+                                            <h3 className='text-ut-burntorange font-semibold'>
+                                                Course Conflict Highlight
+                                            </h3>
+                                            <p className='text-sm text-gray-600'>
+                                                Adds a red strikethrough to courses that have conflicting times.
+                                            </p>
+                                        </div>
+                                        <SwitchButton
+                                            isChecked={highlightConflicts}
+                                            onChange={() => {
+                                                setHighlightConflicts(!highlightConflicts);
+                                                OptionsStore.set('enableHighlightConflicts', !highlightConflicts);
+                                            }}
+                                        />
                                     </div>
-                                    <SwitchButton isChecked={highlightConflicts} onChange={setHighlightConflicts} />
-                                </div>
 
-                                <Divider size='auto' orientation='horizontal' />
+                                    <Divider size='auto' orientation='horizontal' />
 
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>
-                                            Load All Courses in Course Schedule
-                                        </h3>
-                                        <p className='text-sm text-gray-600'>
-                                            Loads all courses in the Course Schedule site by scrolling, instead of using
-                                            next/prev page buttons.
-                                        </p>
+                                    <div className='flex items-center justify-between'>
+                                        <div className='max-w-xs'>
+                                            <h3 className='text-ut-burntorange font-semibold'>
+                                                Load All Courses in Course Schedule
+                                            </h3>
+                                            <p className='text-sm text-gray-600'>
+                                                Loads all courses in the Course Schedule site by scrolling, instead of
+                                                using next/prev page buttons.
+                                            </p>
+                                        </div>
+                                        <SwitchButton
+                                            isChecked={loadAllCourses}
+                                            onChange={() => {
+                                                setLoadAllCourses(!loadAllCourses);
+                                                OptionsStore.set('enableScrollToLoad', !loadAllCourses);
+                                            }}
+                                        />
                                     </div>
-                                    <SwitchButton isChecked={loadAllCourses} onChange={setLoadAllCourses} />
-                                </div>
 
-                                <Divider size='auto' orientation='horizontal' />
+                                    <Divider size='auto' orientation='horizontal' />
 
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>Reset All Data</h3>
-                                        <p className='text-sm text-gray-600'>
-                                            Erases all schedules and courses you have.
-                                        </p>
+                                    <div className='flex items-center justify-between'>
+                                        <div className='max-w-xs'>
+                                            <h3 className='text-ut-burntorange font-semibold'>Reset All Data</h3>
+                                            <p className='text-sm text-gray-600'>
+                                                Erases all schedules and courses you have.
+                                            </p>
+                                        </div>
+                                        <Button
+                                            variant='outline'
+                                            color='ut-red'
+                                            icon={DeleteForeverIcon}
+                                            onClick={() => console.log('Erase clicked')}
+                                        >
+                                            Erase All
+                                        </Button>
                                     </div>
-                                    <Button
-                                        variant='outline'
-                                        color='ut-red'
-                                        icon={DeleteForeverIcon}
-                                        onClick={() => console.log('Erase clicked')}
-                                    >
-                                        Erase All
-                                    </Button>
                                 </div>
+                                <Preview>
+                                    <CalendarCourseCell
+                                        colors={getCourseColors('orange')}
+                                        courseDeptAndInstr={ExampleCourse.department}
+                                        className={ExampleCourse.number}
+                                        status={ExampleCourse.status}
+                                        timeAndLocation={ExampleCourse.schedule.meetings[0]!.getTimeString({
+                                            separator: '-',
+                                        })}
+                                    />
+                                    <PopupCourseBlock colors={getCourseColors('orange')} course={ExampleCourse} />
+                                </Preview>
                             </div>
                         </section>
 
