@@ -56,7 +56,31 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         setIsEditing(false);
     };
 
-    const onDelete = () => {};
+    const onDelete = () => {
+        showDialog({
+            title: 'Confirm Deletion',
+            description: 'Are you sure you want to delete this schedule?',
+            buttons: close => (
+                <>
+                    <Button variant='filled' color='ut-black' onClick={close}>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant='filled'
+                        color='ut-red'
+                        onClick={() => {
+                            deleteSchedule(schedule.id)
+                                .then(() => close())
+                                .catch(e => setError(e.message));
+                        }}
+                    >
+                        Delete
+                    </Button>
+                </>
+            ),
+            onClose: () => setError(undefined),
+        });
+    };
 
     useEffect(() => {
         if (error) {
