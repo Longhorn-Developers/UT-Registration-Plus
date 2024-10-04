@@ -1,5 +1,4 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { Float } from '@headlessui-float/react';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -13,8 +12,8 @@ import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
 import { Button } from './Button';
 import { usePrompt } from './DialogProvider/DialogProvider';
-import DialogProvider from './DialogProvider/DialogProvider';
 import { ConfirmDelete, DeleteActiveScheduleError } from './DialogProvider/ScheduleListItemDialogProviders';
+import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 
 /**
  * Props for the ScheduleListItem component.
@@ -57,10 +56,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         setIsEditing(false);
     };
 
-    const onDelete = () => {
-        deleteSchedule(schedule.id).catch(e => setError(e.message));
-    };
-
+    // todo: maybe remove
     useEffect(() => {
         if (error) {
             console.error(error);
@@ -119,48 +115,50 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                 {schedule.name}
                             </Text>
                         )}
-                    </div className='self-end'>
-                        <DialogProvider>
-                            <Menu>
-                                <Float
-                                    enter='transition ease-out duration-100'
-                                    enterFrom='transform opacity-0 scale-95'
-                                    enterTo='transform opacity-100 scale-100'
-                                    leave='transition ease-in duration-75'
-                                    leaveFrom='transform opacity-100 scale-100'
-                                    leaveTo='transform opacity-0 scale-95'
-                                    placement='bottom-end'
-                                    portal
-                                >
-                                    <MenuButton className='bg-white'>
-                                        <MoreActionsIcon className='invisible h-5 w-5 cursor-pointer rounded text-blueGray btn-transition group-hover:visible group-hover:border-blueGray group-hover:bg-blueGray group-hover:bg-opacity-25 focusable' />
-                                    </MenuButton>
+                    </div>
+                    <div className='self-end'>
+                        <Menu>
+                            <MenuButton className='bg-white'>
+                                <MoreActionsIcon className='invisible h-5 w-5 cursor-pointer rounded text-blueGray btn-transition group-hover:visible group-hover:border-blueGray group-hover:bg-blueGray group-hover:bg-opacity-25 focusable' />
+                            </MenuButton>
 
-                                    <MenuItems className='w-30 cursor-pointer rounded bg-white py-1 text-black shadow-lg'>
-                                        <MenuItem as='div' onClick={() => setIsEditing(true)}>
-                                            {({ focus }) => (
-                                                <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>
-                                                    Rename
-                                                </Text>
-                                            )}
-                                        </MenuItem>
-                                        <MenuItem as='div' onClick={() => duplicateSchedule(schedule.name)}>
-                                            {({ focus }) => (
-                                                <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>
-                                                    Duplicate
-                                                </Text>
-                                            )}
-                                        </MenuItem>
-                                        {schedule.id === activeSchedule.id ? (
-                                            <DeleteActiveScheduleError schedule={schedule} />
-                                        ) : (
-                                            <ConfirmDelete schedule={schedule} />
-                                        )}
-                                    </MenuItems>
-                                </Float>
-                            </Menu>
-                        </DialogProvider>
-                    <div>
+                            <MenuItems
+                                as={ExtensionRootWrapper}
+                                className={clsx([
+                                    styleResetClass,
+                                    'w-30 cursor-pointer rounded bg-white py-1 text-black shadow-lg transition border border-black focus:outline-none',
+                                    'data-[closed]:(opacity-0 scale-95)',
+                                    'data-[enter]:(ease-out duration-100)',
+                                    'data-[leave]:(ease-in duration-75)',
+                                ])}
+                                transition
+                                anchor='bottom end'
+                                // enter='transition ease-out duration-100'
+                                // enterFrom='transform opacity-0 scale-95'
+                                // enterTo='transform opacity-100 scale-100'
+                                // leave='transition ease-in duration-75'
+                                // leaveFrom='transform opacity-100 scale-100'
+                                // leaveTo='transform opacity-0 scale-95'
+                            >
+                                <MenuItem as='div' onClick={() => setIsEditing(true)}>
+                                    {({ focus }) => (
+                                        <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>Rename</Text>
+                                    )}
+                                </MenuItem>
+                                <MenuItem as='div' onClick={() => duplicateSchedule(schedule.name)}>
+                                    {({ focus }) => (
+                                        <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>
+                                            Duplicate
+                                        </Text>
+                                    )}
+                                </MenuItem>
+                                {schedule.id === activeSchedule.id ? (
+                                    <DeleteActiveScheduleError schedule={schedule} />
+                                ) : (
+                                    <ConfirmDelete schedule={schedule} />
+                                )}
+                            </MenuItems>
+                        </Menu>
                     </div>
                 </div>
             </li>
