@@ -11,6 +11,7 @@ import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
 import { Button } from './Button';
 import { usePrompt } from './DialogProvider/DialogProvider';
+import { ConfirmDeleteButtons } from './ConfirmDeletionButtons';
 
 /**
  * Props for the ScheduleListItem component.
@@ -61,22 +62,14 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
             title: 'Confirm Deletion',
             description: 'Are you sure you want to delete this schedule?',
             buttons: close => (
-                <>
-                    <Button variant='filled' color='ut-black' onClick={close}>
-                        Cancel
-                    </Button>
-                    <Button
-                        variant='filled'
-                        color='ut-red'
-                        onClick={() => {
-                            deleteSchedule(schedule.id)
-                                .then(() => close())
-                                .catch(e => setError(e.message));
-                        }}
-                    >
-                        Delete
-                    </Button>
-                </>
+                <ConfirmDeleteButtons
+                    onClose={close}
+                    onDelete={() => {
+                        deleteSchedule(schedule.id)
+                            .then(() => close())
+                            .catch(e => setError(e.message));
+                    }}
+                />
             ),
             onClose: () => setError(undefined),
         });
