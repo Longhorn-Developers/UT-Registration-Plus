@@ -12,7 +12,7 @@ import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
 import { Button } from './Button';
 import { usePrompt } from './DialogProvider/DialogProvider';
-import { ConfirmDelete, DeleteActiveScheduleError } from './DialogProvider/ScheduleListItemDialogProviders';
+import { ConfirmDelete, DeleteActiveScheduleError } from './DialogProvider/ScheduleListItemActions';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 
 /**
