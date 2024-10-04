@@ -1,14 +1,15 @@
 import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd';
 import { background } from '@shared/messages';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
-import { enableCourseStatusChips } from '@shared/util/experimental';
+// import { enableCourseStatusChips } from '@shared/util/experimental';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
@@ -23,6 +24,13 @@ export interface PopupCourseBlockProps {
 }
 
 /**
+ * Initializes the course status chips.
+ *
+ * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether the course status chips are enabled.
+ */
+const initCourseStatusChips = async () => await OptionsStore.get('enableCourseStatusChips');
+
+/**
  * The "course block" to be used in the extension popup.
  *
  * @param props PopupCourseBlockProps
@@ -33,6 +41,21 @@ export default function PopupCourseBlock({
     colors,
     dragHandleProps,
 }: PopupCourseBlockProps): JSX.Element {
+    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+
+    useEffect(() => {
+        initCourseStatusChips().then(setEnableCourseStatusChips);
+
+        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+            setEnableCourseStatusChips(newValue);
+            // console.log('enableCourseStatusChips', newValue);
+        });
+
+        return () => {
+            OptionsStore.removeListener(l1);
+        };
+    }, []);
+
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');

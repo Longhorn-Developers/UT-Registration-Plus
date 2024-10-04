@@ -1,7 +1,6 @@
 import type { IOptionsStore } from '@shared/storage/OptionsStore';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { getCourseColors } from '@shared/util/colors';
-import { enableCourseStatusChips } from '@shared/util/experimental';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
