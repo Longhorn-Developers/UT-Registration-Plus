@@ -12,6 +12,10 @@ import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSched
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useState } from 'react';
 
+import addCourse from '../../../pages/background/lib/addCourse';
+import { CourseCatalogScraper } from '../../lib/CourseCatalogScraper';
+import getCourseTableRows from '../../lib/getCourseTableRows';
+import { SiteSupport } from '../../lib/getSiteSupport';
 import CalendarFooter from './CalendarFooter';
 import TeamLinks from './TeamLinks';
 
@@ -81,6 +85,44 @@ export default function Calendar(): JSX.Element {
                                 <ImportantLinks />
                                 <Divider orientation='horizontal' size='100%' className='my-5' />
                                 <TeamLinks />
+                                <button
+                                    className='btn'
+                                    onClick={async () => {
+                                        // const link =
+                                        //     'https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52625/';
+                                        const link = prompt('Enter course link');
+
+                                        const response = await fetch(link);
+                                        const text = await response.text();
+                                        const doc = new DOMParser().parseFromString(text, 'text/html');
+
+                                        const scraper = new CourseCatalogScraper(
+                                            SiteSupport.COURSE_CATALOG_DETAILS,
+                                            doc,
+                                            link
+                                        );
+                                        const tableRows = getCourseTableRows(doc);
+                                        const courses = scraper.scrape(tableRows, false);
+                                        if (courses.length === 1) {
+                                            const description = scraper.getDescription(doc);
+                                            const row = courses[0]!;
+                                            const course = row.course!;
+                                            course.description = description;
+                                            // console.log(course);
+
+                                            if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
+                                                console.log('adding course');
+                                                addCourse(activeSchedule.id, course);
+                                            } else {
+                                                console.log('course already exists');
+                                            }
+                                        } else {
+                                            console.log(courses);
+                                        }
+                                    }}
+                                >
+                                    add course by link
+                                </button>
                             </div>
                             <CalendarFooter />
                         </div>
