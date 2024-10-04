@@ -1,5 +1,5 @@
 import type { IOptionsStore } from '@shared/storage/OptionsStore';
-import { OptionsStore } from '@shared/storage/OptionsStore';
+import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { getCourseColors } from '@shared/util/colors';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import { Button } from '@views/components/common/Button';
@@ -8,6 +8,10 @@ import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot'
 import { SmallLogo } from '@views/components/common/LogoIcon';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import SwitchButton from '@views/components/common/SwitchButton';
+import Text from '@views/components/common/Text/Text';
+import useSchedules from '@views/hooks/useSchedules';
+import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
+import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
 
@@ -74,28 +78,20 @@ const useDevMode = (targetCount: number): [boolean, () => void] => {
 };
 
 /**
- * Initializes the settings by retrieving the values from the OptionsStore.
- * @returns {Promise<IOptionsStore>} A promise that resolves to an object satisfying the IOptionsStore interface.
- */
-const initSettings = async () =>
-    ({
-        enableCourseStatusChips: await OptionsStore.get('enableCourseStatusChips'),
-        enableTimeAndLocationInPopup: await OptionsStore.get('enableTimeAndLocationInPopup'),
-        enableHighlightConflicts: await OptionsStore.get('enableHighlightConflicts'),
-        enableScrollToLoad: await OptionsStore.get('enableScrollToLoad'),
-    }) satisfies IOptionsStore;
-
-/**
  * Renders the settings page for the UTRP (UT Registration Plus) extension.
  * Allows customization options and displays credits for the development team.
  *
  * @returns The JSX element representing the settings page.
  */
 export default function SettingsPage() {
-    const [showCourseStatus, setShowCourseStatus] = useState<boolean>(false);
+    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
     const [showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
+    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+
+    const [activeSchedule, schedules] = useSchedules();
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     useEffect(() => {
         initSettings().then(
@@ -104,13 +100,50 @@ export default function SettingsPage() {
                 enableTimeAndLocationInPopup,
                 enableHighlightConflicts,
                 enableScrollToLoad,
+                enableDataRefreshing,
             }) => {
-                setShowCourseStatus(enableCourseStatusChips);
+                setEnableCourseStatusChips(enableCourseStatusChips);
                 setShowTimeLocation(enableTimeAndLocationInPopup);
                 setHighlightConflicts(enableHighlightConflicts);
                 setLoadAllCourses(enableScrollToLoad);
+                setEnableDataRefreshing(enableDataRefreshing);
             }
         );
+
+        // Listen for changes in the settings
+        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+            setEnableCourseStatusChips(newValue);
+            // console.log('enableCourseStatusChips', newValue);
+        });
+
+        const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
+            setShowTimeLocation(newValue);
+            // console.log('enableTimeAndLocationInPopup', newValue);
+        });
+
+        const l3 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
+            setHighlightConflicts(newValue);
+            // console.log('enableHighlightConflicts', newValue);
+        });
+
+        const l4 = OptionsStore.listen('enableScrollToLoad', async ({ newValue }) => {
+            setLoadAllCourses(newValue);
+            // console.log('enableScrollToLoad', newValue);
+        });
+
+        const l5 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
+            setEnableDataRefreshing(newValue);
+            // console.log('enableDataRefreshing', newValue);
+        });
+
+        // Remove listeners when the component is unmounted
+        return () => {
+            OptionsStore.removeListener(l1);
+            OptionsStore.removeListener(l2);
+            OptionsStore.removeListener(l3);
+            OptionsStore.removeListener(l4);
+            OptionsStore.removeListener(l5);
+        };
     }, []);
 
     const [devMode, toggleDevMode] = useDevMode(10);
@@ -128,6 +161,7 @@ export default function SettingsPage() {
                         <Divider size='2rem' orientation='vertical' />
                         <h1 className='pl-4 text-xl text-ut-burntorange font-bold'>UTRP SETTINGS & CREDITS PAGE</h1>
                     </div>
+                    {/* TODO: this icon doesn't show up in prod builds */}
                     <img src='/src/assets/LD-icon.png' alt='LD Icon' className='h-10 w-10 rounded-lg' />
                 </header>
 
@@ -145,10 +179,10 @@ export default function SettingsPage() {
                                             </p>
                                         </div>
                                         <SwitchButton
-                                            isChecked={showCourseStatus}
+                                            isChecked={enableCourseStatusChips}
                                             onChange={() => {
-                                                setShowCourseStatus(!showCourseStatus);
-                                                OptionsStore.set('enableCourseStatusChips', !showCourseStatus);
+                                                setEnableCourseStatusChips(!enableCourseStatusChips);
+                                                OptionsStore.set('enableCourseStatusChips', !enableCourseStatusChips);
                                             }}
                                         />
                                     </div>
@@ -207,6 +241,7 @@ export default function SettingsPage() {
                                             color='ut-black'
                                             icon={RefreshIcon}
                                             onClick={() => console.log('Refresh clicked')}
+                                            disabled={!enableDataRefreshing}
                                         >
                                             Refresh
                                         </Button>
@@ -273,16 +308,25 @@ export default function SettingsPage() {
                                     </div>
                                 </div>
                                 <Preview>
-                                    <CalendarCourseCell
-                                        colors={getCourseColors('orange')}
-                                        courseDeptAndInstr={ExampleCourse.department}
-                                        className={ExampleCourse.number}
-                                        status={ExampleCourse.status}
-                                        timeAndLocation={ExampleCourse.schedule.meetings[0]!.getTimeString({
-                                            separator: '-',
+                                    <div className='inline-flex items-center self-center gap-1'>
+                                        <Text variant='small' className='text-ut-gray !font-normal'>
+                                            DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                                        </Text>
+                                        <button
+                                            className='h-4 w-4 bg-transparent p-0 btn'
+                                            onClick={() => {
+                                                setIsRefreshing(true);
+                                            }}
+                                        />
+                                    </div>
+                                    <Text
+                                        variant='h2-course'
+                                        className={clsx('text-center text-ut-red !font-normal', {
+                                            'line-through': highlightConflicts,
                                         })}
-                                    />
-                                    <PopupCourseBlock colors={getCourseColors('orange')} course={ExampleCourse} />
+                                    >
+                                        01234 MWF 10:00 AM - 11:00 AM UTC 1.234
+                                    </Text>
                                 </Preview>
                             </div>
                         </section>
@@ -291,7 +335,7 @@ export default function SettingsPage() {
 
                         <section className='my-8'>
                             <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
-                                Dev Mode
+                                Developer Mode
                             </h2>
                         </section>
                     </div>
