@@ -126,7 +126,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                 as={ExtensionRootWrapper}
                                 className={clsx([
                                     styleResetClass,
-                                    'w-30 cursor-pointer rounded bg-white py-1 text-black shadow-lg transition border border-black focus:outline-none',
+                                    'w-30 cursor-pointer rounded bg-white py-1 text-black shadow-lg transition border border-gray focus:outline-none',
                                     'data-[closed]:(opacity-0 scale-95)',
                                     'data-[enter]:(ease-out duration-100)',
                                     'data-[leave]:(ease-in duration-75)',
@@ -142,12 +142,20 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                             >
                                 <MenuItem as='div' onClick={() => setIsEditing(true)}>
                                     {({ focus }) => (
-                                        <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>Rename</Text>
+                                        <Text
+                                            variant='small'
+                                            className={`block px-3 py-2 ${focus ? 'bg-gray-100' : ''}`}
+                                        >
+                                            Rename
+                                        </Text>
                                     )}
                                 </MenuItem>
                                 <MenuItem as='div' onClick={() => duplicateSchedule(schedule.name)}>
                                     {({ focus }) => (
-                                        <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100' : ''}`}>
+                                        <Text
+                                            variant='small'
+                                            className={`block px-3 py-2 ${focus ? 'bg-gray-100' : ''}`}
+                                        >
                                             Duplicate
                                         </Text>
                                     )}
