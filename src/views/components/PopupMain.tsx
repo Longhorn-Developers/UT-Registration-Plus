@@ -1,20 +1,24 @@
+import createSchedule from '@pages/background/lib/createSchedule';
 import { background } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { enableCourseRefreshing, enableCourseStatusChips } from '@shared/util/experimental';
+import { openReportWindow } from '@shared/util/openReportWindow';
 import Divider from '@views/components/common/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List';
 import Text from '@views/components/common/Text/Text';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
-import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 
+import AddSchedule from '~icons/material-symbols/add';
 import CalendarIcon from '~icons/material-symbols/calendar-month';
+import Feedback from '~icons/material-symbols/flag';
 import RefreshIcon from '~icons/material-symbols/refresh';
 import SettingsIcon from '~icons/material-symbols/settings';
 
+import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
 import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock';
@@ -31,7 +35,7 @@ export default function PopupMain(): JSX.Element {
 
     const handleOpenOptions = async () => {
         const url = chrome.runtime.getURL('/options.html');
-        await openTabFromContentScript(url);
+        background.openNewTab({ url });
     };
 
     const handleCalendarOpenOnClick = async () => {
@@ -51,6 +55,9 @@ export default function PopupMain(): JSX.Element {
                             </button>
                             <button className='bg-transparent px-2 py-1.25 btn' onClick={handleOpenOptions}>
                                 <SettingsIcon className='size-6 color-ut-black' />
+                            </button>
+                            <button className='bg-transparent px-2 py-1.25 btn' onClick={openReportWindow}>
+                                <Feedback className='size-6 color-ut-black' />
                             </button>
                         </div>
                     </div>
@@ -81,6 +88,16 @@ export default function PopupMain(): JSX.Element {
                                 />
                             )}
                         </List>
+                        <div className='bottom-0 right-0 mt-2.5 w-full flex justify-end'>
+                            <Button
+                                variant='filled'
+                                color='ut-burntorange'
+                                className='h-fit p-0 btn'
+                                onClick={() => createSchedule('New Schedule')}
+                            >
+                                <AddSchedule className='h-6 w-6' />
+                            </Button>
+                        </div>
                     </ScheduleDropdown>
                 </div>
                 <div className='flex-1 self-stretch overflow-y-auto px-5'>

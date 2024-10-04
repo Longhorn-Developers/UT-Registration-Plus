@@ -9,7 +9,7 @@ let initialLoad = true;
 const errorSchedule = new UserSchedule({
     courses: [],
     id: 'error',
-    name: 'An error has occurred',
+    name: 'No Schedule Selected',
     hours: 0,
     updatedAt: Date.now(),
 });

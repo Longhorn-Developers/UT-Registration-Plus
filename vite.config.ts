@@ -140,6 +140,7 @@ export default defineConfig({
         renameFile('src/pages/debug/index.html', 'debug.html'),
         renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
+        renameFile('src/pages/report/index.html', 'report.html'),
     ],
     resolve: {
         alias: {
@@ -171,6 +172,10 @@ export default defineConfig({
                 target: 'http://localhost:5173',
                 rewrite: path => path.replace('options', 'src/pages/options/index'),
             },
+            '/report.html': {
+                target: 'http://localhost:5173',
+                rewrite: path => path.replace('report', 'src/pages/report/index'),
+            },
         },
     },
     build: {
@@ -179,6 +184,7 @@ export default defineConfig({
                 debug: 'src/pages/debug/index.html',
                 calendar: 'src/pages/calendar/index.html',
                 options: 'src/pages/options/index.html',
+                report: 'src/pages/report/index.html',
             },
             // output: {
             //     entryFileNames: `[name].js`, // otherwise it will add the hash

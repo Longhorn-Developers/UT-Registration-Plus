@@ -1,0 +1,127 @@
+import 'uno.css';
+
+import { BrowserClient, captureFeedback, defaultStackParser, getCurrentScope, makeFetchTransport } from '@sentry/react';
+import React, { useState } from 'react';
+
+import { Button } from './common/Button';
+import Text from './common/Text/Text';
+
+const client = new BrowserClient({
+    dsn: 'https://ed1a50d8626ff6be35b98d7b1ec86d9d@o4508033820852224.ingest.us.sentry.io/4508033822490624',
+    integrations: [],
+    transport: makeFetchTransport,
+    stackParser: defaultStackParser,
+});
+
+getCurrentScope().setClient(client);
+client.init();
+
+const ReportIssueMain: React.FC = () => {
+    const [email, setEmail] = useState('');
+    const [feedback, setFeedback] = useState('');
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const submitFeedback = async () => {
+        if (!email || !feedback) {
+            throw new Error('Email and feedback are required');
+        }
+        // Here you would typically send the feedback to a server
+        await captureFeedback(
+            {
+                message: feedback || 'No feedback provided',
+                email,
+                tags: {
+                    version: chrome.runtime.getManifest().version,
+                },
+            },
+            {
+                includeReplay: false,
+            }
+        );
+
+        // Reset form fields and close the dialog
+        setEmail('');
+        setFeedback('');
+        setIsSubmitted(true);
+    };
+
+    if (isSubmitted) {
+        return (
+            <div className='w-80 rounded-lg bg-white p-6 shadow-lg'>
+                <Text variant='h3' className='mb-4'>
+                    Thank you
+                </Text>
+                <Text variant='p' className='mb-6'>
+                    Your feedback has been submitted. You may close this window.
+                </Text>
+                <Button variant='filled' color='ut-green' onClick={() => window.close()}>
+                    Done
+                </Button>
+            </div>
+        );
+    }
+
+    if (isSubmitted) {
+        return (
+            <div className='w-80 bg-white p-6'>
+                <h2 className='mb-4 text-2xl text-orange font-bold'>{`Hook'em Horns!`}</h2>
+                <p className='mb-6 text-gray-600'>Your feedback is music to our ears. Thanks for helping us improve!</p>
+                <button
+                    className='w-full rounded bg-orange-600 px-4 py-2 text-white font-bold transition duration-300 hover:bg-orange-700'
+                    onClick={() => window.close()}
+                >
+                    Close
+                </button>
+            </div>
+        );
+    }
+
+    return (
+        <div className='w-80 bg-white p-6'>
+            <h2 className='mb-4 text-2xl text-orange font-bold'>Longhorn Feedback</h2>
+            <p className='mb-4 text-sm text-gray-600'>Help us make UT Registration Plus even better!</p>
+
+            <form onSubmit={submitFeedback}>
+                <div className='mb-4'>
+                    <label htmlFor='email' className='mb-1 block text-sm text-gray-700 font-medium'>
+                        Your @utexas.edu email
+                    </label>
+                    <input
+                        type='email'
+                        id='email'
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500'
+                        placeholder='bevo@utexas.edu'
+                        required
+                    />
+                </div>
+
+                <div className='mb-4'>
+                    <label htmlFor='feedback' className='mb-1 block text-sm text-gray-700 font-medium'>
+                        Your feedback
+                    </label>
+                    <textarea
+                        id='feedback'
+                        value={feedback}
+                        onChange={e => setFeedback(e.target.value)}
+                        className='h-24 w-full resize-none border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500'
+                        placeholder='I wish UT Registration Plus could...'
+                        required
+                    />
+                </div>
+
+                <Button
+                    onClick={submitFeedback}
+                    variant='filled'
+                    color='ut-orange'
+                    className='w-full rounded bg-orange px-4 py-2 text-white font-bold transition duration-300 hover:bg-orange-700'
+                >
+                    Send Feedback
+                </Button>
+            </form>
+        </div>
+    );
+};
+
+export default ReportIssueMain;

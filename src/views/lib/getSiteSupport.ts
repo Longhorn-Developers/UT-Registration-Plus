@@ -11,6 +11,7 @@ export const SiteSupport = {
     WAITLIST: 'WAITLIST',
     EXTENSION_POPUP: 'EXTENSION_POPUP',
     MY_CALENDAR: 'MY_CALENDAR',
+    REPORT_ISSUE: 'REPORT_ISSUE',
 } as const;
 
 /**
