@@ -156,7 +156,12 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                         const timeString = meeting.getTimeString({ separator: ' to ', capitalize: false });
                         return (
                             <Text
-                                key={daysString + timeString + (meeting.location?.building ?? '')}
+                                key={
+                                    daysString +
+                                    timeString +
+                                    (meeting.location?.building ?? '') +
+                                    (meeting.location?.room ?? '')
+                                }
                                 variant='h4'
                                 as='p'
                             >
@@ -169,7 +174,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                             className='link'
                                             variant='h4'
                                         >
-                                            {meeting.location.building}
+                                            {meeting.location.building} {meeting.location.room}
                                         </Link>
                                     </>
                                 )}

@@ -108,7 +108,7 @@ export class CourseMeeting {
         }
 
         startTimeString += startMinute === 0 ? ':00' : `:${startMinute}`;
-        startTimeString += startHour >= 12 ? 'pm' : 'am';
+        startTimeString += startHour >= 12 ? ' p.m.' : ' a.m.';
 
         if (endHour === 0) {
             endTimeString = '12';
@@ -118,7 +118,7 @@ export class CourseMeeting {
             endTimeString = `${endHour}`;
         }
         endTimeString += endMinute === 0 ? ':00' : `:${endMinute}`;
-        endTimeString += endHour >= 12 ? 'pm' : 'am';
+        endTimeString += endHour >= 12 ? ' p.m.' : ' a.m.';
 
         if (options.capitalize) {
             startTimeString = startTimeString.toUpperCase();

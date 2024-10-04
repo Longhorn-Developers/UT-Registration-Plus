@@ -72,10 +72,12 @@ export class CourseSchedule {
                 days,
                 startTime,
                 endTime,
-                location: {
-                    building: location[0] ?? '',
-                    room: location[1] ?? '',
-                },
+                location: location[0]
+                    ? {
+                          building: location[0],
+                          room: location[1] ?? '',
+                      }
+                    : undefined,
             } satisfies Serialized<CourseMeeting>);
         } catch (e) {
             throw new Error(`Failed to parse schedule: ${dayLine} ${timeLine} ${locLine}`);

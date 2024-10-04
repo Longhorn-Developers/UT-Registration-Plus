@@ -2,6 +2,7 @@ import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
+import { enableCourseStatusChips } from '@shared/util/experimental';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
@@ -43,16 +44,19 @@ export default function CalendarCourseCell({
     onClick,
 }: CalendarCourseCellProps): JSX.Element {
     let rightIcon: React.ReactNode | null = null;
-    if (status === Status.WAITLISTED) {
-        rightIcon = <WaitlistIcon className='h-5 w-5' />;
-    } else if (status === Status.CLOSED) {
-        rightIcon = <ClosedIcon className='h-5 w-5' />;
-    } else if (status === Status.CANCELLED) {
-        rightIcon = <CancelledIcon className='h-5 w-5' />;
+    if (enableCourseStatusChips) {
+        if (status === Status.WAITLISTED) {
+            rightIcon = <WaitlistIcon className='h-5 w-5' />;
+        } else if (status === Status.CLOSED) {
+            rightIcon = <ClosedIcon className='h-5 w-5' />;
+        } else if (status === Status.CANCELLED) {
+            rightIcon = <CancelledIcon className='h-5 w-5' />;
+        }
     }
 
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
+    // Note that overflow-hidden is the duct tape holding this all together
 
     return (
         <div
@@ -78,8 +82,8 @@ export default function CalendarCourseCell({
                 <Text
                     variant='h1-course'
                     as='p'
-                    className={clsx('leading-tight! truncate', {
-                        '-mt-0.8 -mb-0.2': timeAndLocation,
+                    className={clsx('leading-tight! truncate overflow-clip!', {
+                        '-mb-0.2': timeAndLocation,
                         'text-wrap': !timeAndLocation,
                     })}
                 >

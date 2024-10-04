@@ -1,5 +1,6 @@
 import type TabInfoMessages from '@shared/messages/TabInfoMessages';
 import Calendar from '@views/components/calendar/Calendar';
+import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect } from 'react';
@@ -26,7 +27,9 @@ export default function CalendarMain() {
 
     return (
         <ExtensionRoot className='h-full w-full'>
-            <Calendar />
+            <DialogProvider>
+                <Calendar />
+            </DialogProvider>
         </ExtensionRoot>
     );
 }

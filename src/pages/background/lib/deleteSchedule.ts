@@ -26,5 +26,9 @@ export default async function deleteSchedule(scheduleId: string): Promise<string
 
     schedules.splice(scheduleIndex, 1);
     await UserScheduleStore.set('schedules', schedules);
+
+    if (activeIndex >= schedules.length) {
+        await UserScheduleStore.set('activeIndex', schedules.length - 1);
+    }
     return undefined;
 }

@@ -3,6 +3,13 @@ import type { CourseSQLRow, Distribution } from '@shared/types/Distribution';
 
 import { initializeDB } from './initializeDB';
 
+type GradeDistributionParams = {
+    ':department_code': string;
+    ':course_number': string;
+    ':instructor_last'?: string;
+    ':semester'?: string;
+};
+
 /**
  * fetches the aggregate distribution of grades for a given course from the course db, and the semesters that we have data for
  * @param course the course to fetch the distribution for
@@ -11,14 +18,14 @@ import { initializeDB } from './initializeDB';
  */
 export async function queryAggregateDistribution(course: Course): Promise<[Distribution, Semester[], boolean]> {
     const db = await initializeDB();
-    const query = generateQuery(course, null, true);
+    const [query, params] = generateQuery(course, null, true);
 
-    let res = db.exec(query)?.[0];
+    let res = db.exec(query, params)?.[0];
     let instructorIncluded = true;
     if (!res?.columns?.length) {
         instructorIncluded = false;
-        const queryWithoutInstructor = generateQuery(course, null, false);
-        res = db.exec(queryWithoutInstructor)?.[0];
+        const [queryWithoutInstructor, paramsWithoutInstructor] = generateQuery(course, null, false);
+        res = db.exec(queryWithoutInstructor, paramsWithoutInstructor)?.[0];
 
         if (!res?.columns?.length) {
             throw new NoDataError(course);
@@ -87,20 +94,33 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
  * @param semester the semester to fetch the distribution for OR null if we want the aggregate distribution
  * @returns a SQL query string
  */
-function generateQuery(course: Course, semester: Semester | null, includeInstructor: boolean): string {
-    const profName = course.instructors[0]?.lastName;
-
+function generateQuery(
+    course: Course,
+    semester: Semester | null,
+    includeInstructor: boolean
+): [string, GradeDistributionParams] {
     const query = `
         select * from grade_distributions
-        where Department_Code = '${course.department}'
-        and Course_Number = '${course.number}'
-        ${includeInstructor ? `and Instructor_Last = '${profName}' collate nocase` : ''}
-        ${semester ? `and Semester = '${semester.season} ${semester.year}'` : ''}
+        where Department_Code = :department_code
+        and Course_Number = :course_number
+        ${includeInstructor ? `and Instructor_Last = :instructor_last collate nocase` : ''}
+        ${semester ? `and Semester = :semester` : ''}
     `;
 
-    console.log(includeInstructor, { query });
+    const params: GradeDistributionParams = {
+        ':department_code': course.department,
+        ':course_number': course.number,
+    };
 
-    return query;
+    if (includeInstructor) {
+        params[':instructor_last'] = course.instructors[0]?.lastName;
+    }
+
+    if (semester) {
+        params[':semester'] = `${semester.season} ${semester.year}`;
+    }
+
+    return [query, params];
 }
 
 /**
@@ -111,14 +131,14 @@ function generateQuery(course: Course, semester: Semester | null, includeInstruc
  */
 export async function querySemesterDistribution(course: Course, semester: Semester): Promise<[Distribution, boolean]> {
     const db = await initializeDB();
-    const query = generateQuery(course, semester, true);
+    const [query, params] = generateQuery(course, semester, true);
 
-    let res = db.exec(query)?.[0];
+    let res = db.exec(query, params)?.[0];
     let instructorIncluded = true;
     if (!res?.columns?.length) {
         instructorIncluded = false;
-        const queryWithoutInstructor = generateQuery(course, semester, false);
-        res = db.exec(queryWithoutInstructor)?.[0];
+        const [queryWithoutInstructor, paramsWithoutInstructor] = generateQuery(course, semester, false);
+        res = db.exec(queryWithoutInstructor, paramsWithoutInstructor)?.[0];
         if (!res?.columns?.length) {
             throw new NoDataError(course);
         }

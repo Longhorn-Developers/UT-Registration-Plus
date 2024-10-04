@@ -1,0 +1,50 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 7210f5fd650a0b7bb36b467fff85feb0d8e4ec63..c8f98bd314daec0b91c514ea9d9fc2b79cea8502 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -369,15 +369,15 @@ const VIRTUAL_ENTRY_ALIAS = [
+   /^(?:virtual:)?uno(?::(.+))?\.css(\?.*)?$/
+ ];
+ const LAYER_MARK_ALL = "__ALL__";
+-const RESOLVED_ID_WITH_QUERY_RE = /[/\\]__uno(_.*?)?\.css(\?.*)?$/;
+-const RESOLVED_ID_RE = /[/\\]__uno(?:_(.*?))?\.css$/;
++const RESOLVED_ID_WITH_QUERY_RE = /[/\\]uno(_.*?)?\.css(\?.*)?$/;
++const RESOLVED_ID_RE = /[/\\]uno(?:_(.*?))?\.css$/;
+ function resolveId(id) {
+   if (id.match(RESOLVED_ID_WITH_QUERY_RE))
+     return id;
+   for (const alias of VIRTUAL_ENTRY_ALIAS) {
+     const match = id.match(alias);
+     if (match) {
+-      return match[1] ? `/__uno_${match[1]}.css` : "/__uno.css";
++      return match[1] ? `/uno_${match[1]}.css` : "/uno.css";
+     }
+   }
+ }
+@@ -652,7 +652,7 @@ function GlobalModeBuildPlugin(ctx) {
+         css = await applyCssTransform(css, fakeCssId, options.dir, this);
+         const transformHandler = "handler" in cssPost.transform ? cssPost.transform.handler : cssPost.transform;
+         if (isLegacy) {
+-          await transformHandler.call({}, css, "/__uno.css");
++          await transformHandler.call({}, css, "/uno.css");
+         } else {
+           const hash = getHash(css);
+           await transformHandler.call({}, getHashPlaceholder(hash), fakeCssId);
+@@ -914,7 +914,7 @@ function GlobalModeDevPlugin({ uno, tokens, tasks, flushTasks, affectedModules,
+         const { hash, css } = await generateCSS(layer);
+         return {
+           // add hash to the chunk of CSS that it will send back to client to check if there is new CSS generated
+-          code: `${css}__uno_hash_${hash}{--:'';}`,
++          code: `${css}uno_hash_${hash}{--:'';}`,
+           map: { mappings: "" }
+         };
+       },
+@@ -933,7 +933,7 @@ function GlobalModeDevPlugin({ uno, tokens, tasks, flushTasks, affectedModules,
+         if (layer && code.includes("import.meta.hot")) {
+           let hmr = `
+ try {
+-  let hash = __vite__css.match(/__uno_hash_(\\w{${HASH_LENGTH}})/)
++  let hash = __vite__css.match(/uno_hash_(\\w{${HASH_LENGTH}})/)
+   hash = hash && hash[1]
+   if (!hash)
+     console.warn('[unocss-hmr]', 'failed to get unocss hash, hmr might not work')

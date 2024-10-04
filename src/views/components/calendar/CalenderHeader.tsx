@@ -1,4 +1,5 @@
 import { Status } from '@shared/types/Course';
+import { enableCourseRefreshing, enableCourseStatusChips } from '@shared/util/experimental';
 import { Button } from '@views/components/common/Button';
 import CourseStatus from '@views/components/common/CourseStatus';
 import Divider from '@views/components/common/Divider';
@@ -50,19 +51,25 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                     totalHours={activeSchedule.hours}
                     totalCourses={activeSchedule.courses.length}
                 />
-                <div className='flex items-center gap-1 screenshot:hidden'>
-                    <Text variant='mini' className='text-nowrap text-ut-gray font-normal!'>
-                        DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
-                    </Text>
-                    <button className='inline-block h-4 w-4 bg-transparent p-0 btn'>
-                        <RefreshIcon className='h-4 w-4 animate-duration-800 text-ut-black' />
-                    </button>
-                </div>
+                {enableCourseRefreshing && (
+                    <div className='flex items-center gap-1 screenshot:hidden'>
+                        <Text variant='mini' className='text-nowrap text-ut-gray font-normal!'>
+                            DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                        </Text>
+                        <button className='inline-block h-4 w-4 bg-transparent p-0 btn'>
+                            <RefreshIcon className='h-4 w-4 animate-duration-800 text-ut-black' />
+                        </button>
+                    </div>
+                )}
             </div>
             <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
-                <CourseStatus size='small' status={Status.WAITLISTED} />
-                <CourseStatus size='small' status={Status.CLOSED} />
-                <CourseStatus size='small' status={Status.CANCELLED} />
+                {enableCourseStatusChips && (
+                    <>
+                        <CourseStatus status='WAITLISTED' size='mini' />
+                        <CourseStatus status='CLOSED' size='mini' />
+                        <CourseStatus status='CANCELLED' size='mini' />
+                    </>
+                )}
 
                 {/* <Button variant='single' icon={UndoIcon} color='ut-black' />
                     <Button variant='single' icon={RedoIcon} color='ut-black' /> */}
