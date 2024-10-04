@@ -18,16 +18,28 @@ export const ConfirmDelete = ({ schedule }: { schedule: UserSchedule }) => {
 
     const handleDelete = () => {
         showDialog({
-            title: `Are you sure you want to delete ${schedule.name}?`,
-            description: `Deleting "${schedule.name}" will remove it from your schedules list permanently.`,
+            title: `Are you sure?`,
+            description: (
+                <>
+                    <Text>Deleting</Text>
+                    <Text className='text-ut-burntorange'> {schedule.name} </Text>
+                    <Text>is permanent and will remove all added courses from that schedule.</Text>
+                </>
+            ),
             // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <>
-                    <Button variant='outline' color='ut-red' onClick={() => deleteSchedule(schedule.id)}>
-                        Yes
+                    <Button variant='single' color='ut-black' onClick={close}>
+                        Cancel
                     </Button>
-                    <Button variant='outline' color='ut-burntorange' onClick={close}>
-                        No
+                    <Button
+                        variant='filled'
+                        color='ut-red'
+                        onClick={() => {
+                            deleteSchedule(schedule.id);
+                        }}
+                    >
+                        Delete Permanently
                     </Button>
                 </>
             ),
@@ -37,7 +49,12 @@ export const ConfirmDelete = ({ schedule }: { schedule: UserSchedule }) => {
     return (
         <MenuItem as='div' onClick={handleDelete}>
             {({ focus }) => (
-                <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}>Delete</Text>
+                <Text
+                    variant='small'
+                    className={`block px-3 py-2 ${focus ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}
+                >
+                    Delete
+                </Text>
             )}
         </MenuItem>
     );
@@ -54,11 +71,18 @@ export const DeleteActiveScheduleError = ({ schedule }: { schedule: UserSchedule
     const showError = () => {
         showDialog({
             title: `Unable to delete active schedule.`,
-            description: `Deleting active schedule "${schedule.name}" is not allowed. If possible, switch to another schedule and try again.`,
+
+            description: (
+                <>
+                    <Text>Deleting the active schedule</Text>
+                    <Text className='text-ut-burntorange'> {schedule.name} </Text>
+                    <Text>is not allowed. Please switch to another schedule and try again.</Text>
+                </>
+            ),
             // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
-                <Button variant='outline' color='ut-burntorange' onClick={close}>
-                    Close
+                <Button variant='filled' color='ut-burntorange' onClick={close}>
+                    I Understand
                 </Button>
             ),
         });
@@ -67,7 +91,12 @@ export const DeleteActiveScheduleError = ({ schedule }: { schedule: UserSchedule
     return (
         <MenuItem as='div' onClick={showError}>
             {({ focus }) => (
-                <Text className={`block px-4 py-1 ${focus ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}>Delete</Text>
+                <Text
+                    variant='small'
+                    className={`block px-3 py-2 ${focus ? 'bg-gray-100 text-red-600' : 'text-red-600'}`}
+                >
+                    Delete
+                </Text>
             )}
         </MenuItem>
     );
