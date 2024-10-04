@@ -1,6 +1,7 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { usePrompt } from 'src/views/components/common/DialogProvider/DialogProvider';
 import PromptDialog from 'src/views/components/common/Prompt';
+import Button from '@views/components/common/Button';
 
 /**
  * Deletes a schedule with the specified name.
@@ -11,14 +12,20 @@ import PromptDialog from 'src/views/components/common/Prompt';
 export default async function deleteSchedule(scheduleId: string): Promise<string | undefined> {
     const prompt = usePrompt();
 
-    return new Promise((resolve, reject) => {
+    const myShow = () => {
         prompt({
-            title: 'Delete Schedule',
-            description: 'Are you sure you want to delete this schedule?',
-            buttons: (close) => (),
-            onClose: () => reject('Deletion cancelled'),
+            title: 'Dialog Title',
+            description: 'Dialog Description',
+            // eslint-disable-next-line react/no-unstable-nested-components
+            buttons: (
+                <div>
+                    <Button variant='filled' color='ut-burntorange' onClick={() => prompt.close()}>
+                        Close
+                    </Button>
+                </div>
+            ),
         });
-    });
+    };
 
     const [schedules, activeIndex] = await Promise.all([
         UserScheduleStore.get('schedules'),
