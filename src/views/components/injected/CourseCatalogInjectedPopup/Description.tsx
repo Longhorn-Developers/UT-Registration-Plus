@@ -1,5 +1,4 @@
 import type { Course } from '@shared/types/Course';
-import Spinner from '@views/components/common/Spinner';
 import Text from '@views/components/common/Text/Text';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import { SiteSupport } from '@views/lib/getSiteSupport';
@@ -62,7 +61,7 @@ export default function Description({ course }: DescriptionProps): JSX.Element {
                 </Text>
             )}
             {status === LoadStatus.LOADING &&
-                Array.from({ length: 5 }).map((_, i) => <Skeleton style={{ marginBottom: 10 }} height={35} />)}
+                Array.from({ length: 5 }).map(() => <Skeleton style={{ marginBottom: 10 }} height={35} />)}
             {status === LoadStatus.DONE && (
                 <ul className='ml-6 mt-1.5 list-disc list-outside space-y-1.5'>
                     {description.map(line => {
