@@ -8,6 +8,7 @@ import { SmallLogo } from '@views/components/common/LogoIcon';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
+import { LONGHORN_DEVELOPERS_ADMINS, useGitHubStats } from '@views/hooks/useGitHubStats';
 import useSchedules from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import clsx from 'clsx';
@@ -19,57 +20,6 @@ import RefreshIcon from '~icons/material-symbols/refresh';
 
 import App from './DevMode';
 import Preview from './Preview';
-
-type TeamMember = {
-    name: string;
-    role: string;
-    githubUsername: string;
-};
-
-type GitHubStats = {
-    commits: number;
-    linesAdded: number;
-    linesDeleted: number;
-    mergedPRs: number;
-};
-
-type UserStat = {
-    author: {
-        login: string;
-        id: number;
-        node_id: string;
-        avatar_url: string;
-        gravatar_id: string;
-        url: string;
-        html_url: string;
-        followers_url: string;
-        following_url: string;
-        gists_url: string;
-        starred_url: string;
-        subscriptions_url: string;
-        organizations_url: string;
-        repos_url: string;
-        events_url: string;
-        received_events_url: string;
-        type: string;
-        site_admin: boolean;
-    };
-    total: number;
-    weeks: {
-        w: number;
-        a: number;
-        d: number;
-        c: number;
-    }[];
-};
-
-const longhornDevelopersAdmins = [
-    { name: 'Sriram Hariharan', role: 'Founder', githubUsername: 'sghsri' },
-    { name: 'Elie Soloveichik', role: 'Senior Software Engineer', githubUsername: 'Razboy20' },
-    { name: 'Diego Perez', role: 'Senior Software Engineer', githubUsername: 'doprz' },
-    { name: 'Lukas Zenick', role: 'Senior Software Engineer', githubUsername: 'Lukas-Zenick' },
-    { name: 'Isaiah Rodriguez', role: 'Chief Design Officer', githubUsername: 'IsaDavRod' },
-] as const satisfies TeamMember[];
 
 /**
  * Custom hook for enabling developer mode.
@@ -120,9 +70,8 @@ export default function SettingsPage() {
     const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
 
     // [TODO]: Toggle GitHub stats when the user presses the 'S' key
-    const [showGitHubStats, setShowGitHubStats] = useState<boolean>(false);
-    const [adminGitHubStats, setAdminGitHubStats] = useState<Record<string, GitHubStats>>({});
-    const [userGitHubStats, setUserGitHubStats] = useState<Record<string, GitHubStats>>({});
+    const [showGitHubStats, setShowGitHubStats] = useState<boolean>(true);
+    const { adminGitHubStats, userGitHubStats, contributors } = useGitHubStats(showGitHubStats);
 
     const [activeSchedule, schedules] = useSchedules();
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -179,92 +128,6 @@ export default function SettingsPage() {
             OptionsStore.removeListener(l5);
         };
     }, []);
-
-    useEffect(() => {
-        if (showGitHubStats) {
-            // Fetch GitHub stats for each team member
-            const fetchStats = async () => {
-                const adminStats: Record<string, GitHubStats> = {};
-                const userStats: Record<string, GitHubStats> = {};
-
-                for (const admin of longhornDevelopersAdmins) {
-                    try {
-                        // eslint-disable-next-line no-await-in-loop
-                        const response = await fetch(
-                            `https://api.github.com/repos/Longhorn-Developers/UT-Registration-Plus/stats/contributors`
-                        );
-                        // eslint-disable-next-line no-await-in-loop
-                        const data = await response.json();
-                        const adminStatsData = data.find(
-                            (stat: UserStat) => stat.author.login === admin.githubUsername
-                        );
-                        const userStatsData = data.find((stat: UserStat) => stat.author.login !== admin.githubUsername);
-
-                        if (adminStatsData) {
-                            // Calculate total lines added and deleted
-                            const totalLinesAdded = adminStatsData.weeks.reduce(
-                                (total: number, week: { a: number }) => total + week.a,
-                                0
-                            );
-                            const totalLinesDeleted = adminStatsData.weeks.reduce(
-                                (total: number, week: { d: number }) => total + week.d,
-                                0
-                            );
-
-                            // Fetch merged PRs for the member
-                            // eslint-disable-next-line no-await-in-loop
-                            const prResponse = await fetch(
-                                `https://api.github.com/search/issues?q=org:Longhorn-Developers%20author:${admin.githubUsername}%20type:pr%20is:merged`
-                            );
-                            // eslint-disable-next-line no-await-in-loop
-                            const prData = await prResponse.json();
-
-                            // Store the stats for the member
-                            adminStats[admin.githubUsername] = {
-                                commits: adminStatsData.total,
-                                linesAdded: totalLinesAdded,
-                                linesDeleted: totalLinesDeleted,
-                                mergedPRs: prData.total_count || 0,
-                            };
-                        }
-
-                        if (userStatsData) {
-                            // Calculate total lines added and deleted
-                            const totalLinesAdded = userStatsData.weeks.reduce(
-                                (total: number, week: { a: number }) => total + week.a,
-                                0
-                            );
-                            const totalLinesDeleted = userStatsData.weeks.reduce(
-                                (total: number, week: { d: number }) => total + week.d,
-                                0
-                            );
-
-                            // Fetch merged PRs for the member
-                            // eslint-disable-next-line no-await-in-loop
-                            const prResponse = await fetch(
-                                `https://api.github.com/search/issues?q=org:Longhorn-Developers%20author:${userStatsData.author.login}%20type:pr%20is:merged`
-                            );
-                            // eslint-disable-next-line no-await-in-loop
-                            const prData = await prResponse.json();
-
-                            // Store the stats for the member
-                            userStats[userStatsData.author.login] = {
-                                commits: userStatsData.total,
-                                linesAdded: totalLinesAdded,
-                                linesDeleted: totalLinesDeleted,
-                                mergedPRs: prData.total_count || 0,
-                            };
-                        }
-                    } catch (error) {
-                        console.error(`Error fetching stats for ${admin.name}:`, error);
-                    }
-                }
-                setAdminGitHubStats(adminStats);
-                setUserGitHubStats(userStats);
-            };
-            fetchStats();
-        }
-    }, [showGitHubStats]);
 
     const [devMode, toggleDevMode] = useDevMode(10);
 
@@ -458,31 +321,31 @@ export default function SettingsPage() {
                         <section>
                             <h2 className='mb-4 text-xl text-ut-black font-semibold'>LONGHORN DEVELOPERS ADMINS</h2>
                             <div className='grid grid-cols-2 gap-4 md:grid-cols-4 sm:grid-cols-3'>
-                                {longhornDevelopersAdmins.map(member => (
-                                    <div key={member.githubUsername} className='rounded-lg bg-gray-100 p-4 shadow-md'>
+                                {LONGHORN_DEVELOPERS_ADMINS.map(admin => (
+                                    <div key={admin.githubUsername} className='rounded-lg bg-gray-100 p-4 shadow-md'>
                                         <h3
                                             className='text-ut-burntorange font-semibold hover:cursor-pointer'
                                             onClick={() =>
-                                                window.open(`https://github.com/${member.githubUsername}`, '_blank')
+                                                window.open(`https://github.com/${admin.githubUsername}`, '_blank')
                                             }
                                         >
-                                            {member.name}
+                                            {admin.name}
                                         </h3>
-                                        <p className='text-sm text-gray-600'>{member.role}</p>
-                                        {showGitHubStats && adminGitHubStats[member.githubUsername] && (
+                                        <p className='text-sm text-gray-600'>{admin.role}</p>
+                                        {showGitHubStats && adminGitHubStats[admin.githubUsername] && (
                                             <div className='mt-2'>
                                                 <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
                                                 <p className='text-xs'>
-                                                    Merged PRs: {adminGitHubStats[member.githubUsername]?.mergedPRs}
+                                                    Merged PRs: {adminGitHubStats[admin.githubUsername]?.mergedPRs}
                                                 </p>
                                                 <p className='text-xs'>
-                                                    Commits: {adminGitHubStats[member.githubUsername]?.commits}
+                                                    Commits: {adminGitHubStats[admin.githubUsername]?.commits}
                                                 </p>
                                                 <p className='text-xs text-ut-green'>
-                                                    {adminGitHubStats[member.githubUsername]?.linesAdded} ++
+                                                    {adminGitHubStats[admin.githubUsername]?.linesAdded} ++
                                                 </p>
                                                 <p className='text-xs text-ut-red'>
-                                                    {adminGitHubStats[member.githubUsername]?.linesDeleted} --
+                                                    {adminGitHubStats[admin.githubUsername]?.linesDeleted} --
                                                 </p>
                                             </div>
                                         )}
@@ -493,7 +356,7 @@ export default function SettingsPage() {
                         <section className='my-8'>
                             <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP DEVELOPMENT TEAM</h2>
                             <div className='grid grid-cols-2 gap-4 md:grid-cols-4 sm:grid-cols-3'>
-                                {Object.entries(userGitHubStats).map(([username, stats]) => (
+                                {contributors.map(username => (
                                     <div key={username} className='rounded-lg bg-gray-100 p-4 shadow-md'>
                                         <h3
                                             className='text-ut-burntorange font-semibold hover:cursor-pointer'
@@ -502,13 +365,21 @@ export default function SettingsPage() {
                                             {username}
                                         </h3>
                                         <p className='text-sm text-gray-600'>Contributor</p>
-                                        <div className='mt-2'>
-                                            <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
-                                            <p className='text-xs'>Merged PRs: {stats.mergedPRs}</p>
-                                            <p className='text-xs'>Commits: {stats.commits}</p>
-                                            <p className='text-xs text-ut-green'>{stats.linesAdded} ++</p>
-                                            <p className='text-xs text-ut-red'>{stats.linesDeleted} --</p>
-                                        </div>
+                                        {showGitHubStats && userGitHubStats[username] && (
+                                            <div className='mt-2'>
+                                                <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
+                                                <p className='text-xs'>
+                                                    Merged PRs: {userGitHubStats[username]?.mergedPRs}
+                                                </p>
+                                                <p className='text-xs'>Commits: {userGitHubStats[username]?.commits}</p>
+                                                <p className='text-xs text-ut-green'>
+                                                    {userGitHubStats[username]?.linesAdded} ++
+                                                </p>
+                                                <p className='text-xs text-ut-red'>
+                                                    {userGitHubStats[username]?.linesDeleted} --
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>
