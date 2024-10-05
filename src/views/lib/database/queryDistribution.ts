@@ -1,5 +1,6 @@
 import type { Course, Semester } from '@shared/types/Course';
 import type { CourseSQLRow, Distribution } from '@shared/types/Distribution';
+import type { QueryExecResult } from 'sql.js';
 
 import { initializeDB } from './initializeDB';
 
@@ -20,9 +21,15 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
     const db = await initializeDB();
     const [query, params] = generateQuery(course, null, true);
 
-    let res = db.exec(query, params)?.[0];
-    let instructorIncluded = true;
-    if (!res?.columns?.length) {
+    let res: QueryExecResult | undefined;
+    let instructorIncluded = params[':instructor_last'] !== undefined;
+    if (instructorIncluded) {
+        // Only check for data on an instructor if the course has an instructor
+        res = db.exec(query, params)?.[0];
+    }
+
+    if (!instructorIncluded || !res?.columns?.length) {
+        // Either no instructor for the class, or no data for the instructor
         instructorIncluded = false;
         const [queryWithoutInstructor, paramsWithoutInstructor] = generateQuery(course, null, false);
         res = db.exec(queryWithoutInstructor, paramsWithoutInstructor)?.[0];
