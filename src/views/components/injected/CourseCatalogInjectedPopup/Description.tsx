@@ -5,6 +5,7 @@ import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import { SiteSupport } from '@views/lib/getSiteSupport';
 import clsx from 'clsx';
 import React from 'react';
+import Skeleton from 'react-loading-skeleton';
 
 interface DescriptionProps {
     course: Course;
@@ -60,8 +61,8 @@ export default function Description({ course }: DescriptionProps): JSX.Element {
                     Please refresh the page and log back in using your UT EID and password.
                 </Text>
             )}
-            {/* TODO (achadaga): would be nice to have a new spinner here */}
-            {status === LoadStatus.LOADING && <Spinner />}
+            {status === LoadStatus.LOADING &&
+                Array.from({ length: 5 }).map((_, i) => <Skeleton style={{ marginBottom: 10 }} height={35} />)}
             {status === LoadStatus.DONE && (
                 <ul className='ml-6 mt-1.5 list-disc list-outside space-y-1.5'>
                     {description.map(line => {
