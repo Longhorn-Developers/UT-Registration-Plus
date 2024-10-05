@@ -45,3 +45,16 @@ export const ellipsify = (input: string, chars: number): string => {
     }
     return ellipisifed;
 };
+
+/**
+ * Converts a string to sentence case.
+ * @param str The string to convert.
+ * @returns The string in sentence case.
+ */
+export function toSentenceCase(str: string): string {
+    return str
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}

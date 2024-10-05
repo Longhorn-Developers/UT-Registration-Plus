@@ -3,6 +3,7 @@ import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
 import { enableCourseStatusChips } from '@shared/util/experimental';
+import { toSentenceCase } from '@shared/util/string';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
@@ -54,6 +55,9 @@ export default function CalendarCourseCell({
         }
     }
 
+    const [courseId, instructor] = courseDeptAndInstr.split(' - ');
+    const formattedInstructor = instructor ? ` - ${toSentenceCase(instructor)}` : '';
+
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
     // Note that overflow-hidden is the duct tape holding this all together
@@ -61,7 +65,7 @@ export default function CalendarCourseCell({
     return (
         <div
             className={clsx(
-                'h-full w-0 flex justify-center rounded p-2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out',
+                'h-full w-0 flex justify-center rounded p-x-2 p-y-1.2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out',
                 {
                     'min-w-full': timeAndLocation,
                     'w-full': !timeAndLocation,
@@ -87,7 +91,8 @@ export default function CalendarCourseCell({
                         'text-wrap': !timeAndLocation,
                     })}
                 >
-                    {courseDeptAndInstr}
+                    {courseId}
+                    {formattedInstructor}
                 </Text>
                 {timeAndLocation && (
                     <Text variant='h3-course' as='p'>
