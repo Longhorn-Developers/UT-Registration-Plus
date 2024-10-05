@@ -1,3 +1,4 @@
+import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { getCourseColors } from '@shared/util/colors';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
@@ -154,8 +155,15 @@ export default function Settings(): JSX.Element {
                 </>
             ),
             // eslint-disable-next-line react/no-unstable-nested-components
-            buttons: close => (
-                <Button variant='filled' color='ut-burntorange' onClick={close}>
+            buttons: accept => (
+                <Button
+                    variant='filled'
+                    color='ut-burntorange'
+                    onClick={() => {
+                        deleteAllSchedules();
+                        accept();
+                    }}
+                >
                     I Understand
                 </Button>
             ),

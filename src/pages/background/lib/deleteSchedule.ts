@@ -28,3 +28,13 @@ export default async function deleteSchedule(scheduleId: string): Promise<string
     }
     return undefined;
 }
+
+/**
+ * Deletes all schedules.
+ *
+ * @returns A promise that resolves when all schedules are deleted
+ */
+export async function deleteAllSchedules(): Promise<void> {
+    await UserScheduleStore.set('schedules', []);
+    await UserScheduleStore.set('activeIndex', 0);
+}
