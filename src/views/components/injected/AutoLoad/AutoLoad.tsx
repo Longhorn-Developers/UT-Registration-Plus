@@ -72,7 +72,7 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
         <div>
             {status !== AutoLoadStatus.ERROR && (
                 <div className=''>
-                    {Array.from({ length: 8 }).map((_, i) => (
+                    {Array.from({ length: 8 }).map(() => (
                         <Skeleton style={{ marginBottom: 30 }} height={40} />
                     ))}
                 </div>

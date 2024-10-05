@@ -1,7 +1,6 @@
 import type { Course } from '@shared/types/Course';
 import type { Distribution, LetterGrade } from '@shared/types/Distribution';
 import { extendedColors } from '@shared/types/ThemeColors';
-import Spinner from '@views/components/common/Spinner';
 import Text from '@views/components/common/Text/Text';
 import {
     NoDataError,
