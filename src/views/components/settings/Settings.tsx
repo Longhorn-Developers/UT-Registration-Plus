@@ -22,6 +22,8 @@ import RefreshIcon from '~icons/material-symbols/refresh';
 import DevMode from './DevMode';
 import Preview from './Preview';
 
+const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
+
 /**
  * Custom hook for enabling developer mode.
  *
@@ -184,8 +186,7 @@ export default function Settings(): JSX.Element {
                     <Divider size='2rem' orientation='vertical' />
                     <h1 className='pl-4 text-xl text-ut-burntorange font-bold'>UTRP SETTINGS & CREDITS PAGE</h1>
                 </div>
-                {/* TODO: this icon doesn't show up in prod builds */}
-                <img src='/src/assets/LD-icon.png' alt='LD Icon' className='h-10 w-10 rounded-lg' />
+                <img src={LDIconURL} alt='LD Icon' className='h-10 w-10 rounded-lg' />
             </header>
 
             <div className='flex'>
