@@ -1,6 +1,4 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
-import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
@@ -8,12 +6,11 @@ import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
 
+import XIcon from '~icons/material-symbols/close';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
-import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
 import { Button } from './Button';
-import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
-import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
+import { usePrompt } from './DialogProvider/DialogProvider';
 
 /**
  * Props for the ScheduleListItem component.
@@ -32,12 +29,14 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
+    const [error, setError] = useState<string | undefined>(undefined);
 
     const showDialog = usePrompt();
 
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
         const editor = editorRef.current;
+
         setEditorValue(schedule.name);
 
         if (isEditing && editor) {
@@ -48,63 +47,35 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
 
     const isActive = useMemo(() => activeSchedule.id === schedule.id, [activeSchedule, schedule]);
 
-    const handleBlur = async () => {
-        if (editorValue.trim() !== '' && editorValue.trim() !== schedule.name) {
-            schedule.name = (await renameSchedule(schedule.id, editorValue.trim())) as string;
+    const handleBlur = () => {
+        if (editorValue.trim() !== '') {
+            schedule.name = editorValue.trim();
+            renameSchedule(schedule.id, schedule.name);
         }
+
         setIsEditing(false);
     };
 
-    const handleDelete = () => {
-        if (schedule.id === activeSchedule.id) {
-            showDialog({
-                title: `Unable to delete active schedule.`,
+    const onDelete = () => {
+        deleteSchedule(schedule.id).catch(e => setError(e.message));
+    };
 
-                description: (
-                    <>
-                        <Text>Deleting the active schedule</Text>
-                        <Text className='text-ut-burntorange'> {schedule.name} </Text>
-                        <Text>is not allowed. Please switch to another schedule and try again.</Text>
-                    </>
-                ),
+    useEffect(() => {
+        if (error) {
+            console.error(error);
+            showDialog({
+                title: <span className='text-ut-red'>Something went wrong.</span>,
+                description: error,
                 // eslint-disable-next-line react/no-unstable-nested-components
                 buttons: close => (
-                    <Button variant='filled' color='ut-burntorange' onClick={close}>
-                        I Understand
+                    <Button variant='filled' color='ut-black' onClick={close}>
+                        I understand
                     </Button>
                 ),
-            });
-        } else {
-            showDialog({
-                title: `Are you sure?`,
-                description: (
-                    <>
-                        <Text>Deleting</Text>
-                        <Text className='text-ut-burntorange'> {schedule.name} </Text>
-                        <Text>is permanent and will remove all added courses from that schedule.</Text>
-                    </>
-                ),
-                // eslint-disable-next-line react/no-unstable-nested-components
-                buttons: close => (
-                    <>
-                        <Button variant='single' color='ut-black' onClick={close}>
-                            Cancel
-                        </Button>
-                        <Button
-                            variant='filled'
-                            color='ut-red'
-                            onClick={() => {
-                                close();
-                                deleteSchedule(schedule.id);
-                            }}
-                        >
-                            Delete Permanently
-                        </Button>
-                    </>
-                ),
+                onClose: () => setError(undefined),
             });
         }
-    };
+    });
 
     return (
         <div className='rounded bg-white'>
@@ -114,12 +85,12 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                 </div>
                 <div className='group relative flex flex-1 items-center overflow-x-hidden'>
                     <div
-                        className='group/circle flex flex-grow items-center gap-1.5 overflow-x-hidden'
+                        className='flex flex-grow items-center gap-1.5 overflow-x-hidden'
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         <div
                             className={clsx(
-                                'h-5.5 w-5.5 relative flex-shrink-0 border-2px border-current rounded-full btn-transition group-active/circle:scale-95 after:(absolute content-empty bg-current h-2.9 w-2.9 rounded-full transition transform-gpu scale-100 ease-out-expo duration-250 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2)',
+                                'h-5.5 w-5.5 relative flex-shrink-0 border-2px border-current rounded-full btn-transition group-active:scale-95 after:(absolute content-empty bg-current h-2.9 w-2.9 rounded-full transition transform-gpu scale-100 ease-out-expo duration-250 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2)',
                                 {
                                     'after:(scale-0! opacity-0 ease-in-out! duration-200!)': !isActive,
                                 }
@@ -148,57 +119,9 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                             </Text>
                         )}
                     </div>
-                    <DialogProvider>
-                        <Menu>
-                            <MenuButton className='invisible h-fit bg-transparent p-0 text-ut-gray btn-transition data-[open]:visible group-hover:visible'>
-                                <MoreActionsIcon className='h-6 w-6' />
-                            </MenuButton>
-
-                            <MenuItems
-                                as={ExtensionRootWrapper}
-                                className={clsx([
-                                    styleResetClass,
-                                    'w-30 cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite focus:outline-none',
-                                    'data-[closed]:(opacity-0 scale-95)',
-                                    'data-[enter]:(ease-out-expo duration-150)',
-                                    'data-[leave]:(ease-out duration-50)',
-                                ])}
-                                transition
-                                anchor='bottom end'
-                            >
-                                <MenuItem>
-                                    <Text
-                                        as='button'
-                                        variant='small'
-                                        onClick={() => setIsEditing(true)}
-                                        className='w-full rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
-                                    >
-                                        Rename
-                                    </Text>
-                                </MenuItem>
-                                <MenuItem>
-                                    <Text
-                                        as='button'
-                                        variant='small'
-                                        onClick={() => duplicateSchedule(schedule.id)}
-                                        className='w-full rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
-                                    >
-                                        Duplicate
-                                    </Text>
-                                </MenuItem>
-                                <MenuItem>
-                                    <Text
-                                        as='button'
-                                        variant='small'
-                                        onClick={handleDelete}
-                                        className='w-full rounded bg-transparent p-2 text-left text-ut-red data-[focus]:bg-red-200/40'
-                                    >
-                                        Delete
-                                    </Text>
-                                </MenuItem>
-                            </MenuItems>
-                        </Menu>
-                    </DialogProvider>
+                    <div className='self-end'>
+                        <XIcon className='invisible h-5 w-5 text-ut-red group-hover:visible' onClick={onDelete} />
+                    </div>
                 </div>
             </li>
         </div>
