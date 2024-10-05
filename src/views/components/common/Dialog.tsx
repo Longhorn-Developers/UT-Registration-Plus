@@ -13,6 +13,9 @@ import React, { Fragment } from 'react';
 
 import ExtensionRoot from './ExtensionRoot/ExtensionRoot';
 
+/**
+ * Represents the props for the _Dialog component
+ */
 export interface _DialogProps {
     className?: string;
     title?: JSX.Element;
