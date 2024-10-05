@@ -364,7 +364,7 @@ export default function SettingsPage() {
                             </div>
                         </section>
                         <section className='my-8'>
-                            <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP DEVELOPMENT TEAM</h2>
+                            <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTERS</h2>
                             <div className='grid grid-cols-2 gap-4 md:grid-cols-4 sm:grid-cols-3'>
                                 {contributors.map(username => (
                                     <div key={username} className='rounded-lg bg-gray-100 p-4 shadow-md'>
@@ -372,7 +372,7 @@ export default function SettingsPage() {
                                             className='text-ut-burntorange font-semibold hover:cursor-pointer'
                                             onClick={() => window.open(`https://github.com/${username}`, '_blank')}
                                         >
-                                            {username}
+                                            @{username}
                                         </h3>
                                         <p className='text-sm text-gray-600'>Contributor</p>
                                         {showGitHubStats && userGitHubStats[username] && (
