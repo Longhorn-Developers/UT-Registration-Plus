@@ -63,7 +63,7 @@ type UserStat = {
     }[];
 };
 
-const teamMembers = [
+const longhornDevelopersAdmins = [
     { name: 'Sriram Hariharan', role: 'Founder', githubUsername: 'sghsri' },
     { name: 'Elie Soloveichik', role: 'Senior Software Engineer', githubUsername: 'Razboy20' },
     { name: 'Diego Perez', role: 'Senior Software Engineer', githubUsername: 'doprz' },
@@ -121,7 +121,8 @@ export default function SettingsPage() {
 
     // [TODO]: Toggle GitHub stats when the user presses the 'S' key
     const [showGitHubStats, setShowGitHubStats] = useState<boolean>(false);
-    const [githubStats, setGithubStats] = useState<Record<string, GitHubStats>>({});
+    const [adminGitHubStats, setAdminGitHubStats] = useState<Record<string, GitHubStats>>({});
+    const [userGitHubStats, setUserGitHubStats] = useState<Record<string, GitHubStats>>({});
 
     const [activeSchedule, schedules] = useSchedules();
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -183,8 +184,10 @@ export default function SettingsPage() {
         if (showGitHubStats) {
             // Fetch GitHub stats for each team member
             const fetchStats = async () => {
-                const stats: Record<string, GitHubStats> = {};
-                for (const member of teamMembers) {
+                const adminStats: Record<string, GitHubStats> = {};
+                const userStats: Record<string, GitHubStats> = {};
+
+                for (const admin of longhornDevelopersAdmins) {
                     try {
                         // eslint-disable-next-line no-await-in-loop
                         const response = await fetch(
@@ -192,14 +195,18 @@ export default function SettingsPage() {
                         );
                         // eslint-disable-next-line no-await-in-loop
                         const data = await response.json();
-                        const userStats = data.find((stat: UserStat) => stat.author.login === member.githubUsername);
-                        if (userStats) {
+                        const adminStatsData = data.find(
+                            (stat: UserStat) => stat.author.login === admin.githubUsername
+                        );
+                        const userStatsData = data.find((stat: UserStat) => stat.author.login !== admin.githubUsername);
+
+                        if (adminStatsData) {
                             // Calculate total lines added and deleted
-                            const totalLinesAdded = userStats.weeks.reduce(
+                            const totalLinesAdded = adminStatsData.weeks.reduce(
                                 (total: number, week: { a: number }) => total + week.a,
                                 0
                             );
-                            const totalLinesDeleted = userStats.weeks.reduce(
+                            const totalLinesDeleted = adminStatsData.weeks.reduce(
                                 (total: number, week: { d: number }) => total + week.d,
                                 0
                             );
@@ -207,24 +214,53 @@ export default function SettingsPage() {
                             // Fetch merged PRs for the member
                             // eslint-disable-next-line no-await-in-loop
                             const prResponse = await fetch(
-                                `https://api.github.com/search/issues?q=org:Longhorn-Developers%20author:${member.githubUsername}%20type:pr%20is:merged`
+                                `https://api.github.com/search/issues?q=org:Longhorn-Developers%20author:${admin.githubUsername}%20type:pr%20is:merged`
                             );
                             // eslint-disable-next-line no-await-in-loop
                             const prData = await prResponse.json();
 
                             // Store the stats for the member
-                            stats[member.githubUsername] = {
-                                commits: userStats.total,
+                            adminStats[admin.githubUsername] = {
+                                commits: adminStatsData.total,
                                 linesAdded: totalLinesAdded,
                                 linesDeleted: totalLinesDeleted,
-                                mergedPRs: prData.total_count,
+                                mergedPRs: prData.total_count || 0,
+                            };
+                        }
+
+                        if (userStatsData) {
+                            // Calculate total lines added and deleted
+                            const totalLinesAdded = userStatsData.weeks.reduce(
+                                (total: number, week: { a: number }) => total + week.a,
+                                0
+                            );
+                            const totalLinesDeleted = userStatsData.weeks.reduce(
+                                (total: number, week: { d: number }) => total + week.d,
+                                0
+                            );
+
+                            // Fetch merged PRs for the member
+                            // eslint-disable-next-line no-await-in-loop
+                            const prResponse = await fetch(
+                                `https://api.github.com/search/issues?q=org:Longhorn-Developers%20author:${userStatsData.author.login}%20type:pr%20is:merged`
+                            );
+                            // eslint-disable-next-line no-await-in-loop
+                            const prData = await prResponse.json();
+
+                            // Store the stats for the member
+                            userStats[userStatsData.author.login] = {
+                                commits: userStatsData.total,
+                                linesAdded: totalLinesAdded,
+                                linesDeleted: totalLinesDeleted,
+                                mergedPRs: prData.total_count || 0,
                             };
                         }
                     } catch (error) {
-                        console.error(`Error fetching stats for ${member.name}:`, error);
+                        console.error(`Error fetching stats for ${admin.name}:`, error);
                     }
                 }
-                setGithubStats(stats);
+                setAdminGitHubStats(adminStats);
+                setUserGitHubStats(userStats);
             };
             fetchStats();
         }
@@ -422,7 +458,7 @@ export default function SettingsPage() {
                         <section>
                             <h2 className='mb-4 text-xl text-ut-black font-semibold'>LONGHORN DEVELOPERS ADMINS</h2>
                             <div className='grid grid-cols-2 gap-4 md:grid-cols-4 sm:grid-cols-3'>
-                                {teamMembers.map(member => (
+                                {longhornDevelopersAdmins.map(member => (
                                     <div key={member.githubUsername} className='rounded-lg bg-gray-100 p-4 shadow-md'>
                                         <h3
                                             className='text-ut-burntorange font-semibold hover:cursor-pointer'
@@ -433,23 +469,46 @@ export default function SettingsPage() {
                                             {member.name}
                                         </h3>
                                         <p className='text-sm text-gray-600'>{member.role}</p>
-                                        {showGitHubStats && githubStats[member.githubUsername] && (
+                                        {showGitHubStats && adminGitHubStats[member.githubUsername] && (
                                             <div className='mt-2'>
                                                 <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
                                                 <p className='text-xs'>
-                                                    Merged PRs: {githubStats[member.githubUsername]?.mergedPRs}
+                                                    Merged PRs: {adminGitHubStats[member.githubUsername]?.mergedPRs}
                                                 </p>
                                                 <p className='text-xs'>
-                                                    Commits: {githubStats[member.githubUsername]?.commits}
+                                                    Commits: {adminGitHubStats[member.githubUsername]?.commits}
                                                 </p>
                                                 <p className='text-xs text-ut-green'>
-                                                    {githubStats[member.githubUsername]?.linesAdded} ++
+                                                    {adminGitHubStats[member.githubUsername]?.linesAdded} ++
                                                 </p>
                                                 <p className='text-xs text-ut-red'>
-                                                    {githubStats[member.githubUsername]?.linesDeleted} --
+                                                    {adminGitHubStats[member.githubUsername]?.linesDeleted} --
                                                 </p>
                                             </div>
                                         )}
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                        <section className='my-8'>
+                            <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP DEVELOPMENT TEAM</h2>
+                            <div className='grid grid-cols-2 gap-4 md:grid-cols-4 sm:grid-cols-3'>
+                                {Object.entries(userGitHubStats).map(([username, stats]) => (
+                                    <div key={username} className='rounded-lg bg-gray-100 p-4 shadow-md'>
+                                        <h3
+                                            className='text-ut-burntorange font-semibold hover:cursor-pointer'
+                                            onClick={() => window.open(`https://github.com/${username}`, '_blank')}
+                                        >
+                                            {username}
+                                        </h3>
+                                        <p className='text-sm text-gray-600'>Contributor</p>
+                                        <div className='mt-2'>
+                                            <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
+                                            <p className='text-xs'>Merged PRs: {stats.mergedPRs}</p>
+                                            <p className='text-xs'>Commits: {stats.commits}</p>
+                                            <p className='text-xs text-ut-green'>{stats.linesAdded} ++</p>
+                                            <p className='text-xs text-ut-red'>{stats.linesDeleted} --</p>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
