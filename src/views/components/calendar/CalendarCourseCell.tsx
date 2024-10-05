@@ -3,7 +3,7 @@ import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
 import { enableCourseStatusChips } from '@shared/util/experimental';
-import { capitalizeFirstLetter, toSentenceCase } from '@shared/util/string';
+import { toSentenceCase } from '@shared/util/string';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
