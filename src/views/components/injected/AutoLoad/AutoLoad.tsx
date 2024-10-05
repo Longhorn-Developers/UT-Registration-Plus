@@ -64,7 +64,7 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
         addRows(scrapedRows);
     }, [addRows, isSinglePage]);
 
-    if (!container || status === AutoLoadStatus.DONE || isSinglePage ) {
+    if (!container || status === AutoLoadStatus.DONE || isSinglePage) {
         return null;
     }
 
