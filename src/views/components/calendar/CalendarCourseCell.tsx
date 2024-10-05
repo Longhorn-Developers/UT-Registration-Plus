@@ -6,6 +6,7 @@ import { enableCourseStatusChips } from '@shared/util/experimental';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
+import { capitalizeFirstLetter, toSentenceCase } from 'src/shared/util/string';
 
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
@@ -54,6 +55,9 @@ export default function CalendarCourseCell({
         }
     }
 
+    const [courseId, instructor] = courseDeptAndInstr.split(' - ');
+    const formattedInstructor = instructor ? ` - ${toSentenceCase(instructor)}` : '';
+
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
     // Note that overflow-hidden is the duct tape holding this all together
@@ -87,7 +91,8 @@ export default function CalendarCourseCell({
                         'text-wrap': !timeAndLocation,
                     })}
                 >
-                    {courseDeptAndInstr}
+                    {courseId}
+                    {formattedInstructor}
                 </Text>
                 {timeAndLocation && (
                     <Text variant='h3-course' as='p'>
