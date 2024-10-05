@@ -69,12 +69,12 @@ export default function SettingsPage() {
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
 
-    // [TODO]: Toggle GitHub stats when the user presses the 'S' key
-    const [showGitHubStats, setShowGitHubStats] = useState<boolean>(true);
+    // Toggle GitHub stats when the user presses the 'S' key
+    const [showGitHubStats, setShowGitHubStats] = useState<boolean>(false);
     const { adminGitHubStats, userGitHubStats, contributors } = useGitHubStats(showGitHubStats);
 
     const [activeSchedule, schedules] = useSchedules();
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    // const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
     useEffect(() => {
         initSettings().then(
@@ -92,6 +92,14 @@ export default function SettingsPage() {
                 setEnableDataRefreshing(enableDataRefreshing);
             }
         );
+
+        const handleKeyPress = (event: KeyboardEvent) => {
+            if (event.key === 'S' || event.key === 's') {
+                setShowGitHubStats(prev => !prev);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyPress);
 
         // Listen for changes in the settings
         const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
@@ -126,6 +134,8 @@ export default function SettingsPage() {
             OptionsStore.removeListener(l3);
             OptionsStore.removeListener(l4);
             OptionsStore.removeListener(l5);
+
+            window.removeEventListener('keydown', handleKeyPress);
         };
     }, []);
 
