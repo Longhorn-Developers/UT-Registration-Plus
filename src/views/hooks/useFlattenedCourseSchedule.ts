@@ -86,7 +86,13 @@ function extractCourseInfo(course: Course) {
         status,
         schedule: { meetings },
     } = course;
-    const courseDeptAndInstr = `${course.department} ${course.number} – ${course.instructors[0]?.lastName}`;
+
+    let courseDeptAndInstr = `${course.department} ${course.number}`;
+
+    const mainInstructor = course.instructors[0];
+    if (mainInstructor) {
+        courseDeptAndInstr += ` – ${mainInstructor.toString({ format: 'first_last', case: 'capitalize' })}`;
+    }
 
     return { status, courseDeptAndInstr, meetings, course };
 }
