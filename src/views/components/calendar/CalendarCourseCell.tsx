@@ -3,10 +3,10 @@ import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
 import { enableCourseStatusChips } from '@shared/util/experimental';
+import { capitalizeFirstLetter, toSentenceCase } from '@shared/util/string';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
-import { capitalizeFirstLetter, toSentenceCase } from 'src/shared/util/string';
 
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
@@ -65,7 +65,7 @@ export default function CalendarCourseCell({
     return (
         <div
             className={clsx(
-                'h-full w-0 flex justify-center rounded p-2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out',
+                'h-full w-0 flex justify-center rounded p-x-2 p-y-1.2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out',
                 {
                     'min-w-full': timeAndLocation,
                     'w-full': !timeAndLocation,
