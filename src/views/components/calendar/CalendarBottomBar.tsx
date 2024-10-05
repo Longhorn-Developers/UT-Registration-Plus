@@ -36,7 +36,10 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
             >
                 {displayCourses && (
                     <>
-                        <Text variant='h4'>Async/Other:</Text>
+                        <Text variant='h4'>Async/Other</Text>
+                        <Text variant='h2' className='text-ut-gray '>
+                            -
+                        </Text>
                         <div className='inline-flex gap-2.5'>
                             {asyncCourseCells.map(block => {
                                 const { courseDeptAndInstr, status, colors, className } = block.componentProps;
