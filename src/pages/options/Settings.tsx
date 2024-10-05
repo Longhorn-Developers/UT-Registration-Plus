@@ -119,7 +119,8 @@ export default function SettingsPage() {
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
 
-    const [showGitHubStats, setShowGitHubStats] = useState<boolean>(true);
+    // [TODO]: Toggle GitHub stats when the user presses the 'S' key
+    const [showGitHubStats, setShowGitHubStats] = useState<boolean>(false);
     const [githubStats, setGithubStats] = useState<Record<string, GitHubStats>>({});
 
     const [activeSchedule, schedules] = useSchedules();
@@ -423,7 +424,14 @@ export default function SettingsPage() {
                             <div className='grid grid-cols-2 gap-4 md:grid-cols-4 sm:grid-cols-3'>
                                 {teamMembers.map(member => (
                                     <div key={member.githubUsername} className='rounded-lg bg-gray-100 p-4 shadow-md'>
-                                        <h3 className='text-ut-burntorange font-semibold'>{member.name}</h3>
+                                        <h3
+                                            className='text-ut-burntorange font-semibold hover:cursor-pointer'
+                                            onClick={() =>
+                                                window.open(`https://github.com/${member.githubUsername}`, '_blank')
+                                            }
+                                        >
+                                            {member.name}
+                                        </h3>
                                         <p className='text-sm text-gray-600'>{member.role}</p>
                                         {showGitHubStats && githubStats[member.githubUsername] && (
                                             <div className='mt-2'>
