@@ -1,4 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -12,7 +13,6 @@ import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
 import { Button } from './Button';
 import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
-import { ConfirmDelete, DeleteActiveScheduleError } from './DialogProvider/ScheduleListItemActions';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 
 /**
@@ -32,7 +32,6 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
-    const [error, setError] = useState<string | undefined>(undefined);
 
     const showDialog = usePrompt();
 
@@ -56,23 +55,56 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         setIsEditing(false);
     };
 
-    // todo: maybe remove
-    useEffect(() => {
-        if (error) {
-            console.error(error);
+    const handleDelete = () => {
+        if (schedule.id === activeSchedule.id) {
             showDialog({
-                title: <span className='text-ut-red'>Something went wrong.</span>,
-                description: error,
+                title: `Unable to delete active schedule.`,
+
+                description: (
+                    <>
+                        <Text>Deleting the active schedule</Text>
+                        <Text className='text-ut-burntorange'> {schedule.name} </Text>
+                        <Text>is not allowed. Please switch to another schedule and try again.</Text>
+                    </>
+                ),
                 // eslint-disable-next-line react/no-unstable-nested-components
                 buttons: close => (
-                    <Button variant='filled' color='ut-black' onClick={close}>
-                        I understand
+                    <Button variant='filled' color='ut-burntorange' onClick={close}>
+                        I Understand
                     </Button>
                 ),
-                onClose: () => setError(undefined),
+            });
+        } else {
+            showDialog({
+                title: `Are you sure?`,
+                description: (
+                    <>
+                        <Text>Deleting</Text>
+                        <Text className='text-ut-burntorange'> {schedule.name} </Text>
+                        <Text>is permanent and will remove all added courses from that schedule.</Text>
+                    </>
+                ),
+                // eslint-disable-next-line react/no-unstable-nested-components
+                buttons: close => (
+                    <>
+                        <Button variant='single' color='ut-black' onClick={close}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant='filled'
+                            color='ut-red'
+                            onClick={() => {
+                                close();
+                                deleteSchedule(schedule.id);
+                            }}
+                        >
+                            Delete Permanently
+                        </Button>
+                    </>
+                ),
             });
         }
-    });
+    };
 
     return (
         <div className='rounded bg-white'>
@@ -82,12 +114,12 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                 </div>
                 <div className='group relative flex flex-1 items-center overflow-x-hidden'>
                     <div
-                        className='flex flex-grow items-center gap-1.5 overflow-x-hidden'
+                        className='group/circle flex flex-grow items-center gap-1.5 overflow-x-hidden'
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         <div
                             className={clsx(
-                                'h-5.5 w-5.5 relative flex-shrink-0 border-2px border-current rounded-full btn-transition group-active:scale-95 after:(absolute content-empty bg-current h-2.9 w-2.9 rounded-full transition transform-gpu scale-100 ease-out-expo duration-250 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2)',
+                                'h-5.5 w-5.5 relative flex-shrink-0 border-2px border-current rounded-full btn-transition group-active/circle:scale-95 after:(absolute content-empty bg-current h-2.9 w-2.9 rounded-full transition transform-gpu scale-100 ease-out-expo duration-250 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2)',
                                 {
                                     'after:(scale-0! opacity-0 ease-in-out! duration-200!)': !isActive,
                                 }
@@ -116,60 +148,57 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                             </Text>
                         )}
                     </div>
-                    <div className='self-end'>
-                        <DialogProvider>
-                            <Menu>
-                                <MenuButton className='bg-white'>
-                                    <MoreActionsIcon className='invisible h-5 w-5 cursor-pointer rounded text-blueGray btn-transition group-hover:visible group-hover:border-blueGray group-hover:bg-blueGray group-hover:bg-opacity-25 focusable' />
-                                </MenuButton>
+                    <DialogProvider>
+                        <Menu>
+                            <MenuButton className='invisible h-fit bg-transparent p-0 text-ut-gray btn-transition data-[open]:visible group-hover:visible'>
+                                <MoreActionsIcon className='h-6 w-6' />
+                            </MenuButton>
 
-                                <MenuItems
-                                    as={ExtensionRootWrapper}
-                                    className={clsx([
-                                        styleResetClass,
-                                        'w-30 cursor-pointer rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite focus:outline-none',
-                                        'data-[closed]:(opacity-0 scale-95)',
-                                        'data-[enter]:(ease-out duration-100)',
-                                        'data-[leave]:(ease-in duration-75)',
-                                    ])}
-                                    transition
-                                    anchor='bottom end'
-                                    // enter='transition ease-out duration-100'
-                                    // enterFrom='transform opacity-0 scale-95'
-                                    // enterTo='transform opacity-100 scale-100'
-                                    // leave='transition ease-in duration-75'
-                                    // leaveFrom='transform opacity-100 scale-100'
-                                    // leaveTo='transform opacity-0 scale-95'
-                                >
-                                    <MenuItem as='div' onClick={() => setIsEditing(true)}>
-                                        {({ focus }) => (
-                                            <Text
-                                                variant='small'
-                                                className={`block px-2 py-2 ${focus ? 'bg-gray-100 rounded' : ''}`}
-                                            >
-                                                Rename
-                                            </Text>
-                                        )}
-                                    </MenuItem>
-                                    <MenuItem as='div' onClick={() => duplicateSchedule(schedule.name)}>
-                                        {({ focus }) => (
-                                            <Text
-                                                variant='small'
-                                                className={`block px-2 py-2 ${focus ? 'bg-gray-100 rounded' : ''}`}
-                                            >
-                                                Duplicate
-                                            </Text>
-                                        )}
-                                    </MenuItem>
-                                    {schedule.id === activeSchedule.id ? (
-                                        <DeleteActiveScheduleError schedule={schedule} />
-                                    ) : (
-                                        <ConfirmDelete schedule={schedule} />
-                                    )}
-                                </MenuItems>
-                            </Menu>
-                        </DialogProvider>
-                    </div>
+                            <MenuItems
+                                as={ExtensionRootWrapper}
+                                className={clsx([
+                                    styleResetClass,
+                                    'w-30 cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite focus:outline-none',
+                                    'data-[closed]:(opacity-0 scale-95)',
+                                    'data-[enter]:(ease-out-expo duration-150)',
+                                    'data-[leave]:(ease-out duration-50)',
+                                ])}
+                                transition
+                                anchor='bottom end'
+                            >
+                                <MenuItem>
+                                    <Text
+                                        as='button'
+                                        variant='small'
+                                        onClick={() => setIsEditing(true)}
+                                        className='w-full rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
+                                    >
+                                        Rename
+                                    </Text>
+                                </MenuItem>
+                                <MenuItem>
+                                    <Text
+                                        as='button'
+                                        variant='small'
+                                        onClick={() => duplicateSchedule(schedule.id)}
+                                        className='w-full rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
+                                    >
+                                        Duplicate
+                                    </Text>
+                                </MenuItem>
+                                <MenuItem>
+                                    <Text
+                                        as='button'
+                                        variant='small'
+                                        onClick={handleDelete}
+                                        className='w-full rounded bg-transparent p-2 text-left text-ut-red data-[focus]:bg-red-200/40'
+                                    >
+                                        Delete
+                                    </Text>
+                                </MenuItem>
+                            </MenuItems>
+                        </Menu>
+                    </DialogProvider>
                 </div>
             </li>
         </div>
