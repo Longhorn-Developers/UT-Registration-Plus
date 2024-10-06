@@ -104,7 +104,7 @@ const splashText: string[] = [
     'Just put the classes in the schedule lil bro',
     'The wait is finally over',
     "Stop trying to make UTRP happen, it's not going to happen!",
-    'Befriend the racoons on campus',
+    'Befriend the raccoons on campus',
 ];
 
 export default splashText;
