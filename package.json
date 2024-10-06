@@ -9,6 +9,7 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
+        "build:watch": "NODE_ENV='development' vite build --mode development -w",
         "prettier": "prettier src --check",
         "prettier:fix": "prettier src --write",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
