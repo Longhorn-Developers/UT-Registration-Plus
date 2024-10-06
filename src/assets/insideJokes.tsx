@@ -77,7 +77,7 @@ const splashText: string[] = [
     'Bevo Bucks are legal tender',
     "'iS iT fInAlS wEeK oR mY fInAl WeEk'",
     // eslint-disable-next-line no-template-curly-in-string
-    "It's ${currentTime} and OU still sucks",
+    "It's ${currentTime} and OU still sucks", // This is on purpose as a joke
     'Deep in the heart of Texas',
     'TEXAS!!! FIGHT!!!',
     'Launder your AP credits through a community college for free',
