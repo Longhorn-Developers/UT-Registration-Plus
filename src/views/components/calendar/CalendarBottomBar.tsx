@@ -36,7 +36,7 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
             >
                 {displayCourses && (
                     <>
-                        <Text variant='h4' className='text-ut-black'>
+                        <Text variant='p' className='text-ut-black'>
                             ASYNC./OTHER
                         </Text>
                         <Text variant='h4' className='text-gray-300'>
