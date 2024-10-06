@@ -39,7 +39,7 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                         <Text variant='small' className='text-ut-black'>
                             ASYNC./OTHER
                         </Text>
-                        <Text variant='small' className='text-gray'>
+                        <Text variant='h2' className='text-gray'>
                             —
                         </Text>
                         <div className='inline-flex gap-2.5'>
