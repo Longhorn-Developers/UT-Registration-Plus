@@ -1,3 +1,4 @@
+import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
@@ -8,7 +9,6 @@ import ReactDOM from 'react-dom';
 import RowIcon from '~icons/material-symbols/bar-chart-rounded';
 
 import styles from './TableRow.module.scss';
-import { initSettings, OptionsStore } from 'src/shared/storage/OptionsStore';
 
 interface Props {
     isSelected: boolean;
