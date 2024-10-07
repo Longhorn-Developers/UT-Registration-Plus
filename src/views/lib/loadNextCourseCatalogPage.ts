@@ -70,7 +70,7 @@ export async function loadNextCourseCatalogPage(): Promise<[AutoLoadStatusType, 
  * @param doc  the document to get the next button from
  * @returns the next button from the document
  */
-function getNextButton(doc: Document) {
+export function getNextButton(doc: Document) {
     return doc.querySelector<HTMLAnchorElement>(NEXT_PAGE_BUTTON_SELECTOR);
 }
 

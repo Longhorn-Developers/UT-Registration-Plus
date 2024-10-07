@@ -44,7 +44,7 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                 >
                     <div className={clsx('fixed inset-0 z-50 bg-slate-700/35')} />
                 </TransitionChild>
-                <div className='fixed inset-0 z-50 flex items-center justify-center'>
+                <div className='fixed inset-0 z-50 flex items-center justify-center p-2'>
                     <TransitionChild
                         as={Fragment}
                         enter='transition duration-375 motion-reduce:duration-0 ease-[cubic-bezier(0.05,0.4,0.2,1)]'
@@ -56,7 +56,7 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                     >
                         <DialogPanel
                             className={clsx(
-                                'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-solid border-ut-offwhite rounded bg-white shadow-xl ml-[calc(100vw-100%)]',
+                                'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-solid border-ut-offwhite rounded bg-white shadow-xl ml-[calc(100vw-100%-1rem)]',
                                 className
                             )}
                         >

@@ -1,5 +1,5 @@
 import type { Course, StatusType } from '@shared/types/Course';
-import type { CourseMeeting } from '@shared/types/CourseMeeting';
+import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 
@@ -68,7 +68,13 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
                 return processAsyncCourses({ courseDeptAndInstr, status, course });
             }
 
-            return meetings.flatMap(meeting => processInPersonMeetings(meeting, courseDeptAndInstr, status, course));
+            return meetings.flatMap(meeting => {
+                if (meeting.days.includes(DAY_MAP.S) || meeting.startTime < 480) {
+                    return processAsyncCourses({ courseDeptAndInstr, status, course });
+                }
+
+                return processInPersonMeetings(meeting, courseDeptAndInstr, status, course);
+            });
         })
         .sort(sortCourses);
 
@@ -86,7 +92,13 @@ function extractCourseInfo(course: Course) {
         status,
         schedule: { meetings },
     } = course;
-    const courseDeptAndInstr = `${course.department} ${course.number} – ${course.instructors[0]?.lastName}`;
+
+    let courseDeptAndInstr = `${course.department} ${course.number}`;
+
+    const mainInstructor = course.instructors[0];
+    if (mainInstructor) {
+        courseDeptAndInstr += ` – ${mainInstructor.toString({ format: 'first_last', case: 'capitalize' })}`;
+    }
 
     return { status, courseDeptAndInstr, meetings, course };
 }
