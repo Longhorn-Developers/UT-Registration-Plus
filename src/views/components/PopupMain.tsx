@@ -10,6 +10,7 @@ import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import clsx from 'clsx';
+import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect, useState } from 'react';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
@@ -29,6 +30,7 @@ import ScheduleListItem from './common/ScheduleListItem';
 export default function PopupMain(): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
     const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    useKC_DABR_WASM();
 
     useEffect(() => {
         initSettings().then(({ enableCourseStatusChips, enableDataRefreshing }) => {

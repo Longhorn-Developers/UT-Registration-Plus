@@ -1,12 +1,12 @@
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
-import { getCourseColors } from '@shared/util/colors';
-import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
+// import { getCourseColors } from '@shared/util/colors';
+// import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import { Button } from '@views/components/common/Button';
 import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import Divider from '@views/components/common/Divider';
 import { SmallLogo } from '@views/components/common/LogoIcon';
-import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
+// import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
 import { LONGHORN_DEVELOPERS_ADMINS, useGitHubStats } from '@views/hooks/useGitHubStats';
@@ -14,14 +14,16 @@ import useSchedules from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
 
+import IconoirGitFork from '~icons/iconoir/git-fork';
+// import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
 import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
-import RefreshIcon from '~icons/material-symbols/refresh';
 
+// import RefreshIcon from '~icons/material-symbols/refresh';
 import DevMode from './DevMode';
 import Preview from './Preview';
 
+const manifest = chrome.runtime.getManifest();
 const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
 
 /**
@@ -179,19 +181,27 @@ export default function Settings(): JSX.Element {
     }
 
     return (
-        <div className='bg-white p-6'>
-            <header className='mb-6 flex items-center justify-between'>
+        <div className='bg-white'>
+            <header className='flex items-center justify-between border-b p-6'>
                 <div className='flex items-center'>
                     <SmallLogo className='pr-4' />
                     <Divider size='2rem' orientation='vertical' />
                     <h1 className='pl-4 text-xl text-ut-burntorange font-bold'>UTRP SETTINGS & CREDITS PAGE</h1>
                 </div>
-                <img src={LDIconURL} alt='LD Icon' className='h-10 w-10 rounded-lg' />
+                <div className='flex space-x-4'>
+                    <div className='flex items-center'>
+                        <IconoirGitFork className='h-6 w-6 text-ut-gray' />
+                        <Text variant='small' className='text-ut-gray font-normal'>
+                            v{manifest.version} - {process.env.NODE_ENV}
+                        </Text>
+                    </div>
+                    <img src={LDIconURL} alt='LD Icon' className='h-10 w-10 rounded-lg' />
+                </div>
             </header>
 
-            <div className='flex'>
+            <div className='flex p-6'>
                 <div className='mr-4 w-1/2'>
-                    <section className='mb-8'>
+                    {/* <section className='mb-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>CUSTOMIZATION OPTIONS</h2>
                         <div className='flex space-x-4'>
                             <div className='w-1/2 space-y-4'>
@@ -246,13 +256,13 @@ export default function Settings(): JSX.Element {
                         </div>
                     </section>
 
-                    <Divider size='auto' orientation='horizontal' />
+                    <Divider size='auto' orientation='horizontal' /> */}
 
-                    <section className='my-8'>
+                    <section className='mb-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>ADVANCED SETTINGS</h2>
                         <div className='flex space-x-4'>
                             <div className='w-1/2 space-y-4'>
-                                <div className='flex items-center justify-between'>
+                                {/* <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
                                         <h3 className='text-ut-burntorange font-semibold'>Refresh Data</h3>
                                         <p className='text-sm text-gray-600'>
@@ -271,11 +281,13 @@ export default function Settings(): JSX.Element {
                                     </Button>
                                 </div>
 
-                                <Divider size='auto' orientation='horizontal' />
+                                <Divider size='auto' orientation='horizontal' /> */}
 
                                 <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>Course Conflict Highlight</h3>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Course Conflict Highlight
+                                        </Text>
                                         <p className='text-sm text-gray-600'>
                                             Adds a red strikethrough to courses that have conflicting times.
                                         </p>
@@ -293,9 +305,9 @@ export default function Settings(): JSX.Element {
 
                                 <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
                                             Load All Courses in Course Schedule
-                                        </h3>
+                                        </Text>
                                         <p className='text-sm text-gray-600'>
                                             Loads all courses in the Course Schedule site by scrolling, instead of using
                                             next/prev page buttons.
@@ -314,7 +326,9 @@ export default function Settings(): JSX.Element {
 
                                 <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>Reset All Data</h3>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Reset All Data
+                                        </Text>
                                         <p className='text-sm text-gray-600'>
                                             Erases all schedules and courses you have.
                                         </p>
@@ -361,15 +375,19 @@ export default function Settings(): JSX.Element {
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>LONGHORN DEVELOPERS ADMINS</h2>
                         <div className='grid grid-cols-2 gap-4 md:grid-cols-4 sm:grid-cols-3'>
                             {LONGHORN_DEVELOPERS_ADMINS.map(admin => (
-                                <div key={admin.githubUsername} className='rounded-lg bg-gray-100 p-4 shadow-md'>
-                                    <h3
+                                <div
+                                    key={admin.githubUsername}
+                                    className='border border-gray-300 rounded bg-ut-gray/10 p-4'
+                                >
+                                    <Text
+                                        variant='p'
                                         className='text-ut-burntorange font-semibold hover:cursor-pointer'
                                         onClick={() =>
                                             window.open(`https://github.com/${admin.githubUsername}`, '_blank')
                                         }
                                     >
                                         {admin.name}
-                                    </h3>
+                                    </Text>
                                     <p className='text-sm text-gray-600'>{admin.role}</p>
                                     {showGitHubStats && adminGitHubStats[admin.githubUsername] && (
                                         <div className='mt-2'>
@@ -396,13 +414,14 @@ export default function Settings(): JSX.Element {
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTERS</h2>
                         <div className='grid grid-cols-2 gap-4 md:grid-cols-4 sm:grid-cols-3'>
                             {contributors.map(username => (
-                                <div key={username} className='rounded-lg bg-gray-100 p-4 shadow-md'>
-                                    <h3
+                                <div key={username} className='border border-gray-300 rounded bg-ut-gray/10 p-4'>
+                                    <Text
+                                        variant='p'
                                         className='text-ut-burntorange font-semibold hover:cursor-pointer'
                                         onClick={() => window.open(`https://github.com/${username}`, '_blank')}
                                     >
                                         @{username}
-                                    </h3>
+                                    </Text>
                                     <p className='text-sm text-gray-600'>Contributor</p>
                                     {showGitHubStats && userGitHubStats[username] && (
                                         <div className='mt-2'>
