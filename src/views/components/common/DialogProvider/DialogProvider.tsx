@@ -87,7 +87,7 @@ export default function DialogProvider(props: { children: ReactNode }): JSX.Elem
                 key={id}
                 onClose={handleClose}
                 afterLeave={onLeave}
-                title=<>{infoUnwrapped.title}</>
+                headline=<>{infoUnwrapped.title}</>
                 description=<>{infoUnwrapped.description}</>
                 appear
                 show={show}
