@@ -74,11 +74,7 @@ export default function CalendarCourseCell({
             }}
             onClick={onClick}
         >
-            <div
-                className={clsx('flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full', {
-                    'self-center': !timeAndLocation,
-                })}
-            >
+            <div className={clsx('flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full')}>
                 <Text
                     variant='h1-course'
                     as='p'
