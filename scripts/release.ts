@@ -1,8 +1,8 @@
 import prompts from 'prompts';
 import { simpleGit } from 'simple-git';
 
-import { error, info } from './utils/chalk';
-import { getSourceRef } from './utils/git/getSourceRef';
+import { error, info } from '../utils/log';
+import { getSourceRef } from '../utils/git/getSourceRef';
 
 const git = simpleGit();
 const status = await git.status();
