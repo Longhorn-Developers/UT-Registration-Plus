@@ -40,6 +40,7 @@
         "react-dom": "^18.3.1",
         "react-loading-skeleton": "^3.5.0",
         "sass": "^1.79.4",
+        "simple-git": "^3.27.0",
         "sql.js": "1.11.0"
     },
     "devDependencies": {
