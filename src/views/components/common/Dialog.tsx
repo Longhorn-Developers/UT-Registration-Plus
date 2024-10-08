@@ -15,7 +15,7 @@ import ExtensionRoot from './ExtensionRoot/ExtensionRoot';
 
 export interface _DialogProps {
     className?: string;
-    headline?: JSX.Element;
+    title?: JSX.Element;
     description?: JSX.Element;
 }
 
@@ -60,7 +60,7 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                                 className
                             )}
                         >
-                            {props.headline && <DialogTitle as={Fragment}>{props.headline}</DialogTitle>}
+                            {props.title && <DialogTitle as={Fragment}>{props.title}</DialogTitle>}
                             {props.description && <Description as={Fragment}>{props.description}</Description>}
                             {children}
                         </DialogPanel>
