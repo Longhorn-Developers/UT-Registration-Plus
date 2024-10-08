@@ -86,16 +86,22 @@ export default function Calendar(): JSX.Element {
                     <div
                         ref={sidebarRef}
                         style={{ width: getSidebarWidth() }}
-                        className={`${showSidebar ? 'opacity-100' : 'opacity-0'} transition-all duration-300 ease-out-expo h-full flex flex-none flex-col justify-between pb-5 screenshot:hidden whitespace-nowrap`}
+                        className='h-full flex flex-none flex-col justify-between whitespace-nowrap pb-5 transition-all duration-300 ease-out-expo screenshot:hidden'
                     >
-                        <div className='mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pl-4.5 pr-4 pt-5'>
+                        <div
+                            className={`${showSidebar ? 'visible' : 'invisible'} mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pl-4.5 pr-4 pt-5`}
+                        >
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' className='my-5' />
                             <ImportantLinks />
                             <Divider orientation='horizontal' size='100%' className='my-5' />
                             <TeamLinks />
                         </div>
-                        <CalendarFooter />
+                        <div
+                            className={`${showSidebar ? 'translate-y-0' : 'translate-y-3.5'} relative transition-transform`}
+                        >
+                            <CalendarFooter />
+                        </div>
                     </div>
                     <div className='h-full min-w-5xl flex flex-grow flex-col overflow-y-auto'>
                         <div className='min-h-2xl flex-grow overflow-auto pl-2 pr-4 pt-6 screenshot:min-h-xl'>
