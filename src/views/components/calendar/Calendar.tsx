@@ -86,7 +86,7 @@ export default function Calendar(): JSX.Element {
                     <div
                         ref={sidebarRef}
                         style={{ width: getSidebarWidth() }}
-                        className={`${showSidebar ? 'opacity-100' : 'opacity-0'} transition-all duration-200 h-full flex flex-none flex-col justify-between pb-5 screenshot:hidden whitespace-nowrap`}
+                        className={`${showSidebar ? 'opacity-100' : 'opacity-0'} transition-all duration-300 ease-out-expo h-full flex flex-none flex-col justify-between pb-5 screenshot:hidden whitespace-nowrap`}
                     >
                         <div className='mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pl-4.5 pr-4 pt-5'>
                             <CalendarSchedules />
