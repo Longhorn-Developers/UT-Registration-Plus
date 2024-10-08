@@ -9,6 +9,7 @@ import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
+import useInitialWidth from '@views/hooks/useInitialWidth';
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useState } from 'react';
 
@@ -39,6 +40,7 @@ export default function Calendar(): JSX.Element {
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const [showSidebar, setShowSidebar] = useState<boolean>(true);
+    const { width, elementRef: sidebarRef } = useInitialWidth<HTMLDivElement>();
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
@@ -64,6 +66,14 @@ export default function Calendar(): JSX.Element {
         if (course) setShowPopup(true);
     }, [course]);
 
+    const getSidebarWidth = () => {
+        if (showSidebar) {
+            return width > 0 ? width : 'auto';
+        }
+
+        return 0;
+    };
+
     return (
         <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
@@ -74,9 +84,11 @@ export default function Calendar(): JSX.Element {
                 />
                 <div className='h-full flex overflow-auto pl-3'>
                     <div
-                        className={`${showSidebar ? 'max-w-[20rem] opacity-100' : 'max-w-0 opacity-0'} h-full flex flex-none flex-col justify-between pb-5 screenshot:hidden transition-all ease-out duration-300 whitespace-nowrap`}
+                        ref={sidebarRef}
+                        style={{ width: getSidebarWidth() }}
+                        className={`${showSidebar ? 'opacity-100' : 'opacity-0'} transition-all duration-200 h-full flex flex-none flex-col justify-between pb-5 screenshot:hidden whitespace-nowrap`}
                     >
-                        <div className='mb-3 h-full flex flex-col overflow-auto overflow-clip pb-2 pl-4.5 pr-4 pt-5'>
+                        <div className='mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pl-4.5 pr-4 pt-5'>
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' className='my-5' />
                             <ImportantLinks />
