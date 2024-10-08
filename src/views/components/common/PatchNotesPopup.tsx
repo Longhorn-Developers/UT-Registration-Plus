@@ -14,13 +14,12 @@ interface PatchNotesPopupProps {
 }
 
 /**
- * Renders a popup component displaying patch notes.
+ * Renders a popup component for displaying patch notes.
  *
- * @component
- * @param {Object} props - The component props.
- * @param {boolean} props.isOpen - Determines whether the popup is open or not.
- * @param {Function} props.onClose - The function to close the popup.
- * @returns {JSX.Element|null} The PatchNotesPopup component.
+ * @param isOpen - A boolean indicating whether the popup is open or not.
+ * @param onClose - A function to be called when the popup is closed.
+ *
+ * @returns The JSX element representing the PatchNotesPopup component.
  */
 export default function PatchNotesPopup({ isOpen, onClose }: PatchNotesPopupProps): JSX.Element | null {
     const [markdownContent, setMarkdownContent] = useState('');
