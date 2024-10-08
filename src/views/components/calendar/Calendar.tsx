@@ -74,7 +74,7 @@ export default function Calendar(): JSX.Element {
                 />
                 <div className='h-full flex overflow-auto pl-3'>
                     <div
-                        className={`h-full flex flex-none flex-col justify-between pb-5 screenshot:hidden transition-all ease-out duration-300 whitespace-nowrap ${showSidebar ? 'max-w-[20rem] opacity-100' : 'max-w-0 opacity-0 '}`}
+                        className={`${showSidebar ? 'max-w-[20rem] opacity-100' : 'max-w-0 opacity-0'} h-full flex flex-none flex-col justify-between pb-5 screenshot:hidden transition-all ease-out duration-300 whitespace-nowrap`}
                     >
                         <div className='mb-3 h-full flex flex-col overflow-auto overflow-clip pb-2 pl-4.5 pr-4 pt-5'>
                             <CalendarSchedules />
