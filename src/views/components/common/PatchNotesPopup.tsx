@@ -197,7 +197,7 @@ export default function PatchNotesPopup({ isOpen, onClose }: PatchNotesPopupProp
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-op-50 p-4'>
             <div
                 ref={popupRef}
-                className='max-h-80vh max-w-2xl w-full overflow-y-auto rounded-lg bg-white shadow-xl dark:bg-gray-800'
+                className='max-h-80vh max-w-3xl w-full overflow-y-auto rounded-lg bg-white shadow-xl dark:bg-gray-800'
             >
                 {/* <div className='flex items-center justify-between border-b border-gray-200 p-4 dark:border-gray-700'>
                     <h2 className='text-xl text-gray-800 font-semibold dark:text-white'>Patch Notes</h2>
@@ -208,7 +208,7 @@ export default function PatchNotesPopup({ isOpen, onClose }: PatchNotesPopupProp
                         <MaterialSymbolsClose className='text-2xl' />
                     </button>
                 </div> */}
-                <div className='p-4'>
+                <div className='px-4 font-mono'>
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={MarkdownComponents}
