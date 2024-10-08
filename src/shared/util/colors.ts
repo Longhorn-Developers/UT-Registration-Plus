@@ -207,9 +207,9 @@ export function getUnusedColor(
 }
 
 // OKLab helper functions (https://github.com/bottosson/bottosson.github.io/blob/master/misc/colorpicker/colorconversion.js)
-function srgbTransferFunction(a: number): number {
-    return a <= 0.0031308 ? 12.92 * a : 1.055 * a ** 0.4166666666666667 - 0.055;
-}
+// function srgbTransferFunction(a: number): number {
+//     return a <= 0.0031308 ? 12.92 * a : 1.055 * a ** 0.4166666666666667 - 0.055;
+// }
 
 function srgbTransferFunctionInv(a: number): number {
     return a > 0.04045 ? ((a + 0.055) / 1.055) ** 2.4 : a / 12.92;
