@@ -27,6 +27,7 @@
     "dependencies": {
         "@headlessui/react": "^2.1.8",
         "@hello-pangea/dnd": "^17.0.0",
+        "@octokit/rest": "^21.0.2",
         "@unocss/vite": "^0.63.2",
         "@vitejs/plugin-react": "^4.3.2",
         "chrome-extension-toolkit": "^0.0.54",

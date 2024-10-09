@@ -9,8 +9,8 @@ import { SmallLogo } from '@views/components/common/LogoIcon';
 // import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
-import { LONGHORN_DEVELOPERS_ADMINS, useGitHubStats } from '@views/hooks/useGitHubStats';
 import useSchedules from '@views/hooks/useSchedules';
+import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS } from '@views/lib/getGitHubStats';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -28,6 +28,9 @@ const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS ? 'w-1/2 space-y-4' : 'fl
 
 const manifest = chrome.runtime.getManifest();
 const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
+
+const gitHubStatsService = new GitHubStatsService();
+const includeMergedPRs = false;
 
 /**
  * Custom hook for enabling developer mode.
@@ -78,7 +81,9 @@ export default function Settings(): JSX.Element {
 
     // Toggle GitHub stats when the user presses the 'S' key
     const [showGitHubStats, setShowGitHubStats] = useState<boolean>(false);
-    const { adminGitHubStats, userGitHubStats, contributors } = useGitHubStats(showGitHubStats);
+    const [githubStats, setGitHubStats] = useState<Awaited<
+        ReturnType<typeof gitHubStatsService.fetchGitHubStats>
+    > | null>(null);
 
     const [activeSchedule] = useSchedules();
     // const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
@@ -86,21 +91,28 @@ export default function Settings(): JSX.Element {
     const showDialog = usePrompt();
 
     useEffect(() => {
-        initSettings().then(
-            ({
+        const fetchGitHubStats = async () => {
+            const stats = await gitHubStatsService.fetchGitHubStats();
+            setGitHubStats(stats);
+        };
+
+        const initAndSetSettings = async () => {
+            const {
                 enableCourseStatusChips,
                 enableTimeAndLocationInPopup,
                 enableHighlightConflicts,
                 enableScrollToLoad,
                 enableDataRefreshing,
-            }) => {
-                setEnableCourseStatusChips(enableCourseStatusChips);
-                setShowTimeLocation(enableTimeAndLocationInPopup);
-                setHighlightConflicts(enableHighlightConflicts);
-                setLoadAllCourses(enableScrollToLoad);
-                setEnableDataRefreshing(enableDataRefreshing);
-            }
-        );
+            } = await initSettings();
+            setEnableCourseStatusChips(enableCourseStatusChips);
+            setShowTimeLocation(enableTimeAndLocationInPopup);
+            setHighlightConflicts(enableHighlightConflicts);
+            setLoadAllCourses(enableScrollToLoad);
+            setEnableDataRefreshing(enableDataRefreshing);
+        };
+
+        fetchGitHubStats();
+        initAndSetSettings();
 
         const handleKeyPress = (event: KeyboardEvent) => {
             if (event.key === 'S' || event.key === 's') {
@@ -398,20 +410,23 @@ export default function Settings(): JSX.Element {
                                         {admin.name}
                                     </Text>
                                     <p className='text-sm text-gray-600'>{admin.role}</p>
-                                    {showGitHubStats && adminGitHubStats[admin.githubUsername] && (
+                                    {showGitHubStats && githubStats && (
                                         <div className='mt-2'>
                                             <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
+                                            {includeMergedPRs && (
+                                                <p className='text-xs'>
+                                                    Merged PRS:{' '}
+                                                    {githubStats.adminGitHubStats[admin.githubUsername]?.mergedPRs}
+                                                </p>
+                                            )}
                                             <p className='text-xs'>
-                                                Merged PRs: {adminGitHubStats[admin.githubUsername]?.mergedPRs}
-                                            </p>
-                                            <p className='text-xs'>
-                                                Commits: {adminGitHubStats[admin.githubUsername]?.commits}
+                                                Commits: {githubStats.adminGitHubStats[admin.githubUsername]?.commits}
                                             </p>
                                             <p className='text-xs text-ut-green'>
-                                                {adminGitHubStats[admin.githubUsername]?.linesAdded} ++
+                                                {githubStats.adminGitHubStats[admin.githubUsername]?.linesAdded} ++
                                             </p>
                                             <p className='text-xs text-ut-red'>
-                                                {adminGitHubStats[admin.githubUsername]?.linesDeleted} --
+                                                {githubStats.adminGitHubStats[admin.githubUsername]?.linesDeleted} --
                                             </p>
                                         </div>
                                     )}
@@ -422,36 +437,47 @@ export default function Settings(): JSX.Element {
                     <section className='my-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTERS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
-                            {contributors.map(username => (
-                                <div
-                                    key={username}
-                                    className='overflow-clip border border-gray-300 rounded bg-ut-gray/10 p-4'
-                                >
-                                    <Text
-                                        variant='p'
-                                        className='text-ut-burntorange font-semibold hover:cursor-pointer'
-                                        onClick={() => window.open(`https://github.com/${username}`, '_blank')}
-                                    >
-                                        @{username}
-                                    </Text>
-                                    <p className='text-sm text-gray-600'>Contributor</p>
-                                    {showGitHubStats && userGitHubStats[username] && (
-                                        <div className='mt-2'>
-                                            <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
-                                            <p className='text-xs'>
-                                                Merged PRs: {userGitHubStats[username]?.mergedPRs}
-                                            </p>
-                                            <p className='text-xs'>Commits: {userGitHubStats[username]?.commits}</p>
-                                            <p className='text-xs text-ut-green'>
-                                                {userGitHubStats[username]?.linesAdded} ++
-                                            </p>
-                                            <p className='text-xs text-ut-red'>
-                                                {userGitHubStats[username]?.linesDeleted} --
-                                            </p>
+                            {githubStats &&
+                                Object.keys(githubStats.userGitHubStats)
+                                    .filter(
+                                        username =>
+                                            !LONGHORN_DEVELOPERS_ADMINS.some(admin => admin.githubUsername === username)
+                                    )
+                                    .map(username => (
+                                        <div
+                                            key={username}
+                                            className='overflow-clip border border-gray-300 rounded bg-ut-gray/10 p-4'
+                                        >
+                                            <Text
+                                                variant='p'
+                                                className='text-ut-burntorange font-semibold hover:cursor-pointer'
+                                                onClick={() => window.open(`https://github.com/${username}`, '_blank')}
+                                            >
+                                                @{username}
+                                            </Text>
+                                            <p className='text-sm text-gray-600'>Contributor</p>
+                                            {showGitHubStats && (
+                                                <div className='mt-2'>
+                                                    <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
+                                                    {includeMergedPRs && (
+                                                        <p className='text-xs'>
+                                                            Merged PRs:{' '}
+                                                            {githubStats.userGitHubStats[username]?.mergedPRs}
+                                                        </p>
+                                                    )}
+                                                    <p className='text-xs'>
+                                                        Commits: {githubStats.userGitHubStats[username]?.commits}
+                                                    </p>
+                                                    <p className='text-xs text-ut-green'>
+                                                        {githubStats.userGitHubStats[username]?.linesAdded} ++
+                                                    </p>
+                                                    <p className='text-xs text-ut-red'>
+                                                        {githubStats.userGitHubStats[username]?.linesDeleted} --
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                </div>
-                            ))}
+                                    ))}
                         </div>
                     </section>
                 </section>
