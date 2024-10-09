@@ -5,6 +5,11 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 /**
+ * @todo Inject the button into page https://my.utexas.edu/student/student/index
+ * @todo figure out how to get ActiveSchedule in here
+ */
+
+/**
  *
  * @returns Button
  */
@@ -47,8 +52,8 @@ export default function InjectedButton(): JSX.Element | null {
 
     return ReactDOM.createPortal(
         <ExtensionRoot>
-            <Button variant='filled' color='ut-black'>
-                Click Me
+            <Button variant='filled' color='ut-burntorange'>
+                Add Courses to Schedule
             </Button>
         </ExtensionRoot>,
         container
