@@ -89,7 +89,8 @@ export default function Calendar(): JSX.Element {
                         className='h-full flex flex-none flex-col justify-between whitespace-nowrap pb-5 transition-all duration-300 ease-out-expo screenshot:hidden'
                     >
                         <div
-                            className={`${showSidebar ? 'visible' : 'invisible'} mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pl-4.5 pr-4 pt-5`}
+                            tabIndex={showSidebar ? 0 : -1}
+                            className={`${showSidebar ? 'opacity-100' : 'opacity-0 pointer-events-none'} transition-opacity ease-out-expo mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pl-4.5 pr-4 pt-5`}
                         >
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' className='my-5' />
@@ -97,11 +98,11 @@ export default function Calendar(): JSX.Element {
                             <Divider orientation='horizontal' size='100%' className='my-5' />
                             <TeamLinks />
                         </div>
-                        <div
-                            className={`${showSidebar ? 'translate-y-0' : 'translate-y-3.5'} relative transition-transform`}
-                        >
-                            <CalendarFooter />
-                        </div>
+
+                        <CalendarFooter
+                            socialIconClassNames={`${showSidebar ? 'translate-y-0 delay-50' : 'translate-y-6.75'} transition-transform ease-out-expo duration-500`}
+                            sublineClassNames={`${showSidebar ? 'opacity-100 delay-75' : 'opacity-0'} duration-300 transition-opacity ease-out-expo`}
+                        />
                     </div>
                     <div className='h-full min-w-5xl flex flex-grow flex-col overflow-y-auto'>
                         <div className='min-h-2xl flex-grow overflow-auto pl-2 pr-4 pt-6 screenshot:min-h-xl'>
