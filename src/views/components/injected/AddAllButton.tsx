@@ -30,6 +30,7 @@ export default function InjectedButton(): JSX.Element | null {
 
         const anchorTags = calendarElement.querySelectorAll('a');
         const courses = Array.from(anchorTags).map(x => x.innerText.trim());
+        handleAddingCourses(courses);
     };
 
     const handleAddingCourses = (courses: Array<string>) => {
@@ -56,7 +57,7 @@ export default function InjectedButton(): JSX.Element | null {
 
     return ReactDOM.createPortal(
         <ExtensionRoot>
-            <Button variant='filled' color='ut-burntorange'>
+            <Button variant='filled' color='ut-burntorange' onClick={extractCoursesFromCalendar}>
                 Add Courses to Schedule
             </Button>
         </ExtensionRoot>,
