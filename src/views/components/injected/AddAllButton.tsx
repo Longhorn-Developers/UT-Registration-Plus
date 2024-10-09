@@ -1,8 +1,11 @@
-import addCourse from '@pages/background/lib/addCourse';
 import { Button } from '@views/components/common/Button';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { background } from 'src/shared/messages';
+import useSchedules from 'src/views/hooks/useSchedules';
+
+const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
 /**
  * @todo Inject the button into page https://my.utexas.edu/student/student/index
@@ -15,6 +18,7 @@ import ReactDOM from 'react-dom';
  */
 export default function InjectedButton(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
+    const [activeSchedule, _] = useSchedules();
 
     const extractCoursesFromCalendar = () => {
         const calendarElement = document.querySelector('#kgoui_Rcontent_I3_Rprimary_I1_Rcontent_I1_Rcontent_I0_Ritems');
@@ -29,7 +33,7 @@ export default function InjectedButton(): JSX.Element | null {
     };
 
     const handleAddingCourses = (courses: Array<string>) => {
-        Array.from(courses).map(x => addCourse(x, _));
+        Array.from(courses).map(x => addCourse({ x, scheduleId: activeSchedule.id }));
     };
 
     useEffect(() => {
