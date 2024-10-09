@@ -23,6 +23,9 @@ import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 import DevMode from './DevMode';
 import Preview from './Preview';
 
+const DISPLAY_PREVIEWS = false;
+const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS ? 'w-1/2 space-y-4' : 'flex-grow space-y-4';
+
 const manifest = chrome.runtime.getManifest();
 const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
 
@@ -181,7 +184,7 @@ export default function Settings(): JSX.Element {
     }
 
     return (
-        <div className='bg-white'>
+        <div className='min-w-xl bg-white'>
             <header className='flex items-center justify-between border-b p-6'>
                 <div className='flex items-center'>
                     <SmallLogo className='pr-4' />
@@ -199,8 +202,8 @@ export default function Settings(): JSX.Element {
                 </div>
             </header>
 
-            <div className='flex p-6'>
-                <div className='mr-4 w-1/2'>
+            <div className='p-6 lg:flex'>
+                <div className='mr-4 lg:w-1/2 xl:w-xl'>
                     {/* <section className='mb-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>CUSTOMIZATION OPTIONS</h2>
                         <div className='flex space-x-4'>
@@ -241,18 +244,20 @@ export default function Settings(): JSX.Element {
                                     />
                                 </div>
                             </div>
-                            <Preview>
-                                <CalendarCourseCell
-                                    colors={getCourseColors('orange')}
-                                    courseDeptAndInstr={ExampleCourse.department}
-                                    className={ExampleCourse.number}
-                                    status={ExampleCourse.status}
-                                    timeAndLocation={ExampleCourse.schedule.meetings[0]!.getTimeString({
-                                        separator: '-',
-                                    })}
-                                />
-                                <PopupCourseBlock colors={getCourseColors('orange')} course={ExampleCourse} />
-                            </Preview>
+                            {DISPLAY_PREVIEWS && (
+                                <Preview>
+                                    <CalendarCourseCell
+                                        colors={getCourseColors('orange')}
+                                        courseDeptAndInstr={ExampleCourse.department}
+                                        className={ExampleCourse.number}
+                                        status={ExampleCourse.status}
+                                        timeAndLocation={ExampleCourse.schedule.meetings[0]!.getTimeString({
+                                            separator: '-',
+                                        })}
+                                    />
+                                    <PopupCourseBlock colors={getCourseColors('orange')} course={ExampleCourse} />
+                                </Preview>
+                            )}
                         </div>
                     </section>
 
@@ -261,7 +266,7 @@ export default function Settings(): JSX.Element {
                     <section className='mb-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>ADVANCED SETTINGS</h2>
                         <div className='flex space-x-4'>
-                            <div className='w-1/2 space-y-4'>
+                            <div className={PREVIEW_SECTION_DIV_CLASSNAME}>
                                 {/* <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
                                         <h3 className='text-ut-burntorange font-semibold'>Refresh Data</h3>
@@ -343,21 +348,23 @@ export default function Settings(): JSX.Element {
                                     </Button>
                                 </div>
                             </div>
-                            <Preview>
-                                <div className='inline-flex items-center self-center gap-1'>
-                                    <Text variant='small' className='text-ut-gray !font-normal'>
-                                        DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                            {DISPLAY_PREVIEWS && (
+                                <Preview>
+                                    <div className='inline-flex items-center self-center gap-1'>
+                                        <Text variant='small' className='text-ut-gray !font-normal'>
+                                            DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                                        </Text>
+                                    </div>
+                                    <Text
+                                        variant='h2-course'
+                                        className={clsx('text-center text-ut-red !font-normal', {
+                                            'line-through': highlightConflicts,
+                                        })}
+                                    >
+                                        01234 MWF 10:00 AM - 11:00 AM UTC 1.234
                                     </Text>
-                                </div>
-                                <Text
-                                    variant='h2-course'
-                                    className={clsx('text-center text-ut-red !font-normal', {
-                                        'line-through': highlightConflicts,
-                                    })}
-                                >
-                                    01234 MWF 10:00 AM - 11:00 AM UTC 1.234
-                                </Text>
-                            </Preview>
+                                </Preview>
+                            )}
                         </div>
                     </section>
 
@@ -370,10 +377,12 @@ export default function Settings(): JSX.Element {
                     </section>
                 </div>
 
-                <section className='ml-4 w-1/2'>
+                <Divider className='lg:hidden' size='auto' orientation='horizontal' />
+
+                <section className='my-8 lg:my-0 lg:ml-4 lg:w-1/2'>
                     <section>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>LONGHORN DEVELOPERS ADMINS</h2>
-                        <div className='grid grid-cols-2 gap-4 md:grid-cols-4 sm:grid-cols-3'>
+                        <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3'>
                             {LONGHORN_DEVELOPERS_ADMINS.map(admin => (
                                 <div
                                     key={admin.githubUsername}
@@ -412,9 +421,12 @@ export default function Settings(): JSX.Element {
                     </section>
                     <section className='my-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTERS</h2>
-                        <div className='grid grid-cols-2 gap-4 md:grid-cols-4 sm:grid-cols-3'>
+                        <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
                             {contributors.map(username => (
-                                <div key={username} className='border border-gray-300 rounded bg-ut-gray/10 p-4'>
+                                <div
+                                    key={username}
+                                    className='overflow-clip border border-gray-300 rounded bg-ut-gray/10 p-4'
+                                >
                                     <Text
                                         variant='p'
                                         className='text-ut-burntorange font-semibold hover:cursor-pointer'

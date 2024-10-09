@@ -12,9 +12,8 @@ export interface PreviewProps {
 /**
  * Renders a preview component.
  *
- * @component
- * @param {PropsWithChildren<PreviewProps>} props - The component props.
- * @returns {JSX.Element} The rendered preview component.
+ * @param props - The component props.
+ * @returns The rendered preview component.
  */
 export default function Preview(props: PropsWithChildren<PreviewProps>): JSX.Element {
     const { children } = props;
