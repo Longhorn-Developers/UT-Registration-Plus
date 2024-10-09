@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { Options as RMOptions } from 'react-markdown';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -7,11 +7,6 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
 
 const patchNotes = new URL('/CHANGELOG.md', import.meta.url).href;
-
-interface PatchNotesPopupProps {
-    isOpen: boolean;
-    onClose: () => void;
-}
 
 /**
  * Renders a popup component for displaying patch notes.
@@ -21,46 +16,15 @@ interface PatchNotesPopupProps {
  *
  * @returns The JSX element representing the PatchNotesPopup component.
  */
-export default function PatchNotesPopup({ isOpen, onClose }: PatchNotesPopupProps): JSX.Element | null {
+export default function PatchNotesPopup(): JSX.Element {
     const [markdownContent, setMarkdownContent] = useState('');
-    const popupRef = useRef<HTMLDivElement>(null);
-
-    const handleClickOutside = useCallback(
-        (event: MouseEvent) => {
-            if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-                onClose();
-            }
-        },
-        [onClose]
-    );
-
-    const handleEscapeKey = useCallback(
-        (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                onClose();
-            }
-        },
-        [onClose]
-    );
 
     useEffect(() => {
-        if (isOpen) {
-            fetch(patchNotes)
-                .then(response => response.text())
-                .then(text => setMarkdownContent(text))
-                .catch(error => console.error('Error fetching patch notes:', error));
-
-            document.addEventListener('mousedown', handleClickOutside);
-            document.addEventListener('keydown', handleEscapeKey);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-            document.removeEventListener('keydown', handleEscapeKey);
-        };
-    }, [isOpen, handleClickOutside, handleEscapeKey]);
-
-    if (!isOpen) return null;
+        fetch(patchNotes)
+            .then(response => response.text())
+            .then(text => setMarkdownContent(text))
+            .catch(error => console.error('Error fetching patch notes:', error));
+    }, []);
 
     const MarkdownComponents: RMOptions['components'] = {
         h1: ({ children, ...props }) => (
@@ -194,30 +158,14 @@ export default function PatchNotesPopup({ isOpen, onClose }: PatchNotesPopupProp
     };
 
     return (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-op-50 p-4'>
-            <div
-                ref={popupRef}
-                className='max-h-80vh max-w-3xl w-full overflow-y-auto rounded-lg bg-white shadow-xl dark:bg-gray-800'
+        <div className='px-4'>
+            <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={MarkdownComponents}
+                className='text-gray-800 dark:text-gray-200'
             >
-                {/* <div className='flex items-center justify-between border-b border-gray-200 p-4 dark:border-gray-700'>
-                    <h2 className='text-xl text-gray-800 font-semibold dark:text-white'>Patch Notes</h2>
-                    <button
-                        onClick={onClose}
-                        className='text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-                    >
-                        <MaterialSymbolsClose className='text-2xl' />
-                    </button>
-                </div> */}
-                <div className='px-4 font-mono'>
-                    <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        components={MarkdownComponents}
-                        className='text-gray-800 dark:text-gray-200'
-                    >
-                        {markdownContent}
-                    </ReactMarkdown>
-                </div>
-            </div>
+                {markdownContent}
+            </ReactMarkdown>
         </div>
     );
 }

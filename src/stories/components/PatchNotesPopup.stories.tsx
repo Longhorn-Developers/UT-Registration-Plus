@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from '@views/components/common/Button';
+import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import PatchNotesPopup from '@views/components/common/PatchNotesPopup';
+import { useDialog } from '@views/contexts/DialogContext';
 import React from 'react';
 
 const meta = {
@@ -21,9 +24,25 @@ export const Primary: Story = {
         isOpen: true,
         onClose: () => {},
     },
-    render: props => (
-        <div className='h-screen w-screen bg-white'>
-            <PatchNotesPopup {...props} />
-        </div>
+    render: () => (
+        <DialogProvider>
+            <InnerComponent />
+        </DialogProvider>
     ),
+};
+
+const InnerComponent = () => {
+    const showDialog = useDialog();
+
+    const handleOnClick = () => {
+        showDialog({
+            description: <PatchNotesPopup />,
+        });
+    };
+
+    return (
+        <Button variant='filled' color='ut-burntorange' onClick={handleOnClick}>
+            Open Patch Notes Popup
+        </Button>
+    );
 };
