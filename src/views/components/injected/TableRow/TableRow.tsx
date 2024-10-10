@@ -1,3 +1,4 @@
+import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
@@ -25,8 +26,25 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     // the courses in the active schedule that conflict with the course for this row
     const [conflicts, setConflicts] = useState<Course[]>([]);
+    const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
 
     const { element, course } = row;
+
+    useEffect(() => {
+        initSettings().then(({ enableHighlightConflicts }) => {
+            setHighlightConflicts(enableHighlightConflicts);
+        });
+
+        const l1 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
+            setHighlightConflicts(newValue);
+            // console.log('enableHighlightConflicts', newValue);
+        });
+
+        // Remove listeners when the component is unmounted
+        return () => {
+            OptionsStore.removeListener(l1);
+        };
+    }, []);
 
     useEffect(() => {
         element.classList.add(styles.row!);
@@ -72,14 +90,23 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             }
         }
 
-        element.classList[conflicts.length ? 'add' : 'remove'](styles.isConflict!);
+        // Clear conflict styling
+        element.classList.remove(styles.isConflict!);
+        element.classList.remove(styles.isConflictNoLineThrough!);
+
+        if (highlightConflicts) {
+            element.classList[conflicts.length ? 'add' : 'remove'](styles.isConflict!);
+        } else {
+            element.classList[conflicts.length ? 'add' : 'remove'](styles.isConflictNoLineThrough!);
+        }
+
         setConflicts(conflicts);
 
         return () => {
             element.classList.remove(styles.isConflict!);
             setConflicts([]);
         };
-    }, [activeSchedule, course, element.classList]);
+    }, [activeSchedule, course, element.classList, highlightConflicts]);
 
     if (!container) {
         return null;

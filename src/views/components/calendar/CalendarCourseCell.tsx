@@ -1,11 +1,11 @@
+import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
-import { enableCourseStatusChips } from '@shared/util/experimental';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
@@ -43,6 +43,21 @@ export default function CalendarCourseCell({
     className,
     onClick,
 }: CalendarCourseCellProps): JSX.Element {
+    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+
+    useEffect(() => {
+        initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
+
+        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+            setEnableCourseStatusChips(newValue);
+            // console.log('enableCourseStatusChips', newValue);
+        });
+
+        return () => {
+            OptionsStore.removeListener(l1);
+        };
+    }, []);
+
     let rightIcon: React.ReactNode | null = null;
     if (enableCourseStatusChips) {
         if (status === Status.WAITLISTED) {

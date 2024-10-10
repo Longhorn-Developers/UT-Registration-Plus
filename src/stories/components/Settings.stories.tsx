@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import Settings from '@views/components/Settings';
+import Settings from '@views/components/settings/Settings';
 
 const meta = {
     title: 'Components/Common/Settings',

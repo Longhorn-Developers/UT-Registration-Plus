@@ -3,9 +3,11 @@ import Link from '@views/components/common/Link';
 import React from 'react';
 
 /**
+ * Renders the DevMode component.
  *
+ * @returns The rendered DevMode component.
  */
-export default function App() {
+export default function DevMode() {
     return (
         <ExtensionRoot>
             <div className='text-base'>
