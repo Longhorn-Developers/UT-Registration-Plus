@@ -1,5 +1,3 @@
-![readmegif2](https://github.com/user-attachments/assets/1aca0f75-f143-4bc9-97f5-1a99d0d9c1ac)
-
 # UT Registration Plus
 
 ![Chrome Web Store](https://img.shields.io/chrome-web-store/v/hboadpjkoaieogjimneceaahlppnipaa)
@@ -7,6 +5,10 @@
 ![License](https://img.shields.io/github/license/Longhorn-Developers/UT-Registration-Plus)
 
 **UT Registration Plus (UTRP)** streamlines the process of registering for classes at UT Austin by reducing the chaos of juggling multiple tabs like Rate My Professor, Google Sheets, and the UT Course Schedule. With UTRP, you can simplify class selection and schedule management. We've all been there. 20 tabs of Rate My Professor, Google Spreadsheet, and the UT Course Schedule open and you still don't know what classes to take. UT Registration Plus (UTRP), tries to streamline most of the unnecessary steps and headaches of registering for classes at UT Austin.
+
+## Demo
+
+![UTRP v2 Demo](images/UTRP-Demo.gif)
 
 ## Features
 
@@ -181,9 +183,7 @@ Special thanks to the developers and contributors behind these amazing tools and
 -   [chrome-extension-toolkit](https://github.com/sghsri/chrome-extension-toolkit)
 -   [UT_Grade_Parser](https://github.com/doprz/UT_Grade_Parser)
 -   [eslint-plugin-import-essentials](https://github.com/doprz/eslint-plugin-import-essentials)
--   Figma designs by @IsaDavRod
--   Custom `pnpm` patches by @Razboy20
--   UT Registration Plus v1 by @sghsri, the original author, whose work positively impacted thousands of UT students
--   [UT Registration Planner](https://github.com/doprz/UT-Registration-Planner) was archived, and its developer @doprz joined UT Registration Plus in 2023
--   [Longhorn Developers](https://github.com/Longhorn-Developers) organization, established in 2024, fosters further development of UTRP and other student-led projects.
+-   [UT Registration Plus v1.2.2.7](https://github.com/Longhorn-Developers/UT-Registration-Plus/tree/legacy) by @sghsri
+-   [UT Registration Planner](https://github.com/doprz/UT-Registration-Planner) by @doprz
+-   [Longhorn Developers](https://github.com/Longhorn-Developers) - established in 2024
 -   The UTRP devs, beta testers, and all supporters of the project!
