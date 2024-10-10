@@ -1,26 +1,3 @@
-type ColorType = 'success' | 'info' | 'error' | 'warning' | keyof typeof COLORS;
-
-export default function colorLog(message: string, type?: ColorType) {
-    let color: string = type || COLORS.FgBlack;
-
-    switch (type) {
-        case 'success':
-            color = COLORS.FgGreen;
-            break;
-        case 'info':
-            color = COLORS.FgBlue;
-            break;
-        case 'error':
-            color = COLORS.FgRed;
-            break;
-        case 'warning':
-            color = COLORS.FgYellow;
-            break;
-    }
-
-    console.log(color, message);
-}
-
 const COLORS = {
     Reset: '\x1b[0m',
     Bright: '\x1b[1m',
@@ -46,3 +23,49 @@ const COLORS = {
     BgCyan: '\x1b[46m',
     BgWhite: '\x1b[47m',
 } as const;
+
+type ColorType = 'success' | 'info' | 'error' | 'warning' | keyof typeof COLORS;
+
+/**
+ * Logs a message with an optional color type.
+ *
+ * @param message - The message to be logged.
+ * @param type - The color type of the log message. Defaults to undefined.
+ */
+export default function colorLog(message: string, type?: ColorType) {
+    let color: string = type || COLORS.FgBlack;
+
+    switch (type) {
+        case 'success':
+            color = COLORS.FgGreen;
+            break;
+        case 'info':
+            color = COLORS.FgBlue;
+            break;
+        case 'error':
+            color = COLORS.FgRed;
+            break;
+        case 'warning':
+            color = COLORS.FgYellow;
+            break;
+        default:
+            color = COLORS.FgWhite;
+            break;
+    }
+
+    console.log(color, message);
+}
+
+/**
+ * Logs an info message
+ *
+ * @param message - The message to be logged.
+ */
+export const info = (message: string) => colorLog(message, 'info');
+
+/**
+ * Logs an error message.
+ *
+ * @param message - The message to be logged
+ */
+export const error = (message: string) => colorLog(message, 'error');
