@@ -6,21 +6,21 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
 
-const patchNotes = new URL('/CHANGELOG.md', import.meta.url).href;
+const changelog = new URL('/CHANGELOG.md', import.meta.url).href;
 
 /**
- * Renders a popup component for displaying patch notes.
+ * Renders a popup component for displaying the changelog.
  *
  * @param isOpen - A boolean indicating whether the popup is open or not.
  * @param onClose - A function to be called when the popup is closed.
  *
- * @returns The JSX element representing the PatchNotesPopup component.
+ * @returns The JSX element representing the ChangelogPopup component.
  */
-export default function PatchNotesPopup(): JSX.Element {
+export default function ChangelogPopup(): JSX.Element {
     const [markdownContent, setMarkdownContent] = useState('');
 
     useEffect(() => {
-        fetch(patchNotes)
+        fetch(changelog)
             .then(response => response.text())
             .then(text => setMarkdownContent(text))
             .catch(error => console.error('Error fetching patch notes:', error));
