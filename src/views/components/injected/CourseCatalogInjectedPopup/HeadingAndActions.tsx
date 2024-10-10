@@ -150,38 +150,47 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                         ))}
                     </div>
                 </div>
-                <div className='mt-1 flex flex-col'>
-                    {schedule.meetings.map(meeting => {
-                        const daysString = meeting.getDaysString({ format: 'long', separator: 'long' });
-                        const timeString = meeting.getTimeString({ separator: ' to ', capitalize: false });
-                        return (
-                            <Text
-                                key={
-                                    daysString +
-                                    timeString +
-                                    (meeting.location?.building ?? '') +
-                                    (meeting.location?.room ?? '')
-                                }
-                                variant='h4'
-                                as='p'
-                            >
-                                {daysString} {timeString}
-                                {meeting.location && (
-                                    <>
-                                        {' in '}
-                                        <Link
-                                            href={getBuildingUrl(meeting.location.building)}
-                                            className='link'
-                                            variant='h4'
-                                        >
-                                            {meeting.location.building} {meeting.location.room}
-                                        </Link>
-                                    </>
-                                )}
-                            </Text>
-                        );
-                    })}
-                </div>
+                {
+                    Array.isArray(schedule.meetings) && schedule.meetings.length > 0 ? (
+                        <div className='mt-1 flex flex-col'>
+                            {schedule.meetings.map(meeting => {
+                                const daysString = meeting.getDaysString({ format: 'long', separator: 'long' });
+                                const timeString = meeting.getTimeString({ separator: ' to ', capitalize: false });
+
+                                return (
+                                    <Text
+                                        key={
+                                            daysString +
+                                            timeString +
+                                            (meeting.location?.building ?? '') +
+                                            (meeting.location?.room ?? '')
+                                        }
+                                        variant='h4'
+                                        as='p'
+                                    >
+                                        {daysString} {timeString}
+                                        {meeting.location && (
+                                            <>
+                                                {' in '}
+                                                <Link
+                                                    href={getBuildingUrl(meeting.location.building)}
+                                                    className='link'
+                                                    variant='h4'
+                                                >
+                                                    {meeting.location.building} {meeting.location.room}
+                                                </Link>
+                                            </>
+                                        )}
+                                    </Text>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className='mt-1 flex flex-col'>
+                            <Text>No time and location has been provided.</Text>
+                        </div>
+                    )
+                }
             </div>
             <div className='my-3 flex flex-wrap items-center gap-x-3.75 gap-y-2.5'>
                 <Button
