@@ -38,9 +38,13 @@ type DetailsSelectorType = (typeof DetailsSelector)[keyof typeof DetailsSelector
  */
 export class CourseCatalogScraper {
     support: SiteSupportType;
+    doc: Document;
+    url: string;
 
-    constructor(support: SiteSupportType) {
+    constructor(support: SiteSupportType, doc: Document = document, url: string = window.location.href) {
         this.support = support;
+        this.doc = doc;
+        this.url = url;
     }
 
     /**
@@ -91,7 +95,7 @@ export class CourseCatalogScraper {
                 uniqueId: this.getUniqueId(row),
                 instructionMode: this.getInstructionMode(row),
                 instructors: this.getInstructors(row) as Instructor[],
-                description: this.getDescription(document),
+                description: this.getDescription(this.doc),
                 semester: this.getSemester(),
                 scrapedAt: Date.now(),
                 colors: getCourseColors('emerald', 500),
@@ -165,7 +169,7 @@ export class CourseCatalogScraper {
      */
     getURL(row: HTMLTableRowElement): string {
         const div = row.querySelector<HTMLAnchorElement>(`${TableDataSelector.UNIQUE_ID} a`);
-        return div?.href || window.location.href;
+        return div?.href || this.url;
     }
 
     /**
@@ -221,11 +225,11 @@ export class CourseCatalogScraper {
 
     /**
      * Scrapes the description of the course from the course details page and separates it into an array of cleaned up lines
-     * @param document the document of the course details page to scrape
+     * @param doc the document of the course details page to scrape
      * @returns an array of lines of the course description
      */
-    getDescription(document: Document): string[] {
-        const lines = document.querySelectorAll(DetailsSelector.COURSE_DESCRIPTION);
+    getDescription(doc: Document): string[] {
+        const lines = doc.querySelectorAll(DetailsSelector.COURSE_DESCRIPTION);
         return Array.from(lines)
             .map(line => line.textContent || '')
             .map(line => line.replace(/\s\s+/g, ' ').trim())
@@ -233,7 +237,7 @@ export class CourseCatalogScraper {
     }
 
     getSemester(): Semester {
-        const { pathname } = new URL(window.location.href);
+        const { pathname } = new URL(this.url);
 
         const code = pathname.split('/')[4];
         if (!code) {
@@ -276,7 +280,7 @@ export class CourseCatalogScraper {
      */
     getFullName(row?: HTMLTableRowElement): string {
         if (!row) {
-            return document.querySelector(DetailsSelector.COURSE_NAME)?.textContent || '';
+            return this.doc.querySelector(DetailsSelector.COURSE_NAME)?.textContent || '';
         }
         const div = row.querySelector(TableDataSelector.COURSE_HEADER);
         return div?.textContent || '';
