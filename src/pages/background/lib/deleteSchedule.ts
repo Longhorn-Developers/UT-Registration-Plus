@@ -17,7 +17,11 @@ export default async function deleteSchedule(scheduleId: string): Promise<string
         throw new Error(`Schedule ${scheduleId} does not exist`);
     }
     if (scheduleIndex === activeIndex) {
-        throw new Error('You cannot delete your active schedule! Please switch to another schedule before deleting.');
+        throw new Error(`Cannot delete active schedule`);
+    }
+
+    if (scheduleIndex < activeIndex) {
+        await UserScheduleStore.set('activeIndex', activeIndex - 1);
     }
 
     schedules.splice(scheduleIndex, 1);
