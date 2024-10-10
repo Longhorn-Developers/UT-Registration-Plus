@@ -23,7 +23,7 @@ export default function ChangelogPopup(): JSX.Element {
         fetch(changelog)
             .then(response => response.text())
             .then(text => setMarkdownContent(text))
-            .catch(error => console.error('Error fetching patch notes:', error));
+            .catch(error => console.error('Error fetching changelog:', error));
     }, []);
 
     const MarkdownComponents: RMOptions['components'] = {
