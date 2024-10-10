@@ -2,8 +2,11 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@views/components/common/Button';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import PatchNotesPopup from '@views/components/common/PatchNotesPopup';
+import Text from '@views/components/common/Text/Text';
 import { useDialog } from '@views/contexts/DialogContext';
 import React from 'react';
+
+import MaterialSymbolsClose from '~icons/material-symbols/close';
 
 const meta = {
     title: 'Components/Common/PatchNotesPopup',
@@ -31,9 +34,22 @@ const InnerComponent = () => {
     const showDialog = useDialog();
 
     const handleOnClick = () => {
-        showDialog({
+        showDialog(close => ({
+            title: (
+                <div className='flex items-center justify-between p-4'>
+                    <Text variant='h1' className='text-theme-black'>
+                        Changelog
+                    </Text>
+                    <button
+                        onClick={close}
+                        className='text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                    >
+                        <MaterialSymbolsClose className='text-2xl' />
+                    </button>
+                </div>
+            ),
             description: <PatchNotesPopup />,
-        });
+        }));
     };
 
     return (
