@@ -13,6 +13,7 @@ import React from 'react';
 
 import MenuIcon from '~icons/material-symbols/menu';
 import RefreshIcon from '~icons/material-symbols/refresh';
+import SettingsIcon from '~icons/material-symbols/settings';
 
 /**
  * Opens the options page in a new tab.
@@ -72,8 +73,8 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                 )}
 
                 {/* <Button variant='single' icon={UndoIcon} color='ut-black' />
-                    <Button variant='single' icon={RedoIcon} color='ut-black' /> */}
-                {/* <Button variant='single' icon={SettingsIcon} color='ut-black' onClick={handleOpenOptions} /> */}
+                <Button variant='single' icon={RedoIcon} color='ut-black' /> */}
+                <Button variant='single' icon={SettingsIcon} color='ut-black' onClick={handleOpenOptions} />
             </div>
         </div>
     );
