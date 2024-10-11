@@ -1,5 +1,7 @@
 # UT Registration Plus
 
+![UTRP Social Preview](images/UTRP_Social-Preview_Prod.svg)
+
 ![Chrome Web Store](https://img.shields.io/chrome-web-store/v/hboadpjkoaieogjimneceaahlppnipaa)
 ![Downloads](https://img.shields.io/chrome-web-store/d/hboadpjkoaieogjimneceaahlppnipaa)
 ![License](https://img.shields.io/github/license/Longhorn-Developers/UT-Registration-Plus)
@@ -26,9 +28,11 @@
 -   React 18
 -   TypeScript
 -   Vite 5
+-   UnoCSS
 -   ESLint
 -   Prettier
 -   Storybook
+-   Figma
 -   Semantic-Release
 -   Custom Messaging & Storage Wrappers
 
@@ -176,14 +180,17 @@ Special thanks to the developers and contributors behind these amazing tools and
 -   React 18
 -   TypeScript
 -   Vite 5
+-   UnoCSS
 -   ESLint
 -   Prettier
 -   Storybook
+-   Figma
 -   Semantic-Release
 -   [chrome-extension-toolkit](https://github.com/sghsri/chrome-extension-toolkit)
 -   [UT_Grade_Parser](https://github.com/doprz/UT_Grade_Parser)
 -   [eslint-plugin-import-essentials](https://github.com/doprz/eslint-plugin-import-essentials)
 -   [UT Registration Plus v1.2.2.7](https://github.com/Longhorn-Developers/UT-Registration-Plus/tree/legacy) by @sghsri
 -   [UT Registration Planner](https://github.com/doprz/UT-Registration-Planner) by @doprz
+-   [Figma Designs](https://www.figma.com/design/8tsCay2FRqctrdcZ3r9Ahw/UTRP) by @IsaDavRod
 -   [Longhorn Developers](https://github.com/Longhorn-Developers) - established in 2024
 -   The UTRP devs, beta testers, and all supporters of the project!
