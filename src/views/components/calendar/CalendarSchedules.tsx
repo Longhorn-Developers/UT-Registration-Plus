@@ -9,6 +9,8 @@ import React from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
 
+import { usePrompt } from '../common/DialogProvider/DialogProvider';
+
 /**
  * Renders a component that displays a list of schedules.
  *
@@ -17,6 +19,33 @@ import AddSchedule from '~icons/material-symbols/add';
  */
 export function CalendarSchedules() {
     const [, schedules] = useSchedules();
+    const showDialog = usePrompt();
+
+    const handleAddSchedule = () => {
+        if (schedules.length >= 10) {
+            showDialog({
+                title: `You have 10 active schedules!`,
+
+                description: (
+                    <>
+                        To encourage organization,{' '}
+                        <span className='text-ut-burntorange'>please consider removing some unused schedules</span> you
+                        may have.
+                    </>
+                ),
+                // eslint-disable-next-line react/no-unstable-nested-components
+                buttons: close => (
+                    <Button variant='filled' color='ut-burntorange' onClick={close}>
+                        I Understand
+                    </Button>
+                ),
+            });
+
+            return;
+        }
+
+        createSchedule('New Schedule');
+    };
 
     return (
         <div className='min-w-full w-0 items-center'>
@@ -24,12 +53,7 @@ export function CalendarSchedules() {
                 <Text variant='h3' className='text-nowrap'>
                     MY SCHEDULES
                 </Text>
-                <Button
-                    variant='single'
-                    color='theme-black'
-                    className='h-fit p-0 btn'
-                    onClick={() => createSchedule('New Schedule')}
-                >
+                <Button variant='single' color='theme-black' className='h-fit p-0 btn' onClick={handleAddSchedule}>
                     <AddSchedule className='h-6 w-6' />
                 </Button>
             </div>

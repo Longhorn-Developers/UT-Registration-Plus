@@ -1,4 +1,4 @@
-import { enableCourseRefreshing, enableCourseStatusChips } from '@shared/util/experimental';
+import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { Button } from '@views/components/common/Button';
 import CourseStatus from '@views/components/common/CourseStatus';
 import Divider from '@views/components/common/Divider';
@@ -7,10 +7,21 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
-import React from 'react';
+import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
+import React, { useEffect, useState } from 'react';
 
 import MenuIcon from '~icons/material-symbols/menu';
 import RefreshIcon from '~icons/material-symbols/refresh';
+import SettingsIcon from '~icons/material-symbols/settings';
+
+/**
+ * Opens the options page in a new tab.
+ * @returns A promise that resolves when the options page is opened.
+ */
+const handleOpenOptions = async (): Promise<void> => {
+    const url = chrome.runtime.getURL('/options.html');
+    await openTabFromContentScript(url);
+};
 
 interface CalendarHeaderProps {
     onSidebarToggle?: () => void;
@@ -21,7 +32,32 @@ interface CalendarHeaderProps {
  * @returns The JSX element representing the calendar header.
  */
 export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps): JSX.Element {
+    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+
     const [activeSchedule] = useSchedules();
+
+    useEffect(() => {
+        initSettings().then(({ enableCourseStatusChips, enableDataRefreshing }) => {
+            setEnableCourseStatusChips(enableCourseStatusChips);
+            setEnableDataRefreshing(enableDataRefreshing);
+        });
+
+        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+            setEnableCourseStatusChips(newValue);
+            // console.log('enableCourseStatusChips', newValue);
+        });
+
+        const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
+            setEnableDataRefreshing(newValue);
+            // console.log('enableDataRefreshing', newValue);
+        });
+
+        return () => {
+            OptionsStore.removeListener(l1);
+            OptionsStore.removeListener(l2);
+        };
+    }, []);
 
     return (
         <div className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
@@ -40,7 +76,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                     totalHours={activeSchedule.hours}
                     totalCourses={activeSchedule.courses.length}
                 />
-                {enableCourseRefreshing && (
+                {enableDataRefreshing && (
                     <div className='flex items-center gap-1 screenshot:hidden'>
                         <Text variant='mini' className='text-nowrap text-ut-gray font-normal!'>
                             DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
@@ -61,8 +97,8 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                 )}
 
                 {/* <Button variant='single' icon={UndoIcon} color='ut-black' />
-                    <Button variant='single' icon={RedoIcon} color='ut-black' /> */}
-                {/* <Button variant='single' icon={SettingsIcon} color='ut-black' onClick={handleOpenOptions} /> */}
+                <Button variant='single' icon={RedoIcon} color='ut-black' /> */}
+                <Button variant='single' icon={SettingsIcon} color='ut-black' onClick={handleOpenOptions} />
             </div>
         </div>
     );

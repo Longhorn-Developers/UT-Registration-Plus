@@ -1,3 +1,5 @@
+import 'react-loading-skeleton/dist/skeleton.css';
+
 import type { ScrapedRow } from '@shared/types/Course';
 import useInfiniteScroll from '@views/hooks/useInfiniteScroll';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
@@ -5,11 +7,13 @@ import { SiteSupport } from '@views/lib/getSiteSupport';
 import type { AutoLoadStatusType } from '@views/lib/loadNextCourseCatalogPage';
 import {
     AutoLoadStatus,
+    getNextButton,
     loadNextCourseCatalogPage,
     removePaginationButtons,
 } from '@views/lib/loadNextCourseCatalogPage';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import Skeleton from 'react-loading-skeleton';
 
 import styles from './AutoLoad.module.scss';
 
@@ -24,12 +28,17 @@ type Props = {
 export default function AutoLoad({ addRows }: Props): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const [status, setStatus] = useState<AutoLoadStatusType>(AutoLoadStatus.IDLE);
+    const [isSinglePage, setIsSinglePage] = useState(false);
 
     useEffect(() => {
         const portalContainer = document.createElement('div');
         const lastTableCell = document.querySelector('table')!;
         lastTableCell!.after(portalContainer);
         setContainer(portalContainer);
+    }, []);
+
+    useEffect(() => {
+        setIsSinglePage(!getNextButton(document));
     }, []);
 
     useEffect(() => {
@@ -40,6 +49,7 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
 
     // This hook will call the callback when the user scrolls to the bottom of the page.
     useInfiniteScroll(async () => {
+        if (isSinglePage) return;
         // fetch the next page of courses
         const [status, nextRows] = await loadNextCourseCatalogPage();
         setStatus(status);
@@ -52,23 +62,19 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
 
         // add the scraped courses to the current page
         addRows(scrapedRows);
-    }, [addRows]);
+    }, [addRows, isSinglePage]);
 
-    if (!container || status === AutoLoadStatus.DONE) {
+    if (!container || status === AutoLoadStatus.DONE || isSinglePage) {
         return null;
     }
 
     return createPortal(
         <div>
             {status !== AutoLoadStatus.ERROR && (
-                <div
-                    style={{
-                        height: '500px',
-                        backgroundColor: '#f4f4f4',
-                    }}
-                >
-                    {/* <Spinner />
-                    <h2>Loading Next Page...</h2> */}
+                <div className=''>
+                    {Array.from({ length: 8 }).map(() => (
+                        <Skeleton style={{ marginBottom: 30 }} height={40} />
+                    ))}
                 </div>
             )}
             {status === AutoLoadStatus.ERROR && (
