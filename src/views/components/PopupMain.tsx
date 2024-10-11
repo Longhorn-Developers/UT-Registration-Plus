@@ -1,7 +1,7 @@
 import splashText from '@assets/insideJokes';
 import { background } from '@shared/messages';
+import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { enableCourseRefreshing, enableCourseStatusChips } from '@shared/util/experimental';
 import Divider from '@views/components/common/Divider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import List from '@views/components/common/List';
@@ -10,6 +10,7 @@ import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import clsx from 'clsx';
+import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect, useState } from 'react';
 
 import CalendarIcon from '~icons/material-symbols/calendar-month';
@@ -28,6 +29,32 @@ import ScheduleListItem from './common/ScheduleListItem';
  * This component displays the main schedule, courses, and options buttons.
  */
 export default function PopupMain(): JSX.Element {
+    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    useKC_DABR_WASM();
+
+    useEffect(() => {
+        initSettings().then(({ enableCourseStatusChips, enableDataRefreshing }) => {
+            setEnableCourseStatusChips(enableCourseStatusChips);
+            setEnableDataRefreshing(enableDataRefreshing);
+        });
+
+        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+            setEnableCourseStatusChips(newValue);
+            // console.log('enableCourseStatusChips', newValue);
+        });
+
+        const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
+            setEnableDataRefreshing(newValue);
+            // console.log('enableDataRefreshing', newValue);
+        });
+
+        return () => {
+            OptionsStore.removeListener(l1);
+            OptionsStore.removeListener(l2);
+        };
+    }, []);
+
     const [activeSchedule, schedules] = useSchedules();
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [funny, setFunny] = useState<string>('');
@@ -139,7 +166,7 @@ export default function PopupMain(): JSX.Element {
                                 </>
                             )}
                         </div>
-                        {enableCourseRefreshing && (
+                        {enableDataRefreshing && (
                             <div className='inline-flex items-center self-center gap-1'>
                                 <Text variant='mini' className='text-ut-gray !font-normal'>
                                     DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
