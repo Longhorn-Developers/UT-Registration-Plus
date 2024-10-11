@@ -7,6 +7,10 @@ import Dialog from '../Dialog';
 import Text from '../Text/Text';
 
 type DialogElement = (show: boolean) => ReactNode;
+
+/**
+ * Represents information for a prompt dialog
+ */
 export interface PromptInfo extends Omit<DialogInfo, 'buttons' | 'className' | 'title' | 'description'> {
     title: JSX.Element | string;
     description: JSX.Element | string;

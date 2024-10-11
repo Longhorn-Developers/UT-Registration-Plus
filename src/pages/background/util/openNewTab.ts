@@ -1,3 +1,6 @@
+/**
+ * Represents a tab with an additional `id` property
+ */
 export type TabWithId = Omit<chrome.tabs.Tab, 'id'> & { id: number };
 
 /**
