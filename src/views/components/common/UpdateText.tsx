@@ -8,6 +8,14 @@ export type UpdateTextProps = {
     courses: string[];
 };
 
+/**
+ * UpdateText component displays a message indicating that the extension has been updated
+ * and lists the unique course numbers from the old version.
+ *
+ * @param props - The properties object.
+ * @param props.courses - An array of course unique numbers to be displayed.
+ * @returns The rendered UpdateText component.
+ */
 export default function UpdateText({ courses }: UpdateTextProps): JSX.Element {
     return (
         <div className='max-w-64 flex flex-col justify-center gap-2'>
@@ -21,7 +29,7 @@ export default function UpdateText({ courses }: UpdateTextProps): JSX.Element {
                 </Text>
             </div>
             <div className='flex flex-col gap-1 text-center'>
-                {courses.map((course) => (
+                {courses.map(course => (
                     <Text key={course} variant='p' className='text-ut-orange underline'>
                         {course}
                     </Text>
