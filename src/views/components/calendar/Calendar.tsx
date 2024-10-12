@@ -55,6 +55,37 @@ export default function Calendar(): JSX.Element {
         if (course) setShowPopup(true);
     }, [course]);
 
+    const handleOnClick = async () => {
+        // const link =
+        //     'https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52625/';
+        const link = prompt('Enter course link'); // TODO
+
+        const response = await fetch(link);
+        const text = await response.text();
+        const doc = new DOMParser().parseFromString(text, 'text/html');
+
+        const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, link);
+        const tableRows = getCourseTableRows(doc);
+        const courses = scraper.scrape(tableRows, false);
+
+        if (courses.length === 1) {
+            const description = scraper.getDescription(doc);
+            const row = courses[0]!;
+            const course = row.course!;
+            course.description = description;
+            // console.log(course);
+
+            if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
+                console.log('adding course');
+                addCourse(activeSchedule.id, course);
+            } else {
+                console.log('course already exists');
+            }
+        } else {
+            console.log(courses);
+        }
+    };
+
     return (
         <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
@@ -72,42 +103,7 @@ export default function Calendar(): JSX.Element {
                                 <ImportantLinks />
                                 <Divider orientation='horizontal' size='100%' className='my-5' />
                                 <TeamLinks />
-                                <button
-                                    className='btn'
-                                    onClick={async () => {
-                                        // const link =
-                                        //     'https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52625/';
-                                        const link = prompt('Enter course link');
-
-                                        const response = await fetch(link);
-                                        const text = await response.text();
-                                        const doc = new DOMParser().parseFromString(text, 'text/html');
-
-                                        const scraper = new CourseCatalogScraper(
-                                            SiteSupport.COURSE_CATALOG_DETAILS,
-                                            doc,
-                                            link
-                                        );
-                                        const tableRows = getCourseTableRows(doc);
-                                        const courses = scraper.scrape(tableRows, false);
-                                        if (courses.length === 1) {
-                                            const description = scraper.getDescription(doc);
-                                            const row = courses[0]!;
-                                            const course = row.course!;
-                                            course.description = description;
-                                            // console.log(course);
-
-                                            if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-                                                console.log('adding course');
-                                                addCourse(activeSchedule.id, course);
-                                            } else {
-                                                console.log('course already exists');
-                                            }
-                                        } else {
-                                            console.log(courses);
-                                        }
-                                    }}
-                                >
+                                <button className='btn' onClick={handleOnClick}>
                                     add course by link
                                 </button>
                             </div>
