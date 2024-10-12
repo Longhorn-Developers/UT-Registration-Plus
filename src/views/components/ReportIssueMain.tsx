@@ -47,14 +47,14 @@ const ReportIssueMain: React.FC = () => {
 
     if (isSubmitted) {
         return (
-            <div className='w-80 rounded-lg bg-white p-6 shadow-lg'>
-                <Text variant='h3' className='mb-4'>
+            <div className='w-80 flex flex-col rounded-lg bg-white p-6 shadow-lg'>
+                <Text variant='h2' className='mb-4'>
                     Thank you
                 </Text>
                 <Text variant='p' className='mb-6'>
                     Your feedback has been submitted. You may close this window.
                 </Text>
-                <Button variant='filled' color='ut-green' onClick={() => window.close()}>
+                <Button variant='filled' color='ut-green' className='border-0' onClick={() => window.close()}>
                     Done
                 </Button>
             </div>
@@ -78,12 +78,12 @@ const ReportIssueMain: React.FC = () => {
 
     return (
         <div className='w-80 bg-white p-6'>
-            <h2 className='mb-4 text-2xl text-orange font-bold'>Longhorn Feedback</h2>
-            <p className='mb-4 text-sm text-gray-600'>Help us make UT Registration Plus even better!</p>
+            <h2 className='mb-4 text-2xl text-ut-burntorange font-bold'>Longhorn Feedback</h2>
+            <p className='mb-4 text-sm text-ut-black'>Help us make UT Registration Plus even better!</p>
 
             <form onSubmit={submitFeedback}>
                 <div className='mb-4'>
-                    <label htmlFor='email' className='mb-1 block text-sm text-gray-700 font-medium'>
+                    <label htmlFor='email' className='mb-1 block text-sm text-ut-black font-medium'>
                         Your @utexas.edu email
                     </label>
                     <input
@@ -98,14 +98,14 @@ const ReportIssueMain: React.FC = () => {
                 </div>
 
                 <div className='mb-4'>
-                    <label htmlFor='feedback' className='mb-1 block text-sm text-gray-700 font-medium'>
+                    <label htmlFor='feedback' className='mb-1 block text-sm text-ut-black font-medium'>
                         Your feedback
                     </label>
                     <textarea
                         id='feedback'
                         value={feedback}
                         onChange={e => setFeedback(e.target.value)}
-                        className='h-24 w-full resize-none border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500'
+                        className='h-24 w-full resize-none border border-gray-300 rounded-md px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-orange-500'
                         placeholder='I wish UT Registration Plus could...'
                         required
                     />
@@ -115,7 +115,7 @@ const ReportIssueMain: React.FC = () => {
                     onClick={submitFeedback}
                     variant='filled'
                     color='ut-orange'
-                    className='w-full rounded bg-orange px-4 py-2 text-white font-bold transition duration-300 hover:bg-orange-700'
+                    className='w-full border-0 rounded bg-orange px-4 py-2 text-white font-bold transition duration-300 hover:bg-orange-700'
                 >
                     Send Feedback
                 </Button>
