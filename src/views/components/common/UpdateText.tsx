@@ -4,11 +4,11 @@ import Text from '@views/components/common/Text/Text';
 /**
  * Props for the Update Text
  */
-export type DividerProps = {
+export type UpdateTextProps = {
     courses: string[];
 };
 
-export default function UpdateText({ courses }: DividerProps): JSX.Element {
+export default function UpdateText({ courses }: UpdateTextProps): JSX.Element {
     return (
         <div>
             <div className='flex flex-col gap-0'>

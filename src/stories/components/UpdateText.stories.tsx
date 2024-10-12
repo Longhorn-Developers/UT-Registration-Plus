@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import UpdateText, { DividerProps } from 'src/views/components/common/UpdateText';
+import UpdateText, { UpdateTextProps } from 'src/views/components/common/UpdateText';
 import React from 'react';
 
 const meta = {
@@ -17,3 +17,5 @@ const meta = {
 export default meta;
 
 type Story = StoryObj<typeof meta>;
+
+const Template: Story = args => <UpdateText {...args} />;
