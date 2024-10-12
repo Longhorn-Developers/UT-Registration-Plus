@@ -1,5 +1,5 @@
-import React from 'react';
 import Text from '@views/components/common/Text/Text';
+import React from 'react';
 
 /**
  * Props for the Update Text
@@ -10,7 +10,7 @@ export type UpdateTextProps = {
 
 export default function UpdateText({ courses }: UpdateTextProps): JSX.Element {
     return (
-        <div className='flex flex-col gap-2 justify-center max-w-64'>
+        <div className='max-w-64 flex flex-col justify-center gap-2'>
             <div className='flex flex-col gap-0 text-center'>
                 <Text variant='p' className='text-ut-burntorange'>
                     This extension has updated!
@@ -22,7 +22,7 @@ export default function UpdateText({ courses }: UpdateTextProps): JSX.Element {
             </div>
             <div className='flex flex-col gap-1 text-center'>
                 {courses.map((course, index) => (
-                    <Text key={index} variant='small' className='text-ut-orange'>
+                    <Text key={index} variant='small' className='text-ut-orange underline'>
                         {course}
                     </Text>
                 ))}

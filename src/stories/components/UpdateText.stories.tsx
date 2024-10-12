@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import UpdateText, { UpdateTextProps } from 'src/views/components/common/UpdateText';
+import type { UpdateTextProps } from '@views/components/common/UpdateText';
+import UpdateText from '@views/components/common/UpdateText';
 import React from 'react';
 
 const meta = {
