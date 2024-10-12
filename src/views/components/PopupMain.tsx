@@ -38,10 +38,13 @@ export default function PopupMain(): JSX.Element {
     useKC_DABR_WASM();
 
     useEffect(() => {
-        initSettings().then(({ enableCourseStatusChips, enableDataRefreshing }) => {
+        const initAllSettings = async () => {
+            const { enableCourseStatusChips, enableDataRefreshing } = await initSettings();
             setEnableCourseStatusChips(enableCourseStatusChips);
             setEnableDataRefreshing(enableDataRefreshing);
-        });
+        };
+
+        initAllSettings();
 
         const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
