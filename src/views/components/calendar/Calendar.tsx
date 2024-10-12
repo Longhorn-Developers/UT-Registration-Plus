@@ -1,3 +1,4 @@
+import addCourse from '@pages/background/lib/addCourse';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import type { Course } from '@shared/types/Course';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
@@ -9,13 +10,12 @@ import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
+import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
+import getCourseTableRows from '@views/lib/getCourseTableRows';
+import { SiteSupport } from '@views/lib/getSiteSupport';
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useState } from 'react';
 
-import addCourse from '../../../pages/background/lib/addCourse';
-import { CourseCatalogScraper } from '../../lib/CourseCatalogScraper';
-import getCourseTableRows from '../../lib/getCourseTableRows';
-import { SiteSupport } from '../../lib/getSiteSupport';
 import CalendarFooter from './CalendarFooter';
 import TeamLinks from './TeamLinks';
 
