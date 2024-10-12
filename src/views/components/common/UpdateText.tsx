@@ -22,7 +22,7 @@ export default function UpdateText({ courses }: UpdateTextProps): JSX.Element {
             </div>
             <div className='flex flex-col gap-1 text-center'>
                 {courses.map((course, index) => (
-                    <Text key={index} variant='small' className='text-ut-orange underline'>
+                    <Text key={course} variant='small' className='text-ut-orange underline'>
                         {course}
                     </Text>
                 ))}
