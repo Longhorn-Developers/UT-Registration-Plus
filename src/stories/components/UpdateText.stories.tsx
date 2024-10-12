@@ -18,4 +18,14 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const Template: Story = args => <UpdateText {...args} />;
+const Template = (args: React.JSX.IntrinsicAttributes & UpdateTextProps) => <UpdateText {...args} />;
+
+export const Default: Story = {
+    render: Template,
+    args: {
+        courses: ['12345', '23456', '34567', '45678', '56789'],
+    },
+};
+Default.args = {
+    courses: ['12345', '23456', '34567', '45678', '56789'],
+};
