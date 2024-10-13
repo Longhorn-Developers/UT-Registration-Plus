@@ -63,41 +63,6 @@ export default function Calendar(): JSX.Element {
         if (course) setShowPopup(true);
     }, [course]);
 
-    const handleOnClick = async () => {
-        // const link = 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52625/';
-        // TODO: Use a proper modal instead of a prompt
-        // eslint-disable-next-line no-alert
-        const link: string | null = prompt('Enter course link');
-
-        // Exit if the user cancels the prompt
-        if (link === null) return;
-
-        const response = await fetch(link);
-        const text = await response.text();
-        const doc = new DOMParser().parseFromString(text, 'text/html');
-
-        const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, link);
-        const tableRows = getCourseTableRows(doc);
-        const courses = scraper.scrape(tableRows, false);
-
-        if (courses.length === 1) {
-            const description = scraper.getDescription(doc);
-            const row = courses[0]!;
-            const course = row.course!;
-            course.description = description;
-            // console.log(course);
-
-            if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-                console.log('adding course');
-                addCourse(activeSchedule.id, course);
-            } else {
-                console.log('course already exists');
-            }
-        } else {
-            console.log(courses);
-        }
-    };
-
     return (
         <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
@@ -114,17 +79,21 @@ export default function Calendar(): JSX.Element {
                                 <Divider orientation='horizontal' size='100%' className='my-5' />
                                 <ImportantLinks />
                                 <Divider orientation='horizontal' size='100%' className='my-5' />
-                                <TeamLinks />
-                                <Divider orientation='horizontal' size='100%' className='my-5' />
-                                <div className='space-y-5'>
-                                    <Text variant='h3'>UTRP v2 Migration Utils</Text>
-                                    <Button variant='filled' color='ut-black' onClick={handleOnClick}>
-                                        Add course by link
-                                    </Button>
+                                <div className='w-80 flex flex-col space-y-5'>
+                                    <Text variant='h3'>ANNOUNCEMENT</Text>
+                                    <Text variant='h4' className='text-ut-burntorange font-bold'>
+                                        This extension has been updated!
+                                    </Text>
+                                    <Text variant='p'>
+                                        You may have already began planning your Spring 2025 schedule. Use the button
+                                        below to migrate your UTRP v1 courses.
+                                    </Text>
                                     <Button variant='filled' color='ut-burntorange' onClick={migrateUTRPv1Courses}>
                                         Migrate UTRP v1 courses
                                     </Button>
                                 </div>
+                                <Divider orientation='horizontal' size='100%' className='my-5' />
+                                <TeamLinks />
                             </div>
                             <CalendarFooter />
                         </div>

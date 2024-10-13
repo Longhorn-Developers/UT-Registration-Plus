@@ -1,4 +1,6 @@
+import addCourse from '@pages/background/lib/addCourse';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
+import migrateUTRPv1Courses from '@pages/background/lib/migrateUTRPv1Courses';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 // import { getCourseColors } from '@shared/util/colors';
 // import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
@@ -10,7 +12,10 @@ import { SmallLogo } from '@views/components/common/LogoIcon';
 import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
+import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
+import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS } from '@views/lib/getGitHubStats';
+import { SiteSupport } from '@views/lib/getSiteSupport';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -187,6 +192,41 @@ export default function Settings(): JSX.Element {
                 </Button>
             ),
         });
+    };
+
+    const handleAddCourseByUrl = async () => {
+        // const link = 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52625/';
+        // TODO: Use a proper modal instead of a prompt
+        // eslint-disable-next-line no-alert
+        const link: string | null = prompt('Enter course link');
+
+        // Exit if the user cancels the prompt
+        if (link === null) return;
+
+        const response = await fetch(link);
+        const text = await response.text();
+        const doc = new DOMParser().parseFromString(text, 'text/html');
+
+        const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, link);
+        const tableRows = getCourseTableRows(doc);
+        const courses = scraper.scrape(tableRows, false);
+
+        if (courses.length === 1) {
+            const description = scraper.getDescription(doc);
+            const row = courses[0]!;
+            const course = row.course!;
+            course.description = description;
+            // console.log(course);
+
+            if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
+                console.log('adding course');
+                addCourse(activeSchedule.id, course);
+            } else {
+                console.log('course already exists');
+            }
+        } else {
+            console.log(courses);
+        }
     };
 
     const [devMode, toggleDevMode] = useDevMode(10);
@@ -382,10 +422,16 @@ export default function Settings(): JSX.Element {
 
                     <Divider size='auto' orientation='horizontal' />
 
-                    <section className='my-8'>
+                    <section className='my-8 space-y-4'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
                             Developer Mode
                         </h2>
+                        <Button variant='filled' color='ut-black' onClick={handleAddCourseByUrl}>
+                            Add course by link
+                        </Button>
+                        <Button variant='filled' color='ut-burntorange' onClick={migrateUTRPv1Courses}>
+                            Migrate UTRP v1 courses
+                        </Button>
                     </section>
                 </div>
 
