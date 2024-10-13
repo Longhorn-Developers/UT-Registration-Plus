@@ -26,6 +26,7 @@
         "prepare": "husky"
     },
     "dependencies": {
+        "@sentry/react": "^8.33.1",
         "@headlessui/react": "^2.1.9",
         "@hello-pangea/dnd": "^17.0.0",
         "@octokit/rest": "^21.0.2",

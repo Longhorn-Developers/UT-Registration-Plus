@@ -1,5 +1,4 @@
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
-import { Status } from '@shared/types/Course';
 import { Button } from '@views/components/common/Button';
 import CourseStatus from '@views/components/common/CourseStatus';
 import Divider from '@views/components/common/Divider';
