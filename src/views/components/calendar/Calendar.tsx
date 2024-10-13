@@ -1,17 +1,23 @@
 import addCourse from '@pages/background/lib/addCourse';
+import createSchedule from '@pages/background/lib/createSchedule';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import type { Course } from '@shared/types/Course';
+import { checkLoginStatus } from '@shared/util/checkLoginStatus';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
 import CalendarHeader from '@views/components/calendar/CalenderHeader';
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
+import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
+import Text from '@views/components/common/Text/Text';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
+import { switchSchedule } from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
+import { courseMigration } from '@views/lib/courseMigration';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { SiteSupport } from '@views/lib/getSiteSupport';
 import { MessageListener } from 'chrome-extension-toolkit';
@@ -19,6 +25,21 @@ import React, { useEffect, useState } from 'react';
 
 import CalendarFooter from './CalendarFooter';
 import TeamLinks from './TeamLinks';
+
+const getUTRPv1Courses = async (): Promise<string[]> => {
+    const { savedCourses } = await chrome.storage.sync.get('savedCourses');
+    console.log(savedCourses);
+
+    // Check if the savedCourses array is empty
+    if (savedCourses.length === 0) {
+        console.log('No courses found');
+        prompt('No courses found');
+        return [];
+    }
+
+    // Extract the link property from each course object and return it as an array
+    return savedCourses.map((course: { link: string }) => course.link);
+};
 
 /**
  * Calendar page component
@@ -107,9 +128,43 @@ export default function Calendar(): JSX.Element {
                                 <ImportantLinks />
                                 <Divider orientation='horizontal' size='100%' className='my-5' />
                                 <TeamLinks />
-                                <button className='btn' onClick={handleOnClick}>
-                                    add course by link
-                                </button>
+                                <Divider orientation='horizontal' size='100%' className='my-5' />
+                                <div className='space-y-5'>
+                                    <Text variant='h3'>UTRP v2 Migration Utils</Text>
+                                    <Button variant='filled' color='ut-black' onClick={handleOnClick}>
+                                        Add course by link
+                                    </Button>
+                                    <Button
+                                        variant='filled'
+                                        color='ut-burntorange'
+                                        onClick={async () => {
+                                            const loggedInToUT = await checkLoginStatus(
+                                                'https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/'
+                                            );
+
+                                            if (!loggedInToUT) {
+                                                console.log('Not logged in to UT');
+
+                                                // Return for now, retry functionality will be added later
+                                                return;
+                                            }
+
+                                            const courses: string[] = await getUTRPv1Courses();
+                                            console.log(courses);
+
+                                            await createSchedule('UTRP v1 Migration');
+                                            console.log('Created UTRP v1 migration schedule');
+                                            await switchSchedule('UTRP v1 Migration');
+                                            console.log('Switched to UTRP v1 migration schedule');
+
+                                            // BUG: activeSchedule is not updated after switching to the new schedule
+                                            courseMigration(activeSchedule, courses);
+                                            console.log('Successfully migrated UTRP v1 courses');
+                                        }}
+                                    >
+                                        Migrate UTRP v1 courses
+                                    </Button>
+                                </div>
                             </div>
                             <CalendarFooter />
                         </div>

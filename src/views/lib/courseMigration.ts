@@ -1,16 +1,16 @@
 import addCourse from '@pages/background/lib/addCourse';
+import type { UserSchedule } from '@shared/types/UserSchedule';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { SiteSupport } from '@views/lib/getSiteSupport';
 
-import { useFlattenedCourseSchedule } from './useFlattenedCourseSchedule';
-
 const SEMESTER_CODE = '20239';
 
 /**
- * Migrates courses from UTRP v1 to the active schedule.
+ * Migrates courses from UTRP v1 to a new schedule.
  *
- * @param oldCourseIDs - An array of UTRP v1 course IDs to be migrated.
+ * @param activeSchedule - The active schedule to migrate the courses to.
+ * @param input - An array of UTRP v1 course IDs or URLs.
  * @returns A promise that resolves when the migration is complete.
  *
  * This hook performs the following steps:
@@ -22,13 +22,15 @@ const SEMESTER_CODE = '20239';
  * Notes:
  * - Chrome warns in the console that in the future, cookies will not work when we do a network request like how we are doing it now, so might need to open a new tab instead.
  */
-export const useCourseMigration = async (oldCourseIDs: number[]): Promise<void> => {
-    const { activeSchedule } = useFlattenedCourseSchedule();
+export const courseMigration = async (activeSchedule: UserSchedule, input: number[] | string[]): Promise<void> => {
+    let links: string[] = [];
 
-    // Loop over the old course IDs and generate links
-    const links = oldCourseIDs.map(
-        courseID => `https://utdirect.utexas.edu/apps/registrar/course_schedule/${SEMESTER_CODE}/${courseID}/`
-    );
+    // Check if the input is an array of numbers
+    if (input.every(Number.isInteger)) {
+        links = input.map(id => `https://utdirect.utexas.edu/apps/registrar/course_schedule/${SEMESTER_CODE}/${id}/`);
+    } else {
+        links = input as string[];
+    }
 
     // Loop over the links
     for (const link of links) {
@@ -52,6 +54,7 @@ export const useCourseMigration = async (oldCourseIDs: number[]): Promise<void> 
 
             // Add the course if it doesn't already exist
             if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
+                console.log(`Adding course: ${course} to schedule: ${activeSchedule.id}`);
                 addCourse(activeSchedule.id, course);
             }
         } else {
