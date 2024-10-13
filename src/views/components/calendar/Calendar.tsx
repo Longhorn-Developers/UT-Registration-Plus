@@ -57,7 +57,12 @@ export default function Calendar(): JSX.Element {
 
     const handleOnClick = async () => {
         // const link = 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52625/';
-        const link = prompt('Enter course link'); // TODO
+        // TODO: Use a proper modal instead of a prompt
+        // eslint-disable-next-line no-alert
+        const link: string | null = prompt('Enter course link');
+
+        // Exit if the user cancels the prompt
+        if (link === null) return;
 
         const response = await fetch(link);
         const text = await response.text();
