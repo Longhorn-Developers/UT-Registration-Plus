@@ -1,6 +1,7 @@
 import addCourse from '@pages/background/lib/addCourse';
 import createSchedule from '@pages/background/lib/createSchedule';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Course } from '@shared/types/Course';
 import { checkLoginStatus } from '@shared/util/checkLoginStatus';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
@@ -15,7 +16,7 @@ import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalog
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
-import { switchSchedule } from '@views/hooks/useSchedules';
+import { getActiveSchedule, switchSchedule, switchScheduleByName } from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import { courseMigration } from '@views/lib/courseMigration';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
@@ -111,6 +112,29 @@ export default function Calendar(): JSX.Element {
         }
     };
 
+    const handleMigrateUTRPv1Courses = async () => {
+        const loggedInToUT = await checkLoginStatus(
+            'https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/'
+        );
+
+        if (!loggedInToUT) {
+            console.log('Not logged in to UT');
+
+            // Return for now, retry functionality will be added later
+            return;
+        }
+
+        const courses: string[] = await getUTRPv1Courses();
+        console.log(courses);
+
+        await createSchedule('UTRP v1 Migration');
+        console.log('Created UTRP v1 migration schedule');
+        await switchScheduleByName('UTRP v1 Migration');
+
+        courseMigration(getActiveSchedule(), courses);
+        console.log('Successfully migrated UTRP v1 courses');
+    };
+
     return (
         <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
@@ -137,30 +161,7 @@ export default function Calendar(): JSX.Element {
                                     <Button
                                         variant='filled'
                                         color='ut-burntorange'
-                                        onClick={async () => {
-                                            const loggedInToUT = await checkLoginStatus(
-                                                'https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/'
-                                            );
-
-                                            if (!loggedInToUT) {
-                                                console.log('Not logged in to UT');
-
-                                                // Return for now, retry functionality will be added later
-                                                return;
-                                            }
-
-                                            const courses: string[] = await getUTRPv1Courses();
-                                            console.log(courses);
-
-                                            await createSchedule('UTRP v1 Migration');
-                                            console.log('Created UTRP v1 migration schedule');
-                                            await switchSchedule('UTRP v1 Migration');
-                                            console.log('Switched to UTRP v1 migration schedule');
-
-                                            // BUG: activeSchedule is not updated after switching to the new schedule
-                                            courseMigration(activeSchedule, courses);
-                                            console.log('Successfully migrated UTRP v1 courses');
-                                        }}
+                                        onClick={handleMigrateUTRPv1Courses}
                                     >
                                         Migrate UTRP v1 courses
                                     </Button>

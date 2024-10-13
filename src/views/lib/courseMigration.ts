@@ -54,7 +54,7 @@ export const courseMigration = async (activeSchedule: UserSchedule, input: numbe
 
             // Add the course if it doesn't already exist
             if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-                console.log(`Adding course: ${course} to schedule: ${activeSchedule.id}`);
+                console.log(`Adding course: ${course} to schedule: ${activeSchedule.name}`);
                 addCourse(activeSchedule.id, course);
             }
         } else {
