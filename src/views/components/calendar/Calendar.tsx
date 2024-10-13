@@ -1,5 +1,6 @@
 import addCourse from '@pages/background/lib/addCourse';
 import createSchedule from '@pages/background/lib/createSchedule';
+import migrateUTRPv1Courses from '@pages/background/lib/migrateUTRPv1Courses';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Course } from '@shared/types/Course';
@@ -26,21 +27,6 @@ import React, { useEffect, useState } from 'react';
 
 import CalendarFooter from './CalendarFooter';
 import TeamLinks from './TeamLinks';
-
-const getUTRPv1Courses = async (): Promise<string[]> => {
-    const { savedCourses } = await chrome.storage.sync.get('savedCourses');
-    console.log(savedCourses);
-
-    // Check if the savedCourses array is empty
-    if (savedCourses.length === 0) {
-        console.log('No courses found');
-        prompt('No courses found');
-        return [];
-    }
-
-    // Extract the link property from each course object and return it as an array
-    return savedCourses.map((course: { link: string }) => course.link);
-};
 
 /**
  * Calendar page component
@@ -112,29 +98,6 @@ export default function Calendar(): JSX.Element {
         }
     };
 
-    const handleMigrateUTRPv1Courses = async () => {
-        const loggedInToUT = await checkLoginStatus(
-            'https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/'
-        );
-
-        if (!loggedInToUT) {
-            console.log('Not logged in to UT');
-
-            // Return for now, retry functionality will be added later
-            return;
-        }
-
-        const courses: string[] = await getUTRPv1Courses();
-        console.log(courses);
-
-        await createSchedule('UTRP v1 Migration');
-        console.log('Created UTRP v1 migration schedule');
-        await switchScheduleByName('UTRP v1 Migration');
-
-        courseMigration(getActiveSchedule(), courses);
-        console.log('Successfully migrated UTRP v1 courses');
-    };
-
     return (
         <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
@@ -158,11 +121,7 @@ export default function Calendar(): JSX.Element {
                                     <Button variant='filled' color='ut-black' onClick={handleOnClick}>
                                         Add course by link
                                     </Button>
-                                    <Button
-                                        variant='filled'
-                                        color='ut-burntorange'
-                                        onClick={handleMigrateUTRPv1Courses}
-                                    >
+                                    <Button variant='filled' color='ut-burntorange' onClick={migrateUTRPv1Courses}>
                                         Migrate UTRP v1 courses
                                     </Button>
                                 </div>
