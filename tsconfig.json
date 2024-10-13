@@ -6,10 +6,7 @@
         "module": "esnext",
         "noEmit": true,
         "jsx": "react",
-        "typeRoots": [
-            "./node_modules/@types",
-            "@types"
-        ],
+        "typeRoots": ["./node_modules/@types", "@types"],
         "skipLibCheck": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
@@ -34,6 +31,7 @@
     "include": [
         "src",
         "utils",
+        "scripts",
         "vite.config.ts",
         "@types",
         "node_modules/@types",
@@ -42,8 +40,7 @@
         ".eslintrc.cjs",
         "postcss.config.cjs",
         ".storybook",
-        "unocss.config.ts"
-,
-"@types"
-]
+        "unocss.config.ts",
+        "@types"
+    ]
 }

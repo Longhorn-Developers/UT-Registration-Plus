@@ -1,5 +1,7 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 
+import createSchedule from './createSchedule';
+
 /**
  * Deletes a schedule with the specified name.
  *
@@ -17,7 +19,11 @@ export default async function deleteSchedule(scheduleId: string): Promise<string
         throw new Error(`Schedule ${scheduleId} does not exist`);
     }
     if (scheduleIndex === activeIndex) {
-        throw new Error('You cannot delete your active schedule! Please switch to another schedule before deleting.');
+        throw new Error(`Cannot delete active schedule`);
+    }
+
+    if (scheduleIndex < activeIndex) {
+        await UserScheduleStore.set('activeIndex', activeIndex - 1);
     }
 
     schedules.splice(scheduleIndex, 1);
@@ -27,4 +33,15 @@ export default async function deleteSchedule(scheduleId: string): Promise<string
         await UserScheduleStore.set('activeIndex', schedules.length - 1);
     }
     return undefined;
+}
+
+/**
+ * Deletes all schedules.
+ *
+ * @returns A promise that resolves when all schedules are deleted
+ */
+export async function deleteAllSchedules(): Promise<void> {
+    await UserScheduleStore.set('schedules', []);
+    await UserScheduleStore.set('activeIndex', 0);
+    await createSchedule('Schedule 1');
 }

@@ -1,7 +1,6 @@
 import type { Course } from '@shared/types/Course';
 import type { Distribution, LetterGrade } from '@shared/types/Distribution';
 import { extendedColors } from '@shared/types/ThemeColors';
-import Spinner from '@views/components/common/Spinner';
 import Text from '@views/components/common/Text/Text';
 import {
     NoDataError,
@@ -12,6 +11,7 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import type { ChangeEvent } from 'react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
 
 interface GradeDistributionProps {
     course: Course;
@@ -193,8 +193,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
 
     return (
         <div className='pt-3'>
-            {/* TODO (achadaga): again would be nice to have an updated spinner */}
-            {status === DataStatus.LOADING && <Spinner />}
+            {status === DataStatus.LOADING && <Skeleton height={300} />}
             {status === DataStatus.NOT_FOUND && (
                 <HighchartsReact
                     ref={ref}

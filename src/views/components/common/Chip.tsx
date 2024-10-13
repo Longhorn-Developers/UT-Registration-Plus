@@ -2,7 +2,7 @@ import Text from '@views/components/common/Text/Text';
 import React from 'react';
 
 /**
- * A type that represents the flags that a course can have.
+ * A type that represents the flags that a course can have
  */
 export type Flag = 'WR' | 'QR' | 'GC' | 'CD' | 'E' | 'II';
 export const flagMap = {
