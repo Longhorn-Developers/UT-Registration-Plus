@@ -11,6 +11,7 @@ import { SmallLogo } from '@views/components/common/LogoIcon';
 // import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
+import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
@@ -94,6 +95,7 @@ export default function Settings(): JSX.Element {
     // const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
     const showDialog = usePrompt();
+    const handleChangelogOnClick = useChangelog();
 
     useEffect(() => {
         const fetchGitHubStats = async () => {
@@ -244,7 +246,7 @@ export default function Settings(): JSX.Element {
                     <h1 className='pl-4 text-xl text-ut-burntorange font-bold'>UTRP SETTINGS & CREDITS PAGE</h1>
                 </div>
                 <div className='flex space-x-4'>
-                    <div className='flex items-center'>
+                    <div className='flex items-center hover:cursor-pointer' onClick={handleChangelogOnClick}>
                         <IconoirGitFork className='h-6 w-6 text-ut-gray' />
                         <Text variant='small' className='text-ut-gray font-normal'>
                             v{manifest.version} - {process.env.NODE_ENV}
