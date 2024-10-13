@@ -56,8 +56,7 @@ export default function Calendar(): JSX.Element {
     }, [course]);
 
     const handleOnClick = async () => {
-        // const link =
-        //     'https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52625/';
+        // const link = 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52625/';
         const link = prompt('Enter course link'); // TODO
 
         const response = await fetch(link);
