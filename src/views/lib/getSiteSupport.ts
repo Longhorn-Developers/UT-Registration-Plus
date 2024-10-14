@@ -12,6 +12,7 @@ export const SiteSupport = {
     EXTENSION_POPUP: 'EXTENSION_POPUP',
     MY_CALENDAR: 'MY_CALENDAR',
     MY_UT: 'MY_UT',
+    CLASSLIST: 'CLASSLIST',
 } as const;
 
 /**
@@ -48,6 +49,9 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
     }
     if (url.includes('my.utexas.edu/student/student/index')) {
         return SiteSupport.MY_UT;
+    }
+    if (url.includes('registration/classlist.WBX')) {
+        return SiteSupport.CLASSLIST;
     }
     return null;
 }

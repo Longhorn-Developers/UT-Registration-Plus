@@ -18,12 +18,13 @@ const nameSuffix = isBeta ? ' (beta)' : mode === 'development' ? ' (dev)' : '';
 
 const HOST_PERMISSIONS: string[] = [
     '*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*',
+    '*://*.utdirect.utexas.edu/registration/classlist/*',
     '*://*.utexas.collegescheduler.com/*',
     '*://*.catalog.utexas.edu/ribbit/',
     '*://*.registrar.utexas.edu/schedules/*',
     '*://*.login.utexas.edu/login/*',
     'https://utexas.bluera.com/*',
-    '*://my.utexas.edu/*',
+    '*://my.utexas.edu/student/student/*',
 ];
 
 const manifest = defineManifest(async () => ({
