@@ -21,6 +21,17 @@ export const SentryContext = createContext<[scope: Scope, client: Client]>(undef
  */
 export const useSentryScope = () => useContext(SentryContext);
 
+/**
+ * SentryProvider component initializes and provides Sentry error tracking context to its children.
+ * It ensures that Sentry is not initialized more than once and configures the Sentry client and scope.
+ *
+ * @param props - The properties object.
+ * @param props.children - The child components that will have access to the Sentry context.
+ * @param props.transactionName - Optional name for the Sentry transaction.
+ * @param props.fullInit - Flag to determine if full initialization of Sentry should be performed.
+ *
+ * @returns The Sentry context provider wrapping the children components.
+ */
 export default function SentryProvider({
     children,
     transactionName,
