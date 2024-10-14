@@ -24,4 +24,4 @@ export async function validateLoginStatus(url: string) {
         console.error('Error checking login status:', error);
         return false;
     }
-};
+}

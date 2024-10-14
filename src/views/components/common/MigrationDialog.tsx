@@ -91,7 +91,7 @@ export function useMigrationDialog() {
                     title: 'This extension has updated!',
                     description:
                         "You may have already began planning your Spring '25 schedule. Click the button below to transfer your saved schedules into a new schedule. (You may be required to login to the UT Registrar)",
-                     
+
                     buttons: close => <MigrationButtons close={close} />,
                 },
                 {
@@ -103,7 +103,7 @@ export function useMigrationDialog() {
                 title: 'Already migrated!',
                 description:
                     'There are no courses to migrate. If you have any issues, please submit a feedback report by clicking the flag at the top right of the extension popup.',
-                 
+
                 buttons: close => (
                     <Button variant='filled' color='ut-burntorange' onClick={close}>
                         I Understand
