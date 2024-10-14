@@ -1,9 +1,10 @@
+import { background } from '@shared/messages';
+import type { Course } from '@shared/types/Course';
 import { Button } from '@views/components/common/Button';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import useSchedules from '@views/hooks/useSchedules';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { background } from 'src/shared/messages';
-import useSchedules from 'src/views/hooks/useSchedules';
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
@@ -20,6 +21,22 @@ export default function InjectedButton(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const [activeSchedule, _] = useSchedules();
 
+    const removeDuplicates = (courseIds: string[], courses: string[]) => {
+        const uniqueCourseIds = [] as string[];
+        const uniqueCourses = [] as string[];
+        const seen = new Set();
+
+        courseIds.forEach((id, index) => {
+            if (!seen.has(id)) {
+                seen.add(id);
+                uniqueCourseIds.push(id);
+                uniqueCourses.push(courses[index] as string);
+            }
+        });
+
+        return { uniqueCourseIds, uniqueCourses };
+    };
+
     const extractCoursesFromCalendar = () => {
         const calendarElement = document.querySelector('#kgoui_Rcontent_I3_Rprimary_I1_Rcontent_I1_Rcontent_I0_Ritems');
 
@@ -28,13 +45,38 @@ export default function InjectedButton(): JSX.Element | null {
             return [];
         }
 
-        const anchorTags = calendarElement.querySelectorAll('a');
+        const anchorTags = Array.from(calendarElement.querySelectorAll('a')).filter(
+            anchor => !anchor.href.includes('google.com') // Remove the Google Map links
+        );
+
         const courses = Array.from(anchorTags).map(x => x.innerText.trim());
-        handleAddingCourses(courses);
+        const courseIds = Array.from(anchorTags).map(({ href }) => {
+            const segments = href.split('/').filter(Boolean); // Remove empty segments caused by trailing slashes
+            return segments.pop();
+        }) as string[];
+
+        const { uniqueCourseIds, uniqueCourses } = removeDuplicates(courseIds, courses);
+
+        handleAddingCourses(uniqueCourses, uniqueCourseIds);
     };
 
-    const handleAddingCourses = (courses: Array<string>) => {
-        Array.from(courses).map(x => addCourse({ x, scheduleId: activeSchedule.id }));
+    const handleAddingCourses = async (courses: string[], uniqueCourseIds: string[]) => {
+        courses.forEach(async (course, index) => {
+            // TODO: need to still get the other course data
+            const courseData = {
+                id: uniqueCourseIds[index],
+                name: course,
+            } as unknown as Course;
+
+            try {
+                await addCourse({
+                    course: courseData,
+                    scheduleId: activeSchedule.id,
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        });
     };
 
     useEffect(() => {
