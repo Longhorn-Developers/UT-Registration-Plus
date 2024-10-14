@@ -198,9 +198,9 @@ export default function Settings(): JSX.Element {
         });
     };
 
+    // todo: move into a util/shared place, rather than specifically in settings
     const handleAddCourseByUrl = async () => {
-        // const link = 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52625/';
-        // TODO: Use a proper modal instead of a prompt
+        // todo: Use a proper modal instead of a prompt
         // eslint-disable-next-line no-alert
         const link: string | null = prompt('Enter course link');
 
@@ -248,12 +248,12 @@ export default function Settings(): JSX.Element {
                     <h1 className='pl-4 text-xl text-ut-burntorange font-bold'>UTRP SETTINGS & CREDITS PAGE</h1>
                 </div>
                 <div className='flex space-x-4'>
-                    <div className='flex items-center hover:cursor-pointer' onClick={handleChangelogOnClick}>
+                    <Button variant='single' color='theme-black' onClick={handleChangelogOnClick}>
                         <IconoirGitFork className='h-6 w-6 text-ut-gray' />
                         <Text variant='small' className='text-ut-gray font-normal'>
                             v{manifest.version} - {process.env.NODE_ENV}
                         </Text>
-                    </div>
+                    </Button>
                     <img src={LDIconURL} alt='LD Icon' className='h-10 w-10 rounded-lg' />
                 </div>
             </header>

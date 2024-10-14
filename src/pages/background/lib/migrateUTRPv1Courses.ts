@@ -50,8 +50,8 @@ async function migrateUTRPv1Courses() {
     const migratedCourses = await courseMigration(oldCourses);
 
     if (migratedCourses.length > 0) {
-        const migrateSchedule = await createSchedule('Old Schedule');
-        console.log('Created UTRP v1 migration schedule');
+        console.log(oldCourses, migratedCourses);
+        const migrateSchedule = await createSchedule('Migrated Schedule');
         await switchSchedule(migrateSchedule);
 
         const activeSchedule = getActiveSchedule();
@@ -59,7 +59,9 @@ async function migrateUTRPv1Courses() {
         for (const course of migratedCourses) {
             // Add the course if it doesn't already exist
             if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-                addCourse(activeSchedule.id, course);
+                // ignore eslint, as we *do* want to spend time on each iteration
+                // eslint-disable-next-line no-await-in-loop
+                await addCourse(activeSchedule.id, course);
             }
         }
 

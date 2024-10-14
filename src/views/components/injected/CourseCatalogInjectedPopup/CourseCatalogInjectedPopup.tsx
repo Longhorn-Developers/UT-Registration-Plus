@@ -28,7 +28,6 @@ export type CourseCatalogInjectedPopupProps = DialogProps & {
 function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPopupProps): JSX.Element {
     const emptyRef = React.useRef<HTMLDivElement>(null);
     const [activeSchedule] = useSchedules();
-    // console.log(structuredClone(course));
 
     return (
         <Dialog className='max-w-[780px] overflow-y-hidden px-4' {...rest} initialFocus={emptyRef}>
