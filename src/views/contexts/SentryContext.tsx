@@ -9,7 +9,7 @@ import {
     Scope,
 } from '@sentry/react';
 import type { Client, ClientOptions } from '@sentry/types';
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 
 /**
  * Context for the sentry provider.
@@ -32,47 +32,52 @@ export default function SentryProvider({
 }): JSX.Element {
     // prevent accidentally initializing sentry twice
     const parent = useSentryScope();
-    if (parent) {
-        const [parentScope, parentClient] = parent;
 
-        const scope = parentScope.clone();
-        if (transactionName) scope.setTransactionName(transactionName);
+    const providerValue = useMemo((): [scope: Scope, client: Client] => {
+        if (parent) {
+            const [parentScope, parentClient] = parent;
 
-        return <SentryContext.Provider value={[scope, parentClient]}>{children}</SentryContext.Provider>;
-    }
+            const scope = parentScope.clone();
+            if (transactionName) scope.setTransactionName(transactionName);
 
-    // filter integrations that use the global variable
-    const integrations = getDefaultIntegrations({}).filter(defaultIntegration => {
-        return !['BrowserApiErrors', 'Breadcrumbs', 'GlobalHandlers'].includes(defaultIntegration.name);
-    });
+            return [scope, parentClient];
+        }
 
-    const options: ClientOptions = {
-        dsn: 'https://ed1a50d8626ff6be35b98d7b1ec86d9d@o4508033820852224.ingest.us.sentry.io/4508033822490624',
-        integrations,
-        transport: makeFetchTransport,
-        stackParser: defaultStackParser,
-        // debug: true,
-        release: import.meta.env.VITE_PACKAGE_VERSION,
-    };
+        // filter integrations that use the global variable
+        const integrations = getDefaultIntegrations({}).filter(
+            defaultIntegration =>
+                !['BrowserApiErrors', 'Breadcrumbs', 'GlobalHandlers'].includes(defaultIntegration.name)
+        );
 
-    let client: Client;
-    let scope: Scope;
+        const options: ClientOptions = {
+            dsn: 'https://ed1a50d8626ff6be35b98d7b1ec86d9d@o4508033820852224.ingest.us.sentry.io/4508033822490624',
+            integrations,
+            transport: makeFetchTransport,
+            stackParser: defaultStackParser,
+            // debug: true,
+            release: import.meta.env.VITE_PACKAGE_VERSION,
+        };
 
-    if (fullInit) {
-        client = init(options)!;
-        scope = getCurrentScope();
-    } else {
-        client = new BrowserClient(options);
+        let client: Client;
+        let scope: Scope;
 
-        scope = new Scope();
+        if (fullInit) {
+            client = init(options)!;
+            scope = getCurrentScope();
+        } else {
+            client = new BrowserClient(options);
 
-        scope.setClient(client);
-        client.init();
-    }
+            scope = new Scope();
+
+            scope.setClient(client);
+            client.init();
+        }
+        return [scope, client];
+    }, []);
 
     return (
         <ErrorBoundary>
-            <SentryContext.Provider value={[scope, client]}>{children}</SentryContext.Provider>
+            <SentryContext.Provider value={providerValue}>{children}</SentryContext.Provider>
         </ErrorBoundary>
     );
 }

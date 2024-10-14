@@ -35,11 +35,13 @@ export async function getUTRPv1Courses(): Promise<string[]> {
  * @returns A promise that resolves when the migration is complete.
  */
 async function migrateUTRPv1Courses() {
-    const loggedInToUT = await validateLoginStatus('https://utdirect.utexas.edu/apps/registrar/course_schedule/');
+    const loggedInToUT = await validateLoginStatus(
+        'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/'
+    );
 
     if (!loggedInToUT) {
         console.warn('Not logged in to UT Registrar.');
-        return;
+        return false;
     }
 
     const oldCourses = await getUTRPv1Courses();
@@ -67,6 +69,8 @@ async function migrateUTRPv1Courses() {
     } else {
         console.warn('No courses successfully found to migrate');
     }
+
+    return true;
 }
 
 export default migrateUTRPv1Courses;

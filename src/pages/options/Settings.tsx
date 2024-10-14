@@ -1,9 +1,9 @@
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import Settings from '@views/components/settings/Settings';
+import SentryProvider from '@views/contexts/SentryContext';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React from 'react';
-import SentryProvider from 'src/views/contexts/SentryContext';
 
 /**
  * Renders the settings page for the UTRP (UT Registration Plus) extension.

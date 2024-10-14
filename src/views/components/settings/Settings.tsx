@@ -1,6 +1,5 @@
 import addCourse from '@pages/background/lib/addCourse';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
-import migrateUTRPv1Courses from '@pages/background/lib/migrateUTRPv1Courses';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 // import { getCourseColors } from '@shared/util/colors';
 // import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
@@ -25,6 +24,7 @@ import IconoirGitFork from '~icons/iconoir/git-fork';
 // import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
 import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 
+import { useMigrationDialog } from '../common/MigrationDialog';
 // import RefreshIcon from '~icons/material-symbols/refresh';
 import DevMode from './DevMode';
 import Preview from './Preview';
@@ -84,6 +84,8 @@ export default function Settings(): JSX.Element {
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+
+    const showMigrationDialog = useMigrationDialog();
 
     // Toggle GitHub stats when the user presses the 'S' key
     const [showGitHubStats, setShowGitHubStats] = useState<boolean>(false);
@@ -431,8 +433,8 @@ export default function Settings(): JSX.Element {
                         <Button variant='filled' color='ut-black' onClick={handleAddCourseByUrl}>
                             Add course by link
                         </Button>
-                        <Button variant='filled' color='ut-burntorange' onClick={migrateUTRPv1Courses}>
-                            Migrate UTRP v1 courses
+                        <Button variant='filled' color='ut-burntorange' onClick={showMigrationDialog}>
+                            Show Migration Dialog
                         </Button>
                     </section>
                 </div>
