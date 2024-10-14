@@ -7,7 +7,7 @@
  * @param url - The URL to check the login status against.
  * @returns A promise that resolves to `true` if the user is logged in, otherwise `false`.
  */
-export const checkLoginStatus = async (url: string): Promise<boolean> => {
+export async function validateLoginStatus(url: string) {
     try {
         const response = await fetch(url, { credentials: 'include' });
 

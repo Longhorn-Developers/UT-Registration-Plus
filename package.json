@@ -62,6 +62,7 @@
         "@iconify-json/material-symbols": "^1.2.4",
         "@iconify-json/ri": "^1.2.1",
         "@semantic-release/exec": "^6.0.3",
+        "@sentry/types": "^8.34.0",
         "@storybook/addon-designs": "^8.0.3",
         "@storybook/addon-essentials": "^8.3.5",
         "@storybook/addon-links": "^8.3.5",

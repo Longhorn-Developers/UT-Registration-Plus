@@ -1,32 +1,27 @@
-import { checkLoginStatus } from '@shared/util/checkLoginStatus';
-import { getActiveSchedule, switchScheduleByName } from '@views/hooks/useSchedules';
+import { validateLoginStatus } from '@shared/util/checkLoginStatus';
+import { getActiveSchedule } from '@views/hooks/useSchedules';
 import { courseMigration } from '@views/lib/courseMigration';
 
+import addCourse from './addCourse';
 import createSchedule from './createSchedule';
+import switchSchedule from './switchSchedule';
 
 /**
- * Retrieves the saved courses from Chrome's synchronized storage and returns an array of course links.
+ * Retrieves the saved courses from the extension's chrome sync storage (old store) and returns an array of course links.
  *
  * @returns A promise that resolves to an array of course links.
- *
- * @remarks
- * - If no courses are found, a message is logged and an empty array is returned.
- * - The function expects the saved courses to be stored under the key 'savedCourses' in Chrome's synchronized storage.
  */
-export const getUTRPv1Courses = async (): Promise<string[]> => {
+export async function getUTRPv1Courses(): Promise<string[]> {
     const { savedCourses } = await chrome.storage.sync.get('savedCourses');
-    console.log(savedCourses);
 
     // Check if the savedCourses array is empty
-    if (savedCourses.length === 0) {
-        console.log('No courses found');
-        prompt('No courses found');
+    if (!savedCourses || savedCourses.length === 0) {
         return [];
     }
 
     // Extract the link property from each course object and return it as an array
     return savedCourses.map((course: { link: string }) => course.link);
-};
+}
 
 /**
  * Handles the migration of UTRP v1 courses.
@@ -39,25 +34,39 @@ export const getUTRPv1Courses = async (): Promise<string[]> => {
  *
  * @returns A promise that resolves when the migration is complete.
  */
-const migrateUTRPv1Courses = async () => {
-    const loggedInToUT = await checkLoginStatus('https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/');
+async function migrateUTRPv1Courses() {
+    const loggedInToUT = await validateLoginStatus('https://utdirect.utexas.edu/apps/registrar/course_schedule/');
 
     if (!loggedInToUT) {
-        console.log('Not logged in to UT');
-
-        // Return for now, retry functionality will be added later
+        console.warn('Not logged in to UT Registrar.');
         return;
     }
 
-    const courses: string[] = await getUTRPv1Courses();
-    console.log(courses);
+    const oldCourses = await getUTRPv1Courses();
+    console.log(oldCourses);
 
-    await createSchedule('UTRP v1 Migration');
-    console.log('Created UTRP v1 migration schedule');
-    await switchScheduleByName('UTRP v1 Migration');
+    const migratedCourses = await courseMigration(oldCourses);
 
-    courseMigration(getActiveSchedule(), courses);
-    console.log('Successfully migrated UTRP v1 courses');
-};
+    if (migratedCourses.length > 0) {
+        const migrateSchedule = await createSchedule('Old Schedule');
+        console.log('Created UTRP v1 migration schedule');
+        await switchSchedule(migrateSchedule);
+
+        const activeSchedule = getActiveSchedule();
+
+        for (const course of migratedCourses) {
+            // Add the course if it doesn't already exist
+            if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
+                addCourse(activeSchedule.id, course);
+            }
+        }
+
+        // Remove the old courses from storage :>
+        await chrome.storage.sync.remove('savedCourses');
+        console.log('Successfully migrated UTRP v1 courses');
+    } else {
+        console.warn('No courses successfully found to migrate');
+    }
+}
 
 export default migrateUTRPv1Courses;

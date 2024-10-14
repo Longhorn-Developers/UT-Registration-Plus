@@ -1,27 +1,15 @@
-import addCourse from '@pages/background/lib/addCourse';
-import createSchedule from '@pages/background/lib/createSchedule';
-import migrateUTRPv1Courses from '@pages/background/lib/migrateUTRPv1Courses';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
-import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Course } from '@shared/types/Course';
-import { checkLoginStatus } from '@shared/util/checkLoginStatus';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
 import CalendarHeader from '@views/components/calendar/CalenderHeader';
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
-import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
-import Text from '@views/components/common/Text/Text';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
-import { getActiveSchedule, switchSchedule, switchScheduleByName } from '@views/hooks/useSchedules';
-import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-import { courseMigration } from '@views/lib/courseMigration';
-import getCourseTableRows from '@views/lib/getCourseTableRows';
-import { SiteSupport } from '@views/lib/getSiteSupport';
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useState } from 'react';
 
@@ -78,20 +66,6 @@ export default function Calendar(): JSX.Element {
                                 <CalendarSchedules />
                                 <Divider orientation='horizontal' size='100%' className='my-5' />
                                 <ImportantLinks />
-                                <Divider orientation='horizontal' size='100%' className='my-5' />
-                                <div className='w-80 flex flex-col space-y-5'>
-                                    <Text variant='h3'>ANNOUNCEMENT</Text>
-                                    <Text variant='h4' className='text-ut-burntorange font-bold'>
-                                        This extension has been updated!
-                                    </Text>
-                                    <Text variant='p'>
-                                        You may have already began planning your Spring 2025 schedule. Use the button
-                                        below to migrate your UTRP v1 courses.
-                                    </Text>
-                                    <Button variant='filled' color='ut-burntorange' onClick={migrateUTRPv1Courses}>
-                                        Migrate UTRP v1 courses
-                                    </Button>
-                                </div>
                                 <Divider orientation='horizontal' size='100%' className='my-5' />
                                 <TeamLinks />
                             </div>

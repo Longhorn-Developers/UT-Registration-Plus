@@ -1,5 +1,3 @@
-import addCourse from '@pages/background/lib/addCourse';
-import type { UserSchedule } from '@shared/types/UserSchedule';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { SiteSupport } from '@views/lib/getSiteSupport';
@@ -19,7 +17,9 @@ import { SiteSupport } from '@views/lib/getSiteSupport';
  * Notes:
  * - Chrome warns in the console that in the future, cookies will not work when we do a network request like how we are doing it now, so might need to open a new tab instead.
  */
-export const courseMigration = async (activeSchedule: UserSchedule, links: string[]): Promise<void> => {
+export const courseMigration = async (links: string[]) => {
+    const migratedCourses = [];
+
     // Loop over the links
     for (const link of links) {
         // eslint-disable-next-line no-await-in-loop
@@ -40,13 +40,12 @@ export const courseMigration = async (activeSchedule: UserSchedule, links: strin
             const course = row.course!;
             course.description = description;
 
-            // Add the course if it doesn't already exist
-            if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-                console.log(`Adding course: ${course} to schedule: ${activeSchedule.name}`);
-                addCourse(activeSchedule.id, course);
-            }
+            // Add the course to the migrated courses
+            migratedCourses.push(course);
         } else {
-            console.log(courses);
+            console.warn('Invalid course link:', link);
         }
     }
+
+    return migratedCourses;
 };

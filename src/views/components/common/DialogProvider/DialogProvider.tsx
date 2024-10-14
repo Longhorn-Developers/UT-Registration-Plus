@@ -1,4 +1,4 @@
-import type { CloseWrapper, DialogInfo, ShowDialogFn } from '@views/contexts/DialogContext';
+import type { CloseWrapper, DialogInfo, DialogOptions, ShowDialogFn } from '@views/contexts/DialogContext';
 import { DialogContext, useDialog } from '@views/contexts/DialogContext';
 import type { ReactNode } from 'react';
 import React, { useCallback, useRef, useState } from 'react';
@@ -29,24 +29,27 @@ function unwrapCloseWrapper<T>(obj: T | CloseWrapper<T>, close: () => void): T {
 /**
  * Hook to show prompt with default stylings.
  */
-export function usePrompt(): (info: PromptInfo) => void {
+export function usePrompt(): (info: PromptInfo, options?: DialogOptions) => void {
     const showDialog = useDialog();
 
-    return (info: PromptInfo) => {
-        showDialog({
-            ...info,
-            title: (
-                <Text variant='h2' as='h1' className='text-theme-black'>
-                    {info.title}
-                </Text>
-            ),
-            description: (
-                <Text variant='p' as='p' className='text-ut-black'>
-                    {info.description}
-                </Text>
-            ),
-            className: 'max-w-[400px] flex flex-col gap-2.5 p-6.25',
-        });
+    return (info, options) => {
+        showDialog(
+            {
+                ...info,
+                title: (
+                    <Text variant='h2' as='h1' className='text-theme-black'>
+                        {info.title}
+                    </Text>
+                ),
+                description: (
+                    <Text variant='p' as='p' className='text-ut-black'>
+                        {info.description}
+                    </Text>
+                ),
+                className: 'max-w-[400px] flex flex-col gap-2.5 p-6.25',
+            },
+            options
+        );
     };
 }
 
@@ -64,7 +67,7 @@ export default function DialogProvider(props: { children: ReactNode }): JSX.Elem
 
     const [isOpen, setIsOpen] = useState(false);
 
-    const showDialog = useCallback<ShowDialogFn>(info => {
+    const showDialog = useCallback<ShowDialogFn>((info, options) => {
         const id = nextId++;
 
         const handleClose = () => {
@@ -89,11 +92,11 @@ export default function DialogProvider(props: { children: ReactNode }): JSX.Elem
         const dialogElement = (show: boolean) => (
             <Dialog
                 key={id}
-                onClose={handleClose}
+                onClose={(options?.closeOnClickOutside ?? true) ? handleClose : () => {}}
                 afterLeave={onLeave}
                 title=<>{infoUnwrapped.title}</>
                 description=<>{infoUnwrapped.description}</>
-                appear
+                appear={!(options?.immediate ?? false)}
                 show={show}
                 className={infoUnwrapped.className}
             >
