@@ -1,7 +1,8 @@
 import migrateUTRPv1Courses, { getUTRPv1Courses } from '@background/lib/migrateUTRPv1Courses';
 import Text from '@views/components/common/Text/Text';
+import { useSentryScope } from '@views/contexts/SentryContext';
 import React, { useEffect, useState } from 'react';
-import { useSentryScope } from 'src/views/contexts/SentryContext';
+
 import { Button } from './Button';
 import { usePrompt } from './DialogProvider/DialogProvider';
 import Spinner from './Spinner';
@@ -29,7 +30,7 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
         };
 
         handleMigration();
-    }, [processState]);
+    }, [processState, close, sentryScope]);
 
     return (
         <>
@@ -47,9 +48,9 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
                     setProcessState(1);
                 }}
             >
-                {processState == 1 ? (
+                {processState === 1 ? (
                     <>
-                        Migrating... <Spinner className='ml-2.75 w-4! h-4! text-current! inline-block' />
+                        Migrating... <Spinner className='ml-2.75 inline-block h-4! w-4! text-current!' />
                     </>
                 ) : (
                     'Migrate courses'
@@ -59,6 +60,15 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
     );
 }
 
+/**
+ * MigrationDialog component.
+ *
+ * This component checks if there are any courses from UTRP v1 and, if so, displays a dialog
+ * prompting the user to migrate their old courses. The dialog includes a title, description,
+ * and buttons for the migration process.
+ *
+ * @returns An empty JSX element.
+ */
 export function MigrationDialog(): JSX.Element {
     const showDialog = usePrompt();
 
@@ -74,6 +84,7 @@ export function MigrationDialog(): JSX.Element {
                         ),
                         description:
                             'You may have already began planning your Spring 2025 schedule. Use the button below to migrate your old UTRP v1 courses.',
+                        // eslint-disable-next-line react/no-unstable-nested-components
                         buttons: close => <MigrationButtons close={close} />,
                     },
                     {
@@ -84,6 +95,7 @@ export function MigrationDialog(): JSX.Element {
         };
 
         checkMigration();
-    }, []);
+    }, [showDialog]);
+    // eslint-disable-next-line react/jsx-no-useless-fragment
     return <></>;
 }
