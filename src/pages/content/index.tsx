@@ -6,28 +6,22 @@ import { createRoot } from 'react-dom/client';
 
 const support = getSiteSupport(window.location.href);
 
-if (support === SiteSupport.COURSE_CATALOG_DETAILS || support === SiteSupport.COURSE_CATALOG_LIST) {
+const renderComponent = (Component: React.FC) => {
     const container = document.createElement('div');
     container.id = 'extension-root';
     document.body.appendChild(container);
 
     createRoot(container).render(
         <React.StrictMode>
-            <CourseCatalogMain support={support} />
+            <Component />
         </React.StrictMode>
     );
+};
+
+if (support === SiteSupport.COURSE_CATALOG_DETAILS || support === SiteSupport.COURSE_CATALOG_LIST) {
+    renderComponent(() => <CourseCatalogMain support={support} />);
 }
 
 if (support === SiteSupport.MY_UT) {
-    const container = document.createElement('div');
-    container.id = 'extension-root';
-
-    const targetElement = document.getElementById('kgoui_Rcontent_I3_Rsecondary');
-    targetElement?.appendChild(container);
-
-    createRoot(container).render(
-        <React.StrictMode>
-            <InjectedButton />
-        </React.StrictMode>
-    );
+    renderComponent(InjectedButton);
 }
