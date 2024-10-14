@@ -23,6 +23,7 @@ const HOST_PERMISSIONS: string[] = [
     '*://*.registrar.utexas.edu/schedules/*',
     '*://*.login.utexas.edu/login/*',
     'https://utexas.bluera.com/*',
+    '*://my.utexas.edu/*',
 ];
 
 const manifest = defineManifest(async () => ({
