@@ -39,10 +39,10 @@ const REPO_NAME = 'UT-Registration-Plus';
 
 export const LONGHORN_DEVELOPERS_ADMINS = [
     { name: 'Sriram Hariharan', role: 'Founder', githubUsername: 'sghsri' },
-    { name: 'Elie Soloveichik', role: 'Senior Software Engineer', githubUsername: 'Razboy20' },
-    { name: 'Diego Perez', role: 'Senior Software Engineer', githubUsername: 'doprz' },
+    { name: 'Elie Soloveichik', role: 'Staff Engineer', githubUsername: 'Razboy20' },
+    { name: 'Diego Perez', role: 'Staff Engineer', githubUsername: 'doprz' },
     { name: 'Lukas Zenick', role: 'Senior Software Engineer', githubUsername: 'Lukas-Zenick' },
-    { name: 'Isaiah Rodriguez', role: 'Chief Design Officer', githubUsername: 'IsaDavRod' },
+    { name: 'Isaiah Rodriguez', role: 'Chief Operations and Design Officer', githubUsername: 'IsaDavRod' },
 ] as const satisfies TeamMember[];
 
 /**
