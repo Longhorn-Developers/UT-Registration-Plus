@@ -59,7 +59,7 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                     >
                         <DialogPanel
                             className={clsx(
-                                'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-solid border-ut-offwhite rounded bg-white shadow-xl ml-[calc(100vw-100%-1rem)]',
+                                'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-solid border-ut-red rounded bg-red shadow-xl ml-[calc(100vw-100%-1rem)]',
                                 className
                             )}
                         >

@@ -22,9 +22,9 @@ export function CalendarSchedules() {
     const showDialog = usePrompt();
 
     const handleAddSchedule = () => {
-        if (schedules.length >= 10) {
+        if (schedules.length >= 0) {
             showDialog({
-                title: `You have 10 active schedules!`,
+                title: `You have active schedules! STOP CREATING SCHEDULES, JUST MEMORIZE THEM!`,
 
                 description: (
                     <>

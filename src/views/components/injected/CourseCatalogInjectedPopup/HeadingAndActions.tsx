@@ -99,7 +99,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
 
     const handleAddOrRemoveCourse = async () => {
         if (!activeSchedule) return;
-        if (!courseAdded) {
+        if (courseAdded) {
             addCourse({ course, scheduleId: activeSchedule.id });
         } else {
             removeCourse({ course, scheduleId: activeSchedule.id });
