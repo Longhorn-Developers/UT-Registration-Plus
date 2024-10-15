@@ -23,7 +23,6 @@ export default function Link(props: PropsWithChildren<Props>): JSX.Element {
         };
     }
     const isDisabled = props.disabled || (!href && !props.onClick);
-
     return (
         <Text
             color='bluebonnet'
@@ -37,6 +36,7 @@ export default function Link(props: PropsWithChildren<Props>): JSX.Element {
                     'underline cursor-pointer': !isDisabled,
                     'cursor-not-allowed color-ut-gray': isDisabled,
                 },
+                "!text-white",
                 props.className
             )}
         />
