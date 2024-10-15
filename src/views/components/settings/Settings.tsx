@@ -14,7 +14,7 @@ import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
-import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS } from '@views/lib/getGitHubStats';
+import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 import { SiteSupport } from '@views/lib/getSiteSupport';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import clsx from 'clsx';
@@ -487,11 +487,50 @@ export default function Settings(): JSX.Element {
                     <section className='my-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTERS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
+                            {LONGHORN_DEVELOPERS_SWE.map(swe => (
+                                <div
+                                    key={swe.githubUsername}
+                                    className='border border-gray-300 rounded bg-ut-gray/10 p-4'
+                                >
+                                    <Text
+                                        variant='p'
+                                        className='text-ut-burntorange font-semibold hover:cursor-pointer'
+                                        onClick={() =>
+                                            window.open(`https://github.com/${swe.githubUsername}`, '_blank')
+                                        }
+                                    >
+                                        {swe.name}
+                                    </Text>
+                                    <p className='text-sm text-gray-600'>{swe.role}</p>
+                                    {showGitHubStats && githubStats && (
+                                        <div className='mt-2'>
+                                            <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
+                                            {includeMergedPRs && (
+                                                <p className='text-xs'>
+                                                    Merged PRS:{' '}
+                                                    {githubStats.userGitHubStats[swe.githubUsername]?.mergedPRs}
+                                                </p>
+                                            )}
+                                            <p className='text-xs'>
+                                                Commits: {githubStats.userGitHubStats[swe.githubUsername]?.commits}
+                                            </p>
+                                            <p className='text-xs text-ut-green'>
+                                                {githubStats.userGitHubStats[swe.githubUsername]?.linesAdded} ++
+                                            </p>
+                                            <p className='text-xs text-ut-red'>
+                                                {githubStats.userGitHubStats[swe.githubUsername]?.linesDeleted} --
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
                             {githubStats &&
                                 Object.keys(githubStats.userGitHubStats)
                                     .filter(
                                         username =>
-                                            !LONGHORN_DEVELOPERS_ADMINS.some(admin => admin.githubUsername === username)
+                                            !LONGHORN_DEVELOPERS_ADMINS.some(
+                                                admin => admin.githubUsername === username
+                                            ) && !LONGHORN_DEVELOPERS_SWE.some(swe => swe.githubUsername === username)
                                     )
                                     .map(username => (
                                         <div
