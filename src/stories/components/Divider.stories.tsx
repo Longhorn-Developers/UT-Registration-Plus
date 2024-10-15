@@ -71,7 +71,7 @@ export const CourseCatalogActionButtons: Story = {
                 Past Syllabi
             </Button>
             <Button variant='filled' color='ut-green' icon={AddIcon}>
-                Add Course
+                Remove Course
             </Button>
         </div>
     ),

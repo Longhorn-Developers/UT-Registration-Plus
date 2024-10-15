@@ -19,6 +19,10 @@ const links: LinkItem[] = [
         url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/',
     },
     {
+        text: 'List of Syllabi',
+        url: 'https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=GEO&course_number=420K&course_title=&unique=&instructor_first=&instructor_last=&course_type=In+Residence&search=Search',
+    },
+    {
         text: "Fall '24 Course Schedule",
         url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20249/',
     },
