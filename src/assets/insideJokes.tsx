@@ -115,6 +115,9 @@ const splashText: string[] = [
     `It's ${new Date().toLocaleString('en-US', { month: 'long', day: 'numeric' })} and OU still sucks`,
     'As seen on TV!	',
     "Should you major in Compsci? well, here's a better question. do you wanna have a bad time?",
+    "on everyone's soul but mine, i didn't get a 49.5",
+    "utrejects.com",
+    "01110100 01101001 01101101 01100101 00100000 01110111 01100001 01110011 01110100 01100101 01100100"
 ];
 
 export default splashText;

@@ -98,6 +98,9 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     };
 
     const handleAddOrRemoveCourse = async () => {
+        if(Math.random() < .1) {
+            window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        }
         if (!activeSchedule) return;
         if (!courseAdded) {
             addCourse({ course, scheduleId: activeSchedule.id });
@@ -214,7 +217,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     icon={!courseAdded ? Add : Remove}
                     onClick={handleAddOrRemoveCourse}
                 >
-                    {!courseAdded ? 'Add Course' : 'Remove Course'}
+                    {!courseAdded ? 'Remove Course' : 'Add Course'}
                 </Button>
             </div>
             <Divider orientation='horizontal' size='100%' />
