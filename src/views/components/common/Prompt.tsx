@@ -50,7 +50,7 @@ function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialo
                     leaveTo='opacity-0 scale-95'
                 >
                     <div className='fixed inset-0 w-screen flex items-center justify-center'>
-                        <DialogPanel className='h-[200] w-[431px] flex flex-col rounded bg-white p-6'>
+                        <DialogPanel className='h-[200] w-[431px] flex flex-col rounded bg-red p-6'>
                             <DialogTitle className='mb-[10px]'>{title}</DialogTitle>
                             <Description className='mb-[13px]'>{content}</Description>
                             <div className='flex items-center justify-end gap-2'>{children}</div>

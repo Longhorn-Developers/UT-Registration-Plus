@@ -107,7 +107,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     };
 
     return (
-        <div className='rounded bg-white'>
+        <div className='rounded bg-red'>
             <li className='w-full flex cursor-pointer items-center text-ut-burntorange'>
                 <div className='h-full cursor-move focusable' {...dragHandleProps}>
                     <DragIndicatorIcon className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
@@ -158,7 +158,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                 as={ExtensionRootWrapper}
                                 className={clsx([
                                     styleResetClass,
-                                    'w-30 cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite focus:outline-none',
+                                    'w-30 cursor-pointer origin-top-right rounded bg-red p-1 text-black shadow-lg transition border border-ut-offwhite focus:outline-none',
                                     'data-[closed]:(opacity-0 scale-95)',
                                     'data-[enter]:(ease-out-expo duration-150)',
                                     'data-[leave]:(ease-out duration-50)',

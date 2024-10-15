@@ -36,13 +36,13 @@ const manifest = defineManifest(async () => ({
     host_permissions: process.env.MODE === 'development' ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
     action: {
         default_popup: 'src/pages/popup/index.html',
-        default_icon: `icons/icon_${mode}_32.png`,
+        default_icon: `icons/MdiMinusCircleOutline(1).png`,
     },
     icons: {
-        '16': `icons/icon_${mode}_16.png`,
-        '32': `icons/icon_${mode}_32.png`,
-        '48': `icons/icon_${mode}_48.png`,
-        '128': `icons/icon_${mode}_128.png`,
+        '16': `icons/MdiMinusCircleOutline(1).png`,
+        '32': `icons/MdiMinusCircleOutline(1).png`,
+        '48': `icons/MdiMinusCircleOutline(1).png`,
+        '128': `icons/MdiMinusCircleOutline(1).png`,
     },
     content_scripts: [
         {

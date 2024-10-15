@@ -12,7 +12,7 @@ interface Props {
  */
 export default function InfoCard({ titleText, bodyText }: React.PropsWithChildren<Props>): JSX.Element {
     return (
-        <div className='w-50 border border-gray-300 rounded bg-white p-4'>
+        <div className='w-50 border border-gray-300 rounded bg-red p-4'>
             <div className='flex flex-col gap-1.5'>
                 <Text variant='h4' as='span' className='text-ut-orange'>
                     {titleText}

@@ -21,7 +21,7 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
     const [activeSchedule] = useSchedules();
 
     return (
-        <div className='border border-ut-offwhite rounded border-solid bg-white'>
+        <div className='border border-ut-offwhite rounded border-solid bg-red'>
             <Disclosure defaultOpen={props.defaultOpen}>
                 {({ open }) => (
                     <>

@@ -47,7 +47,7 @@ const ReportIssueMain: React.FC = () => {
 
     if (isSubmitted) {
         return (
-            <div className='w-80 flex flex-col rounded-lg bg-white p-6 shadow-lg'>
+            <div className='w-80 flex flex-col rounded-lg bg-red p-6 shadow-lg'>
                 <Text variant='h2' className='mb-4'>
                     Thank you
                 </Text>
@@ -63,7 +63,7 @@ const ReportIssueMain: React.FC = () => {
 
     if (isSubmitted) {
         return (
-            <div className='w-80 bg-white p-6'>
+            <div className='w-80 bg-red p-6'>
                 <h2 className='mb-4 text-2xl text-orange font-bold'>{`Hook'em Horns!`}</h2>
                 <p className='mb-6 text-gray-600'>Your feedback is music to our ears. Thanks for helping us improve!</p>
                 <button
@@ -77,7 +77,7 @@ const ReportIssueMain: React.FC = () => {
     }
 
     return (
-        <div className='w-80 bg-white p-6'>
+        <div className='w-80 bg-red p-6'>
             <h2 className='mb-4 text-2xl text-ut-burntorange font-bold'>Longhorn Feedback</h2>
             <p className='mb-4 text-sm text-ut-black'>Help us make UT Registration Plus even better!</p>
 

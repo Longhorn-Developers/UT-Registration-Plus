@@ -38,7 +38,7 @@ const SwitchButton = ({ isChecked = true, onChange }: ToggleSwitchProps): JSX.El
         >
             <span
                 className={`${enabled ? 'translate-x-6' : 'translate-x-1'}
-            inline-block w-6 h-6 transform bg-white rounded-full transition-transform ease-in-out duration-200`}
+            inline-block w-6 h-6 transform bg-red rounded-full transition-transform ease-in-out duration-200`}
             />
         </Switch>
     );

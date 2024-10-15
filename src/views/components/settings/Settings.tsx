@@ -27,7 +27,7 @@ const DISPLAY_PREVIEWS = false;
 const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS ? 'w-1/2 space-y-4' : 'flex-grow space-y-4';
 
 const manifest = chrome.runtime.getManifest();
-const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
+const LDIconURL = new URL('/src/assets/bird.png', import.meta.url).href;
 
 const gitHubStatsService = new GitHubStatsService();
 const includeMergedPRs = false;
@@ -196,7 +196,7 @@ export default function Settings(): JSX.Element {
     }
 
     return (
-        <div className='min-w-xl bg-white'>
+        <div className='min-w-xl bg-red'>
             <header className='flex items-center justify-between border-b p-6'>
                 <div className='flex items-center'>
                     <SmallLogo className='pr-4' />

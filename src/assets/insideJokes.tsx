@@ -115,6 +115,9 @@ const splashText: string[] = [
     `It's ${new Date().toLocaleString('en-US', { month: 'long', day: 'numeric' })} and OU still sucks`,
     'As seen on TV!	',
     "Should you major in Compsci? well, here's a better question. do you wanna have a bad time?",
+    "Why do programmers prefer dark mode? Because the light attracts bugs!",
+    "Weird mutant bird at turtle pond sighting",
+    "Time to feed the squirrels sun chips",
 ];
 
 export default splashText;

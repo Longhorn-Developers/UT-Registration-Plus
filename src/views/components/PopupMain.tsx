@@ -86,9 +86,9 @@ export default function PopupMain(): JSX.Element {
     return (
         <ExtensionRoot>
             <DialogProvider>
-                <div className='h-screen max-h-full flex flex-col bg-white'>
+                <div className='h-screen max-h-full flex flex-col bg-red'>
                     <div className='p-5 py-3.5'>
-                        <div className='flex items-center justify-between bg-white'>
+                        <div className='flex items-center justify-between bg-red'>
                             <SmallLogo />
                             <div className='flex items-center gap-2.5'>
                                 <button
