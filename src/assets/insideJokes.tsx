@@ -115,6 +115,7 @@ const splashText: string[] = [
     `It's ${new Date().toLocaleString('en-US', { month: 'long', day: 'numeric' })} and OU still sucks`,
     'As seen on TV!	',
     "Should you major in Compsci? well, here's a better question. do you wanna have a bad time?",
+    "Archibald C. Manning 🙏🙏🙏🙏"
 ];
 
 export default splashText;
