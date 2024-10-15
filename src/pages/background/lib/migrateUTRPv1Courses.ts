@@ -45,12 +45,12 @@ async function migrateUTRPv1Courses() {
     }
 
     const oldCourses = await getUTRPv1Courses();
-    console.log(oldCourses);
+    // console.log(oldCourses);
 
     const migratedCourses = await courseMigration(oldCourses);
 
     if (migratedCourses.length > 0) {
-        console.log(oldCourses, migratedCourses);
+        // console.log(oldCourses, migratedCourses);
         const migrateSchedule = await createSchedule('Migrated Schedule');
         await switchSchedule(migrateSchedule);
 
