@@ -16,11 +16,11 @@ interface LinkItem {
 const links: LinkItem[] = [
     {
         text: "Spring '25 Course Schedule",
-        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/',
+        url: 'https://catalog.tamu.edu/course-search/',
     },
     {
         text: "Fall '24 Course Schedule",
-        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20249/',
+        url: 'https://catalog.tamu.edu/course-search/',
     },
     // {
     //     text: "Summer '24 Course Schedule",
@@ -28,19 +28,19 @@ const links: LinkItem[] = [
     // },
     {
         text: 'Registration Info Sheet',
-        url: 'https://utdirect.utexas.edu/registrar/ris.WBX',
+        url: 'https://aggie.tamu.edu/registration-and-records/classes/registration-information',
     },
     {
         text: 'Register For Courses',
-        url: 'https://utdirect.utexas.edu/registration/chooseSemester.WBX',
+        url: 'https://howdy.tamu.edu/uPortal/normal/render.uP',
     },
     {
         text: 'Degree Audit',
-        url: 'https://utdirect.utexas.edu/apps/degree/audits/',
+        url: 'https://registrar.tamu.edu/administrative-services/degree-audit',
     },
     {
         text: 'My Registered Courses',
-        url: 'https://utdirect.utexas.edu/registration/classlist.WBX',
+        url: 'https://howdy.tamu.edu/uPortal/normal/render.uP',
     },
 ];
 

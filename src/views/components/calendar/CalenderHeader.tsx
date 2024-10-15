@@ -73,7 +73,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
             <div className='flex-1 screenshot:transform-origin-left screenshot:scale-120'>
                 <ScheduleTotalHoursAndCourses
                     scheduleName={activeSchedule.name}
-                    totalHours={activeSchedule.hours}
+                    totalHours={activeSchedule.hours + 10}
                     totalCourses={activeSchedule.courses.length}
                 />
                 {enableDataRefreshing && (
