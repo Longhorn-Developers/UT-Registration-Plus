@@ -26,7 +26,7 @@ export default async function createSchedule(scheduleName: string): Promise<stri
         id: generateRandomId(),
         name,
         courses: [],
-        hours: 0,
+        hours: 10,
         updatedAt: Date.now(),
     });
 

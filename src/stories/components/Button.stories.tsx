@@ -107,7 +107,7 @@ export const CourseButtons: Story = {
     render: props => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
             <Button {...props} variant='filled' color='ut-green' icon={AddIcon}>
-                Add Course
+                Remove Course
             </Button>
             <Button {...props} variant='filled' color='theme-red' icon={RemoveIcon}>
                 Remove Course

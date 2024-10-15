@@ -4,22 +4,22 @@ import type { HexColor } from './Color';
 
 export const colors = {
     ut: {
-        burntorange: '#BF5700',
-        black: '#333F48',
-        orange: '#F8971F',
-        yellow: '#FFD600',
-        lightgreen: '#A6CD57',
-        green: '#579D42',
-        teal: '#00A9B7',
-        blue: '#005F86',
-        gray: '#9CADB7',
-        offwhite: '#D6D2C4',
-        concrete: '#95A5A6',
+        burntorange: '#B91C1C',
+        black: '#B91C1C',
+        orange: '#B91C1C',
+        yellow: '#B91C1C',
+        lightgreen: '#B91C1C',
+        green: '#B91C1C',
+        teal: '#B91C1C',
+        blue: '#B91C1C',
+        gray: '#B91C1C',
+        offwhite: '##B91C1C',
+        concrete: '#B91C1C',
         red: '#B91C1C', //   Not sure if this should be here, but it's used for remove course, and add course is ut-green
     },
     theme: {
         red: '#BF0000',
-        black: '#1A2024',
+        black: '#B91C1C',
     },
 } as const satisfies Record<string, Record<string, string>>;
 
