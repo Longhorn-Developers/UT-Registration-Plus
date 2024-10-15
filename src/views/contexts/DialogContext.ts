@@ -16,6 +16,9 @@ export interface DialogInfo {
     onClose?: () => void;
 }
 
+/**
+ * Options for configuring the behavior of a dialog.
+ */
 export interface DialogOptions {
     /**
      * Whether to show the dialog immediately.

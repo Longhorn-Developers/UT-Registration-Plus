@@ -39,6 +39,9 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
         };
 
         handleMigration();
+
+        // This is on purpose
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [processState]);
 
     return (
@@ -81,6 +84,15 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
     );
 }
 
+/**
+ * Custom hook that provides a function to show a migration dialog.
+ *
+ * The dialog prompts the user to migrate their saved schedules if there are any courses
+ * available to migrate. If there are no courses to migrate, it informs the user that
+ * migration has already been completed.
+ *
+ * @returns A function that, when called, checks for courses to migrate and shows the appropriate dialog.
+ */
 export function useMigrationDialog() {
     const showDialog = usePrompt();
 
@@ -114,6 +126,19 @@ export function useMigrationDialog() {
     };
 }
 
+/**
+ * MigrationDialog component.
+ *
+ * This component is responsible for checking if a migration has already been attempted
+ * and if there are any courses from UTRPv1 that need to be migrated. If migration is needed,
+ * it triggers the migration dialog.
+ *
+ * @returns An empty fragment.
+ *
+ * @remarks
+ * The component uses the `useMigrationDialog` hook to show the migration dialog and the
+ * `useEffect` hook to perform the migration check on component mount.
+ */
 export function MigrationDialog(): JSX.Element {
     const showMigrationDialog = useMigrationDialog();
 
@@ -126,6 +151,9 @@ export function MigrationDialog(): JSX.Element {
         };
 
         checkMigration();
+
+        // This is on purpose
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // (not actually a useless fragment)

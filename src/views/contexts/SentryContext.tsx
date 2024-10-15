@@ -84,6 +84,9 @@ export default function SentryProvider({
             client.init();
         }
         return [scope, client];
+
+        // This is on purpose to only run once
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
