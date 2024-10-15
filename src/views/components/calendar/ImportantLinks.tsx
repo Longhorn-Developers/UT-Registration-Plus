@@ -28,19 +28,19 @@ const links: LinkItem[] = [
     // },
     {
         text: 'Registration Info Sheet',
-        url: 'https://utdirect.utexas.edu/registrar/ris.WBX',
+        url: 'https://www.youtube.com/watch?v=xvFZjo5PgG0&pp=ygUJcmljayByb2xs',
     },
     {
         text: 'Register For Courses',
-        url: 'https://utdirect.utexas.edu/registration/chooseSemester.WBX',
+        url: 'https://www.youtube.com/watch?v=xvFZjo5PgG0&pp=ygUJcmljayByb2xs',
     },
     {
         text: 'Degree Audit',
-        url: 'https://utdirect.utexas.edu/apps/degree/audits/',
+        url: 'https://www.youtube.com/watch?v=xvFZjo5PgG0&pp=ygUJcmljayByb2xs',
     },
     {
         text: 'My Registered Courses',
-        url: 'https://utdirect.utexas.edu/registration/classlist.WBX',
+        url: 'https://www.youtube.com/watch?v=xvFZjo5PgG0&pp=ygUJcmljayByb2xs',
     },
 ];
 
@@ -51,7 +51,7 @@ const links: LinkItem[] = [
 export default function ImportantLinks({ className }: Props): JSX.Element {
     return (
         <article className={clsx(className, 'flex flex-col gap-2')}>
-            <Text variant='h3'>Useful Links</Text>
+            <Text variant='h3'>Blehhhhh</Text>
             {links.map(link => (
                 <a
                     key={link.text}

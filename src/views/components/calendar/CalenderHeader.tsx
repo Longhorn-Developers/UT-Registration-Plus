@@ -79,7 +79,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                 {enableDataRefreshing && (
                     <div className='flex items-center gap-1 screenshot:hidden'>
                         <Text variant='mini' className='text-nowrap text-ut-gray font-normal!'>
-                            DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                            deez: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                         </Text>
                         <button className='inline-block h-4 w-4 bg-transparent p-0 btn'>
                             <RefreshIcon className='h-4 w-4 animate-duration-800 text-ut-black' />

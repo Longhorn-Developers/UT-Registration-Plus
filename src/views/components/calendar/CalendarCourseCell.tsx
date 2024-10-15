@@ -50,7 +50,6 @@ export default function CalendarCourseCell({
 
         const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
         });
 
         return () => {
@@ -69,9 +68,7 @@ export default function CalendarCourseCell({
         }
     }
 
-    // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
-    // Note that overflow-hidden is the duct tape holding this all together
 
     return (
         <div
@@ -85,7 +82,10 @@ export default function CalendarCourseCell({
                 className
             )}
             style={{
-                backgroundColor: colors.primaryColor,
+                backgroundImage: `url('/images/rick_roll.gif')`, // Path to your GIF
+                backgroundSize: 'cover', // Ensure the GIF covers the entire div
+                backgroundPosition: 'center', // Center the GIF
+                backgroundRepeat: 'no-repeat', // Prevent the GIF from repeating in tiles
             }}
             onClick={onClick}
         >
