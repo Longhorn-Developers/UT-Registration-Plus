@@ -41,6 +41,7 @@
         "postcss.config.cjs",
         ".storybook",
         "unocss.config.ts",
+        "gulpfile.js",
         "@types"
     ]
 }

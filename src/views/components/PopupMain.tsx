@@ -9,14 +9,12 @@ import List from '@views/components/common/List';
 import Text from '@views/components/common/Text/Text';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
-import clsx from 'clsx';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect, useState } from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
 import CalendarIcon from '~icons/material-symbols/calendar-month';
 import Feedback from '~icons/material-symbols/flag';
-import RefreshIcon from '~icons/material-symbols/refresh';
 import SettingsIcon from '~icons/material-symbols/settings';
 
 import { Button } from './common/Button';
@@ -182,9 +180,9 @@ export default function PopupMain(): JSX.Element {
                 {enableDataRefreshing && (
                     <div className='inline-flex items-center self-center gap-1'>
                         <Text variant='mini' className='text-ut-gray !font-normal'>
-                            DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                         </Text>
-                        <button
+                        {/* <button
                             className='h-4 w-4 bg-transparent p-0 btn'
                             onClick={() => {
                                 setIsRefreshing(true);
@@ -195,7 +193,7 @@ export default function PopupMain(): JSX.Element {
                                     'animate-spin': isRefreshing,
                                 })}
                             />
-                        </button>
+                        </button> */}
                     </div>
                 )}
             </div>
