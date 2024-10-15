@@ -1,6 +1,7 @@
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import Settings from '@views/components/settings/Settings';
+import SentryProvider from '@views/contexts/SentryContext';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React from 'react';
 
@@ -13,10 +14,12 @@ import React from 'react';
 export default function SettingsPage() {
     useKC_DABR_WASM();
     return (
-        <ExtensionRoot>
-            <DialogProvider>
-                <Settings />
-            </DialogProvider>
-        </ExtensionRoot>
+        <SentryProvider fullInit>
+            <ExtensionRoot>
+                <DialogProvider>
+                    <Settings />
+                </DialogProvider>
+            </ExtensionRoot>
+        </SentryProvider>
     );
 }

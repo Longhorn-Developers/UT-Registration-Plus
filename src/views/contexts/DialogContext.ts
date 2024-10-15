@@ -16,10 +16,22 @@ export interface DialogInfo {
     onClose?: () => void;
 }
 
+export interface DialogOptions {
+    /**
+     * Whether to show the dialog immediately.
+     */
+    immediate?: boolean;
+
+    /**
+     * Whether to allow the user to close the dialog by clicking outside of it. (Defaults to true)
+     */
+    closeOnClickOutside?: boolean;
+}
+
 /**
  * Function to show a dialog.
  */
-export type ShowDialogFn = (info: DialogInfo | CloseWrapper<DialogInfo>) => void;
+export type ShowDialogFn = (info: DialogInfo | CloseWrapper<DialogInfo>, options?: DialogOptions) => void;
 
 /**
  * Context for the dialog provider.
