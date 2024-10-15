@@ -10,6 +10,7 @@ import inspect from 'vite-plugin-inspect';
 
 import packageJson from './package.json';
 import manifest from './src/manifest';
+import vitePluginRunCommandOnDemand from './utils/plugins/run-command-on-demand';
 
 const root = resolve(__dirname, 'src');
 const pagesDir = resolve(root, 'pages');
@@ -141,6 +142,10 @@ export default defineConfig({
         renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
         renameFile('src/pages/report/index.html', 'report.html'),
+        vitePluginRunCommandOnDemand({
+            afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
+            closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',
+        }),
     ],
     resolve: {
         alias: {
@@ -179,6 +184,9 @@ export default defineConfig({
         },
     },
     build: {
+        target: ['chrome120', 'edge120', 'firefox120'],
+        emptyOutDir: true,
+        reportCompressedSize: false,
         rollupOptions: {
             input: {
                 debug: 'src/pages/debug/index.html',
@@ -186,11 +194,10 @@ export default defineConfig({
                 options: 'src/pages/options/index.html',
                 report: 'src/pages/report/index.html',
             },
-            // output: {
-            //     entryFileNames: `[name].js`, // otherwise it will add the hash
-            //     chunkFileNames: `[name].js`,
-            // },
-            // external: ['/@react-refresh'],
+            output: {
+                chunkFileNames: `assets/[name]-[hash].js`,
+                assetFileNames: `assets/[name]-[hash][extname]`,
+            },
         },
     },
     test: {

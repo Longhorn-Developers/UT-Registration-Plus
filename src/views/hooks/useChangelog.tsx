@@ -5,6 +5,8 @@ import React from 'react';
 
 import MaterialSymbolsClose from '~icons/material-symbols/close';
 
+import { Button } from '../components/common/Button';
+
 /**
  * Custom hook that provides a function to display a changelog dialog.
  *
@@ -16,16 +18,13 @@ export default function useChangelog(): () => void {
     const handleOnClick = () => {
         showDialog(close => ({
             title: (
-                <div className='flex items-center justify-between p-4'>
+                <div className='sticky top-0 flex items-center justify-between bg-white p-4'>
                     <Text variant='h1' className='text-theme-black'>
                         Changelog
                     </Text>
-                    <button
-                        onClick={close}
-                        className='text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-                    >
-                        <MaterialSymbolsClose className='text-2xl' />
-                    </button>
+                    <Button variant='single' onClick={close} color='theme-black' className='p-1 text-gray-700'>
+                        <MaterialSymbolsClose className='h-7 w-7' />
+                    </Button>
                 </div>
             ),
             description: <ChangelogPopup />,

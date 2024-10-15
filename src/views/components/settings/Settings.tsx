@@ -6,7 +6,7 @@ import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { Button } from '@views/components/common/Button';
 import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import Divider from '@views/components/common/Divider';
-import { SmallLogo } from '@views/components/common/LogoIcon';
+import { LargeLogo } from '@views/components/common/LogoIcon';
 // import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
@@ -240,14 +240,14 @@ export default function Settings(): JSX.Element {
     }
 
     return (
-        <div className='min-w-xl bg-white'>
-            <header className='flex items-center justify-between border-b p-6'>
-                <div className='flex items-center'>
-                    <SmallLogo className='pr-4' />
-                    <Divider size='2rem' orientation='vertical' />
-                    <h1 className='pl-4 text-xl text-ut-burntorange font-bold'>UTRP SETTINGS & CREDITS PAGE</h1>
-                </div>
-                <div className='flex space-x-4'>
+        <div>
+            <header className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
+                <LargeLogo />
+                <Divider className='mx-2 self-center md:mx-4' size='2.5rem' orientation='vertical' />
+                <Text variant='h1' className='flex-1 text-ut-burntorange'>
+                    UTRP SETTINGS & CREDITS PAGE
+                </Text>
+                <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
                     <Button variant='single' color='theme-black' onClick={handleChangelogOnClick}>
                         <IconoirGitFork className='h-6 w-6 text-ut-gray' />
                         <Text variant='small' className='text-ut-gray font-normal'>
@@ -408,7 +408,7 @@ export default function Settings(): JSX.Element {
                                 <Preview>
                                     <div className='inline-flex items-center self-center gap-1'>
                                         <Text variant='small' className='text-ut-gray !font-normal'>
-                                            DATA LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                                         </Text>
                                     </div>
                                     <Text
