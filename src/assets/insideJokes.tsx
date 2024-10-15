@@ -115,6 +115,7 @@ const splashText: string[] = [
     `It's ${new Date().toLocaleString('en-US', { month: 'long', day: 'numeric' })} and OU still sucks`,
     'As seen on TV!	',
     "Should you major in Compsci? well, here's a better question. do you wanna have a bad time?",
+    "Lat: 30.285571, Long: -97.738190, 45 degrees east of north", // Location of the UT Tower aligned with the balls
 ];
 
 export default splashText;
