@@ -214,7 +214,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     icon={!courseAdded ? Add : Remove}
                     onClick={handleAddOrRemoveCourse}
                 >
-                    {!courseAdded ? 'Remove Course' : 'Add Course'}
+                    {courseAdded ? 'Add Course' : 'Remove Course'}
                 </Button>
             </div>
             <Divider orientation='horizontal' size='100%' />
