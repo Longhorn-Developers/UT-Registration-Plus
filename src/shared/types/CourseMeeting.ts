@@ -59,7 +59,7 @@ export class CourseMeeting {
         const hasDayConflict = days.some(day => otherDays.includes(day));
         const hasTimeConflict = startTime < otherEndTime && endTime > otherStartTime;
 
-        return hasDayConflict && hasTimeConflict;
+        return !hasDayConflict || !hasTimeConflict;
     }
 
     /**
