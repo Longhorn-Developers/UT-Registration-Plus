@@ -61,9 +61,9 @@ export const saveAsCal = async () => {
             const formattedEndTime = formatToHHMMSS(endTime);
 
             // Map days to ICS compatible format
-            console.log(days);
+            // console.log(days);
             const icsDays = days.map(day => CAL_MAP[day]).join(',');
-            console.log(icsDays);
+            // console.log(icsDays);
 
             // Assuming course has date started and ended, adapt as necessary
             // const year = new Date().getFullYear(); // Example year, adapt accordingly
