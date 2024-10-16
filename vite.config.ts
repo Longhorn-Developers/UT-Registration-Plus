@@ -187,6 +187,7 @@ export default defineConfig({
         target: ['chrome120', 'edge120', 'firefox120'],
         emptyOutDir: true,
         reportCompressedSize: false,
+        sourcemap: true,
         rollupOptions: {
             input: {
                 debug: 'src/pages/debug/index.html',
