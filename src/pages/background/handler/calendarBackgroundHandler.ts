@@ -5,9 +5,7 @@ import type { CalendarBackgroundMessages } from '@shared/messages/CalendarMessag
 import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const getAllTabInfos = async () => {
-    const openTabs = (await chrome.tabs.query({ currentWindow: true })).filter(
-        (tab): tab is TabWithId => tab.id !== undefined
-    );
+    const openTabs = (await chrome.tabs.query({})).filter((tab): tab is TabWithId => tab.id !== undefined);
     const results = await Promise.allSettled(openTabs.map(tab => tabs.getTabInfo(undefined, tab.id)));
 
     type TabInfo = PromiseFulfilledResult<Awaited<ReturnType<typeof tabs.getTabInfo>>>;
@@ -30,14 +28,11 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
         const openCalendarTabInfo = allTabs.find(tab => tab.url?.startsWith(calendarUrl));
 
         if (openCalendarTabInfo !== undefined) {
-            const tabId = openCalendarTabInfo.tab.id;
+            const tabid = openCalendarTabInfo.tab.id;
 
-            await chrome.tabs.update(tabId, { active: true });
-            await chrome.scripting.executeScript({
-                target: { tabId },
-                func: () => window.focus(),
-            });
-            if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, tabId);
+            await chrome.tabs.update(tabid, { active: true });
+            await chrome.windows.update(openCalendarTabInfo.tab.windowId, { focused: true, drawAttention: true });
+            if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, tabid);
 
             sendResponse(openCalendarTabInfo.tab);
         } else {
