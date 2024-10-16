@@ -10,7 +10,12 @@ function zip() {
     const manifest = require('./package.json');
     const zipFileName = `${manifest.name.replaceAll(' ', '-')}-${manifest.version}.zip`;
 
-    return gulp.src('dist/**').pipe(gulpZip(zipFileName)).pipe(gulp.dest('package'));
+    return gulp
+        .src('dist/**', {
+            encoding: false,
+        })
+        .pipe(gulpZip(zipFileName))
+        .pipe(gulp.dest('package'));
 }
 
 // Temp fix for CSP on Chrome 130
