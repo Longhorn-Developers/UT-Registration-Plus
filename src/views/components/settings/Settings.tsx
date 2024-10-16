@@ -101,8 +101,12 @@ export default function Settings(): JSX.Element {
 
     useEffect(() => {
         const fetchGitHubStats = async () => {
-            const stats = await gitHubStatsService.fetchGitHubStats();
-            setGitHubStats(stats);
+            try {
+                const stats = await gitHubStatsService.fetchGitHubStats();
+                setGitHubStats(stats);
+            } catch (error) {
+                console.warn('Error fetching GitHub stats:', error);
+            }
         };
 
         const initAndSetSettings = async () => {
