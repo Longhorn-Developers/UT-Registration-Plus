@@ -207,29 +207,39 @@ export default function Settings(): JSX.Element {
         // Exit if the user cancels the prompt
         if (link === null) return;
 
-        const response = await fetch(link);
-        const text = await response.text();
-        const doc = new DOMParser().parseFromString(text, 'text/html');
-
-        const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, link);
-        const tableRows = getCourseTableRows(doc);
-        const courses = scraper.scrape(tableRows, false);
-
-        if (courses.length === 1) {
-            const description = scraper.getDescription(doc);
-            const row = courses[0]!;
-            const course = row.course!;
-            course.description = description;
-            // console.log(course);
-
-            if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-                console.log('adding course');
-                addCourse(activeSchedule.id, course);
-            } else {
-                console.log('course already exists');
+        try {
+            let response: Response;
+            try {
+                response = await fetch(link);
+            } catch (e) {
+                alert(`Failed to fetch url '${link}'`);
+                return;
             }
-        } else {
-            console.log(courses);
+            const text = await response.text();
+            const doc = new DOMParser().parseFromString(text, 'text/html');
+
+            const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, link);
+            const tableRows = getCourseTableRows(doc);
+            const courses = scraper.scrape(tableRows, false);
+
+            if (courses.length === 1) {
+                const description = scraper.getDescription(doc);
+                const row = courses[0]!;
+                const course = row.course!;
+                course.description = description;
+                // console.log(course);
+
+                if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
+                    console.log('adding course');
+                    addCourse(activeSchedule.id, course);
+                } else {
+                    console.log('course already exists');
+                }
+            } else {
+                console.log(courses);
+            }
+        } catch (error) {
+            console.error('Error scraping course:', error);
         }
     };
 
