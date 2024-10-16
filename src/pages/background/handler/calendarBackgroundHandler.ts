@@ -30,7 +30,8 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
         if (openCalendarTabInfo !== undefined) {
             const tabid = openCalendarTabInfo.tab.id;
 
-            chrome.tabs.update(tabid, { active: true });
+            await chrome.tabs.update(tabid, { active: true });
+            await chrome.windows.update(openCalendarTabInfo.tab.windowId, { focused: true, drawAttention: true });
             if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, tabid);
 
             sendResponse(openCalendarTabInfo.tab);
