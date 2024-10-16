@@ -32,7 +32,7 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
                 }
                 setProcessState(2);
                 close();
-            } else {
+            } else if (processState === 0) {
                 const { pendingMigration } = await chrome.storage.session.get('pendingMigration');
                 if (pendingMigration) setProcessState(1);
             }
