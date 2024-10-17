@@ -31,6 +31,7 @@
     "include": [
         "src",
         "utils",
+        "scripts",
         "vite.config.ts",
         "@types",
         "node_modules/@types",
@@ -40,6 +41,7 @@
         "postcss.config.cjs",
         ".storybook",
         "unocss.config.ts",
+        "gulpfile.js",
         "@types"
     ]
 }
