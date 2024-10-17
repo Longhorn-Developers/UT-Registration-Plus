@@ -95,6 +95,12 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
             const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=&unique=&instructor_first=${firstName}&instructor_last=${lastName}&course_type=In+Residence&search=Search`;
             openNewTab({ url });
         }
+
+        // Show the course's syllabi when no instructors listed
+        if (instructors.length === 0) {
+            const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=&unique=&instructor_first=&instructor_last=&course_type=In+Residence&search=Search`;
+            openNewTab({ url });
+        }
     };
 
     const handleAddOrRemoveCourse = async () => {
@@ -199,10 +205,22 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     }}
                 />
                 <Divider size='1.75rem' orientation='vertical' />
-                <Button variant='outline' color='ut-blue' icon={Reviews} onClick={handleOpenRateMyProf}>
+                <Button
+                    variant='outline'
+                    color='ut-blue'
+                    icon={Reviews}
+                    onClick={handleOpenRateMyProf}
+                    disabled={instructors.length === 0}
+                >
                     RateMyProf
                 </Button>
-                <Button variant='outline' color='ut-teal' icon={Mood} onClick={handleOpenCES}>
+                <Button
+                    variant='outline'
+                    color='ut-teal'
+                    icon={Mood}
+                    onClick={handleOpenCES}
+                    disabled={instructors.length === 0}
+                >
                     CES
                 </Button>
                 <Button variant='outline' color='ut-orange' icon={Description} onClick={handleOpenPastSyllabi}>
