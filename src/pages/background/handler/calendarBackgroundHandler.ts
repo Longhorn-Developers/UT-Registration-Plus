@@ -2,6 +2,7 @@ import type { TabWithId } from '@background/util/openNewTab';
 import openNewTab from '@background/util/openNewTab';
 import { tabs } from '@shared/messages';
 import type { CalendarBackgroundMessages } from '@shared/messages/CalendarMessages';
+import { StatsStore } from '@shared/storage/StatsStore';
 import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const getAllTabInfos = async () => {
@@ -20,6 +21,9 @@ const getAllTabInfos = async () => {
 
 const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
     async switchToCalendarTab({ data, sendResponse }) {
+        StatsStore.get('timesOpenedCalendar').then(timesOpenedCalendar =>
+            StatsStore.set('timesOpenedCalendar', timesOpenedCalendar + 1)
+        );
         const { uniqueId } = data;
         const calendarUrl = chrome.runtime.getURL(`calendar.html`);
 

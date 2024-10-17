@@ -4,6 +4,7 @@ import DialogProvider from '@views/components/common/DialogProvider/DialogProvid
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { MigrationDialog } from '@views/components/common/MigrationDialog';
 import SentryProvider from '@views/contexts/SentryContext';
+import { useInteractionStatsCollecting } from '@views/hooks/useInteractionStatsCollecting';
 import { MessageListener } from 'chrome-extension-toolkit';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect } from 'react';
@@ -28,6 +29,8 @@ export default function CalendarMain() {
 
         return () => tabInfoListener.unlisten();
     }, []);
+
+    useInteractionStatsCollecting();
 
     return (
         <SentryProvider fullInit>

@@ -3,6 +3,7 @@ import { createMessenger } from 'chrome-extension-toolkit';
 import type BrowserActionMessages from './BrowserActionMessages';
 import type { CalendarBackgroundMessages, CalendarTabMessages } from './CalendarMessages';
 import type CESMessage from './CESMessage';
+import type { StatsMessages } from './StatsMessages';
 import type TabInfoMessages from './TabInfoMessages';
 import type TabManagementMessages from './TabManagementMessages';
 import type { UserScheduleMessages } from './UserScheduleMessages';
@@ -14,6 +15,7 @@ export type BACKGROUND_MESSAGES = BrowserActionMessages &
     TabManagementMessages &
     UserScheduleMessages &
     CESMessage &
+    StatsMessages &
     CalendarBackgroundMessages;
 
 /**
