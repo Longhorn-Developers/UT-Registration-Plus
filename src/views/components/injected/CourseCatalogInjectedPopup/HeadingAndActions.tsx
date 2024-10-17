@@ -222,8 +222,8 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                               }
                               return (
                                   <Text variant='h4' as='p'>
-                                        No time has been provided.
-                                    </Text>
+                                      No time has been provided.
+                                  </Text>
                               );
                           })()}
                 </div>
