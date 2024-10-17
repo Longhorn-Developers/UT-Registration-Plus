@@ -9,6 +9,7 @@ import onUpdate from './events/onUpdate';
 import browserActionHandler from './handler/browserActionHandler';
 import calendarBackgroundHandler from './handler/calendarBackgroundHandler';
 import CESHandler from './handler/CESHandler';
+import statsHandler from './handler/statsHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
 import userScheduleHandler from './handler/userScheduleHandler';
 
@@ -52,6 +53,7 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...userScheduleHandler,
     ...CESHandler,
     ...calendarBackgroundHandler,
+    ...statsHandler,
 });
 
 messageListener.listen();
