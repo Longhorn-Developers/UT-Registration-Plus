@@ -1,4 +1,17 @@
-## 2.0.0 (2024-10-15)
+## [2.0.1](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.0.0...v2.0.1) (2024-10-17)
+
+### Features
+
+-   spring 2024 instructors db ([#317](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/317)) ([79dd29c](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/79dd29cfc9e849b09e7d91bd0eed51c1c93b3352))
+
+### Bug Fixes
+
+-   add a little error checking to settings ([#315](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/315)) ([e261641](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/e261641e5985d8bd5047d8a0be5d1caae844e40f))
+-   gulp zip ([#314](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/314)) ([05f00b2](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/05f00b23d26b90f564710db4364426e90c8d6831))
+-   migration loop ([aeff5e0](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/aeff5e09a238503293c3882d97d40270da1e4883))
+-   show calendar in active window ([#312](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/312)) ([ceba38b](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/ceba38b1ac74ec9e6630222183bd466a8d12c27d))
+
+## [2.0.0](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/b4e8c7589e53f1064d70703459cc6d66fae1b04c...v2.0.0) (2024-10-15)
 
 ### Features
 
@@ -133,12 +146,14 @@
 -   splash text additions before v2 release ([#296](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/296)) ([e774f31](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/e774f316e3f92c03e79274a55f1f729178c9a14a))
 -   splash text has arrived! ([#246](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/246)) ([9971435](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/9971435716dec11e954dc26c14bf7d1505563d0d))
 -   Storybook for Vite ([#52](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/52)) ([9cc299c](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/9cc299ced6132644a5c2375b95a8a16a3482601b))
+-   swe title updates ([#310](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/310)) ([4629626](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/4629626a31934c491758ddca874e5018d9c22e57))
 -   switch button ([#229](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/229)) ([abae7a5](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/abae7a5c22ab944262d66ae897298b008a03c5f1))
 -   temporary removal of waitlist etc ([#236](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/236)) ([d424ccc](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/d424ccce49ba05305b24cb61aeb4ffeada5bab33))
 -   UnoCSS (TailwindCSS) (Storybook only) ([#61](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/61)) ([85c7f78](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/85c7f7817c58f13f6a4e8bec13a45f6412ad87db))
 -   UnoCSS (TailwindCSS) (Storybook only) ([#61](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/61)) ([6521a4b](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/6521a4b2a90af06e182c779f2fc7cb1a3b1e55c1))
 -   unplugin-icons ([#62](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/62)) ([2d67b12](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/2d67b1218ff852c59901b77909615c5f54794a67))
 -   unplugin-icons ([#62](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/62)) ([945e09b](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/945e09b49e4ffa9bd4b02442f6567bb99831923e))
+-   update admin titles ([4cf8c3f](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/4cf8c3f9645cd8fda07244413cdc406105b12fec))
 -   update badge count when schedule changes ([#150](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/150)) ([a5e9e3c](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/a5e9e3c2145d61d8cc5788eb50fa19718e6d13bf))
 -   update Button to v2 design ([863521f](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/863521fb3bb268131bd3f369064ae10a442b4fbc))
 -   update dialog component to headlessui ([#159](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/159)) ([442be8c](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/442be8cbee06ec403467b100d8d5300dd4a7ea72))
