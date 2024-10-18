@@ -10,7 +10,10 @@ WORKDIR /app
 # Copy package.json, pnpm-lock.yaml, and .nvmrc
 COPY package.json pnpm-lock.yaml .nvmrc ./
 
-# Install dependencies
+# Copy patches directory if it exists
+COPY patches ./patches
+
+# Install dependencies, including applying patches
 RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the source code
@@ -19,7 +22,7 @@ COPY . .
 # Stage 2: Final stage
 FROM base AS final
 
-# Install zip utility
+# Install zip utility and bash
 RUN apk add --no-cache zip bash
 
 # Set working directory
