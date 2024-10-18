@@ -136,13 +136,13 @@ The Docker setup supports three modes of operation: build, zip, and dev. You can
 This mode builds the extension and places the output in the `dist` folder.
 
 ```
-docker run -it --rm -v $(pwd)/output:/extension/dist ut-registration-plus build
+docker run -it --rm -v $(pwd)/dist:/extension/dist ut-registration-plus build
 ```
 
 or
 
 ```
-docker run -it --rm -v $(pwd)/output:/extension/dist -e BUILD_MODE=build ut-registration-plus
+docker run -it --rm -v $(pwd)/dist:/extension/dist -e BUILD_MODE=build ut-registration-plus
 ```
 
 #### Zip Mode
@@ -150,21 +150,23 @@ docker run -it --rm -v $(pwd)/output:/extension/dist -e BUILD_MODE=build ut-regi
 This mode builds the extension and creates a zipped package in the `package` folder.
 
 ```
-docker run -it --rm -v $(pwd)/output:/extension/package ut-registration-plus zip
+docker run -it --rm -v $(pwd)/package:/extension/package ut-registration-plus zip
 ```
 
 or
 
 ```
-docker run -it --rm -v $(pwd)/output:/extension/package -e BUILD_MODE=zip ut-registration-plus
+docker run -it --rm -v $(pwd)/package:/extension/package -e BUILD_MODE=zip ut-registration-plus
 ```
 
 #### Development Mode with Hot Module Replacement (HMR)
 
 This mode runs the extension in development mode with HMR support.
 
+_Note_: This currently doesn't work.
+
 ```
-docker run -it --rm -v $(pwd)/dist:/extension/dist -p 5173:5173 ut-registration-plus dev
+docker run -it --rm -v $(pwd)/dist:/extension/dist -v $(pwd)/dist:/extension/dist -p 5173:5173 ut-registration-plus dev
 ```
 
 or
@@ -175,8 +177,8 @@ docker run -it --rm -v $(pwd)/dist:/extension/dist -p 5173:5173 -e BUILD_MODE=de
 
 #### Accessing the Built Extension
 
--   For build mode, the extension files will be in the `output/dist` directory on your host machine.
--   For zip mode, the zipped extension will be in the `output/package` directory on your host machine.
+-   For build mode, the extension files will be in the `dist` directory on your host machine.
+-   For zip mode, the zipped extension will be in the `package` directory on your host machine.
 -   For dev mode, the extension will be continuously built in the `dist` directory, and you can load it as an unpacked extension in Chrome.
 
 #### Docker Development Workflow
