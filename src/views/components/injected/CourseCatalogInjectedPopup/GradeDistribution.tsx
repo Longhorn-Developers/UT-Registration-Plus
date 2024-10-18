@@ -252,6 +252,12 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                         </div>
                     )}
                     <HighchartsReact ref={ref} highcharts={Highcharts} options={chartOptions} />
+                    <div className='flex flex-wrap content-center items-center self-stretch justify-center gap-3 text-center'>
+                        <Text variant='mini'>
+                            The &#39;Other&#39; grade category refers to all non-standard letter grades, such as In
+                            Progress, Incomplete, Q-Drop, Withdrawn, Credit/No Credit, Satisfactory/Unsatisfactory, etc.
+                        </Text>
+                    </div>
                 </>
             )}
         </div>
