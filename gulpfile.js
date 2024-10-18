@@ -1,48 +1,78 @@
-// (Thanks go to https://github.com/pnd280/complexity/blob/alpha/gulpfile.js)
-
-import cp from 'child_process';
+import { deleteSync } from 'del';
 import fs from 'fs';
-import gulp from 'gulp';
-import gulpZip from 'gulp-zip';
-import { createRequire } from 'module';
+import { dest, series, src } from 'gulp';
+import { exec } from 'gulp-execa';
+import zip from 'gulp-zip';
+import path from 'path';
 
+const DIST_DIR = 'dist';
+const PACKAGE_DIR = 'package';
+const DATABASE_DIR = path.join(DIST_DIR, 'database');
+
+// Remove extra database folder
+function removeExtraDatabaseDir(cb) {
+    const deletedDirectoryPaths = deleteSync([DATABASE_DIR]);
+    console.log('Deleted directories:', deletedDirectoryPaths);
+
+    cb();
+}
+
+// Instrument with Sentry
 // Make sure sentry is configured https://docs.sentry.io/platforms/javascript/sourcemaps/uploading/typescript/#2-configure-sentry-cli
-function instrumentWithSentry() {
-    return cp.exec('sentry-cli sourcemaps inject dist/ && sentry-cli sourcemaps upload dist/');
+async function instrumentWithSentry(cb) {
+    await exec(`sentry-cli sourcemaps inject ${DIST_DIR}`);
+    await exec(`sentry-cli sourcemaps upload ${DIST_DIR}`);
+    console.log('Sentry instrumentation completed.');
+
+    cb();
 }
 
+// Zip the dist folder
 function zipDist() {
-    const require = createRequire(import.meta.url);
-    const manifest = require('./package.json');
-    const zipFileName = `${manifest.name.replaceAll(' ', '-')}-${manifest.version}.zip`;
+    const packageInfo = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+    const zipFileName = `${packageInfo.name.replace(/ /g, '-')}-${packageInfo.version}.zip`;
 
-    return gulp
-        .src('dist/**', {
-            encoding: false,
-        })
-        .pipe(gulpZip(zipFileName))
-        .pipe(gulp.dest('package'));
+    return src(`${DIST_DIR}/**`, {
+        base: DIST_DIR,
+        encoding: false, // Disable encoding to handle binary files correctly
+    })
+        .pipe(zip(zipFileName))
+        .pipe(dest(PACKAGE_DIR))
+        .on('end', () => console.log(`Zip file created: ${zipFileName}`));
 }
-
-const zip = gulp.series(instrumentWithSentry, zipDist);
 
 // Temp fix for CSP on Chrome 130
 // Manually remove them because there is no option to disable use_dynamic_url on @crxjs/vite-plugin
-function forceDisableUseDynamicUrl(done) {
-    const require = createRequire(import.meta.url);
-    const manifest = require('./dist/manifest.json');
+// Force disable use_dynamic_url in manifest.json
+function forceDisableUseDynamicUrl(cb) {
+    const manifestPath = path.join(DIST_DIR, 'manifest.json');
 
-    manifest.web_accessible_resources.forEach(resource => {
-        delete resource.use_dynamic_url;
-    });
-
-    if (!fs.existsSync('./dist/manifest.json')) {
-        return done();
+    if (!fs.existsSync(manifestPath)) {
+        console.log('manifest.json not found. Skipping modification.');
+        return cb();
     }
 
-    fs.writeFileSync('./dist/manifest.json', JSON.stringify(manifest, null, 2));
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+    let modified = false;
 
-    done();
+    manifest.web_accessible_resources.forEach(resource => {
+        if (resource.use_dynamic_url) {
+            delete resource.use_dynamic_url;
+            modified = true;
+        }
+    });
+
+    if (modified) {
+        fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+        console.log('use_dynamic_url removed from manifest.json');
+    } else {
+        console.log('No use_dynamic_url found in manifest.json. No changes made.');
+    }
+
+    cb();
 }
 
-export { forceDisableUseDynamicUrl, zip };
+// Main build task
+const zipProdBuild = series(removeExtraDatabaseDir, instrumentWithSentry, zipDist);
+
+export { forceDisableUseDynamicUrl, zipProdBuild };
