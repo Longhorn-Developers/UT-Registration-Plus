@@ -1,5 +1,6 @@
 import 'react-loading-skeleton/dist/skeleton.css';
 
+import { background } from '@shared/messages';
 import type { ScrapedRow } from '@shared/types/Course';
 import useInfiniteScroll from '@views/hooks/useInfiniteScroll';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
@@ -62,6 +63,10 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
 
         // add the scraped courses to the current page
         addRows(scrapedRows);
+
+        if (scrapedRows.length > 0) {
+            background.infiniteScrolled();
+        }
     }, [addRows, isSinglePage]);
 
     if (!container || status === AutoLoadStatus.DONE || isSinglePage) {
