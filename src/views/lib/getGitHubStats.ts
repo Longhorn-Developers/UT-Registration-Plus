@@ -43,11 +43,11 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
     { name: 'Diego Perez', role: 'Staff Engineer', githubUsername: 'doprz' },
     { name: 'Lukas Zenick', role: 'Senior Software Engineer', githubUsername: 'Lukas-Zenick' },
     { name: 'Isaiah Rodriguez', role: 'Chief Operations and Design Officer', githubUsername: 'IsaDavRod' },
+    { name: 'Samuel Gunter', role: 'Senior Software Engineer', githubUsername: 'Samathingamajig' },
+    { name: 'Derek Chen', role: 'Senior Software Engineer', githubUsername: 'DereC4' },
 ] as const satisfies TeamMember[];
 
 export const LONGHORN_DEVELOPERS_SWE = [
-    { name: 'Samuel Gunter', role: 'Software Engineer', githubUsername: 'Samathingamajig' },
-    { name: 'Derek Chen', role: 'Software Engineer', githubUsername: 'DereC4' },
     { name: 'Casey Charleston', role: 'Software Engineer', githubUsername: 'caseycharleston' },
     { name: 'Vinson', role: 'Software Engineer', githubUsername: 'vinsonzheng499' },
     { name: 'Vivek', role: 'Software Engineer', githubUsername: 'vivek12311' },
