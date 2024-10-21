@@ -65,7 +65,7 @@ export function Button({
         >
             {Icon && <Icon className='h-6 w-6' />}
             {!isIconOnly && (
-                <Text variant='h4' className='translate-y-0.08'>
+                <Text variant='h4' className='inline-flex translate-y-0.08 items-center gap-2'>
                     {children}
                 </Text>
             )}
