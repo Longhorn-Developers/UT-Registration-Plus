@@ -501,7 +501,11 @@ export default function Settings(): JSX.Element {
                     <section className='my-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTERS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
-                            {LONGHORN_DEVELOPERS_SWE.map(swe => (
+                            {LONGHORN_DEVELOPERS_SWE.sort(
+                                (a, b) =>
+                                    (githubStats?.userGitHubStats[b.githubUsername]?.commits ?? 0) -
+                                    (githubStats?.userGitHubStats[a.githubUsername]?.commits ?? 0)
+                            ).map(swe => (
                                 <div
                                     key={swe.githubUsername}
                                     className='border border-gray-300 rounded bg-ut-gray/10 p-4'
