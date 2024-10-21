@@ -31,6 +31,20 @@ chrome.runtime.onInstalled.addListener(details => {
     }
 });
 
+// migration/login logic
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    // console.log(changeInfo);
+    if (changeInfo.url === 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/') {
+        function openPopupAction() {
+            chrome.tabs.onActivated.removeListener(openPopupAction);
+            chrome.action.openPopup();
+        }
+
+        chrome.tabs.onActivated.addListener(openPopupAction);
+        await chrome.tabs.remove(tabId);
+    }
+});
+
 // initialize the message listener that will listen for messages from the content script
 const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...browserActionHandler,

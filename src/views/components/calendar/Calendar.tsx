@@ -8,6 +8,7 @@ import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
+import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useState } from 'react';
@@ -21,21 +22,7 @@ import TeamLinks from './TeamLinks';
 export default function Calendar(): JSX.Element {
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
 
-    const [course, setCourse] = useState<Course | null>((): Course | null => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const uniqueIdRaw = urlParams.get('uniqueId');
-        if (uniqueIdRaw === null) return null;
-
-        const uniqueId = Number(uniqueIdRaw);
-        const course = activeSchedule.courses.find(course => course.uniqueId === uniqueId);
-        if (course === undefined) return null;
-
-        urlParams.delete('uniqueId');
-        const newUrl = `${window.location.pathname}?${urlParams}`.replace(/\?$/, '');
-        window.history.replaceState({}, '', newUrl);
-
-        return course;
-    });
+    const [course, setCourse] = useState<Course | null>(useCourseFromUrl());
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const [showSidebar, setShowSidebar] = useState<boolean>(true);
@@ -94,6 +81,8 @@ export default function Calendar(): JSX.Element {
                 </div>
 
                 <CourseCatalogInjectedPopup
+                    // Ideally let's not use ! here, but it's fine since we know course is always defined when showPopup is true
+                    // Let's try to refactor this
                     course={course!} // always defined when showPopup is true
                     onClose={() => setShowPopup(false)}
                     open={showPopup}
