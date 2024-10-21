@@ -546,6 +546,11 @@ export default function Settings(): JSX.Element {
                                                 admin => admin.githubUsername === username
                                             ) && !LONGHORN_DEVELOPERS_SWE.some(swe => swe.githubUsername === username)
                                     )
+                                    .sort(
+                                        (a, b) =>
+                                            (githubStats.userGitHubStats[b]?.commits ?? 0) -
+                                            (githubStats.userGitHubStats[a]?.commits ?? 0)
+                                    )
                                     .map(username => (
                                         <div
                                             key={username}
