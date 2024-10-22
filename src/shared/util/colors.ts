@@ -38,7 +38,7 @@ export const useableColorways = Object.keys(theme.colors)
 export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 'text-theme-black' {
     const coefficients = [0.2126729, 0.7151522, 0.072175] as const;
 
-    const flipYs = 0.342; // based on APCA™ 0.98G middle contrast BG color
+    const flipYs = 0.4; // based on APCA™ 0.98G middle contrast BG color
 
     const trc = 2.4; // 2.4 exponent for emulating actual monitor perception
     const rgb = hexToRGB(bgColor);
