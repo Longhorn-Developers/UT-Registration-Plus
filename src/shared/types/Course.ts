@@ -80,7 +80,7 @@ export class Course {
     /** The colors of the course when displayed */
     colors: CourseColors;
     /** The core curriculum requirements the course satisfies */
-    core!: string[];
+    core: string[];
 
     constructor(course: Serialized<Course>) {
         Object.assign(this, course);
@@ -90,6 +90,7 @@ export class Course {
             this.scrapedAt = Date.now();
         }
         this.colors = course.colors ? structuredClone(course.colors) : getCourseColors('emerald', 500);
+        this.core = course.core ?? [];
     }
 
     /**
