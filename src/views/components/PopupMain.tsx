@@ -19,11 +19,11 @@ import SettingsIcon from '~icons/material-symbols/settings';
 
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
+import { usePrompt } from './common/DialogProvider/DialogProvider';
 import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown';
 import ScheduleListItem from './common/ScheduleListItem';
-import { usePrompt } from './common/DialogProvider/DialogProvider';
 
 /**
  * Renders the main popup component.
