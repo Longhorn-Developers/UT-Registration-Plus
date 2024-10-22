@@ -15,7 +15,7 @@ export const colors = {
         gray: '#9CADB7',
         offwhite: '#D6D2C4',
         concrete: '#95A5A6',
-        red: '#B91C1C', //   Not sure if this should be here, but it's used for remove course, and add course is ut-green
+        red: '#d10000', //   Not sure if this should be here, but it's used for remove course, and add course is ut-green
     },
     theme: {
         red: '#BF0000',
