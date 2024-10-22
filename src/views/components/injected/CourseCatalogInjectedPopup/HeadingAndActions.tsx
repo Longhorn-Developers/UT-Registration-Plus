@@ -4,7 +4,6 @@ import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { Button } from '@views/components/common/Button';
 import { Chip, coreMap, flagMap } from '@views/components/common/Chip';
-// import { CoreChip, coreMap } from '@views/components/common/CoreChip';
 import Divider from '@views/components/common/Divider';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
@@ -154,7 +153,6 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                 key={flagMap[flag as keyof typeof flagMap]}
                                 label={flagMap[flag as keyof typeof flagMap]}
                                 variant='flag'
-                                labelMap={flagMap}
                             />
                         ))}
                         {core.map((coreVal: string) => (
@@ -162,7 +160,6 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                 key={coreMap[coreVal as keyof typeof coreMap]}
                                 label={coreMap[coreVal as keyof typeof coreMap]}
                                 variant='core'
-                                labelMap={coreMap}
                             />
                         ))}
                     </div>

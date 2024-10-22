@@ -36,39 +36,38 @@ type Props =
     | {
           variant: 'core';
           label: Core;
-          labelMap: Record<string, Core>;
       }
     | {
           variant: 'flag';
           label: Flag;
-          labelMap: Record<string, Flag>;
       };
 
 /**
- * A reusable chip component for flagged courses that follows the design system of the extension.
+ * A reusable chip component that follows the design system of the extension.
  * @returns
  */
-export function Chip({ variant, label, labelMap }: React.PropsWithChildren<Props>): JSX.Element {
+export function Chip({ variant, label }: React.PropsWithChildren<Props>): JSX.Element {
+    let labelMap;
+    switch (variant) {
+        case 'core':
+            labelMap = coreMap;
+            break;
+        case 'flag':
+            labelMap = flagMap;
+            break;
+        default:
+            labelMap = {};
+    }
     const longName = Object.entries(labelMap).find(([full, short]) => short === label)?.[0] ?? label;
 
     return (
         <Text
             as='div'
             variant='h4'
-            className={clsx(
-                'min-w-5',
-                'inline-flex',
-                'items-center',
-                'justify-center',
-                'gap-2.5',
-                'rounded-lg',
-                'px-1.5',
-                'py-0.5',
-                {
-                    'bg-ut-yellow text-black': variant === 'flag',
-                    'bg-ut-blue text-white': variant === 'core',
-                }
-            )}
+            className={clsx('min-w-5 inline-flex items-center justify-center gap-2.5 rounded-lg px-1.5 py-0.5', {
+                'bg-ut-yellow text-black': variant === 'flag',
+                'bg-ut-blue text-white': variant === 'core',
+            })}
             title={variant === 'flag' ? `${longName} flag` : `[CORE CURRICULUM] ${longName}`}
         >
             {label}
