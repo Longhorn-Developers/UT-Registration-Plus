@@ -88,22 +88,8 @@ export default function PopupMain(): JSX.Element {
                         <button className='bg-ut-burntorange px-2 py-1.25 btn' onClick={handleCalendarOpenOnClick}>
                             <CalendarIcon className='size-6 text-white' />
                         </button>
-                        <Button
-                            variant='single'
-                            color='ut-black'
-                            className='bg-transparent px-2 py-1.25 btn'
-                            onClick={handleOpenOptions}
-                        >
-                            <SettingsIcon className='size-6 color-ut-black' />
-                        </Button>
-                        <Button
-                            variant='single'
-                            color='ut-black'
-                            className='bg-transparent px-2 py-1.25 btn'
-                            onClick={openReportWindow}
-                        >
-                            <Feedback className='size-6 color-ut-black' />
-                        </Button>
+                        <Button variant='single' color='ut-black' icon={SettingsIcon} onClick={handleOpenOptions} />
+                        <Button variant='single' color='ut-black' icon={Feedback} onClick={openReportWindow} />
                     </div>
                 </div>
             </div>
