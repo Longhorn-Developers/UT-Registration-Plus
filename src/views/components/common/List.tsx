@@ -102,7 +102,7 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
     );
 
     return (
-        <div style={{ overflow: 'hidden' }}>
+        <div style={{ overflow: 'clip', overflowClipMargin: `${gap}px` }}>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable
                     droppableId='droppable'

@@ -85,15 +85,14 @@ export default function PopupMain(): JSX.Element {
                 <div className='flex items-center justify-between bg-white'>
                     <SmallLogo />
                     <div className='flex items-center gap-2.5'>
-                        <button className='bg-ut-burntorange px-2 py-1.25 btn' onClick={handleCalendarOpenOnClick}>
-                            <CalendarIcon className='size-6 text-white' />
-                        </button>
-                        <button className='bg-transparent px-2 py-1.25 btn' onClick={handleOpenOptions}>
-                            <SettingsIcon className='size-6 color-ut-black' />
-                        </button>
-                        <button className='bg-transparent px-2 py-1.25 btn' onClick={openReportWindow}>
-                            <Feedback className='size-6 color-ut-black' />
-                        </button>
+                        <Button
+                            variant='filled'
+                            color='ut-burntorange'
+                            onClick={handleCalendarOpenOnClick}
+                            icon={CalendarIcon}
+                        />
+                        <Button variant='single' color='ut-black' onClick={handleOpenOptions} icon={SettingsIcon} />
+                        <Button variant='single' color='ut-black' onClick={handleCalendarOpenOnClick} icon={Feedback} />
                     </div>
                 </div>
             </div>
