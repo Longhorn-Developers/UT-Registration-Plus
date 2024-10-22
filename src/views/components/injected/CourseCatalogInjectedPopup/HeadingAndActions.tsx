@@ -155,14 +155,13 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                 label={flagMap[flag as keyof typeof flagMap]}
                             />
                         ))}
-                    </div>
-                    <div className='flex items-center gap-1'>
-                        {core?.map((coreVal: string) => (
-                            <CoreChip
-                                key={coreMap[coreVal as keyof typeof coreMap]}
-                                label={coreMap[coreVal as keyof typeof coreMap]}
-                            />
-                        ))}
+                        {core?.length > 0 &&
+                            core?.map((coreVal: string) => (
+                                <CoreChip
+                                    key={coreMap[coreVal as keyof typeof coreMap]}
+                                    label={coreMap[coreVal as keyof typeof coreMap]}
+                                />
+                            ))}
                     </div>
                 </div>
                 <div className='mt-1 flex flex-col'>
