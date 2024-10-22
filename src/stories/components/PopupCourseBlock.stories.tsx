@@ -26,6 +26,7 @@ export const ExampleCourse: Course = new Course({
         'Taught as a Web-based course.',
     ],
     flags: ['Quantitative Reasoning'],
+    core: ['Natural Science and Technology, Part I'],
     fullName: 'C S 303E ELEMS OF COMPTRS/PROGRAMMNG-WB',
     instructionMode: 'Online',
     instructors: [

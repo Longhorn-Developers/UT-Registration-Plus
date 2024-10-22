@@ -79,6 +79,8 @@ export class Course {
     scrapedAt!: number;
     /** The colors of the course when displayed */
     colors: CourseColors;
+    /** The core curriculum requirements the course satisfies */
+    core!: string[];
 
     constructor(course: Serialized<Course>) {
         Object.assign(this, course);

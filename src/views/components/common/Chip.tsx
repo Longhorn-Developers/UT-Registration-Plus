@@ -19,7 +19,7 @@ interface Props {
 }
 
 /**
- * A reusable chip component that follows the design system of the extension.
+ * A reusable chip component for flagged courses that follows the design system of the extension.
  * @returns
  */
 export function Chip({ label }: React.PropsWithChildren<Props>): JSX.Element {
