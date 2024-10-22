@@ -29,9 +29,35 @@ export type Props = {
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
 export default function ScheduleListItem({ schedule, dragHandleProps, onClick }: Props): JSX.Element {
-    const [activeSchedule] = useSchedules();
+    const [activeSchedule, schedules] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
+
+    const handleDuplicateSchedule = (scheduleId: string) => {
+        if (schedules.length >= 10) {
+            showDialog({
+                title: `You have 10 active schedules!`,
+
+                description: (
+                    <>
+                        To encourage organization,{' '}
+                        <span className='text-ut-burntorange'>please consider removing some unused schedules</span> you
+                        may have.
+                    </>
+                ),
+                // eslint-disable-next-line react/no-unstable-nested-components
+                buttons: close => (
+                    <Button variant='filled' color='ut-burntorange' onClick={close}>
+                        I Understand
+                    </Button>
+                ),
+            });
+
+            return;
+        }
+
+        duplicateSchedule(scheduleId);
+    };
 
     const showDialog = usePrompt();
 
@@ -180,7 +206,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                     <Text
                                         as='button'
                                         variant='small'
-                                        onClick={() => duplicateSchedule(schedule.id)}
+                                        onClick={() => handleDuplicateSchedule(schedule.id)}
                                         className='w-full rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
                                     >
                                         Duplicate

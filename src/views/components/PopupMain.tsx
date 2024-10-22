@@ -23,6 +23,7 @@ import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown';
 import ScheduleListItem from './common/ScheduleListItem';
+import { usePrompt } from './common/DialogProvider/DialogProvider';
 
 /**
  * Renders the main popup component.
@@ -61,6 +62,7 @@ export default function PopupMain(): JSX.Element {
     const [activeSchedule, schedules] = useSchedules();
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [funny, setFunny] = useState<string>('');
+    const showDialog = usePrompt();
 
     useEffect(() => {
         const randomIndex = Math.floor(Math.random() * splashText.length);
@@ -77,6 +79,32 @@ export default function PopupMain(): JSX.Element {
     const handleCalendarOpenOnClick = async () => {
         await background.switchToCalendarTab({});
         window.close();
+    };
+
+    const handleAddSchedule = () => {
+        if (schedules.length >= 10) {
+            showDialog({
+                title: `You have 10 active schedules!`,
+
+                description: (
+                    <>
+                        To encourage organization,{' '}
+                        <span className='text-ut-burntorange'>please consider removing some unused schedules</span> you
+                        may have.
+                    </>
+                ),
+                // eslint-disable-next-line react/no-unstable-nested-components
+                buttons: close => (
+                    <Button variant='filled' color='ut-burntorange' onClick={close}>
+                        I Understand
+                    </Button>
+                ),
+            });
+
+            return;
+        }
+
+        createSchedule('New Schedule');
     };
 
     return (
@@ -128,7 +156,7 @@ export default function PopupMain(): JSX.Element {
                             variant='filled'
                             color='ut-burntorange'
                             className='h-fit p-0 btn'
-                            onClick={() => createSchedule('New Schedule')}
+                            onClick={() => handleAddSchedule()}
                         >
                             <AddSchedule className='h-6 w-6' />
                         </Button>
