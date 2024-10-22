@@ -19,28 +19,28 @@ const links: LinkItem[] = [
         url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/',
     },
     {
-        text: "Fall '24 Course Schedule",
-        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20249/',
+        text: 'Course Schedule Archives',
+        url: 'https://registrar.utexas.edu/schedules/archive',
     },
     // {
     //     text: "Summer '24 Course Schedule",
     //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20246/',
     // },
     {
+        text: "'24-'25 Academic Calendar",
+        url: 'https://registrar.utexas.edu/calendars/24-25',
+    },
+    {
         text: 'Registration Info Sheet',
         url: 'https://utdirect.utexas.edu/registrar/ris.WBX',
     },
     {
-        text: 'Register For Courses',
+        text: 'Register for Courses',
         url: 'https://utdirect.utexas.edu/registration/chooseSemester.WBX',
     },
     {
         text: 'Degree Audit',
         url: 'https://utdirect.utexas.edu/apps/degree/audits/',
-    },
-    {
-        text: 'My Registered Courses',
-        url: 'https://utdirect.utexas.edu/registration/classlist.WBX',
     },
 ];
 
