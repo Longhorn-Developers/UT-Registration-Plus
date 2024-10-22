@@ -24,8 +24,11 @@ export default function CalendarFooter(): JSX.Element {
                 <Link className='linkanimate' href='https://github.com/Longhorn-Developers'>
                     <GithubIcon className='h-6 w-6' />
                 </Link>
-                <Link className='linkanimate' href='https://www.linkedin.com/company/longhorn-developers/posts/?feedView=all'>
-                    <LinkedinIcon className='h-6 w-6'/>
+                <Link
+                    className='linkanimate'
+                    href='https://www.linkedin.com/company/longhorn-developers/posts/?feedView=all'
+                >
+                    <LinkedinIcon className='h-6 w-6' />
                 </Link>
             </div>
             <p className='text-2.5 text-ut-concrete font-light tracking-wide'>
