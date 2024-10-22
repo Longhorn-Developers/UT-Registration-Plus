@@ -17,7 +17,7 @@ export const colors = {
         concrete: '#95A5A6',
     },
     theme: {
-        red: '#d10000',
+        red: '#D10000',
         black: '#1A2024',
     },
 } as const satisfies Record<string, Record<string, string>>;
