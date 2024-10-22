@@ -410,7 +410,7 @@ export default function Settings(): JSX.Element {
                                     </div>
                                     <Button
                                         variant='outline'
-                                        color='ut-red'
+                                        color='theme-red'
                                         icon={DeleteForeverIcon}
                                         onClick={handleEraseAll}
                                     >
@@ -427,7 +427,7 @@ export default function Settings(): JSX.Element {
                                     </div>
                                     <Text
                                         variant='h2-course'
-                                        className={clsx('text-center text-ut-red !font-normal', {
+                                        className={clsx('text-center text-theme-red !font-normal', {
                                             'line-through': highlightConflicts,
                                         })}
                                     >
@@ -489,7 +489,7 @@ export default function Settings(): JSX.Element {
                                             <p className='text-xs text-ut-green'>
                                                 {githubStats.adminGitHubStats[admin.githubUsername]?.linesAdded} ++
                                             </p>
-                                            <p className='text-xs text-ut-red'>
+                                            <p className='text-xs text-theme-red'>
                                                 {githubStats.adminGitHubStats[admin.githubUsername]?.linesDeleted} --
                                             </p>
                                         </div>
@@ -535,7 +535,7 @@ export default function Settings(): JSX.Element {
                                             <p className='text-xs text-ut-green'>
                                                 {githubStats.userGitHubStats[swe.githubUsername]?.linesAdded} ++
                                             </p>
-                                            <p className='text-xs text-ut-red'>
+                                            <p className='text-xs text-theme-red'>
                                                 {githubStats.userGitHubStats[swe.githubUsername]?.linesDeleted} --
                                             </p>
                                         </div>
@@ -583,7 +583,7 @@ export default function Settings(): JSX.Element {
                                                     <p className='text-xs text-ut-green'>
                                                         {githubStats.userGitHubStats[username]?.linesAdded} ++
                                                     </p>
-                                                    <p className='text-xs text-ut-red'>
+                                                    <p className='text-xs text-theme-red'>
                                                         {githubStats.userGitHubStats[username]?.linesDeleted} --
                                                     </p>
                                                 </div>

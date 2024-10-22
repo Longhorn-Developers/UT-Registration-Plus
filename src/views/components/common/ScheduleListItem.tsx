@@ -92,7 +92,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                         </Button>
                         <Button
                             variant='filled'
-                            color='ut-red'
+                            color='theme-red'
                             onClick={() => {
                                 close();
                                 deleteSchedule(schedule.id);
@@ -191,7 +191,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                         as='button'
                                         variant='small'
                                         onClick={handleDelete}
-                                        className='w-full rounded bg-transparent p-2 text-left text-ut-red data-[focus]:bg-red-200/40'
+                                        className='w-full rounded bg-transparent p-2 text-left text-theme-red data-[focus]:bg-red-200/40'
                                     >
                                         Delete
                                     </Text>
