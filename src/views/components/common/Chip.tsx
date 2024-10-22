@@ -68,7 +68,7 @@ export function Chip({ variant, label }: React.PropsWithChildren<Props>): JSX.El
                 'bg-ut-yellow text-black': variant === 'flag',
                 'bg-ut-blue text-white': variant === 'core',
             })}
-            title={variant === 'flag' ? `${longName} flag` : `[CORE CURRICULUM] ${longName}`}
+            title={variant === 'flag' ? `${longName} flag` : `${longName} core curriculum requirement`}
         >
             {label}
         </Text>
