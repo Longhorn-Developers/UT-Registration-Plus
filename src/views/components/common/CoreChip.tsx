@@ -14,6 +14,8 @@ export const coreMap = {
     'Social and Behavioral Sciences': 'SB',
     'Natural Science and Technology, Part I': 'N1',
     'Natural Science and Technology, Part II': 'N2',
+    Mathematics: 'MA',
+    'Visual and Performing Arts': 'VP',
 } as const satisfies Record<string, Core>;
 
 interface Props {
@@ -31,7 +33,7 @@ export function CoreChip({ label }: React.PropsWithChildren<Props>): JSX.Element
         <Text
             as='div'
             variant='h4'
-            className='min-w-5 inline-flex items-center justify-center gap-2.5 rounded-lg px-1.5 py-0.5'
+            className='min-w-5 inline-flex items-center justify-center gap-2.5 rounded-lg px-1.5 py-0.5 text-center'
             style={{
                 backgroundColor: '#005F86',
                 color: '#FFFFFF',
