@@ -28,7 +28,7 @@ export default function CalendarFooter(): JSX.Element {
                     className='linkanimate'
                     href='https://www.linkedin.com/company/longhorn-developers/posts/?feedView=all'
                 >
-                    <LinkedinIcon className='h-6 w-6' />
+                    <LinkedinIcon className='h-6 w-6 -mx-0.75' />
                 </Link>
             </div>
             <p className='text-2.5 text-ut-concrete font-light tracking-wide'>
