@@ -1,3 +1,4 @@
+import { CRX_PAGES } from '@shared/types/CRXPages';
 import { openReportWindow } from '@shared/util/openReportWindow';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
@@ -21,7 +22,7 @@ const links: LinkItem[] = [
     },
     {
         text: 'Send us Feedback & Ideas',
-        url: '/report.html',
+        url: CRX_PAGES.REPORT,
     },
     {
         text: 'Become a Beta Tester',
@@ -29,7 +30,7 @@ const links: LinkItem[] = [
     },
     {
         text: 'Credits – Meet the team',
-        url: '/options.html',
+        url: CRX_PAGES.OPTIONS,
     },
     {
         text: 'Apply to Longhorn Developers',
@@ -43,7 +44,7 @@ const links: LinkItem[] = [
  */
 export default function TeamLinks({ className }: Props): JSX.Element {
     const handleClick = (link: LinkItem, event: React.MouseEvent) => {
-        if (link.url === '/report.html') {
+        if (link.url === CRX_PAGES.REPORT) {
             event.preventDefault();
             openReportWindow();
         }
