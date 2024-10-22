@@ -346,7 +346,12 @@ export class CourseCatalogScraper {
      */
     getCore(row: HTMLTableRowElement): string[] {
         const lis = row.querySelectorAll(TableDataSelector.CORE_CURRICULUM);
-        return Array.from(lis).map(li => li.textContent || '');
+        return (
+            Array.from(lis)
+                // ut schedule is weird and puts a blank core curriculum element even if there aren't any core requirements so filter those out
+                .filter(li => li.getAttribute('title') !== ' core curriculum requirement')
+                .map(li => li.textContent || '')
+        );
     }
 
     /**
