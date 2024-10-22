@@ -15,7 +15,7 @@ interface LinkItem {
     url: string;
 }
 
-const links: LinkItem[] = [
+const links = [
     {
         text: 'Rate us on Chrome Web Store',
         url: 'https://chromewebstore.google.com/detail/ut-registration-plus/hboadpjkoaieogjimneceaahlppnipaa',
@@ -36,7 +36,7 @@ const links: LinkItem[] = [
         text: 'Apply to Longhorn Developers',
         url: 'https://forms.gle/cdkLKmFwPmvHmiBe9',
     },
-];
+] as const satisfies LinkItem[];
 
 /**
  * The "From The Team" section of the calendar website
