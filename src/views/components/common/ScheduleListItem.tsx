@@ -81,6 +81,32 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         setIsEditing(false);
     };
 
+    const handleDuplicateSchedule = (scheduleId: string) => {
+        if (schedules.length >= 10) {
+            showDialog({
+                title: `You have 10 active schedules!`,
+
+                description: (
+                    <>
+                        To encourage organization,{' '}
+                        <span className='text-ut-burntorange'>please consider removing some unused schedules</span> you
+                        may have.
+                    </>
+                ),
+                // eslint-disable-next-line react/no-unstable-nested-components
+                buttons: close => (
+                    <Button variant='filled' color='ut-burntorange' onClick={close}>
+                        I Understand
+                    </Button>
+                ),
+            });
+
+            return;
+        }
+
+        duplicateSchedule(scheduleId);
+    };
+
     const handleDelete = () => {
         if (schedule.id === activeSchedule.id) {
             showDialog({
