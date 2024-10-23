@@ -4,6 +4,7 @@ import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
+import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -13,7 +14,6 @@ import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
 import { Button } from './Button';
 import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
-import { useEnforceScheduleLimit } from './DialogProvider/useEnforceScheduleLimit';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 
 /**

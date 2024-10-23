@@ -7,6 +7,7 @@ import { openReportWindow } from '@shared/util/openReportWindow';
 import Divider from '@views/components/common/Divider';
 import List from '@views/components/common/List';
 import Text from '@views/components/common/Text/Text';
+import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
@@ -19,7 +20,6 @@ import SettingsIcon from '~icons/material-symbols/settings';
 
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
-import { useEnforceScheduleLimit } from './common/DialogProvider/useEnforceScheduleLimit';
 import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown';
@@ -136,7 +136,7 @@ export default function PopupMain(): JSX.Element {
                             variant='filled'
                             color='ut-burntorange'
                             className='h-fit p-0 btn'
-                            onClick={() => handleAddSchedule()}
+                            onClick={handleAddSchedule}
                         >
                             <AddSchedule className='h-6 w-6' />
                         </Button>

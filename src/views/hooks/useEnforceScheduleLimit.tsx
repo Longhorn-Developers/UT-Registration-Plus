@@ -1,8 +1,8 @@
 import useSchedules from '@views/hooks/useSchedules';
-import React from 'react';
+import React, { useCallback } from 'react';
 
-import { Button } from '../Button';
-import { usePrompt } from './DialogProvider';
+import { Button } from '../components/common/Button';
+import { usePrompt } from '../components/common/DialogProvider/DialogProvider';
 
 const SCHEDULE_LIMIT = 10;
 
@@ -14,7 +14,7 @@ export function useEnforceScheduleLimit(): () => boolean {
     const [, schedules] = useSchedules();
     const showDialog = usePrompt();
 
-    return () => {
+    return useCallback(() => {
         if (schedules.length >= SCHEDULE_LIMIT) {
             showDialog({
                 title: `You have ${SCHEDULE_LIMIT} active schedules!`,
@@ -37,5 +37,5 @@ export function useEnforceScheduleLimit(): () => boolean {
             return false;
         }
         return true;
-    };
+    }, [schedules, showDialog]);
 }

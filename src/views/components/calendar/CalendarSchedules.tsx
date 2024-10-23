@@ -4,12 +4,11 @@ import { Button } from '@views/components/common/Button';
 import List from '@views/components/common/List';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
 import Text from '@views/components/common/Text/Text';
+import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import React from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
-
-import { useEnforceScheduleLimit } from '../common/DialogProvider/useEnforceScheduleLimit';
 
 /**
  * Renders a component that displays a list of schedules.
@@ -33,12 +32,7 @@ export function CalendarSchedules() {
                 <Text variant='h3' className='text-nowrap'>
                     MY SCHEDULES
                 </Text>
-                <Button
-                    variant='single'
-                    color='theme-black'
-                    className='h-fit p-0 btn'
-                    onClick={() => handleAddSchedule()}
-                >
+                <Button variant='single' color='theme-black' className='h-fit p-0 btn' onClick={handleAddSchedule}>
                     <AddSchedule className='h-6 w-6' />
                 </Button>
             </div>
