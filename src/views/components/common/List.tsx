@@ -1,6 +1,11 @@
-import type { DraggableProvided, DraggableProvidedDragHandleProps, OnDragEndResponder } from '@hello-pangea/dnd';
+import type {
+    DraggableProvided,
+    DraggableProvidedDragHandleProps,
+    OnDragEndResponder,
+    OnDragStartResponder,
+} from '@hello-pangea/dnd';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
-import type { ReactElement } from 'react';
+import type { ReactElement, RefObject } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import ExtensionRoot from './ExtensionRoot/ExtensionRoot';
@@ -18,6 +23,7 @@ export interface ListProps<T> {
     onReordered: (elements: T[]) => void;
     itemKey: (item: T) => React.Key;
     gap?: number; // Impacts the spacing between items in the list
+    boundingRef?: RefObject<HTMLElement>; // Element that clamps the y-value for draggable items
 }
 
 function wrap<T>(draggableElements: T[], keyTransform: ListProps<T>['itemKey']) {
@@ -72,28 +78,55 @@ function Item<T>(props: {
  * @example
  * <List draggableElements={elements} />
  */
-function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<T>): JSX.Element {
+function List<T>({ draggables, itemKey, children, onReordered, gap, boundingRef }: ListProps<T>): JSX.Element {
     const [items, setItems] = useState(wrap(draggables, itemKey));
-
+    const [activeItem, setActiveItem] = useState<Element | null>(null);
+    const boundingEl = boundingRef?.current;
     const transformFunction = children;
 
     useEffect(() => {
         setItems(wrap(draggables, itemKey));
+    }, [draggables, itemKey]);
 
-        // This is on purpose
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [draggables]);
+    useEffect(() => {
+        if (!activeItem || !boundingEl) return;
+
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!boundingEl) return;
+
+            const bounds = boundingEl.getBoundingClientRect();
+            const isOutsideBounds = e.clientY < bounds.top || e.clientY > bounds.bottom;
+
+            if (isOutsideBounds) {
+                // force end of drag
+                window.dispatchEvent(
+                    new KeyboardEvent('keydown', {
+                        key: 'Escape',
+                        keyCode: 27,
+                        which: 27,
+                        bubbles: true,
+                    })
+                );
+            }
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        return () => document.removeEventListener('mousemove', handleMouseMove);
+    }, [activeItem, boundingEl]);
 
     const onDragEnd: OnDragEndResponder = useCallback(
         ({ destination, source }) => {
+            setActiveItem(null);
+
             if (!destination) return;
             if (source.index === destination.index) return;
 
             // will reorder in place
             const reordered = reorder(items, source.index, destination.index);
-
             setItems(reordered);
             onReordered(reordered.map(item => item.content));
+
+            // This is on purpose
         },
 
         // This is on purpose
@@ -101,22 +134,19 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
         [items]
     );
 
+    const onDragStart: OnDragStartResponder = useCallback(() => {
+        const el = document.querySelector('.is-dragging');
+        setActiveItem(el);
+    }, []);
+
     return (
         <div style={{ overflow: 'hidden' }}>
-            <DragDropContext onDragEnd={onDragEnd}>
+            <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
                 <Droppable
                     droppableId='droppable'
                     direction='vertical'
                     renderClone={(provided, snapshot, rubric) => {
-                        let { style } = provided.draggableProps;
-                        const transform = style?.transform;
-
-                        if (snapshot.isDragging && transform) {
-                            let [, , y] = transform.match(/translate\(([-\d]+)px, ([-\d]+)px\)/) || [];
-
-                            style.transform = `translate3d(0px, ${y}px, 0px)`; // Apply constrained y value
-                        }
-
+                        const { style } = provided.draggableProps;
                         return (
                             <Item
                                 provided={provided}
@@ -143,7 +173,6 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
                                             {...draggableProps}
                                             style={{
                                                 ...draggableProps.style,
-                                                // if last item, don't add margin
                                                 marginBottom: `${gap}px`,
                                             }}
                                         >

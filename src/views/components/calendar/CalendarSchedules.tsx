@@ -5,7 +5,7 @@ import List from '@views/components/common/List';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
 import Text from '@views/components/common/Text/Text';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import React from 'react';
+import React, { useRef } from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
 
@@ -20,6 +20,7 @@ import { usePrompt } from '../common/DialogProvider/DialogProvider';
 export function CalendarSchedules() {
     const [, schedules] = useSchedules();
     const showDialog = usePrompt();
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const handleAddSchedule = () => {
         if (schedules.length >= 10) {
@@ -48,7 +49,7 @@ export function CalendarSchedules() {
     };
 
     return (
-        <div className='min-w-full w-0 items-center'>
+        <div className='min-w-full w-0 items-center pb-5' ref={containerRef}>
             <div className='m0 m-b-2 w-full flex justify-between'>
                 <Text variant='h3' className='text-nowrap'>
                     MY SCHEDULES
@@ -62,6 +63,7 @@ export function CalendarSchedules() {
                     gap={10}
                     draggables={schedules}
                     itemKey={s => s.id}
+                    boundingRef={containerRef}
                     onReordered={reordered => {
                         const activeSchedule = getActiveSchedule();
                         const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
