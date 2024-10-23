@@ -1,6 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
-import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
@@ -12,6 +11,7 @@ import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
 import { Button } from './Button';
+import { useAddSchedule } from './DialogProvider/AddSchedule';
 import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 
@@ -29,11 +29,12 @@ export type Props = {
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
 export default function ScheduleListItem({ schedule, dragHandleProps, onClick }: Props): JSX.Element {
-    const [activeSchedule, schedules] = useSchedules();
+    const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
 
     const showDialog = usePrompt();
+    const handleDuplicateSchedule = useAddSchedule();
 
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
@@ -53,32 +54,6 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
             schedule.name = (await renameSchedule(schedule.id, editorValue.trim())) as string;
         }
         setIsEditing(false);
-    };
-
-    const handleDuplicateSchedule = (scheduleId: string) => {
-        if (schedules.length >= 10) {
-            showDialog({
-                title: `You have 10 active schedules!`,
-
-                description: (
-                    <>
-                        To encourage organization,{' '}
-                        <span className='text-ut-burntorange'>please consider removing some unused schedules</span> you
-                        may have.
-                    </>
-                ),
-                // eslint-disable-next-line react/no-unstable-nested-components
-                buttons: close => (
-                    <Button variant='filled' color='ut-burntorange' onClick={close}>
-                        I Understand
-                    </Button>
-                ),
-            });
-
-            return;
-        }
-
-        duplicateSchedule(scheduleId);
     };
 
     const handleDelete = () => {
@@ -206,7 +181,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                     <Text
                                         as='button'
                                         variant='small'
-                                        onClick={() => handleDuplicateSchedule(schedule.id)}
+                                        onClick={() => handleDuplicateSchedule(schedule.name)}
                                         className='w-full rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
                                     >
                                         Duplicate
