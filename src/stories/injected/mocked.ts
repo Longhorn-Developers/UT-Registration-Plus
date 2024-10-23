@@ -16,6 +16,7 @@ export const exampleCourse: Course = new Course({
         'Taught as a Web-based course.',
     ],
     flags: ['Quantitative Reasoning'],
+    core: ['Natural Science and Technology, Part I'],
     fullName: 'C S 303E ELEMS OF COMPTRS/PROGRAMMNG-WB',
     instructionMode: 'Online',
     scrapedAt: Date.now(),
@@ -99,6 +100,7 @@ export const bevoCourse: Course = new Course({
     },
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
     flags: ['Independent Inquiry', 'Writing'],
+    core: ['Humanities'],
     instructionMode: 'In Person',
     semester: {
         code: '12345',
@@ -154,6 +156,7 @@ export const mikeScottCS314Course: Course = new Course({
     },
     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/50825/',
     flags: ['Writing', 'Independent Inquiry'],
+    core: ['Natural Science and Technology, Part II'],
     instructionMode: 'In Person',
     semester: {
         code: '12345',

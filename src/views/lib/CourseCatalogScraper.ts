@@ -19,6 +19,7 @@ const TableDataSelector = {
     SCHEDULE_HOURS: 'td[data-th="Hour"]>span',
     SCHEDULE_LOCATION: 'td[data-th="Room"]>span',
     FLAGS: 'td[data-th="Flags"] ul li',
+    CORE_CURRICULUM: 'td[data-th="Core"] ul li',
 } as const satisfies Record<string, string>;
 
 type TableDataSelectorType = (typeof TableDataSelector)[keyof typeof TableDataSelector];
@@ -99,6 +100,7 @@ export class CourseCatalogScraper {
                 semester: this.getSemester(),
                 scrapedAt: Date.now(),
                 colors: getCourseColors('emerald', 500),
+                core: this.getCore(row),
             });
             courses.push({
                 element: row,
@@ -335,6 +337,21 @@ export class CourseCatalogScraper {
     getFlags(row: HTMLTableRowElement): string[] {
         const lis = row.querySelectorAll(TableDataSelector.FLAGS);
         return Array.from(lis).map(li => li.textContent || '');
+    }
+
+    /**
+     * Get the list of core curriculum requirements the course satisfies
+     * @param row
+     * @returns an array of core curriculum codes
+     */
+    getCore(row: HTMLTableRowElement): string[] {
+        const lis = row.querySelectorAll(TableDataSelector.CORE_CURRICULUM);
+        return (
+            Array.from(lis)
+                // ut schedule is weird and puts a blank core curriculum element even if there aren't any core requirements so filter those out
+                .filter(li => li.getAttribute('title') !== ' core curriculum requirement')
+                .map(li => li.textContent || '')
+        );
     }
 
     /**
