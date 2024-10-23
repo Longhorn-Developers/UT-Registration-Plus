@@ -86,7 +86,9 @@ function List<T>({ draggables, itemKey, children, onReordered, gap, boundingRef 
 
     useEffect(() => {
         setItems(wrap(draggables, itemKey));
-    }, [draggables, itemKey]);
+        // This is on purpose
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [draggables]);
 
     useEffect(() => {
         if (!activeItem || !boundingEl) return;
