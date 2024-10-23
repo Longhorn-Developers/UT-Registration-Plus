@@ -20,7 +20,7 @@ import OpenNewIcon from '~icons/material-symbols/open-in-new';
 import Remove from '~icons/material-symbols/remove';
 import Reviews from '~icons/material-symbols/reviews';
 
-import LocationAndTime from './DisplayMeetingInfo';
+import DisplayMeetingInfo from './DisplayMeetingInfo';
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
@@ -163,7 +163,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                         ))}
                     </div>
                 </div>
-                <LocationAndTime course={course} />
+                <DisplayMeetingInfo course={course} />
             </div>
             <div className='my-3 flex flex-wrap items-center gap-x-3.75 gap-y-2.5'>
                 <Button

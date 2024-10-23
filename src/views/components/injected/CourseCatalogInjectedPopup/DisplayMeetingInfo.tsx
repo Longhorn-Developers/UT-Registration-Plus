@@ -1,4 +1,5 @@
 import type { Course } from '@shared/types/Course';
+import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
@@ -7,31 +8,26 @@ interface LocationAndTimeProps {
     course: Course;
 }
 
-interface Meeting {
-    days: string[];
-    startTime: number;
-    endTime: number;
-    location?: {
-        building: string;
-        room: string;
-    } | null;
+interface MeetingInfoTextProp {
+    meeting: CourseMeeting;
+    instructionMode: string;
 }
 
 /**
  * Renders a single meeting's time and location info.
  *
- * @param {Meeting} meeting - The meeting object.
- * @param {string} instructionMode - The mode of instruction (e.g., Online, In-person).
- * @returns {JSX.Element} The rendered meeting info.
+ * @param meeting - The meeting object.
+ * @param instructionMode - The mode of instruction (e.g., Online, In-person).
+ * @returns The rendered meeting info.
  */
-function MeetingInfoText({ meeting, instructionMode }: { meeting: Meeting; instructionMode: string }): JSX.Element {
-    const daysString = meeting.days.join(' ');
-    const timeString = `${meeting.startTime} to ${meeting.endTime}`;
+function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProp): JSX.Element {
+    const daysString = meeting.getDaysString({ format: 'long', separator: 'long' });
+    const timeString = meeting.getTimeString({ separator: ' to ', capitalize: false });
 
     const getBuildingUrl = (building: string) =>
         `https://utdirect.utexas.edu/apps/campus/buildings/nlogon/maps/UTM/${building}`;
 
-    let locationInfo: string | JSX.Element = '';
+    let locationInfo: JSX.Element;
 
     if (meeting.location) {
         locationInfo = (
@@ -43,11 +39,17 @@ function MeetingInfoText({ meeting, instructionMode }: { meeting: Meeting; instr
             </>
         );
     } else if (instructionMode !== 'Online') {
-        locationInfo = '(No location has been provided)';
+        return (
+            <Text variant='h4' as='p'>
+                {daysString} {timeString} (No location has been provided)
+            </Text>
+        );
+    } else {
+        locationInfo = <></>;
     }
 
     return (
-        <Text key={`${daysString}-${timeString}`} variant='h4' as='p'>
+        <Text variant='h4' as='p'>
             {daysString} {timeString} {locationInfo}
         </Text>
     );
@@ -56,8 +58,8 @@ function MeetingInfoText({ meeting, instructionMode }: { meeting: Meeting; instr
 /**
  * Render the time and location for the current class.
  *
- * @param {Course} props.course - The course object containing course details.
- * @returns {JSX.Element} The rendered component.
+ * @param props.course - The course object containing course details.
+ * @returns  The rendered component.
  */
 export default function DisplayMeetingInfo({ course }: LocationAndTimeProps): JSX.Element {
     const { schedule, instructionMode } = course;
@@ -69,8 +71,8 @@ export default function DisplayMeetingInfo({ course }: LocationAndTimeProps): JS
             {noMeetings ? (
                 <Text variant='h4' as='p'>
                     {instructionMode !== 'Online'
-                        ? 'No time and location has been provided.'
-                        : 'No time has been provided.'}
+                        ? '(No time and location has been provided.)'
+                        : '(No time has been provided.)'}
                 </Text>
             ) : (
                 schedule.meetings.map((meeting, index) => (
