@@ -75,8 +75,12 @@ export default function DisplayMeetingInfo({ course }: LocationAndTimeProps): JS
                         : '(No time has been provided.)'}
                 </Text>
             ) : (
-                schedule.meetings.map((meeting, index) => (
-                    <MeetingInfoText key={index} meeting={meeting} instructionMode={instructionMode} />
+                schedule.meetings.map(meeting => (
+                    <MeetingInfoText
+                        key={`${meeting.days.join('-')}-${meeting.startTime}-${meeting.endTime}`}
+                        meeting={meeting}
+                        instructionMode={instructionMode}
+                    />
                 ))
             )}
         </div>
