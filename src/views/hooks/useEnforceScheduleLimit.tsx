@@ -7,7 +7,10 @@ import { usePrompt } from '../components/common/DialogProvider/DialogProvider';
 const SCHEDULE_LIMIT = 10;
 
 /**
- * Hook that checks if currently over the schedule limit
+ * Hook that creates a function that enforces a maximum amount of schedules
+ *
+ * If a new schedule can be created without exceeding the limit, the function returns true
+ * Otherwise, display a prompt explaining the limit, and returns false
  * @returns
  */
 export function useEnforceScheduleLimit(): () => boolean {
