@@ -47,7 +47,7 @@ function makeGridRow(row: number, cols: number): JSX.Element {
  */
 export default function CalendarGrid({
     courseCells,
-    saturdayClass, // TODO: implement/move away from props
+    saturdayClass: _saturdayClass, // TODO: implement/move away from props
     setCourse,
 }: React.PropsWithChildren<Props>): JSX.Element {
     return (

@@ -15,7 +15,7 @@ import CancelledIcon from '~icons/material-symbols/warning';
 export function StatusIcon(props: SVGProps<SVGSVGElement> & { status: StatusType }): JSX.Element | null {
     const { status, ...rest } = props;
 
-    switch (props.status) {
+    switch (status) {
         case Status.WAITLISTED:
             return <WaitlistIcon {...rest} />;
         case Status.CLOSED:
