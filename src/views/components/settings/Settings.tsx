@@ -79,11 +79,11 @@ const useDevMode = (targetCount: number): [boolean, () => void] => {
  * @returns The Settings component.
  */
 export default function Settings(): JSX.Element {
-    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
+    const [_enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -216,6 +216,7 @@ export default function Settings(): JSX.Element {
             try {
                 response = await fetch(link);
             } catch (e) {
+                // eslint-disable-next-line no-alert
                 alert(`Failed to fetch url '${link}'`);
                 return;
             }

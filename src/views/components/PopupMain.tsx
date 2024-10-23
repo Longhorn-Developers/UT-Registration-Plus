@@ -59,7 +59,7 @@ export default function PopupMain(): JSX.Element {
     }, []);
 
     const [activeSchedule, schedules] = useSchedules();
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    // const [isRefreshing, setIsRefreshing] = useState(false);
     const [funny, setFunny] = useState<string>('');
 
     useEffect(() => {
