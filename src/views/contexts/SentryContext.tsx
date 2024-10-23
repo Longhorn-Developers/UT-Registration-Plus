@@ -65,8 +65,9 @@ export default function SentryProvider({
             integrations,
             transport: makeFetchTransport,
             stackParser: defaultStackParser,
-            // debug: true,
+            debug: import.meta.env.DEV,
             release: import.meta.env.VITE_PACKAGE_VERSION,
+            environment: import.meta.env.VITE_SENTRY_ENVIRONMENT,
         };
 
         let client: Client;

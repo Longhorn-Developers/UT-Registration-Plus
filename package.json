@@ -10,7 +10,7 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "build:watch": "NODE_ENV='development' vite build --mode development -w",
-        "zip": "pnpm build && pnpm gulp zip",
+        "zip": "PROD=true pnpm build && pnpm gulp zip",
         "prettier": "prettier src --check",
         "prettier:fix": "prettier src --write",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
