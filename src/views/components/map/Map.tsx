@@ -11,6 +11,7 @@ import CalendarFooter from '../calendar/CalendarFooter';
 import { CalendarSchedules } from '../calendar/CalendarSchedules';
 import ImportantLinks from '../calendar/ImportantLinks';
 import TeamLinks from '../calendar/TeamLinks';
+import CampusMap from './CampusMap';
 
 const manifest = chrome.runtime.getManifest();
 const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
@@ -52,7 +53,7 @@ export default function Map(): JSX.Element {
                     <CalendarFooter />
                 </div>
                 <div className='flex p-12'>
-                    <img src={UTMapURL} alt='LD Icon' />
+                    <CampusMap />
                 </div>
             </div>
         </div>
