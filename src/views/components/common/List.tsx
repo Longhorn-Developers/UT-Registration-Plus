@@ -127,8 +127,6 @@ function List<T>({ draggables, itemKey, children, onReordered, gap, boundingRef 
             const reordered = reorder(items, source.index, destination.index);
             setItems(reordered);
             onReordered(reordered.map(item => item.content));
-
-            // This is on purpose
         },
 
         // This is on purpose
