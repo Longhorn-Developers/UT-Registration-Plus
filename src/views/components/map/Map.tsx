@@ -22,6 +22,23 @@ const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 type Day = (typeof DAYS)[number];
 
+const dayToNumber = {
+    Monday: 0,
+    Tuesday: 1,
+    Wednesday: 2,
+    Thursday: 3,
+    Friday: 4,
+    Saturday: 5,
+    Sunday: 6,
+} as const satisfies Record<string, number>;
+
+/**
+ * Converts minutes to an index value.
+ * @param minutes The number of minutes.
+ * @returns The index value.
+ */
+export const convertMinutesToIndex = (minutes: number): number => Math.floor((minutes - 420) / 30);
+
 /**
  * Renders the map component for the UTRP (UT Registration Plus) extension.
  */
@@ -87,14 +104,26 @@ export default function Map(): JSX.Element {
         status: StatusType,
         course: Course
     ) {
-        const { days, location } = meeting;
+        const { days, location, startTime, endTime } = meeting;
         const time = meeting.getTimeString({ separator: '-', capitalize: true });
-        const timeAndLocation = `${time}${location ? ` - ${location.building}` : ''}`;
+        const timeAndLocation = `${time}${location ? ` - ${location.building} ${location.room}` : ''}`;
+
+        const midnightIndex = 1440;
+        const normalizingTimeFactor = 720;
+        const normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
+        const normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
 
         return days.map(day => ({
             day,
-            fullName: `${courseDeptAndInstr} - ${timeAndLocation}`,
+            dayIndex: dayToNumber[day],
+            // fullName: `${courseDeptAndInstr} - ${timeAndLocation}`,
+            fullName: `${timeAndLocation} - ${courseDeptAndInstr}`,
+            uid: course.uniqueId,
             time,
+            normalizedStartTime,
+            normalizedEndTime,
+            startIndex: convertMinutesToIndex(normalizedStartTime),
+            endIndex: convertMinutesToIndex(normalizedEndTime),
             location,
             status,
             colors: course.colors,
@@ -149,13 +178,27 @@ export default function Map(): JSX.Element {
             }
         });
 
+        // Sort each day based on the start time of the course
+        Object.entries(orderedWeekSchedule).forEach(([day, courses]) => {
+            orderedWeekSchedule[day as Day] = courses.sort((courseA, courseB) => {
+                const courseAStartTime = processedCourses.find(
+                    course => course.fullName === courseA
+                )?.normalizedStartTime;
+                const courseBStartTime = processedCourses.find(
+                    course => course.fullName === courseB
+                )?.normalizedStartTime;
+
+                return (courseAStartTime ?? 0) - (courseBStartTime ?? 0);
+            });
+        });
+
         return orderedWeekSchedule;
     }, [processedCourses]);
 
     useEffect(() => {
-        console.log(activeSchedule);
-        console.log(generateWeekSchedule());
-        console.log(processedCourses);
+        console.log('Active Schedule: ', activeSchedule);
+        console.log('processedCourses:', processedCourses);
+        console.log('generateWeekSchedule():', generateWeekSchedule());
     }, [activeSchedule, processedCourses, generateWeekSchedule]);
 
     return (
