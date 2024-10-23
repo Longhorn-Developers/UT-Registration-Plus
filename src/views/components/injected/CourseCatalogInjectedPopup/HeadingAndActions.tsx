@@ -20,7 +20,7 @@ import OpenNewIcon from '~icons/material-symbols/open-in-new';
 import Remove from '~icons/material-symbols/remove';
 import Reviews from '~icons/material-symbols/reviews';
 
-import LocationAndTime from './LocationAndTime';
+import LocationAndTime from './DisplayMeetingInfo';
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
