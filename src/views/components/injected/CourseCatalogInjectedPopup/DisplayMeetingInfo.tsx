@@ -4,23 +4,19 @@ import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
 
-interface LocationAndTimeProps {
+export interface DisplayMeetingInfoProps {
     course: Course;
 }
 
-interface MeetingInfoTextProp {
+interface MeetingInfoTextProps {
     meeting: CourseMeeting;
     instructionMode: string;
 }
 
 /**
  * Renders a single meeting's time and location info.
- *
- * @param meeting - The meeting object.
- * @param instructionMode - The mode of instruction (e.g., Online, In-person).
- * @returns The rendered meeting info.
  */
-function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProp): JSX.Element {
+function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProps): JSX.Element {
     const daysString = meeting.getDaysString({ format: 'long', separator: 'long' });
     const timeString = meeting.getTimeString({ separator: ' to ', capitalize: false });
 
@@ -45,18 +41,15 @@ function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProp): JSX
     return (
         <Text variant='h4' as='p'>
             {daysString} {timeString}
-            {locationInfo && ` ${locationInfo}`}
+            {locationInfo && <> {locationInfo}</>}
         </Text>
     );
 }
 
 /**
  * Render the time and location for the current class.
- *
- * @param props.course - The course object containing course details.
- * @returns  The rendered component.
  */
-export default function DisplayMeetingInfo({ course }: LocationAndTimeProps): JSX.Element {
+export default function DisplayMeetingInfo({ course }: DisplayMeetingInfoProps): JSX.Element {
     const { schedule, instructionMode } = course;
 
     const noMeetings = !Array.isArray(schedule.meetings) || schedule.meetings.length === 0;
