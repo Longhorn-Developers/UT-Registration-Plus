@@ -8,7 +8,7 @@ import React from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
 
-import { useAddSchedule } from '../common/DialogProvider/AddSchedule';
+import { useAddSchedule } from '../common/DialogProvider/InstantiateSchedule';
 
 /**
  * Renders a component that displays a list of schedules.

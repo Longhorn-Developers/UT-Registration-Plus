@@ -18,7 +18,7 @@ import SettingsIcon from '~icons/material-symbols/settings';
 
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
-import { useAddSchedule } from './common/DialogProvider/AddSchedule';
+import { useAddSchedule } from './common/DialogProvider/InstantiateSchedule';
 import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown';

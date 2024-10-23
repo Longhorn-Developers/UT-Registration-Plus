@@ -11,8 +11,8 @@ import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
 import { Button } from './Button';
-import { useAddSchedule } from './DialogProvider/AddSchedule';
 import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
+import { useDuplicateSchedule } from './DialogProvider/InstantiateSchedule';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 
 /**
@@ -34,7 +34,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [editorValue, setEditorValue] = useState(schedule.name);
 
     const showDialog = usePrompt();
-    const handleDuplicateSchedule = useAddSchedule();
+    const handleDuplicateSchedule = useDuplicateSchedule();
 
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
@@ -181,7 +181,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                     <Text
                                         as='button'
                                         variant='small'
-                                        onClick={() => handleDuplicateSchedule(schedule.name)}
+                                        onClick={() => handleDuplicateSchedule(schedule.id)}
                                         className='w-full rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
                                     >
                                         Duplicate
