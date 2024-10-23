@@ -128,7 +128,6 @@ function List<T>({ draggables, itemKey, children, onReordered, gap, boundingRef 
             setItems(reordered);
             onReordered(reordered.map(item => item.content));
         },
-
         // This is on purpose
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [items]
