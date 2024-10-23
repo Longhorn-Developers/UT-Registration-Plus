@@ -500,7 +500,7 @@ export default function Settings(): JSX.Element {
                         </div>
                     </section>
                     <section className='my-8'>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTERS</h2>
+                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTORS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
                             {LONGHORN_DEVELOPERS_SWE.sort(
                                 (a, b) =>
