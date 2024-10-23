@@ -1,110 +1,6 @@
-import type { MainCampusBuildingsCode } from '@shared/types/MainCampusBuildings';
-import React from 'react';
+import type { Graph, MapNode, NodeType } from './pathFinding';
 
-// Type definitions
-type NodeType = 'building' | 'intersection';
-
-interface Node {
-    x: number;
-    y: number;
-    // connections: string[];
-    type: NodeType;
-}
-
-interface GraphNodes {
-    [key: string]: Node;
-}
-
-interface Path {
-    id: string;
-    points: string[]; // Array of node IDs representing the path
-}
-
-// Helper functions for path finding
-export const findNearestIntersection = (buildingId: string, graph: GraphNodes): string => {
-    const building = graph[buildingId];
-    let nearestIntersection = '';
-    let shortestDistance = Infinity;
-
-    Object.entries(graph).forEach(([nodeId, node]) => {
-        if (node.type === 'intersection' && building) {
-            const distance = Math.sqrt((node.x - building.x) ** 2 + (node.y - building.y) ** 2);
-            if (distance < shortestDistance) {
-                shortestDistance = distance;
-                nearestIntersection = nodeId;
-            }
-        }
-    });
-
-    return nearestIntersection;
-};
-
-// Get all buildings from the graph
-export const getAllBuildings = (graph: GraphNodes): string[] =>
-    Object.entries(graph)
-        .filter(([_key, node]) => node.type === 'building')
-        .map(([id]) => id);
-
-// Generate all possible building-to-building paths
-export const generateAllBuildingPaths = (): Path[] => {
-    const buildings = getAllBuildings(graphNodes);
-    const paths: Path[] = [];
-
-    for (let i = 0; i < buildings.length; i++) {
-        for (let j = i + 1; j < buildings.length; j++) {
-            const building1 = buildings[i];
-            const building2 = buildings[j];
-
-            if (building1 && building2) {
-                // Get nearest intersections for both buildings
-                const int1 = findNearestIntersection(building1, graphNodes);
-                const int2 = findNearestIntersection(building2, graphNodes);
-
-                paths.push({
-                    id: `${building1}-${building2}`,
-                    points: [building1, int1, int2, building2],
-                });
-            }
-        }
-    }
-
-    return paths;
-};
-
-// Draw a single path segment
-export const PathSegment = ({
-    start,
-    end,
-    isHighlighted,
-}: {
-    start: string;
-    end: string;
-    isHighlighted?: boolean;
-}): JSX.Element | null => {
-    const startNode = graphNodes[start];
-    const endNode = graphNodes[end];
-
-    if (!startNode || !endNode) return null;
-
-    if (!isHighlighted) return null;
-
-    return (
-        <line
-            x1={startNode.x}
-            y1={startNode.y}
-            x2={endNode.x}
-            y2={endNode.y}
-            // stroke={isHighlighted ? '#FF8C00' : '#BF5700'}
-            stroke={isHighlighted ? '#000' : '#BF5700'} // TODO
-            // strokeWidth={isHighlighted ? '4' : '2'}
-            strokeWidth={isHighlighted ? '10' : '2'}
-            strokeLinecap='round'
-            className={`opacity-60 ${isHighlighted ? 'z-10000' : ''}`}
-        />
-    );
-};
-
-export const graphNodes: GraphNodes = {
+export const graphNodes: Graph = {
     // Building nodes
     GDC: {
         x: 257,
@@ -328,4 +224,28 @@ export const graphNodes: GraphNodes = {
         y: 425,
         type: 'intersection',
     },
+} as const;
+
+// Type-safe helper to get all buildings
+export const getAllBuildings = (graph: Graph): string[] =>
+    Object.entries(graph)
+        .filter((entry): entry is [string, MapNode & { type: 'building' }] => entry[1].type === 'building')
+        .map(([id]) => id);
+
+// Type-safe helper to get all intersections
+export const getAllIntersections = (graph: Graph): string[] =>
+    Object.entries(graph)
+        .filter((entry): entry is [string, MapNode & { type: 'intersection' }] => entry[1].type === 'intersection')
+        .map(([id]) => id);
+
+// Type guard to validate a node exists and is a building
+export const isBuilding = (nodeId: string, graph: Graph): boolean => {
+    const node = graph[nodeId];
+    return node?.type === 'building';
+};
+
+// Type guard to validate a node exists and is an intersection
+export const isIntersection = (nodeId: string, graph: Graph): boolean => {
+    const node = graph[nodeId];
+    return node?.type === 'intersection';
 };
