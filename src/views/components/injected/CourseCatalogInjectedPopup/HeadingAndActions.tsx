@@ -3,7 +3,7 @@ import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { Button } from '@views/components/common/Button';
-import { Chip, flagMap } from '@views/components/common/Chip';
+import { Chip, coreMap, flagMap } from '@views/components/common/Chip';
 import Divider from '@views/components/common/Divider';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
@@ -49,7 +49,7 @@ const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slic
  * @returns {JSX.Element} The rendered component.
  */
 export default function HeadingAndActions({ course, activeSchedule, onClose }: HeadingAndActionProps): JSX.Element {
-    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule } = course;
+    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule, core } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
     const isInCalendar = useCalendar();
@@ -152,6 +152,14 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                             <Chip
                                 key={flagMap[flag as keyof typeof flagMap]}
                                 label={flagMap[flag as keyof typeof flagMap]}
+                                variant='flag'
+                            />
+                        ))}
+                        {core.map((coreVal: string) => (
+                            <Chip
+                                key={coreMap[coreVal as keyof typeof coreMap]}
+                                label={coreMap[coreVal as keyof typeof coreMap]}
+                                variant='core'
                             />
                         ))}
                     </div>
