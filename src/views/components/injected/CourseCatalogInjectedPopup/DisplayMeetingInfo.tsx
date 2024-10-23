@@ -27,7 +27,7 @@ function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProp): JSX
     const getBuildingUrl = (building: string) =>
         `https://utdirect.utexas.edu/apps/campus/buildings/nlogon/maps/UTM/${building}`;
 
-    let locationInfo: JSX.Element;
+    let locationInfo: String | JSX.Element = '';
 
     if (meeting.location) {
         locationInfo = (
@@ -39,14 +39,8 @@ function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProp): JSX
             </>
         );
     } else if (instructionMode !== 'Online') {
-        return (
-            <Text variant='h4' as='p'>
-                {daysString} {timeString} (No location has been provided)
-            </Text>
-        );
-    } else {
-        locationInfo = <></>;
-    }
+        locationInfo = '(No location has been provided)';
+    } 
 
     return (
         <Text variant='h4' as='p'>
