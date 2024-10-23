@@ -21,16 +21,28 @@ export default function ScheduleTotalHoursAndCourses({
     totalCourses,
 }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div className='min-w-full w-0 flex items-baseline gap-2.5 whitespace-nowrap'>
+        <div className='min-w-full w-0 flex items-baseline gap-5 whitespace-nowrap'>
             <Text className='truncate text-ut-burntorange uppercase' variant='h1' as='span'>
                 {`${scheduleName}: `}
             </Text>
-            <Text variant='h3' as='span' className='flex flex-row items-baseline gap-2 text-theme-black'>
-                {totalHours} {totalHours === 1 ? 'Hour' : 'Hours'}
-                <Text variant='h4' as='span' className='hidden capitalize screenshot:inline sm:inline'>
-                    {totalCourses} {totalCourses === 1 ? 'Course' : 'Courses'}
+            <div className='flex flex-row items-baseline gap-5'>
+                <Text
+                    variant='h3'
+                    as='span'
+                    className='text-smallcaps flex flex-row items-baseline gap-2 text-theme-black sm:inline-flex'
+                >
+                    <span className='font-bold'>{totalHours}</span>
+                    <span className='font-normal'>{totalHours === 1 ? 'Hour' : 'Hours'}</span>
                 </Text>
-            </Text>
+                <Text
+                    variant='h3'
+                    as='span'
+                    className='text-smallcaps hidden flex flex-row items-baseline gap-2 text-theme-black screenshot:inline-flex sm:inline-flex'
+                >
+                    <span className='font-bold'>{totalCourses}</span>
+                    <span className='font-normal'>{totalCourses === 1 ? 'Course' : 'Courses'}</span>
+                </Text>
+            </div>
         </div>
     );
 }
