@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
-import { connectionConfig, findShortestPath, generateConnections, PathSegment, rawGraphNodes } from './mapUtils';
+import { generateAllBuildingPaths, graphNodes, PathSegment } from './mapUtils';
 
 const UTMapURL = new URL('/src/assets/UT-Map.png', import.meta.url).href;
 
@@ -13,40 +13,7 @@ const UTMapURL = new URL('/src/assets/UT-Map.png', import.meta.url).href;
  * - Building selection controls to highlight specific paths.
  */
 export default function CampusMap() {
-    const [selectedPath, setSelectedPath] = useState<string[]>([]);
-    const [startBuilding, setStartBuilding] = useState<string>('');
-    const [endBuilding, setEndBuilding] = useState<string>('');
-    const [allowThroughBuildings, setAllowThroughBuildings] = useState(false);
-    const [debugInfo, setDebugInfo] = useState<string>('');
-
-    // Generate graph with connections once using useMemo
-    const graphNodes = useMemo(() => generateConnections(rawGraphNodes, connectionConfig), []);
-
-    // Function to draw path between buildings
-    const drawPathBetweenBuildings = useCallback(
-        (start: string, end: string) => {
-            if (!start || !end || start === end) {
-                setSelectedPath([]);
-                setDebugInfo('No path to draw - invalid start/end');
-                return;
-            }
-
-            try {
-                const result = findShortestPath(start, end, graphNodes, allowThroughBuildings);
-                setDebugInfo(`Found path: ${result.path.join(' → ')} (distance: ${result.distance.toFixed(2)})`);
-                setSelectedPath(result.path);
-            } catch (error) {
-                setDebugInfo(`Error finding path: ${error instanceof Error ? error.message : 'Unknown error'}`);
-                setSelectedPath([]);
-            }
-        },
-        [allowThroughBuildings, graphNodes]
-    );
-
-    // Update path when selections change
-    React.useEffect(() => {
-        drawPathBetweenBuildings(startBuilding, endBuilding);
-    }, [startBuilding, endBuilding, allowThroughBuildings, drawPathBetweenBuildings]);
+    const [highlightedPath, setHighlightedPath] = useState<string[]>([]);
 
     return (
         <div className='relative h-full w-full'>
@@ -55,34 +22,19 @@ export default function CampusMap() {
 
             {/* SVG Overlay */}
             <svg className='absolute left-0 top-0 h-full w-full' viewBox='0 0 784 754' preserveAspectRatio='none'>
-                {/* Debug visualization of all connections */}
-                {Object.entries(graphNodes).map(([nodeId, node]) =>
-                    node.connections.map(connectionId => (
-                        <line
-                            key={`${nodeId}-${connectionId}`}
-                            x1={node.x}
-                            y1={node.y}
-                            x2={graphNodes[connectionId]?.x || 0}
-                            y2={graphNodes[connectionId]?.y || 0}
-                            stroke='#dddddd'
-                            strokeWidth='1'
-                            strokeDasharray='4,4'
-                            className='opacity-30'
-                        />
-                    ))
-                )}
-
-                {/* Draw selected path */}
-                {selectedPath.length > 1 &&
-                    selectedPath
-                        .slice(0, -1)
-                        .map((nodeId, index) => (
+                {/* Draw all building-to-building paths */}
+                {generateAllBuildingPaths().map(path => (
+                    <g key={path.id}>
+                        {path.points.slice(0, -1).map((startNode, index) => (
                             <PathSegment
-                                key={`path-${nodeId}-${selectedPath[index + 1]}`}
-                                start={nodeId}
-                                end={selectedPath[index + 1] || ''}
+                                key={`${startNode}-${path.points[index + 1]}`}
+                                start={startNode}
+                                end={path.points[index + 1] || ''}
+                                isHighlighted={highlightedPath.includes(path.id)}
                             />
                         ))}
+                    </g>
+                ))}
 
                 {/* Draw nodes */}
                 {Object.entries(graphNodes).map(([id, node]) => (
@@ -91,15 +43,13 @@ export default function CampusMap() {
                             cx={node.x}
                             cy={node.y}
                             r={node.type === 'building' ? 6 : 4}
-                            fill={
-                                // eslint-disable-next-line no-nested-ternary
-                                selectedPath.includes(id) ? '#FF8C00' : node.type === 'building' ? '#BF5700' : '#666666'
-                            }
+                            fill={node.type === 'building' ? '#BF5700' : '#666666'}
                             stroke='white'
                             strokeWidth='2'
                             className='opacity-90'
                         />
 
+                        {/* Only label buildings */}
                         {node.type === 'building' && (
                             <text x={node.x + 12} y={node.y + 4} fill='#000000' fontSize='14' className='font-bold'>
                                 {id}
@@ -109,66 +59,34 @@ export default function CampusMap() {
                 ))}
             </svg>
 
-            {/* Controls */}
-            <div className='absolute right-4 top-4 max-w-xs rounded-md bg-white/90 p-4 shadow-sm space-y-4'>
-                <div className='space-y-4'>
-                    <div className='space-y-2'>
-                        <label className='block text-sm font-medium'>Start Building:</label>
-                        <select
-                            value={startBuilding}
-                            onChange={e => setStartBuilding(e.target.value)}
-                            className='w-full border border-gray-300 rounded-md p-1'
-                        >
-                            <option value=''>Select Building</option>
-                            {Object.entries(graphNodes)
-                                .filter(([_, node]) => node.type === 'building')
-                                .map(([id]) => (
-                                    <option key={id} value={id}>
-                                        {id}
-                                    </option>
-                                ))}
-                        </select>
-                    </div>
-
-                    <div className='space-y-2'>
-                        <label className='block text-sm font-medium'>End Building:</label>
-                        <select
-                            value={endBuilding}
-                            onChange={e => setEndBuilding(e.target.value)}
-                            className='w-full border border-gray-300 rounded-md p-1'
-                        >
-                            <option value=''>Select Building</option>
-                            {Object.entries(graphNodes)
-                                .filter(([_, node]) => node.type === 'building')
-                                .map(([id]) => (
-                                    <option key={id} value={id}>
-                                        {id}
-                                    </option>
-                                ))}
-                        </select>
-                    </div>
-
+            {/* Building Selection Controls */}
+            <div className='absolute right-8 top-8 h-full h-full rounded-md bg-white/90 p-3 shadow-sm space-y-4'>
+                <div className='text-sm space-y-2'>
                     <div className='flex items-center gap-2'>
-                        <input
-                            type='checkbox'
-                            id='allowBuildings'
-                            checked={allowThroughBuildings}
-                            onChange={e => setAllowThroughBuildings(e.target.checked)}
-                            className='rounded'
-                        />
-                        <label htmlFor='allowBuildings' className='text-sm'>
-                            Allow paths through buildings
-                        </label>
+                        <div className='h-3 w-3 rounded-full bg-[#BF5700]' />
+                        <span>Buildings</span>
                     </div>
+                    <div className='flex items-center gap-2'>
+                        <div className='h-3 w-3 rounded-full bg-[#666666]' />
+                        <span>Path Intersections</span>
+                    </div>
+                    <div className='flex items-center gap-2'>
+                        <div className='h-1 w-6 bg-[#BF5700]' />
+                        <span>Walking Paths</span>
+                    </div>
+                </div>
 
-                    {/* Debug info */}
-                    {debugInfo && (
-                        <div className='rounded bg-gray-100 p-2 text-xs'>
-                            <pre className='whitespace-pre-wrap'>{debugInfo}</pre>
-                        </div>
-                    )}
-
-                    {selectedPath.length > 0 && <div className='text-sm'>Path: {selectedPath.join(' → ')}</div>}
+                <div className='overflow-y-scroll space-y-2'>
+                    <p className='text-sm font-medium'>Building Paths:</p>
+                    {generateAllBuildingPaths().map(path => (
+                        <button
+                            key={path.id}
+                            onClick={() => setHighlightedPath([path.id])}
+                            className='block text-sm text-gray-600 hover:text-gray-900'
+                        >
+                            {path.points[0]} → {path.points[path.points.length - 1]}
+                        </button>
+                    ))}
                 </div>
             </div>
         </div>
