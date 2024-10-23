@@ -105,7 +105,7 @@ export default function CourseCellColorPicker({
     }, [hexCodeWithHash, setFinalColor]);
 
     return (
-        <div className='inline-flex flex-col border border-1 border-ut-offwhite rounded-1 p-1.25'>
+        <div className='inline-flex flex-col border border-1 border-ut-offwhite rounded-1 bg-white p-1.25'>
             <div className='grid grid-cols-6 gap-1'>
                 {Array.from(colorPatchColors.keys()).map(baseColor => (
                     <ColorPatch
