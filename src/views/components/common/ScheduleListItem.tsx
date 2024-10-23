@@ -1,5 +1,6 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
+import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
@@ -12,7 +13,7 @@ import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
 import { Button } from './Button';
 import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
-import { useDuplicateSchedule } from './DialogProvider/InstantiateSchedule';
+import { useEnforceScheduleLimit } from './DialogProvider/useEnforceScheduleLimit';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 
 /**
@@ -34,7 +35,12 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [editorValue, setEditorValue] = useState(schedule.name);
 
     const showDialog = usePrompt();
-    const handleDuplicateSchedule = useDuplicateSchedule();
+    const enforceScheduleLimit = useEnforceScheduleLimit();
+    const handleDuplicateSchedule = (scheduleId: string) => {
+        if (enforceScheduleLimit()) {
+            duplicateSchedule(scheduleId);
+        }
+    };
 
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {

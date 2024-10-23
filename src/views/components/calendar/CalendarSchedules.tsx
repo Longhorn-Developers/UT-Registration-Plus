@@ -1,3 +1,4 @@
+import createSchedule from '@pages/background/lib/createSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { Button } from '@views/components/common/Button';
 import List from '@views/components/common/List';
@@ -8,7 +9,7 @@ import React from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
 
-import { useAddSchedule } from '../common/DialogProvider/InstantiateSchedule';
+import { useEnforceScheduleLimit } from '../common/DialogProvider/useEnforceScheduleLimit';
 
 /**
  * Renders a component that displays a list of schedules.
@@ -19,7 +20,12 @@ import { useAddSchedule } from '../common/DialogProvider/InstantiateSchedule';
 export function CalendarSchedules() {
     const [, schedules] = useSchedules();
 
-    const handleAddSchedule = useAddSchedule();
+    const enforceScheduleLimit = useEnforceScheduleLimit();
+    const handleAddSchedule = () => {
+        if (enforceScheduleLimit()) {
+            createSchedule('New Schedule');
+        }
+    };
 
     return (
         <div className='min-w-full w-0 items-center'>

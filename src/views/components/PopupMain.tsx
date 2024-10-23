@@ -1,4 +1,5 @@
 import splashText from '@assets/insideJokes';
+import createSchedule from '@pages/background/lib/createSchedule';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
@@ -18,7 +19,7 @@ import SettingsIcon from '~icons/material-symbols/settings';
 
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
-import { useAddSchedule } from './common/DialogProvider/InstantiateSchedule';
+import { useEnforceScheduleLimit } from './common/DialogProvider/useEnforceScheduleLimit';
 import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown';
@@ -62,7 +63,12 @@ export default function PopupMain(): JSX.Element {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [funny, setFunny] = useState<string>('');
 
-    const handleAddSchedule = useAddSchedule();
+    const enforceScheduleLimit = useEnforceScheduleLimit();
+    const handleAddSchedule = () => {
+        if (enforceScheduleLimit()) {
+            createSchedule('New Schedule');
+        }
+    };
 
     useEffect(() => {
         const randomIndex = Math.floor(Math.random() * splashText.length);
