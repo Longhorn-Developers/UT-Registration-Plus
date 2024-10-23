@@ -60,7 +60,7 @@ export default function CampusMap() {
             </svg>
 
             {/* Building Selection Controls */}
-            <div className='absolute right-8 top-8 rounded-md bg-white/90 p-3 shadow-sm space-y-4'>
+            <div className='absolute right-8 top-8 h-full h-full rounded-md bg-white/90 p-3 shadow-sm space-y-4'>
                 <div className='text-sm space-y-2'>
                     <div className='flex items-center gap-2'>
                         <div className='h-3 w-3 rounded-full bg-[#BF5700]' />
@@ -76,7 +76,7 @@ export default function CampusMap() {
                     </div>
                 </div>
 
-                <div className='space-y-2'>
+                <div className='overflow-y-scroll space-y-2'>
                     <p className='text-sm font-medium'>Building Paths:</p>
                     {generateAllBuildingPaths().map(path => (
                         <button

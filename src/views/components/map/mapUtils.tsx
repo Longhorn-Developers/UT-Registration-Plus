@@ -86,6 +86,8 @@ export const PathSegment = ({
 
     if (!startNode || !endNode) return null;
 
+    if (!isHighlighted) return null;
+
     return (
         <line
             x1={startNode.x}
@@ -97,7 +99,7 @@ export const PathSegment = ({
             // strokeWidth={isHighlighted ? '4' : '2'}
             strokeWidth={isHighlighted ? '10' : '2'}
             strokeLinecap='round'
-            className={`opacity-60 ${isHighlighted ? 'z-1000' : ''}`}
+            className={`opacity-60 ${isHighlighted ? 'z-10000' : ''}`}
         />
     );
 };
