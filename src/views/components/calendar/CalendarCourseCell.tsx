@@ -1,15 +1,19 @@
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
-import type { CourseColors } from '@shared/types/ThemeColors';
+import type { CourseColors, ThemeColor } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
 import ClosedIcon from '~icons/material-symbols/lock';
+import PaletteIcon from '~icons/material-symbols/palette';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
+
+import { Button } from '../common/Button';
+import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellColorPicker';
 
 /**
  * Props for the CalendarCourseCell component.
@@ -44,6 +48,9 @@ export default function CalendarCourseCell({
     onClick,
 }: CalendarCourseCellProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
+    const [selectedColor, setSelectedColor] = useState<ThemeColor>(colors.primaryColor as ThemeColor);
+    const [isInvertColorsToggled, setIsInvertColorsToggled] = useState<boolean>(false);
 
     useEffect(() => {
         initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
@@ -76,7 +83,7 @@ export default function CalendarCourseCell({
     return (
         <div
             className={clsx(
-                'h-full w-0 flex justify-center rounded p-x-2 p-y-1.2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out',
+                'h-full w-0 flex group relative justify-center rounded p-x-2 p-y-1.2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out',
                 {
                     'min-w-full': timeAndLocation,
                     'w-full': !timeAndLocation,
@@ -85,7 +92,7 @@ export default function CalendarCourseCell({
                 className
             )}
             style={{
-                backgroundColor: colors.primaryColor,
+                backgroundColor: showColorPicker ? selectedColor : colors.primaryColor,
             }}
             onClick={onClick}
         >
@@ -116,6 +123,29 @@ export default function CalendarCourseCell({
                     {rightIcon}
                 </div>
             )}
+
+            <div
+                onClick={e => {
+                    e.stopPropagation();
+                }}
+                className='pointer-events-none absolute right-0 top-2 z-999 translate-x-full pl-0.75 text-black opacity-0 transition-all ease-in-out group-focus-within:pointer-events-auto group-hover:pointer-events-auto group-focus-within:opacity-100 group-hover:opacity-100'
+            >
+                <Button
+                    onClick={() => setShowColorPicker(prev => !prev)}
+                    icon={PaletteIcon}
+                    color='ut-gray'
+                    variant='filled'
+                    className='mb-0.75 size-7 border border-white rounded-full !p-1.5 !hover:shadow-none'
+                />
+
+                {showColorPicker && (
+                    <CourseCellColorPicker
+                        setSelectedColor={setSelectedColor}
+                        isInvertColorsToggled={isInvertColorsToggled}
+                        setIsInvertColorsToggled={setIsInvertColorsToggled}
+                    />
+                )}
+            </div>
         </div>
     );
 }
