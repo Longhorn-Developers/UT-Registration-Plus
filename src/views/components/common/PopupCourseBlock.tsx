@@ -10,6 +10,7 @@ import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
+import CheckIcon from '~icons/material-symbols/check';
 import Copy from '~icons/material-symbols/content-copy';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
@@ -112,8 +113,8 @@ export default function PopupCourseBlock({
                 onClick={handleCopy}
                 style={{ display: 'flex', backgroundColor: colors.secondaryColor, color: 'text-white' }}
             >
-                <Copy className='h-5 w-5 text-white' />
-                {isCopied ? 'Copied!' : formattedUniqueId}
+                {isCopied ? <CheckIcon className='h-5 w-5 text-white' /> : <Copy className='h-5 w-5 text-white' />}
+                {formattedUniqueId}
             </button>
         </div>
     );
