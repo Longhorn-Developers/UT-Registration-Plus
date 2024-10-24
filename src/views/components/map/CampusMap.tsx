@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState } from 'react';
 
+import Divider from '../common/Divider';
 import { getAllBuildings, graphNodes, isBuilding } from './mapUtils';
 import { type NodeId, Path } from './pathFinding';
 
@@ -98,7 +99,22 @@ export default function CampusMap() {
             </svg>
 
             {/* Building Selection Controls */}
-            <div className='absolute right-8 top-8 rounded-md bg-white/90 p-4 shadow-sm'>
+            <div className='absolute right-8 top-8 rounded-md bg-white/90 p-4 shadow-sm space-y-4'>
+                <div className='text-sm space-y-1'>
+                    <div className='flex items-center gap-2'>
+                        <div className='h-3 w-3 rounded-full bg-[#BF5700]' />
+                        <span>Buildings</span>
+                    </div>
+                    <div className='flex items-center gap-2'>
+                        <div className='h-3 w-3 rounded-full bg-[#666666]' />
+                        <span>Path Intersections</span>
+                    </div>
+                    <div className='flex items-center gap-2'>
+                        <div className='h-1 w-6 bg-[#BF5700]' />
+                        <span>Walking Paths</span>
+                    </div>
+                </div>
+                <Divider size='auto' orientation='horizontal' />
                 <div className='space-y-4'>
                     <div>
                         <h3 className='text-sm font-medium'>Select Buildings:</h3>
