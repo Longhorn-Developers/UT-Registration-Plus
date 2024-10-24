@@ -27,14 +27,14 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
                     <>
                         <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left'>
                             <div className='flex-1'>
-                                <Text as='div' variant='h3' className='mb-1 w-100% text-ut-burntorange'>
+                                <Text as='div' variant='h4' className='mb-1 w-100% text-ut-burntorange'>
                                     {(activeSchedule ? activeSchedule.name : 'Schedule').toUpperCase()}:
                                 </Text>
                                 <p className='-mb-0.5'>
                                     <Text variant='h3' className='text-theme-black leading-[75%]!'>
                                         {activeSchedule ? activeSchedule.hours : 0} HOURS
                                     </Text>
-                                    <Text variant='h3' className='ml-2.5 text-ut-black leading-[75%]!'>
+                                    <Text variant='h3' className='ml-2.5 text-theme-black leading-[75%]!'>
                                         {activeSchedule ? activeSchedule.courses.length : 0} Courses
                                     </Text>
                                 </p>

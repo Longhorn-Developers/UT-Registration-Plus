@@ -21,27 +21,31 @@ export default function ScheduleTotalHoursAndCourses({
     totalCourses,
 }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div className='min-w-full w-0 flex items-baseline gap-5 whitespace-nowrap'>
+        <div className='min-w-full w-0 flex items-baseline gap-2.5 whitespace-nowrap'>
             <Text className='truncate text-ut-burntorange uppercase' variant='h1' as='span'>
                 {`${scheduleName}: `}
             </Text>
-            <div className='flex flex-row items-baseline gap-5'>
-                <Text
-                    variant='h3'
-                    as='span'
-                    className='text-smallcaps flex flex-row items-baseline gap-2 text-theme-black sm:inline-flex'
-                >
-                    <span className='font-bold'>{totalHours}</span>
-                    <span className='font-normal'>{totalHours === 1 ? 'Hour' : 'Hours'}</span>
-                </Text>
-                <Text
-                    variant='h3'
-                    as='span'
-                    className='text-smallcaps hidden flex flex-row items-baseline gap-2 text-theme-black screenshot:inline-flex sm:inline-flex'
-                >
-                    <span className='font-bold'>{totalCourses}</span>
-                    <span className='font-normal'>{totalCourses === 1 ? 'Course' : 'Courses'}</span>
-                </Text>
+            <div className='flex flex-row items-baseline gap-2'>
+                <div>
+                    <Text variant='h1' as='span' className='font-normal normal-case!'>
+                        <span className='text-theme-black'>{totalHours}</span>{' '}
+                    </Text>
+                    <Text variant='h3' as='span' className='normal-case!'>
+                        <span className='text-theme-black font-bold' style={{ fontVariant: 'all-small-caps' }}>
+                            {totalHours === 1 ? 'HOUR' : 'HOURS'}
+                        </span>
+                    </Text>
+                </div>
+                <div>
+                    <Text variant='h1' as='span' className='font-normal normal-case!'>
+                        <span className='text-theme-black'>{totalCourses}</span>{' '}
+                    </Text>
+                    <Text variant='h3' as='span' className='normal-case!'>
+                        <span className='text-theme-black font-bold' style={{ fontVariant: 'all-small-caps' }}>
+                            {totalCourses === 1 ? 'COURSE' : 'COURSES'}
+                        </span>
+                    </Text>
+                </div>
             </div>
         </div>
     );
