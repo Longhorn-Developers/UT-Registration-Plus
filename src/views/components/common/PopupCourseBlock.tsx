@@ -113,7 +113,7 @@ export default function PopupCourseBlock({
                 style={{ display: 'flex', backgroundColor: colors.secondaryColor, color: 'text-white' }}
             >
                 <Copy className='h-5 w-5 text-white' />
-                {isCopied ? 'Copied!' : formattedUniqueId} {/* Conditionally show "Copied!" */}
+                {isCopied ? 'Copied!' : formattedUniqueId}
             </button>
         </div>
     );
