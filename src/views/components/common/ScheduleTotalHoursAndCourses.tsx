@@ -21,16 +21,32 @@ export default function ScheduleTotalHoursAndCourses({
     totalCourses,
 }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div className='min-w-full w-0 flex items-center gap-2.5 whitespace-nowrap'>
+        <div className='min-w-full w-0 flex items-baseline gap-2.5 whitespace-nowrap'>
             <Text className='truncate text-ut-burntorange uppercase' variant='h1' as='span'>
                 {`${scheduleName}: `}
             </Text>
-            <Text variant='h3' as='div' className='flex flex-row items-center gap-2 text-theme-black'>
-                {totalHours} {totalHours === 1 ? 'Hour' : 'Hours'}
-                <Text variant='h4' as='span' className='hidden capitalize screenshot:inline sm:inline'>
-                    {totalCourses} {totalCourses === 1 ? 'Course' : 'Courses'}
-                </Text>
-            </Text>
+            <div className='flex flex-row items-baseline gap-2'>
+                <div>
+                    <Text variant='h1' as='span' className='font-normal normal-case!'>
+                        <span className='text-theme-black'>{totalHours}</span>{' '}
+                    </Text>
+                    <Text variant='h3' as='span' className='normal-case!'>
+                        <span className='text-theme-black font-bold' style={{ fontVariant: 'all-small-caps' }}>
+                            {totalHours === 1 ? 'HOUR' : 'HOURS'}
+                        </span>
+                    </Text>
+                </div>
+                <div>
+                    <Text variant='h1' as='span' className='font-normal normal-case!'>
+                        <span className='text-theme-black'>{totalCourses}</span>{' '}
+                    </Text>
+                    <Text variant='h3' as='span' className='normal-case!'>
+                        <span className='text-theme-black font-bold' style={{ fontVariant: 'all-small-caps' }}>
+                            {totalCourses === 1 ? 'COURSE' : 'COURSES'}
+                        </span>
+                    </Text>
+                </div>
+            </div>
         </div>
     );
 }

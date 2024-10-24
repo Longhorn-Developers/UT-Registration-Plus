@@ -34,7 +34,7 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
                                     <Text variant='h3' className='text-theme-black leading-[75%]!'>
                                         {activeSchedule ? activeSchedule.hours : 0} HOURS
                                     </Text>
-                                    <Text variant='h4' className='ml-2.5 text-ut-black leading-[75%]!'>
+                                    <Text variant='h3' className='ml-2.5 text-theme-black leading-[75%]!'>
                                         {activeSchedule ? activeSchedule.courses.length : 0} Courses
                                     </Text>
                                 </p>
