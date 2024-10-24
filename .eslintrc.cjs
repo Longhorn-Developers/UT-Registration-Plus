@@ -172,7 +172,14 @@ module.exports = {
             },
         ],
         '@typescript-eslint/no-explicit-any': 'error',
-        '@typescript-eslint/no-unused-vars': 'warn',
+        '@typescript-eslint/no-unused-vars': [
+            'warn',
+            {
+                argsIgnorePattern: '^_',
+                varsIgnorePattern: '^_',
+                caughtErrorsIgnorePattern: '^_',
+            },
+        ],
         '@typescript-eslint/naming-convention': 'off',
         '@typescript-eslint/space-before-function-paren': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',
