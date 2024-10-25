@@ -1,4 +1,5 @@
 import type { ThemeColor, TWIndex } from '@shared/types/ThemeColors';
+import { getThemeColorHexByName } from '@shared/util/themeColors';
 import Divider from '@views/components/common/Divider';
 import React from 'react';
 import { theme } from 'unocss/preset-mini';
@@ -93,7 +94,9 @@ export default function CourseCellColorPicker({
     updateCourseColor,
 }: CourseCellColorPickerProps): JSX.Element {
     // hexCode mirrors contents of HexColorEditor which has no hash prefix
-    const [hexCode, setHexCode] = React.useState<string>(defaultColor.slice(1).toLocaleLowerCase());
+    const [hexCode, setHexCode] = React.useState<string>(
+        defaultColor.slice(1).toLocaleLowerCase() || getThemeColorHexByName('ut-gray')
+    );
     const hexCodeWithHash = `#${hexCode}` as ThemeColor;
     const selectedBaseColor = hexCodeToBaseColor.get(hexCodeWithHash);
 
