@@ -63,7 +63,7 @@ export default function PopupCourseBlock({
                 backgroundColor: colors.primaryColor,
             }}
             className={clsx(
-                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left hover:shadow-md transition-shadow-100 ease-out',
+                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left hover:shadow-md transition-shadow-100 ease-out group-[.is-dragging]:shadow-md',
                 className
             )}
             onClick={handleClick}

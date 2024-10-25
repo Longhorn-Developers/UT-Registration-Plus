@@ -59,7 +59,7 @@ function Item<T>(props: {
             {...props.provided.draggableProps}
             ref={props.provided.innerRef}
             style={getStyle(props.provided, props.style)}
-            className={props.isDragging ? 'is-dragging' : ''}
+            className={props.isDragging ? 'group is-dragging' : ''}
         >
             {props.children}
         </div>
