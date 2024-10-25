@@ -59,15 +59,11 @@ messageListener.listen();
 UserScheduleStore.listen('schedules', async schedules => {
     const index = await UserScheduleStore.get('activeIndex');
     const numCourses = schedules.newValue[index]?.courses?.length;
-    if (!numCourses) return;
-
-    updateBadgeText(numCourses);
+    updateBadgeText(numCourses || 0);
 });
 
 UserScheduleStore.listen('activeIndex', async ({ newValue }) => {
     const schedules = await UserScheduleStore.get('schedules');
     const numCourses = schedules[newValue]?.courses?.length;
-    if (!numCourses) return;
-
-    updateBadgeText(numCourses);
+    updateBadgeText(numCourses || 0);
 });
