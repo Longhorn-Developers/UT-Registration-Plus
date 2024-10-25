@@ -20,7 +20,7 @@ export default function CalendarFooter(): JSX.Element {
                 </Link>
                 <Link className='linkanimate' href='https://discord.gg/7pQDBGdmb7'>
                     <DiscordIcon className='h-6 w-6' />
-                </Link>
+                </Link> 
                 <Link className='linkanimate' href='https://github.com/Longhorn-Developers'>
                     <GithubIcon className='h-6 w-6' />
                 </Link>

@@ -126,7 +126,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                         {formattedUniqueId}
                     </Button>
                     <button className='bg-transparent p-0 text-theme-black btn' onClick={onClose}>
-                        <CloseIcon className='h-7 w-7' />
+                        <CloseIcon className='h-7 w-7 text-[#333F48]' />
                     </button>
                 </div>
                 <div className='flex items-center gap-2'>
