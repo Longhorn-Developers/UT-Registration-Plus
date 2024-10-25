@@ -32,6 +32,22 @@ const dayToNumber = {
     Sunday: 6,
 } as const satisfies Record<string, number>;
 
+export type ProcessInPersonMeetings = {
+    day: Day;
+    dayIndex: number;
+    fullName: string;
+    uid: number;
+    time: string;
+    normalizedStartTime: number;
+    normalizedEndTime: number;
+    startIndex: number;
+    endIndex: number;
+    location: CourseMeeting['location'];
+    status: StatusType;
+    colors: Course['colors'];
+    course: Course;
+};
+
 /**
  * Converts minutes to an index value.
  * @param minutes The number of minutes.
@@ -131,7 +147,7 @@ export default function Map(): JSX.Element {
         }));
     }
 
-    const processedCourses = activeSchedule.courses.flatMap(course => {
+    const processedCourses: ProcessInPersonMeetings[] = activeSchedule.courses.flatMap(course => {
         const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
 
         // if (meetings.length === 0) {
@@ -231,7 +247,7 @@ export default function Map(): JSX.Element {
                     <CalendarFooter />
                 </div>
                 <div className='flex p-12'>
-                    <CampusMap />
+                    <CampusMap processedCourses={processedCourses} />
                 </div>
 
                 {/* Show week schedule */}

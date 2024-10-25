@@ -1,46 +1,154 @@
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
-import Divider from '../common/Divider';
-import { getAllBuildings, graphNodes, isBuilding } from './mapUtils';
-import { type NodeId, Path } from './pathFinding';
+import type { ProcessInPersonMeetings } from './Map';
+import { graphNodes } from './mapUtils';
+import type { NodeId } from './pathFinding';
+import { isValidNode, Path } from './pathFinding';
+import { calcDirectPathStats, PathStats, PIXELS_TO_FEET } from './PathStats';
 
 // Image: 784x754
 const UTMapURL = new URL('/src/assets/UT-Map.png', import.meta.url).href;
+
+// Types
+type DayCode = 'M' | 'T' | 'W' | 'TTH' | 'F';
+
+const DAY_MAPPING: Record<DayCode, string> = {
+    M: 'Monday',
+    T: 'Tuesday',
+    W: 'Wednesday',
+    TTH: 'Thursday',
+    F: 'Friday',
+} as const;
 
 type SelectedBuildings = {
     start: NodeId | null;
     end: NodeId | null;
 };
 
-export default function CampusMap() {
+// Helper to safely get midpoint coordinates
+const getMidpoint = (startId: string, endId: string) => {
+    const startNode = graphNodes[startId];
+    const endNode = graphNodes[endId];
+
+    if (!isValidNode(startNode) || !isValidNode(endNode)) {
+        return null;
+    }
+
+    return {
+        x: (startNode.x + endNode.x) / 2,
+        y: (startNode.y + endNode.y) / 2,
+    };
+};
+
+// Helper Components
+const DaySelector = ({
+    selectedDay,
+    onDaySelect,
+}: {
+    selectedDay: DayCode | null;
+    onDaySelect: (day: DayCode) => void;
+}): JSX.Element => (
+    <div className='flex gap-2 rounded-md bg-white/90 p-2 shadow-sm'>
+        {(Object.keys(DAY_MAPPING) as DayCode[]).map(day => (
+            <div
+                key={day}
+                onClick={() => onDaySelect(day)}
+                className={`px-3 py-1 ${
+                    selectedDay === day ? 'bg-ut-burntorange text-white' : 'hover:bg-ut-burntorange/10'
+                }`}
+            >
+                {day}
+            </div>
+        ))}
+    </div>
+);
+
+const TimeWarningLabel = ({ x, y, minutes }: { x: number; y: number; minutes: number }): JSX.Element => (
+    <g>
+        <circle cx={x} cy={y} r={12} fill='white' stroke='#FF4444' strokeWidth={2} />
+        <text x={x} y={y} textAnchor='middle' dominantBaseline='middle' fill='#FF4444' fontSize='10' fontWeight='bold'>
+            {minutes}&apos;
+        </text>
+    </g>
+);
+
+type CampusMapProps = {
+    processedCourses: ProcessInPersonMeetings[];
+};
+
+/**
+ * Component representing the campus map with interactive features.
+ *
+ * @component
+ * @param props - The properties for the CampusMap component.
+ * @param props.processedCourses - Array of processed courses.
+ * @returns The rendered CampusMap component.
+ *
+ * @remarks
+ * This component renders a map of the campus with interactive features such as:
+ * - Selecting buildings to create a path.
+ * - Displaying daily paths between sequential classes.
+ * - Highlighting paths with less than 15 minutes transition time.
+ *
+ * The rendered output includes:
+ * - An image of the campus map.
+ * - An SVG overlay with paths and buildings.
+ * - Controls for selecting the day and displaying path information.
+ */
+export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Element {
     const [selected, setSelected] = useState<SelectedBuildings>({
         start: null,
         end: null,
     });
+    const [selectedDay, setSelectedDay] = useState<DayCode | null>(null);
 
-    // const buildings = Object.entries(graphNodes)
-    //     .filter(([_, node]) => node.type === 'building')
-    //     .map(([id]) => id);
+    // Get daily paths between sequential classes
+    const getDailyPaths = (courses: ProcessInPersonMeetings[]) => {
+        const sortedCourses = [...courses].sort((a, b) => a.normalizedStartTime - b.normalizedStartTime);
 
-    // const handleBuildingSelect = (buildingId: NodeId) => {
-    //     setSelected(prev => {
-    //         if (!prev.start) return { ...prev, start: buildingId };
-    //         if (!prev.end) return { ...prev, end: buildingId };
-    //         return { start: buildingId, end: null };
-    //     });
-    // };
+        const paths = [];
 
-    // Type-safe way to get all buildings
-    const buildings = getAllBuildings(graphNodes);
+        for (let i = 0; i < sortedCourses.length - 1; i++) {
+            const currentCourse = sortedCourses[i];
+            const nextCourse = sortedCourses[i + 1];
 
-    const handleBuildingSelect = (buildingId: NodeId) => {
-        // Type-safe validation
-        if (!isBuilding(buildingId, graphNodes)) {
-            console.error('Invalid building selected:', buildingId);
-            return;
+            if (currentCourse && nextCourse && currentCourse.location?.building && nextCourse.location?.building) {
+                paths.push({
+                    start: currentCourse.location.building,
+                    end: nextCourse.location.building,
+                    startTime: currentCourse.normalizedEndTime,
+                    endTime: nextCourse.normalizedStartTime,
+                    colors: currentCourse.colors,
+                    startCourseName: currentCourse.fullName,
+                    endCourseName: nextCourse.fullName,
+                });
+            }
         }
 
+        return paths;
+    };
+
+    // Calculate relevant paths for selected day
+    const relevantPaths = useMemo(() => {
+        if (!selectedDay) return [];
+
+        const coursesForDay = processedCourses.filter(course => course.day === DAY_MAPPING[selectedDay]);
+
+        const paths = getDailyPaths(coursesForDay);
+        console.log(paths);
+
+        return paths.map(path => ({
+            ...path,
+            timeBetweenClasses: Math.floor(path.endTime - path.startTime),
+        }));
+    }, [selectedDay, processedCourses]);
+
+    const handleDaySelect = (day: DayCode) => {
+        setSelectedDay(prevDay => (prevDay === day ? null : day));
+    };
+
+    const handleBuildingSelect = (buildingId: NodeId) => {
         setSelected(prev => {
             if (!prev.start) return { ...prev, start: buildingId };
             if (!prev.end) return { ...prev, end: buildingId };
@@ -50,20 +158,44 @@ export default function CampusMap() {
 
     return (
         <div className='relative h-full w-full'>
+            {/* Map Image */}
             <img src={UTMapURL} alt='UT Campus Map' className='h-full w-full object-contain' />
 
+            {/* SVG Overlay */}
             <svg className='absolute left-0 top-0 h-full w-full' viewBox='0 0 784 754' preserveAspectRatio='none'>
-                {/* Render path if both buildings are selected */}
+                {/* Render user-selected path */}
                 {selected.start && selected.end && (
                     <Path
                         startId={selected.start}
                         endId={selected.end}
                         graph={graphNodes}
+                        color='#BF5700'
                         className='opacity-75 transition-opacity duration-300 hover:opacity-100'
                     />
                 )}
 
-                {/* Render nodes */}
+                {/* Render daily schedule paths */}
+                {relevantPaths.map((path, index) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <g key={`${path.start}-${path.end}-${index}`}>
+                        <Path
+                            startId={path.start}
+                            endId={path.end}
+                            graph={graphNodes}
+                            color={path.colors?.primaryColor || '#BF5700'}
+                            className='stroke-4 opacity-50 transition-opacity duration-300 hover:opacity-80'
+                        />
+                        {path.timeBetweenClasses < 15 &&
+                            (() => {
+                                const midpoint = getMidpoint(path.start, path.end);
+                                return midpoint ? (
+                                    <TimeWarningLabel x={midpoint.x} y={midpoint.y} minutes={path.timeBetweenClasses} />
+                                ) : null;
+                            })()}
+                    </g>
+                ))}
+
+                {/* Render buildings and intersections */}
                 {Object.entries(graphNodes).map(([id, node]) => (
                     <g key={id}>
                         <circle
@@ -81,14 +213,13 @@ export default function CampusMap() {
                             }
                             stroke='white'
                             strokeWidth='2'
-                            className='opacity-90'
+                            className='cursor-pointer opacity-90'
                             onClick={() => {
                                 if (node.type === 'building') {
                                     handleBuildingSelect(id);
                                 }
                             }}
                         />
-
                         {node.type === 'building' && (
                             <text x={node.x + 12} y={node.y + 4} fill='#000000' fontSize='14' className='font-bold'>
                                 {id}
@@ -98,46 +229,72 @@ export default function CampusMap() {
                 ))}
             </svg>
 
-            {/* Building Selection Controls */}
-            <div className='absolute right-8 top-8 rounded-md bg-white/90 p-4 shadow-sm space-y-4'>
-                <div className='text-sm space-y-1'>
-                    <div className='flex items-center gap-2'>
-                        <div className='h-3 w-3 rounded-full bg-[#BF5700]' />
-                        <span>Buildings</span>
-                    </div>
-                    <div className='flex items-center gap-2'>
-                        <div className='h-3 w-3 rounded-full bg-[#666666]' />
-                        <span>Path Intersections</span>
-                    </div>
-                    <div className='flex items-center gap-2'>
-                        <div className='h-1 w-6 bg-[#BF5700]' />
-                        <span>Walking Paths</span>
-                    </div>
-                </div>
-                <Divider size='auto' orientation='horizontal' />
-                <div className='space-y-4'>
-                    <div>
-                        <h3 className='text-sm font-medium'>Select Buildings:</h3>
-                        <p className='text-xs text-gray-500'>Start: {selected.start || 'Not selected'}</p>
-                        <p className='text-xs text-gray-500'>End: {selected.end || 'Not selected'}</p>
-                    </div>
+            {/* Controls and Information */}
+            <div className='absolute right-8 top-8 flex flex-col gap-4'>
+                {/* Day Selector */}
+                <DaySelector selectedDay={selectedDay} onDaySelect={handleDaySelect} />
 
-                    <div className='grid grid-cols-2 gap-2'>
-                        {buildings.map(building => (
-                            <button
-                                key={building}
-                                onClick={() => handleBuildingSelect(building)}
-                                className={`text-xs px-2 py-1 rounded ${
-                                    selected.start === building || selected.end === building
-                                        ? 'bg-ut-burntorange text-white'
-                                        : 'bg-gray-100 hover:bg-gray-200'
-                                }`}
-                            >
-                                {building}
-                            </button>
-                        ))}
+                {/* Path Statistics - show when a path is selected */}
+                {selected.start && selected.end && <PathStats startId={selected.start} endId={selected.end} />}
+
+                {/* Daily Paths Statistics - show when day is selected */}
+                {relevantPaths.length > 0 && (
+                    <div className='rounded-md bg-white/90 p-3 shadow-sm'>
+                        <div className='mb-2'>
+                            <p className='text-sm font-medium'>Daily Transitions</p>
+                            <p className='text-xs text-gray-600'>
+                                Total time:{' '}
+                                {relevantPaths.reduce(
+                                    (total, path) =>
+                                        total +
+                                        (calcDirectPathStats({ startId: path.start, endId: path.end })
+                                            ?.walkingTimeMinutes || 0),
+                                    0
+                                )}{' '}
+                                min
+                            </p>
+                            <p className='text-xs text-gray-600'>
+                                Total distance:{' '}
+                                {relevantPaths.reduce(
+                                    (total, path) =>
+                                        total +
+                                        (calcDirectPathStats({ startId: path.start, endId: path.end })
+                                            ?.distanceInFeet || 0),
+                                    0
+                                )}{' '}
+                                ft
+                            </p>
+                        </div>
+                        <div className='space-y-4'>
+                            {relevantPaths.map((path, index) => (
+                                <div
+                                    // eslint-disable-next-line react/no-array-index-key
+                                    key={index}
+                                    className='text-xs space-y-1'
+                                    style={{
+                                        borderLeft: `3px solid ${path.colors?.primaryColor || '#BF5700'}`,
+                                    }}
+                                >
+                                    <p className='ml-2'>{path.startCourseName}</p>
+                                    <p className='ml-2'>
+                                        (
+                                        {
+                                            calcDirectPathStats({ startId: path.start, endId: path.end })
+                                                ?.walkingTimeMinutes
+                                        }{' '}
+                                        min,{' '}
+                                        {calcDirectPathStats({ startId: path.start, endId: path.end })?.distanceInFeet}{' '}
+                                        ft)
+                                        {' - '}
+                                        {path.timeBetweenClasses} min transition
+                                        {path.timeBetweenClasses < 15 && ' ⚠️'}
+                                    </p>
+                                    <p className='ml-2'>{path.endCourseName}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );

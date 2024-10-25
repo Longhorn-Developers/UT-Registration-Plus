@@ -29,7 +29,7 @@ export const DaySelector = ({ selectedDay, onDaySelect }: DaySelectorProps) => (
                     onClick={() => onDaySelect(day)}
                     variant={selectedDay === day ? 'filled' : 'outline'}
                     color={color}
-                    // className='h-2 w-2'
+                    className='rounded-sm'
                 >
                     {day}
                 </Button>

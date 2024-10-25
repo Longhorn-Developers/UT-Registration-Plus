@@ -1,58 +1,73 @@
 import React from 'react';
 
-import type { Graph, NodeId } from './pathFinding';
+import { graphNodes } from './mapUtils';
+import { type Graph, isValidNode, type NodeId } from './pathFinding';
 
-// Average walking speed in feet per minute
-const WALKING_SPEED = 272; // ~3.1 mph
+// First, add these constants and utility functions at the top of your file
+export const WALKING_SPEED = 246.4; // ~2.8 mph in feet per minute
+export const PIXELS_TO_FEET = 9.3895; // Approximate scale factor
 
-type PathStatisticsProps = {
-    path: NodeId[];
-    graph: Graph;
+// Add this type and component
+type PathStatsProps = {
+    startId: string;
+    endId: string;
 };
 
-const calculatePathStatistics = (path: NodeId[], graph: Graph) => {
-    let totalDistance = 0;
+export const calcDirectPathStats = ({ startId, endId }: PathStatsProps) => {
+    const startNode = graphNodes[startId];
+    const endNode = graphNodes[endId];
 
-    // Calculate total distance
-    for (let i = 0; i < path.length - 1; i++) {
-        const currentNode = graph[path[i]!];
-        const nextNode = graph[path[i + 1]!];
-
-        if (currentNode && nextNode) {
-            const distance = Math.sqrt((nextNode.x - currentNode.x) ** 2 + (nextNode.y - currentNode.y) ** 2);
-            totalDistance += distance;
-        }
+    if (!isValidNode(startNode) || !isValidNode(endNode)) {
+        return null;
     }
 
-    // Convert pixel distance to approximate feet (you may need to adjust this factor)
-    const pixelsToFeet = 3; // Adjust based on your map scale
-    const distanceInFeet = totalDistance * pixelsToFeet;
+    // Calculate distance in pixels
+    const distanceInPixels = Math.sqrt((endNode.x - startNode.x) ** 2 + (endNode.y - startNode.y) ** 2);
 
-    // Calculate walking time in minutes
-    const walkingTimeMinutes = distanceInFeet / WALKING_SPEED;
+    // Convert to feet and calculate time
+    const distanceInFeet = Math.round(distanceInPixels * PIXELS_TO_FEET);
+    const walkingTimeMinutes = Math.ceil(distanceInFeet / WALKING_SPEED);
 
     return {
-        distanceInFeet: Math.round(distanceInFeet),
-        walkingTimeMinutes: Math.round(walkingTimeMinutes),
+        distanceInFeet,
+        walkingTimeMinutes,
     };
 };
 
-export const PathStatistics = ({ path, graph }: PathStatisticsProps) => {
-    const stats = calculatePathStatistics(path, graph);
+export const PathStats = ({ startId, endId }: PathStatsProps): JSX.Element | null => {
+    const startNode = graphNodes[startId];
+    const endNode = graphNodes[endId];
+
+    if (!isValidNode(startNode) || !isValidNode(endNode)) {
+        return null;
+    }
+
+    // Calculate distance in pixels
+    const distanceInPixels = Math.sqrt((endNode.x - startNode.x) ** 2 + (endNode.y - startNode.y) ** 2);
+
+    // Convert to feet and calculate time
+    const distanceInFeet = Math.round(distanceInPixels * PIXELS_TO_FEET);
+    const walkingTimeMinutes = Math.ceil(distanceInFeet / WALKING_SPEED);
 
     return (
-        <div className='w-64'>
-            <div>
-                <p className='text-sm font-medium'>Path Statistics</p>
-            </div>
-            <div className='space-y-2'>
-                <div className='flex justify-between text-sm'>
+        <div className='rounded-md bg-white/90 p-3 shadow-sm space-y-2'>
+            <h3 className='text-sm font-medium'>Path Statistics</h3>
+            <div className='space-y-1'>
+                <div className='flex justify-between text-xs'>
                     <span>Distance:</span>
-                    <span className='font-medium'>{stats.distanceInFeet} ft</span>
+                    <span className='font-medium'>{distanceInFeet} ft</span>
                 </div>
-                <div className='flex justify-between text-sm'>
+                <div className='flex justify-between text-xs'>
                     <span>Walking Time:</span>
-                    <span className='font-medium'>{stats.walkingTimeMinutes} min</span>
+                    <span className='font-medium'>{walkingTimeMinutes} min</span>
+                </div>
+                <div className='flex justify-between text-xs'>
+                    <span>From:</span>
+                    <span className='font-medium'>{startId}</span>
+                </div>
+                <div className='flex justify-between text-xs'>
+                    <span>To:</span>
+                    <span className='font-medium'>{endId}</span>
                 </div>
             </div>
         </div>

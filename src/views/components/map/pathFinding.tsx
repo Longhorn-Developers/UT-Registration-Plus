@@ -33,7 +33,7 @@ export class PathFindingError extends Error {
 }
 
 // Type guard to check if a node exists in the graph
-const isValidNode = (node: MapNode | undefined): node is MapNode =>
+export const isValidNode = (node: MapNode | undefined): node is MapNode =>
     node !== undefined &&
     typeof node.x === 'number' &&
     typeof node.y === 'number' &&
@@ -271,10 +271,11 @@ type PathProps = {
     startId: NodeId;
     endId: NodeId;
     graph: Graph;
+    color: string;
     className?: string;
 };
 
-export const Path = ({ startId, endId, graph, className = '' }: PathProps): JSX.Element | null => {
+export const Path = ({ startId, endId, graph, color, className = '' }: PathProps): JSX.Element | null => {
     try {
         const pathFinder = new PathFinder(graph);
         const path = pathFinder.findPath(startId, endId);
@@ -298,8 +299,9 @@ export const Path = ({ startId, endId, graph, className = '' }: PathProps): JSX.
                             x2={end.x}
                             y2={end.y}
                             strokeLinecap='round'
+                            stroke={color}
                             // TODO: use clsx
-                            className={`stroke-8 stroke-ut-burntorange ${className} opacity-50`}
+                            className={`stroke-8 ${className} opacity-50`}
                         />
                     );
                 })}
