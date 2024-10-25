@@ -1,5 +1,4 @@
 import type { ThemeColor, TWIndex } from '@shared/types/ThemeColors';
-import { getThemeColorHexByName } from '@shared/util/themeColors';
 import Divider from '@views/components/common/Divider';
 import React from 'react';
 import { theme } from 'unocss/preset-mini';
@@ -58,6 +57,8 @@ export interface CourseCellColorPickerProps {
     setSelectedColor: React.Dispatch<React.SetStateAction<ThemeColor | null>>;
     isInvertColorsToggled: boolean;
     setIsInvertColorsToggled: React.Dispatch<React.SetStateAction<boolean>>;
+    defaultColor: string;
+    updateCourseColor: (color: string) => void;
 }
 
 /**
@@ -88,11 +89,11 @@ export default function CourseCellColorPicker({
     setSelectedColor: setFinalColor,
     isInvertColorsToggled,
     setIsInvertColorsToggled,
+    defaultColor,
+    updateCourseColor,
 }: CourseCellColorPickerProps): JSX.Element {
     // hexCode mirrors contents of HexColorEditor which has no hash prefix
-    const [hexCode, setHexCode] = React.useState<string>(
-        getThemeColorHexByName('ut-gray').slice(1).toLocaleLowerCase()
-    );
+    const [hexCode, setHexCode] = React.useState<string>(defaultColor.slice(1).toLocaleLowerCase());
     const hexCodeWithHash = `#${hexCode}` as ThemeColor;
     const selectedBaseColor = hexCodeToBaseColor.get(hexCodeWithHash);
 
@@ -112,6 +113,8 @@ export default function CourseCellColorPicker({
                         color={baseColor}
                         isSelected={baseColor === selectedBaseColor}
                         handleSetSelectedColor={handleSelectColorPatch}
+                        defaultColor={defaultColor}
+                        updateCourseColor={updateCourseColor}
                     />
                 ))}
                 <div className='col-span-3 flex items-center justify-center overflow-hidden'>
@@ -139,6 +142,8 @@ export default function CourseCellColorPicker({
                                     color={shadeColor}
                                     isSelected={shadeColor === hexCodeWithHash}
                                     handleSetSelectedColor={handleSelectColorPatch}
+                                    defaultColor={defaultColor}
+                                    updateCourseColor={updateCourseColor}
                                 />
                             ))}
                     </div>

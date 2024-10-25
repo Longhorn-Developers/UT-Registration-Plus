@@ -1,4 +1,3 @@
-import { getThemeColorHexByName } from '@shared/util/themeColors';
 import React from 'react';
 
 import CheckIcon from '~icons/material-symbols/check';
@@ -10,6 +9,8 @@ interface ColorPatchProps {
     color: string;
     isSelected: boolean;
     handleSetSelectedColor: (color: string) => void;
+    defaultColor: string;
+    updateCourseColor: (color: string) => void;
 }
 
 /**
@@ -22,9 +23,20 @@ interface ColorPatchProps {
  *                                                  color is a hex string with a hash prefix.
  * @returns {JSX.Element} The rendered color patch button.
  */
-export default function ColorPatch({ color, isSelected, handleSetSelectedColor }: ColorPatchProps): JSX.Element {
+export default function ColorPatch({
+    color,
+    isSelected,
+    handleSetSelectedColor,
+    defaultColor,
+    updateCourseColor,
+}: ColorPatchProps): JSX.Element {
     const handleClick = () => {
-        handleSetSelectedColor(isSelected ? getThemeColorHexByName('ut-gray') : color);
+        // double clicked
+        if (isSelected) {
+            updateCourseColor(color);
+        } else {
+            handleSetSelectedColor(isSelected ? defaultColor : color);
+        }
     };
     return (
         <button

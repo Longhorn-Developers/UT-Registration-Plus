@@ -25,6 +25,7 @@ export interface CalendarCourseCellProps {
     colors: CourseColors;
     className?: string;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
+    updateCourseColor: (color: string) => void;
 }
 
 /**
@@ -46,10 +47,11 @@ export default function CalendarCourseCell({
     colors,
     className,
     onClick,
+    updateCourseColor,
 }: CalendarCourseCellProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
     const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
-    const [selectedColor, setSelectedColor] = useState<ThemeColor>(colors.primaryColor as ThemeColor);
+    const [selectedColor, setSelectedColor] = useState<ThemeColor | null>(colors.primaryColor as ThemeColor);
     const [isInvertColorsToggled, setIsInvertColorsToggled] = useState<boolean>(false);
 
     useEffect(() => {
@@ -92,7 +94,7 @@ export default function CalendarCourseCell({
                 className
             )}
             style={{
-                backgroundColor: showColorPicker ? selectedColor : colors.primaryColor,
+                backgroundColor: showColorPicker ? (selectedColor ?? colors.primaryColor) : colors.primaryColor,
             }}
             onClick={onClick}
         >
@@ -133,16 +135,21 @@ export default function CalendarCourseCell({
                 <Button
                     onClick={() => setShowColorPicker(prev => !prev)}
                     icon={PaletteIcon}
-                    color='ut-gray'
                     variant='filled'
                     className='mb-0.75 size-7 border border-white rounded-full !p-1.5 !hover:shadow-none'
+                    color='ut-gray'
                 />
 
                 {showColorPicker && (
                     <CourseCellColorPicker
+                        defaultColor={colors.primaryColor}
                         setSelectedColor={setSelectedColor}
                         isInvertColorsToggled={isInvertColorsToggled}
                         setIsInvertColorsToggled={setIsInvertColorsToggled}
+                        updateCourseColor={color => {
+                            setShowColorPicker(false);
+                            updateCourseColor(color);
+                        }}
                     />
                 )}
             </div>
