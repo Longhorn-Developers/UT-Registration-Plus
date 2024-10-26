@@ -196,6 +196,11 @@ const rawGraphNodes: Graph = {
         y: 400,
         type: 'intersection',
     },
+    'wichita-mlk-jr': {
+        x: 187,
+        y: 498,
+        type: 'intersection',
+    },
     'n-mai-24th': {
         x: 167,
         y: 250,
@@ -296,62 +301,249 @@ const rawGraphNodes: Graph = {
         y: 83,
         type: 'intersection',
     },
+    'san-jac-mlk-jr': {
+        x: 310,
+        y: 527,
+        type: 'intersection',
+    },
+    'robert-dedman-mlk-jr': {
+        x: 423,
+        y: 552,
+        type: 'intersection',
+    },
+    'robert-dedman-23rd': {
+        x: 460,
+        y: 318,
+        type: 'intersection',
+    },
+    '23rd-circle': {
+        x: 340,
+        y: 318,
+        type: 'intersection',
+    },
 } as const;
 
-type Walkway = {
+type LinearWalkway = {
+    type: 'linear';
     start: NodeCoordinates;
     end: NodeCoordinates;
     namePrefix: string;
 };
 
-const WalkwayInterval = 20;
+type BezierWalkway = {
+    type: 'bezier';
+    start: NodeCoordinates;
+    end: NodeCoordinates;
+    control1: NodeCoordinates;
+    control2: NodeCoordinates;
+    namePrefix: string;
+};
+
+type Walkway = LinearWalkway | BezierWalkway;
+
+const WALKWAY_INTERVAL = 10;
 
 const walkways: Walkway[] = [
     {
+        type: 'linear',
         start: { x: 241, y: 83 },
         end: { x: 241, y: 468 },
         namePrefix: 'speedway-walkway',
     },
     {
+        type: 'linear',
         start: { x: 89, y: 250 },
         end: { x: 357, y: 250 },
         namePrefix: '24st-walkway',
     },
     {
+        type: 'linear',
         start: { x: 89, y: 400 },
         end: { x: 354, y: 400 },
         namePrefix: '21st-walkway',
     },
     {
+        type: 'linear',
         start: { x: 89, y: 83 },
         end: { x: 89, y: 477 },
         namePrefix: 'guad-walkway',
     },
     {
+        type: 'linear',
+        start: { x: 167, y: 310 },
+        end: { x: 166, y: 400 },
+        namePrefix: 's-mall-walkway',
+    },
+    {
+        type: 'linear',
+        start: { x: 167, y: 310 },
+        end: { x: 315, y: 318 },
+        namePrefix: 'e-mall-walkway',
+    },
+    {
+        type: 'linear',
+        start: { x: 167, y: 310 },
+        end: { x: 89, y: 317 },
+        namePrefix: 'w-mall-walkway',
+    },
+    {
+        type: 'linear',
         start: { x: 89, y: 168 },
         end: { x: 315, y: 168 },
         namePrefix: 'dean-keeton-walkway',
     },
     {
+        type: 'linear',
         start: { x: 36, y: 83 },
         end: { x: 241, y: 83 },
         namePrefix: '27th-walkway',
     },
+    {
+        type: 'linear',
+        start: { x: 89, y: 477 },
+        end: { x: 423, y: 552 },
+        namePrefix: 'mlk-jr-walkway',
+    },
+    {
+        type: 'linear',
+        start: { x: 187, y: 400 },
+        end: { x: 187, y: 498 },
+        namePrefix: 'wichita-walkway',
+    },
+    {
+        type: 'linear',
+        start: { x: 273, y: 468 },
+        end: { x: 273, y: 518 },
+        namePrefix: 'brazos-walkway',
+    },
+    {
+        type: 'linear',
+        start: { x: 460, y: 318 },
+        end: { x: 423, y: 552 },
+        namePrefix: 'robert-dedman-walkway',
+    },
+    {
+        type: 'linear',
+        start: { x: 340, y: 318 },
+        end: { x: 460, y: 318 },
+        namePrefix: '23rd-walkway',
+    },
+
+    // Bezier curves
+    {
+        type: 'bezier',
+        start: { x: 190, y: 282 },
+        end: { x: 190, y: 347 },
+        control1: { x: 218, y: 282 },
+        control2: { x: 233, y: 347 },
+        namePrefix: 'inner-campus-drive-curve',
+    },
+    {
+        type: 'bezier',
+        start: { x: 315, y: 168 },
+        end: { x: 357, y: 250 },
+        control1: { x: 310, y: 200 },
+        control2: { x: 363, y: 223 },
+        namePrefix: 'san-jac-bezier-curve-1',
+    },
+    {
+        type: 'bezier',
+        start: { x: 357, y: 250 },
+        end: { x: 354, y: 400 },
+        control1: { x: 367, y: 296 },
+        control2: { x: 348, y: 360 },
+        namePrefix: 'san-jac-bezier-curve-2',
+    },
+    {
+        type: 'bezier',
+        start: { x: 354, y: 400 },
+        end: { x: 357, y: 510 },
+        control1: { x: 400, y: 460 },
+        control2: { x: 389, y: 487 },
+        namePrefix: 'san-jac-bezier-curve-3',
+    },
+    {
+        type: 'bezier',
+        start: { x: 371, y: 498 },
+        end: { x: 310, y: 527 },
+        control1: { x: 330, y: 527 },
+        control2: { x: 322, y: 505 },
+        namePrefix: 'san-jac-bezier-curve-4',
+    },
+    {
+        type: 'bezier',
+        start: { x: 241, y: 468 },
+        end: { x: 325, y: 449 },
+        control1: { x: 317, y: 472 },
+        control2: { x: 313, y: 468 },
+        namePrefix: 'jester-circle-curve',
+    },
 ];
 
-const generateWalkwayNodes = (config: Walkway): Graph => {
+// Utility function to calculate point on a cubic Bézier curve
+const getBezierPoint = (
+    t: number,
+    start: NodeCoordinates,
+    end: NodeCoordinates,
+    control1: NodeCoordinates,
+    control2: NodeCoordinates
+): NodeCoordinates => {
+    const oneMinusT = 1 - t;
+    const oneMinusTSquared = oneMinusT * oneMinusT;
+    const oneMinusTCubed = oneMinusTSquared * oneMinusT;
+    const tSquared = t * t;
+    const tCubed = tSquared * t;
+
+    return {
+        x: Math.round(
+            oneMinusTCubed * start.x +
+                3 * oneMinusTSquared * t * control1.x +
+                3 * oneMinusT * tSquared * control2.x +
+                tCubed * end.x
+        ),
+        y: Math.round(
+            oneMinusTCubed * start.y +
+                3 * oneMinusTSquared * t * control1.y +
+                3 * oneMinusT * tSquared * control2.y +
+                tCubed * end.y
+        ),
+    };
+};
+
+// Function to estimate the length of a Bézier curve
+const estimateBezierLength = (
+    start: NodeCoordinates,
+    end: NodeCoordinates,
+    control1: NodeCoordinates,
+    control2: NodeCoordinates,
+    segments: number = 100
+): number => {
+    let length = 0;
+    let previousPoint = start;
+
+    for (let i = 1; i <= segments; i++) {
+        const t = i / segments;
+        const currentPoint = getBezierPoint(t, start, end, control1, control2);
+
+        const dx = currentPoint.x - previousPoint.x;
+        const dy = currentPoint.y - previousPoint.y;
+        length += Math.sqrt(dx * dx + dy * dy);
+
+        previousPoint = currentPoint;
+    }
+
+    return length;
+};
+
+const generateLinearWalkwayNodes = (config: LinearWalkway): Graph => {
     const { start, end, namePrefix } = config;
     const nodes: Graph = {};
 
-    // Calculate the total distance
     const dx = end.x - start.x;
     const dy = end.y - start.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
+    const numPoints = Math.floor(distance / WALKWAY_INTERVAL);
 
-    // Calculate number of points to generate (excluding start and end)
-    const numPoints = Math.floor(distance / WalkwayInterval);
-
-    // Generate points along the line
     for (let i = 1; i < numPoints; i++) {
         const t = i / numPoints;
         const x = Math.round(start.x + dx * t);
@@ -368,14 +560,42 @@ const generateWalkwayNodes = (config: Walkway): Graph => {
     return nodes;
 };
 
+const generateBezierWalkwayNodes = (config: BezierWalkway): Graph => {
+    const { start, end, control1, control2, namePrefix } = config;
+    const nodes: Graph = {};
+
+    // Estimate the curve length to determine number of points
+    const approximateLength = estimateBezierLength(start, end, control1, control2);
+    const numPoints = Math.floor(approximateLength / WALKWAY_INTERVAL);
+
+    for (let i = 1; i < numPoints; i++) {
+        const t = i / numPoints;
+        const point = getBezierPoint(t, start, end, control1, control2);
+
+        const nodeName = `${namePrefix}-${i}` as keyof Graph;
+        nodes[nodeName] = {
+            x: point.x,
+            y: point.y,
+            type: 'walkway',
+        };
+    }
+
+    return nodes;
+};
+
+const generateWalkwayNodes = (config: Walkway): Graph => {
+    if (config.type === 'bezier') {
+        return generateBezierWalkwayNodes(config);
+    }
+    return generateLinearWalkwayNodes(config);
+};
+
 const generateAllWalkwayNodes = (): Graph => {
-    // Generate nodes for each walkway and combine them
     const generatedNodes = walkways.reduce((acc, config) => {
         const nodes = generateWalkwayNodes(config);
         return { ...acc, ...nodes };
     }, {} as Graph);
 
-    // Merge with original nodes
     return {
         ...rawGraphNodes,
         ...generatedNodes,

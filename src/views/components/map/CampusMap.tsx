@@ -139,16 +139,43 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
 
             {/* SVG Overlay */}
             <svg className='absolute left-0 top-0 h-full w-full' viewBox='0 0 784 754' preserveAspectRatio='none'>
-                {/* Render user-selected path */}
-                {selected.start && selected.end && (
-                    <Path
-                        startId={selected.start}
-                        endId={selected.end}
-                        graph={graphNodes}
-                        color='#BF5700'
-                        className='opacity-75 transition-opacity duration-300 hover:opacity-100'
-                    />
-                )}
+                {/* Render buildings and intersections */}
+                {Object.entries(graphNodes).map(([id, node]) => (
+                    <g key={id}>
+                        <circle
+                            cx={node.x}
+                            cy={node.y}
+                            r={node.type === 'building' ? 6 : 4}
+                            fill={
+                                id === selected.start
+                                    ? '#579D42'
+                                    : id === selected.end
+                                      ? '#D10000'
+                                      : node.type === 'building'
+                                        ? '#BF5700'
+                                        : node.type === 'intersection'
+                                          ? '#9CADB7'
+                                          : '#D6D2C400'
+                            }
+                            stroke={node.type !== 'walkway' ? 'white' : 'none'}
+                            strokeWidth='2'
+                            className='cursor-pointer opacity-90'
+                            onClick={() => {
+                                // if (node.type === 'building') {
+                                //     handleBuildingSelect(id);
+                                // }
+
+                                handleBuildingSelect(id);
+                                console.log(id, node);
+                            }}
+                        />
+                        {node.type === 'building' && (
+                            <text x={node.x + 12} y={node.y + 4} fill='#000000' fontSize='14' className='font-bold'>
+                                {id}
+                            </text>
+                        )}
+                    </g>
+                ))}
 
                 {/* Render daily schedule paths */}
                 {relevantPaths.map((path, index) => (
@@ -171,40 +198,16 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                     </g>
                 ))}
 
-                {/* Render buildings and intersections */}
-                {Object.entries(graphNodes).map(([id, node]) => (
-                    <g key={id}>
-                        <circle
-                            cx={node.x}
-                            cy={node.y}
-                            r={node.type === 'building' ? 6 : 4}
-                            fill={
-                                id === selected.start
-                                    ? '#00FF00'
-                                    : id === selected.end
-                                      ? '#FF0000'
-                                      : node.type === 'building'
-                                        ? '#BF5700'
-                                        : '#666666'
-                            }
-                            stroke='white'
-                            strokeWidth='2'
-                            className='cursor-pointer opacity-90'
-                            onClick={() => {
-                                if (node.type === 'building') {
-                                    handleBuildingSelect(id);
-                                }
-
-                                console.log(id, node);
-                            }}
-                        />
-                        {node.type === 'building' && (
-                            <text x={node.x + 12} y={node.y + 4} fill='#000000' fontSize='14' className='font-bold'>
-                                {id}
-                            </text>
-                        )}
-                    </g>
-                ))}
+                {/* Render user-selected path */}
+                {selected.start && selected.end && (
+                    <Path
+                        startId={selected.start}
+                        endId={selected.end}
+                        graph={graphNodes}
+                        color='#BF5700'
+                        className='opacity-75 transition-opacity duration-300 hover:opacity-100'
+                    />
+                )}
             </svg>
 
             {/* Controls and Information */}
