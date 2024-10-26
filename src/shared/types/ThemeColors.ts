@@ -6,7 +6,6 @@ export const colors = {
     ut: {
         burntorange: '#BF5700',
         black: '#333F48',
-        white: '#FFFFFF',
         orange: '#F8971F',
         yellow: '#FFD600',
         lightgreen: '#A6CD57',

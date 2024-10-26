@@ -36,7 +36,7 @@ export default function PopupCourseBlock({
     dragHandleProps,
 }: PopupCourseBlockProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [isCopied, setIsCopied] = useState<boolean>(false); // Add state to track if copied
+    const [isCopied, setIsCopied] = useState<boolean>(false);
 
     useEffect(() => {
         initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
@@ -108,10 +108,10 @@ export default function PopupCourseBlock({
             </div>
 
             <button
-                className='bg-transparent px-2 py-0.25 text-white btn'
+                className='flex bg-transparent px-2 py-0.25 text-white btn'
                 color={colors.secondaryColor}
                 onClick={handleCopy}
-                style={{ display: 'flex', backgroundColor: colors.secondaryColor, color: 'text-white' }}
+                style={{ backgroundColor: colors.secondaryColor, color: { fontColor } }}
             >
                 {isCopied ? <CheckIcon className='h-5 w-5 text-white' /> : <Copy className='h-5 w-5 text-white' />}
                 {formattedUniqueId}
