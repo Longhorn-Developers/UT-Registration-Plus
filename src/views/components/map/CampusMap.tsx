@@ -96,8 +96,9 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
         end: null,
     });
     const [selectedDay, setSelectedDay] = useState<DayCode | null>(null);
+    const [hoveredPathIndex, setHoveredPathIndex] = useState<number | null>(null);
+    const [toggledPathIndex, setToggledPathIndex] = useState<number | null>(null);
 
-    // Get daily paths between sequential classes
     const getDailyPaths = (courses: ProcessInPersonMeetings[]) => {
         const sortedCourses = [...courses].sort((a, b) => a.normalizedStartTime - b.normalizedStartTime);
 
@@ -123,14 +124,12 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
         return paths;
     };
 
-    // Calculate relevant paths for selected day
     const relevantPaths = useMemo(() => {
         if (!selectedDay) return [];
 
         const coursesForDay = processedCourses.filter(course => course.day === DAY_MAPPING[selectedDay]);
 
         const paths = getDailyPaths(coursesForDay);
-        console.log(paths);
 
         return paths.map(path => ({
             ...path,
@@ -140,6 +139,8 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
 
     const handleDaySelect = (day: DayCode) => {
         setSelectedDay(prevDay => (prevDay === day ? null : day));
+        setHoveredPathIndex(null);
+        setToggledPathIndex(null);
     };
 
     const handleBuildingSelect = (buildingId: NodeId) => {
@@ -148,6 +149,20 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
             if (!prev.end) return { ...prev, end: buildingId };
             return { start: buildingId, end: null };
         });
+    };
+
+    const handlePathClick = (index: number) => {
+        setToggledPathIndex(prevIndex => (prevIndex === index ? null : index));
+    };
+
+    const shouldShowPath = (index: number) => {
+        if (hoveredPathIndex !== null) {
+            return hoveredPathIndex === index;
+        }
+        if (toggledPathIndex !== null) {
+            return toggledPathIndex === index;
+        }
+        return true;
     };
 
     return (
@@ -196,25 +211,32 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                 ))}
 
                 {/* Render daily schedule paths */}
-                {relevantPaths.map((path, index) => (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <g key={`${path.start}-${path.end}-${index}`}>
-                        <Path
-                            startId={path.start}
-                            endId={path.end}
-                            graph={graphNodes}
-                            color={path.colors?.primaryColor || '#BF5700'}
-                            className='stroke-4 opacity-50 transition-opacity duration-300 hover:opacity-80'
-                        />
-                        {path.timeBetweenClasses < 15 &&
-                            (() => {
-                                const midpoint = getMidpoint(path.start, path.end);
-                                return midpoint ? (
-                                    <TimeWarningLabel x={midpoint.x} y={midpoint.y} minutes={path.timeBetweenClasses} />
-                                ) : null;
-                            })()}
-                    </g>
-                ))}
+                {relevantPaths.map(
+                    (path, index) =>
+                        shouldShowPath(index) && (
+                            // eslint-disable-next-line react/no-array-index-key
+                            <g key={`${path.start}-${path.end}-${index}`}>
+                                <Path
+                                    startId={path.start}
+                                    endId={path.end}
+                                    graph={graphNodes}
+                                    color={path.colors?.primaryColor || '#BF5700'}
+                                    className='stroke-4 opacity-50 transition-opacity duration-300 hover:opacity-80'
+                                />
+                                {path.timeBetweenClasses < 15 &&
+                                    (() => {
+                                        const midpoint = getMidpoint(path.start, path.end);
+                                        return midpoint ? (
+                                            <TimeWarningLabel
+                                                x={midpoint.x}
+                                                y={midpoint.y}
+                                                minutes={path.timeBetweenClasses}
+                                            />
+                                        ) : null;
+                                    })()}
+                            </g>
+                        )
+                )}
 
                 {/* Render user-selected path */}
                 {selected.start && selected.end && (
@@ -269,10 +291,15 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                                 <div
                                     // eslint-disable-next-line react/no-array-index-key
                                     key={index}
-                                    className='text-xs space-y-1'
+                                    className={`text-xs space-y-1 cursor-pointer transition-colors duration-200 ${
+                                        toggledPathIndex === index ? 'bg-gray-100' : ''
+                                    }`}
                                     style={{
                                         borderLeft: `3px solid ${path.colors?.primaryColor || '#BF5700'}`,
                                     }}
+                                    onMouseEnter={() => setHoveredPathIndex(index)}
+                                    onMouseLeave={() => setHoveredPathIndex(null)}
+                                    onClick={() => handlePathClick(index)}
                                 >
                                     <p className='ml-2'>{path.startCourseName}</p>
                                     <p className='ml-2'>
