@@ -219,9 +219,10 @@ module.exports = {
                 selector: 'TSEnumDeclaration',
                 message: "Don't declare enums",
             },
-            // Prevent arbitrary values in className strings, but allow data attributes
+            // Prevent arbitrary values in className strings, but allow specific exceptions
             {
-                selector: "JSXAttribute[name.name='className'][value.value=/(?<!data-)[a-zA-Z]+-\\[(.*?)\\]/]",
+                selector:
+                    "JSXAttribute[name.name='className'][value.value=/(?<!data-|grid-cols-|grid-rows-|grid-areas-|animation-|keyframes-|col-start-|col-end-|row-start-|row-end-|content-)[a-zA-Z]+-\\[(.*?)\\]/]",
                 message: 'Avoid arbitrary values in utility classes. Use predefined utility classes instead.',
             },
             // Prevent hex color literals
