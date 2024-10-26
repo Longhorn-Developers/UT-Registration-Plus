@@ -219,6 +219,55 @@ module.exports = {
                 selector: 'TSEnumDeclaration',
                 message: "Don't declare enums",
             },
+            // Prevent hex color literals
+            {
+                selector: 'Literal[value=/^#[a-zA-Z0-9]/i]',
+                message: 'Use UnoCSS/ThemeColors color utilities instead of hex colors',
+            },
+            // Prevent rgb/rgba color literals
+            {
+                selector: 'Literal[value=/^rgb[(]/i]',
+                message: 'Use UnoCSS/ThemeColors color utilities instead of rgb colors',
+            },
+            {
+                selector: 'Literal[value=/^rgba[(]/i]',
+                message: 'Use UnoCSS/ThemeColors color utilities instead of rgba colors',
+            },
+            // Prevent pixel values
+            {
+                selector: 'Literal[value=/^[0-9]+px$/]',
+                message: 'Use UnoCSS spacing utilities instead of pixel values',
+            },
+            // Prevent rem/em values
+            {
+                selector: 'Literal[value=/^[0-9]+(rem|em)$/]',
+                message: 'Use UnoCSS spacing utilities instead of rem/em values',
+            },
+            // Prevent percentage values
+            {
+                selector: 'Literal[value=/^[0-9]+%$/]',
+                message: 'Use UnoCSS percentage utilities instead of percentage values',
+            },
+            // Prevent direct style properties that should use UnoCSS utilities
+            {
+                selector: "Property[key.name='style'][value.expression.properties]",
+                message: 'Use UnoCSS/ThemeColors utilities instead of inline styles',
+            },
+            // Prevent fontSize literals
+            {
+                selector: "Property[key.name='fontSize']",
+                message: 'Use UnoCSS/ThemeColors text-{size} utilities instead of fontSize property',
+            },
+            // Prevent direct margin/padding values
+            {
+                selector: 'Property[key.name=/^margin|padding/]',
+                message: 'Use UnoCSS m-{size} or p-{size} utilities instead',
+            },
+            // Prevent width/height literals
+            {
+                selector: 'Property[key.name=/^(width|height)$/]',
+                message: 'Use UnoCSS w-{size} or h-{size} utilities instead',
+            },
         ],
         '@typescript-eslint/consistent-type-exports': 'error',
         '@typescript-eslint/consistent-type-imports': 'error',
