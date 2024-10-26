@@ -1,6 +1,6 @@
 import type { Course } from '@shared/types/Course';
 import type { Distribution, LetterGrade } from '@shared/types/Distribution';
-import { extendedColors } from '@shared/types/ThemeColors';
+import { colors, extendedColors } from '@shared/types/ThemeColors';
 import Text from '@views/components/common/Text/Text';
 import {
     NoDataError,
@@ -129,7 +129,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             title: {
                 text: 'Grades',
                 style: {
-                    color: '#333F48',
+                    color: colors.ut.black,
                     fontSize: '0.80rem',
                     fontWeight: '400',
                 },
@@ -138,16 +138,16 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             tickInterval: 1,
             tickWidth: 1.5,
             tickLength: 10,
-            tickColor: '#9CADB7',
+            tickColor: colors.ut.gray,
             crosshair: true,
-            lineColor: '#9CADB7',
+            lineColor: colors.ut.gray,
         },
         yAxis: {
             labels: {
                 style: {
                     fontSize: '0.80rem',
                     fontWeight: '400',
-                    color: '#333F48',
+                    color: colors.ut.black,
                     lineHeight: '100%',
                     fontStyle: 'normal',
                 },
@@ -156,7 +156,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             title: {
                 text: 'Students',
                 style: {
-                    color: '#333F48',
+                    color: colors.ut.black,
                     fontSize: '0.80rem',
                     fontWeight: '400',
                 },

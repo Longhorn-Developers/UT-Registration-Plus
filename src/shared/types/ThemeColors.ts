@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import type { theme } from 'unocss/preset-mini';
 
 import type { HexColor } from './Color';

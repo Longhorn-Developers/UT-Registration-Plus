@@ -1,6 +1,8 @@
 import getCourseTableRows from './getCourseTableRows';
 
+// eslint-disable-next-line no-restricted-syntax
 const NEXT_PAGE_BUTTON_SELECTOR = '#next_nav_link';
+// eslint-disable-next-line no-restricted-syntax
 const PREV_PAGE_BUTTON_SELECTOR = '#prev_nav_link';
 
 /**

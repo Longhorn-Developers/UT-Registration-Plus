@@ -30,6 +30,7 @@ function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPo
     const [activeSchedule] = useSchedules();
 
     return (
+        // eslint-disable-next-line no-restricted-syntax
         <Dialog className='max-w-[780px] overflow-y-hidden px-4' {...rest} initialFocus={emptyRef}>
             <div className='hidden' ref={emptyRef} />
             <HeadingAndActions course={course} onClose={rest.onClose as () => void} activeSchedule={activeSchedule} />

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/themeColors';
 import { describe, expect, it } from 'vitest';
 
