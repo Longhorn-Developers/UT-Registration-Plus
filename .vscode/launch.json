@@ -6,9 +6,13 @@
             "request": "launch",
             "name": "Run current script",
             "runtimeExecutable": "npx",
-            "runtimeArgs": ["tsx"],
+            "runtimeArgs": [
+                "tsx"
+            ],
             "program": "${file}",
-            "skipFiles": ["<node_internals>/**"]
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
         }
     ]
 }

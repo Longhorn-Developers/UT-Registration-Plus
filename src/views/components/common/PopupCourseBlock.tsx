@@ -52,6 +52,7 @@ export default function PopupCourseBlock({
 
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
+    const buttonColor = pickFontColor(colors.secondaryColor);
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
 
     const handleClick = async () => {
@@ -111,7 +112,7 @@ export default function PopupCourseBlock({
                 className='flex bg-transparent px-2 py-0.25 text-white btn'
                 color={colors.secondaryColor}
                 onClick={handleCopy}
-                style={{ backgroundColor: colors.secondaryColor, color: { fontColor } }}
+                style={{ backgroundColor: colors.secondaryColor, color: buttonColor }}
             >
                 {isCopied ? <CheckIcon className='h-5 w-5 text-white' /> : <Copy className='h-5 w-5 text-white' />}
                 {formattedUniqueId}
