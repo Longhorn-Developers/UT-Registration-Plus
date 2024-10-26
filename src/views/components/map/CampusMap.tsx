@@ -3,42 +3,18 @@ import React, { useMemo, useState } from 'react';
 
 import type { ProcessInPersonMeetings } from './Map';
 import { graphNodes } from './mapUtils';
-import type { NodeId } from './pathFinding';
-import { isValidNode, Path } from './pathFinding';
-import { calcDirectPathStats, PathStats, PIXELS_TO_FEET } from './PathStats';
+import { Path } from './Path';
+import { calcDirectPathStats, PathStats } from './PathStats';
+import type { DayCode, NodeId } from './types';
+import { DAY_MAPPING } from './types';
+import { getMidpoint } from './utils';
 
 // Image: 784x754
 const UTMapURL = new URL('/src/assets/UT-Map.png', import.meta.url).href;
 
-// Types
-type DayCode = 'M' | 'T' | 'W' | 'TTH' | 'F';
-
-const DAY_MAPPING: Record<DayCode, string> = {
-    M: 'Monday',
-    T: 'Tuesday',
-    W: 'Wednesday',
-    TTH: 'Thursday',
-    F: 'Friday',
-} as const;
-
 type SelectedBuildings = {
     start: NodeId | null;
     end: NodeId | null;
-};
-
-// Helper to safely get midpoint coordinates
-const getMidpoint = (startId: string, endId: string) => {
-    const startNode = graphNodes[startId];
-    const endNode = graphNodes[endId];
-
-    if (!isValidNode(startNode) || !isValidNode(endNode)) {
-        return null;
-    }
-
-    return {
-        x: (startNode.x + endNode.x) / 2,
-        y: (startNode.y + endNode.y) / 2,
-    };
 };
 
 // Helper Components

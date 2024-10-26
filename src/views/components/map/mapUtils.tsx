@@ -1,17 +1,18 @@
-import type { Graph, MapNode, NodeType } from './pathFinding';
+import type { Graph } from './types';
 
 export const graphNodes: Graph = {
-    // Scale debug nodes
-    dn1: {
-        x: 89,
-        y: 83,
-        type: 'building',
-    },
-    dn2: {
-        x: 89,
-        y: 445,
-        type: 'building',
-    },
+    // // Debug nodes
+    // dn1: {
+    //     x: 89,
+    //     y: 83,
+    //     type: 'building',
+    // },
+    // dn2: {
+    //     x: 89,
+    //     y: 445,
+    //     type: 'building',
+    // },
+
     // Building nodes
     GDC: {
         x: 257,
@@ -256,27 +257,3 @@ export const graphNodes: Graph = {
         type: 'intersection',
     },
 } as const;
-
-// // Type-safe helper to get all buildings
-// export const getAllBuildings = (graph: Graph): string[] =>
-//     Object.entries(graph)
-//         .filter((entry): entry is [string, MapNode & { type: 'building' }] => entry[1].type === 'building')
-//         .map(([id]) => id);
-
-// // Type-safe helper to get all intersections
-// export const getAllIntersections = (graph: Graph): string[] =>
-//     Object.entries(graph)
-//         .filter((entry): entry is [string, MapNode & { type: 'intersection' }] => entry[1].type === 'intersection')
-//         .map(([id]) => id);
-
-// // Type guard to validate a node exists and is a building
-// export const isBuilding = (nodeId: string, graph: Graph): boolean => {
-//     const node = graph[nodeId];
-//     return node?.type === 'building';
-// };
-
-// // Type guard to validate a node exists and is an intersection
-// export const isIntersection = (nodeId: string, graph: Graph): boolean => {
-//     const node = graph[nodeId];
-//     return node?.type === 'intersection';
-// };

@@ -1,11 +1,7 @@
 import React from 'react';
 
 import { graphNodes } from './mapUtils';
-import { type Graph, isValidNode, type NodeId } from './pathFinding';
-
-// First, add these constants and utility functions at the top of your file
-export const WALKING_SPEED = 246.4; // ~2.8 mph in feet per minute
-export const PIXELS_TO_FEET = 9.3895; // Approximate scale factor
+import { isValidNode, PIXELS_TO_FEET, WALKING_SPEED } from './types';
 
 // Add this type and component
 type PathStatsProps = {
