@@ -1,6 +1,6 @@
-import type { Graph } from './types';
+import type { Graph, NodeCoordinates } from './types';
 
-export const graphNodes: Graph = {
+const rawGraphNodes: Graph = {
     // // Debug nodes
     // dn1: {
     //     x: 89,
@@ -136,6 +136,11 @@ export const graphNodes: Graph = {
     },
 
     // Intersection nodes
+    'speedway-dean-keeton': {
+        x: 241,
+        y: 168,
+        type: 'intersection',
+    },
     'speedway-24th': {
         x: 241,
         y: 250,
@@ -154,6 +159,16 @@ export const graphNodes: Graph = {
     'speedway-w-eer': {
         x: 241,
         y: 208,
+        type: 'intersection',
+    },
+    'speedway-jester-circle': {
+        x: 241,
+        y: 468,
+        type: 'intersection',
+    },
+    'guad-dean-keeton': {
+        x: 89,
+        y: 168,
         type: 'intersection',
     },
     'guad-24th': {
@@ -201,6 +216,16 @@ export const graphNodes: Graph = {
         y: 317,
         type: 'intersection',
     },
+    'guad-27th': {
+        x: 89,
+        y: 83,
+        type: 'intersection',
+    },
+    'guad-mlk-jr': {
+        x: 89,
+        y: 477,
+        type: 'intersection',
+    },
     'n-mai-turtle-pond': {
         x: 167,
         y: 282,
@@ -224,6 +249,11 @@ export const graphNodes: Graph = {
     'icd-sse': {
         x: 190,
         y: 347,
+        type: 'intersection',
+    },
+    'san-jac-dean-keeton': {
+        x: 315,
+        y: 168,
         type: 'intersection',
     },
     'san-jac-21th': {
@@ -256,4 +286,101 @@ export const graphNodes: Graph = {
         y: 425,
         type: 'intersection',
     },
+    'speedway-27th': {
+        x: 241,
+        y: 83,
+        type: 'intersection',
+    },
+    'nueces-27th': {
+        x: 36,
+        y: 83,
+        type: 'intersection',
+    },
 } as const;
+
+type Walkway = {
+    start: NodeCoordinates;
+    end: NodeCoordinates;
+    namePrefix: string;
+};
+
+const WalkwayInterval = 20;
+
+const walkways: Walkway[] = [
+    {
+        start: { x: 241, y: 83 },
+        end: { x: 241, y: 468 },
+        namePrefix: 'speedway-walkway',
+    },
+    {
+        start: { x: 89, y: 250 },
+        end: { x: 357, y: 250 },
+        namePrefix: '24st-walkway',
+    },
+    {
+        start: { x: 89, y: 400 },
+        end: { x: 354, y: 400 },
+        namePrefix: '21st-walkway',
+    },
+    {
+        start: { x: 89, y: 83 },
+        end: { x: 89, y: 477 },
+        namePrefix: 'guad-walkway',
+    },
+    {
+        start: { x: 89, y: 168 },
+        end: { x: 315, y: 168 },
+        namePrefix: 'dean-keeton-walkway',
+    },
+    {
+        start: { x: 36, y: 83 },
+        end: { x: 241, y: 83 },
+        namePrefix: '27th-walkway',
+    },
+];
+
+const generateWalkwayNodes = (config: Walkway): Graph => {
+    const { start, end, namePrefix } = config;
+    const nodes: Graph = {};
+
+    // Calculate the total distance
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Calculate number of points to generate (excluding start and end)
+    const numPoints = Math.floor(distance / WalkwayInterval);
+
+    // Generate points along the line
+    for (let i = 1; i < numPoints; i++) {
+        const t = i / numPoints;
+        const x = Math.round(start.x + dx * t);
+        const y = Math.round(start.y + dy * t);
+
+        const nodeName = `${namePrefix}-${i}` as keyof Graph;
+        nodes[nodeName] = {
+            x,
+            y,
+            type: 'walkway',
+        };
+    }
+
+    return nodes;
+};
+
+const generateAllWalkwayNodes = (): Graph => {
+    // Generate nodes for each walkway and combine them
+    const generatedNodes = walkways.reduce((acc, config) => {
+        const nodes = generateWalkwayNodes(config);
+        return { ...acc, ...nodes };
+    }, {} as Graph);
+
+    // Merge with original nodes
+    return {
+        ...rawGraphNodes,
+        ...generatedNodes,
+    };
+};
+
+// Export the combined graph with walkway nodes
+export const graphNodes = generateAllWalkwayNodes();

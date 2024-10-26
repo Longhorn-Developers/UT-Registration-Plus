@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import React, { useMemo, useState } from 'react';
 
+import { graphNodes } from './graphNodes';
 import type { ProcessInPersonMeetings } from './Map';
-import { graphNodes } from './mapUtils';
 import { Path } from './Path';
 import { calcDirectPathStats, PathStats } from './PathStats';
 import type { DayCode, NodeId } from './types';
@@ -194,6 +194,8 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                                 if (node.type === 'building') {
                                     handleBuildingSelect(id);
                                 }
+
+                                console.log(id, node);
                             }}
                         />
                         {node.type === 'building' && (

@@ -1,4 +1,4 @@
-import { graphNodes } from './mapUtils';
+import { graphNodes } from './graphNodes';
 import type { Graph, MapNode, NodeCoordinates, NodeId } from './types';
 import { isValidNode, NEIGHBOR_DISTANCE_THRESHOLD } from './types';
 

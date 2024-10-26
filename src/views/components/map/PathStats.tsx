@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { graphNodes } from './mapUtils';
+import { graphNodes } from './graphNodes';
 import { isValidNode, PIXELS_TO_FEET, WALKING_SPEED } from './types';
 
 // Add this type and component

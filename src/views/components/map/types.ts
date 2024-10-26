@@ -5,7 +5,7 @@ export const PIXELS_TO_FEET = 9.3895; // Approximate scale factor
 export const DIRECT_PATH_THRESHOLD = 25; // Units for direct path calculation
 export const NEIGHBOR_DISTANCE_THRESHOLD = 75; // Increased threshold for neighbor connections
 
-export type NodeType = 'building' | 'intersection';
+export type NodeType = 'building' | 'intersection' | 'walkway';
 
 export type NodeCoordinates = {
     x: number;
@@ -29,7 +29,7 @@ export const isValidNode = (node: MapNode | undefined): node is MapNode =>
     node !== undefined &&
     typeof node.x === 'number' &&
     typeof node.y === 'number' &&
-    (node.type === 'building' || node.type === 'intersection');
+    (node.type === 'building' || node.type === 'intersection' || node.type === 'walkway');
 
 export type DayCode = 'M' | 'T' | 'W' | 'TTH' | 'F';
 
