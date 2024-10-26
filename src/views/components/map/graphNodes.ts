@@ -339,11 +339,21 @@ type BezierWalkway = {
     namePrefix: string;
 };
 
-type Walkway = LinearWalkway | BezierWalkway;
+type CircularWalkway = {
+    type: 'circular';
+    center: NodeCoordinates;
+    radius: number;
+    startAngle?: number; // in radians, default 0
+    endAngle?: number; // in radians, default 2π
+    namePrefix: string;
+};
+
+type Walkway = LinearWalkway | BezierWalkway | CircularWalkway;
 
 const WALKWAY_INTERVAL = 10;
 
 const walkways: Walkway[] = [
+    // Linear walkways
     {
         type: 'linear',
         start: { x: 241, y: 83 },
@@ -478,6 +488,14 @@ const walkways: Walkway[] = [
         control2: { x: 313, y: 468 },
         namePrefix: 'jester-circle-curve',
     },
+
+    // Circular walkways
+    {
+        type: 'circular',
+        center: { x: 330, y: 318 },
+        radius: 10,
+        namePrefix: '23rd-circle',
+    },
 ];
 
 // Utility function to calculate point on a cubic Bézier curve
@@ -535,6 +553,11 @@ const estimateBezierLength = (
     return length;
 };
 
+const getCirclePoint = (center: NodeCoordinates, radius: number, angle: number): NodeCoordinates => ({
+    x: Math.round(center.x + radius * Math.cos(angle)),
+    y: Math.round(center.y + radius * Math.sin(angle)),
+});
+
 const generateLinearWalkwayNodes = (config: LinearWalkway): Graph => {
     const { start, end, namePrefix } = config;
     const nodes: Graph = {};
@@ -583,11 +606,39 @@ const generateBezierWalkwayNodes = (config: BezierWalkway): Graph => {
     return nodes;
 };
 
-const generateWalkwayNodes = (config: Walkway): Graph => {
-    if (config.type === 'bezier') {
-        return generateBezierWalkwayNodes(config);
+const generateCircularWalkwayNodes = (config: CircularWalkway): Graph => {
+    const { center, radius, namePrefix, startAngle = 0, endAngle = 2 * Math.PI } = config;
+    const nodes: Graph = {};
+
+    // Calculate circumference to determine number of points
+    const arcLength = radius * (endAngle - startAngle);
+    const numPoints = Math.floor(arcLength / WALKWAY_INTERVAL);
+
+    // Generate points along the circle
+    for (let i = 0; i < numPoints; i++) {
+        const angle = startAngle + (endAngle - startAngle) * (i / numPoints);
+        const point = getCirclePoint(center, radius, angle);
+
+        const nodeName = `${namePrefix}-${i}` as keyof Graph;
+        nodes[nodeName] = {
+            x: point.x,
+            y: point.y,
+            type: 'walkway',
+        };
     }
-    return generateLinearWalkwayNodes(config);
+
+    return nodes;
+};
+
+const generateWalkwayNodes = (config: Walkway): Graph => {
+    switch (config.type) {
+        case 'bezier':
+            return generateBezierWalkwayNodes(config);
+        case 'circular':
+            return generateCircularWalkwayNodes(config);
+        default:
+            return generateLinearWalkwayNodes(config);
+    }
 };
 
 const generateAllWalkwayNodes = (): Graph => {
