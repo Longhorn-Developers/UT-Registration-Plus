@@ -3,7 +3,6 @@ import React from 'react';
 import { PathFinder } from './PathFinder';
 import { type Graph, isValidNode, type NodeId } from './types';
 
-// React component for rendering paths
 type PathProps = {
     startId: NodeId;
     endId: NodeId;
@@ -12,6 +11,18 @@ type PathProps = {
     className?: string;
 };
 
+/**
+ * Renders a path between two nodes in a graph.
+ *
+ * @param props - The properties object.
+ * @param props.startId - The ID of the starting node.
+ * @param props.endId - The ID of the ending node.
+ * @param props.graph - The graph object containing nodes and edges.
+ * @param props.color - The color of the path.
+ * @param [props.className] - Additional CSS classes for the path.
+ *
+ * @returns The rendered path as a series of SVG lines, or null if an error occurs.
+ */
 export const Path = ({ startId, endId, graph, color, className = '' }: PathProps): JSX.Element | null => {
     try {
         const pathFinder = new PathFinder(graph);

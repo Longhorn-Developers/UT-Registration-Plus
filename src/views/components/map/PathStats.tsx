@@ -3,12 +3,20 @@ import React from 'react';
 import { graphNodes } from './graphNodes';
 import { isValidNode, PIXELS_TO_FEET, WALKING_SPEED } from './types';
 
-// Add this type and component
 type PathStatsProps = {
     startId: string;
     endId: string;
 };
 
+/**
+ * Calculates the direct path statistics between two nodes.
+ *
+ * @param props - The properties object.
+ * @param props.startId - The ID of the starting node.
+ * @param props.endId - The ID of the ending node.
+ *
+ * @returns The distance in feet and walking time in minutes between the two nodes.
+ */
 export const calcDirectPathStats = ({ startId, endId }: PathStatsProps) => {
     const startNode = graphNodes[startId];
     const endNode = graphNodes[endId];
@@ -30,6 +38,15 @@ export const calcDirectPathStats = ({ startId, endId }: PathStatsProps) => {
     };
 };
 
+/**
+ * Component to display statistics about a path between two nodes on a map.
+ *
+ * @param props - The properties for the PathStats component.
+ * @param props.startId - The ID of the starting node.
+ * @param props.endId - The ID of the ending node.
+ *
+ * @returns A JSX element displaying the path statistics, or null if the nodes are invalid.
+ */
 export const PathStats = ({ startId, endId }: PathStatsProps): JSX.Element | null => {
     const startNode = graphNodes[startId];
     const endNode = graphNodes[endId];

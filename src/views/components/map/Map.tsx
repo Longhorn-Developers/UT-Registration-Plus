@@ -15,12 +15,10 @@ import { CalendarSchedules } from '../calendar/CalendarSchedules';
 import ImportantLinks from '../calendar/ImportantLinks';
 import TeamLinks from '../calendar/TeamLinks';
 import CampusMap from './CampusMap';
+import { type DAY, DAYS } from './types';
 
 const manifest = chrome.runtime.getManifest();
 const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
-
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
-type Day = (typeof DAYS)[number];
 
 const dayToNumber = {
     Monday: 0,
@@ -32,8 +30,25 @@ const dayToNumber = {
     Sunday: 6,
 } as const satisfies Record<string, number>;
 
+/**
+ * Represents the details of an in-person meeting process.
+ *
+ * @property day - The day of the meeting.
+ * @property dayIndex - The index of the day in the week.
+ * @property fullName - The full name of the person.
+ * @property uid - The unique identifier of the person.
+ * @property time - The time of the meeting.
+ * @property normalizedStartTime - The normalized start time of the meeting.
+ * @property normalizedEndTime - The normalized end time of the meeting.
+ * @property startIndex - The start index of the meeting.
+ * @property endIndex - The end index of the meeting.
+ * @property location - The location of the meeting.
+ * @property status - The status of the meeting.
+ * @property colors - The colors associated with the course.
+ * @property course - The course details.
+ */
 export type ProcessInPersonMeetings = {
-    day: Day;
+    day: DAY;
     dayIndex: number;
     fullName: string;
     uid: number;
@@ -53,7 +68,7 @@ export type ProcessInPersonMeetings = {
  * @param minutes The number of minutes.
  * @returns The index value.
  */
-export const convertMinutesToIndex = (minutes: number): number => Math.floor((minutes - 420) / 30);
+const convertMinutesToIndex = (minutes: number): number => Math.floor((minutes - 420) / 30);
 
 /**
  * Renders the map component for the UTRP (UT Registration Plus) extension.
@@ -163,7 +178,7 @@ export default function Map(): JSX.Element {
         );
     });
 
-    const generateWeekSchedule = useCallback((): Record<Day, string[]> => {
+    const generateWeekSchedule = useCallback((): Record<DAY, string[]> => {
         const weekSchedule: Record<string, string[]> = {};
 
         processedCourses.forEach(course => {
@@ -178,7 +193,7 @@ export default function Map(): JSX.Element {
         // currently weekSchedule is an object with keys as days and values as an array of courses
         // we want to display the days in order, so we create a new object with the days in order
 
-        const orderedWeekSchedule: Record<Day, string[]> = {
+        const orderedWeekSchedule: Record<DAY, string[]> = {
             Monday: [],
             Tuesday: [],
             Wednesday: [],
@@ -196,7 +211,7 @@ export default function Map(): JSX.Element {
 
         // Sort each day based on the start time of the course
         Object.entries(orderedWeekSchedule).forEach(([day, courses]) => {
-            orderedWeekSchedule[day as Day] = courses.sort((courseA, courseB) => {
+            orderedWeekSchedule[day as DAY] = courses.sort((courseA, courseB) => {
                 const courseAStartTime = processedCourses.find(
                     course => course.fullName === courseA
                 )?.normalizedStartTime;

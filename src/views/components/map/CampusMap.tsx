@@ -17,7 +17,15 @@ type SelectedBuildings = {
     end: NodeId | null;
 };
 
-// Helper Components
+/**
+ * DaySelector component allows users to select a day from a list of days.
+ *
+ * @param props - The component props.
+ * @param props.selectedDay - The currently selected day.
+ * @param props.onDaySelect - Callback function to handle day selection.
+ *
+ * @returns The rendered DaySelector component.
+ */
 const DaySelector = ({
     selectedDay,
     onDaySelect,
@@ -40,6 +48,16 @@ const DaySelector = ({
     </div>
 );
 
+/**
+ * TimeWarningLabel component that renders a warning label on a map.
+ * The label consists of a circle with a text inside it, indicating the number of minutes.
+ *
+ * @param props - The properties object.
+ * @param props.x - The x-coordinate for the center of the circle.
+ * @param props.y - The y-coordinate for the center of the circle.
+ * @param props.minutes - The number of minutes to display inside the circle.
+ * @returns A JSX element representing the warning label.
+ */
 const TimeWarningLabel = ({ x, y, minutes }: { x: number; y: number; minutes: number }): JSX.Element => (
     <g>
         <circle cx={x} cy={y} r={12} fill='white' stroke='#FF4444' strokeWidth={2} />

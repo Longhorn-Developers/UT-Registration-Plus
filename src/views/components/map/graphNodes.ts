@@ -1,5 +1,11 @@
 import type { Graph, NodeCoordinates } from './types';
 
+/**
+ * A constant object representing the graph nodes for a map.
+ *
+ * The graph nodes are categorized into two types: buildings and intersections.
+ * Each node has coordinates (x, y) and a type indicating whether it is a building or an intersection.
+ */
 const rawGraphNodes: Graph = {
     // // Debug nodes
     // dn1: {
@@ -498,7 +504,17 @@ const walkways: Walkway[] = [
     },
 ];
 
-// Utility function to calculate point on a cubic Bézier curve
+/**
+ * Calculates a point on a cubic Bézier curve.
+ *
+ * @param t - The time value between 0 and 1.
+ * @param start - The starting point of the curve.
+ * @param end - The ending point of the curve.
+ * @param control1 - The first control point of the curve.
+ * @param control2 - The second control point of the curve.
+ *
+ * @returns The calculated point on the curve.
+ */
 const getBezierPoint = (
     t: number,
     start: NodeCoordinates,
@@ -528,7 +544,17 @@ const getBezierPoint = (
     };
 };
 
-// Function to estimate the length of a Bézier curve
+/**
+ * Estimates the length of a cubic Bézier curve.
+ *
+ * @param start - The starting point of the curve.
+ * @param end - The ending point of the curve.
+ * @param control1 - The first control point of the curve.
+ * @param control2 - The second control point of the curve.
+ * @param segments - The number of segments to use for the estimation.
+ *
+ * @returns The estimated length of the curve.
+ */
 const estimateBezierLength = (
     start: NodeCoordinates,
     end: NodeCoordinates,
@@ -553,11 +579,27 @@ const estimateBezierLength = (
     return length;
 };
 
+/**
+ * Calculates a point on a circle given a center, radius, and angle.
+ *
+ * @param center - The center of the circle.
+ * @param radius - The radius of the circle.
+ * @param angle - The angle in radians.
+ *
+ * @returns The calculated point on the circle.
+ */
 const getCirclePoint = (center: NodeCoordinates, radius: number, angle: number): NodeCoordinates => ({
     x: Math.round(center.x + radius * Math.cos(angle)),
     y: Math.round(center.y + radius * Math.sin(angle)),
 });
 
+/**
+ * Generates nodes for a linear walkway.
+ *
+ * @param config - The configuration object for the walkway.
+ *
+ * @returns The generated nodes for the walkway.
+ */
 const generateLinearWalkwayNodes = (config: LinearWalkway): Graph => {
     const { start, end, namePrefix } = config;
     const nodes: Graph = {};
@@ -583,6 +625,13 @@ const generateLinearWalkwayNodes = (config: LinearWalkway): Graph => {
     return nodes;
 };
 
+/**
+ * Generates nodes for a Bézier walkway.
+ *
+ * @param config - The configuration object for the walkway.
+ *
+ * @returns The generated nodes for the walkway.
+ */
 const generateBezierWalkwayNodes = (config: BezierWalkway): Graph => {
     const { start, end, control1, control2, namePrefix } = config;
     const nodes: Graph = {};
@@ -606,6 +655,13 @@ const generateBezierWalkwayNodes = (config: BezierWalkway): Graph => {
     return nodes;
 };
 
+/**
+ * Generates nodes for a circular walkway.
+ *
+ * @param config - The configuration object for the walkway.
+ *
+ * @returns The generated nodes for the walkway.
+ */
 const generateCircularWalkwayNodes = (config: CircularWalkway): Graph => {
     const { center, radius, namePrefix, startAngle = 0, endAngle = 2 * Math.PI } = config;
     const nodes: Graph = {};
@@ -630,6 +686,13 @@ const generateCircularWalkwayNodes = (config: CircularWalkway): Graph => {
     return nodes;
 };
 
+/**
+ * Generates all walkway nodes for the map.
+ *
+ * @param config - The configuration object for the walkway.
+ *
+ * @returns The combined graph with walkway nodes.
+ */
 const generateWalkwayNodes = (config: Walkway): Graph => {
     switch (config.type) {
         case 'bezier':
@@ -641,6 +704,11 @@ const generateWalkwayNodes = (config: Walkway): Graph => {
     }
 };
 
+/**
+ * Generates all walkway nodes for the map.
+ *
+ * @returns The combined graph with all walkway nodes.
+ */
 const generateAllWalkwayNodes = (): Graph => {
     const generatedNodes = walkways.reduce((acc, config) => {
         const nodes = generateWalkwayNodes(config);

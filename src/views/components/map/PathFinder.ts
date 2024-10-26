@@ -11,6 +11,9 @@ import {
 } from './types';
 import { calculateDistance, getNeighbors } from './utils';
 
+/**
+ * Custom error class for handling pathfinding errors.
+ */
 export class PathFindingError extends Error {
     constructor(message: string) {
         super(message);
@@ -18,6 +21,10 @@ export class PathFindingError extends Error {
     }
 }
 
+/**
+ * The `PathFinder` class is responsible for finding the shortest path between nodes in a graph.
+ * It uses Dijkstra's algorithm to compute the shortest path and supports bidirectional connections.
+ */
 export class PathFinder {
     private graph: Graph;
     private nodeConnections: Map<NodeId, Set<NodeId>>;
