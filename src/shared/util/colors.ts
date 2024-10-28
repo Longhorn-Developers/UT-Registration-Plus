@@ -55,9 +55,7 @@ export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 
 
     const trc = 2.4; // 2.4 exponent for emulating actual monitor perception
     const rgb = hexToRGB(bgColor);
-    if (!rgb) {
-        return 'text-black';
-    }
+    if (!rgb) throw new Error('bgColor: Invalid hex.');
 
     // coefficients and rgb are both 3 elements long, so this is safe
     let Ys = rgb.reduce((acc, c, i) => acc + (c / 255.0) ** trc * coefficients[i]!, 0);
