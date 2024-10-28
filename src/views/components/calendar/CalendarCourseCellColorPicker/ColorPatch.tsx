@@ -8,9 +8,9 @@ import CheckIcon from '~icons/material-symbols/check';
 interface ColorPatchProps {
     color: string;
     isSelected: boolean;
-    handleSetSelectedColor: (color: string) => void;
+    handleSelectColorPatch: (color: string) => void;
     defaultColor: string;
-    updateCourseColor: (color: string) => void;
+    handleCloseColorPicker: () => void;
 }
 
 /**
@@ -26,16 +26,16 @@ interface ColorPatchProps {
 export default function ColorPatch({
     color,
     isSelected,
-    handleSetSelectedColor,
+    handleSelectColorPatch,
     defaultColor,
-    updateCourseColor,
+    handleCloseColorPicker,
 }: ColorPatchProps): JSX.Element {
-    const handleClick = () => {
-        // double clicked
+    const handleClick = async () => {
+        // If the color patch is already selected, close the color picker
         if (isSelected) {
-            updateCourseColor(color);
+            handleCloseColorPicker();
         } else {
-            handleSetSelectedColor(isSelected ? defaultColor : color);
+            handleSelectColorPatch(isSelected ? defaultColor : color);
         }
     };
     return (

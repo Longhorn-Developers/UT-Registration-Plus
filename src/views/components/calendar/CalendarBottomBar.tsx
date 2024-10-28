@@ -53,6 +53,7 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                                         key={courseDeptAndInstr}
                                         className={clsx(className, 'w-35! h-15!')}
                                         onClick={() => setCourse(block.course)}
+                                        courseID={block.course.uniqueId}
                                     />
                                 );
                             })}

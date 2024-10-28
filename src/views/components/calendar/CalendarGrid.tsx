@@ -1,9 +1,8 @@
 import type { Course } from '@shared/types/Course';
-import type { UserSchedule } from '@shared/types/UserSchedule';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
+import { useColorPicker } from '@views/hooks/useColorPicker';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import useSchedules, { replaceSchedule } from '@views/hooks/useSchedules';
 import React from 'react';
 
 import CalendarCell from './CalendarGridCell';
@@ -84,7 +83,7 @@ interface AccountForCourseConflictsProps {
 // TODO: Possibly refactor to be more concise
 // TODO: Deal with react strict mode (wacky movements)
 function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
-    const [activeSchedule, schedules] = useSchedules();
+    const colorPickerProps = useColorPicker();
 
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce(
@@ -127,21 +126,6 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
         });
     });
 
-    // TODO: probably need to move this to a better place
-    const updateCourseColor = (course: Course, color: string) => {
-        const updatedCourse = { ...course, colors: { ...course.colors, primaryColor: color } };
-
-        const newSchedule = {
-            ...activeSchedule,
-            courses: activeSchedule.courses.map(c => (c.uniqueId === course.uniqueId ? updatedCourse : c)),
-        } as UserSchedule;
-
-        console.log(activeSchedule);
-        console.log(newSchedule);
-
-        replaceSchedule(activeSchedule, newSchedule);
-    };
-
     return courseCells
         .filter(block => !block.async)
         .map(block => {
@@ -164,7 +148,10 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                         status={status}
                         colors={block.course.colors}
                         onClick={() => setCourse(block.course)}
-                        updateCourseColor={color => updateCourseColor(block.course, color)}
+                        courseID={block.course.uniqueId}
+                        startIndex={block.calendarGridPoint.startIndex}
+                        dayIndex={block.calendarGridPoint.dayIndex}
+                        colorPickerProps={colorPickerProps}
                     />
                 </div>
             );

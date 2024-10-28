@@ -1,3 +1,4 @@
+import { isValidHexColor } from '@shared/util/colors';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import React from 'react';
 
@@ -8,7 +9,7 @@ import TagIcon from '~icons/material-symbols/tag';
  */
 export interface HexColorEditorProps {
     hexCode: string;
-    setHexCode: React.Dispatch<React.SetStateAction<string>>;
+    setHexCode: (hexCode: string) => void;
 }
 
 /**
@@ -22,7 +23,7 @@ export interface HexColorEditorProps {
  */
 export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorProps): JSX.Element {
     const baseColor = React.useMemo(() => getThemeColorHexByName('ut-gray'), []);
-    const previewColor = hexCode.length === 6 ? `#${hexCode}` : baseColor;
+    const previewColor = isValidHexColor(`#${hexCode}`) ? `#${hexCode}` : baseColor;
 
     return (
         <>

@@ -59,7 +59,7 @@ export interface CourseCellColorPickerProps {
     isInvertColorsToggled: boolean;
     setIsInvertColorsToggled: React.Dispatch<React.SetStateAction<boolean>>;
     defaultColor: string;
-    updateCourseColor: (color: string) => void;
+    handleCloseColorPicker: () => void;
 }
 
 /**
@@ -87,11 +87,11 @@ export interface CourseCellColorPickerProps {
  * color for the course cell. The user can set any valid hex color they want.
  */
 export default function CourseCellColorPicker({
-    setSelectedColor: setFinalColor,
+    defaultColor,
+    setSelectedColor,
     isInvertColorsToggled,
     setIsInvertColorsToggled,
-    defaultColor,
-    updateCourseColor,
+    handleCloseColorPicker,
 }: CourseCellColorPickerProps): JSX.Element {
     // hexCode mirrors contents of HexColorEditor which has no hash prefix
     const [hexCode, setHexCode] = React.useState<string>(
@@ -101,27 +101,31 @@ export default function CourseCellColorPicker({
     const selectedBaseColor = hexCodeToBaseColor.get(hexCodeWithHash);
 
     const handleSelectColorPatch = (baseColor: string) => {
-        setHexCode(baseColor.slice(1).toLocaleLowerCase());
-    };
+        let hexCode = baseColor.toLocaleLowerCase();
 
-    React.useEffect(() => {
-        setFinalColor(hexCodeWithHash);
-    }, [hexCodeWithHash, setFinalColor]);
+        if (hexCode.startsWith('#')) {
+            hexCode = baseColor.slice(1);
+        }
+
+        setHexCode(hexCode);
+        setSelectedColor(`#${hexCode}` as ThemeColor);
+    };
 
     return (
         <div className='inline-flex flex-col border border-1 border-ut-offwhite rounded-1 bg-white p-1.25'>
             <div className='grid grid-cols-6 gap-1'>
                 {Array.from(colorPatchColors.keys()).map(baseColor => (
                     <ColorPatch
+                        key={baseColor}
                         color={baseColor}
                         isSelected={baseColor === selectedBaseColor}
-                        handleSetSelectedColor={handleSelectColorPatch}
+                        handleSelectColorPatch={handleSelectColorPatch}
                         defaultColor={defaultColor}
-                        updateCourseColor={updateCourseColor}
+                        handleCloseColorPicker={handleCloseColorPicker}
                     />
                 ))}
                 <div className='col-span-3 flex items-center justify-center overflow-hidden'>
-                    <HexColorEditor hexCode={hexCode} setHexCode={setHexCode} />
+                    <HexColorEditor hexCode={hexCode} setHexCode={handleSelectColorPatch} />
                 </div>
                 <button
                     className='h-5.5 w-5.5 bg-ut-black p-0 transition-all duration-200 hover:scale-110 btn'
@@ -142,11 +146,12 @@ export default function CourseCellColorPicker({
                             .get(selectedBaseColor)
                             ?.map(shadeColor => (
                                 <ColorPatch
+                                    key={shadeColor}
                                     color={shadeColor}
                                     isSelected={shadeColor === hexCodeWithHash}
-                                    handleSetSelectedColor={handleSelectColorPatch}
+                                    handleSelectColorPatch={handleSelectColorPatch}
                                     defaultColor={defaultColor}
-                                    updateCourseColor={updateCourseColor}
+                                    handleCloseColorPicker={handleCloseColorPicker}
                                 />
                             ))}
                     </div>

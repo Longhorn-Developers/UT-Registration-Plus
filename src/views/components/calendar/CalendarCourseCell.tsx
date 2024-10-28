@@ -1,11 +1,12 @@
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
-import type { CourseColors, ThemeColor } from '@shared/types/ThemeColors';
-import { pickFontColor } from '@shared/util/colors';
+import type { CourseColors } from '@shared/types/ThemeColors';
+import { hexToRGB, pickFontColor } from '@shared/util/colors';
 import Text from '@views/components/common/Text/Text';
+import type { ColorPickerInterface } from '@views/hooks/useColorPicker';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import ClosedIcon from '~icons/material-symbols/lock';
 import PaletteIcon from '~icons/material-symbols/palette';
@@ -20,12 +21,15 @@ import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellCol
  */
 export interface CalendarCourseCellProps {
     courseDeptAndInstr: string;
+    courseID: number;
     timeAndLocation?: string;
+    dayIndex?: number;
+    startIndex?: number;
     status: StatusType;
     colors: CourseColors;
     className?: string;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
-    updateCourseColor: (color: string) => void;
+    colorPickerProps?: ColorPickerInterface;
 }
 
 /**
@@ -42,17 +46,36 @@ export interface CalendarCourseCellProps {
  */
 export default function CalendarCourseCell({
     courseDeptAndInstr,
+    courseID,
     timeAndLocation,
+    startIndex = 0,
+    dayIndex = -1,
     status,
     colors,
     className,
     onClick,
-    updateCourseColor,
+    colorPickerProps = {} as ColorPickerInterface,
 }: CalendarCourseCellProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
-    const [selectedColor, setSelectedColor] = useState<ThemeColor | null>(colors.primaryColor as ThemeColor);
-    const [isInvertColorsToggled, setIsInvertColorsToggled] = useState<boolean>(false);
+    const colorPickerRef = useRef<HTMLDivElement>(null);
+    const {
+        selectedColor,
+        setSelectedColor,
+        isInvertColorsToggled,
+        setIsInvertColorsToggled,
+        setSelectedCourse,
+        handleCloseColorPicker,
+        isSelectedBlock,
+        isSelectedCourse,
+    } = colorPickerProps;
+
+    let selectedCourse = false;
+    let selectedBlock = false;
+
+    if (isSelectedCourse && isSelectedBlock) {
+        selectedCourse = isSelectedCourse(courseID);
+        selectedBlock = isSelectedBlock(courseID, dayIndex, startIndex);
+    }
 
     useEffect(() => {
         initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
@@ -66,6 +89,26 @@ export default function CalendarCourseCell({
             OptionsStore.removeListener(l1);
         };
     }, []);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (selectedBlock && colorPickerRef.current) {
+                const path = event.composedPath();
+                const isClickOutside = !path.some(
+                    element => (element as HTMLElement).classList === colorPickerRef.current?.classList
+                );
+
+                if (isClickOutside) {
+                    handleCloseColorPicker();
+                }
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [handleCloseColorPicker, selectedBlock]);
 
     let rightIcon: React.ReactNode | null = null;
     if (enableCourseStatusChips) {
@@ -94,7 +137,7 @@ export default function CalendarCourseCell({
                 className
             )}
             style={{
-                backgroundColor: showColorPicker ? (selectedColor ?? colors.primaryColor) : colors.primaryColor,
+                backgroundColor: colors.primaryColor,
             }}
             onClick={onClick}
         >
@@ -117,7 +160,7 @@ export default function CalendarCourseCell({
             </div>
             {rightIcon && (
                 <div
-                    className='h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white screenshot:hidden'
+                    className='focus- h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white screenshot:hidden'
                     style={{
                         backgroundColor: colors.secondaryColor,
                     }}
@@ -126,33 +169,56 @@ export default function CalendarCourseCell({
                 </div>
             )}
 
-            <div
-                onClick={e => {
-                    e.stopPropagation();
-                }}
-                className='pointer-events-none absolute right-0 top-2 z-999 translate-x-full pl-0.75 text-black opacity-0 transition-all ease-in-out group-focus-within:pointer-events-auto group-hover:pointer-events-auto group-focus-within:opacity-100 group-hover:opacity-100'
-            >
-                <Button
-                    onClick={() => setShowColorPicker(prev => !prev)}
-                    icon={PaletteIcon}
-                    variant='filled'
-                    className='mb-0.75 size-7 border border-white rounded-full !p-1.5 !hover:shadow-none'
-                    color='ut-gray'
-                />
-
-                {showColorPicker && (
-                    <CourseCellColorPicker
-                        defaultColor={colors.primaryColor}
-                        setSelectedColor={setSelectedColor}
-                        isInvertColorsToggled={isInvertColorsToggled}
-                        setIsInvertColorsToggled={setIsInvertColorsToggled}
-                        updateCourseColor={color => {
-                            setShowColorPicker(false);
-                            updateCourseColor(color);
+            {Object.keys(colorPickerProps).length !== 0 && (
+                <div
+                    ref={colorPickerRef}
+                    onClick={e => {
+                        e.stopPropagation();
+                    }}
+                    className={clsx(
+                        'flex flex-col absolute top-2 text-black transition-all ease-in-out',
+                        'group-focus-within:pointer-events-auto group-hover:pointer-events-auto group-focus-within:opacity-100 group-hover:opacity-100',
+                        dayIndex === 4
+                            ? 'left-0 -translate-x-full pr-0.75 items-end'
+                            : 'right-0 translate-x-full pl-0.75',
+                        selectedBlock ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                    )}
+                    style={{
+                        // Prevents from button from appear on top of color picker
+                        zIndex: 50 - startIndex,
+                    }}
+                >
+                    <Button
+                        onClick={() => {
+                            if (selectedBlock) {
+                                handleCloseColorPicker();
+                            } else {
+                                setSelectedCourse(courseID, dayIndex, startIndex);
+                            }
+                        }}
+                        icon={PaletteIcon}
+                        variant='filled'
+                        className='mb-0.75 size-7 border border-white rounded-full !p-1.5 !hover:shadow-none'
+                        color='ut-gray'
+                        style={{
+                            color: `${colors.primaryColor}`,
+                            backgroundColor: selectedCourse
+                                ? (selectedColor ?? colors.primaryColor)
+                                : `rgba(${hexToRGB(`${colors.primaryColor}`)}, var(--un-bg-opacity))`,
                         }}
                     />
-                )}
-            </div>
+
+                    {selectedBlock && (
+                        <CourseCellColorPicker
+                            defaultColor={colors.primaryColor}
+                            setSelectedColor={setSelectedColor}
+                            isInvertColorsToggled={isInvertColorsToggled}
+                            setIsInvertColorsToggled={setIsInvertColorsToggled}
+                            handleCloseColorPicker={handleCloseColorPicker}
+                        />
+                    )}
+                </div>
+            )}
         </div>
     );
 }
