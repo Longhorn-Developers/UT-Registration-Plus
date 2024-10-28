@@ -12,20 +12,20 @@ export default async function duplicateSchedule(scheduleId: string): Promise<str
     const schedules = await UserScheduleStore.get('schedules');
     const scheduleIndex = schedules.findIndex(schedule => schedule.id === scheduleId);
 
-    if (scheduleIndex < 0) {
+    if (scheduleIndex === -1) {
         throw new Error(`Schedule ${scheduleId} does not exist`);
     }
 
-    const schedule = schedules[scheduleIndex];
+    const schedule = schedules[scheduleIndex]!;
 
-    const copyOfName = `Copy of ${schedule!.name}`;
+    const copyOfName = `Copy of ${schedule.name}`;
     const updatedName = await handleDuplicate(copyOfName);
 
     schedules.splice(scheduleIndex + 1, 0, {
         id: generateRandomId(),
         name: updatedName,
-        courses: JSON.parse(JSON.stringify(schedule!.courses)),
-        hours: schedule!.hours,
+        courses: JSON.parse(JSON.stringify(schedule.courses)),
+        hours: schedule.hours,
         updatedAt: Date.now(),
     } satisfies typeof schedule);
 
