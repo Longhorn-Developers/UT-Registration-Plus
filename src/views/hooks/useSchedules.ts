@@ -115,3 +115,32 @@ export async function switchScheduleByName(name: string): Promise<void> {
     const activeIndex = schedules.findIndex(s => s.name === name);
     await UserScheduleStore.set('activeIndex', activeIndex);
 }
+
+/**
+ * Updates the color of a course in the active schedule.
+ *
+ * @param {number} courseID - The ID of the course to update.
+ * @param {`#${string}`} color - The new color to set for the course.
+ * @throws {Error} If the course with the given ID is not found.
+ */
+export async function updateCourseColors(courseID: number, color: `#${string}`) {
+    const activeSchedule = getActiveSchedule();
+    const updatedCourseIndex = activeSchedule.courses.findIndex(c => c.uniqueId === courseID);
+
+    if (updatedCourseIndex === -1) {
+        throw new Error(`Course with ID ${courseID} not found`);
+    }
+
+    // Deep copy the active schedule and the updated course
+    const newSchedule = structuredClone(activeSchedule);
+    const updatedCourse = newSchedule.courses[updatedCourseIndex];
+
+    if (!updatedCourse) {
+        throw new Error(`Course with ID ${courseID} not found`);
+    }
+
+    updatedCourse.colors.primaryColor = color;
+    newSchedule.courses[updatedCourseIndex] = updatedCourse;
+
+    await replaceSchedule(activeSchedule, newSchedule);
+}

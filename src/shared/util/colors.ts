@@ -26,6 +26,19 @@ export function hexToRGB(hex: HexColor): RGB | undefined {
     return [parseInt(result[1]!, 16), parseInt(result[2]!, 16), parseInt(result[3]!, 16)];
 }
 
+/**
+ * Checks if a given string is a valid hex color.
+ *
+ * A valid hex color is a string that starts with a '#' followed by either
+ * 3 or 6 hexadecimal characters (0-9, A-F, a-f).
+ *
+ * @param {string} hex - The hex color string to validate.
+ * @returns {boolean} True if the string is a valid hex color, false otherwise.
+ */
+export function isValidHexColor(hex: string): boolean {
+    return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
+}
+
 export const useableColorways = Object.keys(theme.colors)
     // check that the color is a colorway (is an object)
     .filter(color => typeof theme.colors[color as keyof typeof theme.colors] === 'object')
@@ -42,7 +55,9 @@ export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 
 
     const trc = 2.4; // 2.4 exponent for emulating actual monitor perception
     const rgb = hexToRGB(bgColor);
-    if (!rgb) throw new Error('bgColor: Invalid hex.');
+    if (!rgb) {
+        return 'text-black';
+    }
 
     // coefficients and rgb are both 3 elements long, so this is safe
     let Ys = rgb.reduce((acc, c, i) => acc + (c / 255.0) ** trc * coefficients[i]!, 0);
