@@ -125,6 +125,17 @@ export default function CalendarCourseCell({
     const fontColor = pickFontColor(colors.primaryColor);
     // Note that overflow-hidden is the duct tape holding this all together
 
+    // This function is used to determine the position of the color picker depending on the position of the cell
+    const getPositionClass = () => {
+        if (startIndex < 21) {
+            return 'top-2 flex-col';
+        }
+        if (!selectedBlock) {
+            return 'flex-col-reverse top-2';
+        }
+        return 'flex-col-reverse bottom-26'; // If the cell is near the bottom of the screen
+    };
+
     return (
         <div
             className={clsx(
@@ -176,16 +187,17 @@ export default function CalendarCourseCell({
                         e.stopPropagation();
                     }}
                     className={clsx(
-                        'flex flex-col absolute top-2 text-black transition-all ease-in-out',
-                        'group-focus-within:pointer-events-auto group-hover:pointer-events-auto group-focus-within:opacity-100 group-hover:opacity-100',
+                        'flex absolute text-black transition-all ease-in-out',
+                        'group-focus-within:pointer-events-auto group-hover:pointer-events-auto group-focus-within:opacity-100 group-hover:opacity-100 gap-y-0.75',
                         dayIndex === 4
                             ? 'left-0 -translate-x-full pr-0.75 items-end'
-                            : 'right-0 translate-x-full pl-0.75',
-                        selectedBlock ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                            : 'right-0 translate-x-full pl-0.75', // If the cell is on the right side of the screen
+                        selectedBlock ? 'opacity-100 pointer-events-auto' : 'opacity-0   pointer-events-none',
+                        getPositionClass()
                     )}
                     style={{
                         // Prevents from button from appear on top of color picker
-                        zIndex: 50 - startIndex,
+                        zIndex: selectedBlock ? 30 : 29,
                     }}
                 >
                     <Button
@@ -198,7 +210,7 @@ export default function CalendarCourseCell({
                         }}
                         icon={PaletteIcon}
                         variant='filled'
-                        className='mb-0.75 size-7 border border-white rounded-full !p-1.5 !hover:shadow-none'
+                        className='size-7 border border-white rounded-full !p-1.5 !hover:shadow-none'
                         color='ut-gray'
                         style={{
                             color: `${colors.primaryColor}`,
