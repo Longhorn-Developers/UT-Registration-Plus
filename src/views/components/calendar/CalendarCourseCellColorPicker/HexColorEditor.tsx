@@ -18,7 +18,7 @@ export interface HexColorEditorProps {
  * @param {HexColorEditorProps} props - the props for the component
  * @param {string} props.hexCode - the current hex color code displayed in this component. Note that this code does not
  * include the leading '#' character since it is already included in the component. Passed down from the parent component.
- * @param {React.Dispatch<React.SetStateAction<string>>} props.setHexCode - set state fn to control the hex color code from parent
+ * @param {(hexCode: string) => void} props.setHexCode - set state fn to control the hex color code from parent
  * @returns {JSX.Element} - the hex color editor component
  */
 export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorProps): JSX.Element {

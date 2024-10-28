@@ -68,6 +68,8 @@ export interface CourseCellColorPickerProps {
  * @param {boolean} props.isInvertColorsToggled - boolean state passed down from the parent component that indicates whether the color picker is in invert colors mode
  * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsInvertColorsToggled - set state function passed down from the parent component to set invert colors mode
  * that will be called when a color is selected. The user can set any valid hex color they want.
+ * @param {string} props.defaultColor - The default color for the color picker.
+ * @param {() => void} props.handleCloseColorPicker - Function to handle closing the color picker.
  *
  * @example
  * ```

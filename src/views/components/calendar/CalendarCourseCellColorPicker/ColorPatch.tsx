@@ -21,6 +21,8 @@ interface ColorPatchProps {
  * @param {boolean} props.isSelected - Indicates whether the patch is selected.
  * @param {Function} props.handleSetSelectedColor - Function from parent component to control selection state of a patch.
  *                                                  color is a hex string with a hash prefix.
+ * @param {string} props.defaultColor - The default color for the color picker.
+ * @param {Function} props.handleCloseColorPicker - Function to close the color picker.
  * @returns {JSX.Element} The rendered color patch button.
  */
 export default function ColorPatch({

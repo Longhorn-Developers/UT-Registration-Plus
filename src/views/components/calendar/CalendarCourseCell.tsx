@@ -42,6 +42,7 @@ export interface CalendarCourseCellProps {
  * @param {StatusType} props.status - The status of the course.
  * @param {Colors} props.colors - The colors for styling the cell.
  * @param {string} props.className - Additional CSS class name for the cell.
+ * @param {boolean} props.isInvertColorsToggled - Flag to indicate if colors should be inverted.
  * @returns {JSX.Element} The rendered component.
  */
 export default function CalendarCourseCell({
@@ -171,7 +172,7 @@ export default function CalendarCourseCell({
             </div>
             {rightIcon && (
                 <div
-                    className='focus- h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white screenshot:hidden'
+                    className='h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white screenshot:hidden'
                     style={{
                         backgroundColor: colors.secondaryColor,
                     }}
