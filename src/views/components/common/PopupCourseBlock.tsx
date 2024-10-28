@@ -10,6 +10,8 @@ import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
+import CheckIcon from '~icons/material-symbols/check';
+import Copy from '~icons/material-symbols/content-copy';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
 /**
@@ -34,13 +36,13 @@ export default function PopupCourseBlock({
     dragHandleProps,
 }: PopupCourseBlockProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const [isCopied, setIsCopied] = useState<boolean>(false);
 
     useEffect(() => {
         initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
 
         const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
         });
 
         return () => {
@@ -50,11 +52,18 @@ export default function PopupCourseBlock({
 
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
+    const buttonColor = pickFontColor(colors.secondaryColor);
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
 
     const handleClick = async () => {
         await background.switchToCalendarTab({ uniqueId: course.uniqueId });
         window.close();
+    };
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(formattedUniqueId);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 1000);
     };
 
     return (
@@ -66,7 +75,6 @@ export default function PopupCourseBlock({
                 'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left',
                 className
             )}
-            onClick={handleClick}
         >
             <div
                 style={{
@@ -77,20 +85,38 @@ export default function PopupCourseBlock({
             >
                 <DragIndicatorIcon className='h-6 w-6 text-white' />
             </div>
-            <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
-                <span className='px-0.5 font-450'>{formattedUniqueId}</span> {course.department} {course.number} &ndash;{' '}
-                {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
-            </Text>
-            {enableCourseStatusChips && course.status !== Status.OPEN && (
-                <div
-                    style={{
-                        backgroundColor: colors.secondaryColor,
-                    }}
-                    className='ml-1 flex items-center justify-center justify-self-end rounded p-1px text-white'
-                >
-                    <StatusIcon status={course.status} className='h-5 w-5' />
-                </div>
-            )}
+            <div
+                onClick={handleClick}
+                className={clsx(
+                    'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left',
+                    className
+                )}
+            >
+                <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
+                    {course.department} {course.number} &ndash;{' '}
+                    {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
+                </Text>
+                {enableCourseStatusChips && course.status !== Status.OPEN && (
+                    <div
+                        style={{
+                            backgroundColor: colors.secondaryColor,
+                        }}
+                        className='ml-1 flex items-center justify-center justify-self-end rounded p-1px text-white'
+                    >
+                        <StatusIcon status={course.status} className='h-5 w-5' />
+                    </div>
+                )}
+            </div>
+
+            <button
+                className='flex bg-transparent px-2 py-0.25 text-white btn'
+                color={colors.secondaryColor}
+                onClick={handleCopy}
+                style={{ backgroundColor: colors.secondaryColor, color: buttonColor }}
+            >
+                {isCopied ? <CheckIcon className='h-5 w-5 text-white' /> : <Copy className='h-5 w-5 text-white' />}
+                {formattedUniqueId}
+            </button>
         </div>
     );
 }
