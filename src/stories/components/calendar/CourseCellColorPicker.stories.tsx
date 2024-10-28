@@ -20,7 +20,7 @@ function CourseCellColorPickerWithState() {
             isInvertColorsToggled={isInvertColorsToggled}
             setIsInvertColorsToggled={setIsInvertColorsToggled}
             defaultColor='#000000'
-            updateCourseColor={() => {}}
+            handleCloseColorPicker={() => {}}
         />
     );
 }

@@ -39,9 +39,26 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+    args: {
+        courseDeptAndInstr: ExampleCourse.department,
+        className: ExampleCourse.number,
+        status: ExampleCourse.status,
+        timeAndLocation: ExampleCourse.schedule.meetings[0]!.getTimeString({ separator: '-' }),
+        colors: getCourseColors('emerald', 500),
+        courseID: 1,
+    },
+};
 
 export const Variants: Story = {
+    args: {
+        courseDeptAndInstr: ExampleCourse.department,
+        className: ExampleCourse.number,
+        status: ExampleCourse.status,
+        timeAndLocation: ExampleCourse.schedule.meetings[0]!.getTimeString({ separator: '-' }),
+        colors: getCourseColors('emerald', 500),
+        courseID: 1,
+    },
     render: props => (
         <div className='grid grid-cols-2 h-40 max-w-60 w-90vw gap-x-4 gap-y-2'>
             <CalendarCourseCell {...props} colors={getCourseColors('green', 500)} />
