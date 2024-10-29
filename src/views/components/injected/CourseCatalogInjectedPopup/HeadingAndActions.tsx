@@ -125,7 +125,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
                         {formattedUniqueId}
                     </Button>
-                    <button className='bg-transparent p-0 text-theme-black btn' onClick={onClose}>
+                    <button className='bg-transparent p-0 text-ut-black btn' onClick={onClose}>
                         <CloseIcon className='h-7 w-7' />
                     </button>
                 </div>
