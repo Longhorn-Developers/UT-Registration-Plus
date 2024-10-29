@@ -54,11 +54,8 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
     const isInCalendar = useCalendar();
 
-    const getInstructorFullName = (instructor: Instructor) => {
-        const { firstName = '', lastName = '' } = instructor;
-        if (firstName === '') return capitalizeString(lastName);
-        return `${capitalizeString(firstName)} ${capitalizeString(lastName)}`;
-    };
+    const getInstructorFullName = (instructor: Instructor) =>
+        instructor.toString({ format: 'first_last', case: 'capitalize' });
 
     const getBuildingUrl = (building: string) =>
         `https://utdirect.utexas.edu/apps/campus/buildings/nlogon/maps/UTM/${building}`;
