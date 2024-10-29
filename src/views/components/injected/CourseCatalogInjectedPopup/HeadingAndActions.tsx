@@ -37,7 +37,8 @@ interface HeadingAndActionProps {
  * @param str - The string to be capitalized.
  * @returns The capitalized string.
  */
-const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+const capitalizeString: (str: string) => string = (str: string) =>
+    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
 /**
  * Renders the heading component for the CoursePopup component.
