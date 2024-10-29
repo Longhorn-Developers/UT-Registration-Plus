@@ -99,7 +99,7 @@ function extractCourseInfo(course: Course) {
         courseDeptAndInstr += ` - `;
         courseDeptAndInstr += course.instructors
             .map(instructor => instructor.toString({ format: 'last', case: 'capitalize' }))
-            .join(', ');
+            .join('; ');
     }
 
     return { status, courseDeptAndInstr, meetings, course };
