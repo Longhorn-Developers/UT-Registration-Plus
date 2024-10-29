@@ -105,7 +105,7 @@ function extractCourseInfo(course: Course) {
     if (course.instructors.length >= 0) {
         courseDeptAndInstr += ` - `;
         courseDeptAndInstr += course.instructors
-            .map(instructor => `${instructor.toString({ format: 'first_last', case: 'capitalize' })}`)
+            .map(instructor => `${instructor.toString({ format: 'last', case: 'capitalize' })}`)
             .join(', ');
     }
 
