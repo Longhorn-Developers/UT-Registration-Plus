@@ -55,13 +55,10 @@ export default function PopupCourseBlock({
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
     const [copyTimeoutId, setCopyTimeoutId] = useState<NodeJS.Timeout | undefined>(undefined);
 
-
     const handleClick = async () => {
         await background.switchToCalendarTab({ uniqueId: course.uniqueId });
         window.close();
     };
-
-    
 
     const handleCopy = (event: React.MouseEvent<HTMLElement>) => {
         if (copyTimeoutId) {
@@ -97,20 +94,20 @@ export default function PopupCourseBlock({
             >
                 <DragIndicatorIcon className='h-6 w-6 text-white' />
             </div>
-                <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
-                    {course.department} {course.number} &ndash;{' '}
-                    {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
-                </Text>
-                {enableCourseStatusChips && course.status !== Status.OPEN && (
-                    <div
-                        style={{
-                            backgroundColor: colors.secondaryColor,
-                        }}
-                        className='ml-1 flex items-center justify-center justify-self-end rounded p-1px text-white'
-                    >
-                        <StatusIcon status={course.status} className='h-5 w-5' />
-                    </div>
-                )}
+            <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
+                {course.department} {course.number} &ndash;{' '}
+                {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
+            </Text>
+            {enableCourseStatusChips && course.status !== Status.OPEN && (
+                <div
+                    style={{
+                        backgroundColor: colors.secondaryColor,
+                    }}
+                    className='ml-1 flex items-center justify-center justify-self-end rounded p-1px text-white'
+                >
+                    <StatusIcon status={course.status} className='h-5 w-5' />
+                </div>
+            )}
 
             <button
                 className='flex bg-transparent px-2 py-0.25 text-white btn'
@@ -118,7 +115,11 @@ export default function PopupCourseBlock({
                 onClick={handleCopy}
                 style={{ backgroundColor: colors.secondaryColor, color: buttonColor }}
             >
-                {copyTimeoutId !== undefined ? <CheckIcon className='h-5 w-5 text-white' /> : <Copy className='h-5 w-5 text-white' />}
+                {copyTimeoutId !== undefined ? (
+                    <CheckIcon className='h-5 w-5 text-white' />
+                ) : (
+                    <Copy className='h-5 w-5 text-white' />
+                )}
                 {formattedUniqueId}
             </button>
         </div>
