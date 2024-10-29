@@ -130,8 +130,8 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     </button>
                 </div>
                 <div className='flex items-center gap-2'>
-                    {instructors.length > 0 && (
-                        <Text variant='h4' as='p' className='items-center justify-center'>
+                    {instructors.length > 0 ? (
+                        <Text variant='h4' as='p'>
                             with{' '}
                             {instructors
                                 .map(instructor => (
@@ -145,6 +145,10 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                     </Link>
                                 ))
                                 .flatMap((el, i) => (i === 0 ? [el] : [', ', el]))}
+                        </Text>
+                    ) : (
+                        <Text variant='h4' as='p'>
+                            (No instructor has been provided)
                         </Text>
                     )}
                     <div className='flex items-center gap-1'>
