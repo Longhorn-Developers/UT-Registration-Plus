@@ -36,7 +36,6 @@ export default function PopupCourseBlock({
     dragHandleProps,
 }: PopupCourseBlockProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [isCopied, setIsCopied] = useState<boolean>(false);
 
     useEffect(() => {
         initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
@@ -54,16 +53,26 @@ export default function PopupCourseBlock({
     const fontColor = pickFontColor(colors.primaryColor);
     const buttonColor = pickFontColor(colors.secondaryColor);
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
+    const [copyTimeoutId, setCopyTimeoutId] = useState<NodeJS.Timeout | undefined>(undefined);
+
 
     const handleClick = async () => {
         await background.switchToCalendarTab({ uniqueId: course.uniqueId });
         window.close();
     };
 
-    const handleCopy = () => {
+    const handleCopy = (event: React.MouseEvent<HTMLElement>) => {
+        if (copyTimeoutId) {
+            clearTimeout(copyTimeoutId);
+        }
+
+        event.preventDefault();
         navigator.clipboard.writeText(formattedUniqueId);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 1000);
+
+        const newTimeoutId = setTimeout(() => {
+            setCopyTimeoutId(undefined);
+        }, 1000);
+        setCopyTimeoutId(newTimeoutId);
     };
 
     return (
@@ -82,16 +91,10 @@ export default function PopupCourseBlock({
                 }}
                 className='flex items-center self-stretch rounded rounded-r-0 cursor-move!'
                 {...dragHandleProps}
+                onClick={handleClick}
             >
                 <DragIndicatorIcon className='h-6 w-6 text-white' />
             </div>
-            <div
-                onClick={handleClick}
-                className={clsx(
-                    'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left',
-                    className
-                )}
-            >
                 <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
                     {course.department} {course.number} &ndash;{' '}
                     {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
@@ -106,7 +109,6 @@ export default function PopupCourseBlock({
                         <StatusIcon status={course.status} className='h-5 w-5' />
                     </div>
                 )}
-            </div>
 
             <button
                 className='flex bg-transparent px-2 py-0.25 text-white btn'
@@ -114,7 +116,7 @@ export default function PopupCourseBlock({
                 onClick={handleCopy}
                 style={{ backgroundColor: colors.secondaryColor, color: buttonColor }}
             >
-                {isCopied ? <CheckIcon className='h-5 w-5 text-white' /> : <Copy className='h-5 w-5 text-white' />}
+                {copyTimeoutId !== undefined ? <CheckIcon className='h-5 w-5 text-white' /> : <Copy className='h-5 w-5 text-white' />}
                 {formattedUniqueId}
             </button>
         </div>
