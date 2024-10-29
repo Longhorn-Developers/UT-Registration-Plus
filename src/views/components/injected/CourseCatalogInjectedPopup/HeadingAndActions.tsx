@@ -131,7 +131,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 </div>
                 <div className='flex items-center gap-2'>
                     {instructors.length > 0 ? (
-                        <Text variant='h4' as='p' className='items-center justify-center'>
+                        <Text variant='h4' as='p'>
                             with{' '}
                             {instructors
                                 .map(instructor => (
