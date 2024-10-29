@@ -61,6 +61,8 @@ export default function PopupCourseBlock({
         window.close();
     };
 
+    
+
     const handleCopy = (event: React.MouseEvent<HTMLElement>) => {
         if (copyTimeoutId) {
             clearTimeout(copyTimeoutId);
