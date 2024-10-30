@@ -51,10 +51,10 @@ export default function InjectedButton(): JSX.Element | null {
         );
 
         // Make sure to remove duplicate anchorTags using set
-        const uniqueAnchorTags = new Set(anchorTags);
+        const uniqueAnchorTags = new Set(anchorTags.map(a => a.href));
 
-        uniqueAnchorTags.forEach(anchor => {
-            addCourseByUrl(anchor.href, activeSchedule);
+        uniqueAnchorTags.forEach(a => {
+            addCourseByUrl(a, activeSchedule);
         });
 
         // const courses = Array.from(anchorTags).map(x => x.innerText.trim());
