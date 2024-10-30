@@ -156,12 +156,12 @@ export class GitHubStatsService {
                         if(json.name) {
                             name = json.name;
                         }
+                        await this.setCachedData(cacheKey, name);
                     } catch (e) {
                         console.error(e);
                     }
                 }
 
-                await this.setCachedData(cacheKey, name);
                 names[contributor] = name;
             })
         );
