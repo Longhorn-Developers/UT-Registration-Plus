@@ -110,6 +110,9 @@ importers:
       '@iconify-json/bi':
         specifier: ^1.2.1
         version: 1.2.1
+      '@iconify-json/ic':
+        specifier: ^1.2.1
+        version: 1.2.1
       '@iconify-json/iconoir':
         specifier: ^1.2.2
         version: 1.2.2
@@ -117,6 +120,9 @@ importers:
         specifier: ^1.2.4
         version: 1.2.4
       '@iconify-json/ri':
+        specifier: ^1.2.1
+        version: 1.2.1
+      '@iconify-json/streamline':
         specifier: ^1.2.1
         version: 1.2.1
       '@semantic-release/exec':
@@ -914,6 +920,9 @@ packages:
   '@iconify-json/bi@1.2.1':
     resolution: {integrity: sha512-wsIWb6bcnBkfN8/2puIIE2ul6NYVjclbE/nI7JZsPnfzBamd3NuRFstXQH9Ckkbrw9eiBTNKwHbH90w3UE5QIg==}
 
+  '@iconify-json/ic@1.2.1':
+    resolution: {integrity: sha512-UjL/bjJP/T5EV881+hTzcfTKVo0KEUjhnMiJcLtPzNgPtU2KZZmRx8BSKKR61H4CN/5FTEbyawGyG0aEt3SwGQ==}
+
   '@iconify-json/iconoir@1.2.2':
     resolution: {integrity: sha512-ytC2V7WeIHsQSyd5r+Iq/ExNb/yM45iR0jhbKNqFFSWhJvuanfIyuTHH/SQJpPYwV1grGtIx7v+kZ7xIjltdpA==}
 
@@ -922,6 +931,9 @@ packages:
 
   '@iconify-json/ri@1.2.1':
     resolution: {integrity: sha512-xI3+xZHBI+wlhQqd6jRRcLD5K8B8vQNyxcSB43myxNZ/SfXIn7Ny28h0jyPo9e0gT8fGhqx6R5PeLz/UBB8jwQ==}
+
+  '@iconify-json/streamline@1.2.1':
+    resolution: {integrity: sha512-hqNodkjyIHBymkFY3zMip0F/D5yw4qXgwMJCaTF3zlbpQMgNJhY3D2ikTFTDVcTHfCSd6EX6enKXj4Rvu+5hnw==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -7477,6 +7489,10 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
+  '@iconify-json/ic@1.2.1':
+    dependencies:
+      '@iconify/types': 2.0.0
+
   '@iconify-json/iconoir@1.2.2':
     dependencies:
       '@iconify/types': 2.0.0
@@ -7486,6 +7502,10 @@ snapshots:
       '@iconify/types': 2.0.0
 
   '@iconify-json/ri@1.2.1':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/streamline@1.2.1':
     dependencies:
       '@iconify/types': 2.0.0
 
