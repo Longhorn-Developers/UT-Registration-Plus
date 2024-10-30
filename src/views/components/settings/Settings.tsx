@@ -566,7 +566,7 @@ export default function Settings(): JSX.Element {
                                                 className='text-ut-burntorange font-semibold hover:cursor-pointer'
                                                 onClick={() => window.open(`https://github.com/${username}`, '_blank')}
                                             >
-                                                @{username}
+                                                {githubStats.names[username]}
                                             </Text>
                                             <p className='text-sm text-gray-600'>Contributor</p>
                                             {showGitHubStats && (

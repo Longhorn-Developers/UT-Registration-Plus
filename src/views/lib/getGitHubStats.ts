@@ -1,4 +1,7 @@
 import { Octokit } from '@octokit/rest';
+import { CachedData } from '@shared/types/CachedData';
+import { CacheStore } from '@shared/storage/CacheStore';
+import { serialize } from 'chrome-extension-toolkit';
 
 // Types
 type TeamMember = {
@@ -18,11 +21,6 @@ type ContributorStats = {
     total: number;
     weeks: { w: number; a: number; d: number; c: number }[];
     author: { login: string };
-};
-
-type CachedData<T> = {
-    data: T;
-    dataFetched: Date;
 };
 
 type FetchResult<T> = {
@@ -68,24 +66,30 @@ export type LD_ADMIN_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_ADMINS)[numb
  */
 export class GitHubStatsService {
     private octokit: Octokit;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private cache: Map<string, CachedData<any>>;
+    private cache: Record<string, CachedData<any>>;
 
     constructor(githubToken?: string) {
         this.octokit = githubToken ? new Octokit({ auth: githubToken }) : new Octokit();
-        this.cache = new Map();
+        this.cache = {};
     }
 
-    private getCachedData<T>(key: string): CachedData<T> | null {
-        const cachedItem = this.cache.get(key);
-        if (cachedItem && Date.now() - cachedItem.dataFetched.getTime() < CACHE_TTL) {
+    private async getCachedData<T>(key: string): Promise<CachedData<T> | null> {
+        if(Object.keys(this.cache).length === 0) {
+            this.cache = await CacheStore.get('github') as Record<string, CachedData<any>>;
+        }
+        const cachedItem = this.cache[key];
+        if (cachedItem && Date.now() - new Date(cachedItem.dataFetched).getTime() < CACHE_TTL) {
             return cachedItem;
         }
         return null;
     }
 
-    private setCachedData<T>(key: string, data: T): void {
-        this.cache.set(key, { data, dataFetched: new Date() });
+    private async setCachedData<T>(key: string, data: T): Promise<void> {
+        if(Object.keys(this.cache).length === 0) {
+            this.cache = await CacheStore.get('github') as Record<string, CachedData<any>>;
+        }
+        this.cache[key] = { data, dataFetched: (new Date()).getTime() };
+        await CacheStore.set('github', this.cache);
     }
 
     private async fetchWithRetry<T>(fetchFn: () => Promise<T>, retries: number = 3, delay: number = 5000): Promise<T> {
@@ -103,12 +107,12 @@ export class GitHubStatsService {
 
     private async fetchContributorStats(): Promise<FetchResult<ContributorStats[]>> {
         const cacheKey = `contributor_stats_${REPO_OWNER}_${REPO_NAME}`;
-        const cachedStats = this.getCachedData<ContributorStats[]>(cacheKey);
+        const cachedStats = await this.getCachedData<ContributorStats[]>(cacheKey);
 
         if (cachedStats) {
             return {
                 data: cachedStats.data,
-                dataFetched: cachedStats.dataFetched,
+                dataFetched: new Date(cachedStats.dataFetched),
                 lastUpdated: new Date(),
                 isCached: true,
             };
@@ -128,21 +132,50 @@ export class GitHubStatsService {
                 lastUpdated: new Date(),
                 isCached: false,
             };
-            this.setCachedData(cacheKey, fetchResult.data);
+            await this.setCachedData(cacheKey, fetchResult.data);
             return fetchResult;
         }
 
         throw new Error('Invalid response format');
     }
 
+    private async fetchContributorNames(contributors: string[]): Promise<Record<string, string>> {
+        const names: Record<string, string> = {};
+        await Promise.all(
+            contributors.map(async (contributor) => {
+                const cacheKey = `contributor_name_${contributor}`;
+                const cachedName = await this.getCachedData<string>(cacheKey);
+                let name = `@${contributor}`;
+
+                if(cachedName) {
+                    name = cachedName.data;
+                } else {
+                    try {
+                        const response = await fetch(`https://api.github.com/users/${contributor}`);
+                        const json = await response.json();
+                        if(json.name) {
+                            name = json.name;
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                await this.setCachedData(cacheKey, name);
+                names[contributor] = name;
+            })
+        );
+        return names;
+    }
+
     private async fetchMergedPRsCount(username: string): Promise<FetchResult<number>> {
         const cacheKey = `merged_prs_${username}`;
-        const cachedCount = this.getCachedData<number>(cacheKey);
+        const cachedCount = await this.getCachedData<number>(cacheKey);
 
         if (cachedCount !== null) {
             return {
                 data: cachedCount.data,
-                dataFetched: cachedCount.dataFetched,
+                dataFetched: new Date(cachedCount.dataFetched),
                 lastUpdated: new Date(),
                 isCached: true,
             };
@@ -158,7 +191,7 @@ export class GitHubStatsService {
             lastUpdated: new Date(),
             isCached: false,
         };
-        this.setCachedData(cacheKey, fetchResult.data);
+        await this.setCachedData(cacheKey, fetchResult.data);
         return fetchResult;
     }
 
@@ -174,6 +207,7 @@ export class GitHubStatsService {
         adminGitHubStats: Record<string, GitHubStats>;
         userGitHubStats: Record<string, GitHubStats>;
         contributors: string[];
+        names: Record<string, string>;
         dataFetched: Date;
         lastUpdated: Date;
         isCached: boolean;
@@ -222,10 +256,13 @@ export class GitHubStatsService {
                 })
             );
 
+            const names = await this.fetchContributorNames(contributors);
+
             return {
                 adminGitHubStats,
                 userGitHubStats,
                 contributors,
+                names,
                 dataFetched: oldestDataFetch,
                 lastUpdated: new Date(),
                 isCached: allCached,
