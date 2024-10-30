@@ -70,29 +70,13 @@ export default function InjectedButton(): JSX.Element | null {
         // handleAddingCourses(uniqueCourses, uniqueCourseIds);
     };
 
-    // const handleAddingCourses = async (courses: string[], uniqueCourseIds: string[]) => {
-    //     courses.forEach(async (course, index) => {
-    //         // TODO: need to still get the other course data
-    //         const courseData = {
-    //             id: uniqueCourseIds[index],
-    //             name: course,
-    //         } as unknown as Course;
-
-    //         try {
-    //             await addCourse({
-    //                 course: courseData,
-    //                 scheduleId: activeSchedule.id,
-    //             });
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     });
-    // };
-
     useEffect(() => {
         const targetElement = document.getElementById('kgoui_Rcontent_I3_Rsecondary');
 
-        if (targetElement) {
+        if (
+            targetElement &&
+            targetElement.classList.contains('kgoui_container_responsive_asymmetric2_column_secondary')
+        ) {
             const buttonContainer = document.createElement('div');
             targetElement.appendChild(buttonContainer);
             setContainer(buttonContainer);
@@ -110,7 +94,7 @@ export default function InjectedButton(): JSX.Element | null {
     return ReactDOM.createPortal(
         <ExtensionRoot>
             <Button variant='filled' color='ut-burntorange' onClick={extractCoursesFromCalendar}>
-                Add Courses to Schedule
+                Add Courses to UT Registration+
             </Button>
         </ExtensionRoot>,
         container
