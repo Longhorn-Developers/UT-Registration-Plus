@@ -48,7 +48,7 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
     if (url.includes('utdirect.utexas.edu') && (url.includes('waitlist') || url.includes('classlist'))) {
         return SiteSupport.WAITLIST;
     }
-    if (url.includes('my.utexas.edu/student/student/index')) {
+    if (url.includes('my.utexas.edu/student/student/index') || url.includes('https://my.utexas.edu/student/')) {
         return SiteSupport.MY_UT;
     }
     if (url.includes('registration/classlist.WBX')) {
