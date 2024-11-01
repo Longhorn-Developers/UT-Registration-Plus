@@ -211,8 +211,13 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             {status === DataStatus.FOUND && (
                 <>
                     <div className='flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
-                        <Text variant='small'>
-                            Grade Distribution for {course.department} {course.number}
+                        <Text variant='small' className='text-ut-black'>
+                            Grade Distribution for{' '}
+                            {/* note: manual style used here since using a className
+                                style gets overridden by the styles specified in the Text component */}
+                            <Text variant='small' style={{ fontWeight: 800 }} as='strong'>
+                                {course.department} {course.number}
+                            </Text>
                         </Text>
                         <select
                             className='border border rounded border-solid px-3 py-2'
