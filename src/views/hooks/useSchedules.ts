@@ -119,9 +119,9 @@ export async function switchScheduleByName(name: string): Promise<void> {
 /**
  * Updates the color of a course in the active schedule.
  *
- * @param {number} courseID - The ID of the course to update.
- * @param {`#${string}`} color - The new color to set for the course.
- * @throws {Error} If the course with the given ID is not found.
+ * @param courseID - The ID of the course to update.
+ * @param color - The new color to set for the course.
+ * @throws If the course with the given ID is not found.
  */
 export async function updateCourseColors(courseID: number, color: `#${string}`) {
     const activeSchedule = getActiveSchedule();
@@ -131,8 +131,7 @@ export async function updateCourseColors(courseID: number, color: `#${string}`) 
         throw new Error(`Course with ID ${courseID} not found`);
     }
 
-    // Deep copy the active schedule and the updated course
-    const newSchedule = structuredClone(activeSchedule);
+    const newSchedule = new UserSchedule(activeSchedule);
     const updatedCourse = newSchedule.courses[updatedCourseIndex];
 
     if (!updatedCourse) {

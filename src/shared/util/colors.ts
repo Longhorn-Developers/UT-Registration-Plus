@@ -32,11 +32,11 @@ export function hexToRGB(hex: HexColor): RGB | undefined {
  * A valid hex color is a string that starts with a '#' followed by either
  * 3 or 6 hexadecimal characters (0-9, A-F, a-f).
  *
- * @param {string} hex - The hex color string to validate.
- * @returns {boolean} True if the string is a valid hex color, false otherwise.
+ * @param hex - The hex color string to validate.
+ * @returns True if the string is a valid hex color, false otherwise.
  */
 export function isValidHexColor(hex: string): boolean {
-    return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
+    return /^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
 }
 
 export const useableColorways = Object.keys(theme.colors)

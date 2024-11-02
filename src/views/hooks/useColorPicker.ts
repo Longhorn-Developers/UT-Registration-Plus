@@ -20,16 +20,6 @@ export interface ColorPickerInterface {
     setSelectedColor: React.Dispatch<React.SetStateAction<ThemeColor | null>>;
 
     /**
-     * Boolean indicating if the colors are inverted.
-     */
-    isInvertColorsToggled: boolean;
-
-    /**
-     * Function to toggle the inversion of colors.
-     */
-    setIsInvertColorsToggled: React.Dispatch<React.SetStateAction<boolean>>;
-
-    /**
      * Function to close the color picker.
      */
     handleCloseColorPicker: () => void;
@@ -37,9 +27,9 @@ export interface ColorPickerInterface {
     /**
      * Function to set the selected course.
      *
-     * @param {number} courseID - The ID of the course.
-     * @param {number} dayIndex - The index of the day.
-     * @param {number} startIndex - The start index of the course.
+     * @param courseID - The ID of the course.
+     * @param dayIndex - The index of the day.
+     * @param startIndex - The start index of the course.
      */
     setSelectedCourse: (courseID: number, dayIndex: number, startIndex: number) => void;
 
@@ -54,10 +44,10 @@ export interface ColorPickerInterface {
     /**
      * Function to check if a course block is selected.
      *
-     * @param {number} courseID - The ID of the course.
-     * @param {number} dayIndex - The index of the day.
-     * @param {number} startIndex - The start index of the course.
-     * @returns {boolean} True if the block is selected, false otherwise.
+     * @param courseID - The ID of the course.
+     * @param dayIndex - The index of the day.
+     * @param startIndex - The start index of the course.
+     * @returns True if the block is selected, false otherwise.
      */
     isSelectedBlock: (courseID: number, dayIndex: number, startIndex: number) => boolean;
 }
@@ -78,7 +68,6 @@ export function useColorPicker(): ColorPickerInterface {
         dayIndex: null,
         startIndex: null,
     });
-    const [isInvertColorsToggled, setIsInvertColorsToggled] = useState<boolean>(false);
 
     const updateSelectedCourseColor = useCallback(async () => {
         if (selectedBlock.courseID && selectedColor) {
@@ -114,8 +103,6 @@ export function useColorPicker(): ColorPickerInterface {
     return {
         selectedColor,
         setSelectedColor,
-        isInvertColorsToggled,
-        setIsInvertColorsToggled,
         handleCloseColorPicker,
         setSelectedCourse,
         isSelectedBlock,

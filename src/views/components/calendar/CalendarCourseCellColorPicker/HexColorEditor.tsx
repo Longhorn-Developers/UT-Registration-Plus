@@ -15,11 +15,11 @@ export interface HexColorEditorProps {
 /**
  * Utility component to allow the user to enter a valid hex color code
  *
- * @param {HexColorEditorProps} props - the props for the component
- * @param {string} props.hexCode - the current hex color code displayed in this component. Note that this code does not
+ * @param props - the props for the component
+ * @param props.hexCode - the current hex color code displayed in this component. Note that this code does not
  * include the leading '#' character since it is already included in the component. Passed down from the parent component.
- * @param {(hexCode: string) => void} props.setHexCode - set state fn to control the hex color code from parent
- * @returns {JSX.Element} - the hex color editor component
+ * @param props.setHexCode - set state fn to control the hex color code from parent
+ * @returns the hex color editor component
  */
 export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorProps): JSX.Element {
     const baseColor = React.useMemo(() => getThemeColorHexByName('ut-gray'), []);
