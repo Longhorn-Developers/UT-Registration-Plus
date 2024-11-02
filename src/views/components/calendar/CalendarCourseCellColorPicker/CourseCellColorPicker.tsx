@@ -1,11 +1,9 @@
 import type { ThemeColor, TWIndex } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import Divider from '@views/components/common/Divider';
+import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import React from 'react';
 import { theme } from 'unocss/preset-mini';
-
-import InvertColorsIcon from '~icons/material-symbols/invert-colors';
-import InvertColorsOffIcon from '~icons/material-symbols/invert-colors-off';
 
 import ColorPatch from './ColorPatch';
 import HexColorEditor from './HexColorEditor';
@@ -55,21 +53,11 @@ const hexCodeToBaseColor = new Map<string, string>(
  * Props for the CourseCellColorPicker component.
  */
 export interface CourseCellColorPickerProps {
-    setSelectedColor: React.Dispatch<React.SetStateAction<ThemeColor | null>>;
-    isInvertColorsToggled: boolean;
-    setIsInvertColorsToggled: React.Dispatch<React.SetStateAction<boolean>>;
     defaultColor: string;
-    handleCloseColorPicker: () => void;
 }
 
 /**
  * @param {CourseCellColorPickerProps} props - the props for the component
- * @param {React.Dispatch<React.SetStateAction<string | null>>} props.setSelectedColor - set state function passed down from the parent component
- * @param {boolean} props.isInvertColorsToggled - boolean state passed down from the parent component that indicates whether the color picker is in invert colors mode
- * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsInvertColorsToggled - set state function passed down from the parent component to set invert colors mode
- * that will be called when a color is selected. The user can set any valid hex color they want.
- * @param {string} props.defaultColor - The default color for the color picker.
- * @param {() => void} props.handleCloseColorPicker - Function to handle closing the color picker.
  *
  * @example
  * ```
@@ -88,17 +76,14 @@ export interface CourseCellColorPickerProps {
  * This component is available when a user hovers over a course cell in their calendar to
  * color for the course cell. The user can set any valid hex color they want.
  */
-export default function CourseCellColorPicker({
-    defaultColor,
-    setSelectedColor,
-    isInvertColorsToggled,
-    setIsInvertColorsToggled,
-    handleCloseColorPicker,
-}: CourseCellColorPickerProps): JSX.Element {
+export default function CourseCellColorPicker({ defaultColor }: CourseCellColorPickerProps): JSX.Element {
     // hexCode mirrors contents of HexColorEditor which has no hash prefix
     const [hexCode, setHexCode] = React.useState<string>(
         defaultColor.slice(1).toLocaleLowerCase() || getThemeColorHexByName('ut-gray')
     );
+
+    const { setSelectedColor } = useColorPickerContext();
+
     const hexCodeWithHash = `#${hexCode}` as ThemeColor;
     const selectedBaseColor = hexCodeToBaseColor.get(hexCodeWithHash);
 
@@ -123,22 +108,11 @@ export default function CourseCellColorPicker({
                         isSelected={baseColor === selectedBaseColor}
                         handleSelectColorPatch={handleSelectColorPatch}
                         defaultColor={defaultColor}
-                        handleCloseColorPicker={handleCloseColorPicker}
                     />
                 ))}
                 <div className='col-span-3 flex items-center justify-center overflow-hidden'>
                     <HexColorEditor hexCode={hexCode} setHexCode={handleSelectColorPatch} />
                 </div>
-                <button
-                    className='h-5.5 w-5.5 bg-ut-black p-0 transition-all duration-200 hover:scale-110 btn'
-                    onClick={() => setIsInvertColorsToggled(prev => !prev)}
-                >
-                    {isInvertColorsToggled ? (
-                        <InvertColorsIcon className='h-3.5 w-3.5 color-white' />
-                    ) : (
-                        <InvertColorsOffIcon className='h-3.5 w-3.5 color-white' />
-                    )}
-                </button>
             </div>
             {selectedBaseColor && (
                 <>
@@ -153,7 +127,6 @@ export default function CourseCellColorPicker({
                                     isSelected={shadeColor === hexCodeWithHash}
                                     handleSelectColorPatch={handleSelectColorPatch}
                                     defaultColor={defaultColor}
-                                    handleCloseColorPicker={handleCloseColorPicker}
                                 />
                             ))}
                     </div>

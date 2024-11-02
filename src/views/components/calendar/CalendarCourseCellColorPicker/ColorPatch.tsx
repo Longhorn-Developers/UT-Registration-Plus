@@ -1,3 +1,4 @@
+import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import React from 'react';
 
 import CheckIcon from '~icons/material-symbols/check';
@@ -10,7 +11,6 @@ interface ColorPatchProps {
     isSelected: boolean;
     handleSelectColorPatch: (color: string) => void;
     defaultColor: string;
-    handleCloseColorPicker: () => void;
 }
 
 /**
@@ -22,7 +22,6 @@ interface ColorPatchProps {
  * @param {Function} props.handleSetSelectedColor - Function from parent component to control selection state of a patch.
  *                                                  color is a hex string with a hash prefix.
  * @param {string} props.defaultColor - The default color for the color picker.
- * @param {Function} props.handleCloseColorPicker - Function to close the color picker.
  * @returns {JSX.Element} The rendered color patch button.
  */
 export default function ColorPatch({
@@ -30,8 +29,9 @@ export default function ColorPatch({
     isSelected,
     handleSelectColorPatch,
     defaultColor,
-    handleCloseColorPicker,
 }: ColorPatchProps): JSX.Element {
+    const { handleCloseColorPicker } = useColorPickerContext();
+
     const handleClick = async () => {
         // If the color patch is already selected, close the color picker
         if (isSelected) {

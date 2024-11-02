@@ -3,6 +3,7 @@ import { saveAsCal, saveCalAsPng } from '@views/components/calendar/utils';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
+import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
 import React from 'react';
@@ -43,20 +44,21 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                             —
                         </Text>
                         <div className='inline-flex gap-2.5'>
-                            {asyncCourseCells.map(block => {
-                                const { courseDeptAndInstr, status, colors, className } = block.componentProps;
-                                return (
-                                    <CalendarCourseBlock
-                                        courseDeptAndInstr={courseDeptAndInstr}
-                                        status={status}
-                                        colors={colors}
-                                        key={courseDeptAndInstr}
-                                        className={clsx(className, 'w-35! h-15!')}
-                                        onClick={() => setCourse(block.course)}
-                                        courseID={block.course.uniqueId}
-                                    />
-                                );
-                            })}
+                            <ColorPickerProvider>
+                                {asyncCourseCells.map(block => {
+                                    const { courseDeptAndInstr, status, className } = block.componentProps;
+                                    return (
+                                        <CalendarCourseBlock
+                                            courseDeptAndInstr={courseDeptAndInstr}
+                                            status={status}
+                                            key={courseDeptAndInstr}
+                                            className={clsx(className, 'w-35! h-15!')}
+                                            onClick={() => setCourse(block.course)}
+                                            blockData={block}
+                                        />
+                                    );
+                                })}
+                            </ColorPickerProvider>
                         </div>
                     </>
                 )}
