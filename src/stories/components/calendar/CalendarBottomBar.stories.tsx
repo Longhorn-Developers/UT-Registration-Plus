@@ -3,6 +3,7 @@ import Instructor from '@shared/types/Instructor';
 import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
+import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React from 'react';
 
 const exampleGovCourse: Course = new Course({
@@ -91,10 +92,18 @@ export const Default: Story = {
                 async: true,
                 calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
                 componentProps: {
-                    colors: getCourseColors('pink', 200),
                     courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
                     status: exampleGovCourse.status,
-                    courseID: exampleGovCourse.uniqueId,
+                    blockData: {
+                        calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
+                        componentProps: {
+                            courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
+                            status: exampleGovCourse.status,
+                            blockData: {} as CalendarGridCourse,
+                        },
+                        course: exampleGovCourse,
+                        async: true,
+                    },
                 },
                 course: exampleGovCourse,
             },
@@ -102,10 +111,18 @@ export const Default: Story = {
                 async: true,
                 calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
                 componentProps: {
-                    colors: getCourseColors('slate', 500),
                     courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
                     status: examplePsyCourse.status,
-                    courseID: examplePsyCourse.uniqueId,
+                    blockData: {
+                        calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
+                        componentProps: {
+                            courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
+                            status: examplePsyCourse.status,
+                            blockData: {} as CalendarGridCourse,
+                        },
+                        course: examplePsyCourse,
+                        async: true,
+                    },
                 },
                 course: examplePsyCourse,
             },
