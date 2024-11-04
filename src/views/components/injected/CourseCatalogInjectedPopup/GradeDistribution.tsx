@@ -213,7 +213,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     <div className='flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
                         <Text variant='small' className='text-ut-black'>
                             Grade Distribution for{' '}
-                            <Text variant='small' className='font-800!' as='strong'>
+                            <Text variant='small' className='font-extrabold!' as='strong'>
                                 {course.department} {course.number}
                             </Text>
                         </Text>
