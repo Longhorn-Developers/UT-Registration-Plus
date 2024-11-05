@@ -27,21 +27,31 @@ export default function ScheduleTotalHoursAndCourses({
             </Text>
             <br />
             <div className='flex flex-row items-center gap-2.5 text-ut-black'>
-                <div className='flex flex-row items-center gap-1 text-ut-black font-normal'>
+                <div className='flex flex-row items-center gap-1.25 text-ut-black'>
                     <Text variant='h4' as='span' className='hidden capitalize screenshot:inline sm:inline'>
                         {totalHours}
-                    </Text>{' '}
-                    <span className='font-bold' style={{ fontVariant: 'all-small-caps' }}>
+                    </Text>
+                    <Text
+                        variant='h4'
+                        as='span'
+                        className='hidden capitalize screenshot:inline sm:inline'
+                        style={{ fontVariant: 'all-small-caps' }}
+                    >
                         {totalHours === 1 ? 'Hour' : 'Hours'}
-                    </span>
+                    </Text>
                 </div>
-                <div className='flex flex-row items-center gap-1 text-ut-black'>
-                    <Text variant='h4' as='span' className='hidden font-normal capitalize screenshot:inline sm:inline'>
+                <div className='flex flex-row items-center gap-1.25 text-ut-black'>
+                    <Text variant='h4' as='span' className='hidden capitalize screenshot:inline sm:inline'>
                         {totalCourses}
-                    </Text>{' '}
-                    <span className='font-bold' style={{ fontVariant: 'all-small-caps' }}>
+                    </Text>
+                    <Text
+                        variant='h4'
+                        as='span'
+                        className='hidden capitalize screenshot:inline sm:inline'
+                        style={{ fontVariant: 'all-small-caps' }}
+                    >
                         {totalCourses === 1 ? 'Course' : 'Courses'}
-                    </span>
+                    </Text>
                 </div>
             </div>
         </div>

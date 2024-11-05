@@ -30,20 +30,32 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
                                 <Text as='div' variant='h3' className='mb-1 w-100% text-ut-burntorange'>
                                     {(activeSchedule ? activeSchedule.name : 'Schedule').toUpperCase()}:
                                 </Text>
-                                <p className='-mb-0.5'>
-                                    <Text variant='h4' className='text-theme-black font-normal leading-[75%]!'>
-                                        {activeSchedule ? activeSchedule.hours : 0}
-                                    </Text>{' '}
-                                    <span className='font-bold' style={{ fontVariant: 'all-small-caps' }}>
-                                        {activeSchedule.hours === 1 ? 'Hour' : 'Hours'}
-                                    </span>{' '}
-                                    <Text variant='h4' className='text-theme-black font-normal leading-[75%]!'>
-                                        {activeSchedule ? activeSchedule.courses.length : 0}
-                                    </Text>{' '}
-                                    <span className='font-bold' style={{ fontVariant: 'all-small-caps' }}>
-                                        {activeSchedule.courses.length === 1 ? 'Course' : 'Courses'}
-                                    </span>
-                                </p>
+                                <div className='flex gap-2.5 text-theme-black leading-[75%]!'>
+                                    <div className='flex gap-1.25'>
+                                        <Text variant='h4' className='text-theme-black leading-[75%]!'>
+                                            {activeSchedule ? activeSchedule.hours : 0}
+                                        </Text>
+                                        <Text
+                                            variant='h4'
+                                            className='text-theme-black leading-[75%]!'
+                                            style={{ fontVariant: 'all-small-caps' }}
+                                        >
+                                            {activeSchedule.hours === 1 ? 'Hour' : 'Hours'}
+                                        </Text>
+                                    </div>
+                                    <div className='flex gap-1.25'>
+                                        <Text variant='h4' className='text-theme-black leading-[75%]!'>
+                                            {activeSchedule ? activeSchedule.courses.length : 0}
+                                        </Text>
+                                        <Text
+                                            variant='h4'
+                                            className='text-theme-black leading-[75%]!'
+                                            style={{ fontVariant: 'all-small-caps' }}
+                                        >
+                                            {activeSchedule.courses.length === 1 ? 'Course' : 'Courses'}
+                                        </Text>
+                                    </div>
+                                </div>
                             </div>
                             <Text className='text-ut-burntorange text-2xl! font-normal!'>
                                 {open ? <DropdownArrowDown /> : <DropdownArrowUp />}
