@@ -1,4 +1,4 @@
-import { deleteSync } from 'del';
+import chalk from 'chalk';
 import fs from 'fs';
 import { dest, series, src } from 'gulp';
 import { exec } from 'gulp-execa';
@@ -9,10 +9,25 @@ const DIST_DIR = 'dist';
 const PACKAGE_DIR = 'package';
 const DATABASE_DIR = path.join(DIST_DIR, 'database');
 
+// Custom log functions
+const log = message => console.log(chalk.blue(`[${new Date().toTimeString().split(' ')[0]}]`), chalk.white(message));
+const logWarn = message =>
+    console.warn(
+        chalk.blue(`[${new Date().toTimeString().split(' ')[0]}]`),
+        chalk.yellow(' [WARN]'),
+        chalk.white(message)
+    );
+const logError = message =>
+    console.error(
+        chalk.blue(`[${new Date().toTimeString().split(' ')[0]}]`),
+        chalk.red(' [ERROR]'),
+        chalk.white(message)
+    );
+
 // Remove extra database folder
 function removeExtraDatabaseDir(cb) {
-    const deletedDirectoryPaths = deleteSync([DATABASE_DIR]);
-    console.log('Deleted directories:', deletedDirectoryPaths);
+    fs.rmSync(DATABASE_DIR, { recursive: true, force: true });
+    log('Extra database directory removed.');
 
     cb();
 }
@@ -22,7 +37,7 @@ function removeExtraDatabaseDir(cb) {
 async function instrumentWithSentry(cb) {
     await exec(`sentry-cli sourcemaps inject ${DIST_DIR}`);
     await exec(`sentry-cli sourcemaps upload ${DIST_DIR}`);
-    console.log('Sentry instrumentation completed.');
+    log('Sentry instrumentation completed.');
 
     cb();
 }
@@ -38,7 +53,7 @@ function zipDist() {
     })
         .pipe(zip(zipFileName))
         .pipe(dest(PACKAGE_DIR))
-        .on('end', () => console.log(`Zip file created: ${zipFileName}`));
+        .on('end', () => log(`Zip file created: ${path.join(PACKAGE_DIR, zipFileName)}`));
 }
 
 // Temp fix for CSP on Chrome 130
@@ -48,7 +63,7 @@ function forceDisableUseDynamicUrl(cb) {
     const manifestPath = path.join(DIST_DIR, 'manifest.json');
 
     if (!fs.existsSync(manifestPath)) {
-        console.log('manifest.json not found. Skipping modification.');
+        logWarn('manifest.json not found. Skipping modification.');
         return cb();
     }
 
@@ -64,9 +79,9 @@ function forceDisableUseDynamicUrl(cb) {
 
     if (modified) {
         fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
-        console.log('use_dynamic_url removed from manifest.json');
+        log('use_dynamic_url removed from manifest.json');
     } else {
-        console.log('No use_dynamic_url found in manifest.json. No changes made.');
+        log('No use_dynamic_url found in manifest.json. No changes made.');
     }
 
     cb();
