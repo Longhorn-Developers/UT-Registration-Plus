@@ -55,7 +55,7 @@ export interface ColorPickerInterface {
 /**
  * Custom hook for managing color picker state and functionality.
  *
- * @returns {ColorPickerInterface} The color picker interface with state and functions.
+ * @returns The color picker interface with state and functions.
  */
 export function useColorPicker(): ColorPickerInterface {
     const [selectedColor, setSelectedColor] = useState<ThemeColor | null>(null);
