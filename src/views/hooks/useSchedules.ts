@@ -1,5 +1,7 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import type { HexColor } from '@shared/types/Color';
 import { UserSchedule } from '@shared/types/UserSchedule';
+import { getColorwayFromColor, getCourseColors, pickFontColor, tailwindColorMap } from '@shared/util/colors';
 import { useEffect, useState } from 'react';
 
 let schedulesCache: UserSchedule[] = [];
@@ -89,7 +91,6 @@ export async function replaceSchedule(oldSchedule: UserSchedule, newSchedule: Us
     oldIndex = oldIndex !== -1 ? oldIndex : 0;
     schedules[oldIndex] = newSchedule;
     await UserScheduleStore.set('schedules', schedules);
-    console.log('schedule replaced');
 }
 
 /**
@@ -123,7 +124,7 @@ export async function switchScheduleByName(name: string): Promise<void> {
  * @param color - The new color to set for the course.
  * @throws If the course with the given ID is not found.
  */
-export async function updateCourseColors(courseID: number, color: `#${string}`) {
+export async function updateCourseColors(courseID: number, primaryColor: `#${string}`) {
     const activeSchedule = getActiveSchedule();
     const updatedCourseIndex = activeSchedule.courses.findIndex(c => c.uniqueId === courseID);
 
@@ -138,7 +139,21 @@ export async function updateCourseColors(courseID: number, color: `#${string}`) 
         throw new Error(`Course with ID ${courseID} not found`);
     }
 
-    updatedCourse.colors.primaryColor = color;
+    const determineSecondaryColor = (color: HexColor): HexColor => {
+        try {
+            const { colorway: primaryColorWay, index: primaryIndex } = getColorwayFromColor(color);
+            const { secondaryColor } = getCourseColors(primaryColorWay, primaryIndex, 400);
+            return secondaryColor;
+        } catch (e) {
+            // Fallback to default colors with pickFontColor
+            return tailwindColorMap[pickFontColor(color)] as HexColor;
+        }
+    };
+
+    const secondaryColor = determineSecondaryColor(primaryColor);
+
+    updatedCourse.colors.primaryColor = primaryColor;
+    updatedCourse.colors.secondaryColor = secondaryColor;
     newSchedule.courses[updatedCourseIndex] = updatedCourse;
 
     await replaceSchedule(activeSchedule, newSchedule);

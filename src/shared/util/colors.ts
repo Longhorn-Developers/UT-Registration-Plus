@@ -5,7 +5,7 @@ import type { HexColor, Lab, RGB, sRGB } from '../types/Color';
 import { isHexColor } from '../types/Color';
 import type { Course } from '../types/Course';
 import type { CourseColors, TWColorway, TWIndex } from '../types/ThemeColors';
-import { colorwayIndexes } from '../types/ThemeColors';
+import { colors, colorwayIndexes } from '../types/ThemeColors';
 import type { UserSchedule } from '../types/UserSchedule';
 
 /**
@@ -67,6 +67,13 @@ export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 
     return Ys < 0.365 ? 'text-black' : 'text-theme-black';
 }
 
+// Mapping of Tailwind CSS class names to their corresponding hex values
+export const tailwindColorMap: Record<string, HexColor> = {
+    'text-white': '#FFFFFF',
+    'text-black': '#000000',
+    'text-theme-black': colors.theme.black,
+};
+
 /**
  * Get primary and secondary colors from a Tailwind colorway
  * @param colorway the Tailwind colorway ex. "emerald"
@@ -89,10 +96,15 @@ export function getCourseColors(colorway: TWColorway, index?: number, offset: nu
  * @param color - The hexadecimal color value.
  * @returns The Tailwind colorway.
  */
-export function getColorwayFromColor(color: HexColor): TWColorway {
+export function getColorwayFromColor(color: HexColor): {
+    colorway: TWColorway;
+    index: TWIndex;
+} {
     for (const colorway of useableColorways) {
-        if (Object.values(theme.colors[colorway]).includes(color)) {
-            return colorway as TWColorway;
+        const colorValues = Object.values(theme.colors[colorway]);
+        const index = colorValues.indexOf(color);
+        if (index !== -1) {
+            return { colorway: colorway as TWColorway, index: (index * 100) as TWIndex };
         }
     }
 

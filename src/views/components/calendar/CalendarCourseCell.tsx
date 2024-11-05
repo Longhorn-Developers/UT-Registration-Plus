@@ -195,10 +195,10 @@ export default function CalendarCourseCell({
                     }}
                     icon={PaletteIcon}
                     variant='filled'
-                    className='size-8 border border-white rounded-full !p-1'
+                    className={clsx('size-8 border border-white rounded-full !p-1')}
                     color='ut-gray'
                     style={{
-                        color: `${colors.primaryColor}`,
+                        color: colors.secondaryColor,
                         backgroundColor: selectedCourse
                             ? (selectedColor ?? colors.primaryColor)
                             : `rgba(${hexToRGB(`${colors.primaryColor}`)}, var(--un-bg-opacity))`,
