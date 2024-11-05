@@ -51,7 +51,6 @@ export default function PopupCourseBlock({
 
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
-    const buttonColor = pickFontColor(colors.secondaryColor);
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
     const [copyTimeoutId, setCopyTimeoutId] = useState<NodeJS.Timeout | undefined>(undefined);
 
@@ -61,7 +60,7 @@ export default function PopupCourseBlock({
     };
 
     const handleCopy = (event: React.MouseEvent<HTMLElement>) => {
-        if (copyTimeoutId) {
+        if (copyTimeoutId !== undefined) {
             clearTimeout(copyTimeoutId);
         }
 
@@ -70,7 +69,7 @@ export default function PopupCourseBlock({
 
         const newTimeoutId = setTimeout(() => {
             setCopyTimeoutId(undefined);
-        }, 1000);
+        }, 500);
         setCopyTimeoutId(newTimeoutId);
     };
 
@@ -111,9 +110,8 @@ export default function PopupCourseBlock({
 
             <button
                 className='flex bg-transparent px-2 py-0.25 text-white btn'
-                color={colors.secondaryColor}
                 onClick={handleCopy}
-                style={{ backgroundColor: colors.secondaryColor, color: buttonColor }}
+                style={{ backgroundColor: colors.secondaryColor }}
             >
                 {copyTimeoutId !== undefined ? (
                     <CheckIcon className='h-5 w-5 text-white' />
