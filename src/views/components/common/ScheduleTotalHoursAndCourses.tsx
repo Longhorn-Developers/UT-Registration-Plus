@@ -22,13 +22,13 @@ export default function ScheduleTotalHoursAndCourses({
 }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
         <div className='block min-w-full w-0 items-center gap-2.5 whitespace-nowrap'>
-            <Text className='truncate text-ut-burntorange uppercase' variant='h1' as='span'>
-                {`${scheduleName}:`}
+            <Text className='truncate text-ut-burntorange' variant='h1' as='span' style={{ textTransform: 'none' }}>
+                {`${scheduleName}`}
             </Text>
             <br />
             <div className='flex flex-row items-center gap-2.5 text-ut-black'>
                 <div className='flex flex-row items-center gap-1.25 text-ut-black'>
-                    <Text variant='h4' as='span' className='hidden capitalize screenshot:inline sm:inline'>
+                    <Text variant='h3' as='span' className='hidden capitalize screenshot:inline sm:inline'>
                         {totalHours}
                     </Text>
                     <Text
@@ -41,7 +41,7 @@ export default function ScheduleTotalHoursAndCourses({
                     </Text>
                 </div>
                 <div className='flex flex-row items-center gap-1.25 text-ut-black'>
-                    <Text variant='h4' as='span' className='hidden capitalize screenshot:inline sm:inline'>
+                    <Text variant='h3' as='span' className='hidden capitalize screenshot:inline sm:inline'>
                         {totalCourses}
                     </Text>
                     <Text

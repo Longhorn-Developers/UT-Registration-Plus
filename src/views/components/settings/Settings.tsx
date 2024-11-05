@@ -421,11 +421,7 @@ export default function Settings(): JSX.Element {
                             </div>
                             {DISPLAY_PREVIEWS && (
                                 <Preview>
-                                    <div className='inline-flex items-center self-center gap-1'>
-                                        <Text variant='small' className='text-ut-gray !font-normal'>
-                                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
-                                        </Text>
-                                    </div>
+                                    <div className='inline-flex items-center self-center gap-1' />
                                     <Text
                                         variant='h2-course'
                                         className={clsx('text-center text-theme-red !font-normal', {

@@ -27,8 +27,13 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
                     <>
                         <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left'>
                             <div className='flex-1'>
-                                <Text as='div' variant='h3' className='mb-1 w-100% text-ut-burntorange'>
-                                    {(activeSchedule ? activeSchedule.name : 'Schedule').toUpperCase()}:
+                                <Text
+                                    as='div'
+                                    variant='h3'
+                                    className='mb-1 w-100% text-ut-burntorange'
+                                    style={{ textTransform: 'none' }}
+                                >
+                                    {activeSchedule ? activeSchedule.name : 'Schedule'}
                                 </Text>
                                 <div className='flex gap-2.5 text-theme-black leading-[75%]!'>
                                     <div className='flex gap-1.25'>
