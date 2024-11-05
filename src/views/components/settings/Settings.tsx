@@ -79,11 +79,11 @@ const useDevMode = (targetCount: number): [boolean, () => void] => {
  * @returns The Settings component.
  */
 export default function Settings(): JSX.Element {
-    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
+    const [_enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -216,6 +216,7 @@ export default function Settings(): JSX.Element {
             try {
                 response = await fetch(link);
             } catch (e) {
+                // eslint-disable-next-line no-alert
                 alert(`Failed to fetch url '${link}'`);
                 return;
             }
@@ -410,7 +411,7 @@ export default function Settings(): JSX.Element {
                                     </div>
                                     <Button
                                         variant='outline'
-                                        color='ut-red'
+                                        color='theme-red'
                                         icon={DeleteForeverIcon}
                                         onClick={handleEraseAll}
                                     >
@@ -427,7 +428,7 @@ export default function Settings(): JSX.Element {
                                     </div>
                                     <Text
                                         variant='h2-course'
-                                        className={clsx('text-center text-ut-red !font-normal', {
+                                        className={clsx('text-center text-theme-red !font-normal', {
                                             'line-through': highlightConflicts,
                                         })}
                                     >
@@ -489,7 +490,7 @@ export default function Settings(): JSX.Element {
                                             <p className='text-xs text-ut-green'>
                                                 {githubStats.adminGitHubStats[admin.githubUsername]?.linesAdded} ++
                                             </p>
-                                            <p className='text-xs text-ut-red'>
+                                            <p className='text-xs text-theme-red'>
                                                 {githubStats.adminGitHubStats[admin.githubUsername]?.linesDeleted} --
                                             </p>
                                         </div>
@@ -499,9 +500,13 @@ export default function Settings(): JSX.Element {
                         </div>
                     </section>
                     <section className='my-8'>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTERS</h2>
+                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTORS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
-                            {LONGHORN_DEVELOPERS_SWE.map(swe => (
+                            {LONGHORN_DEVELOPERS_SWE.sort(
+                                (a, b) =>
+                                    (githubStats?.userGitHubStats[b.githubUsername]?.commits ?? 0) -
+                                    (githubStats?.userGitHubStats[a.githubUsername]?.commits ?? 0)
+                            ).map(swe => (
                                 <div
                                     key={swe.githubUsername}
                                     className='border border-gray-300 rounded bg-ut-gray/10 p-4'
@@ -531,7 +536,7 @@ export default function Settings(): JSX.Element {
                                             <p className='text-xs text-ut-green'>
                                                 {githubStats.userGitHubStats[swe.githubUsername]?.linesAdded} ++
                                             </p>
-                                            <p className='text-xs text-ut-red'>
+                                            <p className='text-xs text-theme-red'>
                                                 {githubStats.userGitHubStats[swe.githubUsername]?.linesDeleted} --
                                             </p>
                                         </div>
@@ -545,6 +550,11 @@ export default function Settings(): JSX.Element {
                                             !LONGHORN_DEVELOPERS_ADMINS.some(
                                                 admin => admin.githubUsername === username
                                             ) && !LONGHORN_DEVELOPERS_SWE.some(swe => swe.githubUsername === username)
+                                    )
+                                    .sort(
+                                        (a, b) =>
+                                            (githubStats.userGitHubStats[b]?.commits ?? 0) -
+                                            (githubStats.userGitHubStats[a]?.commits ?? 0)
                                     )
                                     .map(username => (
                                         <div
@@ -574,7 +584,7 @@ export default function Settings(): JSX.Element {
                                                     <p className='text-xs text-ut-green'>
                                                         {githubStats.userGitHubStats[username]?.linesAdded} ++
                                                     </p>
-                                                    <p className='text-xs text-ut-red'>
+                                                    <p className='text-xs text-theme-red'>
                                                         {githubStats.userGitHubStats[username]?.linesDeleted} --
                                                     </p>
                                                 </div>

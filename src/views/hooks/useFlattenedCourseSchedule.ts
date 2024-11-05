@@ -95,9 +95,11 @@ function extractCourseInfo(course: Course) {
 
     let courseDeptAndInstr = `${course.department} ${course.number}`;
 
-    const mainInstructor = course.instructors[0];
-    if (mainInstructor) {
-        courseDeptAndInstr += ` – ${mainInstructor.toString({ format: 'first_last', case: 'capitalize' })}`;
+    if (course.instructors.length > 0) {
+        courseDeptAndInstr += ' \u2013 ';
+        courseDeptAndInstr += course.instructors
+            .map(instructor => instructor.toString({ format: 'last', case: 'capitalize' }))
+            .join('; ');
     }
 
     return { status, courseDeptAndInstr, meetings, course };
