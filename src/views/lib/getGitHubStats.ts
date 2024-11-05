@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/rest';
-import { CachedData } from '@shared/types/CachedData';
 import { CacheStore } from '@shared/storage/CacheStore';
+import type { CachedData } from '@shared/types/CachedData';
 import { serialize } from 'chrome-extension-toolkit';
 
 // Types
@@ -74,7 +74,7 @@ export class GitHubStatsService {
     }
 
     private async getCachedData<T>(key: string): Promise<CachedData<T> | null> {
-        if(Object.keys(this.cache).length === 0) {
+        if (Object.keys(this.cache).length === 0) {
             this.cache = await CacheStore.get('github') as Record<string, CachedData<any>>;
         }
         const cachedItem = this.cache[key];
@@ -85,7 +85,7 @@ export class GitHubStatsService {
     }
 
     private async setCachedData<T>(key: string, data: T): Promise<void> {
-        if(Object.keys(this.cache).length === 0) {
+        if (Object.keys(this.cache).length === 0) {
             this.cache = await CacheStore.get('github') as Record<string, CachedData<any>>;
         }
         this.cache[key] = { data, dataFetched: (new Date()).getTime() };
@@ -147,13 +147,13 @@ export class GitHubStatsService {
                 const cachedName = await this.getCachedData<string>(cacheKey);
                 let name = `@${contributor}`;
 
-                if(cachedName) {
+                if (cachedName) {
                     name = cachedName.data;
                 } else {
                     try {
                         const response = await fetch(`https://api.github.com/users/${contributor}`);
                         const json = await response.json();
-                        if(json.name) {
+                        if (json.name) {
                             name = json.name;
                         }
                         await this.setCachedData(cacheKey, name);

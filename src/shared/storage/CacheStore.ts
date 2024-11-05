@@ -1,4 +1,4 @@
-import { CachedData } from '@shared/types/CachedData';
+import type { CachedData } from '@shared/types/CachedData';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 import { generateRandomId } from '../util/random';
