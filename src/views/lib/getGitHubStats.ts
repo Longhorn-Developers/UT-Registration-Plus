@@ -1,7 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import { CacheStore } from '@shared/storage/CacheStore';
 import type { CachedData } from '@shared/types/CachedData';
-import { serialize } from 'chrome-extension-toolkit';
 
 // Types
 type TeamMember = {
@@ -66,7 +65,7 @@ export type LD_ADMIN_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_ADMINS)[numb
  */
 export class GitHubStatsService {
     private octokit: Octokit;
-    private cache: Record<string, CachedData<any>>;
+    private cache: Record<string, CachedData<unknown>>;
 
     constructor(githubToken?: string) {
         this.octokit = githubToken ? new Octokit({ auth: githubToken }) : new Octokit();
@@ -75,10 +74,14 @@ export class GitHubStatsService {
 
     private async getCachedData<T>(key: string): Promise<CachedData<T> | null> {
         if (Object.keys(this.cache).length === 0) {
-            this.cache = await CacheStore.get('github') as Record<string, CachedData<any>>;
+            const githubCache = await CacheStore.get('github');
+            if (githubCache && typeof githubCache === 'object') {
+                this.cache = githubCache as Record<string, CachedData<unknown>>;
+            }
         }
-        const cachedItem = this.cache[key];
-        if (cachedItem && Date.now() - new Date(cachedItem.dataFetched).getTime() < CACHE_TTL) {
+
+        const cachedItem = this.cache[key] as CachedData<T> | undefined;
+        if (cachedItem && Date.now() - cachedItem.dataFetched < CACHE_TTL) {
             return cachedItem;
         }
         return null;
@@ -86,9 +89,13 @@ export class GitHubStatsService {
 
     private async setCachedData<T>(key: string, data: T): Promise<void> {
         if (Object.keys(this.cache).length === 0) {
-            this.cache = await CacheStore.get('github') as Record<string, CachedData<any>>;
+            const githubCache = await CacheStore.get('github');
+            if (githubCache && typeof githubCache === 'object') {
+                this.cache = githubCache as Record<string, CachedData<unknown>>;
+            }
         }
-        this.cache[key] = { data, dataFetched: (new Date()).getTime() };
+
+        this.cache[key] = { data, dataFetched: Date.now() };
         await CacheStore.set('github', this.cache);
     }
 
@@ -142,7 +149,7 @@ export class GitHubStatsService {
     private async fetchContributorNames(contributors: string[]): Promise<Record<string, string>> {
         const names: Record<string, string> = {};
         await Promise.all(
-            contributors.map(async (contributor) => {
+            contributors.map(async contributor => {
                 const cacheKey = `contributor_name_${contributor}`;
                 const cachedName = await this.getCachedData<string>(cacheKey);
                 let name = `@${contributor}`;
