@@ -21,33 +21,33 @@ export default function ScheduleTotalHoursAndCourses({
     totalCourses,
 }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div className='block min-w-full w-0 items-center gap-2.5 whitespace-nowrap'>
+        <div className='min-w-full w-0 items-center whitespace-nowrap'>
             <Text className='truncate text-ut-burntorange' variant='h1' as='span' style={{ textTransform: 'none' }}>
                 {`${scheduleName}`}
             </Text>
             <br />
             <div className='flex flex-row items-center gap-2.5 text-theme-black'>
                 <div className='flex flex-row items-center gap-1.25 text-theme-black'>
-                    <Text variant='h3' as='span' className='hidden capitalize screenshot:inline sm:inline'>
+                    <Text variant='h3' as='span' className='capitalize screenshot:inline sm:inline'>
                         {totalHours}
                     </Text>
                     <Text
                         variant='h3'
                         as='span'
-                        className='hidden capitalize screenshot:inline sm:inline'
+                        className='capitalize screenshot:inline sm:inline'
                         style={{ fontVariant: 'all-small-caps' }}
                     >
                         {totalHours === 1 ? 'Hour' : 'Hours'}
                     </Text>
                 </div>
                 <div className='flex flex-row items-center gap-1.25 text-theme-black'>
-                    <Text variant='h3' as='span' className='hidden capitalize screenshot:inline sm:inline'>
+                    <Text variant='h3' as='span' className='capitalize screenshot:inline sm:inline'>
                         {totalCourses}
                     </Text>
                     <Text
                         variant='h3'
                         as='span'
-                        className='hidden capitalize screenshot:inline sm:inline'
+                        className='capitalize screenshot:inline sm:inline'
                         style={{ fontVariant: 'all-small-caps' }}
                     >
                         {totalCourses === 1 ? 'Course' : 'Courses'}
