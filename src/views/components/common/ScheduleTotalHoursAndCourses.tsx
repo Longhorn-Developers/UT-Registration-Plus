@@ -32,7 +32,7 @@ export default function ScheduleTotalHoursAndCourses({
                         {totalHours}
                     </Text>
                     <Text
-                        variant='h4'
+                        variant='h3'
                         as='span'
                         className='hidden capitalize screenshot:inline sm:inline'
                         style={{ fontVariant: 'all-small-caps' }}
@@ -45,7 +45,7 @@ export default function ScheduleTotalHoursAndCourses({
                         {totalCourses}
                     </Text>
                     <Text
-                        variant='h4'
+                        variant='h3'
                         as='span'
                         className='hidden capitalize screenshot:inline sm:inline'
                         style={{ fontVariant: 'all-small-caps' }}
