@@ -25,7 +25,6 @@ export default function ScheduleTotalHoursAndCourses({
             <Text className='truncate text-ut-burntorange' variant='h1' as='span' style={{ textTransform: 'none' }}>
                 {`${scheduleName}`}
             </Text>
-            <br />
             <div className='flex flex-row items-center gap-2.5 text-theme-black'>
                 <div className='flex flex-row items-center gap-1.25 text-theme-black'>
                     <Text variant='h3' as='span' className='capitalize screenshot:inline sm:inline'>

@@ -30,7 +30,7 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
                                 <Text
                                     as='div'
                                     variant='h3'
-                                    className='mb-1 w-100% text-ut-burntorange'
+                                    className='w-100% text-ut-burntorange'
                                     style={{ textTransform: 'none' }}
                                 >
                                     {activeSchedule ? activeSchedule.name : 'Schedule'}
