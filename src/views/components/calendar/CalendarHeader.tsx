@@ -88,7 +88,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
 
                 {/* <Button variant='single' icon={UndoIcon} color='ut-black' />
                 <Button variant='single' icon={RedoIcon} color='ut-black' /> */}
-                <Button variant='single' icon={SettingsIcon} color='ut-black' onClick={handleOpenOptions} />
+                <Button variant='single' icon={SettingsIcon} color='theme-black' onClick={handleOpenOptions} />
             </div>
         </div>
     );

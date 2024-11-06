@@ -26,8 +26,8 @@ export default function ScheduleTotalHoursAndCourses({
                 {`${scheduleName}`}
             </Text>
             <br />
-            <div className='flex flex-row items-center gap-2.5 text-ut-black'>
-                <div className='flex flex-row items-center gap-1.25 text-ut-black'>
+            <div className='flex flex-row items-center gap-2.5 text-theme-black'>
+                <div className='flex flex-row items-center gap-1.25 text-theme-black'>
                     <Text variant='h3' as='span' className='hidden capitalize screenshot:inline sm:inline'>
                         {totalHours}
                     </Text>
@@ -40,7 +40,7 @@ export default function ScheduleTotalHoursAndCourses({
                         {totalHours === 1 ? 'Hour' : 'Hours'}
                     </Text>
                 </div>
-                <div className='flex flex-row items-center gap-1.25 text-ut-black'>
+                <div className='flex flex-row items-center gap-1.25 text-theme-black'>
                     <Text variant='h3' as='span' className='hidden capitalize screenshot:inline sm:inline'>
                         {totalCourses}
                     </Text>
