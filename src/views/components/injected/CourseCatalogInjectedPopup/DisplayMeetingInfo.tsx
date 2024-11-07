@@ -37,14 +37,18 @@ function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProps): JS
     } else if (instructionMode !== 'Online') {
         locationInfo = '(No location has been provided)';
     } else if (instructionMode === 'Online') {
-        locationInfo = 'Online (Internet)';
+        locationInfo = ', Online (Internet)';
     }
 
     return (
-        <Text variant='h4' as='p'>
-            {daysString} {timeString}
-            {locationInfo && <> {locationInfo}</>}
-        </Text>
+        <div className='flex'>
+            <Text variant='h4' as='p'>
+                {daysString} {timeString}
+            </Text>
+            <Text variant='h4' as='p'>
+                {locationInfo && <> {locationInfo}</>}
+            </Text>
+        </div>
     );
 }
 
@@ -62,7 +66,7 @@ export default function DisplayMeetingInfo({ course }: DisplayMeetingInfoProps):
                 <Text variant='h4' as='p'>
                     {instructionMode !== 'Online'
                         ? '(No time and location has been provided)'
-                        : '(No time has been provided)'}
+                        : '(No time has been provided), Online (Internet)'}
                 </Text>
             ) : (
                 schedule.meetings.map(meeting => (
