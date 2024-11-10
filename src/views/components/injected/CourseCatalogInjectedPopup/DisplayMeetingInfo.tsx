@@ -27,15 +27,19 @@ function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProps): JS
 
     if (meeting.location) {
         locationInfo = (
-            <>
+            <div className='ml-1'>
                 {'in '}
                 <Link href={getBuildingUrl(meeting.location.building)} className='link' variant='h4'>
                     {meeting.location.building} {meeting.location.room}
                 </Link>
-            </>
+            </div>
         );
     } else if (instructionMode !== 'Online') {
-        locationInfo = '(No location has been provided)';
+        locationInfo = (
+            <Text variant='h4' as='p' className='ml-1'>
+                (No location has been provided)
+            </Text>
+        )
     } else if (instructionMode === 'Online') {
         locationInfo = ', Online (Internet)';
     }
@@ -46,10 +50,11 @@ function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProps): JS
                 {daysString} {timeString}
             </Text>
             <Text variant='h4' as='p'>
-                {locationInfo && <> {locationInfo}</>}
+                {locationInfo}
             </Text>
         </div>
     );
+
 }
 
 /**
