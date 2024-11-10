@@ -39,7 +39,7 @@ function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProps): JS
             <Text variant='h4' as='p' className='ml-1'>
                 (No location has been provided)
             </Text>
-        )
+        );
     } else if (instructionMode === 'Online') {
         locationInfo = ', Online (Internet)';
     }
@@ -54,7 +54,6 @@ function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProps): JS
             </Text>
         </div>
     );
-
 }
 
 /**
