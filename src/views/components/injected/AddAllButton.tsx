@@ -1,6 +1,6 @@
 import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
-import { addCourseByUrl } from '@shared/util/courseUtils';
+// import { addCourseByUrl } from '@shared/util/courseUtils';
 import { Button } from '@views/components/common/Button';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import useSchedules from '@views/hooks/useSchedules';
