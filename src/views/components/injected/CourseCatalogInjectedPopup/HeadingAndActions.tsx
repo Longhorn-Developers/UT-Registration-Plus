@@ -54,11 +54,8 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
     const isInCalendar = useCalendar();
 
-    const getInstructorFullName = (instructor: Instructor) => {
-        const { firstName = '', lastName = '' } = instructor;
-        if (firstName === '') return capitalizeString(lastName);
-        return `${capitalizeString(firstName)} ${capitalizeString(lastName)}`;
-    };
+    const getInstructorFullName = (instructor: Instructor) =>
+        instructor.toString({ format: 'first_last', case: 'capitalize' });
 
     const getBuildingUrl = (building: string) =>
         `https://utdirect.utexas.edu/apps/campus/buildings/nlogon/maps/UTM/${building}`;
@@ -125,13 +122,13 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
                         {formattedUniqueId}
                     </Button>
-                    <button className='bg-transparent p-0 text-theme-black btn' onClick={onClose}>
+                    <button className='bg-transparent p-0 text-ut-black btn' onClick={onClose}>
                         <CloseIcon className='h-7 w-7' />
                     </button>
                 </div>
                 <div className='flex items-center gap-2'>
-                    {instructors.length > 0 && (
-                        <Text variant='h4' as='p' className='items-center justify-center'>
+                    {instructors.length > 0 ? (
+                        <Text variant='h4' as='p'>
                             with{' '}
                             {instructors
                                 .map(instructor => (
@@ -145,6 +142,10 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                     </Link>
                                 ))
                                 .flatMap((el, i) => (i === 0 ? [el] : [', ', el]))}
+                        </Text>
+                    ) : (
+                        <Text variant='h4' as='p'>
+                            (No instructor has been provided)
                         </Text>
                     )}
                     <div className='flex items-center gap-1'>
