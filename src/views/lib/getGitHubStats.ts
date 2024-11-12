@@ -24,7 +24,7 @@ type ContributorStats = {
 
 type ContributorUser = {
     name: string;
-}
+};
 
 type FetchResult<T> = {
     data: T;
@@ -172,9 +172,9 @@ export class GitHubStatsService {
                     name = cachedName.data;
                 } else {
                     try {
-                        const data = await this.fetchWithRetry(() =>
+                        const data = (await this.fetchWithRetry(() =>
                             this.fetchGitHub(`/users/${contributor}`)
-                        ) as ContributorUser;
+                        )) as ContributorUser;
                         if (data.name) {
                             name = data.name;
                         }
