@@ -33,13 +33,13 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
                                 <div className='flex gap-2.5 text-theme-black leading-[75%]!'>
                                     <div className='flex gap-1.25'>
                                         <Text variant='h4'>{activeSchedule ? activeSchedule.hours : 0}</Text>
-                                        <Text className='font-all-small-caps!' variant='h4'>
+                                        <Text variant='h4' className='font-all-small-caps!'>
                                             {activeSchedule.hours === 1 ? 'Hour' : 'Hours'}
                                         </Text>
                                     </div>
                                     <div className='flex gap-1.25'>
                                         <Text variant='h4'>{activeSchedule ? activeSchedule.courses.length : 0}</Text>
-                                        <Text className='font-all-small-caps!' variant='h4'>
+                                        <Text variant='h4' className='font-all-small-caps!'>
                                             {activeSchedule.courses.length === 1 ? 'Course' : 'Courses'}
                                         </Text>
                                     </div>
