@@ -171,6 +171,7 @@ export default defineConfig({
             '@shared': resolve(root, 'shared'),
             '@background': resolve(pagesDir, 'background'),
             '@views': resolve(root, 'views'),
+            'fs': resolve(__dirname, 'node_modules/.pnpm/rollup-plugin-node-builtins@2.1.2/node_modules/rollup-plugin-node-builtins/src/index.js')
         },
     },
     server: {
