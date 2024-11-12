@@ -121,10 +121,12 @@ export class GitHubStatsService {
 
     private async fetchGitHub(route: string): Promise<unknown> {
         try {
-            const response = await fetch(`https://github.cachedapi.com${route}`);
+            const url = new URL(route, 'https://github.cachedapi.com');
+            const response = await fetch(url);
             return await response.json();
         } catch (error: unknown) {
-            const response = await fetch(`https://api.github.com${route}`);
+            const url = new URL(route, 'https://api.github.com');
+            const response = await fetch(url);
             return await response.json();
         }
     }
