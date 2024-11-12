@@ -22,6 +22,10 @@ type ContributorStats = {
     author: { login: string };
 };
 
+type ContributorUser = {
+    name: string;
+}
+
 type FetchResult<T> = {
     data: T;
     dataFetched: Date;
@@ -81,8 +85,11 @@ export class GitHubStatsService {
         }
 
         const cachedItem = this.cache[key] as CachedData<T> | undefined;
-        if (cachedItem && Date.now() - cachedItem.dataFetched < CACHE_TTL) {
-            return cachedItem;
+        if (cachedItem) {
+            const timeDifference = Date.now() - cachedItem.dataFetched;
+            if (timeDifference < CACHE_TTL) {
+                return cachedItem;
+            }
         }
         return null;
     }
@@ -112,6 +119,16 @@ export class GitHubStatsService {
         }
     }
 
+    private async fetchGitHub(route: string): Promise<unknown> {
+        try {
+            const response = await fetch(`https://github.cachedapi.com${route}`);
+            return await response.json();
+        } catch (error: unknown) {
+            const response = await fetch(`https://api.github.com${route}`);
+            return await response.json();
+        }
+    }
+
     private async fetchContributorStats(): Promise<FetchResult<ContributorStats[]>> {
         const cacheKey = `contributor_stats_${REPO_OWNER}_${REPO_NAME}`;
         const cachedStats = await this.getCachedData<ContributorStats[]>(cacheKey);
@@ -125,11 +142,8 @@ export class GitHubStatsService {
             };
         }
 
-        const { data } = await this.fetchWithRetry(() =>
-            this.octokit.repos.getContributorsStats({
-                owner: REPO_OWNER,
-                repo: REPO_NAME,
-            })
+        const data = await this.fetchWithRetry(() =>
+            this.fetchGitHub(`/repos/${REPO_OWNER}/${REPO_NAME}/stats/contributors`)
         );
 
         if (Array.isArray(data)) {
@@ -158,10 +172,11 @@ export class GitHubStatsService {
                     name = cachedName.data;
                 } else {
                     try {
-                        const response = await fetch(`https://api.github.com/users/${contributor}`);
-                        const json = await response.json();
-                        if (json.name) {
-                            name = json.name;
+                        const data = await this.fetchWithRetry(() =>
+                            this.fetchGitHub(`/users/${contributor}`)
+                        ) as ContributorUser;
+                        if (data.name) {
+                            name = data.name;
                         }
                         await this.setCachedData(cacheKey, name);
                     } catch (e) {
