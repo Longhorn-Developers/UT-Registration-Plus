@@ -4,6 +4,7 @@ import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
+import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -34,6 +35,12 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const [editorValue, setEditorValue] = useState(schedule.name);
 
     const showDialog = usePrompt();
+    const enforceScheduleLimit = useEnforceScheduleLimit();
+    const handleDuplicateSchedule = (scheduleId: string) => {
+        if (enforceScheduleLimit()) {
+            duplicateSchedule(scheduleId);
+        }
+    };
 
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
@@ -84,6 +91,37 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                 </>
             ),
         });
+      //your change
+        } else {
+            showDialog({
+                title: `Are you sure?`,
+                description: (
+                    <>
+                        <Text>Deleting</Text>
+                        <Text className='text-ut-burntorange'> {schedule.name} </Text>
+                        <Text>is permanent and will remove all added courses from that schedule.</Text>
+                    </>
+                ),
+                // eslint-disable-next-line react/no-unstable-nested-components
+                buttons: close => (
+                    <>
+                        <Button variant='single' color='ut-black' onClick={close}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant='filled'
+                            color='theme-red'
+                            onClick={() => {
+                                close();
+                                deleteSchedule(schedule.id);
+                            }}
+                        >
+                            Delete Permanently
+                        </Button>
+                    </>
+                ),
+            });
+        }
     };
 
     return (
@@ -160,7 +198,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                     <Text
                                         as='button'
                                         variant='small'
-                                        onClick={() => duplicateSchedule(schedule.id)}
+                                        onClick={() => handleDuplicateSchedule(schedule.id)}
                                         className='w-full rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
                                     >
                                         Duplicate
@@ -171,7 +209,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                         as='button'
                                         variant='small'
                                         onClick={handleDelete}
-                                        className='w-full rounded bg-transparent p-2 text-left text-ut-red data-[focus]:bg-red-200/40'
+                                        className='w-full rounded bg-transparent p-2 text-left text-theme-red data-[focus]:bg-red-200/40'
                                     >
                                         Delete
                                     </Text>

@@ -76,7 +76,7 @@ export default function CalendarCourseCell({
     return (
         <div
             className={clsx(
-                'h-full w-0 flex justify-center rounded p-x-2 p-y-1.2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out',
+                'h-full w-0 flex justify-center rounded p-x-2 p-y-1.2 cursor-pointer hover:shadow-md transition-shadow-100 ease-out',
                 {
                     'min-w-full': timeAndLocation,
                     'w-full': !timeAndLocation,
