@@ -27,24 +27,19 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
                     <>
                         <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left'>
                             <div className='flex-1'>
-                                <Text
-                                    as='div'
-                                    variant='h3'
-                                    className='w-100% text-ut-burntorange'
-                                    style={{ textTransform: 'none' }}
-                                >
+                                <Text as='div' variant='h3' className='w-100% text-ut-burntorange normal-case!'>
                                     {activeSchedule ? activeSchedule.name : 'Schedule'}
                                 </Text>
                                 <div className='flex gap-2.5 text-theme-black leading-[75%]!'>
                                     <div className='flex gap-1.25'>
                                         <Text variant='h4'>{activeSchedule ? activeSchedule.hours : 0}</Text>
-                                        <Text variant='h4' style={{ fontVariant: 'all-small-caps' }}>
+                                        <Text className='font-all-small-caps!' variant='h4'>
                                             {activeSchedule.hours === 1 ? 'Hour' : 'Hours'}
                                         </Text>
                                     </div>
                                     <div className='flex gap-1.25'>
                                         <Text variant='h4'>{activeSchedule ? activeSchedule.courses.length : 0}</Text>
-                                        <Text variant='h4' style={{ fontVariant: 'all-small-caps' }}>
+                                        <Text className='font-all-small-caps!' variant='h4'>
                                             {activeSchedule.courses.length === 1 ? 'Course' : 'Courses'}
                                         </Text>
                                     </div>

@@ -18,6 +18,7 @@ export default defineConfig({
                 '--un-ring-offset-width': '0px',
             },
         ],
+        ['font-all-small-caps', { 'font-variant-caps': 'all-small-caps' }],
     ],
     shortcuts: {
         focusable: 'outline-none ring-blue-500/50 dark:ring-blue-400/60 ring-0 focus-visible:ring-4',
