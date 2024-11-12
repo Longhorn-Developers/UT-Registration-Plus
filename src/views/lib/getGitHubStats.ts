@@ -73,7 +73,7 @@ export class GitHubStatsService {
 
     constructor(githubToken?: string) {
         this.octokit = githubToken ? new Octokit({ auth: githubToken }) : new Octokit();
-        this.cache = {};
+        this.cache = {} as Record<string, CachedData<unknown>>;
     }
 
     private async getCachedData<T>(key: string): Promise<CachedData<T> | null> {
