@@ -53,16 +53,33 @@ export default class Instructor {
             return capitalize(str);
         };
 
-        if (format === 'abbr' && firstName && lastName && firstName[0]) {
-            return `${process(firstName[0])}. ${process(lastName)}`;
-        }
-        if (format === 'full_name' && fullName) {
+        if (format === 'full_name') {
+            if (!fullName) {
+                return process(lastName || firstName || 'Unknown');
+            }
             return process(fullName);
         }
-        if (format === 'first_last' && firstName && lastName) {
+
+        // Avoid duplicating this for every remaining case
+        if (!lastName) {
+            return process(fullName || firstName || 'Unknown');
+        }
+
+        if (format === 'abbr') {
+            if (!firstName || !firstName[0]) {
+                return process(lastName);
+            }
+            return `${process(firstName[0])}. ${process(lastName)}`;
+        }
+
+        if (format === 'first_last') {
+            if (!firstName) {
+                return process(lastName);
+            }
             return `${process(firstName)} ${process(lastName)}`;
         }
-        if (format === 'last' && lastName) {
+
+        if (format === 'last') {
             return process(lastName);
         }
 
