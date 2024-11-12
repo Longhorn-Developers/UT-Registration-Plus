@@ -23,7 +23,7 @@ type ContributorStats = {
 };
 
 type ContributorUser = {
-    name: string | undefined;
+    name: string;
 };
 
 type FetchResult<T> = {
