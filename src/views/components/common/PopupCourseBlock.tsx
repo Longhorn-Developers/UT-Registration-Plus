@@ -8,7 +8,7 @@ import { pickFontColor } from '@shared/util/colors';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import CheckIcon from '~icons/material-symbols/check';
 import Copy from '~icons/material-symbols/content-copy';
@@ -52,7 +52,8 @@ export default function PopupCourseBlock({
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
-    const [copyTimeoutId, setCopyTimeoutId] = useState<NodeJS.Timeout | undefined>(undefined);
+    const [copyWait, setCopyWait] = useState<NodeJS.Timeout | undefined>(undefined);
+    const copyTimeoutIdRef = useRef(0);
 
     const handleClick = async () => {
         await background.switchToCalendarTab({ uniqueId: course.uniqueId });
@@ -60,18 +61,20 @@ export default function PopupCourseBlock({
     };
 
     const handleCopy = (event: React.MouseEvent<HTMLElement>) => {
-        if (copyTimeoutId !== undefined) {
-            clearTimeout(copyTimeoutId);
+        if (copyWait !== undefined) {
+            clearTimeout(copyWait);
         }
 
         event.preventDefault();
         navigator.clipboard.writeText(formattedUniqueId);
+        copyTimeoutIdRef.current += 250;
 
         const newTimeoutId = setTimeout(() => {
-            setCopyTimeoutId(undefined);
-        }, 500);
-        setCopyTimeoutId(newTimeoutId);
+            setCopyWait(undefined);
+        }, copyTimeoutIdRef.current);
+        setCopyWait(newTimeoutId);
     };
+
 
     return (
         <div
@@ -113,7 +116,7 @@ export default function PopupCourseBlock({
                 onClick={handleCopy}
                 style={{ backgroundColor: colors.secondaryColor }}
             >
-                {copyTimeoutId !== undefined ? (
+                {copyWait !== undefined ? (
                     <CheckIcon className='h-5 w-5 text-white' />
                 ) : (
                     <Copy className='h-5 w-5 text-white' />
