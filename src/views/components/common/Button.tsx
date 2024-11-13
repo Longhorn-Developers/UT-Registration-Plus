@@ -49,7 +49,7 @@ export function Button({
             className={clsx(
                 'btn',
                 {
-                    'text-white bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20':
+                    '!text-white bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20':
                         variant === 'filled',
                     'bg-opacity-0 border-current hover:enabled:bg-opacity-8 border': variant === 'outline',
                     'bg-opacity-0 border-none hover:enabled:bg-opacity-8': variant === 'single', // settings is the only "single"
