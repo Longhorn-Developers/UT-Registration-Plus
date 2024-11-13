@@ -170,15 +170,15 @@ export function getUnusedColor(
         ...c,
         colorway: getColorwayFromColor(c.colors.primaryColor),
     }));
-    const usedColorways = new Set(scheduleCourses.map(c => c.colorway));
+    const usedColorways = new Set(scheduleCourses.map(c => c.colorway.colorway));
     const availableColorways = new Set(useableColorways.filter(c => !usedColorways.has(c)));
 
     if (availableColorways.size > 0) {
         let sameDepartment = scheduleCourses.filter(c => c.department === course.department);
 
         sameDepartment.sort((a, b) => {
-            const aIndex = useableColorways.indexOf(a.colorway);
-            const bIndex = useableColorways.indexOf(b.colorway);
+            const aIndex = useableColorways.indexOf(a.colorway.colorway);
+            const bIndex = useableColorways.indexOf(b.colorway.colorway);
 
             return aIndex - bIndex;
         });
@@ -187,8 +187,8 @@ export function getUnusedColor(
             // check to see if any adjacent colorways are available
             const centerCourse = sameDepartment[Math.floor(Math.random() * sameDepartment.length)]!;
 
-            let nextColorway = getNextColorway(centerCourse.colorway);
-            let prevColorway = getPreviousColorway(centerCourse.colorway);
+            let nextColorway = getNextColorway(centerCourse.colorway.colorway);
+            let prevColorway = getPreviousColorway(centerCourse.colorway.colorway);
 
             // eslint-disable-next-line no-constant-condition
             while (true) {
