@@ -113,17 +113,6 @@ export default function CalendarCourseCell({
     const fontColor = pickFontColor(colors.primaryColor);
     // Note that overflow-hidden is the duct tape holding this all together
 
-    // This function is used to determine the position of the color picker depending on the position of the cell
-    const getPositionClass = () => {
-        if (startIndex < 21) {
-            return 'top-2 flex-col';
-        }
-        if (!selectedBlock) {
-            return 'flex-col-reverse top-2';
-        }
-        return 'flex-col-reverse bottom-26'; // If the cell is near the bottom of the screen
-    };
-
     return (
         <div
             className={clsx(
@@ -174,38 +163,51 @@ export default function CalendarCourseCell({
                     e.stopPropagation();
                 }}
                 className={clsx(
-                    'flex absolute text-black transition-all ease-in-out',
+                    'absolute text-black transition-all ease-in-out',
                     'group-focus-within:pointer-events-auto group-hover:pointer-events-auto group-focus-within:opacity-100 group-hover:opacity-100 gap-y-0.75',
                     dayIndex === 4 ? 'left-0 -translate-x-full pr-0.75 items-end' : 'right-0 translate-x-full pl-0.75', // If the cell is on the right side of the screen
-                    selectedBlock ? 'opacity-100 pointer-events-auto' : 'opacity-0   pointer-events-none',
-                    getPositionClass()
+                    selectedBlock ? 'opacity-100 pointer-events-auto' : 'opacity-0   pointer-events-none'
                 )}
                 style={{
                     // Prevents from button from appear on top of color picker
                     zIndex: selectedBlock ? 30 : 29,
                 }}
             >
-                <Button
-                    onClick={() => {
-                        if (selectedBlock) {
-                            handleCloseColorPicker();
-                        } else {
-                            setSelectedCourse(courseID, dayIndex, startIndex);
-                        }
-                    }}
-                    icon={PaletteIcon}
-                    variant='filled'
-                    className={clsx('size-8 border border-white rounded-full !p-1')}
-                    color='ut-gray'
-                    style={{
-                        color: colors.secondaryColor,
-                        backgroundColor: selectedCourse
-                            ? (selectedColor ?? colors.primaryColor)
-                            : `rgba(${hexToRGB(`${colors.primaryColor}`)}, var(--un-bg-opacity))`,
-                    }}
-                />
+                <div className={clsx('relative', dayIndex === 4 && 'flex flex-col items-end')}>
+                    <Button
+                        onClick={() => {
+                            if (selectedBlock) {
+                                handleCloseColorPicker();
+                            } else {
+                                setSelectedCourse(courseID, dayIndex, startIndex);
+                            }
+                        }}
+                        icon={PaletteIcon}
+                        variant='outline'
+                        className={clsx(
+                            'size-8 border border-white rounded-full !p-1 bg-opacity-100 !hover:enabled:bg-opacity-100'
+                        )}
+                        color='ut-gray'
+                        style={{
+                            color: colors.secondaryColor,
+                            backgroundColor: selectedCourse
+                                ? (selectedColor ?? colors.primaryColor)
+                                : `rgba(${hexToRGB(`${colors.primaryColor}`)}, var(--un-bg-opacity))`,
+                        }}
+                    />
 
-                {selectedBlock && <CourseCellColorPicker defaultColor={colors.primaryColor} />}
+                    {selectedBlock && (
+                        <div
+                            className={
+                                startIndex < 21 && !blockData.async
+                                    ? 'relative top-0.75 w-max'
+                                    : 'absolute bottom-full mb-0.75 w-max'
+                            }
+                        >
+                            <CourseCellColorPicker defaultColor={colors.primaryColor} />
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
