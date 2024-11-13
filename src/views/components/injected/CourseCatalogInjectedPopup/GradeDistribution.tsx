@@ -140,6 +140,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             tickLength: 10,
             tickColor: '#9CADB7',
             crosshair: true,
+            lineWidth: 1.5,
             lineColor: '#9CADB7',
         },
         yAxis: {
@@ -166,6 +167,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             style: { fontFamily: 'Roboto Flex, Roboto Flex Local', fontWeight: '600' },
             spacingBottom: 25,
             spacingTop: 25,
+            spacingLeft: 1.5,
             height: 250,
         },
         credits: { enabled: false },
