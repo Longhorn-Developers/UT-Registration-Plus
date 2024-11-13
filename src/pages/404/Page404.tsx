@@ -484,5 +484,3 @@ export default function Page404(): JSX.Element {
         </div>
     );
 }
-
-export default Page404;
