@@ -1,0 +1,34 @@
+query GetRepositoryStats($owner: String!, $name: String!) {
+    repository(owner: $owner, name: $name) {
+        defaultBranchRef {
+            target {
+                ... on Commit {
+                    history(first: -1) {
+                        totalCount
+                        nodes {
+                            author {
+                                name
+                                email
+                                user {
+                                    login
+                                    avatarUrl
+                                }
+                            }
+                            additions
+                            deletions
+                            committedDate
+                        }
+                    }
+                }
+            }
+        }
+        pullRequests(states: [MERGED], first: -1) {
+            totalCount
+            nodes {
+                author {
+                    login
+                }
+            }
+        }
+    }
+}

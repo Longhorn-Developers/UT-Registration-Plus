@@ -94,3 +94,5 @@ typings/
 config
 .eslintrc.js
 !.storybook
+codegen.ts
+/src/graphql/generated
