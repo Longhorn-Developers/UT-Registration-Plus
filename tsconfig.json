@@ -43,5 +43,6 @@
         "unocss.config.ts",
         "gulpfile.js",
         "@types"
-    ]
+    ],
+    "exclude": ["src/graphql/generated"]
 }
