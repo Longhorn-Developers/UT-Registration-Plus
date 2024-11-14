@@ -13,6 +13,7 @@ import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
 import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
+import { addCourseByURL } from '@views/lib/addCourseByURL';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
@@ -409,7 +410,7 @@ export default function Settings(): JSX.Element {
                         <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
                             Developer Mode
                         </h2>
-                        <Button variant='filled' color='ut-black' onClick={handleAddCourseByLink}>
+                        <Button variant='filled' color='ut-black' onClick={() => addCourseByURL(activeSchedule)}>
                             Add course by link
                         </Button>
                         <Button variant='filled' color='ut-burntorange' onClick={showMigrationDialog}>

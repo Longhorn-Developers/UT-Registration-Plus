@@ -31,8 +31,13 @@ const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
     renameSchedule({ data, sendResponse }) {
         renameSchedule(data.scheduleId, data.newName).then(sendResponse);
     },
-    addCourseByURL({ data, sendResponse }): Promise<void> | void {
-        throw new Error('Function not implemented.');
+    addCourseByURL({ data, sendResponse }) {
+        fetch(data.url, {
+            method: data.method,
+            body: data.body,
+        })
+            .then(response => (data.response === 'json' ? response.json() : response.text()))
+            .then(sendResponse);
     },
 };
 
