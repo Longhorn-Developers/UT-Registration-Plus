@@ -10,6 +10,12 @@ export interface UserScheduleMessages {
      */
     addCourse: (data: { scheduleId: string; course: Course }) => void;
     /**
+     * Adds a course by URL
+     * @param data
+     * @returns Response of the requested course URL
+     */
+    addCourseByURL: (data: { url: string; method: string; body?: string; response: 'json' | 'text' }) => string;
+    /**
      * Remove a course from a schedule
      * @param data the schedule id and course to remove
      */
@@ -44,11 +50,4 @@ export interface UserScheduleMessages {
      * @returns undefined if successful, otherwise an error message
      */
     renameSchedule: (data: { scheduleId: string; newName: string }) => string | undefined;
-
-    /**
-     * Adds a course by URL
-     * @param data
-     * @returns
-     */
-    addCourseByURL: (data: { url: string; method: string; body?: string; response: 'json' | 'text' }) => string;
 }

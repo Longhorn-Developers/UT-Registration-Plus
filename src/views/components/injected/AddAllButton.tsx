@@ -1,13 +1,9 @@
-import { background } from '@shared/messages';
-import type { Course } from '@shared/types/Course';
-// import { addCourseByUrl } from '@shared/util/courseUtils';
+import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { Button } from '@views/components/common/Button';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import useSchedules from '@views/hooks/useSchedules';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-
-const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
 /**
  * @todo Inject the button into page https://my.utexas.edu/student/student/index
@@ -20,6 +16,7 @@ const { openNewTab, addCourse, removeCourse, openCESPage } = background;
  */
 export default function InjectedButton(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [activeSchedule, _] = useSchedules();
 
     // const removeDuplicates = (courseIds: string[], courses: string[]) => {
@@ -54,7 +51,7 @@ export default function InjectedButton(): JSX.Element | null {
         const uniqueAnchorTags = new Set(anchorTags.map(a => a.href));
 
         uniqueAnchorTags.forEach(a => {
-            // addCourseByUrl(a, activeSchedule);
+            addCourseByURL(activeSchedule, a);
         });
 
         // const courses = Array.from(anchorTags).map(x => x.innerText.trim());
