@@ -28,8 +28,10 @@ export default function InjectedButton(): JSX.Element | null {
         // Make sure to remove duplicate anchorTags using set
         const uniqueAnchorTags = Array.from(new Set(anchorTags.map(a => a.href)));
 
-        const promises = uniqueAnchorTags.map(a => addCourseByURL(activeSchedule, a));
-        await Promise.all(promises);
+        for (const a of uniqueAnchorTags) {
+            // eslint-disable-next-line no-await-in-loop
+            await addCourseByURL(activeSchedule, a);
+        }
 
         // const courses = Array.from(anchorTags).map(x => x.innerText.trim());
         // const courseIds = Array.from(anchorTags).map(({ href }) => {

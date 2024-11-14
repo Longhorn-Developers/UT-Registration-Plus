@@ -19,6 +19,7 @@ export default async function addCourse(scheduleId: string, course: Course): Pro
     course.colors = getUnusedColor(activeSchedule, course);
     activeSchedule.courses.push(course);
     activeSchedule.updatedAt = Date.now();
-
+    console.log(activeSchedule.courses);
     await UserScheduleStore.set('schedules', schedules);
+    console.log('course added!');
 }
