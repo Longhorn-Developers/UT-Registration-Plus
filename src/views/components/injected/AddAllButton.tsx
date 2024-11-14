@@ -13,7 +13,7 @@ export default function InjectedButton(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const [activeSchedule, _] = useSchedules();
 
-    const extractCoursesFromCalendar = () => {
+    const extractCoursesFromCalendar = async () => {
         const calendarElement = document.querySelector('#kgoui_Rcontent_I3_Rprimary_I1_Rcontent_I1_Rcontent_I0_Ritems');
 
         if (!calendarElement) {
@@ -26,11 +26,10 @@ export default function InjectedButton(): JSX.Element | null {
         );
 
         // Make sure to remove duplicate anchorTags using set
-        const uniqueAnchorTags = new Set(anchorTags.map(a => a.href));
+        const uniqueAnchorTags = Array.from(new Set(anchorTags.map(a => a.href)));
 
-        uniqueAnchorTags.forEach(a => {
-            addCourseByURL(activeSchedule, a);
-        });
+        const promises = uniqueAnchorTags.map(a => addCourseByURL(activeSchedule, a));
+        await Promise.all(promises);
 
         // const courses = Array.from(anchorTags).map(x => x.innerText.trim());
         // const courseIds = Array.from(anchorTags).map(({ href }) => {

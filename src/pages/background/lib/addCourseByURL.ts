@@ -18,7 +18,7 @@ import { SiteSupport } from '@views/lib/getSiteSupport';
  *
  * @throws an error if there is an issue with scraping the course details.
  */
-export async function addCourseByURL(activeSchedule: UserSchedule, link?: string) {
+export async function addCourseByURL(activeSchedule: UserSchedule, link?: string): Promise<void> {
     // todo: Use a proper modal instead of a prompt
     // eslint-disable-next-line no-param-reassign
     if (!link) link = prompt('Enter course link') || undefined;
@@ -54,7 +54,7 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
 
         if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
             console.log('adding course');
-            addCourse(activeSchedule.id, course);
+            await addCourse(activeSchedule.id, course);
         } else {
             console.log('course already exists');
         }
