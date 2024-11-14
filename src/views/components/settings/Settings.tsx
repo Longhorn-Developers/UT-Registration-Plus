@@ -1,7 +1,8 @@
 import addCourse from '@pages/background/lib/addCourse';
+import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
-import { addCourseByUrl } from '@shared/util/courseUtils';
+// import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
 // import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import { Button } from '@views/components/common/Button';
@@ -13,7 +14,6 @@ import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
 import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
-import { addCourseByURL } from '@views/lib/addCourseByURL';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
@@ -204,14 +204,14 @@ export default function Settings(): JSX.Element {
         });
     };
 
-    const handleAddCourseByLink = async () => {
-        // todo: Use a proper modal instead of a prompt
-        const link: string | null = prompt('Enter course link');
-        // Exit if the user cancels the prompt
-        if (link === null) return;
+    // const handleAddCourseByLink = async () => {
+    //     // todo: Use a proper modal instead of a prompt
+    //     const link: string | null = prompt('Enter course link');
+    //     // Exit if the user cancels the prompt
+    //     if (link === null) return;
 
-        await addCourseByUrl(link, activeSchedule);
-    };
+    //     await addCourseByUrl(link, activeSchedule);
+    // };
 
     const [devMode, toggleDevMode] = useDevMode(10);
 

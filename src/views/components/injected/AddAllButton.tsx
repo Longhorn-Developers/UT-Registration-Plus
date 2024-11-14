@@ -54,7 +54,7 @@ export default function InjectedButton(): JSX.Element | null {
         const uniqueAnchorTags = new Set(anchorTags.map(a => a.href));
 
         uniqueAnchorTags.forEach(a => {
-            addCourseByUrl(a, activeSchedule);
+            // addCourseByUrl(a, activeSchedule);
         });
 
         // const courses = Array.from(anchorTags).map(x => x.innerText.trim());

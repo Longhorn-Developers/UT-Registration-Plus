@@ -29,7 +29,7 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
     try {
         let htmlText: string;
         try {
-            htmlText = await background.makeProxyRequest({
+            htmlText = await background.addCourseByURL({
                 url: link,
                 method: 'GET',
                 response: 'text',

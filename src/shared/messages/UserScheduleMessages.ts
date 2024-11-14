@@ -50,5 +50,5 @@ export interface UserScheduleMessages {
      * @param data
      * @returns
      */
-    addCourseByURL: (data: { url: string; method: string; body?: string; response: 'json' | 'text' }) => unknown;
+    addCourseByURL: (data: { url: string; method: string; body?: string; response: 'json' | 'text' }) => string;
 }
