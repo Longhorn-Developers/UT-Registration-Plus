@@ -6,33 +6,12 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 /**
- * @todo Inject the button into page https://my.utexas.edu/student/student/index
- * @todo figure out how to get ActiveSchedule in here
- */
-
-/**
  *
  * @returns Button
  */
 export default function InjectedButton(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const [activeSchedule, _] = useSchedules();
-
-    // const removeDuplicates = (courseIds: string[], courses: string[]) => {
-    //     const uniqueCourseIds = [] as string[];
-    //     const uniqueCourses = [] as string[];
-    //     const seen = new Set();
-
-    //     courseIds.forEach((id, index) => {
-    //         if (!seen.has(id)) {
-    //             seen.add(id);
-    //             uniqueCourseIds.push(id);
-    //             uniqueCourses.push(courses[index] as string);
-    //         }
-    //     });
-
-    //     return { uniqueCourseIds, uniqueCourses };
-    // };
 
     const extractCoursesFromCalendar = () => {
         const calendarElement = document.querySelector('#kgoui_Rcontent_I3_Rprimary_I1_Rcontent_I1_Rcontent_I0_Ritems');
