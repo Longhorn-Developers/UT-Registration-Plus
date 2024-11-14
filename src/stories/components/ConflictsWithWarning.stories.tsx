@@ -17,6 +17,7 @@ export const ExampleCourse: Course = new Course({
         'Taught as a Web-based course.',
     ],
     flags: ['Quantitative Reasoning'],
+    core: ['Natural Science and Technology, Part I'],
     fullName: 'C S 303E ELEMS OF COMPTRS/PROGRAMMNG-WB',
     instructionMode: 'Online',
     instructors: [
@@ -60,6 +61,7 @@ export const ExampleCourse2: Course = new Course({
         'May be counted toward the Independent Inquiry flag requirement.',
     ],
     flags: ['Independent Inquiry'],
+    core: ['Natural Science and Technology, Part II'],
     fullName: 'C S 439 PRINCIPLES OF COMPUTER SYSTEMS',
     instructionMode: 'In Person',
     instructors: [

@@ -11,6 +11,7 @@ const exampleGovCourse: Course = new Course({
     department: 'GOV',
     description: ['nah', 'aint typing this', 'corndog'],
     flags: ['no flag for you >:)'],
+    core: ['American and Texas Government'],
     fullName: 'GOV 312L Something something',
     instructionMode: 'Online',
     instructors: [
@@ -43,6 +44,7 @@ const examplePsyCourse: Course = new Course({
     department: 'PSY',
     description: ['nah', 'aint typing this', 'corndog'],
     flags: ['no flag for you >:)'],
+    core: ['Social and Behavioral Sciences'],
     fullName: 'PSY 317L Yada yada',
     instructionMode: 'Online',
     scrapedAt: Date.now(),
