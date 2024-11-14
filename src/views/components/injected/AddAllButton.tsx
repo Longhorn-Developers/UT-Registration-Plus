@@ -16,7 +16,6 @@ import ReactDOM from 'react-dom';
  */
 export default function InjectedButton(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [activeSchedule, _] = useSchedules();
 
     // const removeDuplicates = (courseIds: string[], courses: string[]) => {
