@@ -44,11 +44,11 @@ const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slic
 /**
  * Renders the heading component for the CoursePopup component.
  *
- * @param {HeadingAndActionProps} props - The component props.
- * @param {Course} props.course - The course object containing course details.
- * @param {Schedule} props.activeSchedule - The active schedule object.
- * @param {Function} props.onClose - The function to close the popup.
- * @returns {JSX.Element} The rendered component.
+ * @param props - The component props.
+ * @param props.course - The course object containing course details.
+ * @param props.activeSchedule - The active schedule object.
+ * @param props.onClose - The function to close the popup.
+ * @returns The rendered component.
  */
 export default function HeadingAndActions({ course, activeSchedule, onClose }: HeadingAndActionProps): JSX.Element {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule, core } = course;
