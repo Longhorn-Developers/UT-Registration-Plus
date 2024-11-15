@@ -5,8 +5,9 @@ import handleDuplicate from './handleDuplicate';
 
 /**
  * Creates a new schedule with the given name
- * @param scheduleName the name of the schedule to create
- * @returns undefined if successful, otherwise an error message
+ *
+ * @param scheduleName - The name of the schedule to create
+ * @returns Undefined if successful, otherwise an error message
  */
 export default async function duplicateSchedule(scheduleId: string): Promise<string | undefined> {
     const schedules = await UserScheduleStore.get('schedules');
