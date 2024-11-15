@@ -7,6 +7,7 @@ import { openReportWindow } from '@shared/util/openReportWindow';
 import Divider from '@views/components/common/Divider';
 import List from '@views/components/common/List';
 import Text from '@views/components/common/Text/Text';
+import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
@@ -59,8 +60,15 @@ export default function PopupMain(): JSX.Element {
     }, []);
 
     const [activeSchedule, schedules] = useSchedules();
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    // const [isRefreshing, setIsRefreshing] = useState(false);
     const [funny, setFunny] = useState<string>('');
+
+    const enforceScheduleLimit = useEnforceScheduleLimit();
+    const handleAddSchedule = () => {
+        if (enforceScheduleLimit()) {
+            createSchedule('New Schedule');
+        }
+    };
 
     useEffect(() => {
         const randomIndex = Math.floor(Math.random() * splashText.length);
@@ -128,7 +136,7 @@ export default function PopupMain(): JSX.Element {
                             variant='filled'
                             color='ut-burntorange'
                             className='h-fit p-0 btn'
-                            onClick={() => createSchedule('New Schedule')}
+                            onClick={handleAddSchedule}
                         >
                             <AddSchedule className='h-6 w-6' />
                         </Button>

@@ -22,8 +22,6 @@ const TableDataSelector = {
     CORE_CURRICULUM: 'td[data-th="Core"] ul li',
 } as const satisfies Record<string, string>;
 
-type TableDataSelectorType = (typeof TableDataSelector)[keyof typeof TableDataSelector];
-
 /**
  * The selectors that we use to scrape the course details page for an individual course (https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52700/)
  */
@@ -31,8 +29,6 @@ const DetailsSelector = {
     COURSE_NAME: '#details h2',
     COURSE_DESCRIPTION: '#details p',
 } as const;
-
-type DetailsSelectorType = (typeof DetailsSelector)[keyof typeof DetailsSelector];
 
 /**
  * A class that allows us to scrape information from UT's course catalog to create our internal representation of a course

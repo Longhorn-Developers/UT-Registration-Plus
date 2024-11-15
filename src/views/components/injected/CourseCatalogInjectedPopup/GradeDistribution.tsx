@@ -1,6 +1,7 @@
 import type { Course } from '@shared/types/Course';
 import type { Distribution, LetterGrade } from '@shared/types/Distribution';
 import { extendedColors } from '@shared/types/ThemeColors';
+import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import {
     NoDataError,
@@ -12,6 +13,8 @@ import HighchartsReact from 'highcharts-react-official';
 import type { ChangeEvent } from 'react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
+
+const UT_GRADE_DISTRIBUTION_URL = 'https://reports.utexas.edu/spotlight-data/ut-course-grade-distributions';
 
 interface GradeDistributionProps {
     course: Course;
@@ -166,6 +169,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             style: { fontFamily: 'Roboto Flex, Roboto Flex Local', fontWeight: '600' },
             spacingBottom: 25,
             spacingTop: 25,
+            spacingLeft: 1.5,
             height: 250,
         },
         credits: { enabled: false },
@@ -211,8 +215,11 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             {status === DataStatus.FOUND && (
                 <>
                     <div className='flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
-                        <Text variant='small'>
-                            Grade Distribution for {course.department} {course.number}
+                        <Text variant='small' className='text-ut-black'>
+                            Grade Distribution for{' '}
+                            <Text variant='small' className='font-extrabold!' as='strong'>
+                                {course.department} {course.number}
+                            </Text>
                         </Text>
                         <select
                             className='border border rounded border-solid px-3 py-2'
@@ -242,6 +249,9 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                                     </option>
                                 ))}
                         </select>
+                        <Link variant='small' href={UT_GRADE_DISTRIBUTION_URL} className='link'>
+                            About the data
+                        </Link>
                     </div>
                     {distributions[semester] && !distributions[semester]!.instructorIncluded && (
                         <div className='mt-3 flex flex-wrap content-center items-center self-stretch justify-center gap-3'>

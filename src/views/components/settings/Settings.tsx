@@ -79,11 +79,11 @@ const useDevMode = (targetCount: number): [boolean, () => void] => {
  * @returns The Settings component.
  */
 export default function Settings(): JSX.Element {
-    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
+    const [_enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -216,6 +216,7 @@ export default function Settings(): JSX.Element {
             try {
                 response = await fetch(link);
             } catch (e) {
+                // eslint-disable-next-line no-alert
                 alert(`Failed to fetch url '${link}'`);
                 return;
             }
@@ -499,7 +500,7 @@ export default function Settings(): JSX.Element {
                         </div>
                     </section>
                     <section className='my-8'>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTERS</h2>
+                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTORS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
                             {LONGHORN_DEVELOPERS_SWE.sort(
                                 (a, b) =>
@@ -565,7 +566,7 @@ export default function Settings(): JSX.Element {
                                                 className='text-ut-burntorange font-semibold hover:cursor-pointer'
                                                 onClick={() => window.open(`https://github.com/${username}`, '_blank')}
                                             >
-                                                @{username}
+                                                {githubStats.names[username]}
                                             </Text>
                                             <p className='text-sm text-gray-600'>Contributor</p>
                                             {showGitHubStats && (
