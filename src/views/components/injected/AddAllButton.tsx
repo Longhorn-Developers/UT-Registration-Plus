@@ -6,8 +6,10 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 /**
+ * InjectedButton component renders a button that adds courses to UTRP from official MyUT calendar
+ * and adds the courses to the active schedule.
  *
- * @returns Button
+ * @returns {JSX.Element | null} The rendered button component or null if the container is not found.
  */
 export default function InjectedButton(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
@@ -32,18 +34,6 @@ export default function InjectedButton(): JSX.Element | null {
             // eslint-disable-next-line no-await-in-loop
             await addCourseByURL(activeSchedule, a);
         }
-
-        // const courses = Array.from(anchorTags).map(x => x.innerText.trim());
-        // const courseIds = Array.from(anchorTags).map(({ href }) => {
-        //     const segments = href.split('/').filter(Boolean); // Remove empty segments caused by trailing slashes
-        //     return segments.pop();
-        // }) as string[];
-
-        // const { uniqueCourseIds, uniqueCourses } = removeDuplicates(courseIds, courses);
-
-        // // print all the href of anchor tags
-        // console.log(Array.from(anchorTags).map(x => x.href));
-        // handleAddingCourses(uniqueCourses, uniqueCourseIds);
     };
 
     useEffect(() => {
