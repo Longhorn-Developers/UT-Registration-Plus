@@ -168,7 +168,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 <div className='mt-1 flex flex-col'>
                     {schedule.meetings.map(meeting => {
                         const daysString = meeting.getDaysString({ format: 'long', separator: 'long' });
-                        const timeString = meeting.getTimeString({ separator: ' to ', capitalize: false });
+                        const timeString = meeting.getTimeString({ separator: ' to ' });
                         return (
                             <Text
                                 key={

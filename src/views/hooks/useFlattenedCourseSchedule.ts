@@ -147,10 +147,19 @@ function processInPersonMeetings(
     const { days, startTime, endTime, location } = meeting;
     const midnightIndex = 1440;
     const normalizingTimeFactor = 720;
-    const time = meeting.getTimeString({ separator: '-', capitalize: true });
-    const timeAndLocation = `${time}${location ? ` - ${location.building}` : ''}`;
+    const oneHour = 60;
+    const time = meeting.getTimeString({ separator: '–' });
     const normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
     const normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
+    const courseDuration = normalizedEndTime - normalizedStartTime;
+    let timeAndLocation = `${time}`;
+    if (location) {
+        if (courseDuration > oneHour) {
+            timeAndLocation += `\n${location.building} ${location.room}`;
+        } else {
+            timeAndLocation += `, ${location.building} ${location.room}`;
+        }
+    }
 
     return days.map(day => ({
         calendarGridPoint: {

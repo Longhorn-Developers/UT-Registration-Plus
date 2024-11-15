@@ -101,7 +101,7 @@ export default function CalendarCourseCell({
                     {courseDeptAndInstr}
                 </Text>
                 {timeAndLocation && (
-                    <Text variant='h3-course' as='p'>
+                    <Text variant='h3-course' as='p' className='whitespace-pre-line'>
                         {timeAndLocation}
                     </Text>
                 )}
