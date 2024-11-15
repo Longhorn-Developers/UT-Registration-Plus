@@ -245,7 +245,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                                     </option>
                                 ))}
                         </select>
-                        <Link variant='mini' href={UT_GRADE_DISTRIBUTION_URL} className='link'>
+                        <Link variant='small' href={UT_GRADE_DISTRIBUTION_URL} className='link'>
                             About the data
                         </Link>
                     </div>
