@@ -166,6 +166,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             style: { fontFamily: 'Roboto Flex, Roboto Flex Local', fontWeight: '600' },
             spacingBottom: 25,
             spacingTop: 25,
+            spacingLeft: 1.5,
             height: 250,
         },
         credits: { enabled: false },
