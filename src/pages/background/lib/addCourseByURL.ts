@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 import addCourse from '@pages/background/lib/addCourse';
 import { background } from '@shared/messages';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -20,7 +19,7 @@ import { SiteSupport } from '@views/lib/getSiteSupport';
  */
 export async function addCourseByURL(activeSchedule: UserSchedule, link?: string): Promise<void> {
     // todo: Use a proper modal instead of a prompt
-    // eslint-disable-next-line no-param-reassign
+    // eslint-disable-next-line no-param-reassign, no-alert
     if (!link) link = prompt('Enter course link') || undefined;
 
     // Exit if the user cancels the prompt
@@ -35,6 +34,7 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
                 response: 'text',
             });
         } catch (e) {
+            // eslint-disable-next-line no-alert
             alert(`Failed to fetch url '${link}'`);
             return;
         }
