@@ -6,7 +6,7 @@ import { createRoot } from 'react-dom/client';
 
 const support = getSiteSupport(window.location.href);
 
-const renderComponent = (Component: React.FC) => {
+const renderComponent = (Component: React.ComponentType) => {
     const container = document.createElement('div');
     container.id = 'extension-root';
     document.body.appendChild(container);

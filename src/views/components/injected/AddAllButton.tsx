@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom';
  * InjectedButton component renders a button that adds courses to UTRP from official MyUT calendar
  * and adds the courses to the active schedule.
  *
- * @returns {JSX.Element | null} The rendered button component or null if the container is not found.
+ * @returns The rendered button component or null if the container is not found.
  */
 export default function InjectedButton(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
