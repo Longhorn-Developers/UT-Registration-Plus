@@ -236,9 +236,6 @@ importers:
       cssnano-preset-advanced:
         specifier: ^7.0.6
         version: 7.0.6(postcss@8.4.47)
-      del:
-        specifier: ^8.0.0
-        version: 8.0.0
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -2462,6 +2459,7 @@ packages:
 
   acorn-import-assertions@1.9.0:
     resolution: {integrity: sha512-cmMwop9x+8KFhxvKrKfPYmN6/pKTYYHBqLa0DfvVZcKMJWNyWLnaqND7dx/qn66R7ewM1UX5XMaDVP5wlVTaVA==}
+    deprecated: package has been renamed to acorn-import-attributes
     peerDependencies:
       acorn: ^8
 
@@ -3235,10 +3233,6 @@ packages:
 
   defu@6.1.4:
     resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
-
-  del@8.0.0:
-    resolution: {integrity: sha512-R6ep6JJ+eOBZsBr9esiNN1gxFbZE4Q2cULkUSFumGYecAiS6qodDvcPx/sFuWHMNul7DWmrtoEOpYSm7o6tbSA==}
-    engines: {node: '>=18'}
 
   dequal@2.0.3:
     resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
@@ -4373,17 +4367,9 @@ packages:
     resolution: {integrity: sha512-drqDG3cbczxxEJRoOXcOjtdp1J/lyp1mNn0xaznRs8+muBhgQcrnbspox5X5fOw0HnMnbfDzvnEMEtqDEJEo8w==}
     engines: {node: '>=8'}
 
-  is-path-cwd@3.0.0:
-    resolution: {integrity: sha512-kyiNFFLU0Ampr6SDZitD/DwUo4Zs1nSdnygUBqsu3LooL00Qvb5j+UnvApUn/TTj1J3OuE6BTdQ5rudKmU2ZaA==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-
   is-path-inside@3.0.3:
     resolution: {integrity: sha512-Fd4gABb+ycGAmKou8eMftCupSir5lRxqf4aD/vd0cD2qc4HL07OjCeuHMr8Ro4CoMaeCKDB0/ECBOVWjTwUvPQ==}
     engines: {node: '>=8'}
-
-  is-path-inside@4.0.0:
-    resolution: {integrity: sha512-lJJV/5dYS+RcL8uQdBDW9c9uWFLLBNRyFhnAKXw5tVqLlKZ4RMGZKv+YQ/IA3OhD+RpbJa1LLFM1FQPGyIXvOA==}
-    engines: {node: '>=12'}
 
   is-plain-obj@4.1.0:
     resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
@@ -10107,15 +10093,6 @@ snapshots:
 
   defu@6.1.4: {}
 
-  del@8.0.0:
-    dependencies:
-      globby: 14.0.2
-      is-glob: 4.0.3
-      is-path-cwd: 3.0.0
-      is-path-inside: 4.0.0
-      p-map: 7.0.2
-      slash: 5.1.0
-
   dequal@2.0.3: {}
 
   destr@2.0.3: {}
@@ -11527,11 +11504,7 @@ snapshots:
 
   is-obj@2.0.0: {}
 
-  is-path-cwd@3.0.0: {}
-
   is-path-inside@3.0.3: {}
-
-  is-path-inside@4.0.0: {}
 
   is-plain-obj@4.1.0: {}
 
