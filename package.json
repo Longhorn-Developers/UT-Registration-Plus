@@ -101,7 +101,6 @@
         "chromatic": "^11.16.5",
         "cssnano": "^7.0.6",
         "cssnano-preset-advanced": "^7.0.6",
-        "del": "^8.0.0",
         "dotenv": "^16.4.5",
         "es-module-lexer": "^1.5.4",
         "eslint": "^8.57.1",
