@@ -23,6 +23,7 @@ module.exports = {
         'import',
         'import-essentials',
         'jsdoc',
+        'eslint-plugin-tsdoc',
         'react-prefer-function-component',
         '@typescript-eslint',
         'simple-import-sort',
@@ -171,6 +172,7 @@ module.exports = {
                 ],
             },
         ],
+        'tsdoc/syntax': 'warn',
         '@typescript-eslint/no-explicit-any': 'error',
         '@typescript-eslint/no-unused-vars': [
             'warn',
