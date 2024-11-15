@@ -102,6 +102,7 @@ export const saveCalAsPng = () => {
     rootNode.style.height = '754px';
     document.body.appendChild(rootNode);
 
+    // eslint-disable-next-line no-restricted-syntax
     const clonedNode = document.querySelector('#root')!.cloneNode(true) as HTMLDivElement;
     clonedNode.style.backgroundColor = 'white';
     (clonedNode.firstChild as HTMLDivElement).classList.add('screenshot-in-progress');

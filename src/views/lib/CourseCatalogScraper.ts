@@ -26,7 +26,10 @@ const TableDataSelector = {
  * The selectors that we use to scrape the course details page for an individual course (https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52700/)
  */
 const DetailsSelector = {
+    // eslint-disable-next-line no-restricted-syntax
     COURSE_NAME: '#details h2',
+
+    // eslint-disable-next-line no-restricted-syntax
     COURSE_DESCRIPTION: '#details p',
 } as const;
 

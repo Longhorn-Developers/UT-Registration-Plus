@@ -1,3 +1,5 @@
+import { colors } from '@shared/types/ThemeColors';
+
 const splashText: string[] = [
     "You can't fail classes you're not in, that's for sure.",
     'Steer clear of O-Chem, unless you fancy a challenge.',
@@ -67,7 +69,7 @@ const splashText: string[] = [
     'You are filled with DETERMINATION',
     '60k+ users!',
     'Almost Turing complete',
-    '#BF5700',
+    colors.ut.burntorange,
     'The waitlist is a lie!',
     `He's a CS Major, but he showers regularly. 🧢`,
     'A CS major walks into a bar. The bar is empty because it is a CS major.',

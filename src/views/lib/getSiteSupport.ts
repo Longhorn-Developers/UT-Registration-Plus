@@ -29,22 +29,29 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
     if (isExtensionPopup()) {
         return SiteSupport.EXTENSION_POPUP;
     }
+
     if (isExtensionPage('my_calendar.html')) {
         return SiteSupport.MY_CALENDAR;
     }
+
     if (url.includes('utexas.collegescheduler.com')) {
         return SiteSupport.UT_PLANNER;
     }
+
     if (url.includes('utdirect.utexas.edu/apps/registrar/course_schedule')) {
         if (url.includes('results')) {
             return SiteSupport.COURSE_CATALOG_LIST;
         }
+
+        // eslint-disable-next-line no-restricted-syntax
         if (document.querySelector('#details')) {
             return SiteSupport.COURSE_CATALOG_DETAILS;
         }
     }
+
     if (url.includes('utdirect.utexas.edu') && (url.includes('waitlist') || url.includes('classlist'))) {
         return SiteSupport.WAITLIST;
     }
+
     return null;
 }
