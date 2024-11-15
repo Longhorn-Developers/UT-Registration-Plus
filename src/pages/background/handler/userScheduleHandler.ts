@@ -32,12 +32,12 @@ const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
         renameSchedule(data.scheduleId, data.newName).then(sendResponse);
     },
     // proxy so we can add courses
-    addCourseByURL({ data, sendResponse }) {
-        fetch(data.url, {
-            method: data.method,
-            body: data.body,
+    addCourseByURL({ data: { url, method, body, response }, sendResponse }) {
+        fetch(url, {
+            method,
+            body,
         })
-            .then(response => (data.response === 'json' ? response.json() : response.text()))
+            .then(res => (response === 'json' ? res.json() : res.text()))
             .then(sendResponse);
     },
 };
