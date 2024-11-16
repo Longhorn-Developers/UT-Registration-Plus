@@ -1,6 +1,8 @@
 import addCourse from '@pages/background/lib/addCourse';
+import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+// import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
 // import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import { Button } from '@views/components/common/Button';
@@ -202,51 +204,13 @@ export default function Settings(): JSX.Element {
         });
     };
 
-    // todo: move into a util/shared place, rather than specifically in settings
-    const handleAddCourseByUrl = async () => {
-        // todo: Use a proper modal instead of a prompt
-        // eslint-disable-next-line no-alert
-        const link: string | null = prompt('Enter course link');
-
-        // Exit if the user cancels the prompt
-        if (link === null) return;
-
-        try {
-            let response: Response;
-            try {
-                response = await fetch(link);
-            } catch (e) {
-                // eslint-disable-next-line no-alert
-                alert(`Failed to fetch url '${link}'`);
-                return;
-            }
-            const text = await response.text();
-            const doc = new DOMParser().parseFromString(text, 'text/html');
-
-            const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, link);
-            const tableRows = getCourseTableRows(doc);
-            const courses = scraper.scrape(tableRows, false);
-
-            if (courses.length === 1) {
-                const description = scraper.getDescription(doc);
-                const row = courses[0]!;
-                const course = row.course!;
-                course.description = description;
-                // console.log(course);
-
-                if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-                    console.log('adding course');
-                    addCourse(activeSchedule.id, course);
-                } else {
-                    console.log('course already exists');
-                }
-            } else {
-                console.log(courses);
-            }
-        } catch (error) {
-            console.error('Error scraping course:', error);
-        }
-    };
+    // const handleAddCourseByLink = async () => {
+    //     // todo: Use a proper modal instead of a prompt
+    //     const link: string | null = prompt('Enter course link');
+    //     // Exit if the user cancels the prompt
+    //     if (link === null) return;
+    //     await addCourseByUrl(link, activeSchedule);
+    // };
 
     const [devMode, toggleDevMode] = useDevMode(10);
 
@@ -445,7 +409,7 @@ export default function Settings(): JSX.Element {
                         <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
                             Developer Mode
                         </h2>
-                        <Button variant='filled' color='ut-black' onClick={handleAddCourseByUrl}>
+                        <Button variant='filled' color='ut-black' onClick={() => addCourseByURL(activeSchedule)}>
                             Add course by link
                         </Button>
                         <Button variant='filled' color='ut-burntorange' onClick={showMigrationDialog}>
