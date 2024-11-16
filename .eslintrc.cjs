@@ -144,7 +144,7 @@ module.exports = {
         'jsdoc/newline-after-description': 'off',
         'react/require-default-props': 'off',
         'jsdoc/require-jsdoc': [
-            'warn',
+            'error',
             {
                 enableFixer: false,
                 publicOnly: true,
@@ -172,7 +172,7 @@ module.exports = {
                 ],
             },
         ],
-        'tsdoc/syntax': 'warn',
+        'tsdoc/syntax': 'error',
         '@typescript-eslint/no-explicit-any': 'error',
         '@typescript-eslint/no-unused-vars': [
             'warn',
