@@ -24,6 +24,14 @@ import DisplayMeetingInfo from './DisplayMeetingInfo';
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
+/**
+ * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.
+ *
+ * @param str - The string to be capitalized.
+ * @returns The capitalized string.
+ */
+const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
 interface HeadingAndActionProps {
     /* The course to display */
     course: Course;
@@ -34,20 +42,11 @@ interface HeadingAndActionProps {
 }
 
 /**
- * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.
- *
- * @param str - The string to be capitalized.
- * @returns The capitalized string.
- */
-const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-
-/**
  * Renders the heading component for the CoursePopup component.
  *
- * @param props - The component props.
- * @param props.course - The course object containing course details.
- * @param props.activeSchedule - The active schedule object.
- * @param props.onClose - The function to close the popup.
+ * @param course - The course object containing course details.
+ * @param activeSchedule - The active schedule object.
+ * @param onClose - The function to close the popup.
  * @returns The rendered component.
  */
 export default function HeadingAndActions({ course, activeSchedule, onClose }: HeadingAndActionProps): JSX.Element {

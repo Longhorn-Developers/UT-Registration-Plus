@@ -48,10 +48,8 @@ const GRADE_COLORS = {
 /**
  * Renders the grade distribution chart for a specific course.
  *
- * @component
- * @param {GradeDistributionProps} props - The component props.
- * @param {Course} props.course - The course for which to display the grade distribution.
- * @returns {JSX.Element} The grade distribution chart component.
+ * @param course - The course for which to display the grade distribution.
+ * @returns The grade distribution chart component.
  */
 export default function GradeDistribution({ course }: GradeDistributionProps): JSX.Element {
     const [semester, setSemester] = useState('Aggregate');
