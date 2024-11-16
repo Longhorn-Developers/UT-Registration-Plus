@@ -13,10 +13,12 @@ export interface UserScheduleMessages {
 
     /**
      * Adds a course by URL
-     * @param data
+     *
+     * @param data - The URL of the course to add
      * @returns Response of the requested course URL
      */
     addCourseByURL: (data: { url: string; method: string; body?: string; response: 'json' | 'text' }) => string;
+
     /**
      * Remove a course from a schedule
      *
