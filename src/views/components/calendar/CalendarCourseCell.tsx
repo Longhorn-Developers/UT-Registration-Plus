@@ -26,14 +26,12 @@ export interface CalendarCourseCellProps {
 /**
  * Renders a cell for a calendar course.
  *
- * @component
- * @param {CalendarCourseCellProps} props - The component props.
- * @param {string} props.courseDeptAndInstr - The course department and instructor.
- * @param {string} props.timeAndLocation - The time and location of the course.
- * @param {StatusType} props.status - The status of the course.
- * @param {Colors} props.colors - The colors for styling the cell.
- * @param {string} props.className - Additional CSS class name for the cell.
- * @returns {JSX.Element} The rendered component.
+ * @param courseDeptAndInstr - The course department and instructor.
+ * @param timeAndLocation - The time and location of the course.
+ * @param status - The status of the course.
+ * @param colors - The colors for styling the cell.
+ * @param className - Additional CSS class name for the cell.
+ * @returns The rendered component.
  */
 export default function CalendarCourseCell({
     courseDeptAndInstr,

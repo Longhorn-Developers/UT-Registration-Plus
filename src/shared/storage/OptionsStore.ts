@@ -30,7 +30,8 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
 
 /**
  * Initializes the settings by retrieving the values from the OptionsStore.
- * @returns {Promise<IOptionsStore>} A promise that resolves to an object satisfying the IOptionsStore interface.
+ *
+ * @returns A promise that resolves to an object satisfying the IOptionsStore interface.
  */
 export const initSettings = async () =>
     ({

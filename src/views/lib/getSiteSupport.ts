@@ -24,7 +24,8 @@ export type SiteSupportType = (typeof SiteSupport)[keyof typeof SiteSupport];
 
 /**
  * We use this function to determine what page the user is on, and then we can use that information to determine what to do
- * @param url the url of the current page
+ *
+ * @param url - the url of the current page
  * @returns a list of page types that the current page is
  */
 export default function getSiteSupport(url: string): SiteSupportType | null {

@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 
 /**
  * Hook that calls a callback when a key is pressed
- * @param key the key to listen for
- * @param callback the callback to call when the key is pressed
+ *
+ * @param key - the key to listen for
+ * @param callback - the callback to call when the key is pressed
  */
 export function useKeyPress(key: string, callback: (event: KeyboardEvent) => void): void {
     useEffect(() => {

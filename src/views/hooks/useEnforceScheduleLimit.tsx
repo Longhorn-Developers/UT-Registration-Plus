@@ -12,7 +12,7 @@ const SCHEDULE_LIMIT = 10;
  * If a new schedule can be created without exceeding the limit, the function returns true
  * Otherwise, display a prompt explaining the limit, and returns false
  *
- * @returns a function, () => boolean
+ * @returns a callback function that enforces the schedule limit via a dialog
  */
 export function useEnforceScheduleLimit(): () => boolean {
     const [, schedules] = useSchedules();

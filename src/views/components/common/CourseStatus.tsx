@@ -17,7 +17,9 @@ export interface CourseStatusProps {
 /**
  * The CourseStatus component as per the Labels and Details Figma section
  *
- * @param props CourseStatusProps
+ * @param status - The status of the course
+ * @param size - The size of the component
+ * @returns The CourseStatus component
  */
 export default function CourseStatus({ status, size }: CourseStatusProps): JSX.Element {
     const statusIconSizeClass = clsx({
