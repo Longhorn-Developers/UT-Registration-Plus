@@ -4,6 +4,9 @@ import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
 
+/**
+ * Props for the DisplayMeetingInfo component.
+ */
 export interface DisplayMeetingInfoProps {
     course: Course;
 }
@@ -15,6 +18,10 @@ interface MeetingInfoTextProps {
 
 /**
  * Renders a single meeting's time and location info.
+ *
+ * @param meeting - The meeting to display the info for.
+ * @param instructionMode - The instruction mode of the course.
+ * @returns The JSX element for the meeting info.
  */
 function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProps): JSX.Element {
     const daysString = meeting.getDaysString({ format: 'long', separator: 'long' });
@@ -58,6 +65,9 @@ function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProps): JS
 
 /**
  * Render the time and location for the current class.
+ *
+ * @param course - The course to display the meeting info for.
+ * @returns The JSX element for the meeting info.
  */
 export default function DisplayMeetingInfo({ course }: DisplayMeetingInfoProps): JSX.Element {
     const { schedule, instructionMode } = course;
