@@ -20,6 +20,8 @@ import OpenNewIcon from '~icons/material-symbols/open-in-new';
 import Remove from '~icons/material-symbols/remove';
 import Reviews from '~icons/material-symbols/reviews';
 
+import DisplayMeetingInfo from './DisplayMeetingInfo';
+
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
 /**
@@ -55,9 +57,6 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
 
     const getInstructorFullName = (instructor: Instructor) =>
         instructor.toString({ format: 'first_last', case: 'capitalize' });
-
-    const getBuildingUrl = (building: string) =>
-        `https://utdirect.utexas.edu/apps/campus/buildings/nlogon/maps/UTM/${building}`;
 
     const handleCopy = () => {
         navigator.clipboard.writeText(formattedUniqueId);
@@ -164,38 +163,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                         ))}
                     </div>
                 </div>
-                <div className='mt-1 flex flex-col'>
-                    {schedule.meetings.map(meeting => {
-                        const daysString = meeting.getDaysString({ format: 'long', separator: 'long' });
-                        const timeString = meeting.getTimeString({ separator: ' to ' });
-                        return (
-                            <Text
-                                key={
-                                    daysString +
-                                    timeString +
-                                    (meeting.location?.building ?? '') +
-                                    (meeting.location?.room ?? '')
-                                }
-                                variant='h4'
-                                as='p'
-                            >
-                                {daysString} {timeString}
-                                {meeting.location && (
-                                    <>
-                                        {' in '}
-                                        <Link
-                                            href={getBuildingUrl(meeting.location.building)}
-                                            className='link'
-                                            variant='h4'
-                                        >
-                                            {meeting.location.building} {meeting.location.room}
-                                        </Link>
-                                    </>
-                                )}
-                            </Text>
-                        );
-                    })}
-                </div>
+                <DisplayMeetingInfo course={course} />
             </div>
             <div className='my-3 flex flex-wrap items-center gap-x-3.75 gap-y-2.5'>
                 <Button
