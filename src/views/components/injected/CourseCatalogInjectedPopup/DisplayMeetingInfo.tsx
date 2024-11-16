@@ -18,7 +18,7 @@ interface MeetingInfoTextProps {
  */
 function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProps): JSX.Element {
     const daysString = meeting.getDaysString({ format: 'long', separator: 'long' });
-    const timeString = meeting.getTimeString({ separator: ' to ', capitalize: false });
+    const timeString = meeting.getTimeString({ separator: ' to ' });
 
     const getBuildingUrl = (building: string) =>
         `https://utdirect.utexas.edu/apps/campus/buildings/nlogon/maps/UTM/${building}`;
