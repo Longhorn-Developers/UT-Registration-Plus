@@ -6,6 +6,7 @@ import switchSchedule from './switchSchedule';
 
 /**
  * Imports a user schedule from portable file, creating a new schedule for it
+ 
  * @param scheduleData - Data to be parsed back into a course schedule
  */
 export default async function importSchedule(scheduleData: string | null) {
