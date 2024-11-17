@@ -79,7 +79,6 @@ export default function PopupCourseBlock({
         setCopyWait(newTimeoutId);
     };
 
-
     return (
         <div
             style={{
