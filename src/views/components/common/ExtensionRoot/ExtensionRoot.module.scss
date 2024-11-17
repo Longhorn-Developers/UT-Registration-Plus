@@ -1,8 +1,10 @@
-@import 'src/views/styles/base.module.scss';
+@use "sass:meta";
+@use '../../../styles/base.module.scss';
+
 
 @layer base {
     .extensionRoot {
-        @import 'tailwind-compat';
+        @include meta.load-css('tailwind-compat');
     }
 
     span {

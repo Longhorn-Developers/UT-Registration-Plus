@@ -63,34 +63,34 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     };
 
     const handleDelete = () => {
-            showDialog({
-                title: `Are you sure?`,
-                description: (
-                    <>
-                        <Text>Deleting</Text>
-                        <Text className='text-ut-burntorange'> {schedule.name} </Text>
-                        <Text>is permanent and will remove all added courses from that schedule.</Text>
-                    </>
-                ),
-                // eslint-disable-next-line react/no-unstable-nested-components
-                buttons: close => (
-                    <>
-                        <Button variant='single' color='ut-black' onClick={close}>
-                            Cancel
-                        </Button>
-                        <Button
-                            variant='filled'
-                            color='theme-red'
-                            onClick={() => {
-                                close();
-                                deleteSchedule(schedule.id);
-                            }}
-                        >
-                            Delete Permanently
-                        </Button>
-                    </>
-                ),
-            });
+        showDialog({
+            title: `Are you sure?`,
+            description: (
+                <>
+                    <Text>Deleting</Text>
+                    <Text className='text-ut-burntorange'> {schedule.name} </Text>
+                    <Text>is permanent and will remove all added courses from that schedule.</Text>
+                </>
+            ),
+            // eslint-disable-next-line react/no-unstable-nested-components
+            buttons: close => (
+                <>
+                    <Button variant='single' color='ut-black' onClick={close}>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant='filled'
+                        color='theme-red'
+                        onClick={() => {
+                            close();
+                            deleteSchedule(schedule.id);
+                        }}
+                    >
+                        Delete Permanently
+                    </Button>
+                </>
+            ),
+        });
     };
 
     return (

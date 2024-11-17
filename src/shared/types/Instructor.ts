@@ -68,8 +68,13 @@ export default class Instructor {
             return process(lastName);
         }
 
+        if (format === 'first_last') {
+            return 'Instructor data not available';
+        }
+
         throw new Error(`Invalid Instructor String format: ${format}`);
     }
+
 }
 
 /**
