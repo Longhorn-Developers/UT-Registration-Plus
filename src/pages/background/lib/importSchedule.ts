@@ -1,6 +1,6 @@
-import { getActiveSchedule } from '@views/hooks/useSchedules';
+import { Course } from '@shared/types/Course';
 
-import { addCourseByURL } from './addCourseByURL';
+import addCourse from './addCourse';
 import createSchedule from './createSchedule';
 import switchSchedule from './switchSchedule';
 
@@ -11,15 +11,14 @@ import switchSchedule from './switchSchedule';
 export default async function importSchedule(scheduleData: string | null) {
     if (scheduleData) {
         const parsedData = JSON.parse(scheduleData);
+        console.log('DEREK CHEN WAS HERE', parsedData);
         const newScheduleId = await createSchedule(parsedData.name);
         await switchSchedule(newScheduleId);
-        const activeSchedule = getActiveSchedule();
 
-        for (const course of parsedData.courses) {
-            if (course.url) {
-                // eslint-disable-next-line no-await-in-loop
-                await addCourseByURL(activeSchedule, course.url);
-            }
+        for (const c of parsedData.courses) {
+            const course = new Course(c);
+            // eslint-disable-next-line no-await-in-loop
+            await addCourse(newScheduleId, course);
         }
     } else {
         console.error('No schedule data provided for import');

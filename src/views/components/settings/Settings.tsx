@@ -228,9 +228,6 @@ export default function Settings(): JSX.Element {
                     const result = e.target?.result as string;
                     const jsonObject = JSON.parse(result);
                     setImportedSchedule(JSON.stringify(jsonObject, null, 2));
-                    console.log('Course schedule successfully parsed!');
-                    console.log(jsonObject);
-                    importSchedule(_importedSchedule);
                 } catch (error) {
                     console.error('invalid import file');
                 }
@@ -238,6 +235,13 @@ export default function Settings(): JSX.Element {
             reader.readAsText(file);
         }
     };
+
+    useEffect(() => {
+        if (_importedSchedule) {
+            console.log('Course schedule successfully parsed!');
+            importSchedule(_importedSchedule);
+        }
+    }, [_importedSchedule]);
 
     // const handleAddCourseByLink = async () => {
     //     // todo: Use a proper modal instead of a prompt
