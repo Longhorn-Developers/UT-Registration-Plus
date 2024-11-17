@@ -74,7 +74,6 @@ export default class Instructor {
 
         throw new Error(`Invalid Instructor String format: ${format}`);
     }
-
 }
 
 /**
