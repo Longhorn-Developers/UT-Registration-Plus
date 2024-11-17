@@ -19,6 +19,7 @@ interface Props {
 
 /**
  * A reusable input button component that follows the Button.tsx consistency
+ *
  * @returns
  */
 export default function InputButton({

@@ -229,7 +229,7 @@ export default function Settings(): JSX.Element {
                     const jsonObject = JSON.parse(result);
                     setImportedSchedule(JSON.stringify(jsonObject, null, 2));
                 } catch (error) {
-                    console.error('invalid import file');
+                    console.error('Invalid import file!');
                 }
             };
             reader.readAsText(file);
