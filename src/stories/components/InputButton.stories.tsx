@@ -1,4 +1,3 @@
-// InputButton.stories.tsx
 import { colorsFlattened } from '@shared/util/themeColors';
 import type { Meta, StoryObj } from '@storybook/react';
 import InputButton from '@views/components/common/InputButton';
