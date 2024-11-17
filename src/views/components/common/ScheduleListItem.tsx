@@ -63,25 +63,6 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     };
 
     const handleDelete = () => {
-        if (schedule.id === activeSchedule.id) {
-            showDialog({
-                title: `Unable to delete active schedule.`,
-
-                description: (
-                    <>
-                        <Text>Deleting the active schedule</Text>
-                        <Text className='text-ut-burntorange'> {schedule.name} </Text>
-                        <Text>is not allowed. Please switch to another schedule and try again.</Text>
-                    </>
-                ),
-                // eslint-disable-next-line react/no-unstable-nested-components
-                buttons: close => (
-                    <Button variant='filled' color='ut-burntorange' onClick={close}>
-                        I Understand
-                    </Button>
-                ),
-            });
-        } else {
             showDialog({
                 title: `Are you sure?`,
                 description: (
@@ -110,7 +91,6 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                     </>
                 ),
             });
-        }
     };
 
     return (
