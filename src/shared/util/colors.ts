@@ -141,6 +141,28 @@ export function getColorwayFromColor(color: HexColor): {
 }
 
 /**
+ * Returns a darker shade of the given hex color by reducing the RGB values by the specified offset.
+ *
+ * @param color - The hexadecimal color value to darken.
+ * @param offset - The amount to reduce each RGB component by (default is 20).
+ * @returns The darker shade of the given hex color.
+ * @throws If the provided color is not a valid hex color.
+ */
+export function getDarkerShade(color: HexColor, offset: number = 20): HexColor {
+    const rgb = hexToRGB(color);
+    if (!rgb) {
+        throw new Error('color: Invalid hex.');
+    }
+
+    const [r, g, b] = rgb.map(c => Math.max(0, c - offset));
+    if (r === undefined || g === undefined || b === undefined) {
+        throw new Error('RGB values are undefined');
+    }
+
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+
+/**
  * Get next unused color in a tailwind colorway for a given schedule
  * @param schedule the schedule which the course is in
  * @param course the course to get the color for

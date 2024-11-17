@@ -1,7 +1,7 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { HexColor } from '@shared/types/Color';
 import { UserSchedule } from '@shared/types/UserSchedule';
-import { getColorwayFromColor, getCourseColors, pickFontColor, tailwindColorMap } from '@shared/util/colors';
+import { getColorwayFromColor, getCourseColors, getDarkerShade } from '@shared/util/colors';
 import { useEffect, useState } from 'react';
 
 let schedulesCache: UserSchedule[] = [];
@@ -143,10 +143,15 @@ export async function updateCourseColors(courseID: number, primaryColor: `#${str
         try {
             const { colorway: primaryColorWay, index: primaryIndex } = getColorwayFromColor(color);
             const { secondaryColor } = getCourseColors(primaryColorWay, primaryIndex, 400);
+
+            if (!secondaryColor) {
+                throw new Error('Secondary color not found');
+            }
+
             return secondaryColor;
         } catch (e) {
-            // Fallback to default colors with pickFontColor
-            return tailwindColorMap[pickFontColor(color)] as HexColor;
+            const secondaryColor = getDarkerShade(color, 80);
+            return secondaryColor;
         }
     };
 
