@@ -8,7 +8,7 @@ import { pickFontColor } from '@shared/util/colors';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import CheckIcon from '~icons/material-symbols/check';
 import Copy from '~icons/material-symbols/content-copy';
@@ -36,7 +36,8 @@ export default function PopupCourseBlock({
     dragHandleProps,
 }: PopupCourseBlockProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [isCopied, setIsCopied] = useState<boolean>(false);
+    const [copyWait, setCopyWait] = useState<NodeJS.Timeout | undefined>(undefined);
+    const copyTimeoutIdRef = useRef(0);
 
     useEffect(() => {
         initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
@@ -52,7 +53,6 @@ export default function PopupCourseBlock({
 
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
-    const buttonColor = pickFontColor(colors.secondaryColor);
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
 
     const handleClick = async () => {
@@ -60,10 +60,21 @@ export default function PopupCourseBlock({
         window.close();
     };
 
-    const handleCopy = () => {
+    const handleCopy = (event: React.MouseEvent<HTMLElement>) => {
+        // if (copyWait !== undefined) {
+        //     clearTimeout(copyWait);
+        // }
+
+        event.preventDefault();
         navigator.clipboard.writeText(formattedUniqueId);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 1000);
+        if (copyTimeoutIdRef.current === 0) {
+            copyTimeoutIdRef.current = 1000;
+        }
+
+        const newTimeoutId = setTimeout(() => {
+            setCopyWait(undefined);
+        }, copyTimeoutIdRef.current);
+        setCopyWait(newTimeoutId);
     };
 
     return (
@@ -72,7 +83,7 @@ export default function PopupCourseBlock({
                 backgroundColor: colors.primaryColor,
             }}
             className={clsx(
-                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left',
+                'h-full min-h-[50px] w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left',
                 className
             )}
         >
@@ -88,7 +99,7 @@ export default function PopupCourseBlock({
             <div
                 onClick={handleClick}
                 className={clsx(
-                    'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left',
+                    'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 pl-[10px] focusable cursor-pointer text-left',
                     className
                 )}
             >
@@ -109,12 +120,15 @@ export default function PopupCourseBlock({
             </div>
 
             <button
-                className='flex bg-transparent px-2 py-0.25 text-white btn'
-                color={colors.secondaryColor}
+                className='h-[30px] flex bg-transparent px-2 py-0.25 text-white btn'
                 onClick={handleCopy}
-                style={{ backgroundColor: colors.secondaryColor, color: buttonColor }}
+                style={{ backgroundColor: colors.secondaryColor }}
             >
-                {isCopied ? <CheckIcon className='h-5 w-5 text-white' /> : <Copy className='h-5 w-5 text-white' />}
+                {copyWait === undefined ? (
+                    <Copy className='h-5 w-5 text-white' />
+                ) : (
+                    <CheckIcon className='h-5 w-5 text-white' />
+                )}
                 {formattedUniqueId}
             </button>
         </div>
