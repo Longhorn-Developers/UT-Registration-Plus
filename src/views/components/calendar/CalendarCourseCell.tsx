@@ -185,7 +185,7 @@ export default function CalendarCourseCell({
                         icon={PaletteIcon}
                         variant='outline'
                         className={clsx(
-                            'size-8 border border-white rounded-full !p-1 bg-opacity-100 !hover:enabled:bg-opacity-100'
+                            'size-8 border border-white rounded-full !p-1 bg-opacity-100 !hover:enabled:bg-opacity-100 rounded-full shadow-lg shadow-black/20'
                         )}
                         color='ut-gray'
                         style={{
