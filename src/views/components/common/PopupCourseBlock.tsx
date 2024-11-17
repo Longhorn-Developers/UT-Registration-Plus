@@ -25,7 +25,11 @@ export interface PopupCourseBlockProps {
 /**
  * The "course block" to be used in the extension popup.
  *
- * @param props PopupCourseBlockProps
+ * @param className - The class name to apply to the component.
+ * @param course - The course object to display.
+ * @param colors - The colors to use for the course block.
+ * @param dragHandleProps - The drag handle props for the course block.
+ * @returns The rendered PopupCourseBlock component.
  */
 export default function PopupCourseBlock({
     className,
