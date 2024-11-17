@@ -89,6 +89,7 @@ export default function Settings(): JSX.Element {
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    const [_importedSchedule, setImportedSchedule] = useState<string | null>(null);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -213,6 +214,25 @@ export default function Settings(): JSX.Element {
             await downloadBlob(jsonString, 'JSON', `schedule_${id}.json`);
         } else {
             console.error('Error exporting schedule: jsonString is undefined');
+        }
+    };
+
+    const handleImportClick = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                try {
+                    const result = e.target?.result as string;
+                    const jsonObject = JSON.parse(result);
+                    setImportedSchedule(JSON.stringify(jsonObject, null, 2));
+                    console.log('Course schedule successfully parsed!');
+                    console.log(jsonObject);
+                } catch (error) {
+                    console.error('invalid import file');
+                }
+            };
+            reader.readAsText(file);
         }
     };
 
@@ -351,6 +371,25 @@ export default function Settings(): JSX.Element {
                                     >
                                         Export
                                     </Button>
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Import Schedule
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>Import from a schedule file</p>
+                                    </div>
+                                    <div className='flex'>
+                                        <input
+                                            type='file'
+                                            id='importSchedule'
+                                            onChange={handleImportClick}
+                                            className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500'
+                                        />
+                                    </div>
                                 </div>
 
                                 <Divider size='auto' orientation='horizontal' />
