@@ -2,6 +2,7 @@
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import exportSchedule from '@pages/background/lib/exportSchedule';
+import importSchedule from '@pages/background/lib/importSchedule';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { downloadBlob } from '@shared/util/downloadBlob';
@@ -229,6 +230,7 @@ export default function Settings(): JSX.Element {
                     setImportedSchedule(JSON.stringify(jsonObject, null, 2));
                     console.log('Course schedule successfully parsed!');
                     console.log(jsonObject);
+                    importSchedule(_importedSchedule);
                 } catch (error) {
                     console.error('invalid import file');
                 }
