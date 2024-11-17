@@ -7,12 +7,17 @@ import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
 import CancelledIcon from '~icons/material-symbols/warning';
 
+interface StatusIconProps extends SVGProps<SVGSVGElement> {
+    status: StatusType;
+}
+
 /**
  * Get Icon component based on status
- * @param props.status status
- * @returns the icon component
+ *
+ * @param props - The props for the StatusIcon component
+ * @returns The rendered icon component
  */
-export function StatusIcon(props: SVGProps<SVGSVGElement> & { status: StatusType }): JSX.Element | null {
+export function StatusIcon(props: StatusIconProps): JSX.Element | null {
     const { status, ...rest } = props;
 
     switch (status) {

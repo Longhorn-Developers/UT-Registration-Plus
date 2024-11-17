@@ -27,7 +27,11 @@ export interface PopupCourseBlockProps {
 /**
  * The "course block" to be used in the extension popup.
  *
- * @param props PopupCourseBlockProps
+ * @param className - The class name to apply to the component.
+ * @param course - The course object to display.
+ * @param colors - The colors to use for the course block.
+ * @param dragHandleProps - The drag handle props for the course block.
+ * @returns The rendered PopupCourseBlock component.
  */
 export default function PopupCourseBlock({
     className,
@@ -96,9 +100,10 @@ export default function PopupCourseBlock({
             >
                 <DragIndicatorIcon className='h-6 w-6 text-white' />
             </div>
-            <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
-                {course.department} {course.number} &ndash;{' '}
-                {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
+            <Text className={clsx('flex-1 pl-[10px] py-3.5 truncate', fontColor)} variant='h1-course'>
+                {course.department} {course.number}
+                {course.instructors.length > 0 ? <> &ndash; </> : ''}
+                {course.instructors.map(v => v.toString({ format: 'last', case: 'capitalize' })).join('; ')}
             </Text>
             {enableCourseStatusChips && course.status !== Status.OPEN && (
                 <div

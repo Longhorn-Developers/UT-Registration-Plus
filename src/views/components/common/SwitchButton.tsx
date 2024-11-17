@@ -9,11 +9,9 @@ type ToggleSwitchProps = {
 /**
  * A custom switch button component.
  *
- * @component
- * @param {Object} props - The component props.
- * @param {boolean} [props.isChecked=true] - The initial checked state of the switch button.
- * @param {Function} props.onChange - The callback function to be called when the switch button is toggled.
- * @returns {JSX.Element} The rendered SwitchButton component.
+ * @param isChecked - The initial checked state of the switch button.
+ * @param onChange - The callback function to be called when the switch button is toggled.
+ * @returns The rendered SwitchButton component.
  */
 const SwitchButton = ({ isChecked = true, onChange }: ToggleSwitchProps): JSX.Element => {
     const [enabled, setEnabled] = useState(isChecked);

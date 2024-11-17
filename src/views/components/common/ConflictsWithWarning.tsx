@@ -15,7 +15,9 @@ export interface ConflictsWithWarningProps {
  * The ConflictsWithWarning component is used to display a warning message when a course conflicts
  * with another course as part of the labels and details section
  *
- * @param props ConflictsWithWarningProps
+ * @param className - The class name for the component
+ * @param conflicts - The courses that conflict with the current course
+ * @returns The ConflictsWithWarning component
  */
 export default function ConflictsWithWarning({ className, conflicts }: ConflictsWithWarningProps): JSX.Element {
     return (
