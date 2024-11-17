@@ -29,6 +29,7 @@ import IconoirGitFork from '~icons/iconoir/git-fork';
 // import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
 import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 
+import InputButton from '../common/InputButton';
 import { useMigrationDialog } from '../common/MigrationDialog';
 // import RefreshIcon from '~icons/material-symbols/refresh';
 import DevMode from './DevMode';
@@ -382,14 +383,9 @@ export default function Settings(): JSX.Element {
                                         </Text>
                                         <p className='text-sm text-gray-600'>Import from a schedule file</p>
                                     </div>
-                                    <div className='flex'>
-                                        <input
-                                            type='file'
-                                            id='importSchedule'
-                                            onChange={handleImportClick}
-                                            className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500'
-                                        />
-                                    </div>
+                                    <InputButton variant='filled' color='ut-burntorange' onChange={handleImportClick}>
+                                        Import Schedule
+                                    </InputButton>
                                 </div>
 
                                 <Divider size='auto' orientation='horizontal' />
