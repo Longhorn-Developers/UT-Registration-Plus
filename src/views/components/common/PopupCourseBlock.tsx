@@ -101,8 +101,7 @@ export default function PopupCourseBlock({
             </div>
             <Text className={clsx('flex-1 pl-[10px] py-3.5 truncate', fontColor)} variant='h1-course'>
                 {course.department} {course.number}
-                {course.instructors.length > 0 ? <> &ndash; </> : ''}
-                {course.instructors.map(v => v.toString({ format: 'last', case: 'capitalize' })).join('; ')}
+                {course.instructors.length > 0 ? <> &ndash; </> : course.instructors.map(v => v.toString({ format: 'last', case: 'capitalize' })).join('; ')}
             </Text>
             {enableCourseStatusChips && course.status !== Status.OPEN && (
                 <div
