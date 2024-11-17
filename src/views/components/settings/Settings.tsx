@@ -4,6 +4,7 @@ import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { downloadBlob } from '@shared/util/downloadBlob';
 // import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
 // import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
@@ -207,23 +208,11 @@ export default function Settings(): JSX.Element {
     };
 
     const handleExportClick = async (id: string) => {
-        try {
-            const jsonString = await exportSchedule(id);
-            if (jsonString) {
-                const blob = new Blob([jsonString], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `schedule_${id}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            } else {
-                console.error('Error exporting schedule: jsonString is undefined');
-            }
-        } catch (error) {
-            console.error('Error exporting schedule:', error);
+        const jsonString = await exportSchedule(id);
+        if (jsonString) {
+            await downloadBlob(jsonString, 'JSON', `schedule_${id}.json`);
+        } else {
+            console.error('Error exporting schedule: jsonString is undefined');
         }
     };
 
