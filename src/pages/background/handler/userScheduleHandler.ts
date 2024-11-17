@@ -2,6 +2,7 @@ import addCourse from '@pages/background/lib/addCourse';
 import clearCourses from '@pages/background/lib/clearCourses';
 import createSchedule from '@pages/background/lib/createSchedule';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
+import exportSchedule from '@pages/background/lib/exportSchedule';
 import removeCourse from '@pages/background/lib/removeCourse';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import switchSchedule from '@pages/background/lib/switchSchedule';
@@ -39,6 +40,9 @@ const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
         })
             .then(res => (response === 'json' ? res.json() : res.text()))
             .then(sendResponse);
+    },
+    exportSchedule({ data, sendResponse }) {
+        exportSchedule(data.scheduleId);
     },
 };
 

@@ -1,6 +1,8 @@
 // import addCourse from '@pages/background/lib/addCourse';
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
+import exportSchedule from '@pages/background/lib/exportSchedule';
+import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 // import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
@@ -204,6 +206,10 @@ export default function Settings(): JSX.Element {
         });
     };
 
+    const handleExportClick = async () => {
+        // const jsonString = await export
+    };
+
     // const handleAddCourseByLink = async () => {
     //     // todo: Use a proper modal instead of a prompt
     //     const link: string | null = prompt('Enter course link');
@@ -322,6 +328,26 @@ export default function Settings(): JSX.Element {
                                 </div>
 
                                 <Divider size='auto' orientation='horizontal' /> */}
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Export Current Schedule
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>
+                                            Backup your active schedule to a portable file
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant='outline'
+                                        color='ut-burntorange'
+                                        onClick={() => exportSchedule(activeSchedule.id)}
+                                    >
+                                        Export
+                                    </Button>
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
 
                                 <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
