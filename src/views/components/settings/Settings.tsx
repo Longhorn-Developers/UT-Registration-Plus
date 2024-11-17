@@ -206,8 +206,25 @@ export default function Settings(): JSX.Element {
         });
     };
 
-    const handleExportClick = async () => {
-        // const jsonString = await export
+    const handleExportClick = async (id: string) => {
+        try {
+            const jsonString = await exportSchedule(id);
+            if (jsonString) {
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `schedule_${id}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } else {
+                console.error('Error exporting schedule: jsonString is undefined');
+            }
+        } catch (error) {
+            console.error('Error exporting schedule:', error);
+        }
     };
 
     // const handleAddCourseByLink = async () => {
@@ -341,7 +358,7 @@ export default function Settings(): JSX.Element {
                                     <Button
                                         variant='outline'
                                         color='ut-burntorange'
-                                        onClick={() => exportSchedule(activeSchedule.id)}
+                                        onClick={() => handleExportClick(activeSchedule.id)}
                                     >
                                         Export
                                     </Button>
