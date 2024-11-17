@@ -17,7 +17,7 @@ export default async function exportSchedule(scheduleId: string): Promise<string
         }
 
         console.log(selectedSchedule);
-        return JSON.stringify(selectedSchedule);
+        return JSON.stringify(selectedSchedule, null, 2);
     } catch (error) {
         console.error('Error getting storage data:', error);
     }
