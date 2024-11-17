@@ -36,8 +36,6 @@ export default function PopupCourseBlock({
     dragHandleProps,
 }: PopupCourseBlockProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [copyWait, setCopyWait] = useState<NodeJS.Timeout | undefined>(undefined);
-    const copyTimeoutIdRef = useRef(0);
 
     useEffect(() => {
         initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
@@ -54,6 +52,8 @@ export default function PopupCourseBlock({
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
+    const [copyWait, setCopyWait] = useState<NodeJS.Timeout | undefined>(undefined);
+    const copyTimeoutIdRef = useRef(0);
 
     const handleClick = async () => {
         await background.switchToCalendarTab({ uniqueId: course.uniqueId });
@@ -61,21 +61,20 @@ export default function PopupCourseBlock({
     };
 
     const handleCopy = (event: React.MouseEvent<HTMLElement>) => {
-        // if (copyWait !== undefined) {
-        //     clearTimeout(copyWait);
-        // }
+        if (copyWait !== undefined) {
+            clearTimeout(copyWait);
+        }
 
         event.preventDefault();
         navigator.clipboard.writeText(formattedUniqueId);
-        if (copyTimeoutIdRef.current === 0) {
-            copyTimeoutIdRef.current = 1000;
-        }
+        copyTimeoutIdRef.current += 250;
 
         const newTimeoutId = setTimeout(() => {
             setCopyWait(undefined);
         }, copyTimeoutIdRef.current);
         setCopyWait(newTimeoutId);
     };
+
 
     return (
         <div
@@ -93,41 +92,34 @@ export default function PopupCourseBlock({
                 }}
                 className='flex items-center self-stretch rounded rounded-r-0 cursor-move!'
                 {...dragHandleProps}
+                onClick={handleClick}
             >
                 <DragIndicatorIcon className='h-6 w-6 text-white' />
             </div>
-            <div
-                onClick={handleClick}
-                className={clsx(
-                    'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 pl-[10px] focusable cursor-pointer text-left',
-                    className
-                )}
-            >
-                <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
-                    {course.department} {course.number} &ndash;{' '}
-                    {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
-                </Text>
-                {enableCourseStatusChips && course.status !== Status.OPEN && (
-                    <div
-                        style={{
-                            backgroundColor: colors.secondaryColor,
-                        }}
-                        className='ml-1 flex items-center justify-center justify-self-end rounded p-1px text-white'
-                    >
-                        <StatusIcon status={course.status} className='h-5 w-5' />
-                    </div>
-                )}
-            </div>
+            <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
+                {course.department} {course.number} &ndash;{' '}
+                {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
+            </Text>
+            {enableCourseStatusChips && course.status !== Status.OPEN && (
+                <div
+                    style={{
+                        backgroundColor: colors.secondaryColor,
+                    }}
+                    className='ml-1 flex items-center justify-center justify-self-end rounded p-1px text-white'
+                >
+                    <StatusIcon status={course.status} className='h-5 w-5' />
+                </div>
+            )}
 
             <button
-                className='h-[30px] flex bg-transparent px-2 py-0.25 text-white btn'
+                className='flex bg-transparent px-2 py-0.25 text-white btn'
                 onClick={handleCopy}
                 style={{ backgroundColor: colors.secondaryColor }}
             >
-                {copyWait === undefined ? (
-                    <Copy className='h-5 w-5 text-white' />
-                ) : (
+                {copyWait !== undefined ? (
                     <CheckIcon className='h-5 w-5 text-white' />
+                ) : (
+                    <Copy className='h-5 w-5 text-white' />
                 )}
                 {formattedUniqueId}
             </button>
