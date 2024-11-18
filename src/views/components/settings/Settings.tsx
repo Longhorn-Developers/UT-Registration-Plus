@@ -5,6 +5,7 @@ import exportSchedule from '@pages/background/lib/exportSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { downloadBlob } from '@shared/util/downloadBlob';
 // import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
@@ -213,7 +214,10 @@ export default function Settings(): JSX.Element {
     const handleExportClick = async (id: string) => {
         const jsonString = await exportSchedule(id);
         if (jsonString) {
-            await downloadBlob(jsonString, 'JSON', `schedule_${id}.json`);
+            const schedules = await UserScheduleStore.get('schedules');
+            const schedule = schedules.find(s => s.id === id);
+            const fileName = `${schedule?.name ?? `schedule_${id}`}_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+            await downloadBlob(jsonString, 'JSON', fileName);
         } else {
             console.error('Error exporting schedule: jsonString is undefined');
         }
