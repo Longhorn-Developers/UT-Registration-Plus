@@ -42,7 +42,7 @@ export default function ColorPatch({
     };
     return (
         <button
-            className='h-5.5 w-5.5 p-0 transition-all duration-200 hover:scale-110 btn'
+            className='size-6.5 p-0 transition-all duration-200 hover:scale-110 btn'
             style={{ backgroundColor: color }}
             onClick={handleClick}
         >
