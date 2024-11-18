@@ -71,7 +71,7 @@ export default function CalendarGrid({
                     <div className='h-4 flex items-end justify-center border-r border-gray-300' />
                 ))}
             <ColorPickerProvider>
-                {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} /> : null}
+                {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
             </ColorPickerProvider>
         </div>
     );
