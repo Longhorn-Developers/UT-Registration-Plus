@@ -1,5 +1,6 @@
 import { isValidHexColor, pickFontColor } from '@shared/util/colors';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
+import { useDebounce } from '@views/hooks/useDebounce';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -27,21 +28,30 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
     const previewColor = isValidHexColor(`#${hexCode}`) ? `#${hexCode}` : baseColor;
     const tagColor = pickFontColor(previewColor.slice(1) as `#${string}`);
 
+    const [localHexCode, setLocalHexCode] = React.useState(hexCode);
+
+    // Debounced version of setHexCode
+    const debouncedSetHexCode = useDebounce((value: string) => setHexCode(value), 500);
+
+    React.useEffect(() => {
+        debouncedSetHexCode(localHexCode);
+    }, [localHexCode, debouncedSetHexCode]);
+
     return (
         <>
             <div
                 style={{ backgroundColor: previewColor }}
-                className='h-5.5 w-5.25 flex items-center justify-center rounded-l-1'
+                className='h-6.5 w-6.5 flex items-center justify-center rounded-l-1'
             >
                 <TagIcon className={clsx('h-4 w-4 text-color-white', tagColor)} />
             </div>
-            <div className='h-5.5 w-[53px] flex flex-1 items-center justify-center border-b border-r border-t rounded-br rounded-tr p-1.25'>
+            <div className='h-6.5 w-[53px] flex flex-1 items-center justify-center border-b border-r border-t rounded-br rounded-tr p-1.25'>
                 <input
                     type='text'
                     maxLength={6}
                     className='w-full border-none bg-transparent font-size-2.75 font-normal outline-none focus:outline-none'
-                    value={hexCode}
-                    onChange={e => setHexCode(e.target.value)}
+                    value={localHexCode}
+                    onChange={e => setLocalHexCode(e.target.value)}
                 />
             </div>
         </>
