@@ -5,6 +5,9 @@ import type { CalendarCourseCellProps } from '@views/components/calendar/Calenda
 
 import useSchedules from './useSchedules';
 
+export const EARLIEST: number = 390 as const;
+export const LATEST: number = 1320 as const;
+
 const dayToNumber = {
     Monday: 0,
     Tuesday: 1,
@@ -69,7 +72,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
             }
 
             return meetings.flatMap(meeting => {
-                if (meeting.days.includes(DAY_MAP.S) || meeting.startTime < 480) {
+                if (meeting.days.includes(DAY_MAP.SU) || meeting.startTime < EARLIEST || meeting.endTime > LATEST) {
                     return processAsyncCourses({ courseDeptAndInstr, status, course });
                 }
 

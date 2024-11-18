@@ -1,13 +1,14 @@
 import type { Course } from '@shared/types/Course';
+import { DAY_MAP } from '@shared/types/CourseMeeting';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
-import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import React from 'react';
+import { type CalendarGridCourse, EARLIEST, LATEST } from '@views/hooks/useFlattenedCourseSchedule';
+import React, { useState } from 'react';
 
 import CalendarCell from './CalendarGridCell';
 
-const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
-const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
+// const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
+// const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 
 interface Props {
     courseCells?: CalendarGridCourse[];
@@ -25,7 +26,7 @@ function CalendarHour({ hour }: { hour: number }) {
     );
 }
 
-function makeGridRow(row: number, cols: number): JSX.Element {
+function makeGridRow(row: number, cols: number, hoursOfDay: number[]): JSX.Element {
     const hour = hoursOfDay[row]!;
 
     return (
@@ -50,8 +51,70 @@ export default function CalendarGrid({
     saturdayClass: _saturdayClass, // TODO: implement/move away from props
     setCourse,
 }: React.PropsWithChildren<Props>): JSX.Element {
+    const FIRST_HOUR = 8;
+    const LAST_HOUR = 9 + 12;
+    const [daysOfWeek, setDaysOfWeek] = useState<string[]>(['MON', 'TUE', 'WED', 'THU', 'FRI']);
+    const [hoursOfDay, setHoursOfDay] = useState<number[]>([
+        ...Array.from({ length: LAST_HOUR - FIRST_HOUR + 1 }, (_, index) => index + FIRST_HOUR),
+    ]);
+
+    // Don't display courses that can't be displayed
+    let restoreDefaultDaysOfWeek: boolean = true;
+    let restoreDefaultEarlyHours: boolean = true;
+    let restoreDefaultLateHours: boolean = true;
+    const validCourseCells = courseCells!.filter(
+        courseCell =>
+            courseCell.course.schedule.meetings.find(meeting => {
+                if (meeting.days.includes(DAY_MAP.S)) {
+                    restoreDefaultDaysOfWeek = false;
+                    if (!daysOfWeek.includes('SAT')) {
+                        setDaysOfWeek([...daysOfWeek, 'SAT']);
+                        return true;
+                    }
+                }
+                if (meeting.endTime / 60 > LAST_HOUR) {
+                    restoreDefaultLateHours = false;
+                    if (hoursOfDay.find(hour => hour > LAST_HOUR) === undefined) {
+                        setHoursOfDay([
+                            ...hoursOfDay,
+                            ...Array.from(
+                                { length: Math.ceil(LATEST / 60) - LAST_HOUR },
+                                (_, index) => index + LAST_HOUR + 1
+                            ),
+                        ]);
+                        return true;
+                    }
+                }
+                if (meeting.startTime / 60 < FIRST_HOUR) {
+                    restoreDefaultEarlyHours = false;
+                    if (hoursOfDay.find(hour => hour < FIRST_HOUR) === undefined) {
+                        setHoursOfDay([
+                            ...Array.from(
+                                { length: FIRST_HOUR - Math.floor(EARLIEST / 60) },
+                                (_, index) => index + Math.floor(EARLIEST / 60)
+                            ),
+                            ...hoursOfDay,
+                        ]);
+                        return true;
+                    }
+                }
+                return false;
+            }) === undefined
+    );
+
+    if (restoreDefaultDaysOfWeek && daysOfWeek.includes('SAT')) {
+        setDaysOfWeek([...daysOfWeek.filter(day => day !== 'SAT')]);
+    }
+    if (restoreDefaultLateHours && hoursOfDay.find(hour => hour > LAST_HOUR) !== undefined) {
+        setHoursOfDay([...hoursOfDay.filter(hour => hour <= LAST_HOUR)]);
+    }
+    if (restoreDefaultEarlyHours && hoursOfDay.find(hour => hour < FIRST_HOUR) !== undefined) {
+        setHoursOfDay([...hoursOfDay.filter(hour => hour >= FIRST_HOUR)]);
+    }
     return (
-        <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto_repeat(26,1fr)] h-full'>
+        <div
+            className={`grid grid-cols-[auto_auto_repeat(${daysOfWeek.length},1fr)] grid-rows-[auto_repeat(${2 * (hoursOfDay.length - 1)},1fr)] h-full`}
+        >
             {/* Displaying day labels */}
             <div />
             <div className='w-4 border-b border-r border-gray-300' />
@@ -62,14 +125,21 @@ export default function CalendarGrid({
                     </Text>
                 </div>
             ))}
-            {[...Array(13).keys()].map(i => makeGridRow(i, 5))}
-            <CalendarHour hour={21} />
-            {Array(6)
+            {[...Array(hoursOfDay.length - 1).keys()].map(i => makeGridRow(i, daysOfWeek.length, hoursOfDay))}
+            <CalendarHour hour={hoursOfDay[hoursOfDay.length - 1]!} />
+            {Array(daysOfWeek.length + 1)
                 .fill(1)
                 .map(() => (
                     <div className='h-4 flex items-end justify-center border-r border-gray-300' />
                 ))}
-            {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} /> : null}
+            {courseCells ? (
+                <AccountForCourseConflicts
+                    courseCells={validCourseCells}
+                    setCourse={setCourse}
+                    hoursOfDay={hoursOfDay}
+                    FIRST_HOUR={FIRST_HOUR}
+                />
+            ) : null}
         </div>
     );
 }
@@ -77,11 +147,18 @@ export default function CalendarGrid({
 interface AccountForCourseConflictsProps {
     courseCells: CalendarGridCourse[];
     setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
+    hoursOfDay: number[];
+    FIRST_HOUR: number;
 }
 
 // TODO: Possibly refactor to be more concise
 // TODO: Deal with react strict mode (wacky movements)
-function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
+function AccountForCourseConflicts({
+    courseCells,
+    setCourse,
+    hoursOfDay,
+    FIRST_HOUR,
+}: AccountForCourseConflictsProps): JSX.Element[] {
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce(
         (acc, cell: CalendarGridCourse) => {
@@ -123,6 +200,10 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
         });
     });
 
+    // Offset indices by the number of hours off from the first and last normal hours
+    const earlyOffset: number = 2 * hoursOfDay.filter(hour => hour < FIRST_HOUR).length;
+    // const lateOffset: number = 2 * hoursOfDay.filter(hour => hour < FIRST_HOUR).length + 1;
+
     return courseCells
         .filter(block => !block.async)
         .map(block => {
@@ -133,7 +214,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                     key={`${JSON.stringify(block)}`}
                     style={{
                         gridColumn: `${block.calendarGridPoint.dayIndex + 3}`,
-                        gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
+                        gridRow: `${block.calendarGridPoint.startIndex + earlyOffset} / ${block.calendarGridPoint.endIndex + earlyOffset}`,
                         width: `calc(100% / ${block.totalColumns ?? 1})`,
                         marginLeft: `calc(100% * ${((block.gridColumnStart ?? 0) - 1) / (block.totalColumns ?? 1)})`,
                     }}
