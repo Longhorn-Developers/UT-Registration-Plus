@@ -92,7 +92,6 @@ export default function Settings(): JSX.Element {
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
-    const [_importedSchedule, setImportedSchedule] = useState<string | null>(null);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -227,11 +226,11 @@ export default function Settings(): JSX.Element {
         const file = event.target.files?.[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = e => {
+            reader.onload = async e => {
                 try {
                     const result = e.target?.result as string;
                     const jsonObject = JSON.parse(result);
-                    setImportedSchedule(JSON.stringify(jsonObject, null, 2));
+                    await importSchedule(jsonObject);
                 } catch (error) {
                     console.error('Invalid import file!');
                 }
@@ -239,13 +238,6 @@ export default function Settings(): JSX.Element {
             reader.readAsText(file);
         }
     };
-
-    useEffect(() => {
-        if (_importedSchedule) {
-            console.log('Course schedule successfully parsed!');
-            importSchedule(_importedSchedule);
-        }
-    }, [_importedSchedule]);
 
     // const handleAddCourseByLink = async () => {
     //     // todo: Use a proper modal instead of a prompt
