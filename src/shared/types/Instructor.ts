@@ -17,25 +17,6 @@ export default class Instructor {
     }
 
     /**
-     * Get the URL to the instructor's directory page on the UT Directory website
-     *
-     * @returns A URL string to the instructor's directory page
-     */
-    getDirectoryUrl(): string {
-        const name = this.toString({
-            format: 'full_name',
-            case: 'capitalize',
-        });
-
-        const url = new URL('https://directory.utexas.edu/index.php');
-        url.searchParams.set('q', name);
-        url.searchParams.set('scope', 'faculty/staff');
-        url.searchParams.set('submit', 'Search');
-
-        return url.toString();
-    }
-
-    /**
      * Get a string representation of the instructor
      *
      * @param options - The options for how to format the instructor string
@@ -43,49 +24,30 @@ export default class Instructor {
      */
     toString(options: InstructorFormatOptions): string {
         const { firstName, lastName, fullName } = this;
-        const { format, case: caseType } = options;
+        const { format } = options;
 
-        const process = (str: string) => {
-            if (caseType === 'lowercase') {
-                return str.toLowerCase();
-            }
-            if (caseType === 'uppercase') {
-                return str.toUpperCase();
-            }
-            return capitalize(str);
-        };
-
-        if (format === 'full_name') {
-            if (!fullName) {
-                return process(lastName || firstName || 'Unknown');
-            }
-            return process(fullName);
+        switch (format) {
+            case 'first_last':
+                if (firstName && lastName) {
+                    return `${capitalize(firstName)} ${capitalize(lastName)}`;
+                } else if (lastName) {
+                    return capitalize(lastName);
+                } else if (fullName) {
+                    return fullName;
+                } else {
+                    return '';
+                }
+            case 'last':
+                if (lastName) {
+                    return capitalize(lastName);
+                } else if (fullName) {
+                    return fullName;
+                } else {
+                    return '';
+                }
+            default:
+                throw new Error(`Invalid Instructor String format: ${format}`);
         }
-
-        // Avoid duplicating this for every remaining case
-        if (!lastName) {
-            return process(fullName || firstName || 'Unknown');
-        }
-
-        if (format === 'abbr') {
-            if (!firstName || !firstName[0]) {
-                return process(lastName);
-            }
-            return `${process(firstName[0])}. ${process(lastName)}`;
-        }
-
-        if (format === 'first_last') {
-            if (!firstName) {
-                return process(lastName);
-            }
-            return `${process(firstName)} ${process(lastName)}`;
-        }
-
-        if (format === 'last') {
-            return process(lastName);
-        }
-
-        throw new Error(`Invalid Instructor String format: ${format}`);
     }
 }
 
@@ -94,9 +56,5 @@ export default class Instructor {
  */
 type InstructorFormatOptions = {
     /** How do you want the names of the professors formatted */
-    format: 'abbr' | 'first_last' | 'last' | 'full_name';
-    /**
-     * What the case of the string should be
-     */
-    case: 'capitalize' | 'lowercase' | 'uppercase';
+    format: 'first_last' | 'last';
 };

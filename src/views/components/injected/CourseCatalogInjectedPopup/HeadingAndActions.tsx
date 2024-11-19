@@ -55,8 +55,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
     const isInCalendar = useCalendar();
 
-    const getInstructorFullName = (instructor: Instructor) =>
-        instructor.toString({ format: 'first_last', case: 'capitalize' });
+    const getInstructorFullName = (instructor: Instructor) => instructor.toString({ format: 'first_last' });
 
     const handleCopy = () => {
         navigator.clipboard.writeText(formattedUniqueId);
