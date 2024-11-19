@@ -137,7 +137,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             },
             categories: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F', 'Other'],
             tickInterval: 1,
-            tickWidth: 1.5,
+            tickWidth: 1,
             tickLength: 10,
             tickColor: '#9CADB7',
             crosshair: true,
