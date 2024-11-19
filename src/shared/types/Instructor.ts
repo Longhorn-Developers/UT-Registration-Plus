@@ -30,21 +30,27 @@ export default class Instructor {
             case 'first_last':
                 if (firstName && lastName) {
                     return `${capitalize(firstName)} ${capitalize(lastName)}`;
-                } else if (lastName) {
-                    return capitalize(lastName);
-                } else if (fullName) {
-                    return fullName;
-                } else {
-                    return '';
                 }
+
+                if (lastName) {
+                    return capitalize(lastName);
+                }
+
+                if (fullName) {
+                    return fullName;
+                }
+
+                return '';
             case 'last':
                 if (lastName) {
                     return capitalize(lastName);
-                } else if (fullName) {
-                    return fullName;
-                } else {
-                    return '';
                 }
+
+                if (fullName) {
+                    return fullName;
+                }
+
+                return '';
             default:
                 throw new Error(`Invalid Instructor String format: ${format}`);
         }
