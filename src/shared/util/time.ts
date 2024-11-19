@@ -6,6 +6,7 @@ export const DAY = 24 * HOUR;
 
 /**
  * Pauses the execution for the specified number of milliseconds.
+ *
  * @param milliseconds - The number of milliseconds to sleep.
  * @returns A promise that resolves after the specified number of milliseconds.
  */
@@ -14,8 +15,8 @@ export const sleep = (milliseconds: number): Promise<void> => new Promise(resolv
 /**
  * Checks to see if expired by the time first stored and the time frame that it is stored for
  *
- * @param time time it was stored
- * @param threshold time frame it can be stored for
- * @return true if expired, false if the time frame is still in range
+ * @param time - time it was stored
+ * @param threshold - time frame it can be stored for
+ * @returns true if expired, false if the time frame is still in range
  */
 export const didExpire = (time: number, threshold: number): boolean => time + threshold <= Date.now();
