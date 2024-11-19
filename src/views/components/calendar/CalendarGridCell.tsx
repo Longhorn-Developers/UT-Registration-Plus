@@ -3,6 +3,7 @@ import React from 'react';
 interface Props {
     row: number;
     col: number;
+    another_prop?: number;
 }
 
 /**
@@ -16,6 +17,7 @@ function CalendarCell(props: Props): JSX.Element {
             style={{
                 gridColumn: props.col + 3,
                 gridRow: `${2 * props.row + 2} / ${2 * props.row + 4}`,
+                opacity: props.another_prop != undefined && props.another_prop > 3 ? '50%' : '100%',
             }}
         >
             <div className='h-0 w-full border-t border-gray-300/25' />
