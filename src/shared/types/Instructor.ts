@@ -18,7 +18,8 @@ export default class Instructor {
 
     /**
      * Get the URL to the instructor's directory page on the UT Directory website
-     * @returns a URL string to the instructor's directory page
+     *
+     * @returns A URL string to the instructor's directory page
      */
     getDirectoryUrl(): string {
         const name = this.toString({
@@ -36,8 +37,9 @@ export default class Instructor {
 
     /**
      * Get a string representation of the instructor
-     * @param options the options for how to format the instructor string
-     * @returns a string representation of the instructor
+     *
+     * @param options - The options for how to format the instructor string
+     * @returns A string representation of the instructor
      */
     toString(options: InstructorFormatOptions): string {
         const { firstName, lastName, fullName } = this;
