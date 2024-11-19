@@ -58,6 +58,9 @@ importers:
       husky:
         specifier: ^9.1.6
         version: 9.1.6
+      is-odd:
+        specifier: ^3.0.1
+        version: 3.0.1
       kc-dabr-wasm:
         specifier: ^0.1.2
         version: 0.1.2
@@ -164,6 +167,9 @@ importers:
       '@types/gulp-zip':
         specifier: ^4.0.4
         version: 4.0.4
+      '@types/is-odd':
+        specifier: ^3.0.4
+        version: 3.0.4
       '@types/node':
         specifier: ^22.8.7
         version: 22.8.7
@@ -1995,6 +2001,9 @@ packages:
 
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
+
+  '@types/is-odd@3.0.4':
+    resolution: {integrity: sha512-BdjXVZXuHVqdXNi9gEbwf/W/k2lIhXzqnmygz4BFRTdpgFpJsn1v7AfB3DaLHj04O9hKiqQvnxu5AeogyptDjQ==}
 
   '@types/istanbul-lib-coverage@2.0.6':
     resolution: {integrity: sha512-2QF/t/auWm0lsy8XtKVPG19v3sSOQlJe/YHZgfjb/KBBHOGSV+J2q/S671rcq9uTBrLAXmZpqJiaQbMT+zNU1w==}
@@ -4359,6 +4368,10 @@ packages:
     resolution: {integrity: sha512-k1U0IRzLMo7ZlYIfzRu23Oh6MiIFasgpb9X76eqfFZAqwH44UI4KTBvBYIZ1dSL9ZzChTB9ShHfLkR4pdW5krQ==}
     engines: {node: '>= 0.4'}
 
+  is-number@6.0.0:
+    resolution: {integrity: sha512-Wu1VHeILBK8KAWJUAiSZQX94GmOE45Rg6/538fKwiloUu21KncEkYGPqob2oSZ5mUT73vLGrHQjKw3KMPwfDzg==}
+    engines: {node: '>=0.10.0'}
+
   is-number@7.0.0:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
@@ -4366,6 +4379,10 @@ packages:
   is-obj@2.0.0:
     resolution: {integrity: sha512-drqDG3cbczxxEJRoOXcOjtdp1J/lyp1mNn0xaznRs8+muBhgQcrnbspox5X5fOw0HnMnbfDzvnEMEtqDEJEo8w==}
     engines: {node: '>=8'}
+
+  is-odd@3.0.1:
+    resolution: {integrity: sha512-CQpnWPrDwmP1+SMHXZhtLtJv90yiyVfluGsX5iNCVkrhQtU3TQHsUWPG9wkdk9Lgd5yNpAg9jQEo90CBaXgWMA==}
+    engines: {node: '>=4'}
 
   is-path-inside@3.0.3:
     resolution: {integrity: sha512-Fd4gABb+ycGAmKou8eMftCupSir5lRxqf4aD/vd0cD2qc4HL07OjCeuHMr8Ro4CoMaeCKDB0/ECBOVWjTwUvPQ==}
@@ -8579,6 +8596,8 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
 
+  '@types/is-odd@3.0.4': {}
+
   '@types/istanbul-lib-coverage@2.0.6': {}
 
   '@types/istanbul-lib-report@3.0.3':
@@ -11500,9 +11519,15 @@ snapshots:
     dependencies:
       has-tostringtag: 1.0.2
 
+  is-number@6.0.0: {}
+
   is-number@7.0.0: {}
 
   is-obj@2.0.0: {}
+
+  is-odd@3.0.1:
+    dependencies:
+      is-number: 6.0.0
 
   is-path-inside@3.0.3: {}
 

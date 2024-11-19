@@ -1,3 +1,4 @@
+import isOdd from 'is-odd';
 import React from 'react';
 
 interface Props {
@@ -17,7 +18,7 @@ function CalendarCell(props: Props): JSX.Element {
             style={{
                 gridColumn: props.col + 3,
                 gridRow: `${2 * props.row + 2} / ${2 * props.row + 4}`,
-                opacity: props.another_prop != undefined && props.another_prop > 3 ? '50%' : '100%',
+                opacity: props.another_prop != undefined && isOdd(props.another_prop) ? '50%' : '100%',
             }}
         >
             <div className='h-0 w-full border-t border-gray-300/25' />
