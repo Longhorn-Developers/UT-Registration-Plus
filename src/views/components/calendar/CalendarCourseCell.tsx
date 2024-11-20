@@ -1,11 +1,11 @@
+import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
-import { enableCourseStatusChips } from '@shared/util/experimental';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import ClosedIcon from '~icons/material-symbols/lock';
 import WaitlistIcon from '~icons/material-symbols/timelapse';
@@ -26,14 +26,12 @@ export interface CalendarCourseCellProps {
 /**
  * Renders a cell for a calendar course.
  *
- * @component
- * @param {CalendarCourseCellProps} props - The component props.
- * @param {string} props.courseDeptAndInstr - The course department and instructor.
- * @param {string} props.timeAndLocation - The time and location of the course.
- * @param {StatusType} props.status - The status of the course.
- * @param {Colors} props.colors - The colors for styling the cell.
- * @param {string} props.className - Additional CSS class name for the cell.
- * @returns {JSX.Element} The rendered component.
+ * @param courseDeptAndInstr - The course department and instructor.
+ * @param timeAndLocation - The time and location of the course.
+ * @param status - The status of the course.
+ * @param colors - The colors for styling the cell.
+ * @param className - Additional CSS class name for the cell.
+ * @returns The rendered component.
  */
 export default function CalendarCourseCell({
     courseDeptAndInstr,
@@ -43,6 +41,21 @@ export default function CalendarCourseCell({
     className,
     onClick,
 }: CalendarCourseCellProps): JSX.Element {
+    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+
+    useEffect(() => {
+        initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
+
+        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+            setEnableCourseStatusChips(newValue);
+            // console.log('enableCourseStatusChips', newValue);
+        });
+
+        return () => {
+            OptionsStore.removeListener(l1);
+        };
+    }, []);
+
     let rightIcon: React.ReactNode | null = null;
     if (enableCourseStatusChips) {
         if (status === Status.WAITLISTED) {
@@ -61,7 +74,7 @@ export default function CalendarCourseCell({
     return (
         <div
             className={clsx(
-                'h-full w-0 flex justify-center rounded p-x-2 p-y-1.2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out',
+                'h-full w-0 flex justify-center rounded p-x-2 p-y-1.2 cursor-pointer hover:shadow-md transition-shadow-100 ease-out',
                 {
                     'min-w-full': timeAndLocation,
                     'w-full': !timeAndLocation,
@@ -86,7 +99,7 @@ export default function CalendarCourseCell({
                     {courseDeptAndInstr}
                 </Text>
                 {timeAndLocation && (
-                    <Text variant='h3-course' as='p'>
+                    <Text variant='h3-course' as='p' className='whitespace-pre-line'>
                         {timeAndLocation}
                     </Text>
                 )}

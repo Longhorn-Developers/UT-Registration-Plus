@@ -19,9 +19,8 @@ const TableDataSelector = {
     SCHEDULE_HOURS: 'td[data-th="Hour"]>span',
     SCHEDULE_LOCATION: 'td[data-th="Room"]>span',
     FLAGS: 'td[data-th="Flags"] ul li',
+    CORE_CURRICULUM: 'td[data-th="Core"] ul li',
 } as const satisfies Record<string, string>;
-
-type TableDataSelectorType = (typeof TableDataSelector)[keyof typeof TableDataSelector];
 
 /**
  * The selectors that we use to scrape the course details page for an individual course (https://utdirect.utexas.edu/apps/registrar/course_schedule/20239/52700/)
@@ -31,22 +30,25 @@ const DetailsSelector = {
     COURSE_DESCRIPTION: '#details p',
 } as const;
 
-type DetailsSelectorType = (typeof DetailsSelector)[keyof typeof DetailsSelector];
-
 /**
  * A class that allows us to scrape information from UT's course catalog to create our internal representation of a course
  */
 export class CourseCatalogScraper {
     support: SiteSupportType;
+    doc: Document;
+    url: string;
 
-    constructor(support: SiteSupportType) {
+    constructor(support: SiteSupportType, doc: Document = document, url: string = window.location.href) {
         this.support = support;
+        this.doc = doc;
+        this.url = url;
     }
 
     /**
      * Pass in a list of HTMLtable rows and scrape every course from them
-     * @param rows the rows of the course catalog table
-     * @param keepHeaders whether to keep the header rows (which contain the course name) in the output
+     *
+     * @param rows - the rows of the course catalog table
+     * @param keepHeaders - whether to keep the header rows (which contain the course name) in the output
      * @returns an array of course row objects (which contain courses corresponding to the htmltable row)
      */
     public scrape(rows: NodeListOf<HTMLTableRowElement> | HTMLTableRowElement[], keepHeaders = false): ScrapedRow[] {
@@ -91,10 +93,11 @@ export class CourseCatalogScraper {
                 uniqueId: this.getUniqueId(row),
                 instructionMode: this.getInstructionMode(row),
                 instructors: this.getInstructors(row) as Instructor[],
-                description: this.getDescription(document),
+                description: this.getDescription(this.doc),
                 semester: this.getSemester(),
                 scrapedAt: Date.now(),
                 colors: getCourseColors('emerald', 500),
+                core: this.getCore(row),
             });
             courses.push({
                 element: row,
@@ -107,8 +110,12 @@ export class CourseCatalogScraper {
 
     /**
      * Separate the course name into its department, number, and name
-     * @example separateCourseName("CS 314H - Honors Discrete Structures") => ["Honors Discrete Structures", "CS", "314H"]
-     * @param courseFullName the full name of the course (e.g. "CS 314H - Honors Discrete Structures")
+     *
+     * @example
+     * ```
+     * separateCourseName("CS 314H - Honors Discrete Structures") => ["Honors Discrete Structures", "CS", "314H"]
+     * ```
+     * @param courseFullName - the full name of the course (e.g. "CS 314H - Honors Discrete Structures")
      * @returns an array of the course name , department, and number
      */
     separateCourseName(courseFullName: string): [courseName: string, department: string, number: string] {
@@ -122,8 +129,9 @@ export class CourseCatalogScraper {
 
     /**
      * Gets how many credit hours the course is worth
-     * @param courseNumber the course number, CS 314H
-     * @return the number of credit hours the course is worth
+     *
+     * @param courseNumber - the course number, CS 314H
+     * @returns the number of credit hours the course is worth
      */
     getCreditHours(courseNumber: string): number {
         let creditHours = Number(courseNumber.split('')[0]);
@@ -147,7 +155,8 @@ export class CourseCatalogScraper {
 
     /**
      * Scrape the Unique ID from the course catalog table row
-     * @param row the row of the course catalog table
+     *
+     * @param row - the row of the course catalog table
      * @returns the uniqueid of the course as a number
      */
     getUniqueId(row: HTMLTableRowElement): number {
@@ -160,17 +169,19 @@ export class CourseCatalogScraper {
 
     /**
      * Scrapes the individual URL for a given course that takes you to the course details page
-     * @param row the row of the course catalog table
+     *
+     * @param row - the row of the course catalog table
      * @returns the url of the course details page for the course in the row
      */
     getURL(row: HTMLTableRowElement): string {
         const div = row.querySelector<HTMLAnchorElement>(`${TableDataSelector.UNIQUE_ID} a`);
-        return div?.href || window.location.href;
+        return div?.href || this.url;
     }
 
     /**
      * Scrape who is teaching the course from the course catalog table row with meta-data about their name
-     * @param row the row of the course catalog table
+     *
+     * @param row - the row of the course catalog table
      * @returns an array of instructors for the course
      */
     getInstructors(row: HTMLTableRowElement): Instructor[] {
@@ -195,7 +206,8 @@ export class CourseCatalogScraper {
 
     /**
      * Whether or not this is a header row for a course within the course catalog list (we can't scrape courses from header rows)
-     * @param row the row of the course catalog table
+     *
+     * @param row - the row of the course catalog table
      * @returns true if this is a header row, false otherwise
      */
     isHeaderRow(row: HTMLTableRowElement): boolean {
@@ -204,7 +216,8 @@ export class CourseCatalogScraper {
 
     /**
      * Scrape whether the class is being taught online, in person, or a hybrid of the two
-     * @param row the row of the course catalog table
+     *
+     * @param row - the row of the course catalog table
      * @returns the instruction mode of the course
      */
     getInstructionMode(row: HTMLTableRowElement): InstructionMode {
@@ -221,11 +234,12 @@ export class CourseCatalogScraper {
 
     /**
      * Scrapes the description of the course from the course details page and separates it into an array of cleaned up lines
-     * @param document the document of the course details page to scrape
+     *
+     * @param doc - the document of the course details page to scrape
      * @returns an array of lines of the course description
      */
-    getDescription(document: Document): string[] {
-        const lines = document.querySelectorAll(DetailsSelector.COURSE_DESCRIPTION);
+    getDescription(doc: Document): string[] {
+        const lines = doc.querySelectorAll(DetailsSelector.COURSE_DESCRIPTION);
         return Array.from(lines)
             .map(line => line.textContent || '')
             .map(line => line.replace(/\s\s+/g, ' ').trim())
@@ -233,7 +247,7 @@ export class CourseCatalogScraper {
     }
 
     getSemester(): Semester {
-        const { pathname } = new URL(window.location.href);
+        const { pathname } = new URL(this.url);
 
         const code = pathname.split('/')[4];
         if (!code) {
@@ -271,12 +285,13 @@ export class CourseCatalogScraper {
 
     /**
      * Get the full name of the course from the course catalog table row (e.g. "CS 314H - Honors Discrete Structures")
-     * @param row the row of the course catalog table
+     *
+     * @param row - the row of the course catalog table
      * @returns the full name of the course
      */
     getFullName(row?: HTMLTableRowElement): string {
         if (!row) {
-            return document.querySelector(DetailsSelector.COURSE_NAME)?.textContent || '';
+            return this.doc.querySelector(DetailsSelector.COURSE_NAME)?.textContent || '';
         }
         const div = row.querySelector(TableDataSelector.COURSE_HEADER);
         return div?.textContent || '';
@@ -284,7 +299,8 @@ export class CourseCatalogScraper {
 
     /**
      * When registration is open, the registration URL will show up in the course catalog table row as a link. This will scrape it from the row.
-     * @param row the row of the course catalog table
+     *
+     * @param row - the row of the course catalog table
      * @returns the registration URL for the course if it is currently displayed, undefined otherwise
      */
     getRegisterURL(row: HTMLTableRowElement): string | undefined {
@@ -294,8 +310,9 @@ export class CourseCatalogScraper {
 
     /**
      * Scrapes whether the course is open, closed, waitlisted, or cancelled
-     * @param row the row of the course catalog table
-     * @returns
+     *
+     * @param row - the row of the course catalog table
+     * @returns a tuple of the status of the course and whether the course is reserved
      */
     getStatus(row: HTMLTableRowElement): [status: StatusType, isReserved: boolean] {
         const div = row.querySelector(TableDataSelector.STATUS);
@@ -325,7 +342,8 @@ export class CourseCatalogScraper {
 
     /**
      * At UT, some courses have certain "flags" which aid in graduation. This will scrape the flags from the course catalog table row.
-     * @param row
+     *
+     * @param row - the row of the course catalog table
      * @returns an array of flags for the course
      */
     getFlags(row: HTMLTableRowElement): string[] {
@@ -334,8 +352,25 @@ export class CourseCatalogScraper {
     }
 
     /**
+     * Get the list of core curriculum requirements the course satisfies
+     *
+     * @param row - the row of the course catalog table
+     * @returns an array of core curriculum codes
+     */
+    getCore(row: HTMLTableRowElement): string[] {
+        const lis = row.querySelectorAll(TableDataSelector.CORE_CURRICULUM);
+        return (
+            Array.from(lis)
+                // ut schedule is weird and puts a blank core curriculum element even if there aren't any core requirements so filter those out
+                .filter(li => li.getAttribute('title') !== ' core curriculum requirement')
+                .map(li => li.textContent || '')
+        );
+    }
+
+    /**
      * This will scrape all the time information from the course catalog table row and return it as a CourseSchedule object, which represents all of the meeting timiestimes/places of the course.
-     * @param row the row of the course catalog table
+     *
+     * @param row - the row of the course catalog table
      * @returns a CourseSchedule object representing all of the meetings of the course
      */
     getSchedule(row: HTMLTableRowElement): CourseSchedule {

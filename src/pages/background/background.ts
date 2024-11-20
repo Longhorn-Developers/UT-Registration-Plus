@@ -31,6 +31,20 @@ chrome.runtime.onInstalled.addListener(details => {
     }
 });
 
+// migration/login logic
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+    // console.log(changeInfo);
+    if (changeInfo.url === 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/') {
+        function openPopupAction() {
+            chrome.tabs.onActivated.removeListener(openPopupAction);
+            chrome.action.openPopup();
+        }
+
+        chrome.tabs.onActivated.addListener(openPopupAction);
+        await chrome.tabs.remove(tabId);
+    }
+});
+
 // initialize the message listener that will listen for messages from the content script
 const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...browserActionHandler,
@@ -45,15 +59,11 @@ messageListener.listen();
 UserScheduleStore.listen('schedules', async schedules => {
     const index = await UserScheduleStore.get('activeIndex');
     const numCourses = schedules.newValue[index]?.courses?.length;
-    if (!numCourses) return;
-
-    updateBadgeText(numCourses);
+    updateBadgeText(numCourses || 0);
 });
 
 UserScheduleStore.listen('activeIndex', async ({ newValue }) => {
     const schedules = await UserScheduleStore.get('schedules');
     const numCourses = schedules[newValue]?.courses?.length;
-    if (!numCourses) return;
-
-    updateBadgeText(numCourses);
+    updateBadgeText(numCourses || 0);
 });

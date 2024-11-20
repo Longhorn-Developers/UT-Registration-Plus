@@ -15,10 +15,9 @@ export const colors = {
         gray: '#9CADB7',
         offwhite: '#D6D2C4',
         concrete: '#95A5A6',
-        red: '#B91C1C', //   Not sure if this should be here, but it's used for remove course, and add course is ut-green
     },
     theme: {
-        red: '#BF0000',
+        red: '#D10000',
         black: '#1A2024',
     },
 } as const satisfies Record<string, Record<string, string>>;
@@ -52,11 +51,15 @@ type NestedKeys<T> = {
 export type ThemeColor = NestedKeys<typeof colors>;
 
 /**
- * Represents a Tailwind colorway: a colorway is a key in the theme.colors object that has an object as its value.
+ * Represents a Tailwind colorway: a colorway is a key in the theme.colors object that has an object as its value
  */
 export type TWColorway = {
     [K in keyof typeof theme.colors]: (typeof theme.colors)[K] extends Record<string, unknown> ? K : never;
 }[keyof typeof theme.colors];
+
+/**
+ * Represents the index type for accessing the theme colors based on the specified TWColorway
+ */
 export type TWIndex = keyof (typeof theme.colors)[TWColorway];
 
 /**

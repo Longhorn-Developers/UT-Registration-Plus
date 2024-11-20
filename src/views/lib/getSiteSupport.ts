@@ -11,6 +11,9 @@ export const SiteSupport = {
     WAITLIST: 'WAITLIST',
     EXTENSION_POPUP: 'EXTENSION_POPUP',
     MY_CALENDAR: 'MY_CALENDAR',
+    REPORT_ISSUE: 'REPORT_ISSUE',
+    MY_UT: 'MY_UT',
+    CLASSLIST: 'CLASSLIST',
 } as const;
 
 /**
@@ -21,7 +24,8 @@ export type SiteSupportType = (typeof SiteSupport)[keyof typeof SiteSupport];
 
 /**
  * We use this function to determine what page the user is on, and then we can use that information to determine what to do
- * @param url the url of the current page
+ *
+ * @param url - the url of the current page
  * @returns a list of page types that the current page is
  */
 export default function getSiteSupport(url: string): SiteSupportType | null {
@@ -44,6 +48,12 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
     }
     if (url.includes('utdirect.utexas.edu') && (url.includes('waitlist') || url.includes('classlist'))) {
         return SiteSupport.WAITLIST;
+    }
+    if (url.includes('my.utexas.edu/student/student/index') || url.includes('my.utexas.edu/student/')) {
+        return SiteSupport.MY_UT;
+    }
+    if (url.includes('registration/classlist.WBX')) {
+        return SiteSupport.CLASSLIST;
     }
     return null;
 }

@@ -86,3 +86,10 @@
         text-decoration: line-through;
     }
 }
+
+.isConflictNoLineThrough:not(.inActiveSchedule) {
+    > *:not(td:last-child) {
+        color: colors.$speedway_brick;
+        font-weight: normal;
+    }
+}

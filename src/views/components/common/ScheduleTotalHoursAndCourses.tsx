@@ -13,7 +13,10 @@ export interface ScheduleTotalHoursAndCoursesProps {
 /**
  * The ScheduleTotalHoursAndCourses as per the Labels and Details Figma section
  *
- * @param props ScheduleTotalHoursAndCoursesProps
+ * @param scheduleName - The name of the schedule.
+ * @param totalHours - The total number of hours.
+ * @param totalCourses - The total number of courses.
+ * @returns The rendered ScheduleTotalHoursAndCourses component.
  */
 export default function ScheduleTotalHoursAndCourses({
     scheduleName,
@@ -27,7 +30,7 @@ export default function ScheduleTotalHoursAndCourses({
             </Text>
             <Text variant='h3' as='div' className='flex flex-row items-center gap-2 text-theme-black'>
                 {totalHours} {totalHours === 1 ? 'Hour' : 'Hours'}
-                <Text variant='h4' as='span' className='hidden text-ut-black capitalize screenshot:inline sm:inline'>
+                <Text variant='h4' as='span' className='hidden capitalize screenshot:inline sm:inline'>
                     {totalCourses} {totalCourses === 1 ? 'Course' : 'Courses'}
                 </Text>
             </Text>

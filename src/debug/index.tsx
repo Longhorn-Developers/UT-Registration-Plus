@@ -1,4 +1,5 @@
 import { DevStore } from '@shared/storage/DevStore';
+import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -7,8 +8,8 @@ const manifest = chrome.runtime.getManifest();
 /**
  * Handles editing the storage for a specific area.
  *
- * @param {string} areaName - The name of the storage area.
- * @returns {Function} - A function that accepts changes and sets them in the storage.
+ * @param areaName - The name of the storage area.
+ * @returns A function that accepts changes and sets them in the storage.
  */
 const handleEditStorage = (areaName: 'local' | 'sync' | 'session') => (changes: Record<string, unknown>) => {
     chrome.storage[areaName].set(changes);
@@ -77,6 +78,7 @@ function DevDashboard() {
     const [localStorage, setLocalStorage] = React.useState<Record<string, unknown>>({});
     const [syncStorage, setSyncStorage] = React.useState<Record<string, unknown>>({});
     const [sessionStorage, setSessionStorage] = React.useState<Record<string, unknown>>({});
+    useKC_DABR_WASM();
 
     useEffect(() => {
         const onVisibilityChange = () => {

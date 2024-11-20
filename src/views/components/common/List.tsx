@@ -70,7 +70,9 @@ function Item<T>(props: {
  * `List` is a functional component that displays a course meeting.
  *
  * @example
+ * ```
  * <List draggableElements={elements} />
+ * ```
  */
 function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<T>): JSX.Element {
     const [items, setItems] = useState(wrap(draggables, itemKey));
@@ -79,6 +81,9 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
 
     useEffect(() => {
         setItems(wrap(draggables, itemKey));
+
+        // This is on purpose
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [draggables]);
 
     const onDragEnd: OnDragEndResponder = useCallback(
@@ -92,6 +97,9 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
             setItems(reordered);
             onReordered(reordered.map(item => item.content));
         },
+
+        // This is on purpose
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [items]
     );
 

@@ -33,7 +33,9 @@ export const useableColorways = Object.keys(theme.colors)
 
 /**
  * Generate a Tailwind classname for the font color based on the background color
- * @param bgColor the hex color of the background
+ *
+ * @param bgColor - The hex color of the background
+ * @returns The Tailwind classname for the font color
  */
 export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 'text-theme-black' {
     const coefficients = [0.2126729, 0.7151522, 0.072175] as const;
@@ -56,7 +58,11 @@ export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 
 
 /**
  * Get primary and secondary colors from a Tailwind colorway
- * @param colorway the Tailwind colorway ex. "emerald"
+ *
+ * @param colorway - The Tailwind colorway ex. "emerald"
+ * @param index - The index of the primary color in the colorway
+ * @param offset - The offset to get the secondary color
+ * @returns The primary and secondary colors
  */
 export function getCourseColors(colorway: TWColorway, index?: number, offset: number = 300): CourseColors {
     if (index === undefined) {
@@ -117,8 +123,12 @@ export function getColorwayFromColor(color: HexColor): TWColorway {
 
 /**
  * Get next unused color in a tailwind colorway for a given schedule
- * @param schedule the schedule which the course is in
- * @param course the course to get the color for
+ *
+ * @param schedule - The schedule which the course is in
+ * @param course - The course to get the color for
+ * @param index - The index of the primary color in the colorway
+ * @param offset - The offset to get the secondary color
+ * @returns The primary and secondary colors
  */
 export function getUnusedColor(
     schedule: Serialized<UserSchedule>,
@@ -207,9 +217,9 @@ export function getUnusedColor(
 }
 
 // OKLab helper functions (https://github.com/bottosson/bottosson.github.io/blob/master/misc/colorpicker/colorconversion.js)
-function srgbTransferFunction(a: number): number {
-    return a <= 0.0031308 ? 12.92 * a : 1.055 * a ** 0.4166666666666667 - 0.055;
-}
+// function srgbTransferFunction(a: number): number {
+//     return a <= 0.0031308 ? 12.92 * a : 1.055 * a ** 0.4166666666666667 - 0.055;
+// }
 
 function srgbTransferFunctionInv(a: number): number {
     return a > 0.04045 ? ((a + 0.055) / 1.055) ** 2.4 : a / 12.92;
@@ -221,8 +231,9 @@ function rgbToSrgb(rgb: RGB): sRGB {
 
 /**
  * Convert an RGB color to the OKLab color space
- * @param rgb the RGB color
- * @returns the color in the OKLab color space
+ *
+ * @param rgb - The RGB color
+ * @returns The color in the OKLab color space
  */
 function srgbToOKlab([r, g, b]: sRGB): Lab {
     let l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;

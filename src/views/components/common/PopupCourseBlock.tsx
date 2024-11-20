@@ -1,14 +1,14 @@
 import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd';
 import { background } from '@shared/messages';
+import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
-import { enableCourseStatusChips } from '@shared/util/experimental';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
@@ -25,7 +25,11 @@ export interface PopupCourseBlockProps {
 /**
  * The "course block" to be used in the extension popup.
  *
- * @param props PopupCourseBlockProps
+ * @param className - The class name to apply to the component.
+ * @param course - The course object to display.
+ * @param colors - The colors to use for the course block.
+ * @param dragHandleProps - The drag handle props for the course block.
+ * @returns The rendered PopupCourseBlock component.
  */
 export default function PopupCourseBlock({
     className,
@@ -33,6 +37,21 @@ export default function PopupCourseBlock({
     colors,
     dragHandleProps,
 }: PopupCourseBlockProps): JSX.Element {
+    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+
+    useEffect(() => {
+        initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
+
+        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+            setEnableCourseStatusChips(newValue);
+            // console.log('enableCourseStatusChips', newValue);
+        });
+
+        return () => {
+            OptionsStore.removeListener(l1);
+        };
+    }, []);
+
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
@@ -63,8 +82,9 @@ export default function PopupCourseBlock({
                 <DragIndicatorIcon className='h-6 w-6 text-white' />
             </div>
             <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
-                <span className='px-0.5 font-450'>{formattedUniqueId}</span> {course.department} {course.number} &ndash;{' '}
-                {course.instructors.length === 0 ? 'Unknown' : course.instructors.map(v => v.lastName)}
+                <span className='px-0.5 font-450'>{formattedUniqueId}</span> {course.department} {course.number}
+                {course.instructors.length > 0 ? <> &ndash; </> : ''}
+                {course.instructors.map(v => v.toString({ format: 'last' })).join('; ')}
             </Text>
             {enableCourseStatusChips && course.status !== Status.OPEN && (
                 <div
