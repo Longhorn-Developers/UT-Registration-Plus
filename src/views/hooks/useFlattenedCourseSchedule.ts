@@ -98,9 +98,7 @@ function extractCourseInfo(course: Course) {
 
     if (course.instructors.length > 0) {
         courseDeptAndInstr += ' \u2013 ';
-        courseDeptAndInstr += course.instructors
-            .map(instructor => instructor.toString({ format: 'last', case: 'capitalize' }))
-            .join('; ');
+        courseDeptAndInstr += course.instructors.map(instructor => instructor.toString({ format: 'last' })).join('; ');
     }
 
     return { status, courseDeptAndInstr, meetings, course };
