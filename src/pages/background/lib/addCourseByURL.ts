@@ -53,10 +53,10 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
         course.description = description;
 
         if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-            console.log('adding course');
+            console.log('Adding course');
             await addCourse(activeSchedule.id, course);
         } else {
-            console.log('course already exists');
+            console.log('Course already exists');
         }
     } catch (error) {
         console.error('Error scraping course:', error);

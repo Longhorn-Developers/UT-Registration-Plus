@@ -18,6 +18,8 @@ export default function InjectedButton(): JSX.Element | null {
     const extractCoursesFromCalendar = async () => {
         const calendarElement = document.querySelector('#kgoui_Rcontent_I3_Rprimary_I1_Rcontent_I1_Rcontent_I0_Ritems');
 
+        console.log('DEREK ONE');
+
         if (!calendarElement) {
             console.error('Calendar element not found');
             return [];
@@ -27,10 +29,14 @@ export default function InjectedButton(): JSX.Element | null {
             anchor => !anchor.href.includes('google.com')
         );
 
+        console.log('DEREK TWO');
+
         // Make sure to remove duplicate anchorTags using set
         const uniqueAnchorTags = Array.from(new Set(anchorTags.map(a => a.href)));
 
         for (const a of uniqueAnchorTags) {
+            console.log('DEREK THREE');
+
             // eslint-disable-next-line no-await-in-loop
             await addCourseByURL(activeSchedule, a);
         }
