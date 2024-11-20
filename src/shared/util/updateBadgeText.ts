@@ -14,7 +14,7 @@ export const BADGE_LIMIT = 10;
  */
 export default function updateBadgeText(value: number): void {
     let badgeText = '';
-    if (value > 0) {
+    if (value >= 0) {
         if (value > BADGE_LIMIT) {
             badgeText = `${BADGE_LIMIT}+`;
         } else {

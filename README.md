@@ -6,7 +6,7 @@
 ![Downloads](https://img.shields.io/chrome-web-store/d/hboadpjkoaieogjimneceaahlppnipaa)
 ![License](https://img.shields.io/github/license/Longhorn-Developers/UT-Registration-Plus)
 
-**UT Registration Plus (UTRP)** streamlines the process of registering for classes at UT Austin by reducing the chaos of juggling multiple tabs like Rate My Professor, Google Sheets, and the UT Course Schedule. With UTRP, you can simplify class selection and schedule management. We've all been there. 20 tabs of Rate My Professor, Google Spreadsheet, and the UT Course Schedule open and you still don't know what classes to take. UT Registration Plus (UTRP), tries to streamline most of the unnecessary steps and headaches of registering for classes at UT Austin.
+**UT Registration Plus (UTRP)** streamlines the process of registering for classes at UT Austin by reducing the chaos of juggling multiple tabs like Rate My Professor, Google Sheets, and the UT Course Schedule. With UTRP, you can simplify class selection and schedule management. We've all been there. 20 tabs of Rate My Professor, Google Spreadsheet, and the UT Course Schedule open and you still don't know what classes to take. 
 
 ## Demo
 

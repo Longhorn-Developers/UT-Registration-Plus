@@ -4,12 +4,11 @@ import { Button } from '@views/components/common/Button';
 import List from '@views/components/common/List';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
 import Text from '@views/components/common/Text/Text';
+import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import React from 'react';
 
 import AddSchedule from '~icons/material-symbols/add';
-
-import { usePrompt } from '../common/DialogProvider/DialogProvider';
 
 /**
  * Renders a component that displays a list of schedules.
@@ -19,32 +18,12 @@ import { usePrompt } from '../common/DialogProvider/DialogProvider';
  */
 export function CalendarSchedules() {
     const [, schedules] = useSchedules();
-    const showDialog = usePrompt();
 
+    const enforceScheduleLimit = useEnforceScheduleLimit();
     const handleAddSchedule = () => {
-        if (schedules.length >= 10) {
-            showDialog({
-                title: `You have 10 active schedules!`,
-
-                description: (
-                    <>
-                        To encourage organization,{' '}
-                        <span className='text-ut-burntorange'>please consider removing some unused schedules</span> you
-                        may have.
-                    </>
-                ),
-                // eslint-disable-next-line react/no-unstable-nested-components
-                buttons: close => (
-                    <Button variant='filled' color='ut-burntorange' onClick={close}>
-                        I Understand
-                    </Button>
-                ),
-            });
-
-            return;
+        if (enforceScheduleLimit()) {
+            createSchedule('New Schedule');
         }
-
-        createSchedule('New Schedule');
     };
 
     return (

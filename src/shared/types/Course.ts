@@ -79,6 +79,8 @@ export class Course {
     scrapedAt!: number;
     /** The colors of the course when displayed */
     colors: CourseColors;
+    /** The core curriculum requirements the course satisfies */
+    core: string[];
 
     constructor(course: Serialized<Course>) {
         Object.assign(this, course);
@@ -88,12 +90,14 @@ export class Course {
             this.scrapedAt = Date.now();
         }
         this.colors = course.colors ? structuredClone(course.colors) : getCourseColors('emerald', 500);
+        this.core = course.core ?? [];
     }
 
     /**
      * Gets a list of all the conflicts between this course and another course (i.e. if they have a meeting at the same time)
-     * @param other another course to compare this course to
-     * @returns a list of all the conflicts between this course and the other course as a tuple of the two conflicting meetings
+     *
+     * @param other - Another course to compare this course to
+     * @returns A list of all the conflicts between this course and the other course as a tuple of the two conflicting meetings
      */
     getConflicts(other: Course): [CourseMeeting, CourseMeeting][] {
         const conflicts: [CourseMeeting, CourseMeeting][] = [];

@@ -21,26 +21,23 @@ export const SentryContext = createContext<[scope: Scope, client: Client]>(undef
  */
 export const useSentryScope = () => useContext(SentryContext);
 
+interface SentryProviderProps {
+    children: React.ReactNode;
+    transactionName?: string;
+    fullInit?: boolean;
+}
+
 /**
  * SentryProvider component initializes and provides Sentry error tracking context to its children.
  * It ensures that Sentry is not initialized more than once and configures the Sentry client and scope.
  *
- * @param props - The properties object.
- * @param props.children - The child components that will have access to the Sentry context.
- * @param props.transactionName - Optional name for the Sentry transaction.
- * @param props.fullInit - Flag to determine if full initialization of Sentry should be performed.
+ * @param children - The child components that will have access to the Sentry context.
+ * @param transactionName - Optional name for the Sentry transaction.
+ * @param fullInit - Flag to determine if full initialization of Sentry should be performed.
  *
  * @returns The Sentry context provider wrapping the children components.
  */
-export default function SentryProvider({
-    children,
-    transactionName,
-    fullInit,
-}: {
-    children: React.ReactNode;
-    transactionName?: string;
-    fullInit?: boolean;
-}): JSX.Element {
+export default function SentryProvider({ children, transactionName, fullInit }: SentryProviderProps): JSX.Element {
     // prevent accidentally initializing sentry twice
     const parent = useSentryScope();
 
@@ -65,8 +62,9 @@ export default function SentryProvider({
             integrations,
             transport: makeFetchTransport,
             stackParser: defaultStackParser,
-            // debug: true,
+            debug: import.meta.env.DEV,
             release: import.meta.env.VITE_PACKAGE_VERSION,
+            environment: import.meta.env.VITE_SENTRY_ENVIRONMENT,
         };
 
         let client: Client;
