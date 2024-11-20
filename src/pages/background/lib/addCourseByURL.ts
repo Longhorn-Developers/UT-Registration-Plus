@@ -24,7 +24,7 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
 
     // Exit if the user cancels the prompt
     if (!link) return;
-
+    console.log('DEREK THREE');
     try {
         let htmlText: string;
         try {
