@@ -24,8 +24,7 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
 
     // Exit if the user cancels the prompt
     if (!link) return;
-    console.log('DEREK THREE');
-    console.log(link);
+
     try {
         let htmlText: string;
         try {
@@ -39,17 +38,14 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
             alert(`Failed to fetch url '${link}'`);
             return;
         }
-        console.log(htmlText);
 
         const doc = new DOMParser().parseFromString(htmlText, 'text/html');
 
         const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, link);
         const tableRows = getCourseTableRows(doc);
         const scrapedCourses = scraper.scrape(tableRows, false);
-        console.log('DEREK FOUR');
 
         if (scrapedCourses.length !== 1) return;
-        console.log('DEREK FIVE');
         const description = scraper.getDescription(doc);
         const row = scrapedCourses[0]!;
         const course = row.course!;

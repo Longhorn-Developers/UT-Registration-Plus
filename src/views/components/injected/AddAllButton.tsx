@@ -1,4 +1,5 @@
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
+import { background } from '@shared/messages';
 import { validateLoginStatus } from '@shared/util/checkLoginStatus';
 import { Button } from '@views/components/common/Button';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
@@ -31,13 +32,18 @@ export default function InjectedButton(): JSX.Element | null {
         // Make sure to remove duplicate anchorTags using set
         const uniqueAnchorTags = Array.from(new Set(anchorTags.map(a => a.href)));
 
-        if (uniqueAnchorTags[0]) {
-            await validateLoginStatus(uniqueAnchorTags[0]);
-        }
+        // Make sure user is logged in
+        const loggedInToUT = await background.validateLoginStatus({
+            url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/',
+        });
 
-        for (const a of uniqueAnchorTags) {
-            // eslint-disable-next-line no-await-in-loop
-            await addCourseByURL(activeSchedule, a);
+        if (loggedInToUT) {
+            for (const a of uniqueAnchorTags) {
+                // eslint-disable-next-line no-await-in-loop
+                await addCourseByURL(activeSchedule, a);
+            }
+        } else {
+            window.alert('Logged into UT Registrar.');
         }
     };
 
