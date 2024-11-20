@@ -2,10 +2,15 @@ import clsx from 'clsx';
 import type { SVGProps } from 'react';
 import React from 'react';
 
+interface LogoIconProps {
+    className?: string;
+}
+
 /**
  * Renders the logo icon.
- * @param {SVGProps<SVGSVGElement>} props - The SVG props.
- * @returns {JSX.Element} The rendered logo icon.
+ *
+ * @param props - The SVG props.
+ * @returns The rendered logo icon.
  */
 export function LogoIcon(props: SVGProps<SVGSVGElement>): JSX.Element {
     return (
@@ -20,11 +25,11 @@ export function LogoIcon(props: SVGProps<SVGSVGElement>): JSX.Element {
 
 /**
  * Renders the small logo.
- * @param {Object} props - The component props.
- * @param {string} props.className - The class name for the logo container.
- * @returns {JSX.Element} The rendered small logo.
+ *
+ * @param className - The class name for the logo container.
+ * @returns The rendered small logo.
  */
-export function SmallLogo({ className }: { className?: string }): JSX.Element {
+export function SmallLogo({ className }: LogoIconProps): JSX.Element {
     return (
         <div className={clsx('flex items-center gap-2', className)}>
             <LogoIcon />
@@ -43,11 +48,11 @@ export function SmallLogo({ className }: { className?: string }): JSX.Element {
 
 /**
  * Renders the large logo.
- * @param {Object} props - The component props.
- * @param {string} props.className - The class name for the logo container.
- * @returns {JSX.Element} The rendered large logo.
+ *
+ * @param className - The class name for the logo container.
+ * @returns The rendered large logo.
  */
-export function LargeLogo({ className }: { className?: string }): JSX.Element {
+export function LargeLogo({ className }: LogoIconProps): JSX.Element {
     return (
         <div className={clsx('flex items-center gap-2', className)}>
             <LogoIcon className='h-12 w-12' />

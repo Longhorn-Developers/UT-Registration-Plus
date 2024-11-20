@@ -20,9 +20,10 @@ export class CourseSchedule {
 
     /**
      * Given a string representation of the meeting information for a class, parse it into a CourseMeeting object
-     * @param dayLine a string representation of the days of the week that the course is taught: MWF, TR, etc.
-     * @param timeLine a string representation of a time-range that the course is taught: 10:00 am - 11:00 am, 1:00 pm - 2:00 pm, etc.
-     * @param locLine a string representation of the location that the course is taught in: JGB 2.302, etc.
+     *
+     * @param dayLine - A string representation of the days of the week that the course is taught: MWF, TR, etc.
+     * @param timeLine - A string representation of a time-range that the course is taught: 10:00 am - 11:00 am, 1:00 pm - 2:00 pm, etc.
+     * @param locLine - A string representation of the location that the course is taught in: JGB 2.302, etc.
      * @returns CourseMeeting object representing the meeting information
      */
     static parse(dayLine: string, timeLine: string, locLine: string): CourseMeeting {

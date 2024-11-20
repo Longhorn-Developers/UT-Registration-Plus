@@ -12,8 +12,7 @@ export type UpdateTextProps = {
  * UpdateText component displays a message indicating that the extension has been updated
  * and lists the unique course numbers from the old version.
  *
- * @param props - The properties object.
- * @param props.courses - An array of course unique numbers to be displayed.
+ * @param courses - An array of course unique numbers to be displayed.
  * @returns The rendered UpdateText component.
  */
 export default function UpdateText({ courses }: UpdateTextProps): JSX.Element {

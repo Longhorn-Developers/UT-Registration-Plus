@@ -12,19 +12,17 @@ import HeadingAndActions from './HeadingAndActions';
 /**
  * Props for the CourseCatalogInjectedPopup component.
  */
-export type CourseCatalogInjectedPopupProps = DialogProps & {
+export interface CourseCatalogInjectedPopupProps extends DialogProps {
     course: Course;
-};
+}
 
 /**
  * CourseCatalogInjectedPopup component displays a popup with course details.
  *
- * @component
- * @param {CourseCatalogInjectedPopupProps} props - The component props.
- * @param {Course} props.course - The course object containing course details.
- * @param {Schedule} props.activeSchedule - The active schedule object.
- * @param {Function} props.onClose - The function to close the popup.
- * @returns {JSX.Element} The CourseCatalogInjectedPopup component.
+ * @param course - The course object containing course details.
+ * @param activeSchedule - The active schedule object.
+ * @param onClose - The function to close the popup.
+ * @returns The CourseCatalogInjectedPopup component.
  */
 function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPopupProps): JSX.Element {
     const emptyRef = React.useRef<HTMLDivElement>(null);

@@ -81,29 +81,33 @@ export default function ReportIssueMain(): JSX.Element {
                     <label htmlFor='email' className='mb-1 block text-sm text-ut-black font-medium'>
                         Your @utexas.edu email
                     </label>
-                    <input
-                        type='email'
-                        id='email'
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500'
-                        placeholder='bevo@utexas.edu'
-                        required
-                    />
+                    <div className='flex'>
+                        <input
+                            type='email'
+                            id='email'
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500'
+                            placeholder='bevo@utexas.edu'
+                            required
+                        />
+                    </div>
                 </div>
 
                 <div className='mb-4'>
                     <label htmlFor='feedback' className='mb-1 block text-sm text-ut-black font-medium'>
                         Your feedback
                     </label>
-                    <textarea
-                        id='feedback'
-                        value={feedback}
-                        onChange={e => setFeedback(e.target.value)}
-                        className='h-24 w-full resize-none border border-gray-300 rounded-md px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-orange-500'
-                        placeholder='I wish UT Registration Plus could...'
-                        required
-                    />
+                    <div className='flex'>
+                        <textarea
+                            id='feedback'
+                            value={feedback}
+                            onChange={e => setFeedback(e.target.value)}
+                            className='h-24 w-full resize-none border border-gray-300 rounded-md px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-orange-500'
+                            placeholder='I wish UT Registration Plus could...'
+                            required
+                        />
+                    </div>
                 </div>
 
                 <Button

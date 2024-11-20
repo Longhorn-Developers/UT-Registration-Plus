@@ -48,9 +48,10 @@ export class CourseMeeting {
 
     /**
      * Whether or not this meeting conflicts with another meeting
-     * MWF 10:00 am - 11:00 am conflicts with a F 10:00 am - 10:30 am
-     * @param meeting the meeting to check for conflicts with
-     * @returns true if the given meeting conflicts with this meeting, false otherwise
+     *
+     * @remarks MWF 10:00 am - 11:00 am conflicts with a F 10:00 am - 10:30 am
+     * @param meeting - The meeting to check for conflicts with
+     * @returns True if the given meeting conflicts with this meeting, false otherwise
      */
     isConflicting(meeting: CourseMeeting): boolean {
         const { days, startTime, endTime } = this;
@@ -64,8 +65,9 @@ export class CourseMeeting {
 
     /**
      * Return the string representation of the days of the week that this meeting is taught
-     * @param options options for the string representation
-     * @returns string representation of the days of the week that this meeting is taught
+     *
+     * @param options - Options for the string representation
+     * @returns String representation of the days of the week that this meeting is taught
      */
     getDaysString(options: DaysStringOptions): string {
         let { format, separator } = options;
@@ -86,8 +88,9 @@ export class CourseMeeting {
 
     /**
      * Return the string representation of the time range for the course
-     * @param options options for the string representation
-     * @returns string representation of the time range for the course
+     *
+     * @param options - Options for the string representation
+     * @returns String representation of the time range for the course
      */
     getTimeString(options: TimeStringOptions): string {
         const { startTime, endTime } = this;
@@ -108,7 +111,7 @@ export class CourseMeeting {
         }
 
         startTimeString += startMinute === 0 ? ':00' : `:${startMinute}`;
-        startTimeString += startHour >= 12 ? ' p.m.' : ' a.m.';
+        startTimeString += startHour >= 12 ? 'pm' : 'am';
 
         if (endHour === 0) {
             endTimeString = '12';
@@ -117,13 +120,9 @@ export class CourseMeeting {
         } else {
             endTimeString = `${endHour}`;
         }
-        endTimeString += endMinute === 0 ? ':00' : `:${endMinute}`;
-        endTimeString += endHour >= 12 ? ' p.m.' : ' a.m.';
 
-        if (options.capitalize) {
-            startTimeString = startTimeString.toUpperCase();
-            endTimeString = endTimeString.toUpperCase();
-        }
+        endTimeString += endMinute === 0 ? ':00' : `:${endMinute}`;
+        endTimeString += endHour >= 12 ? 'pm' : 'am';
 
         return `${startTimeString} ${options.separator} ${endTimeString}`;
     }
@@ -135,8 +134,6 @@ export class CourseMeeting {
 type TimeStringOptions = {
     /** the separator between the start and end times */
     separator: string;
-    /** capitalizes the AM/PM */
-    capitalize?: boolean;
 };
 
 /**

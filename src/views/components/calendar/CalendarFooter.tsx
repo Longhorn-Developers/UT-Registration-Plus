@@ -3,6 +3,7 @@ import React from 'react';
 import DiscordIcon from '~icons/bi/discord';
 import GithubIcon from '~icons/ri/github-fill';
 import InstagramIcon from '~icons/ri/instagram-line';
+import LinkedinIcon from '~icons/ri/linkedin-box-fill';
 
 import Link from '../common/Link';
 
@@ -22,6 +23,12 @@ export default function CalendarFooter(): JSX.Element {
                 </Link>
                 <Link className='linkanimate' href='https://github.com/Longhorn-Developers'>
                     <GithubIcon className='h-6 w-6' />
+                </Link>
+                <Link
+                    className='linkanimate'
+                    href='https://www.linkedin.com/company/longhorn-developers/posts/?feedView=all'
+                >
+                    <LinkedinIcon className='h-6 w-6 -mx-0.75' />
                 </Link>
             </div>
             <p className='text-2.5 text-ut-concrete font-light tracking-wide'>

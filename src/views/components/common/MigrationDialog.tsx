@@ -47,7 +47,7 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
     return (
         <>
             {error && (
-                <Text variant='p' className='text-ut-red'>
+                <Text variant='p' className='text-theme-red'>
                     An error occurred while migrating your courses. Please try again later in settings. (
                     {error.substring(0, 8)})
                 </Text>
