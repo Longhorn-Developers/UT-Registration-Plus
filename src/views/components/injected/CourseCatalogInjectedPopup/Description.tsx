@@ -32,10 +32,8 @@ const fetchDescription = async (course: Course): Promise<string[]> => {
 /**
  * Renders the description component.
  *
- * @component
- * @param {DescriptionProps} props - The component props.
- * @param {Course} props.course - The course for which to display the description.
- * @returns {JSX.Element} The rendered description component.
+ * @param course - The course for which to display the description.
+ * @returns The rendered description component.
  */
 export default function Description({ course }: DescriptionProps): JSX.Element {
     const [description, setDescription] = React.useState<string[]>([]);

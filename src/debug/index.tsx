@@ -8,8 +8,8 @@ const manifest = chrome.runtime.getManifest();
 /**
  * Handles editing the storage for a specific area.
  *
- * @param {string} areaName - The name of the storage area.
- * @returns {Function} - A function that accepts changes and sets them in the storage.
+ * @param areaName - The name of the storage area.
+ * @returns A function that accepts changes and sets them in the storage.
  */
 const handleEditStorage = (areaName: 'local' | 'sync' | 'session') => (changes: Record<string, unknown>) => {
     chrome.storage[areaName].set(changes);

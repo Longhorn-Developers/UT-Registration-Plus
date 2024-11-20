@@ -30,7 +30,8 @@ const meta = {
         courseDeptAndInstr: ExampleCourse.department,
         className: ExampleCourse.number,
         status: ExampleCourse.status,
-        timeAndLocation: ExampleCourse.schedule.meetings[0]!.getTimeString({ separator: '-' }),
+        timeAndLocation: ExampleCourse.schedule.meetings[0]!.getTimeString({ separator: '–' }),
+        colors: getCourseColors('emerald', 500),
     },
 } satisfies Meta<typeof CalendarCourseCell>;
 export default meta;

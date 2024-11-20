@@ -57,7 +57,15 @@ export interface CourseCellColorPickerProps {
 }
 
 /**
- * @param {CourseCellColorPickerProps} props - the props for the component
+ * The CourseCellColorPicker component that displays a color palette with a list of color patches.
+ *
+ * @remarks This component is available when a user hovers over a course cell in their calendar to
+ * color for the course cell. The user can set any valid hex color they want.
+ *
+ * @param setSelectedColor - Set state function passed down from the parent component
+ * @param isInvertColorsToggled - Boolean state passed down from the parent component that indicates whether the color picker is in invert colors mode
+ * @param setIsInvertColorsToggled - Set state function passed down from the parent component to set invert colors mode
+ * that will be called when a color is selected. The user can set any valid hex color they want.
  *
  * @example
  * ```
@@ -72,9 +80,7 @@ export interface CourseCellColorPickerProps {
  *   );
  * ```
  *
- * @returns {JSX.Element} - the color picker component that displays a color palette with a list of color patches.
- * This component is available when a user hovers over a course cell in their calendar to
- * color for the course cell. The user can set any valid hex color they want.
+ * @returns The color picker component that displays a color palette with a list of color patches.
  */
 export default function CourseCellColorPicker({ defaultColor }: CourseCellColorPickerProps): JSX.Element {
     // hexCode mirrors contents of HexColorEditor which has no hash prefix

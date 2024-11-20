@@ -44,11 +44,15 @@ function makeGridRow(row: number, cols: number): JSX.Element {
 
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
- * @param props
+ *
+ * @param courseCells - The courses to display on the calendar
+ * @param saturdayClass - Whether the user has a Saturday class
+ * @param setCourse - Function to set the course to display in the course details panel
+ * @returns The CalendarGrid component
  */
 export default function CalendarGrid({
     courseCells,
-    saturdayClass, // TODO: implement/move away from props
+    saturdayClass: _saturdayClass, // TODO: implement/move away from props
     setCourse,
 }: React.PropsWithChildren<Props>): JSX.Element {
     return (
