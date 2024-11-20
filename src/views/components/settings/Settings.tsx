@@ -1,6 +1,8 @@
-import addCourse from '@pages/background/lib/addCourse';
+// import addCourse from '@pages/background/lib/addCourse';
+import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+// import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
 // import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import { Button } from '@views/components/common/Button';
@@ -12,10 +14,10 @@ import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
 import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
-import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-import getCourseTableRows from '@views/lib/getCourseTableRows';
+// import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
+// import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
-import { SiteSupport } from '@views/lib/getSiteSupport';
+// import { SiteSupport } from '@views/lib/getSiteSupport';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -79,11 +81,11 @@ const useDevMode = (targetCount: number): [boolean, () => void] => {
  * @returns The Settings component.
  */
 export default function Settings(): JSX.Element {
-    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
+    const [_enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -202,50 +204,13 @@ export default function Settings(): JSX.Element {
         });
     };
 
-    // todo: move into a util/shared place, rather than specifically in settings
-    const handleAddCourseByUrl = async () => {
-        // todo: Use a proper modal instead of a prompt
-        // eslint-disable-next-line no-alert
-        const link: string | null = prompt('Enter course link');
-
-        // Exit if the user cancels the prompt
-        if (link === null) return;
-
-        try {
-            let response: Response;
-            try {
-                response = await fetch(link);
-            } catch (e) {
-                alert(`Failed to fetch url '${link}'`);
-                return;
-            }
-            const text = await response.text();
-            const doc = new DOMParser().parseFromString(text, 'text/html');
-
-            const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, link);
-            const tableRows = getCourseTableRows(doc);
-            const courses = scraper.scrape(tableRows, false);
-
-            if (courses.length === 1) {
-                const description = scraper.getDescription(doc);
-                const row = courses[0]!;
-                const course = row.course!;
-                course.description = description;
-                // console.log(course);
-
-                if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-                    console.log('adding course');
-                    addCourse(activeSchedule.id, course);
-                } else {
-                    console.log('course already exists');
-                }
-            } else {
-                console.log(courses);
-            }
-        } catch (error) {
-            console.error('Error scraping course:', error);
-        }
-    };
+    // const handleAddCourseByLink = async () => {
+    //     // todo: Use a proper modal instead of a prompt
+    //     const link: string | null = prompt('Enter course link');
+    //     // Exit if the user cancels the prompt
+    //     if (link === null) return;
+    //     await addCourseByUrl(link, activeSchedule);
+    // };
 
     const [devMode, toggleDevMode] = useDevMode(10);
 
@@ -410,7 +375,7 @@ export default function Settings(): JSX.Element {
                                     </div>
                                     <Button
                                         variant='outline'
-                                        color='ut-red'
+                                        color='theme-red'
                                         icon={DeleteForeverIcon}
                                         onClick={handleEraseAll}
                                     >
@@ -427,7 +392,7 @@ export default function Settings(): JSX.Element {
                                     </div>
                                     <Text
                                         variant='h2-course'
-                                        className={clsx('text-center text-ut-red !font-normal', {
+                                        className={clsx('text-center text-theme-red !font-normal', {
                                             'line-through': highlightConflicts,
                                         })}
                                     >
@@ -444,7 +409,7 @@ export default function Settings(): JSX.Element {
                         <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
                             Developer Mode
                         </h2>
-                        <Button variant='filled' color='ut-black' onClick={handleAddCourseByUrl}>
+                        <Button variant='filled' color='ut-black' onClick={() => addCourseByURL(activeSchedule)}>
                             Add course by link
                         </Button>
                         <Button variant='filled' color='ut-burntorange' onClick={showMigrationDialog}>
@@ -489,7 +454,7 @@ export default function Settings(): JSX.Element {
                                             <p className='text-xs text-ut-green'>
                                                 {githubStats.adminGitHubStats[admin.githubUsername]?.linesAdded} ++
                                             </p>
-                                            <p className='text-xs text-ut-red'>
+                                            <p className='text-xs text-theme-red'>
                                                 {githubStats.adminGitHubStats[admin.githubUsername]?.linesDeleted} --
                                             </p>
                                         </div>
@@ -499,7 +464,7 @@ export default function Settings(): JSX.Element {
                         </div>
                     </section>
                     <section className='my-8'>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTERS</h2>
+                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTORS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
                             {LONGHORN_DEVELOPERS_SWE.sort(
                                 (a, b) =>
@@ -535,7 +500,7 @@ export default function Settings(): JSX.Element {
                                             <p className='text-xs text-ut-green'>
                                                 {githubStats.userGitHubStats[swe.githubUsername]?.linesAdded} ++
                                             </p>
-                                            <p className='text-xs text-ut-red'>
+                                            <p className='text-xs text-theme-red'>
                                                 {githubStats.userGitHubStats[swe.githubUsername]?.linesDeleted} --
                                             </p>
                                         </div>
@@ -565,7 +530,7 @@ export default function Settings(): JSX.Element {
                                                 className='text-ut-burntorange font-semibold hover:cursor-pointer'
                                                 onClick={() => window.open(`https://github.com/${username}`, '_blank')}
                                             >
-                                                @{username}
+                                                {githubStats.names[username]}
                                             </Text>
                                             <p className='text-sm text-gray-600'>Contributor</p>
                                             {showGitHubStats && (
@@ -583,7 +548,7 @@ export default function Settings(): JSX.Element {
                                                     <p className='text-xs text-ut-green'>
                                                         {githubStats.userGitHubStats[username]?.linesAdded} ++
                                                     </p>
-                                                    <p className='text-xs text-ut-red'>
+                                                    <p className='text-xs text-theme-red'>
                                                         {githubStats.userGitHubStats[username]?.linesDeleted} --
                                                     </p>
                                                 </div>

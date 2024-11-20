@@ -23,6 +23,7 @@ module.exports = {
         'import',
         'import-essentials',
         'jsdoc',
+        'eslint-plugin-tsdoc',
         'react-prefer-function-component',
         '@typescript-eslint',
         'simple-import-sort',
@@ -143,7 +144,7 @@ module.exports = {
         'jsdoc/newline-after-description': 'off',
         'react/require-default-props': 'off',
         'jsdoc/require-jsdoc': [
-            'warn',
+            'error',
             {
                 enableFixer: false,
                 publicOnly: true,
@@ -171,8 +172,16 @@ module.exports = {
                 ],
             },
         ],
+        'tsdoc/syntax': 'error',
         '@typescript-eslint/no-explicit-any': 'error',
-        '@typescript-eslint/no-unused-vars': 'warn',
+        '@typescript-eslint/no-unused-vars': [
+            'warn',
+            {
+                argsIgnorePattern: '^_',
+                varsIgnorePattern: '^_',
+                caughtErrorsIgnorePattern: '^_',
+            },
+        ],
         '@typescript-eslint/naming-convention': 'off',
         '@typescript-eslint/space-before-function-paren': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',

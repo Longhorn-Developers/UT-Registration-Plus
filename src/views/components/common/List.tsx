@@ -70,7 +70,9 @@ function Item<T>(props: {
  * `List` is a functional component that displays a course meeting.
  *
  * @example
+ * ```
  * <List draggableElements={elements} />
+ * ```
  */
 function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<T>): JSX.Element {
     const [items, setItems] = useState(wrap(draggables, itemKey));

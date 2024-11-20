@@ -1,4 +1,6 @@
 import { Octokit } from '@octokit/rest';
+import { CacheStore } from '@shared/storage/CacheStore';
+import type { CachedData } from '@shared/types/CachedData';
 
 // Types
 type TeamMember = {
@@ -20,9 +22,8 @@ type ContributorStats = {
     author: { login: string };
 };
 
-type CachedData<T> = {
-    data: T;
-    dataFetched: Date;
+type ContributorUser = {
+    name: string | undefined;
 };
 
 type FetchResult<T> = {
@@ -36,6 +37,7 @@ type FetchResult<T> = {
 const CACHE_TTL = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
 const REPO_OWNER = 'Longhorn-Developers';
 const REPO_NAME = 'UT-Registration-Plus';
+const CONTRIBUTORS_API_ROUTE = `/repos/${REPO_OWNER}/${REPO_NAME}/stats/contributors`;
 
 export const LONGHORN_DEVELOPERS_ADMINS = [
     { name: 'Sriram Hariharan', role: 'Founder', githubUsername: 'sghsri' },
@@ -68,24 +70,41 @@ export type LD_ADMIN_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_ADMINS)[numb
  */
 export class GitHubStatsService {
     private octokit: Octokit;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private cache: Map<string, CachedData<any>>;
+    private cache: Record<string, CachedData<unknown>>;
 
     constructor(githubToken?: string) {
         this.octokit = githubToken ? new Octokit({ auth: githubToken }) : new Octokit();
-        this.cache = new Map();
+        this.cache = {} as Record<string, CachedData<unknown>>;
     }
 
-    private getCachedData<T>(key: string): CachedData<T> | null {
-        const cachedItem = this.cache.get(key);
-        if (cachedItem && Date.now() - cachedItem.dataFetched.getTime() < CACHE_TTL) {
-            return cachedItem;
+    private async getCachedData<T>(key: string): Promise<CachedData<T> | null> {
+        if (Object.keys(this.cache).length === 0) {
+            const githubCache = await CacheStore.get('github');
+            if (githubCache && typeof githubCache === 'object') {
+                this.cache = githubCache as Record<string, CachedData<unknown>>;
+            }
+        }
+
+        const cachedItem = this.cache[key] as CachedData<T> | undefined;
+        if (cachedItem) {
+            const timeDifference = Date.now() - cachedItem.dataFetched;
+            if (timeDifference < CACHE_TTL) {
+                return cachedItem;
+            }
         }
         return null;
     }
 
-    private setCachedData<T>(key: string, data: T): void {
-        this.cache.set(key, { data, dataFetched: new Date() });
+    private async setCachedData<T>(key: string, data: T): Promise<void> {
+        if (Object.keys(this.cache).length === 0) {
+            const githubCache = await CacheStore.get('github');
+            if (githubCache && typeof githubCache === 'object') {
+                this.cache = githubCache as Record<string, CachedData<unknown>>;
+            }
+        }
+
+        this.cache[key] = { data, dataFetched: Date.now() };
+        await CacheStore.set('github', this.cache);
     }
 
     private async fetchWithRetry<T>(fetchFn: () => Promise<T>, retries: number = 3, delay: number = 5000): Promise<T> {
@@ -101,25 +120,32 @@ export class GitHubStatsService {
         }
     }
 
+    private async fetchGitHub(route: string): Promise<unknown> {
+        try {
+            const url = new URL(route, 'https://github.cachedapi.com');
+            const response = await fetch(url);
+            return await response.json();
+        } catch (error: unknown) {
+            const url = new URL(route, 'https://api.github.com');
+            const response = await fetch(url);
+            return await response.json();
+        }
+    }
+
     private async fetchContributorStats(): Promise<FetchResult<ContributorStats[]>> {
         const cacheKey = `contributor_stats_${REPO_OWNER}_${REPO_NAME}`;
-        const cachedStats = this.getCachedData<ContributorStats[]>(cacheKey);
+        const cachedStats = await this.getCachedData<ContributorStats[]>(cacheKey);
 
         if (cachedStats) {
             return {
                 data: cachedStats.data,
-                dataFetched: cachedStats.dataFetched,
+                dataFetched: new Date(cachedStats.dataFetched),
                 lastUpdated: new Date(),
                 isCached: true,
             };
         }
 
-        const { data } = await this.fetchWithRetry(() =>
-            this.octokit.repos.getContributorsStats({
-                owner: REPO_OWNER,
-                repo: REPO_NAME,
-            })
-        );
+        const data = await this.fetchWithRetry(() => this.fetchGitHub(CONTRIBUTORS_API_ROUTE));
 
         if (Array.isArray(data)) {
             const fetchResult: FetchResult<ContributorStats[]> = {
@@ -128,21 +154,51 @@ export class GitHubStatsService {
                 lastUpdated: new Date(),
                 isCached: false,
             };
-            this.setCachedData(cacheKey, fetchResult.data);
+            await this.setCachedData(cacheKey, fetchResult.data);
             return fetchResult;
         }
 
         throw new Error('Invalid response format');
     }
 
+    private async fetchContributorNames(contributors: string[]): Promise<Record<string, string>> {
+        const names: Record<string, string> = {};
+        await Promise.all(
+            contributors.map(async contributor => {
+                const cacheKey = `contributor_name_${contributor}`;
+                const cachedName = await this.getCachedData<string>(cacheKey);
+                let name = `@${contributor}`;
+
+                if (cachedName) {
+                    name = cachedName.data;
+                } else {
+                    try {
+                        const data = (await this.fetchWithRetry(() =>
+                            this.fetchGitHub(`/users/${contributor}`)
+                        )) as ContributorUser;
+                        if (data.name) {
+                            name = data.name;
+                        }
+                        await this.setCachedData(cacheKey, name);
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                names[contributor] = name;
+            })
+        );
+        return names;
+    }
+
     private async fetchMergedPRsCount(username: string): Promise<FetchResult<number>> {
         const cacheKey = `merged_prs_${username}`;
-        const cachedCount = this.getCachedData<number>(cacheKey);
+        const cachedCount = await this.getCachedData<number>(cacheKey);
 
         if (cachedCount !== null) {
             return {
                 data: cachedCount.data,
-                dataFetched: cachedCount.dataFetched,
+                dataFetched: new Date(cachedCount.dataFetched),
                 lastUpdated: new Date(),
                 isCached: true,
             };
@@ -158,7 +214,7 @@ export class GitHubStatsService {
             lastUpdated: new Date(),
             isCached: false,
         };
-        this.setCachedData(cacheKey, fetchResult.data);
+        await this.setCachedData(cacheKey, fetchResult.data);
         return fetchResult;
     }
 
@@ -174,6 +230,7 @@ export class GitHubStatsService {
         adminGitHubStats: Record<string, GitHubStats>;
         userGitHubStats: Record<string, GitHubStats>;
         contributors: string[];
+        names: Record<string, string>;
         dataFetched: Date;
         lastUpdated: Date;
         isCached: boolean;
@@ -222,10 +279,13 @@ export class GitHubStatsService {
                 })
             );
 
+            const names = await this.fetchContributorNames(contributors);
+
             return {
                 adminGitHubStats,
                 userGitHubStats,
                 contributors,
+                names,
                 dataFetched: oldestDataFetch,
                 lastUpdated: new Date(),
                 isCached: allCached,

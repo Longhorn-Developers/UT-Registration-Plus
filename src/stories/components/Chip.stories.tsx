@@ -16,8 +16,16 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const FlagChip: Story = {
     args: {
         label: 'QR',
+        variant: 'flag',
+    },
+};
+
+export const CoreChip: Story = {
+    args: {
+        label: 'SB',
+        variant: 'core',
     },
 };
