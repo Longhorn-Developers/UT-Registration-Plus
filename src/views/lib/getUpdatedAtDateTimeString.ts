@@ -1,7 +1,8 @@
 /**
+ * Returns a formatted string of the last time the schedule was updated.
  *
- * @param updatedAt {number} - The time in milliseconds since the epoch when the schedule was last updated.
- * @returns {string} - DateTime formatted as HH:MM AM/PM MM/DD/YYYY
+ * @param updatedAt - The time in milliseconds since the epoch when the schedule was last updated.
+ * @returns DateTime formatted as HH:MM AM/PM MM/DD/YYYY
  */
 export function getUpdatedAtDateTimeString(updatedAt: number): string {
     const updatedAtDate = new Date(updatedAt);

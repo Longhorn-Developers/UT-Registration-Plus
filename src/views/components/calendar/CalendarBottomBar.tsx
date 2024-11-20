@@ -20,8 +20,8 @@ type CalendarBottomBarProps = {
 /**
  * Renders the bottom bar of the calendar component.
  *
- * @param {Object[]} courses - The list of courses to display in the calendar.
- * @returns {JSX.Element} The rendered bottom bar component.
+ * @param courses - The list of courses to display in the calendar.
+ * @returns The rendered bottom bar component.
  */
 export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBottomBarProps): JSX.Element {
     const asyncCourseCells = courseCells?.filter(block => block.async);

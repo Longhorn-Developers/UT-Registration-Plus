@@ -95,8 +95,9 @@ export class Course {
 
     /**
      * Gets a list of all the conflicts between this course and another course (i.e. if they have a meeting at the same time)
-     * @param other another course to compare this course to
-     * @returns a list of all the conflicts between this course and the other course as a tuple of the two conflicting meetings
+     *
+     * @param other - Another course to compare this course to
+     * @returns A list of all the conflicts between this course and the other course as a tuple of the two conflicting meetings
      */
     getConflicts(other: Course): [CourseMeeting, CourseMeeting][] {
         const conflicts: [CourseMeeting, CourseMeeting][] = [];
