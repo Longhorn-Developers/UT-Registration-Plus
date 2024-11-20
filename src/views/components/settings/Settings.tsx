@@ -79,7 +79,7 @@ const useDevMode = (targetCount: number): [boolean, () => void] => {
  * @returns The Settings component.
  */
 export default function Settings(): JSX.Element {
-    const [_enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
     const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
@@ -99,6 +99,9 @@ export default function Settings(): JSX.Element {
     const showDialog = usePrompt();
     const handleChangelogOnClick = useChangelog();
 
+    useEffect(() => {
+        console.log(enableCourseStatusChips, "settings");
+    },[enableCourseStatusChips])
     useEffect(() => {
         const fetchGitHubStats = async () => {
             try {
@@ -138,7 +141,7 @@ export default function Settings(): JSX.Element {
         // Listen for changes in the settings
         const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
+            console.log('enableCourseStatusChips', newValue);
         });
 
         const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
@@ -394,6 +397,24 @@ export default function Settings(): JSX.Element {
                                         onChange={() => {
                                             setLoadAllCourses(!loadAllCourses);
                                             OptionsStore.set('enableScrollToLoad', !loadAllCourses);
+                                        }}
+                                    />
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <h3 className='text-ut-burntorange font-semibold'>Show Course Status</h3>
+                                        <p className='text-sm text-gray-600'>
+                                            Shows an indicator for waitlisted, cancelled, and closed courses.
+                                        </p>
+                                    </div>
+                                    <SwitchButton
+                                        isChecked={enableCourseStatusChips}
+                                        onChange={() => {
+                                            setEnableCourseStatusChips(!enableCourseStatusChips);
+                                            OptionsStore.set('enableCourseStatusChips', !enableCourseStatusChips);
                                         }}
                                     />
                                 </div>

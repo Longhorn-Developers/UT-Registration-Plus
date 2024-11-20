@@ -47,7 +47,10 @@ export default function CalendarCourseCell({
 
     useEffect(() => {
         initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
-
+        console.log("useEffect");
+        initSettings().then((res) => {
+            console.log(res);
+        })
         const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
             // console.log('enableCourseStatusChips', newValue);
@@ -59,6 +62,8 @@ export default function CalendarCourseCell({
     }, []);
 
     let rightIcon: React.ReactNode | null = null;
+    console.log("enabledCourseStatusChips", enableCourseStatusChips);
+    console.log("status", status)
     if (enableCourseStatusChips) {
         if (status === Status.WAITLISTED) {
             rightIcon = <WaitlistIcon className='h-5 w-5' />;
