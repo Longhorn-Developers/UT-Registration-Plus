@@ -68,7 +68,7 @@ export interface UserScheduleMessages {
      * Checks the login status by making a request to the provided URL.
      *
      * @param data - The URL to check the login status against.
-     * @returns
+     * @returns true if user was already logged into the provided URL, false otherwise
      */
     validateLoginStatus: (data: { url: string }) => boolean;
 }
