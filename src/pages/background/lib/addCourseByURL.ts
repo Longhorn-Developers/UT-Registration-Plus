@@ -26,7 +26,7 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
     if (!link) {
         return;
     }
-    
+
     try {
         let htmlText: string;
         try {
