@@ -1,6 +1,7 @@
 /**
  * Given a string, returns a string with the first letter capitalized.
- * @input The string to capitalize.
+ *
+ * @param input - The string to capitalize.
  */
 export function capitalize(input: string): string {
     let capitalized = '';
@@ -25,8 +26,9 @@ export function capitalize(input: string): string {
 
 /**
  * Given a string, returns a string with the first letter capitalized.
- * @param input capitalize the first letter of this string
- * @returns the string with the first letter capitalized
+ *
+ * @param input - Capitalize the first letter of this string
+ * @returns The string with the first letter capitalized
  */
 export function capitalizeFirstLetter(input: string): string {
     return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
@@ -34,8 +36,9 @@ export function capitalizeFirstLetter(input: string): string {
 
 /**
  * Cuts the input string to the specified length and adds an ellipsis if the string is longer than the specified length.
- * @param input The string to ellipsify.
- * @param length The length of the string to return.
+ *
+ * @param input - The string to ellipsify.
+ * @param length - The length of the string to return.
  * @returns The ellipsified string.
  */
 export const ellipsify = (input: string, chars: number): string => {
