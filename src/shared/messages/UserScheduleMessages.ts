@@ -63,4 +63,12 @@ export interface UserScheduleMessages {
      * @returns Undefined if successful, otherwise an error message
      */
     renameSchedule: (data: { scheduleId: string; newName: string }) => string | undefined;
+
+    /**
+     * Checks the login status by making a request to the provided URL.
+     *
+     * @param data - The URL to check the login status against.
+     * @returns
+     */
+    validateLoginStatus: (data: { url: string }) => boolean;
 }

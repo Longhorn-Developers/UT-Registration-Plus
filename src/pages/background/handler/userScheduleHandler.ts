@@ -7,6 +7,7 @@ import renameSchedule from '@pages/background/lib/renameSchedule';
 import switchSchedule from '@pages/background/lib/switchSchedule';
 import type { UserScheduleMessages } from '@shared/messages/UserScheduleMessages';
 import { Course } from '@shared/types/Course';
+import { validateLoginStatus } from '@shared/util/checkLoginStatus';
 import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
@@ -39,6 +40,9 @@ const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
         })
             .then(res => (response === 'json' ? res.json() : res.text()))
             .then(sendResponse);
+    },
+    validateLoginStatus({ data, sendResponse }) {
+        validateLoginStatus(data.url).then(sendResponse);
     },
 };
 

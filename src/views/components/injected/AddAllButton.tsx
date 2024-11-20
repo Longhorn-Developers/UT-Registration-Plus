@@ -1,4 +1,5 @@
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
+import { validateLoginStatus } from '@shared/util/checkLoginStatus';
 import { Button } from '@views/components/common/Button';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import useSchedules from '@views/hooks/useSchedules';
@@ -29,6 +30,10 @@ export default function InjectedButton(): JSX.Element | null {
 
         // Make sure to remove duplicate anchorTags using set
         const uniqueAnchorTags = Array.from(new Set(anchorTags.map(a => a.href)));
+
+        if (uniqueAnchorTags[0]) {
+            await validateLoginStatus(uniqueAnchorTags[0]);
+        }
 
         for (const a of uniqueAnchorTags) {
             // eslint-disable-next-line no-await-in-loop
