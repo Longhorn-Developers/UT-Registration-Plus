@@ -23,8 +23,10 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
     if (!link) link = prompt('Enter course link') || undefined;
 
     // Exit if the user cancels the prompt
-    if (!link) return;
-
+    if (!link) {
+        return;
+    }
+    
     try {
         let htmlText: string;
         try {
