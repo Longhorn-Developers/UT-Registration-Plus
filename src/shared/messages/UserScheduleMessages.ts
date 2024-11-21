@@ -63,4 +63,12 @@ export interface UserScheduleMessages {
      * @returns Undefined if successful, otherwise an error message
      */
     renameSchedule: (data: { scheduleId: string; newName: string }) => string | undefined;
+
+    /**
+     * Exports the current schedule to a JSON file for backing up and sharing
+     *
+     * @param data - Id of schedule that will be exported
+     * @returns
+     */
+    exportSchedule: (data: { scheduleId: string }) => string | undefined;
 }
