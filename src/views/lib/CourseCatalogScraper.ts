@@ -222,7 +222,7 @@ export class CourseCatalogScraper {
      */
     getInstructionMode(row: HTMLTableRowElement): InstructionMode {
         const text = (row.querySelector(TableDataSelector.INSTRUCTION_MODE)?.textContent || '').toLowerCase();
-
+        
         if (text.includes('internet')) {
             return 'Online';
         }

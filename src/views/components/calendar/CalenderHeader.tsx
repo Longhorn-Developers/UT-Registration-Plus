@@ -7,12 +7,15 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
+
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
+
 import React, { useEffect, useState } from 'react';
 
 import MenuIcon from '~icons/material-symbols/menu';
-// import RefreshIcon from '~icons/material-symbols/refresh';
+import RefreshIcon from '~icons/material-symbols/refresh';
 import SettingsIcon from '~icons/material-symbols/settings';
+import checkCourseStatusChanges from 'src/pages/background/handler/courseStatusChange';
 
 /**
  * Opens the options page in a new tab.
@@ -81,9 +84,12 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                         <Text variant='mini' className='text-nowrap text-ut-gray font-normal!'>
                             LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
                         </Text>
-                        {/* <button className='inline-block h-4 w-4 bg-transparent p-0 btn'>
+                        <button 
+                            className='inline-block h-4 w-4 bg-transparent p-0 btn'
+                            onClick={async () => await checkCourseStatusChanges()}
+                        >
                             <RefreshIcon className='h-4 w-4 animate-duration-800 text-ut-black' />
-                        </button> */}
+                        </button>
                     </div>
                 )}
             </div>

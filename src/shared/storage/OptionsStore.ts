@@ -21,7 +21,7 @@ export interface IOptionsStore {
 }
 
 export const OptionsStore = createSyncStore<IOptionsStore>({
-    enableCourseStatusChips: false,
+    enableCourseStatusChips: true, // true for dev purposes, will make switch in settings - ali v
     enableTimeAndLocationInPopup: false,
     enableHighlightConflicts: true,
     enableScrollToLoad: true,
