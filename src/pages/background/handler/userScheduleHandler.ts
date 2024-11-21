@@ -42,7 +42,7 @@ const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
             .then(sendResponse);
     },
     exportSchedule({ data, sendResponse }) {
-        exportSchedule(data.scheduleId);
+        exportSchedule(data.scheduleId).then(sendResponse);
     },
 };
 

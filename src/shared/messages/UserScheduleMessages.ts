@@ -70,5 +70,5 @@ export interface UserScheduleMessages {
      * @param data - Id of schedule that will be exported
      * @returns
      */
-    exportSchedule: (data: { scheduleId: string }) => void;
+    exportSchedule: (data: { scheduleId: string }) => string | undefined;
 }
