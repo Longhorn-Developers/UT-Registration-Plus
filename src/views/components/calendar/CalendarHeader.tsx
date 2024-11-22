@@ -4,9 +4,7 @@ import CourseStatus from '@views/components/common/CourseStatus';
 import Divider from '@views/components/common/Divider';
 import { LargeLogo } from '@views/components/common/LogoIcon';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
-import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
-import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React, { useEffect, useState } from 'react';
 
@@ -33,7 +31,7 @@ interface CalendarHeaderProps {
  */
 export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
 
     const [activeSchedule] = useSchedules();
 
@@ -76,16 +74,6 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                     totalHours={activeSchedule.hours}
                     totalCourses={activeSchedule.courses.length}
                 />
-                {enableDataRefreshing && (
-                    <div className='flex items-center gap-1 screenshot:hidden'>
-                        <Text variant='mini' className='text-nowrap text-ut-gray font-normal!'>
-                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
-                        </Text>
-                        {/* <button className='inline-block h-4 w-4 bg-transparent p-0 btn'>
-                            <RefreshIcon className='h-4 w-4 animate-duration-800 text-ut-black' />
-                        </button> */}
-                    </div>
-                )}
             </div>
             <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
                 {enableCourseStatusChips && (
@@ -98,7 +86,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
 
                 {/* <Button variant='single' icon={UndoIcon} color='ut-black' />
                 <Button variant='single' icon={RedoIcon} color='ut-black' /> */}
-                <Button variant='single' icon={SettingsIcon} color='ut-black' onClick={handleOpenOptions} />
+                <Button variant='single' icon={SettingsIcon} color='theme-black' onClick={handleOpenOptions} />
             </div>
         </div>
     );
