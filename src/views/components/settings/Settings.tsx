@@ -1,7 +1,11 @@
 // import addCourse from '@pages/background/lib/addCourse';
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
+import exportSchedule from '@pages/background/lib/exportSchedule';
+import importSchedule from '@pages/background/lib/importSchedule';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { downloadBlob } from '@shared/util/downloadBlob';
 // import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
 // import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
@@ -18,7 +22,6 @@ import useSchedules from '@views/hooks/useSchedules';
 // import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 // import { SiteSupport } from '@views/lib/getSiteSupport';
-import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 
@@ -26,6 +29,7 @@ import IconoirGitFork from '~icons/iconoir/git-fork';
 // import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
 import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 
+import InputButton from '../common/InputButton';
 import { useMigrationDialog } from '../common/MigrationDialog';
 // import RefreshIcon from '~icons/material-symbols/refresh';
 import DevMode from './DevMode';
@@ -204,6 +208,35 @@ export default function Settings(): JSX.Element {
         });
     };
 
+    const handleExportClick = async (id: string) => {
+        const jsonString = await exportSchedule(id);
+        if (jsonString) {
+            const schedules = await UserScheduleStore.get('schedules');
+            const schedule = schedules.find(s => s.id === id);
+            const fileName = `${schedule?.name ?? `schedule_${id}`}_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+            await downloadBlob(jsonString, 'JSON', fileName);
+        } else {
+            console.error('Error exporting schedule: jsonString is undefined');
+        }
+    };
+
+    const handleImportClick = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async e => {
+                try {
+                    const result = e.target?.result as string;
+                    const jsonObject = JSON.parse(result);
+                    await importSchedule(jsonObject);
+                } catch (error) {
+                    console.error('Invalid import file!');
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+
     // const handleAddCourseByLink = async () => {
     //     // todo: Use a proper modal instead of a prompt
     //     const link: string | null = prompt('Enter course link');
@@ -326,6 +359,40 @@ export default function Settings(): JSX.Element {
                                 <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
                                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Export Current Schedule
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>
+                                            Backup your active schedule to a portable file
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant='outline'
+                                        color='ut-burntorange'
+                                        onClick={() => handleExportClick(activeSchedule.id)}
+                                    >
+                                        Export
+                                    </Button>
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Import Schedule
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>Import from a schedule file</p>
+                                    </div>
+                                    <InputButton variant='filled' color='ut-burntorange' onChange={handleImportClick}>
+                                        Import Schedule
+                                    </InputButton>
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
                                             Course Conflict Highlight
                                         </Text>
                                         <p className='text-sm text-gray-600'>
@@ -385,11 +452,6 @@ export default function Settings(): JSX.Element {
                             </div>
                             {DISPLAY_PREVIEWS && (
                                 <Preview>
-                                    <div className='inline-flex items-center self-center gap-1'>
-                                        <Text variant='small' className='text-ut-gray !font-normal'>
-                                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
-                                        </Text>
-                                    </div>
                                     <Text
                                         variant='h2-course'
                                         className={clsx('text-center text-theme-red !font-normal', {

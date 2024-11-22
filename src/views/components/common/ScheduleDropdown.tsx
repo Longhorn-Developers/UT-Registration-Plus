@@ -27,17 +27,23 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
                     <>
                         <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left'>
                             <div className='flex-1'>
-                                <Text as='div' variant='h4' className='mb-1 w-100% text-ut-burntorange'>
-                                    {(activeSchedule ? activeSchedule.name : 'Schedule').toUpperCase()}:
+                                <Text as='div' variant='h3' className='w-100% text-ut-burntorange normal-case!'>
+                                    {activeSchedule ? activeSchedule.name : 'Schedule'}
                                 </Text>
-                                <p className='-mb-0.5'>
-                                    <Text variant='h3' className='text-theme-black leading-[75%]!'>
-                                        {activeSchedule ? activeSchedule.hours : 0} HOURS
-                                    </Text>
-                                    <Text variant='h4' className='ml-2.5 text-ut-black leading-[75%]!'>
-                                        {activeSchedule ? activeSchedule.courses.length : 0} Courses
-                                    </Text>
-                                </p>
+                                <div className='flex gap-2.5 text-theme-black leading-[75%]!'>
+                                    <div className='flex gap-1.25'>
+                                        <Text variant='h4'>{activeSchedule ? activeSchedule.hours : 0}</Text>
+                                        <Text variant='h4' className='font-all-small-caps!'>
+                                            {activeSchedule.hours === 1 ? 'HOUR' : 'HOURS'}
+                                        </Text>
+                                    </div>
+                                    <div className='flex gap-1.25'>
+                                        <Text variant='h4'>{activeSchedule ? activeSchedule.courses.length : 0}</Text>
+                                        <Text variant='h4' className='font-all-small-caps!'>
+                                            {activeSchedule.courses.length === 1 ? 'COURSE' : 'COURSES'}
+                                        </Text>
+                                    </div>
+                                </div>
                             </div>
                             <Text className='text-ut-burntorange text-2xl! font-normal!'>
                                 {open ? <DropdownArrowDown /> : <DropdownArrowUp />}
