@@ -71,4 +71,11 @@ export interface UserScheduleMessages {
      * @returns true if user was already logged into the provided URL, false otherwise
      */
     validateLoginStatus: (data: { url: string }) => boolean;
+    /**
+     * Exports the current schedule to a JSON file for backing up and sharing
+     *
+     * @param data - Id of schedule that will be exported
+     * @returns
+     */
+    exportSchedule: (data: { scheduleId: string }) => string | undefined;
 }
