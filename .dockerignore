@@ -1,0 +1,44 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Dependencies
+node_modules
+.pnpm-store
+
+# Development
+.vscode
+.idea
+*.log
+*.lock
+!pnpm-lock.yaml
+.env
+.env.*
+!.env.example
+
+# Build outputs
+dist
+build
+.next
+.nuxt
+.output
+
+# Testing
+coverage
+.nyc_output
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*
+
+# Documentation
+README.md
+CHANGELOG.md
+DOCKER_DEV_SETUP.md
+docs/
