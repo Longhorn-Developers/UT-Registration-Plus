@@ -44,7 +44,7 @@ const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
     },
     validateLoginStatus({ data, sendResponse }) {
         validateLoginStatus(data.url).then(sendResponse);
-      },
+    },
     exportSchedule({ data, sendResponse }) {
         exportSchedule(data.scheduleId).then(sendResponse);
     },
