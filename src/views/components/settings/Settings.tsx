@@ -3,7 +3,6 @@ import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
-import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { downloadBlob } from '@shared/util/downloadBlob';
@@ -23,7 +22,6 @@ import useSchedules from '@views/hooks/useSchedules';
 // import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 // import { SiteSupport } from '@views/lib/getSiteSupport';
-import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 

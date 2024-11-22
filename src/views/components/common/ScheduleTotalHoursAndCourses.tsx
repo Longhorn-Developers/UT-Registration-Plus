@@ -36,9 +36,9 @@ export default function ScheduleTotalHoursAndCourses({
                     <Text
                         variant='h3'
                         as='span'
-                        className='font-all-small-caps! capitalize screenshot:inline sm:inline'
+                        className='capitalize screenshot:inline sm:inline font-all-small-caps!'
                     >
-                        {totalHours === 1 ? 'Hour' : 'Hours'}
+                        {totalHours === 1 ? 'HOUR' : 'HOURS'}
                     </Text>
                 </div>
                 <div className='flex flex-row items-center gap-1.25 text-theme-black'>
@@ -48,9 +48,9 @@ export default function ScheduleTotalHoursAndCourses({
                     <Text
                         variant='h3'
                         as='span'
-                        className='font-all-small-caps! capitalize screenshot:inline sm:inline'
+                        className='capitalize screenshot:inline sm:inline font-all-small-caps!'
                     >
-                        {totalCourses === 1 ? 'Course' : 'Courses'}
+                        {totalCourses === 1 ? 'COURSE' : 'COURSES'}
                     </Text>
                 </div>
             </div>

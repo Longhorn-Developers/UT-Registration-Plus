@@ -34,13 +34,13 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
                                     <div className='flex gap-1.25'>
                                         <Text variant='h4'>{activeSchedule ? activeSchedule.hours : 0}</Text>
                                         <Text variant='h4' className='font-all-small-caps!'>
-                                            {activeSchedule.hours === 1 ? 'Hour' : 'Hours'}
+                                            {activeSchedule.hours === 1 ? 'HOUR' : 'HOURS'}
                                         </Text>
                                     </div>
                                     <div className='flex gap-1.25'>
                                         <Text variant='h4'>{activeSchedule ? activeSchedule.courses.length : 0}</Text>
                                         <Text variant='h4' className='font-all-small-caps!'>
-                                            {activeSchedule.courses.length === 1 ? 'Course' : 'Courses'}
+                                            {activeSchedule.courses.length === 1 ? 'COURSE' : 'COURSES'}
                                         </Text>
                                     </div>
                                 </div>

@@ -4,9 +4,7 @@ import CourseStatus from '@views/components/common/CourseStatus';
 import Divider from '@views/components/common/Divider';
 import { LargeLogo } from '@views/components/common/LogoIcon';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
-import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
-import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React, { useEffect, useState } from 'react';
 
@@ -33,7 +31,7 @@ interface CalendarHeaderProps {
  */
 export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
 
     const [activeSchedule] = useSchedules();
 
