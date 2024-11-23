@@ -29,7 +29,7 @@ import IconoirGitFork from '~icons/iconoir/git-fork';
 // import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
 import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 
-import InputButton from '../common/InputButton';
+import FileUpload from '../common/FileUpload';
 import { useMigrationDialog } from '../common/MigrationDialog';
 // import RefreshIcon from '~icons/material-symbols/refresh';
 import DevMode from './DevMode';
@@ -383,9 +383,9 @@ export default function Settings(): JSX.Element {
                                         </Text>
                                         <p className='text-sm text-gray-600'>Import from a schedule file</p>
                                     </div>
-                                    <InputButton variant='filled' color='ut-burntorange' onChange={handleImportClick}>
+                                    <FileUpload variant='filled' color='ut-burntorange' onChange={handleImportClick}>
                                         Import Schedule
-                                    </InputButton>
+                                    </FileUpload>
                                 </div>
 
                                 <Divider size='auto' orientation='horizontal' />

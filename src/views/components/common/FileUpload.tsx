@@ -22,7 +22,7 @@ interface Props {
  *
  * @returns
  */
-export default function InputButton({
+export default function FileUpload({
     className,
     style,
     variant,
