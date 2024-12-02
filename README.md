@@ -58,7 +58,9 @@ Contributions are welcome and encouraged! To get started:
 
 For significant changes, it’s recommended to open an issue first to discuss the proposed updates.
 
-## Development: Getting Started
+## Development
+
+### Getting Started
 
 1. Clone this repository: `git clone https://github.com/Longhorn-Developers/UT-Registration-Plus.git`
 2. **Node Version**: This project requires the Node.js version specified in `.nvmrc`. Use [nvm](https://github.com/nvm-sh/nvm) to install and manage the correct version:
@@ -100,6 +102,10 @@ Once set up, the extension can be built to the `dist/` directory using the follo
 Use `BETA=true pnpm build` to generate a beta build.
 
 </details>
+
+### Docker
+
+This project includes a Dockerfile that allows you to build, zip, or run the extension in development mode using Docker. Refer to [Docker Dev Setup](./DOCKER_DEV_SETUP.md) to get started.
 
 ## Loading the Extension Manually
 

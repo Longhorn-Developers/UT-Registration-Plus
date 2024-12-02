@@ -110,6 +110,9 @@ importers:
       '@iconify-json/bi':
         specifier: ^1.2.1
         version: 1.2.1
+      '@iconify-json/ic':
+        specifier: ^1.2.1
+        version: 1.2.1
       '@iconify-json/iconoir':
         specifier: ^1.2.4
         version: 1.2.4
@@ -119,6 +122,9 @@ importers:
       '@iconify-json/ri':
         specifier: ^1.2.3
         version: 1.2.3
+      '@iconify-json/streamline':
+        specifier: ^1.2.1
+        version: 1.2.1
       '@semantic-release/exec':
         specifier: ^6.0.3
         version: 6.0.3(semantic-release@24.2.0(typescript@5.6.3))
@@ -1053,6 +1059,9 @@ packages:
   '@iconify-json/bi@1.2.1':
     resolution: {integrity: sha512-wsIWb6bcnBkfN8/2puIIE2ul6NYVjclbE/nI7JZsPnfzBamd3NuRFstXQH9Ckkbrw9eiBTNKwHbH90w3UE5QIg==}
 
+  '@iconify-json/ic@1.2.1':
+    resolution: {integrity: sha512-UjL/bjJP/T5EV881+hTzcfTKVo0KEUjhnMiJcLtPzNgPtU2KZZmRx8BSKKR61H4CN/5FTEbyawGyG0aEt3SwGQ==}
+
   '@iconify-json/iconoir@1.2.4':
     resolution: {integrity: sha512-PILwyd8to0DFnMdT0s1RogIT+PRbh0THfvFxi94zobIRpsx/It/slFJHH6bslzXZLPRMSBebNwjqwQt5FvWlSQ==}
 
@@ -1061,6 +1070,9 @@ packages:
 
   '@iconify-json/ri@1.2.3':
     resolution: {integrity: sha512-UVKofd5xkSevGd5K01pvO4NWsu+2C9spu+GxnMZUYymUiaWmpCAxtd22MFSpm6MGf0MP4GCwhDCo1Q8L8oZ9wg==}
+
+  '@iconify-json/streamline@1.2.1':
+    resolution: {integrity: sha512-hqNodkjyIHBymkFY3zMip0F/D5yw4qXgwMJCaTF3zlbpQMgNJhY3D2ikTFTDVcTHfCSd6EX6enKXj4Rvu+5hnw==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -5725,7 +5737,6 @@ packages:
     engines: {node: '>=0.6.0', teleport: '>=0.2.0'}
     deprecated: |-
       You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
-
       (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
 
   queue-microtask@1.2.3:
@@ -7535,6 +7546,10 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
+  '@iconify-json/ic@1.2.1':
+    dependencies:
+      '@iconify/types': 2.0.0
+
   '@iconify-json/iconoir@1.2.4':
     dependencies:
       '@iconify/types': 2.0.0
@@ -7544,6 +7559,10 @@ snapshots:
       '@iconify/types': 2.0.0
 
   '@iconify-json/ri@1.2.3':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/streamline@1.2.1':
     dependencies:
       '@iconify/types': 2.0.0
 
