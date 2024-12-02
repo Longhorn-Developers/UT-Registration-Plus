@@ -21,11 +21,13 @@ import useSchedules from '@views/hooks/useSchedules';
 // import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 // import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
+import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 // import { SiteSupport } from '@views/lib/getSiteSupport';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import IconoirGitFork from '~icons/iconoir/git-fork';
+import CalendarIcon from '~icons/material-symbols/calendar-month';
 // import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
 import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 
@@ -39,10 +41,18 @@ const DISPLAY_PREVIEWS = false;
 const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS ? 'w-1/2 space-y-4' : 'flex-grow space-y-4';
 
 const manifest = chrome.runtime.getManifest();
-const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
 
 const gitHubStatsService = new GitHubStatsService();
 const includeMergedPRs = false;
+
+/**
+ * Opens the calendar page in a new tab.
+ * @returns A promise that resolves when the options page is opened.
+ */
+const handleOpenCalendar = async (): Promise<void> => {
+    const url = chrome.runtime.getURL('/calendar.html');
+    await openTabFromContentScript(url);
+};
 
 /**
  * Custom hook for enabling developer mode.
@@ -256,8 +266,8 @@ export default function Settings(): JSX.Element {
             <header className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
                 <LargeLogo />
                 <Divider className='mx-2 self-center md:mx-4' size='2.5rem' orientation='vertical' />
-                <Text variant='h1' className='flex-1 text-ut-burntorange'>
-                    UTRP SETTINGS & CREDITS PAGE
+                <Text variant='h1' className='flex-1 text-ut-burntorange normal-case!'>
+                    Settings and Credits
                 </Text>
                 <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
                     <Button variant='single' color='theme-black' onClick={handleChangelogOnClick}>
@@ -266,7 +276,9 @@ export default function Settings(): JSX.Element {
                             v{manifest.version} - {process.env.NODE_ENV}
                         </Text>
                     </Button>
-                    <img src={LDIconURL} alt='LD Icon' className='h-10 w-10 rounded-lg' />
+                    <Button variant='filled' icon={CalendarIcon} color='ut-burntorange' onClick={handleOpenCalendar}>
+                        Calendar
+                    </Button>
                 </div>
             </header>
 
