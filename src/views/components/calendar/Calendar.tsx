@@ -10,6 +10,7 @@ import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalog
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
+import useInitialWidth from '@views/hooks/useInitialWidth';
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useState } from 'react';
 
@@ -26,6 +27,7 @@ export default function Calendar(): JSX.Element {
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const [showSidebar, setShowSidebar] = useState<boolean>(true);
+    const { width, elementRef: sidebarRef } = useInitialWidth<HTMLDivElement>();
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
@@ -51,6 +53,14 @@ export default function Calendar(): JSX.Element {
         if (course) setShowPopup(true);
     }, [course]);
 
+    const getSidebarWidth = () => {
+        if (showSidebar) {
+            return width > 0 ? width : 'auto';
+        }
+
+        return 0;
+    };
+
     return (
         <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
@@ -60,18 +70,27 @@ export default function Calendar(): JSX.Element {
                     }}
                 />
                 <div className='h-full flex overflow-auto pl-3'>
-                    {showSidebar && (
-                        <div className='h-full flex flex-none flex-col justify-between pb-5 screenshot:hidden'>
-                            <div className='mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pl-4.5 pr-4 pt-5'>
-                                <CalendarSchedules />
-                                <Divider orientation='horizontal' size='100%' className='my-5' />
-                                <ImportantLinks />
-                                <Divider orientation='horizontal' size='100%' className='my-5' />
-                                <TeamLinks />
-                            </div>
-                            <CalendarFooter />
+                    <div
+                        ref={sidebarRef}
+                        style={{ width: getSidebarWidth() }}
+                        className='h-full flex flex-none flex-col justify-between whitespace-nowrap pb-5 transition-all duration-300 ease-out-expo screenshot:hidden'
+                    >
+                        <div
+                            tabIndex={showSidebar ? 0 : -1}
+                            className={`${showSidebar ? 'opacity-100' : 'opacity-0 pointer-events-none'} transition-opacity ease-out-expo mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pl-4.5 pr-4 pt-5`}
+                        >
+                            <CalendarSchedules />
+                            <Divider orientation='horizontal' size='100%' className='my-5' />
+                            <ImportantLinks />
+                            <Divider orientation='horizontal' size='100%' className='my-5' />
+                            <TeamLinks />
                         </div>
-                    )}
+
+                        <CalendarFooter
+                            socialIconClassNames={`${showSidebar ? 'translate-y-0 delay-50' : 'translate-y-6.75'} transition-transform ease-out-expo duration-500`}
+                            sublineClassNames={`${showSidebar ? 'opacity-100 delay-75' : 'opacity-0'} duration-300 transition-opacity ease-out-expo`}
+                        />
+                    </div>
                     <div className='h-full min-w-5xl flex flex-grow flex-col overflow-y-auto'>
                         <div className='min-h-2xl flex-grow overflow-auto pl-2 pr-4 pt-6 screenshot:min-h-xl'>
                             <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
