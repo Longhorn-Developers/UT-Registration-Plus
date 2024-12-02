@@ -8,8 +8,10 @@ import { pickFontColor } from '@shared/util/colors';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
+import CheckIcon from '~icons/material-symbols/check';
+import Copy from '~icons/material-symbols/content-copy';
 import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
 /**
@@ -44,7 +46,6 @@ export default function PopupCourseBlock({
 
         const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
         });
 
         return () => {
@@ -55,10 +56,27 @@ export default function PopupCourseBlock({
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
     const formattedUniqueId = course.uniqueId.toString().padStart(5, '0');
+    const [copyWait, setCopyWait] = useState<NodeJS.Timeout | undefined>(undefined);
+    const copyTimeoutIdRef = useRef(0);
 
     const handleClick = async () => {
         await background.switchToCalendarTab({ uniqueId: course.uniqueId });
         window.close();
+    };
+
+    const handleCopy = (event: React.MouseEvent<HTMLElement>) => {
+        if (copyWait !== undefined) {
+            clearTimeout(copyWait);
+        }
+
+        event.preventDefault();
+        navigator.clipboard.writeText(formattedUniqueId);
+        copyTimeoutIdRef.current += 250;
+
+        const newTimeoutId = setTimeout(() => {
+            setCopyWait(undefined);
+        }, copyTimeoutIdRef.current);
+        setCopyWait(newTimeoutId);
     };
 
     return (
@@ -67,10 +85,9 @@ export default function PopupCourseBlock({
                 backgroundColor: colors.primaryColor,
             }}
             className={clsx(
-                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left',
+                'h-full min-h-[50px] w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left',
                 className
             )}
-            onClick={handleClick}
         >
             <div
                 style={{
@@ -78,11 +95,12 @@ export default function PopupCourseBlock({
                 }}
                 className='flex items-center self-stretch rounded rounded-r-0 cursor-move!'
                 {...dragHandleProps}
+                onClick={handleClick}
             >
                 <DragIndicatorIcon className='h-6 w-6 text-white' />
             </div>
-            <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
-                <span className='px-0.5 font-450'>{formattedUniqueId}</span> {course.department} {course.number}
+            <Text className={clsx('flex-1 pl-[10px] py-3.5 truncate', fontColor)} variant='h1-course'>
+                {course.department} {course.number}
                 {course.instructors.length > 0 ? <> &ndash; </> : ''}
                 {course.instructors.map(v => v.toString({ format: 'last' })).join('; ')}
             </Text>
@@ -96,6 +114,19 @@ export default function PopupCourseBlock({
                     <StatusIcon status={course.status} className='h-5 w-5' />
                 </div>
             )}
+
+            <button
+                className='flex bg-transparent px-2 py-0.25 text-white btn'
+                onClick={handleCopy}
+                style={{ backgroundColor: colors.secondaryColor }}
+            >
+                {copyWait !== undefined ? (
+                    <CheckIcon className='h-5 w-5 text-white' />
+                ) : (
+                    <Copy className='h-5 w-5 text-white' />
+                )}
+                {formattedUniqueId}
+            </button>
         </div>
     );
 }
