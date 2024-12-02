@@ -21,6 +21,7 @@ export default async function addCourse(scheduleId: string, course: Course, hasC
     if (!hasColor) {
         course.colors = getUnusedColor(activeSchedule, course);
     }
+
     activeSchedule.courses.push(course);
     activeSchedule.updatedAt = Date.now();
     await UserScheduleStore.set('schedules', schedules);
