@@ -41,15 +41,15 @@ export function Button({
         <button
             style={
                 {
-                    ...style,
                     color: colorHex,
                     backgroundColor: `rgb(${colorRgb} / var(--un-bg-opacity)`,
+                    ...style,
                 } satisfies React.CSSProperties
             }
             className={clsx(
                 'btn',
                 {
-                    'text-white! bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20':
+                    '!text-white bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20':
                         variant === 'filled',
                     'bg-opacity-0 border-current hover:enabled:bg-opacity-8 border': variant === 'outline',
                     'bg-opacity-0 border-none hover:enabled:bg-opacity-8': variant === 'single', // settings is the only "single"

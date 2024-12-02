@@ -1,11 +1,9 @@
 import type { ThemeColor, TWIndex } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import Divider from '@views/components/common/Divider';
+import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import React from 'react';
 import { theme } from 'unocss/preset-mini';
-
-import InvertColorsIcon from '~icons/material-symbols/invert-colors';
-import InvertColorsOffIcon from '~icons/material-symbols/invert-colors-off';
 
 import ColorPatch from './ColorPatch';
 import HexColorEditor from './HexColorEditor';
@@ -55,9 +53,7 @@ const hexCodeToBaseColor = new Map<string, string>(
  * Props for the CourseCellColorPicker component.
  */
 export interface CourseCellColorPickerProps {
-    setSelectedColor: React.Dispatch<React.SetStateAction<ThemeColor | null>>;
-    isInvertColorsToggled: boolean;
-    setIsInvertColorsToggled: React.Dispatch<React.SetStateAction<boolean>>;
+    defaultColor: string;
 }
 
 /**
@@ -86,49 +82,43 @@ export interface CourseCellColorPickerProps {
  *
  * @returns The color picker component that displays a color palette with a list of color patches.
  */
-export default function CourseCellColorPicker({
-    setSelectedColor: setFinalColor,
-    isInvertColorsToggled,
-    setIsInvertColorsToggled,
-}: CourseCellColorPickerProps): JSX.Element {
+export default function CourseCellColorPicker({ defaultColor }: CourseCellColorPickerProps): JSX.Element {
     // hexCode mirrors contents of HexColorEditor which has no hash prefix
     const [hexCode, setHexCode] = React.useState<string>(
-        getThemeColorHexByName('ut-gray').slice(1).toLocaleLowerCase()
+        defaultColor.slice(1).toLocaleLowerCase() || getThemeColorHexByName('ut-gray')
     );
+
+    const { setSelectedColor } = useColorPickerContext();
+
     const hexCodeWithHash = `#${hexCode}` as ThemeColor;
     const selectedBaseColor = hexCodeToBaseColor.get(hexCodeWithHash);
 
     const handleSelectColorPatch = (baseColor: string) => {
-        setHexCode(baseColor.slice(1).toLocaleLowerCase());
+        let hexCode = baseColor.toLocaleLowerCase();
+
+        if (hexCode.startsWith('#')) {
+            hexCode = baseColor.slice(1);
+        }
+
+        setHexCode(hexCode);
+        setSelectedColor(`#${hexCode}` as ThemeColor);
     };
 
-    React.useEffect(() => {
-        setFinalColor(hexCodeWithHash);
-    }, [hexCodeWithHash, setFinalColor]);
-
     return (
-        <div className='inline-flex flex-col border border-1 border-ut-offwhite rounded-1 p-1.25'>
+        <div className='inline-flex flex-col border border-1 border-ut-offwhite rounded-1 bg-white p-1.25'>
             <div className='grid grid-cols-6 gap-1'>
                 {Array.from(colorPatchColors.keys()).map(baseColor => (
                     <ColorPatch
+                        key={baseColor}
                         color={baseColor}
                         isSelected={baseColor === selectedBaseColor}
-                        handleSetSelectedColor={handleSelectColorPatch}
+                        handleSelectColorPatch={handleSelectColorPatch}
+                        defaultColor={defaultColor}
                     />
                 ))}
                 <div className='col-span-3 flex items-center justify-center overflow-hidden'>
-                    <HexColorEditor hexCode={hexCode} setHexCode={setHexCode} />
+                    <HexColorEditor hexCode={hexCode} setHexCode={handleSelectColorPatch} />
                 </div>
-                <button
-                    className='h-5.5 w-5.5 bg-ut-black p-0 transition-all duration-200 hover:scale-110 btn'
-                    onClick={() => setIsInvertColorsToggled(prev => !prev)}
-                >
-                    {isInvertColorsToggled ? (
-                        <InvertColorsIcon className='h-3.5 w-3.5 color-white' />
-                    ) : (
-                        <InvertColorsOffIcon className='h-3.5 w-3.5 color-white' />
-                    )}
-                </button>
             </div>
             {selectedBaseColor && (
                 <>
@@ -138,9 +128,11 @@ export default function CourseCellColorPicker({
                             .get(selectedBaseColor)
                             ?.map(shadeColor => (
                                 <ColorPatch
+                                    key={shadeColor}
                                     color={shadeColor}
                                     isSelected={shadeColor === hexCodeWithHash}
-                                    handleSetSelectedColor={handleSelectColorPatch}
+                                    handleSelectColorPatch={handleSelectColorPatch}
+                                    defaultColor={defaultColor}
                                 />
                             ))}
                     </div>

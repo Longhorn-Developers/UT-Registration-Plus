@@ -5,7 +5,7 @@ import type { HexColor, Lab, RGB, sRGB } from '../types/Color';
 import { isHexColor } from '../types/Color';
 import type { Course } from '../types/Course';
 import type { CourseColors, TWColorway, TWIndex } from '../types/ThemeColors';
-import { colorwayIndexes } from '../types/ThemeColors';
+import { colors, colorwayIndexes } from '../types/ThemeColors';
 import type { UserSchedule } from '../types/UserSchedule';
 
 /**
@@ -24,6 +24,19 @@ export function hexToRGB(hex: HexColor): RGB | undefined {
     if (!result || !(result.length > 3)) return undefined;
 
     return [parseInt(result[1]!, 16), parseInt(result[2]!, 16), parseInt(result[3]!, 16)];
+}
+
+/**
+ * Checks if a given string is a valid hex color.
+ *
+ * A valid hex color is a string that starts with a '#' followed by either
+ * 3 or 6 hexadecimal characters (0-9, A-F, a-f).
+ *
+ * @param hex - The hex color string to validate.
+ * @returns True if the string is a valid hex color, false otherwise.
+ */
+export function isValidHexColor(hex: string): boolean {
+    return /^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
 }
 
 export const useableColorways = Object.keys(theme.colors)
@@ -56,6 +69,13 @@ export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 
     return Ys < 0.365 ? 'text-black' : 'text-theme-black';
 }
 
+// Mapping of Tailwind CSS class names to their corresponding hex values
+export const tailwindColorMap: Record<string, HexColor> = {
+    'text-white': '#FFFFFF',
+    'text-black': '#000000',
+    'text-theme-black': colors.theme.black,
+};
+
 /**
  * Get primary and secondary colors from a Tailwind colorway
  *
@@ -82,10 +102,15 @@ export function getCourseColors(colorway: TWColorway, index?: number, offset: nu
  * @param color - The hexadecimal color value.
  * @returns The Tailwind colorway.
  */
-export function getColorwayFromColor(color: HexColor): TWColorway {
+export function getColorwayFromColor(color: HexColor): {
+    colorway: TWColorway;
+    index: TWIndex;
+} {
     for (const colorway of useableColorways) {
-        if (Object.values(theme.colors[colorway]).includes(color)) {
-            return colorway as TWColorway;
+        const colorValues = Object.values(theme.colors[colorway]);
+        const index = colorValues.indexOf(color);
+        if (index !== -1) {
+            return { colorway: colorway as TWColorway, index: (index * 100) as TWIndex };
         }
     }
 
@@ -122,6 +147,28 @@ export function getColorwayFromColor(color: HexColor): TWColorway {
 }
 
 /**
+ * Returns a darker shade of the given hex color by reducing the RGB values by the specified offset.
+ *
+ * @param color - The hexadecimal color value to darken.
+ * @param offset - The amount to reduce each RGB component by (default is 20).
+ * @returns The darker shade of the given hex color.
+ * @throws If the provided color is not a valid hex color.
+ */
+export function getDarkerShade(color: HexColor, offset: number = 20): HexColor {
+    const rgb = hexToRGB(color);
+    if (!rgb) {
+        throw new Error('color: Invalid hex.');
+    }
+
+    const [r, g, b] = rgb.map(c => Math.max(0, c - offset));
+    if (r === undefined || g === undefined || b === undefined) {
+        throw new Error('RGB values are undefined');
+    }
+
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+
+/**
  * Get next unused color in a tailwind colorway for a given schedule
  *
  * @param schedule - The schedule which the course is in
@@ -155,15 +202,15 @@ export function getUnusedColor(
         ...c,
         colorway: getColorwayFromColor(c.colors.primaryColor),
     }));
-    const usedColorways = new Set(scheduleCourses.map(c => c.colorway));
+    const usedColorways = new Set(scheduleCourses.map(c => c.colorway.colorway));
     const availableColorways = new Set(useableColorways.filter(c => !usedColorways.has(c)));
 
     if (availableColorways.size > 0) {
         let sameDepartment = scheduleCourses.filter(c => c.department === course.department);
 
         sameDepartment.sort((a, b) => {
-            const aIndex = useableColorways.indexOf(a.colorway);
-            const bIndex = useableColorways.indexOf(b.colorway);
+            const aIndex = useableColorways.indexOf(a.colorway.colorway);
+            const bIndex = useableColorways.indexOf(b.colorway.colorway);
 
             return aIndex - bIndex;
         });
@@ -172,8 +219,8 @@ export function getUnusedColor(
             // check to see if any adjacent colorways are available
             const centerCourse = sameDepartment[Math.floor(Math.random() * sameDepartment.length)]!;
 
-            let nextColorway = getNextColorway(centerCourse.colorway);
-            let prevColorway = getPreviousColorway(centerCourse.colorway);
+            let nextColorway = getNextColorway(centerCourse.colorway.colorway);
+            let prevColorway = getPreviousColorway(centerCourse.colorway.colorway);
 
             // eslint-disable-next-line no-constant-condition
             while (true) {
