@@ -14,7 +14,7 @@ type Props = TextProps<'a'> & {
  * A reusable Text component with props that build on top of the design system for the extension
  */
 export default function Link(props: PropsWithChildren<Props>): JSX.Element {
-    let { className, href, ...passedProps } = props;
+    const { className, href, ...passedProps } = props;
 
     if (href && !props.onClick) {
         passedProps.onClick = e => {
@@ -37,7 +37,7 @@ export default function Link(props: PropsWithChildren<Props>): JSX.Element {
                     'underline cursor-pointer': !isDisabled,
                     'cursor-not-allowed color-ut-gray': isDisabled,
                 },
-                props.className
+                className
             )}
         />
     );

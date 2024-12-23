@@ -3,9 +3,10 @@ import MIMEType from '../types/MIMEType';
 
 /**
  * Downloads a blob by creating a temporary URL and triggering a download.
- * @param blobPart The blob data to be downloaded.
- * @param type The MIME type of the blob.
- * @param fileName The name of the file to be downloaded.
+ *
+ * @param blobPart - The blob data to be downloaded.
+ * @param type - The MIME type of the blob.
+ * @param fileName - The name of the file to be downloaded.
  * @returns A promise that resolves when the download is successful, or rejects with an error if the download fails.
  */
 export function downloadBlob(blobPart: BlobPart, type: MIMETypeKey, fileName: string): Promise<void> {
