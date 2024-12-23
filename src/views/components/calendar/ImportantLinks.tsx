@@ -22,25 +22,25 @@ const links: LinkItem[] = [
         text: 'Course Schedule Archives',
         url: 'https://registrar.utexas.edu/schedules/archive',
     },
+    {
+        text: 'My Degree Audit (IDA)',
+        url: 'https://utdirect.utexas.edu/apps/degree/audits/',
+    },
     // {
     //     text: "Summer '24 Course Schedule",
     //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20246/',
     // },
+    // {
+    //     text: "'24-'25 Academic Calendar",
+    //     url: 'https://registrar.utexas.edu/calendars/24-25',
+    // },
     {
-        text: "'24-'25 Academic Calendar",
-        url: 'https://registrar.utexas.edu/calendars/24-25',
-    },
-    {
-        text: 'Registration Info Sheet',
+        text: 'Registration Info Sheet (RIS)',
         url: 'https://utdirect.utexas.edu/registrar/ris.WBX',
     },
     {
         text: 'Register for Courses',
         url: 'https://utdirect.utexas.edu/registration/chooseSemester.WBX',
-    },
-    {
-        text: 'Degree Audit',
-        url: 'https://utdirect.utexas.edu/apps/degree/audits/',
     },
 ];
 
@@ -50,8 +50,8 @@ const links: LinkItem[] = [
  */
 export default function ImportantLinks({ className }: Props): JSX.Element {
     return (
-        <article className={clsx(className, 'flex flex-col gap-2')}>
-            <Text variant='h3'>Useful Links</Text>
+        <article className={clsx(className, 'flex flex-col gap-2.5')}>
+            <Text variant='h3'>Resources</Text>
             {links.map(link => (
                 <a
                     key={link.text}
