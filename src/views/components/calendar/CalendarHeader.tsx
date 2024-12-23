@@ -2,12 +2,8 @@ import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { Button } from '@views/components/common/Button';
 import CourseStatus from '@views/components/common/CourseStatus';
 import Divider from '@views/components/common/Divider';
-import { LargeLogo } from '@views/components/common/LogoIcon';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
-import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
-import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
-import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React, { useEffect, useState } from 'react';
 
 // import RefreshIcon from '~icons/material-symbols/refresh';
