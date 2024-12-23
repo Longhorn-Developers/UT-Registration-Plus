@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import MenuIcon from '~icons/material-symbols/menu';
 
 interface CalendarHeaderProps {
-    sidebarOpen: boolean;
+    sidebarOpen?: boolean;
     onSidebarToggle?: () => void;
 }
 
