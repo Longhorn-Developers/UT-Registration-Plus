@@ -14,8 +14,13 @@ import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useState } from 'react';
 
 import CalendarFooter from './CalendarFooter';
-import TeamLinks from './TeamLinks';
-
+import { LargeLogo } from '../common/LogoIcon';
+import MenuIcon from '~icons/material-symbols/menu';
+import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
+import { Button } from '../common/Button';
+import { CRX_PAGES } from 'src/shared/types/CRXPages';
+import { openReportWindow } from 'src/shared/util/openReportWindow';
+import Text from '../common/Text/Text';
 /**
  * Calendar page component
  */
@@ -54,25 +59,52 @@ export default function Calendar(): JSX.Element {
     return (
         <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
-                <CalendarHeader
-                    onSidebarToggle={() => {
-                        setShowSidebar(!showSidebar);
-                    }}
-                />
-                <div className='h-full flex overflow-auto pl-3'>
+                <div className='h-screen flex overflow-auto'>
                     {showSidebar && (
-                        <div className='h-full flex flex-none flex-col justify-between pb-5 screenshot:hidden'>
-                            <div className='mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pl-4.5 pr-4 pt-5'>
+                        <div className='h-full flex flex-none flex-col justify-between screenshot:hidden border-r border-ut-offwhite/75 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] px-7.5 py-5'>
+                            <div className='h-full w-fit flex flex-col overflow-auto '>
+                                <div className='flex items-center w-full justify-between pb-[1.5625rem] gap-x-3xl'>
+                                    <LargeLogo />
+                                    <Button
+                                        variant='single'
+                                        color='theme-black'
+                                        onClick={() => {
+                                            setShowSidebar(!showSidebar);
+                                        }}
+                                        className='screenshot:hidden !p-0 h-fit'
+                                    >
+                                        <MenuIcon className='size-6' />
+                                    </Button>
+                                </div>
                                 <CalendarSchedules />
                                 <Divider orientation='horizontal' size='100%' className='my-5' />
                                 <ImportantLinks />
                                 <Divider orientation='horizontal' size='100%' className='my-5' />
-                                <TeamLinks />
+                                {/* <TeamLinks /> */}
+                                <a
+                                    href={CRX_PAGES.REPORT}
+                                    className='flex items-center gap-0.5 text-ut-burntorange underline-offset-2 hover:underline'
+                                    target='_blank'
+                                    rel='noreferrer'
+                                    onClick={event => {
+                                        event.preventDefault();
+                                        openReportWindow();
+                                    }}
+                                >
+                                    <Text variant='p'>Send us Feedback!</Text>
+                                    <OutwardArrowIcon className='h-3 w-3' />
+                                </a>
                             </div>
                             <CalendarFooter />
                         </div>
                     )}
                     <div className='h-full min-w-5xl flex flex-grow flex-col overflow-y-auto'>
+                        <CalendarHeader
+                            sidebarOpen={showSidebar}
+                            onSidebarToggle={() => {
+                                setShowSidebar(!showSidebar);
+                            }}
+                        />
                         <div className='min-h-2xl flex-grow overflow-auto pl-2 pr-4 pt-6 screenshot:min-h-xl'>
                             <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                         </div>

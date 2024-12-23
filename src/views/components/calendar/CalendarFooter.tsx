@@ -4,8 +4,20 @@ import DiscordIcon from '~icons/bi/discord';
 import GithubIcon from '~icons/ri/github-fill';
 import InstagramIcon from '~icons/ri/instagram-line';
 import LinkedinIcon from '~icons/ri/linkedin-box-fill';
+import SettingsIcon from '~icons/material-symbols/settings';
 
 import Link from '../common/Link';
+import { openTabFromContentScript } from 'src/views/lib/openNewTabFromContentScript';
+import { Button } from '../common/Button';
+
+/**
+ * Opens the options page in a new tab.
+ * @returns A promise that resolves when the options page is opened.
+ */
+const handleOpenOptions = async (): Promise<void> => {
+    const url = chrome.runtime.getURL('/options.html');
+    await openTabFromContentScript(url);
+};
 
 /**
  * The footer section of the calendar's sidebar
@@ -13,8 +25,8 @@ import Link from '../common/Link';
  */
 export default function CalendarFooter(): JSX.Element {
     return (
-        <footer className='min-w-full w-0 pl-4.5 space-y-2'>
-            <div className='flex gap-2'>
+        <footer className='min-w-full w-0 flex items-center justify-between'>
+            <div className='flex gap-3.75'>
                 <Link className='linkanimate' href='https://www.instagram.com/longhorndevelopers'>
                     <InstagramIcon className='h-6 w-6' />
                 </Link>
@@ -31,10 +43,7 @@ export default function CalendarFooter(): JSX.Element {
                     <LinkedinIcon className='h-6 w-6 -mx-0.75' />
                 </Link>
             </div>
-            <p className='text-2.5 text-ut-concrete font-light tracking-wide'>
-                UT Registration Plus is a project under Longhorn Developers, a student-led organization aimed at
-                addressing issues at UT Austin.
-            </p>
+            <Button variant='single' icon={SettingsIcon} color='ut-black' onClick={handleOpenOptions} />
         </footer>
     );
 }
