@@ -25,6 +25,7 @@ let nextPageURL = getNextButton(document)?.href;
 /**
  * This will scrape the pagination buttons from the course list and use them to load the next page
  * and then return the table rows from the next page
+ *
  * @returns a tuple of the current LoadStatus (whether are currently loading the next page, or if we have reached the end of the course catalog,
  * or if there was an error loading the next page) and an array of the table rows from the next page (or an empty array
  * if we have reached the end of the course catalog
@@ -67,7 +68,8 @@ export async function loadNextCourseCatalogPage(): Promise<[AutoLoadStatusType, 
 
 /**
  * Scrapes the next button from the document
- * @param doc  the document to get the next button from
+ *
+ * @param doc - the document to get the next button from
  * @returns the next button from the document
  */
 export function getNextButton(doc: Document) {
@@ -76,7 +78,8 @@ export function getNextButton(doc: Document) {
 
 /**
  * Removes the next and previous buttons from the document so that we don't load the same page twice
- * @param doc the document to remove the next and previous buttons from
+ *
+ * @param doc - the document to remove the next and previous buttons from
  */
 export function removePaginationButtons(doc: Document) {
     const nextButton = doc.querySelectorAll<HTMLAnchorElement>(NEXT_PAGE_BUTTON_SELECTOR);

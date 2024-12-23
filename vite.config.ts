@@ -22,6 +22,13 @@ if (isBeta) {
     process.env.VITE_BETA_BUILD = 'true';
 }
 process.env.VITE_PACKAGE_VERSION = packageJson.version;
+if (process.env.PROD) {
+    process.env.VITE_SENTRY_ENVIRONMENT = 'production';
+} else if (isBeta) {
+    process.env.VITE_SENTRY_ENVIRONMENT = 'beta';
+} else {
+    process.env.VITE_SENTRY_ENVIRONMENT = 'development';
+}
 
 export const preambleCode = `
 import RefreshRuntime from "__BASE__@react-refresh"
@@ -89,10 +96,13 @@ export default defineConfig({
             apply: 'serve',
             transform(code, id) {
                 if (id.endsWith('.tsx') || id.endsWith('.ts') || id.endsWith('?url')) {
-                    return code.replace(
-                        /(['"])(\/public\/.*?)(['"])/g,
-                        (_, quote1, path, quote2) => `chrome.runtime.getURL(${quote1}${path}${quote2})`
-                    );
+                    return {
+                        code: code.replace(
+                            /(['"])(\/public\/.*?)(['"])/g,
+                            (_, quote1, path, quote2) => `chrome.runtime.getURL(${quote1}${path}${quote2})`
+                        ),
+                        map: null,
+                    };
                 }
             },
         },
@@ -101,10 +111,13 @@ export default defineConfig({
             apply: 'build',
             transform(code, id) {
                 if (id.endsWith('.tsx') || id.endsWith('.ts') || id.endsWith('?url')) {
-                    return code.replace(
-                        /(['"])(__VITE_ASSET__.*?__)(['"])/g,
-                        (_, quote1, path, quote2) => `chrome.runtime.getURL(${quote1}${path}${quote2})`
-                    );
+                    return {
+                        code: code.replace(
+                            /(['"])(__VITE_ASSET__.*?__)(['"])/g,
+                            (_, quote1, path, quote2) => `chrome.runtime.getURL(${quote1}${path}${quote2})`
+                        ),
+                        map: null,
+                    };
                 }
             },
         },
@@ -114,13 +127,16 @@ export default defineConfig({
             enforce: 'post',
             transform(code, id) {
                 if (process.env.NODE_ENV === 'development' && (id.endsWith('.css') || id.endsWith('.scss'))) {
-                    return code.replace(
-                        /url\((.*?)\)/g,
-                        (_, path) =>
-                            `url(\\"" + chrome.runtime.getURL(${path
-                                .replaceAll(`\\"`, `"`)
-                                .replace(/public\//, '')}) + "\\")`
-                    );
+                    return {
+                        code: code.replace(
+                            /url\((.*?)\)/g,
+                            (_, path) =>
+                                `url(\\"" + chrome.runtime.getURL(${path
+                                    .replaceAll(`\\"`, `"`)
+                                    .replace(/public\//, '')}) + "\\")`
+                        ),
+                        map: null,
+                    };
                 }
             },
         },
@@ -133,17 +149,17 @@ export default defineConfig({
                         /(__VITE_ASSET__.*?__)/g,
                         (_, path) => `chrome-extension://__MSG_@@extension_id__${path}`
                     );
-                    return transformedCode;
+                    return { code: transformedCode, map: null };
                 }
-                return code;
             },
         },
         renameFile('src/pages/debug/index.html', 'debug.html'),
         renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
         renameFile('src/pages/report/index.html', 'report.html'),
+        renameFile('src/pages/404/index.html', '404.html'),
         vitePluginRunCommandOnDemand({
-            afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
+            // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
             closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',
         }),
     ],
@@ -181,6 +197,10 @@ export default defineConfig({
                 target: 'http://localhost:5173',
                 rewrite: path => path.replace('report', 'src/pages/report/index'),
             },
+            '/404.html': {
+                target: 'http://localhost:5173',
+                rewrite: path => path.replace('404', 'src/pages/404/index'),
+            },
         },
     },
     build: {
@@ -194,6 +214,7 @@ export default defineConfig({
                 calendar: 'src/pages/calendar/index.html',
                 options: 'src/pages/options/index.html',
                 report: 'src/pages/report/index.html',
+                404: 'src/pages/404/index.html',
             },
             output: {
                 chunkFileNames: `assets/[name]-[hash].js`,
@@ -204,6 +225,13 @@ export default defineConfig({
     test: {
         coverage: {
             provider: 'v8',
+        },
+    },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                api: 'modern-compiler',
+            },
         },
     },
 });

@@ -18,13 +18,15 @@ export interface PromptDialogProps {
 
 /**
  * A reusable dialog component that can be used to display a prompt to the user.
- * @param {PromptDialogProps} props.isOpen - Whether the dialog is open or not.
- * @param {Function} props.onClose - A function to call when the user exits the dialog.
- * @param {React.ReactElement<typeof Text>} props.title - The title of the dialog.
- * @param {React.ReactElement<typeof Text>} props.content - The content of the dialog.
- * @param {React.ReactElement<typeof Button>[]} props.children - The buttons to display in the dialog.
+ *
+ * @param isOpen - Whether the dialog is open or not.
+ * @param onClose - A function to call when the user exits the dialog.
+ * @param title - The title of the dialog.
+ * @param content - The content of the dialog.
+ * @param children - The buttons to display in the dialog.
+ * @returns The rendered PromptDialog component.
  */
-function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialogProps) {
+function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialogProps): JSX.Element {
     return (
         <Transition appear show={isOpen} as={React.Fragment}>
             <Dialog as='div' onClose={onClose} className='relative z-50'>

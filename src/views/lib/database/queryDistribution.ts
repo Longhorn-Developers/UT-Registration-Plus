@@ -12,8 +12,9 @@ type GradeDistributionParams = {
 };
 
 /**
- * fetches the aggregate distribution of grades for a given course from the course db, and the semesters that we have data for
- * @param course the course to fetch the distribution for
+ * Fetches the aggregate distribution of grades for a given course from the course db, and the semesters that we have data for
+ *
+ * @param course - the course to fetch the distribution for
  * @returns a Distribution object containing the distribution of grades for the course, and
  * an array of semesters that we have the distribution for
  */
@@ -97,8 +98,9 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
 
 /**
  * Creates a SQL query that we can execute on the database to get the distribution of grades for a given course in a given semester
- * @param course the course to fetch the distribution for
- * @param semester the semester to fetch the distribution for OR null if we want the aggregate distribution
+ *
+ * @param course - the course to fetch the distribution for
+ * @param semester - the semester to fetch the distribution for OR null if we want the aggregate distribution
  * @returns a SQL query string
  */
 function generateQuery(
@@ -131,9 +133,10 @@ function generateQuery(
 }
 
 /**
- * fetches the distribution of grades for a semester for a given course from the course db
- * @param course the course to fetch the distribution for
- * @param semester the semester to fetch the distribution for
+ * Fetches the distribution of grades for a semester for a given course from the course db
+ *
+ * @param course - the course to fetch the distribution for
+ * @param semester - the semester to fetch the distribution for
  * @returns a Distribution object containing the distribution of grades for the course
  */
 export async function querySemesterDistribution(course: Course, semester: Semester): Promise<[Distribution, boolean]> {

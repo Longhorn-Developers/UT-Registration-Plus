@@ -58,7 +58,7 @@ export function Chip({ variant, label }: React.PropsWithChildren<Props>): JSX.El
         default:
             labelMap = {};
     }
-    const longName = Object.entries(labelMap).find(([full, short]) => short === label)?.[0] ?? label;
+    const longName = Object.entries(labelMap).find(([_full, short]) => short === label)?.[0] ?? label;
 
     return (
         <Text

@@ -1,6 +1,12 @@
-import addCourse from '@pages/background/lib/addCourse';
+// import addCourse from '@pages/background/lib/addCourse';
+import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
+import exportSchedule from '@pages/background/lib/exportSchedule';
+import importSchedule from '@pages/background/lib/importSchedule';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { downloadBlob } from '@shared/util/downloadBlob';
+// import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
 // import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import { Button } from '@views/components/common/Button';
@@ -12,11 +18,10 @@ import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
 import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
-import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-import getCourseTableRows from '@views/lib/getCourseTableRows';
+// import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
+// import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
-import { SiteSupport } from '@views/lib/getSiteSupport';
-import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
+// import { SiteSupport } from '@views/lib/getSiteSupport';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 
@@ -24,6 +29,7 @@ import IconoirGitFork from '~icons/iconoir/git-fork';
 // import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
 import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 
+import FileUpload from '../common/FileUpload';
 import { useMigrationDialog } from '../common/MigrationDialog';
 // import RefreshIcon from '~icons/material-symbols/refresh';
 import DevMode from './DevMode';
@@ -79,11 +85,11 @@ const useDevMode = (targetCount: number): [boolean, () => void] => {
  * @returns The Settings component.
  */
 export default function Settings(): JSX.Element {
-    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
+    const [_enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -202,50 +208,42 @@ export default function Settings(): JSX.Element {
         });
     };
 
-    // todo: move into a util/shared place, rather than specifically in settings
-    const handleAddCourseByUrl = async () => {
-        // todo: Use a proper modal instead of a prompt
-        // eslint-disable-next-line no-alert
-        const link: string | null = prompt('Enter course link');
-
-        // Exit if the user cancels the prompt
-        if (link === null) return;
-
-        try {
-            let response: Response;
-            try {
-                response = await fetch(link);
-            } catch (e) {
-                alert(`Failed to fetch url '${link}'`);
-                return;
-            }
-            const text = await response.text();
-            const doc = new DOMParser().parseFromString(text, 'text/html');
-
-            const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, link);
-            const tableRows = getCourseTableRows(doc);
-            const courses = scraper.scrape(tableRows, false);
-
-            if (courses.length === 1) {
-                const description = scraper.getDescription(doc);
-                const row = courses[0]!;
-                const course = row.course!;
-                course.description = description;
-                // console.log(course);
-
-                if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-                    console.log('adding course');
-                    addCourse(activeSchedule.id, course);
-                } else {
-                    console.log('course already exists');
-                }
-            } else {
-                console.log(courses);
-            }
-        } catch (error) {
-            console.error('Error scraping course:', error);
+    const handleExportClick = async (id: string) => {
+        const jsonString = await exportSchedule(id);
+        if (jsonString) {
+            const schedules = await UserScheduleStore.get('schedules');
+            const schedule = schedules.find(s => s.id === id);
+            const fileName = `${schedule?.name ?? `schedule_${id}`}_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+            await downloadBlob(jsonString, 'JSON', fileName);
+        } else {
+            console.error('Error exporting schedule: jsonString is undefined');
         }
     };
+
+    const handleImportClick = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async e => {
+                try {
+                    const result = e.target?.result as string;
+                    const jsonObject = JSON.parse(result);
+                    await importSchedule(jsonObject);
+                } catch (error) {
+                    console.error('Invalid import file!');
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+
+    // const handleAddCourseByLink = async () => {
+    //     // todo: Use a proper modal instead of a prompt
+    //     const link: string | null = prompt('Enter course link');
+    //     // Exit if the user cancels the prompt
+    //     if (link === null) return;
+    //     await addCourseByUrl(link, activeSchedule);
+    // };
 
     const [devMode, toggleDevMode] = useDevMode(10);
 
@@ -361,6 +359,40 @@ export default function Settings(): JSX.Element {
                                 <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
                                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Export Current Schedule
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>
+                                            Backup your active schedule to a portable file
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant='outline'
+                                        color='ut-burntorange'
+                                        onClick={() => handleExportClick(activeSchedule.id)}
+                                    >
+                                        Export
+                                    </Button>
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Import Schedule
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>Import from a schedule file</p>
+                                    </div>
+                                    <FileUpload variant='filled' color='ut-burntorange' onChange={handleImportClick}>
+                                        Import Schedule
+                                    </FileUpload>
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
                                             Course Conflict Highlight
                                         </Text>
                                         <p className='text-sm text-gray-600'>
@@ -420,11 +452,6 @@ export default function Settings(): JSX.Element {
                             </div>
                             {DISPLAY_PREVIEWS && (
                                 <Preview>
-                                    <div className='inline-flex items-center self-center gap-1'>
-                                        <Text variant='small' className='text-ut-gray !font-normal'>
-                                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
-                                        </Text>
-                                    </div>
                                     <Text
                                         variant='h2-course'
                                         className={clsx('text-center text-theme-red !font-normal', {
@@ -444,7 +471,7 @@ export default function Settings(): JSX.Element {
                         <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
                             Developer Mode
                         </h2>
-                        <Button variant='filled' color='ut-black' onClick={handleAddCourseByUrl}>
+                        <Button variant='filled' color='ut-black' onClick={() => addCourseByURL(activeSchedule)}>
                             Add course by link
                         </Button>
                         <Button variant='filled' color='ut-burntorange' onClick={showMigrationDialog}>
@@ -499,7 +526,7 @@ export default function Settings(): JSX.Element {
                         </div>
                     </section>
                     <section className='my-8'>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTERS</h2>
+                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTORS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
                             {LONGHORN_DEVELOPERS_SWE.sort(
                                 (a, b) =>
@@ -565,7 +592,7 @@ export default function Settings(): JSX.Element {
                                                 className='text-ut-burntorange font-semibold hover:cursor-pointer'
                                                 onClick={() => window.open(`https://github.com/${username}`, '_blank')}
                                             >
-                                                @{username}
+                                                {githubStats.names[username]}
                                             </Text>
                                             <p className='text-sm text-gray-600'>Contributor</p>
                                             {showGitHubStats && (

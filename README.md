@@ -6,7 +6,7 @@
 ![Downloads](https://img.shields.io/chrome-web-store/d/hboadpjkoaieogjimneceaahlppnipaa)
 ![License](https://img.shields.io/github/license/Longhorn-Developers/UT-Registration-Plus)
 
-**UT Registration Plus (UTRP)** streamlines the process of registering for classes at UT Austin by reducing the chaos of juggling multiple tabs like Rate My Professor, Google Sheets, and the UT Course Schedule. With UTRP, you can simplify class selection and schedule management. We've all been there. 20 tabs of Rate My Professor, Google Spreadsheet, and the UT Course Schedule open and you still don't know what classes to take. UT Registration Plus (UTRP), tries to streamline most of the unnecessary steps and headaches of registering for classes at UT Austin.
+**UT Registration Plus (UTRP)** streamlines the process of registering for classes at UT Austin by reducing the chaos of juggling multiple tabs like Rate My Professor, Google Sheets, and the UT Course Schedule. With UTRP, you can simplify class selection and schedule management. We've all been there. 20 tabs of Rate My Professor, Google Spreadsheet, and the UT Course Schedule open and you still don't know what classes to take. 
 
 ## Demo
 
@@ -58,7 +58,9 @@ Contributions are welcome and encouraged! To get started:
 
 For significant changes, it’s recommended to open an issue first to discuss the proposed updates.
 
-## Development: Getting Started
+## Development
+
+### Getting Started
 
 1. Clone this repository: `git clone https://github.com/Longhorn-Developers/UT-Registration-Plus.git`
 2. **Node Version**: This project requires the Node.js version specified in `.nvmrc`. Use [nvm](https://github.com/nvm-sh/nvm) to install and manage the correct version:
@@ -100,6 +102,10 @@ Once set up, the extension can be built to the `dist/` directory using the follo
 Use `BETA=true pnpm build` to generate a beta build.
 
 </details>
+
+### Docker
+
+This project includes a Dockerfile that allows you to build, zip, or run the extension in development mode using Docker. Refer to [Docker Dev Setup](./DOCKER_DEV_SETUP.md) to get started.
 
 ## Loading the Extension Manually
 

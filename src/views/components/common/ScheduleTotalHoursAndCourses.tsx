@@ -13,7 +13,10 @@ export interface ScheduleTotalHoursAndCoursesProps {
 /**
  * The ScheduleTotalHoursAndCourses as per the Labels and Details Figma section
  *
- * @param props ScheduleTotalHoursAndCoursesProps
+ * @param scheduleName - The name of the schedule.
+ * @param totalHours - The total number of hours.
+ * @param totalCourses - The total number of courses.
+ * @returns The rendered ScheduleTotalHoursAndCourses component.
  */
 export default function ScheduleTotalHoursAndCourses({
     scheduleName,
