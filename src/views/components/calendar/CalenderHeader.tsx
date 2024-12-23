@@ -51,13 +51,13 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     }, []);
 
     return (
-        <div className='flex items-center min-h-[91px] gap-5 overflow-x-auto overflow-y-hidden px-7 py-4 md:overflow-x-hidden'>
+        <div className='min-h-[91px] flex items-center gap-5 overflow-x-auto overflow-y-hidden px-7 py-4 md:overflow-x-hidden'>
             {!sidebarOpen && (
                 <Button
                     variant='single'
                     color='theme-black'
                     onClick={onSidebarToggle}
-                    className='screenshot:hidden !p-0 h-fit'
+                    className='h-fit screenshot:hidden !p-0'
                 >
                     <MenuIcon className='size-6' />
                 </Button>

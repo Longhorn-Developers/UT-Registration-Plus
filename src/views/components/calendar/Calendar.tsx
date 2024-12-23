@@ -1,5 +1,7 @@
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import type { Course } from '@shared/types/Course';
+import { CRX_PAGES } from '@shared/types/CRXPages';
+import { openReportWindow } from '@shared/util/openReportWindow';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
@@ -13,14 +15,13 @@ import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSched
 import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useState } from 'react';
 
-import CalendarFooter from './CalendarFooter';
-import { LargeLogo } from '../common/LogoIcon';
-import MenuIcon from '~icons/material-symbols/menu';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
+import MenuIcon from '~icons/material-symbols/menu';
+
 import { Button } from '../common/Button';
-import { CRX_PAGES } from 'src/shared/types/CRXPages';
-import { openReportWindow } from 'src/shared/util/openReportWindow';
+import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
+import CalendarFooter from './CalendarFooter';
 /**
  * Calendar page component
  */
@@ -61,9 +62,9 @@ export default function Calendar(): JSX.Element {
             <div className='h-full w-full flex flex-col'>
                 <div className='h-screen flex overflow-auto'>
                     {showSidebar && (
-                        <div className='h-full flex flex-none flex-col justify-between screenshot:hidden border-r border-ut-offwhite/75 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] px-7.5 py-5'>
-                            <div className='h-full w-fit flex flex-col overflow-auto '>
-                                <div className='flex items-center w-full justify-between pb-[1.5625rem] gap-x-3xl'>
+                        <div className='h-full flex flex-none flex-col justify-between border-r border-ut-offwhite/75 px-7.5 py-5 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] screenshot:hidden'>
+                            <div className='h-full w-fit flex flex-col overflow-auto'>
+                                <div className='w-full flex items-center justify-between gap-x-3xl pb-[1.5625rem]'>
                                     <LargeLogo />
                                     <Button
                                         variant='single'
@@ -71,7 +72,7 @@ export default function Calendar(): JSX.Element {
                                         onClick={() => {
                                             setShowSidebar(!showSidebar);
                                         }}
-                                        className='screenshot:hidden !p-0 h-fit'
+                                        className='h-fit screenshot:hidden !p-0'
                                     >
                                         <MenuIcon className='size-6' />
                                     </Button>
