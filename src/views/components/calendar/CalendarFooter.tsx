@@ -1,14 +1,14 @@
+import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
 
 import DiscordIcon from '~icons/bi/discord';
+import SettingsIcon from '~icons/material-symbols/settings';
 import GithubIcon from '~icons/ri/github-fill';
 import InstagramIcon from '~icons/ri/instagram-line';
 import LinkedinIcon from '~icons/ri/linkedin-box-fill';
-import SettingsIcon from '~icons/material-symbols/settings';
 
-import Link from '../common/Link';
-import { openTabFromContentScript } from 'src/views/lib/openNewTabFromContentScript';
 import { Button } from '../common/Button';
+import Link from '../common/Link';
 
 /**
  * Opens the options page in a new tab.
