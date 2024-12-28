@@ -62,9 +62,9 @@ export default function Calendar(): JSX.Element {
             <div className='h-full w-full flex flex-col'>
                 <div className='h-screen flex overflow-auto'>
                     {showSidebar && (
-                        <div className='h-full min-w-[20.3125rem] flex flex-none flex-col justify-between border-r border-ut-offwhite/75 px-7.5 py-5 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] screenshot:hidden'>
+                        <div className='px-spacing7 py-spacing5 h-full min-w-[20.3125rem] flex flex-none flex-col justify-between border-r border-ut-offwhite/75 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] screenshot:hidden'>
                             <div className='h-full w-fit flex flex-col overflow-auto'>
-                                <div className='w-full flex items-center justify-between gap-x-3xl pb-[1.5625rem]'>
+                                <div className='sticky top-0 z-50 w-full flex items-center justify-between gap-x-3xl bg-white pb-[1.5625rem]'>
                                     <LargeLogo />
                                     <Button
                                         variant='single'
