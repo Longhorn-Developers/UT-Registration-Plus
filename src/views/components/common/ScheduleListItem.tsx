@@ -115,13 +115,14 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
 
     return (
         <div className='rounded bg-white'>
-            <li className='w-full flex cursor-pointer items-center text-ut-burntorange'>
+            <li className='gap-spacing2 w-full flex cursor-pointer items-center text-ut-burntorange'>
                 <div className='h-full cursor-move focusable' {...dragHandleProps}>
                     <DragIndicatorIcon className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
                 </div>
+
                 <div className='group relative flex flex-1 items-center overflow-x-hidden'>
                     <div
-                        className='group/circle flex flex-grow items-center gap-1.5 overflow-x-hidden'
+                        className='group/circle gap-spacing2 flex flex-grow items-center overflow-x-hidden'
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         <div

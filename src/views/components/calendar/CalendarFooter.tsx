@@ -26,21 +26,21 @@ const handleOpenOptions = async (): Promise<void> => {
 export default function CalendarFooter(): JSX.Element {
     return (
         <footer className='min-w-full w-0 flex items-center justify-between'>
-            <div className='flex gap-3.75'>
+            <div className='gap-spacing4 flex'>
                 <Link className='linkanimate' href='https://www.instagram.com/longhorndevelopers'>
-                    <InstagramIcon className='h-6 w-6' />
+                    <InstagramIcon className='h-6 w-6 fill-ut-black' />
                 </Link>
                 <Link className='linkanimate' href='https://discord.gg/7pQDBGdmb7'>
-                    <DiscordIcon className='h-6 w-6' />
+                    <DiscordIcon className='h-6 w-6 fill-ut-black' />
                 </Link>
                 <Link className='linkanimate' href='https://github.com/Longhorn-Developers'>
-                    <GithubIcon className='h-6 w-6' />
+                    <GithubIcon className='h-6 w-6 fill-ut-black' />
                 </Link>
                 <Link
                     className='linkanimate'
                     href='https://www.linkedin.com/company/longhorn-developers/posts/?feedView=all'
                 >
-                    <LinkedinIcon className='h-6 w-6 -mx-0.75' />
+                    <LinkedinIcon className='h-6 w-6 fill-ut-black -mx-0.75' />
                 </Link>
             </div>
             <Button variant='single' icon={SettingsIcon} color='ut-black' onClick={handleOpenOptions} />
