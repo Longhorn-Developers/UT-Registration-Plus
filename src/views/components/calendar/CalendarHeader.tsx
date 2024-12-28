@@ -54,9 +54,8 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     color='theme-black'
                     onClick={onSidebarToggle}
                     className='h-fit screenshot:hidden !p-0'
-                >
-                    <MenuIcon className='size-6' />
-                </Button>
+                    icon={MenuIcon}
+                />
             )}
 
             <div className='screenshot:transform-origin-left screenshot:scale-120'>
