@@ -4,6 +4,7 @@ import transformerDirectives from '@unocss/transformer-directives';
 import transformerVariantGroup from '@unocss/transformer-variant-group';
 import { defineConfig } from 'unocss';
 
+import { spacing } from './src/shared/types/Spacing';
 import { colors } from './src/shared/types/ThemeColors';
 
 export default defineConfig({
@@ -36,6 +37,7 @@ export default defineConfig({
             'out-expo': 'cubic-bezier(0.19, 1, 0.22, 1)',
         },
         colors,
+        spacing,
     },
     variants: [
         matcher => {
