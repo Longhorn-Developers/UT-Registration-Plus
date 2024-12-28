@@ -20,7 +20,7 @@ interface CalendarHeaderProps {
  */
 export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
 
     const [activeSchedule] = useSchedules();
 
