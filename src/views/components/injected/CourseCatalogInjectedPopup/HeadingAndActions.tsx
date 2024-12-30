@@ -1,14 +1,4 @@
-import {
-    ArrowUpRight,
-    CalendarDots,
-    ChatText,
-    CopySimple,
-    FileText,
-    Minus,
-    Plus,
-    Smiley,
-    X,
-} from '@phosphor-icons/react';
+import { ArrowUpRight, CalendarDots, ChatText, Copy, FileText, Minus, Plus, Smiley, X } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
@@ -117,11 +107,11 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     <Text variant='h1' className='flex-1 whitespace-nowrap text-theme-black'>
                         ({department} {courseNumber})
                     </Text>
-                    <Button color='ut-burntorange' variant='single' icon={CopySimple} onClick={handleCopy}>
+                    <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
                         {formattedUniqueId}
                     </Button>
                     <button className='bg-transparent p-0 text-ut-black btn' onClick={onClose}>
-                        <X className='h-7 w-7' />
+                        <X className='h-6 w-6' />
                     </button>
                 </div>
                 <div className='flex items-center gap-2'>

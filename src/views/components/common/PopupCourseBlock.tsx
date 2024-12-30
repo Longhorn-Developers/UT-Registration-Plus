@@ -78,7 +78,7 @@ export default function PopupCourseBlock({
                 className='flex items-center self-stretch rounded rounded-r-0 cursor-move!'
                 {...dragHandleProps}
             >
-                <DotsSixVertical className='h-6 w-6 text-white' />
+                <DotsSixVertical weight='bold' className='h-6 w-6 text-white' />
             </div>
             <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
                 <span className='px-0.5 font-450'>{formattedUniqueId}</span> {course.department} {course.number}

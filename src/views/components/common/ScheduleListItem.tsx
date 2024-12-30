@@ -126,9 +126,9 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         {isActive ? (
-                            <RadioButton className='h-5.5 w-5.5 btn-transition active:scale-95' weight='fill' />
+                            <RadioButton className='h-7.5 w-7.5 btn-transition active:scale-95' weight='fill' />
                         ) : (
-                            <Circle className='h-5.5 w-5.5 btn-transition active:scale-95' />
+                            <Circle className='h-7.5 w-7.5 btn-transition active:scale-95' />
                         )}
                         {isEditing && (
                             <Text

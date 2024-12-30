@@ -22,7 +22,7 @@ export default function useChangelog(): () => void {
                         Changelog
                     </Text>
                     <Button variant='single' onClick={close} color='theme-black' className='p-1 text-gray-700'>
-                        <X className='h-7 w-7' />
+                        <X className='h-6 w-6' />
                     </Button>
                 </div>
             ),

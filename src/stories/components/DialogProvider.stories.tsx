@@ -45,7 +45,13 @@ const InnerComponent = () => {
     };
 
     return (
-        <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
+        <Button
+            variant='filled'
+            color='ut-burntorange'
+            icon={ArrowsVertical}
+            iconProps={{ className: 'h-4 w-4' }}
+            onClick={myShow}
+        >
             Open Dialog
         </Button>
     );

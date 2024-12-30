@@ -202,7 +202,7 @@ export default function Settings(): JSX.Element {
                         accept();
                     }}
                 >
-                    I Understand
+                    I Understand hello
                 </Button>
             ),
         });
