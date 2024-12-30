@@ -2,7 +2,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
-import { Circle, DotsSixVertical, DotsThree, Radio, RadioButton } from '@phosphor-icons/react';
+import { Circle, DotsSixVertical, DotsThree, RadioButton } from '@phosphor-icons/react';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
