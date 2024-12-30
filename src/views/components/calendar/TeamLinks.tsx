@@ -1,10 +1,9 @@
+import { ArrowUpRight } from '@phosphor-icons/react';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import { openReportWindow } from '@shared/util/openReportWindow';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
-
-import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
 type Props = {
     className?: string;
@@ -63,7 +62,7 @@ export default function TeamLinks({ className }: Props): JSX.Element {
                     onClick={event => handleClick(link, event)}
                 >
                     <Text variant='p'>{link.text}</Text>
-                    <OutwardArrowIcon className='h-3 w-3' />
+                    <ArrowUpRight className='h-3 w-3' />
                 </a>
             ))}
         </article>
