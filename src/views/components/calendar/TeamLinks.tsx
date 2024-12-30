@@ -62,7 +62,7 @@ export default function TeamLinks({ className }: Props): JSX.Element {
                     onClick={event => handleClick(link, event)}
                 >
                     <Text variant='p'>{link.text}</Text>
-                    <ArrowUpRight className='h-3 w-3' />
+                    <ArrowUpRight className='h-4 w-4' />
                 </a>
             ))}
         </article>

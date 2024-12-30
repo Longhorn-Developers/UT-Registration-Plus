@@ -60,7 +60,7 @@ export default function ImportantLinks({ className }: Props): JSX.Element {
                     rel='noreferrer'
                 >
                     <Text variant='p'>{link.text}</Text>
-                    <ArrowUpRight className='h-3 w-3' />
+                    <ArrowUpRight className='h-4 w-4' />
                 </a>
             ))}
         </article>
