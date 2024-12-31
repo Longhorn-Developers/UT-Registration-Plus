@@ -1,7 +1,6 @@
+import { Check } from '@phosphor-icons/react';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import React from 'react';
-
-import CheckIcon from '~icons/material-symbols/check';
 
 /**
  * Props for the ColorPatch component
@@ -30,7 +29,7 @@ export default function ColorPatch({ color, isSelected, handleSetSelectedColor }
             style={{ backgroundColor: color }}
             onClick={handleClick}
         >
-            {isSelected && <CheckIcon className='h-5 w-5 color-white' />}
+            {isSelected && <Check className='h-5 w-5 color-white' />}
         </button>
     );
 }

@@ -1,4 +1,5 @@
 import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd';
+import { DotsSixVertical } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
@@ -9,8 +10,6 @@ import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-
-import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
 
 /**
  * Props for PopupCourseBlock
@@ -79,7 +78,7 @@ export default function PopupCourseBlock({
                 className='flex items-center self-stretch rounded rounded-r-0 cursor-move!'
                 {...dragHandleProps}
             >
-                <DragIndicatorIcon className='h-6 w-6 text-white' />
+                <DotsSixVertical weight='bold' className='h-6 w-6 text-white' />
             </div>
             <Text className={clsx('flex-1 py-3.5 truncate', fontColor)} variant='h1-course'>
                 <span className='px-0.5 font-450'>{formattedUniqueId}</span> {course.department} {course.number}
