@@ -1,10 +1,9 @@
+import { ArrowsVertical } from '@phosphor-icons/react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@views/components/common/Button';
 import DialogProvider, { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import Text from '@views/components/common/Text/Text';
 import React, { useState } from 'react';
-
-import MaterialSymbolsExpandAllRoundedIcon from '~icons/material-symbols/expand-all-rounded';
 
 const meta = {
     title: 'Components/Common/DialogProvider',
@@ -46,7 +45,13 @@ const InnerComponent = () => {
     };
 
     return (
-        <Button variant='filled' color='ut-burntorange' icon={MaterialSymbolsExpandAllRoundedIcon} onClick={myShow}>
+        <Button
+            variant='filled'
+            color='ut-burntorange'
+            icon={ArrowsVertical}
+            iconProps={{ className: 'h-4 w-4' }}
+            onClick={myShow}
+        >
             Open Dialog
         </Button>
     );
@@ -86,7 +91,7 @@ const FiveDialogsInnerComponent = () => {
     };
 
     return (
-        <Button variant='filled' color='ut-burntorange' icon={MaterialSymbolsExpandAllRoundedIcon} onClick={myShow}>
+        <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
             Open Dialogs
         </Button>
     );
@@ -121,7 +126,7 @@ const NestedDialogsInnerComponent = () => {
     };
 
     return (
-        <Button variant='filled' color='ut-burntorange' icon={MaterialSymbolsExpandAllRoundedIcon} onClick={myShow}>
+        <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
             Open Next Dialog
         </Button>
     );
@@ -161,7 +166,7 @@ const DialogWithOnCloseInnerComponent = () => {
             <h1>
                 You closed the button below {timesClosed} {timesClosed === 1 ? 'time' : 'times'}
             </h1>
-            <Button variant='filled' color='ut-burntorange' icon={MaterialSymbolsExpandAllRoundedIcon} onClick={myShow}>
+            <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
                 Open Dialog
             </Button>
         </>
