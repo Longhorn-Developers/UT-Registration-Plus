@@ -19,14 +19,14 @@ export const colors = {
     theme: {
         red: '#D10000',
         black: '#1A2024',
-        'off-white-1': ' #D6D2C450',
-        'off-white-2': '#D6D2C420',
-        'black-1': '#333F4850',
-        'black-2': '#333F4820',
-        'static-white': '#FFFFFF',
-        'static-utrp-black': '#1A2024',
-        'major-gridline': '#D1D5DB',
-        'minor-gridline': '#F3F4F6',
+        offwhite1: ' #D6D2C450',
+        offwhite2: '#D6D2C420',
+        black1: '#333F4850',
+        black2: '#333F4820',
+        staticwhite: '#FFFFFF',
+        staticutrpblack: '#1A2024',
+        majorgridline: '#D1D5DB',
+        minorgridline: '#F3F4F6',
     },
 } as const satisfies Record<string, Record<string, string>>;
 
