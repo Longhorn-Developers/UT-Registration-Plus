@@ -1,15 +1,8 @@
+import { CalendarDots, ChatText, FileText, ImageSquare, Minus, Plus, Smiley } from '@phosphor-icons/react';
 import { colorsFlattened } from '@shared/util/themeColors';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@views/components/common/Button';
 import React from 'react';
-
-import AddIcon from '~icons/material-symbols/add';
-import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
-import DescriptionIcon from '~icons/material-symbols/description';
-import ImagePlaceholderIcon from '~icons/material-symbols/image';
-import HappyFaceIcon from '~icons/material-symbols/mood';
-import RemoveIcon from '~icons/material-symbols/remove';
-import ReviewsIcon from '~icons/material-symbols/reviews';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -24,7 +17,7 @@ const meta = {
     // More on argTypes: https://storybook.js.org/docs/api/argtypes
     args: {
         children: 'Button',
-        icon: ImagePlaceholderIcon,
+        icon: ImageSquare,
     },
     argTypes: {
         children: { control: 'text' },
@@ -106,10 +99,10 @@ export const PrettyColors: Story = {
 export const CourseButtons: Story = {
     render: props => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
-            <Button {...props} variant='filled' color='ut-green' icon={AddIcon}>
+            <Button {...props} variant='filled' color='ut-green' icon={Plus}>
                 Add Course
             </Button>
-            <Button {...props} variant='filled' color='theme-red' icon={RemoveIcon}>
+            <Button {...props} variant='filled' color='theme-red' icon={Minus}>
                 Remove Course
             </Button>
         </div>
@@ -129,17 +122,17 @@ export const CourseCatalogActionButtons: Story = {
     },
     render: props => (
         <div style={{ display: 'flex', gap: '15px' }}>
-            <Button {...props} variant='filled' color='ut-burntorange' icon={CalendarMonthIcon} />
-            <Button {...props} variant='outline' color='ut-blue' icon={ReviewsIcon}>
+            <Button {...props} variant='filled' color='ut-burntorange' icon={CalendarDots} />
+            <Button {...props} variant='outline' color='ut-blue' icon={ChatText}>
                 RateMyProf
             </Button>
-            <Button {...props} variant='outline' color='ut-teal' icon={HappyFaceIcon}>
+            <Button {...props} variant='outline' color='ut-teal' icon={Smiley}>
                 CES
             </Button>
-            <Button {...props} variant='outline' color='ut-orange' icon={DescriptionIcon}>
+            <Button {...props} variant='outline' color='ut-orange' icon={FileText}>
                 Past Syllabi
             </Button>
-            <Button {...props} variant='filled' color='ut-green' icon={AddIcon}>
+            <Button {...props} variant='filled' color='ut-green' icon={Plus}>
                 Add Course
             </Button>
         </div>

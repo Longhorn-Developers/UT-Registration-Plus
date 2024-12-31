@@ -1,17 +1,17 @@
+import type { Icon, IconProps } from '@phosphor-icons/react';
 import type { ThemeColor } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/themeColors';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
 
-import type IconComponent from '~icons/material-symbols';
-
 interface Props {
     className?: string;
     style?: React.CSSProperties;
     variant: 'filled' | 'outline' | 'single';
     onClick?: () => void;
-    icon?: typeof IconComponent;
+    icon?: Icon;
+    iconProps?: IconProps;
     disabled?: boolean;
     title?: string;
     color: ThemeColor;
@@ -27,6 +27,7 @@ export function Button({
     variant,
     onClick,
     icon,
+    iconProps,
     disabled,
     title,
     color,
@@ -63,7 +64,7 @@ export function Button({
             disabled={disabled}
             onClick={disabled ? undefined : onClick}
         >
-            {Icon && <Icon className='h-6 w-6' />}
+            {Icon && <Icon {...iconProps} className={clsx('h-6 w-6', iconProps?.className)} />}
             {!isIconOnly && (
                 <Text variant='h4' className='inline-flex translate-y-0.08 items-center gap-2'>
                     {children}
