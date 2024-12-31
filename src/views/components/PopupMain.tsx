@@ -1,5 +1,6 @@
 import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
+import { CalendarDots, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
@@ -13,10 +14,7 @@ import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeStrin
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect, useState } from 'react';
 
-import AddSchedule from '~icons/material-symbols/add';
-import CalendarIcon from '~icons/material-symbols/calendar-month';
 import Feedback from '~icons/material-symbols/flag';
-import SettingsIcon from '~icons/material-symbols/settings';
 
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
@@ -94,10 +92,10 @@ export default function PopupMain(): JSX.Element {
                     <SmallLogo />
                     <div className='flex items-center gap-2.5'>
                         <button className='bg-ut-burntorange px-2 py-1.25 btn' onClick={handleCalendarOpenOnClick}>
-                            <CalendarIcon className='size-6 text-white' />
+                            <CalendarDots className='size-6 text-white' />
                         </button>
                         <button className='bg-transparent px-2 py-1.25 btn' onClick={handleOpenOptions}>
-                            <SettingsIcon className='size-6 color-ut-black' />
+                            <GearSix className='size-6 color-ut-black' />
                         </button>
                         <button className='bg-transparent px-2 py-1.25 btn' onClick={openReportWindow}>
                             <Feedback className='size-6 color-ut-black' />
@@ -138,7 +136,7 @@ export default function PopupMain(): JSX.Element {
                             className='h-fit p-0 btn'
                             onClick={handleAddSchedule}
                         >
-                            <AddSchedule className='h-6 w-6' />
+                            <Plus className='h-6 w-6' />
                         </Button>
                     </div>
                 </ScheduleDropdown>

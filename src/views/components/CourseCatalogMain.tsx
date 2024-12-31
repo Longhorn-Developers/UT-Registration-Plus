@@ -2,6 +2,7 @@ import type { Course, ScrapedRow } from '@shared/types/Course';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import AutoLoad from '@views/components/injected/AutoLoad/AutoLoad';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
+import NewSearchLink from '@views/components/injected/NewSearchLink';
 import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from '@views/components/injected/TableHead';
 import TableRow from '@views/components/injected/TableRow/TableRow';
@@ -64,6 +65,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
 
     return (
         <ExtensionRoot>
+            <NewSearchLink />
             <RecruitmentBanner />
             <TableHead>Plus</TableHead>
             {rows.map(

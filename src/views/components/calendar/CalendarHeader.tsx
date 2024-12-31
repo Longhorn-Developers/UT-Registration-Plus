@@ -1,3 +1,4 @@
+import { GearSix, Sidebar } from '@phosphor-icons/react';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { Button } from '@views/components/common/Button';
 import CourseStatus from '@views/components/common/CourseStatus';
@@ -7,10 +8,6 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import useSchedules from '@views/hooks/useSchedules';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React, { useEffect, useState } from 'react';
-
-import MenuIcon from '~icons/material-symbols/menu';
-// import RefreshIcon from '~icons/material-symbols/refresh';
-import SettingsIcon from '~icons/material-symbols/settings';
 
 /**
  * Opens the options page in a new tab.
@@ -61,7 +58,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
         <div className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
             <Button
                 variant='single'
-                icon={MenuIcon}
+                icon={Sidebar}
                 color='ut-gray'
                 onClick={onSidebarToggle}
                 className='screenshot:hidden'
@@ -86,7 +83,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
 
                 {/* <Button variant='single' icon={UndoIcon} color='ut-black' />
                 <Button variant='single' icon={RedoIcon} color='ut-black' /> */}
-                <Button variant='single' icon={SettingsIcon} color='theme-black' onClick={handleOpenOptions} />
+                <Button variant='single' icon={GearSix} color='theme-black' onClick={handleOpenOptions} />
             </div>
         </div>
     );

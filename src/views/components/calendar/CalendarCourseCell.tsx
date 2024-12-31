@@ -1,3 +1,4 @@
+import { ClockUser, LockKey, Prohibit } from '@phosphor-icons/react';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
@@ -6,10 +7,6 @@ import { pickFontColor } from '@shared/util/colors';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-
-import ClosedIcon from '~icons/material-symbols/lock';
-import WaitlistIcon from '~icons/material-symbols/timelapse';
-import CancelledIcon from '~icons/material-symbols/warning';
 
 /**
  * Props for the CalendarCourseCell component.
@@ -59,11 +56,11 @@ export default function CalendarCourseCell({
     let rightIcon: React.ReactNode | null = null;
     if (enableCourseStatusChips) {
         if (status === Status.WAITLISTED) {
-            rightIcon = <WaitlistIcon className='h-5 w-5' />;
+            rightIcon = <ClockUser weight='fill' className='h-5 w-5' />;
         } else if (status === Status.CLOSED) {
-            rightIcon = <ClosedIcon className='h-5 w-5' />;
+            rightIcon = <LockKey weight='fill' className='h-5 w-5' />;
         } else if (status === Status.CANCELLED) {
-            rightIcon = <CancelledIcon className='h-5 w-5' />;
+            rightIcon = <Prohibit weight='fill' className='h-5 w-5' />;
         }
     }
 
