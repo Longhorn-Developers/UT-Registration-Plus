@@ -19,6 +19,14 @@ export const colors = {
     theme: {
         red: '#D10000',
         black: '#1A2024',
+        'off-white-1': ' #D6D2C450',
+        'off-white-2': '#D6D2C420',
+        'black-1': '#333F4850',
+        'black-2': '#333F4820',
+        'static-white': '#FFFFFF',
+        'static-utrp-black': '#1A2024',
+        'major-gridline': '#D1D5DB',
+        'minor-gridline': '#F3F4F6',
     },
 } as const satisfies Record<string, Record<string, string>>;
 
@@ -37,7 +45,7 @@ export const extendedColors = {
         d: '#DC2626',
         dminus: '#B91C1C',
         f: '#B91C1C',
-        other: '#6B7280',
+        other: '#D6D3D1',
     },
 } as const;
 
