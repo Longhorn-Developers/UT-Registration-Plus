@@ -30,6 +30,7 @@
         "@headlessui/react": "^2.2.0",
         "@hello-pangea/dnd": "^17.0.0",
         "@octokit/rest": "^21.0.2",
+        "@phosphor-icons/react": "^2.1.7",
         "@sentry/react": "^8.38.0",
         "@unocss/vite": "^0.63.6",
         "@vitejs/plugin-react": "^4.3.3",

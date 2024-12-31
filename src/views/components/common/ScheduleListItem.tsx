@@ -2,15 +2,13 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
+import { Circle, DotsSixVertical, DotsThree, RadioButton } from '@phosphor-icons/react';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
-
-import DragIndicatorIcon from '~icons/material-symbols/drag-indicator';
-import MoreActionsIcon from '~icons/material-symbols/more-vert';
 
 import { Button } from './Button';
 import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
@@ -117,21 +115,21 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
         <div className='rounded bg-white'>
             <li className='w-full flex cursor-pointer items-center text-ut-burntorange'>
                 <div className='h-full cursor-move focusable' {...dragHandleProps}>
-                    <DragIndicatorIcon className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
+                    <DotsSixVertical
+                        weight='bold'
+                        className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400'
+                    />
                 </div>
                 <div className='group relative flex flex-1 items-center overflow-x-hidden'>
                     <div
                         className='group/circle flex flex-grow items-center gap-1.5 overflow-x-hidden'
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
-                        <div
-                            className={clsx(
-                                'h-5.5 w-5.5 relative flex-shrink-0 border-2px border-current rounded-full btn-transition group-active/circle:scale-95 after:(absolute content-empty bg-current h-2.9 w-2.9 rounded-full transition transform-gpu scale-100 ease-out-expo duration-250 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2)',
-                                {
-                                    'after:(scale-0! opacity-0 ease-in-out! duration-200!)': !isActive,
-                                }
-                            )}
-                        />
+                        {isActive ? (
+                            <RadioButton className='h-7.5 w-7.5 btn-transition active:scale-95' weight='fill' />
+                        ) : (
+                            <Circle className='h-7.5 w-7.5 btn-transition active:scale-95' />
+                        )}
                         {isEditing && (
                             <Text
                                 variant='p'
@@ -158,7 +156,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                     <DialogProvider>
                         <Menu>
                             <MenuButton className='invisible h-fit bg-transparent p-0 text-ut-gray btn-transition data-[open]:visible group-hover:visible'>
-                                <MoreActionsIcon className='h-6 w-6' />
+                                <DotsThree weight='bold' className='h-6 w-6' />
                             </MenuButton>
 
                             <MenuItems
