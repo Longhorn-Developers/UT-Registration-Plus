@@ -14,7 +14,6 @@ export const colors = {
         blue: '#005F86',
         gray: '#9CADB7',
         offwhite: '#D6D2C4',
-        concrete: '#95A5A6',
     },
     theme: {
         red: '#D10000',
