@@ -1,7 +1,6 @@
+import { Hash } from '@phosphor-icons/react';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import React from 'react';
-
-import TagIcon from '~icons/material-symbols/tag';
 
 /**
  * Props for the HexColorEditor component
@@ -29,7 +28,7 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
                 style={{ backgroundColor: previewColor }}
                 className='h-5.5 w-5.25 flex items-center justify-center rounded-l-1'
             >
-                <TagIcon className='h-4 w-4 text-color-white' />
+                <Hash className='h-4 w-4 text-color-white' />
             </div>
             <div className='h-5.5 w-[53px] flex flex-1 items-center justify-center border-b border-r border-t rounded-br rounded-tr p-1.25'>
                 <input
