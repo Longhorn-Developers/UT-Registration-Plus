@@ -23,7 +23,7 @@ export const colors = {
         black1: '#333F4850',
         black2: '#333F4820',
         staticwhite: '#FFFFFF',
-        staticutrpblack: '#1A2024',
+        staticblack: '#1A2024',
         majorgridline: '#D1D5DB',
         minorgridline: '#F3F4F6',
     },
