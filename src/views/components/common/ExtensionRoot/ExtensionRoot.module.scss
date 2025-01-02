@@ -1,5 +1,5 @@
 @use 'sass:meta';
-@use '../../../styles/base.module.scss';
+@use 'src/views/styles/base.module.scss';
 
 @layer base {
     .extensionRoot {
