@@ -7,7 +7,7 @@ import useSchedules from '@views/hooks/useSchedules';
 import { useScreenSize } from '@views/hooks/useScreenSize';
 import React from 'react';
 
-import Text from '../common/Text/Text';
+import Text from '@views/components/common/Text/Text';
 
 /**
  * Opens the options page in a new tab.
