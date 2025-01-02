@@ -1,3 +1,4 @@
+import { ArrowUpRight, CalendarDots, ChatText, Copy, FileText, Minus, Plus, Smiley, X } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
@@ -9,16 +10,6 @@ import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import { useCalendar } from '@views/contexts/CalendarContext';
 import React from 'react';
-
-import Add from '~icons/material-symbols/add';
-import CalendarMonth from '~icons/material-symbols/calendar-month';
-import CloseIcon from '~icons/material-symbols/close';
-import Copy from '~icons/material-symbols/content-copy';
-import Description from '~icons/material-symbols/description';
-import Mood from '~icons/material-symbols/mood';
-import OpenNewIcon from '~icons/material-symbols/open-in-new';
-import Remove from '~icons/material-symbols/remove';
-import Reviews from '~icons/material-symbols/reviews';
 
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
@@ -120,7 +111,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                         {formattedUniqueId}
                     </Button>
                     <button className='bg-transparent p-0 text-ut-black btn' onClick={onClose}>
-                        <CloseIcon className='h-7 w-7' />
+                        <X className='h-6 w-6' />
                     </button>
                 </div>
                 <div className='flex items-center gap-2'>
@@ -168,7 +159,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 <Button
                     variant='filled'
                     color='ut-burntorange'
-                    icon={isInCalendar ? OpenNewIcon : CalendarMonth}
+                    icon={isInCalendar ? ArrowUpRight : CalendarDots}
                     onClick={() => {
                         if (isInCalendar) {
                             openNewTab({
@@ -183,7 +174,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 <Button
                     variant='outline'
                     color='ut-blue'
-                    icon={Reviews}
+                    icon={ChatText}
                     onClick={handleOpenRateMyProf}
                     disabled={instructors.length === 0}
                 >
@@ -192,19 +183,19 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 <Button
                     variant='outline'
                     color='ut-teal'
-                    icon={Mood}
+                    icon={Smiley}
                     onClick={handleOpenCES}
                     disabled={instructors.length === 0}
                 >
                     CES
                 </Button>
-                <Button variant='outline' color='ut-orange' icon={Description} onClick={handleOpenPastSyllabi}>
+                <Button variant='outline' color='ut-orange' icon={FileText} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
                 </Button>
                 <Button
                     variant='filled'
                     color={!courseAdded ? 'ut-green' : 'theme-red'}
-                    icon={!courseAdded ? Add : Remove}
+                    icon={!courseAdded ? Plus : Minus}
                     onClick={handleAddOrRemoveCourse}
                 >
                     {!courseAdded ? 'Add Course' : 'Remove Course'}
