@@ -7,6 +7,7 @@ import React from 'react';
 
 interface Props {
     className?: string;
+    ref?: React.ForwardedRef<HTMLButtonElement>;
     style?: React.CSSProperties;
     variant: 'filled' | 'outline' | 'single';
     onClick?: () => void;
@@ -23,6 +24,7 @@ interface Props {
  */
 export function Button({
     className,
+    ref,
     style,
     variant,
     onClick,
@@ -40,6 +42,7 @@ export function Button({
 
     return (
         <button
+            ref={ref}
             style={
                 {
                     ...style,
