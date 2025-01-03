@@ -1,11 +1,6 @@
+import { DiscordLogo, GearSix, GithubLogo, InstagramLogo, LinkedinLogo } from '@phosphor-icons/react';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
-
-import DiscordIcon from '~icons/bi/discord';
-import SettingsIcon from '~icons/material-symbols/settings';
-import GithubIcon from '~icons/ri/github-fill';
-import InstagramIcon from '~icons/ri/instagram-line';
-import LinkedinIcon from '~icons/ri/linkedin-box-fill';
 
 import { Button } from '../common/Button';
 import Link from '../common/Link';
@@ -25,29 +20,29 @@ const handleOpenOptions = async (): Promise<void> => {
  */
 export default function CalendarFooter(): JSX.Element {
     return (
-        <footer className='min-w-full w-0 flex items-center justify-between bg-white px-spacing7 py-spacing6 pt-spacing3'>
-            <div className='flex gap-spacing4'>
+        <footer className='min-w-full w-0 flex items-center justify-between bg-white px-spacing-8 pt-spacing-4'>
+            <div className='flex gap-spacing-5'>
                 <Link className='linkanimate' href='https://www.instagram.com/longhorndevelopers'>
-                    <InstagramIcon className='h-6 w-6 text-ut-black' />
+                    <InstagramLogo className='h-6 w-6 text-ut-black' />
                 </Link>
                 <Link className='linkanimate' href='https://discord.gg/7pQDBGdmb7'>
-                    <DiscordIcon className='h-6 w-6 text-ut-black' />
+                    <DiscordLogo className='h-6 w-6 text-ut-black' />
                 </Link>
                 <Link className='linkanimate' href='https://github.com/Longhorn-Developers'>
-                    <GithubIcon className='h-6 w-6 text-ut-black' />
+                    <GithubLogo className='h-6 w-6 text-ut-black' />
                 </Link>
                 <Link
                     className='linkanimate'
                     href='https://www.linkedin.com/company/longhorn-developers/posts/?feedView=all'
                 >
-                    <LinkedinIcon className='h-6 w-6 text-ut-black -mx-0.75' />
+                    <LinkedinLogo className='h-6 w-6 text-ut-black -mx-0.75' />
                 </Link>
             </div>
             <div>
                 <Button
                     className='h-fit !p-0'
                     variant='single'
-                    icon={SettingsIcon}
+                    icon={GearSix}
                     color='ut-black'
                     onClick={handleOpenOptions}
                 />

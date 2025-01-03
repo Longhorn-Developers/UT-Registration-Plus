@@ -93,7 +93,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
 
     return (
         <div className='h-7.5 rounded bg-white'>
-            <li className='h-full w-full flex cursor-pointer items-center gap-spacing2 text-ut-burntorange'>
+            <li className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
                 <div className='flex cursor-move items-center justify-center focusable' {...dragHandleProps}>
                     <DotsSixVertical
                         weight='bold'
@@ -103,7 +103,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
 
                 <div className='group relative flex flex-1 items-center overflow-x-hidden'>
                     <div
-                        className='group/circle flex flex-grow items-center gap-spacing2 overflow-x-hidden'
+                        className='group/circle flex flex-grow items-center gap-spacing-2 overflow-x-hidden'
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         {isActive ? (

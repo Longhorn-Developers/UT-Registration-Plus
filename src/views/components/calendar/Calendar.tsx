@@ -1,3 +1,4 @@
+import { Sidebar } from '@phosphor-icons/react';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import type { Course } from '@shared/types/Course';
 import { CRX_PAGES } from '@shared/types/CRXPages';
@@ -17,7 +18,6 @@ import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
-import MenuIcon from '~icons/material-symbols/menu';
 
 import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
@@ -64,7 +64,7 @@ export default function Calendar(): JSX.Element {
                 <div className='h-screen flex overflow-auto'>
                     <div
                         className={clsx(
-                            'gap-y-spacing6 py-spacing5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/75 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] duration-300 ease-out-expo transition-property-max-width screenshot:hidden',
+                            'gap-y-spacing-6 py-spacing-6 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/75 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] duration-300 ease-out-expo transition-property-max-width screenshot:hidden',
                             {
                                 'max-w-[20.3125rem] ': showSidebar,
                                 'max-w-0 pointer-events-none': !showSidebar,
@@ -74,7 +74,7 @@ export default function Calendar(): JSX.Element {
                         aria-hidden={!showSidebar}
                         {...{ inert: !showSidebar ? '' : undefined }}
                     >
-                        <div className='px-spacing7 sticky top-0 z-50 w-full flex items-center justify-between gap-x-3xl bg-white'>
+                        <div className='sticky top-0 z-50 w-full flex items-center justify-between gap-x-3xl bg-white px-spacing-8'>
                             <LargeLogo />
                             <Button
                                 variant='single'
@@ -82,12 +82,12 @@ export default function Calendar(): JSX.Element {
                                 onClick={() => {
                                     setShowSidebar(!showSidebar);
                                 }}
-                                className='h-fit screenshot:hidden !p-0'
-                                icon={MenuIcon}
+                                className='scree nshot:hidden h-fit !p-0'
+                                icon={Sidebar}
                             />
                         </div>
 
-                        <div className='gap-y-spacing5 py-spacing5 px-spacing7 relative h-full w-full flex grow flex-col overflow-x-clip overflow-y-auto'>
+                        <div className='relative h-full w-full flex grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto px-spacing-8 py-spacing-6'>
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' />
                             <ResourceLinks />
@@ -95,7 +95,7 @@ export default function Calendar(): JSX.Element {
                             {/* <TeamLinks /> */}
                             <a
                                 href={CRX_PAGES.REPORT}
-                                className='gap-spacing1 flex items-center text-ut-burntorange underline-offset-2 hover:underline'
+                                className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
                                 target='_blank'
                                 rel='noreferrer'
                                 onClick={event => {
