@@ -31,7 +31,7 @@ export default function CalendarFooter(): JSX.Element {
                     <LinkedinIcon className='h-6 w-6 -mx-0.75' />
                 </Link>
             </div>
-            <p className='text-2.5 text-ut-concrete font-light tracking-wide'>
+            <p className='text-2.5 text-ut-gray font-light tracking-wide'>
                 UT Registration Plus is a project under Longhorn Developers, a student-led organization aimed at
                 addressing issues at UT Austin.
             </p>

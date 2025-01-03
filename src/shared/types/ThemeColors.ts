@@ -14,11 +14,18 @@ export const colors = {
         blue: '#005F86',
         gray: '#9CADB7',
         offwhite: '#D6D2C4',
-        concrete: '#95A5A6',
     },
     theme: {
         red: '#D10000',
         black: '#1A2024',
+        offwhite1: ' #D6D2C450',
+        offwhite2: '#D6D2C420',
+        black1: '#333F4850',
+        black2: '#333F4820',
+        staticwhite: '#FFFFFF',
+        staticblack: '#1A2024',
+        majorgridline: '#D1D5DB',
+        minorgridline: '#F3F4F6',
     },
 } as const satisfies Record<string, Record<string, string>>;
 
@@ -37,7 +44,7 @@ export const extendedColors = {
         d: '#DC2626',
         dminus: '#B91C1C',
         f: '#B91C1C',
-        other: '#6B7280',
+        other: '#D6D3D1',
     },
 } as const;
 
