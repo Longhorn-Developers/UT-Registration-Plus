@@ -8,7 +8,7 @@ import React from 'react';
 interface Props {
     className?: string;
     style?: React.CSSProperties;
-    variant?: 'filled' | 'outline' | 'minimal' | 'minimal-small';
+    variant?: 'filled' | 'outline' | 'minimal';
     size?: 'regular' | 'small';
     onClick?: () => void;
     icon?: Icon;
