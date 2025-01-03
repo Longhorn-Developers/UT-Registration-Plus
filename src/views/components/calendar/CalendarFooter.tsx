@@ -1,9 +1,35 @@
+import type { Icon } from '@phosphor-icons/react';
 import { DiscordLogo, GearSix, GithubLogo, InstagramLogo, LinkedinLogo } from '@phosphor-icons/react';
+import { background } from '@shared/messages';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
 
 import { Button } from '../common/Button';
 import Link from '../common/Link';
+
+interface SocialLink {
+    icon: Icon;
+    url: string;
+}
+
+const socialLinks: SocialLink[] = [
+    {
+        icon: InstagramLogo,
+        url: 'https://www.instagram.com/longhorndevelopers',
+    },
+    {
+        icon: DiscordLogo,
+        url: 'https://discord.gg/7pQDBGdmb7',
+    },
+    {
+        icon: GithubLogo,
+        url: 'https://github.com/Longhorn-Developers',
+    },
+    {
+        icon: LinkedinLogo,
+        url: 'https://www.linkedin.com/company/longhorn-developers/posts/?feedView=all',
+    },
+];
 
 /**
  * Opens the options page in a new tab.
@@ -22,21 +48,11 @@ export default function CalendarFooter(): JSX.Element {
     return (
         <footer className='min-w-full w-0 flex items-center justify-between bg-white px-spacing-8 pt-spacing-4'>
             <div className='flex gap-spacing-5'>
-                <Link className='linkanimate' href='https://www.instagram.com/longhorndevelopers'>
-                    <InstagramLogo className='h-6 w-6 text-ut-black' />
-                </Link>
-                <Link className='linkanimate' href='https://discord.gg/7pQDBGdmb7'>
-                    <DiscordLogo className='h-6 w-6 text-ut-black' />
-                </Link>
-                <Link className='linkanimate' href='https://github.com/Longhorn-Developers'>
-                    <GithubLogo className='h-6 w-6 text-ut-black' />
-                </Link>
-                <Link
-                    className='linkanimate'
-                    href='https://www.linkedin.com/company/longhorn-developers/posts/?feedView=all'
-                >
-                    <LinkedinLogo className='h-6 w-6 text-ut-black -mx-0.75' />
-                </Link>
+                {socialLinks.map(({ icon, url }) => (
+                    <Link href={url}>
+                        <Button className='h-fit !p-0' variant='single' icon={icon} color='ut-black' />
+                    </Link>
+                ))}
             </div>
             <div>
                 <Button
