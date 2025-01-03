@@ -53,7 +53,7 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
                 </Text>
             )}
             <Button
-                variant='single'
+                variant='minimal'
                 color='ut-black'
                 onClick={() => {
                     close();

@@ -60,12 +60,12 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
             </div>
             <div className='flex items-center screenshot:hidden'>
                 {displayCourses && <Divider orientation='vertical' size='1rem' className='mx-1.25' />}
-                <Button variant='single' color='ut-black' icon={CalendarDots} onClick={saveAsCal}>
+                <Button variant='minimal' color='ut-black' icon={CalendarDots} onClick={saveAsCal}>
                     Save as .CAL
                 </Button>
                 <Divider orientation='vertical' size='1rem' className='mx-1.25' />
                 <Button
-                    variant='single'
+                    variant='minimal'
                     color='ut-black'
                     icon={ImageSquare}
                     onClick={() => requestAnimationFrame(() => saveCalAsPng())}
