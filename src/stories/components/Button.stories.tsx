@@ -50,7 +50,7 @@ export const Grid: Story = {
             <div style={{ display: 'flex', gap: '15px' }}>
                 <Button {...props} variant='filled' color='ut-black' />
                 <Button {...props} variant='outline' color='ut-black' />
-                <Button {...props} variant='single' color='ut-black' />
+                <Button {...props} variant='minimal' color='ut-black' />
             </div>
 
             <hr />
@@ -58,7 +58,7 @@ export const Grid: Story = {
             <div style={{ display: 'flex', gap: '15px' }}>
                 <Button {...props} variant='filled' color='ut-black' disabled />
                 <Button {...props} variant='outline' color='ut-black' disabled />
-                <Button {...props} variant='single' color='ut-black' disabled />
+                <Button {...props} variant='minimal' color='ut-black' disabled />
             </div>
         </div>
     ),
@@ -82,12 +82,12 @@ export const PrettyColors: Story = {
                         <Button {...props} variant='outline' color={color}>
                             Button
                         </Button>
-                        <Button {...props} variant='single' color={color}>
+                        <Button {...props} variant='minimal' color={color}>
                             Button
                         </Button>
                         <Button {...props} variant='filled' color={color} />
                         <Button {...props} variant='outline' color={color} />
-                        <Button {...props} variant='single' color={color} />
+                        <Button {...props} variant='minimal' color={color} />
                     </div>
                 ))}
             </div>

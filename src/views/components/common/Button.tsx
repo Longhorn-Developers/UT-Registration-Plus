@@ -8,7 +8,7 @@ import React from 'react';
 interface Props {
     className?: string;
     style?: React.CSSProperties;
-    variant: 'filled' | 'outline' | 'single';
+    variant: 'filled' | 'outline' | 'minimal' | 'minimal-small';
     onClick?: () => void;
     icon?: Icon;
     iconProps?: IconProps;
@@ -50,13 +50,17 @@ export function Button({
             className={clsx(
                 'btn',
                 {
-                    'text-white! bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20':
+                    'text-white! bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20 px-spacing-5 gap-spacing-3 h-[40px]':
                         variant === 'filled',
-                    'bg-opacity-0 border-current hover:enabled:bg-opacity-8 border': variant === 'outline',
-                    'bg-opacity-0 border-none hover:enabled:bg-opacity-8': variant === 'single', // settings is the only "single"
-                    'px-2 py-1.25': isIconOnly && variant !== 'outline',
-                    'px-1.75 py-1.25': isIconOnly && variant === 'outline',
-                    'px-3.75': variant === 'outline' && !isIconOnly,
+                    'bg-opacity-0 border-current hover:enabled:bg-opacity-8 border stroke-width-[1px] px-spacing-5 gap-spacing-3 h-[40px]':
+                        variant === 'outline',
+                    'bg-opacity-0 border-none hover:enabled:bg-opacity-8  px-spacing-5 gap-spacing-3 h-[40px]':
+                        variant === 'minimal',
+                    'bg-opacity-0 border-none hover:enabled:bg-opacity-8 text-sm px-spacing-3 gap-spacing-3 h-[35px]':
+                        variant === 'minimal-small',
+                    'px-spacing-3':
+                        isIconOnly && (variant === 'filled' || variant === 'outline' || variant === 'minimal'),
+                    'px-0 py-0 h-6 w-6': isIconOnly && variant === 'minimal-small',
                 },
                 className
             )}
