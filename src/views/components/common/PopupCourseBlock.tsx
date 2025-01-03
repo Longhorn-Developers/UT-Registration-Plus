@@ -9,7 +9,7 @@ import { pickFontColor } from '@shared/util/colors';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * Props for PopupCourseBlock
@@ -37,6 +37,7 @@ export default function PopupCourseBlock({
     dragHandleProps,
 }: PopupCourseBlockProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
@@ -44,6 +45,17 @@ export default function PopupCourseBlock({
         const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
             // console.log('enableCourseStatusChips', newValue);
+        });
+
+        // adds transition for shadow hover after three frames
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    if (ref.current) {
+                        ref.current.classList.add('transition-shadow-100');
+                    }
+                });
+            });
         });
 
         return () => {
@@ -66,10 +78,11 @@ export default function PopupCourseBlock({
                 backgroundColor: colors.primaryColor,
             }}
             className={clsx(
-                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left',
+                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-3 focusable cursor-pointer text-left hover:shadow-md ease-out group-[.is-dragging]:shadow-md',
                 className
             )}
             onClick={handleClick}
+            ref={ref}
         >
             <div
                 style={{
