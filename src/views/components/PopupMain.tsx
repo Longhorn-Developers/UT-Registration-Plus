@@ -95,10 +95,10 @@ export default function PopupMain(): JSX.Element {
                             variant='filled'
                             color='ut-burntorange'
                             onClick={handleCalendarOpenOnClick}
-                            icon={CalendarIcon}
+                            icon={CalendarDots}
                         />
-                        <Button variant='single' color='ut-black' onClick={handleOpenOptions} icon={SettingsIcon} />
-                        <Button variant='single' color='ut-black' onClick={openReportWindow} icon={Feedback} />
+                        <Button variant='single' color='ut-black' onClick={handleOpenOptions} icon={GearSix} />
+                        <Button variant='single' color='ut-black' onClick={openReportWindow} icon={Plus} />
                     </div>
                 </div>
             </div>
