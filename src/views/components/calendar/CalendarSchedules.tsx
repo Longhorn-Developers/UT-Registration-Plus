@@ -26,18 +26,22 @@ export function CalendarSchedules() {
     };
 
     return (
-        <div className='min-w-full w-0 items-center'>
-            <div className='m0 m-b-2 w-full flex justify-between'>
-                <Text variant='h3' className='text-nowrap'>
+        <div className='min-w-full w-0 flex flex-col items-center gap-y-spacing-3'>
+            <div className='m0 w-full flex justify-between'>
+                <Text variant='h3' className='text-nowrap text-theme-black'>
                     MY SCHEDULES
                 </Text>
-                <Button variant='single' color='theme-black' className='h-fit p-0 btn' onClick={handleAddSchedule}>
-                    <Plus className='h-6 w-6' />
-                </Button>
+                <Button
+                    variant='single'
+                    color='theme-black'
+                    className='h-fit !p-0 btn'
+                    onClick={handleAddSchedule}
+                    icon={Plus}
+                />
             </div>
-            <div className='flex flex-col space-y-2.5'>
+            <div className='w-full flex flex-col'>
                 <List
-                    gap={10}
+                    gap={8}
                     draggables={schedules}
                     itemKey={s => s.id}
                     onReordered={reordered => {
