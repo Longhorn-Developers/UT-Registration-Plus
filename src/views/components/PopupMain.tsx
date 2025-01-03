@@ -1,5 +1,6 @@
 import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
+import { CalendarDots, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
@@ -13,10 +14,7 @@ import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeStrin
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect, useState } from 'react';
 
-import AddSchedule from '~icons/material-symbols/add';
-import CalendarIcon from '~icons/material-symbols/calendar-month';
 import Feedback from '~icons/material-symbols/flag';
-import SettingsIcon from '~icons/material-symbols/settings';
 
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
@@ -137,7 +135,7 @@ export default function PopupMain(): JSX.Element {
                             className='h-fit p-0 btn'
                             onClick={handleAddSchedule}
                         >
-                            <AddSchedule className='h-6 w-6' />
+                            <Plus className='h-6 w-6' />
                         </Button>
                     </div>
                 </ScheduleDropdown>
