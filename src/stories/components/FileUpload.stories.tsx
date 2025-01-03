@@ -1,9 +1,8 @@
+import { ImageSquare } from '@phosphor-icons/react';
 import { colorsFlattened } from '@shared/util/themeColors';
 import type { Meta, StoryObj } from '@storybook/react';
 import FileUpload from '@views/components/common/FileUpload';
 import React from 'react';
-
-import ImagePlaceholderIcon from '~icons/material-symbols/image';
 
 /**
  * Stole this straight from Button.stories.tsx to test the input
@@ -17,7 +16,7 @@ const meta = {
     tags: ['autodocs'],
     args: {
         children: 'Upload File',
-        icon: ImagePlaceholderIcon,
+        icon: ImageSquare,
     },
     argTypes: {
         children: { control: 'text' },

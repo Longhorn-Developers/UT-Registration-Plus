@@ -1,3 +1,4 @@
+import { GearSix, Sidebar } from '@phosphor-icons/react';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { Button } from '@views/components/common/Button';
 import CourseStatus from '@views/components/common/CourseStatus';
@@ -6,8 +7,14 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import useSchedules from '@views/hooks/useSchedules';
 import React, { useEffect, useState } from 'react';
 
-// import RefreshIcon from '~icons/material-symbols/refresh';
-import MenuIcon from '~icons/material-symbols/menu';
+/**
+ * Opens the options page in a new tab.
+ * @returns A promise that resolves when the options page is opened.
+ */
+const handleOpenOptions = async (): Promise<void> => {
+    const url = chrome.runtime.getURL('/options.html');
+    await openTabFromContentScript(url);
+};
 
 interface CalendarHeaderProps {
     sidebarOpen?: boolean;
@@ -54,7 +61,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     color='theme-black'
                     onClick={onSidebarToggle}
                     className='h-fit screenshot:hidden !p-0'
-                    icon={MenuIcon}
+                    icon={Sidebar}
                 />
             )}
 
