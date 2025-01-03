@@ -1,6 +1,5 @@
 import type { Icon } from '@phosphor-icons/react';
 import { DiscordLogo, GearSix, GithubLogo, InstagramLogo, LinkedinLogo } from '@phosphor-icons/react';
-import { background } from '@shared/messages';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
 
