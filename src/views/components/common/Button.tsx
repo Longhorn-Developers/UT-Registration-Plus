@@ -8,7 +8,8 @@ import React from 'react';
 interface Props {
     className?: string;
     style?: React.CSSProperties;
-    variant: 'filled' | 'outline' | 'minimal' | 'minimal-small';
+    variant?: 'filled' | 'outline' | 'minimal' | 'minimal-small';
+    size?: 'regular' | 'small';
     onClick?: () => void;
     icon?: Icon;
     iconProps?: IconProps;
@@ -24,7 +25,8 @@ interface Props {
 export function Button({
     className,
     style,
-    variant,
+    variant = 'filled',
+    size = 'regular',
     onClick,
     icon,
     iconProps,
@@ -50,17 +52,15 @@ export function Button({
             className={clsx(
                 'btn',
                 {
-                    'text-white! bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20 px-spacing-5 gap-spacing-3 h-[40px]':
+                    'text-white! bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20':
                         variant === 'filled',
-                    'bg-opacity-0 border-current hover:enabled:bg-opacity-8 border stroke-width-[1px] px-spacing-5 gap-spacing-3 h-[40px]':
+                    'bg-opacity-0 border-current hover:enabled:bg-opacity-8 border stroke-width-[1px]':
                         variant === 'outline',
-                    'bg-opacity-0 border-none hover:enabled:bg-opacity-8  px-spacing-5 gap-spacing-3 h-[40px]':
-                        variant === 'minimal',
-                    'bg-opacity-0 border-none hover:enabled:bg-opacity-8 text-sm px-spacing-3 gap-spacing-3 h-[35px]':
-                        variant === 'minimal-small',
-                    'px-spacing-3':
-                        isIconOnly && (variant === 'filled' || variant === 'outline' || variant === 'minimal'),
-                    'px-0 py-0 h-6 w-6': isIconOnly && variant === 'minimal-small',
+                    'bg-opacity-0 border-none hover:enabled:bg-opacity-8': variant === 'minimal',
+                    'h-10 gap-spacing-3 px-spacing-5': size === 'regular' && !isIconOnly,
+                    'h-10 px-spacing-3': size === 'regular' && isIconOnly,
+                    'h-[35px] px-spacing-3': size === 'small' && !isIconOnly,
+                    'h-6 w-6 p-0': size === 'small' && isIconOnly,
                 },
                 className
             )}
@@ -70,7 +70,10 @@ export function Button({
         >
             {Icon && <Icon {...iconProps} className={clsx('h-6 w-6', iconProps?.className)} />}
             {!isIconOnly && (
-                <Text variant='h4' className='inline-flex translate-y-0.08 items-center gap-2'>
+                <Text
+                    variant={size === 'regular' ? 'h4' : 'small'}
+                    className='inline-flex translate-y-0.08 items-center gap-2'
+                >
                     {children}
                 </Text>
             )}
