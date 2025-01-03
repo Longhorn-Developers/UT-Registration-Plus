@@ -51,15 +51,15 @@ const links: LinkItem[] = [
 export default function ResourceLinks({ className }: Props): JSX.Element {
     return (
         <article className={clsx(className, 'flex flex-col gap-spacing2')}>
-            <Text className='text-theme-black' variant='h3'>
-                Resources
+            <Text className='text-theme-black uppercase' variant='h3'>
+                RESOURCES
             </Text>
             <div className='flex flex-col gap-2.5'>
                 {links.map(link => (
                     <a
                         key={link.text}
                         href={link.url}
-                        className='gap-spacing1 flex items-center text-ut-burntorange underline-offset-2 hover:underline'
+                        className='flex items-center gap-spacing1 text-ut-burntorange underline-offset-2 hover:underline'
                         target='_blank'
                         rel='noreferrer'
                     >

@@ -25,7 +25,7 @@ const handleOpenOptions = async (): Promise<void> => {
  */
 export default function CalendarFooter(): JSX.Element {
     return (
-        <footer className='min-w-full w-0 flex items-center justify-between bg-white px-spacing7 pt-spacing3'>
+        <footer className='min-w-full w-0 flex items-center justify-between bg-white px-spacing7 py-spacing6 pt-spacing3'>
             <div className='flex gap-spacing4'>
                 <Link className='linkanimate' href='https://www.instagram.com/longhorndevelopers'>
                     <InstagramIcon className='h-6 w-6 text-ut-black' />

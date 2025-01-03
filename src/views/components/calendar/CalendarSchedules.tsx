@@ -27,7 +27,7 @@ export function CalendarSchedules() {
     };
 
     return (
-        <div className='space-y-spacing2 min-w-full w-0 items-center'>
+        <div className='min-w-full w-0 items-center space-y-spacing2'>
             <div className='m0 w-full flex justify-between'>
                 <Text variant='h3' className='text-nowrap text-theme-black'>
                     MY SCHEDULES
@@ -40,7 +40,7 @@ export function CalendarSchedules() {
                     icon={AddSchedule}
                 />
             </div>
-            <div className='flex flex-col space-y-2.5'>
+            <div className='flex flex-col'>
                 <List
                     gap={8}
                     draggables={schedules}
