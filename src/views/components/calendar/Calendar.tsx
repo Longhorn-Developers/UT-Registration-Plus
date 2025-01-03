@@ -82,7 +82,7 @@ export default function Calendar(): JSX.Element {
                                 onClick={() => {
                                     setShowSidebar(!showSidebar);
                                 }}
-                                className='scree nshot:hidden h-fit !p-0'
+                                className='h-fit screenshot:hidden !p-0'
                                 icon={Sidebar}
                             />
                         </div>
