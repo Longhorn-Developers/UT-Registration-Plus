@@ -35,6 +35,34 @@ export const Default: Story = {
     },
 };
 
+export const Small: Story = {
+    // @ts-ignore
+    args: {
+        children: '',
+    },
+    render: props => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <Button {...props} variant='filled' color='ut-black' size='small'>
+                    Button
+                </Button>
+                <Button {...props} variant='outline' color='ut-black' size='small'>
+                    Button
+                </Button>
+                <Button {...props} variant='minimal' color='ut-black' size='small'>
+                    Button
+                </Button>
+            </div>
+            <hr />
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <Button {...props} icon={ImageSquare} variant='filled' color='ut-black' size='small' />
+                <Button {...props} icon={ImageSquare} variant='outline' color='ut-black' size='small' />
+                <Button {...props} icon={ImageSquare} variant='minimal' color='ut-black' size='small' />
+            </div>
+        </div>
+    ),
+};
+
 export const Disabled: Story = {
     args: {
         variant: 'filled',
