@@ -254,9 +254,10 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     {distributions[semester] && !distributions[semester]!.instructorIncluded && (
                         <div className='mt-3 flex flex-wrap content-center items-center self-stretch justify-center gap-3 text-center'>
                             <Text variant='small' className='text-theme-red'>
-                                We couldn&apos;t find instructor-specific grades
-                                {semester !== 'Aggregate' && ` for ${semester.replace(/(\d{2})(\d{2})$/, "'$2")}`}, so
-                                here are the grades for all {course.department} {course.number} sections.
+                                We couldn&apos;t find{' '}
+                                {semester !== 'Aggregate' && ` ${semester.replace(/(\d{2})(\d{2})$/, "'$2")}`} grades
+                                for this instructor, so here are the grades for all {course.department} {course.number}{' '}
+                                sections.
                             </Text>
                         </div>
                     )}
