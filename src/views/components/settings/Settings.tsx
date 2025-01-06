@@ -3,6 +3,7 @@ import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
+import { Trash } from '@phosphor-icons/react';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { downloadBlob } from '@shared/util/downloadBlob';
@@ -31,6 +32,7 @@ import CalendarIcon from '~icons/material-symbols/calendar-month';
 // import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
 import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 
+// import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';;
 import FileUpload from '../common/FileUpload';
 import { useMigrationDialog } from '../common/MigrationDialog';
 // import RefreshIcon from '~icons/material-symbols/refresh';
@@ -452,12 +454,7 @@ export default function Settings(): JSX.Element {
                                             Erases all schedules and courses you have.
                                         </p>
                                     </div>
-                                    <Button
-                                        variant='outline'
-                                        color='theme-red'
-                                        icon={DeleteForeverIcon}
-                                        onClick={handleEraseAll}
-                                    >
+                                    <Button variant='outline' color='theme-red' icon={Trash} onClick={handleEraseAll}>
                                         Erase All
                                     </Button>
                                 </div>
