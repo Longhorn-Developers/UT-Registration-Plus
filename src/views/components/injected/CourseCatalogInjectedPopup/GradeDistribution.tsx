@@ -255,7 +255,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                         <div className='mt-3 flex flex-wrap content-center items-center self-stretch justify-center gap-3 text-center'>
                             <Text variant='small' className='text-theme-red'>
                                 We couldn&apos;t find {semester !== 'Aggregate' && ` ${semester}`} grades for this
-                                instructor, so here are the grades for all {course.department} {course.number}H
+                                instructor, so here are the grades for all {course.department} {course.number}
                                 sections.
                             </Text>
                         </div>
