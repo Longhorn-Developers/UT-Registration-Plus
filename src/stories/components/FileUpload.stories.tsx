@@ -45,14 +45,6 @@ export const Default: Story = {
     },
 };
 
-export const Disabled: Story = {
-    args: {
-        variant: 'filled',
-        color: 'ut-black',
-        disabled: true,
-    },
-};
-
 export const Small: Story = {
     // @ts-ignore
     args: {
@@ -79,6 +71,42 @@ export const Small: Story = {
             </div>
         </div>
     ),
+};
+
+export const Mini: Story = {
+    // @ts-ignore
+    args: {
+        children: '',
+    },
+    render: props => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <FileUpload {...props} variant='filled' color='ut-black' size='mini'>
+                    Button
+                </FileUpload>
+                <FileUpload {...props} variant='outline' color='ut-black' size='mini'>
+                    Button
+                </FileUpload>
+                <FileUpload {...props} variant='minimal' color='ut-black' size='mini'>
+                    Button
+                </FileUpload>
+            </div>
+            <hr />
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <FileUpload {...props} icon={ImageSquare} variant='filled' color='ut-black' size='mini' />
+                <FileUpload {...props} icon={ImageSquare} variant='outline' color='ut-black' size='mini' />
+                <FileUpload {...props} icon={ImageSquare} variant='minimal' color='ut-black' size='mini' />
+            </div>
+        </div>
+    ),
+};
+
+export const Disabled: Story = {
+    args: {
+        variant: 'filled',
+        color: 'ut-black',
+        disabled: true,
+    },
 };
 
 // @ts-ignore

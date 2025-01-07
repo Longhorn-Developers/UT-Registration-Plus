@@ -9,7 +9,7 @@ interface Props {
     className?: string;
     style?: React.CSSProperties;
     variant?: 'filled' | 'outline' | 'minimal';
-    size?: 'regular' | 'small';
+    size?: 'regular' | 'small' | 'mini';
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     icon?: Icon;
     iconProps?: IconProps;
@@ -59,9 +59,11 @@ export default function FileUpload({
                         variant === 'outline',
                     'bg-opacity-0 border-none hover:enabled:bg-opacity-8': variant === 'minimal',
                     'h-10 gap-spacing-3 px-spacing-5': size === 'regular' && !isIconOnly,
-                    'h-10 px-spacing-3': size === 'regular' && isIconOnly,
-                    'h-[35px] px-spacing-3': size === 'small' && !isIconOnly,
-                    'h-6 w-6 p-0': size === 'small' && isIconOnly,
+                    'h-10 p-spacing-2': size === 'regular' && isIconOnly,
+                    'h-[35px] gap-spacing-3 px-spacing-3': size === 'small' && !isIconOnly,
+                    'h-[35px] w-[35px] p-spacing-2': size === 'small' && isIconOnly,
+                    'h-6 p-spacing-2': size === 'mini' && !isIconOnly,
+                    'h-6 w-6 p-0': size === 'mini' && isIconOnly,
                 },
                 className
             )}
