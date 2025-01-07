@@ -132,12 +132,11 @@ export default function PopupMain(): JSX.Element {
                     <div className='bottom-0 right-0 mt-2.5 w-full flex justify-end'>
                         <Button
                             variant='filled'
+                            size='mini'
                             color='ut-burntorange'
-                            className='h-fit p-0 btn'
                             onClick={handleAddSchedule}
-                        >
-                            <Plus className='h-6 w-6' />
-                        </Button>
+                            icon={Plus}
+                        />
                     </div>
                 </ScheduleDropdown>
             </div>
