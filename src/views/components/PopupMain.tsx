@@ -134,7 +134,6 @@ export default function PopupMain(): JSX.Element {
                             variant='filled'
                             size='mini'
                             color='ut-burntorange'
-                            className='h-fit p-0 btn'
                             onClick={handleAddSchedule}
                             icon={Plus}
                         />
