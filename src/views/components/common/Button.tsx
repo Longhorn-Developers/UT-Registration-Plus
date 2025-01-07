@@ -58,7 +58,7 @@ export function Button({
                         variant === 'outline',
                     'bg-opacity-0 border-none hover:enabled:bg-opacity-8': variant === 'minimal',
                     'h-10 gap-spacing-3 px-spacing-5': size === 'regular' && !isIconOnly,
-                    'h-10 p-spacing-2': size === 'regular' && isIconOnly,
+                    'h-10 w-10 p-spacing-2': size === 'regular' && isIconOnly,
                     'h-[35px] gap-spacing-3 px-spacing-3': size === 'small' && !isIconOnly,
                     'h-[35px] w-[35px] p-spacing-2': size === 'small' && isIconOnly,
                     'h-6 p-spacing-2': size === 'mini' && !isIconOnly,
