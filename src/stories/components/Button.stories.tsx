@@ -35,6 +35,62 @@ export const Default: Story = {
     },
 };
 
+export const Small: Story = {
+    // @ts-ignore
+    args: {
+        children: '',
+    },
+    render: props => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <Button {...props} variant='filled' color='ut-black' size='small'>
+                    Button
+                </Button>
+                <Button {...props} variant='outline' color='ut-black' size='small'>
+                    Button
+                </Button>
+                <Button {...props} variant='minimal' color='ut-black' size='small'>
+                    Button
+                </Button>
+            </div>
+            <hr />
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <Button {...props} icon={ImageSquare} variant='filled' color='ut-black' size='small' />
+                <Button {...props} icon={ImageSquare} variant='outline' color='ut-black' size='small' />
+                <Button {...props} icon={ImageSquare} variant='minimal' color='ut-black' size='small' />
+            </div>
+        </div>
+    ),
+};
+
+export const Mini: Story = {
+    // @ts-ignore
+    args: {
+        children: '',
+    },
+    render: props => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <Button {...props} variant='filled' color='ut-black' size='mini'>
+                    Button
+                </Button>
+                <Button {...props} variant='outline' color='ut-black' size='mini'>
+                    Button
+                </Button>
+                <Button {...props} variant='minimal' color='ut-black' size='mini'>
+                    Button
+                </Button>
+            </div>
+            <hr />
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <Button {...props} icon={ImageSquare} variant='filled' color='ut-black' size='mini' />
+                <Button {...props} icon={ImageSquare} variant='outline' color='ut-black' size='mini' />
+                <Button {...props} icon={ImageSquare} variant='minimal' color='ut-black' size='mini' />
+            </div>
+        </div>
+    ),
+};
+
 export const Disabled: Story = {
     args: {
         variant: 'filled',
@@ -50,7 +106,7 @@ export const Grid: Story = {
             <div style={{ display: 'flex', gap: '15px' }}>
                 <Button {...props} variant='filled' color='ut-black' />
                 <Button {...props} variant='outline' color='ut-black' />
-                <Button {...props} variant='single' color='ut-black' />
+                <Button {...props} variant='minimal' color='ut-black' />
             </div>
 
             <hr />
@@ -58,7 +114,7 @@ export const Grid: Story = {
             <div style={{ display: 'flex', gap: '15px' }}>
                 <Button {...props} variant='filled' color='ut-black' disabled />
                 <Button {...props} variant='outline' color='ut-black' disabled />
-                <Button {...props} variant='single' color='ut-black' disabled />
+                <Button {...props} variant='minimal' color='ut-black' disabled />
             </div>
         </div>
     ),
@@ -82,12 +138,12 @@ export const PrettyColors: Story = {
                         <Button {...props} variant='outline' color={color}>
                             Button
                         </Button>
-                        <Button {...props} variant='single' color={color}>
+                        <Button {...props} variant='minimal' color={color}>
                             Button
                         </Button>
                         <Button {...props} variant='filled' color={color} />
                         <Button {...props} variant='outline' color={color} />
-                        <Button {...props} variant='single' color={color} />
+                        <Button {...props} variant='minimal' color={color} />
                     </div>
                 ))}
             </div>

@@ -48,7 +48,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
         <div className='min-h-[91px] flex items-center gap-5 overflow-x-auto overflow-y-hidden px-7 py-4 md:overflow-x-hidden'>
             {!sidebarOpen && (
                 <Button
-                    variant='single'
+                    variant='minimal'
                     color='theme-black'
                     onClick={onSidebarToggle}
                     className='h-fit screenshot:hidden !p-0'

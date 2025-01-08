@@ -260,7 +260,7 @@ export default function Settings(): JSX.Element {
                     UTRP SETTINGS & CREDITS PAGE
                 </Text>
                 <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
-                    <Button variant='single' color='theme-black' onClick={handleChangelogOnClick}>
+                    <Button variant='minimal' color='theme-black' onClick={handleChangelogOnClick}>
                         <IconoirGitFork className='h-6 w-6 text-ut-gray' />
                         <Text variant='small' className='text-ut-gray font-normal'>
                             v{manifest.version} - {process.env.NODE_ENV}

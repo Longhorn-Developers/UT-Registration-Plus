@@ -8,7 +8,8 @@ import React from 'react';
 interface Props {
     className?: string;
     style?: React.CSSProperties;
-    variant: 'filled' | 'outline' | 'single';
+    variant?: 'filled' | 'outline' | 'minimal';
+    size?: 'regular' | 'small' | 'mini';
     onClick?: () => void;
     icon?: Icon;
     iconProps?: IconProps;
@@ -24,7 +25,8 @@ interface Props {
 export function Button({
     className,
     style,
-    variant,
+    variant = 'filled',
+    size = 'regular',
     onClick,
     icon,
     iconProps,
@@ -52,11 +54,15 @@ export function Button({
                 {
                     'text-white! bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20':
                         variant === 'filled',
-                    'bg-opacity-0 border-current hover:enabled:bg-opacity-8 border': variant === 'outline',
-                    'bg-opacity-0 border-none hover:enabled:bg-opacity-8': variant === 'single', // settings is the only "single"
-                    'px-2 py-1.25': isIconOnly && variant !== 'outline',
-                    'px-1.75 py-1.25': isIconOnly && variant === 'outline',
-                    'px-3.75': variant === 'outline' && !isIconOnly,
+                    'bg-opacity-0 border-current hover:enabled:bg-opacity-8 border stroke-width-[1px]':
+                        variant === 'outline',
+                    'bg-opacity-0 border-none hover:enabled:bg-opacity-8': variant === 'minimal',
+                    'h-10 gap-spacing-3 px-spacing-5': size === 'regular' && !isIconOnly,
+                    'h-10 w-10 p-spacing-2': size === 'regular' && isIconOnly,
+                    'h-[35px] gap-spacing-3 px-spacing-3': size === 'small' && !isIconOnly,
+                    'h-[35px] w-[35px] p-spacing-2': size === 'small' && isIconOnly,
+                    'h-6 p-spacing-2': size === 'mini' && !isIconOnly,
+                    'h-6 w-6 p-0': size === 'mini' && isIconOnly,
                 },
                 className
             )}
@@ -66,7 +72,10 @@ export function Button({
         >
             {Icon && <Icon {...iconProps} className={clsx('h-6 w-6', iconProps?.className)} />}
             {!isIconOnly && (
-                <Text variant='h4' className='inline-flex translate-y-0.08 items-center gap-2'>
+                <Text
+                    variant={size === 'regular' ? 'h4' : 'small'}
+                    className='inline-flex translate-y-0.08 items-center gap-2'
+                >
                     {children}
                 </Text>
             )}

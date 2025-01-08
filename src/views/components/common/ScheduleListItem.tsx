@@ -73,7 +73,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
             // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <>
-                    <Button variant='single' color='ut-black' onClick={close}>
+                    <Button variant='minimal' color='ut-black' onClick={close}>
                         Cancel
                     </Button>
                     <Button

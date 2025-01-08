@@ -33,7 +33,7 @@ export function CalendarSchedules() {
                     MY SCHEDULES
                 </Text>
                 <Button
-                    variant='single'
+                    variant='minimal'
                     color='theme-black'
                     className='h-fit !p-0 btn'
                     onClick={handleAddSchedule}
