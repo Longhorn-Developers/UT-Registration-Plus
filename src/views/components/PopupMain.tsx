@@ -1,6 +1,6 @@
 import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
-import { CalendarDots, GearSix, Plus } from '@phosphor-icons/react';
+import { CalendarDots, Flag, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
@@ -13,8 +13,6 @@ import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from
 import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect, useState } from 'react';
-
-import Feedback from '~icons/material-symbols/flag';
 
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
@@ -98,7 +96,7 @@ export default function PopupMain(): JSX.Element {
                             icon={CalendarDots}
                         />
                         <Button variant='single' color='ut-black' onClick={handleOpenOptions} icon={GearSix} />
-                        <Button variant='single' color='ut-black' onClick={openReportWindow} icon={Plus} />
+                        <Button variant='single' color='ut-black' onClick={openReportWindow} icon={Flag} />
                     </div>
                 </div>
             </div>
