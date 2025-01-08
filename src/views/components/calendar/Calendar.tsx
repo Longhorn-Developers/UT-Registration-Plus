@@ -74,7 +74,7 @@ export default function Calendar(): JSX.Element {
                         aria-hidden={!showSidebar}
                         {...{ inert: !showSidebar ? '' : undefined }}
                     >
-                        <div className='sticky top-0 z-50 w-full flex items-center justify-between gap-x-3xl bg-white px-spacing-8'>
+                        <div className='sticky top-0 z-50 w-full flex items-center justify-between gap-x-3xl bg-white px-spacing-8 pb-spacing-6'>
                             <LargeLogo />
                             <Button
                                 variant='minimal'
@@ -91,7 +91,7 @@ export default function Calendar(): JSX.Element {
                             style={{
                                 scrollbarGutter: 'stable',
                             }}
-                            className='relative h-full w-full flex grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto py-spacing-6 pl-spacing-8 pr-spacing-5'
+                            className='relative h-full w-full flex grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-8 pr-4.5'
                         >
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' />
