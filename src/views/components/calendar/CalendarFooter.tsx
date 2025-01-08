@@ -1,31 +1,35 @@
-import type { Icon } from '@phosphor-icons/react';
-import { DiscordLogo, GearSix, GithubLogo, InstagramLogo, LinkedinLogo } from '@phosphor-icons/react';
+import { GearSix } from '@phosphor-icons/react';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import React from 'react';
+
+import DiscordIcon from '~icons/bi/discord';
+import GithubIcon from '~icons/ri/github-fill';
+import InstagramIcon from '~icons/ri/instagram-line';
+import LinkedinIcon from '~icons/ri/linkedin-box-fill';
 
 import { Button } from '../common/Button';
 import Link from '../common/Link';
 
 interface SocialLink {
-    icon: Icon;
+    icon: React.FC<React.SVGProps<SVGSVGElement>>;
     url: string;
 }
 
 const socialLinks: SocialLink[] = [
     {
-        icon: InstagramLogo,
+        icon: InstagramIcon,
         url: 'https://www.instagram.com/longhorndevelopers',
     },
     {
-        icon: DiscordLogo,
+        icon: DiscordIcon,
         url: 'https://discord.gg/7pQDBGdmb7',
     },
     {
-        icon: GithubLogo,
+        icon: GithubIcon,
         url: 'https://github.com/Longhorn-Developers',
     },
     {
-        icon: LinkedinLogo,
+        icon: LinkedinIcon,
         url: 'https://www.linkedin.com/company/longhorn-developers/posts/?feedView=all',
     },
 ];
@@ -47,9 +51,9 @@ export default function CalendarFooter(): JSX.Element {
     return (
         <footer className='min-w-full w-0 flex items-center justify-between bg-white px-spacing-8 pt-spacing-4'>
             <div className='flex gap-spacing-5'>
-                {socialLinks.map(({ icon, url }) => (
-                    <Link href={url}>
-                        <Button className='h-fit !p-0' variant='single' icon={icon} color='ut-black' />
+                {socialLinks.map(({ icon: Icon, url }) => (
+                    <Link className='linkanimate' href={url}>
+                        <Icon className='h-6 w-6' />
                     </Link>
                 ))}
             </div>
