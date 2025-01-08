@@ -64,7 +64,7 @@ export default function Calendar(): JSX.Element {
                 <div className='h-screen flex overflow-auto'>
                     <div
                         className={clsx(
-                            'gap-y-spacing-6 py-spacing-6 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/75 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] duration-300 ease-out-expo transition-property-max-width screenshot:hidden',
+                            'py-spacing-6 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-theme-offwhite1 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] duration-300 ease-out-expo transition-property-max-width screenshot:hidden',
                             {
                                 'max-w-[20.3125rem] ': showSidebar,
                                 'max-w-0 pointer-events-none': !showSidebar,
@@ -87,7 +87,12 @@ export default function Calendar(): JSX.Element {
                             />
                         </div>
 
-                        <div className='relative h-full w-full flex grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto px-spacing-8 py-spacing-6'>
+                        <div
+                            style={{
+                                scrollbarGutter: 'stable',
+                            }}
+                            className='relative h-full w-full flex grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto py-spacing-6 pl-spacing-8 pr-spacing-5'
+                        >
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' />
                             <ResourceLinks />
