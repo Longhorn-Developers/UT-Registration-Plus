@@ -103,7 +103,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
 
                 <div className='group relative flex flex-1 items-center overflow-x-hidden'>
                     <div
-                        className='group/circle flex flex-grow items-center gap-spacing-2 overflow-x-hidden'
+                        className='group/circle flex flex-grow items-center gap-spacing-3 overflow-x-hidden'
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         {isActive ? (
