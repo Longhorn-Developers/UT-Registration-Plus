@@ -59,8 +59,8 @@ export default function CalendarFooter(): JSX.Element {
             </div>
             <div>
                 <Button
-                    className='h-fit !p-0'
-                    variant='single'
+                    className='h-fit w-fit !p-0'
+                    variant='minimal'
                     icon={GearSix}
                     color='ut-black'
                     onClick={handleOpenOptions}

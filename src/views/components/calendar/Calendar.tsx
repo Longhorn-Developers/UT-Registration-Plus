@@ -77,7 +77,7 @@ export default function Calendar(): JSX.Element {
                         <div className='sticky top-0 z-50 w-full flex items-center justify-between gap-x-3xl bg-white px-spacing-8'>
                             <LargeLogo />
                             <Button
-                                variant='single'
+                                variant='minimal'
                                 color='theme-black'
                                 onClick={() => {
                                     setShowSidebar(!showSidebar);
