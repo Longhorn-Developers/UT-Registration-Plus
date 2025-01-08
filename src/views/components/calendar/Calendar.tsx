@@ -109,7 +109,7 @@ export default function Calendar(): JSX.Element {
                                 }}
                             >
                                 <Text variant='p'>Send us Feedback!</Text>
-                                <OutwardArrowIcon className='h-3 w-3' />
+                                <OutwardArrowIcon className='h-4 w-4' />
                             </a>
                         </div>
 
