@@ -1,6 +1,7 @@
 import createSchedule from '@pages/background/lib/createSchedule';
 import { Plus } from '@phosphor-icons/react';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { getSpacingInPx } from '@shared/types/Spacing';
 import { Button } from '@views/components/common/Button';
 import List from '@views/components/common/List';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
@@ -41,7 +42,7 @@ export function CalendarSchedules() {
             </div>
             <div className='w-full flex flex-col'>
                 <List
-                    gap={8}
+                    gap={getSpacingInPx('spacing-3')}
                     draggables={schedules}
                     itemKey={s => s.id}
                     onReordered={reordered => {
