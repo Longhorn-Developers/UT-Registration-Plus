@@ -15,7 +15,6 @@ import { Button } from '@views/components/common/Button';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import Divider from '@views/components/common/Divider';
 import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
-import { LargeLogo } from '@views/components/common/LogoIcon';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
@@ -29,7 +28,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 interface CalendarHeaderProps {
     onSidebarToggle?: () => void;
-    showSidebar: boolean;
 }
 
 const SECONDARY_ACTIONS_WITH_TEXT_WIDTH = 274; // in px
@@ -40,7 +38,7 @@ const PRIMARY_ACTION_WITHOUT_TEXT_WIDTH = 160; // in px
  * Renders the header component for the calendar.
  * @returns The JSX element representing the calendar header.
  */
-export default function CalendarHeader({ onSidebarToggle, showSidebar }: CalendarHeaderProps): JSX.Element {
+export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const [activeSchedule] = useSchedules();
     const secondaryActionContainerRef = useRef<HTMLDivElement | null>(null);
     const [{ isDisplayingPrimaryActionsText, isDisplayingSecondaryActionsText }, setIsDisplayingText] = useState({
@@ -94,18 +92,11 @@ export default function CalendarHeader({ onSidebarToggle, showSidebar }: Calenda
             <Button
                 variant='minimal'
                 icon={Sidebar}
-                color='ut-gray'
+                color='ut-black'
                 onClick={onSidebarToggle}
                 className='flex-shrink-0 screenshot:hidden'
             />
-            {showSidebar && (
-                <>
-                    <LargeLogo className='flex-shrink-0' />
-                    <Divider className='mx-2 flex-shrink-0 self-center md:mx-4' size='2.5rem' orientation='vertical' />
-                </>
-            )}
-
-            <div className='min-w-0 screenshot:transform-origin-left screenshot:scale-120'>
+            <div className='min-w-[10.9375rem] screenshot:transform-origin-left screenshot:scale-120'>
                 <ScheduleTotalHoursAndCourses
                     scheduleName={activeSchedule.name}
                     totalHours={activeSchedule.hours}
@@ -113,7 +104,7 @@ export default function CalendarHeader({ onSidebarToggle, showSidebar }: Calenda
                 />
             </div>
 
-            <Divider size='2.5rem' orientation='vertical' />
+            <Divider className='border-theme-offwhite1' size='1.75rem' orientation='vertical' />
             <div className='flex flex-shrink-0 items-center gap-5'>
                 <Button variant='minimal' color='ut-black' icon={PlusCircle} className='flex-shrink-0'>
                     {isDisplayingPrimaryActionsText && <Text variant='small'>Quick Add</Text>}
@@ -178,7 +169,7 @@ export default function CalendarHeader({ onSidebarToggle, showSidebar }: Calenda
                     </Menu>
                 </DialogProvider>
             </div>
-            <Divider size='2.5rem' orientation='vertical' />
+            <Divider className='border-theme-offwhite1' size='1.75rem' orientation='vertical' />
             <div ref={secondaryActionContainerRef} className='mr-5 flex flex-1 items-center justify-end gap-5'>
                 <Button variant='minimal' color='ut-black' icon={BookmarkSimple}>
                     {isDisplayingSecondaryActionsText && <Text variant='small'>Bookmarks</Text>}

@@ -55,7 +55,6 @@ export default function Calendar(): JSX.Element {
         <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
                 <CalendarHeader
-                    showSidebar={showSidebar}
                     onSidebarToggle={() => {
                         setShowSidebar(prev => !prev);
                     }}

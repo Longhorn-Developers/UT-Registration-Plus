@@ -8,9 +8,6 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-    args: {
-        showSidebar: true,
-    },
 } satisfies Meta<typeof CalendarHeader>;
 
 export default meta;
