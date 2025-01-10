@@ -92,7 +92,7 @@ export default function CalendarHeader({ onSidebarToggle, showSidebar }: Calenda
     return (
         <div className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite py-5 pl-6 md:overflow-x-hidden'>
             <Button
-                variant='single'
+                variant='minimal'
                 icon={Sidebar}
                 color='ut-gray'
                 onClick={onSidebarToggle}
@@ -115,16 +115,16 @@ export default function CalendarHeader({ onSidebarToggle, showSidebar }: Calenda
 
             <Divider size='2.5rem' orientation='vertical' />
             <div className='flex flex-shrink-0 items-center gap-5'>
-                <Button variant='single' color='ut-black' icon={PlusCircle} className='flex-shrink-0'>
+                <Button variant='minimal' color='ut-black' icon={PlusCircle} className='flex-shrink-0'>
                     {isDisplayingPrimaryActionsText && <Text variant='small'>Quick Add</Text>}
                 </Button>
-                <Button variant='single' color='ut-black' icon={SelectionPlus} className='flex-shrink-0'>
+                <Button variant='minimal' color='ut-black' icon={SelectionPlus} className='flex-shrink-0'>
                     {isDisplayingPrimaryActionsText && <Text variant='small'>Add Block</Text>}
                 </Button>
                 <DialogProvider>
                     <Menu>
                         <MenuButton className='h-fit bg-transparent p-0'>
-                            <Button variant='single' color='ut-black' icon={Export} className='flex-shrink-0'>
+                            <Button variant='minimal' color='ut-black' icon={Export} className='flex-shrink-0'>
                                 {isDisplayingPrimaryActionsText && <Text variant='small'>Export</Text>}
                             </Button>
                         </MenuButton>
@@ -180,10 +180,10 @@ export default function CalendarHeader({ onSidebarToggle, showSidebar }: Calenda
             </div>
             <Divider size='2.5rem' orientation='vertical' />
             <div ref={secondaryActionContainerRef} className='mr-5 flex flex-1 items-center justify-end gap-5'>
-                <Button variant='single' color='ut-black' icon={BookmarkSimple}>
+                <Button variant='minimal' color='ut-black' icon={BookmarkSimple}>
                     {isDisplayingSecondaryActionsText && <Text variant='small'>Bookmarks</Text>}
                 </Button>
-                <Button variant='single' color='ut-black' icon={MapPinArea}>
+                <Button variant='minimal' color='ut-black' icon={MapPinArea}>
                     {isDisplayingSecondaryActionsText && <Text variant='small'>UT Map</Text>}
                 </Button>
             </div>

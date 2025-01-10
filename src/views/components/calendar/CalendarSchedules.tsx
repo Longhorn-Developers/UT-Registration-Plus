@@ -31,9 +31,7 @@ export function CalendarSchedules() {
                 <Text variant='h3' className='text-nowrap'>
                     MY SCHEDULES
                 </Text>
-                <Button variant='single' color='theme-black' className='h-fit p-0 btn' onClick={handleAddSchedule}>
-                    <Plus className='h-6 w-6' />
-                </Button>
+                <Button size='mini' variant='minimal' color='theme-black' onClick={handleAddSchedule} icon={Plus} />
             </div>
             <div className='flex flex-col space-y-2.5'>
                 <List
