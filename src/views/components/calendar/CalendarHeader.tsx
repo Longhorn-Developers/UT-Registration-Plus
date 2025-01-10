@@ -19,8 +19,7 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
-import React, { useEffect, useRef, useState } from 'react';
-
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 /**
  * Opens the options page in a new tab.
  * @returns A promise that resolves when the options page is opened.
@@ -41,51 +40,57 @@ const PRIMARY_ACTION_WITHOUT_TEXT_WIDTH = 160; // in px
 export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const [activeSchedule] = useSchedules();
     const secondaryActionContainerRef = useRef<HTMLDivElement | null>(null);
-    const [{ isDisplayingPrimaryActionsText, isDisplayingSecondaryActionsText }, setIsDisplayingText] = useState({
-        isDisplayingPrimaryActionsText: true,
-        isDisplayingSecondaryActionsText: true,
-    });
+    const [isDisplayingPrimaryActionsText, setIsDisplayingPrimaryActionsText] = useState(true);
+    const [isDisplayingSecondaryActionsText, setIsDisplayingSecondaryActionsText] = useState(true);
+
+    const resizeObserver = useMemo(
+        () =>
+            new ResizeObserver(([entry]) => {
+                if (!entry) return;
+
+                const width = Math.round(entry.contentRect.width);
+
+                if (
+                    width < SECONDARY_ACTIONS_WITH_TEXT_WIDTH &&
+                    isDisplayingPrimaryActionsText &&
+                    isDisplayingSecondaryActionsText
+                ) {
+                    setIsDisplayingPrimaryActionsText(() => false);
+                    setIsDisplayingSecondaryActionsText(() => true);
+                    return;
+                }
+
+                if (
+                    isDisplayingSecondaryActionsText &&
+                    width - SECONDARY_ACTIONS_WITH_TEXT_WIDTH >=
+                        PRIMARY_ACTION_WITH_TEXT_WIDTH - PRIMARY_ACTION_WITHOUT_TEXT_WIDTH
+                ) {
+                    setIsDisplayingPrimaryActionsText(() => true);
+                    setIsDisplayingSecondaryActionsText(() => true);
+                    return;
+                }
+
+                if (width < SECONDARY_ACTIONS_WITH_TEXT_WIDTH && isDisplayingSecondaryActionsText) {
+                    setIsDisplayingPrimaryActionsText(() => false);
+                    setIsDisplayingSecondaryActionsText(() => false);
+                    return;
+                }
+
+                if (width >= SECONDARY_ACTIONS_WITH_TEXT_WIDTH && !isDisplayingSecondaryActionsText) {
+                    setIsDisplayingPrimaryActionsText(() => false);
+                    setIsDisplayingSecondaryActionsText(() => true);
+                }
+            }),
+        [isDisplayingPrimaryActionsText, isDisplayingSecondaryActionsText]
+    );
 
     useEffect(() => {
         if (!secondaryActionContainerRef.current) return;
 
-        const resizeObserver = new ResizeObserver(([entry]) => {
-            if (!entry) return;
-
-            const width = Math.round(entry.contentRect.width);
-
-            if (
-                width < SECONDARY_ACTIONS_WITH_TEXT_WIDTH &&
-                isDisplayingPrimaryActionsText &&
-                isDisplayingSecondaryActionsText
-            ) {
-                setIsDisplayingText({ isDisplayingSecondaryActionsText: true, isDisplayingPrimaryActionsText: false });
-                return;
-            }
-
-            if (
-                isDisplayingSecondaryActionsText &&
-                width - SECONDARY_ACTIONS_WITH_TEXT_WIDTH >=
-                    PRIMARY_ACTION_WITH_TEXT_WIDTH - PRIMARY_ACTION_WITHOUT_TEXT_WIDTH
-            ) {
-                setIsDisplayingText({ isDisplayingSecondaryActionsText: true, isDisplayingPrimaryActionsText: true });
-                return;
-            }
-
-            if (width < SECONDARY_ACTIONS_WITH_TEXT_WIDTH && isDisplayingSecondaryActionsText) {
-                setIsDisplayingText({ isDisplayingSecondaryActionsText: false, isDisplayingPrimaryActionsText: false });
-                return;
-            }
-
-            if (width >= SECONDARY_ACTIONS_WITH_TEXT_WIDTH && !isDisplayingSecondaryActionsText) {
-                setIsDisplayingText({ isDisplayingSecondaryActionsText: true, isDisplayingPrimaryActionsText: false });
-            }
-        });
-
         resizeObserver.observe(secondaryActionContainerRef.current);
 
         return () => resizeObserver.disconnect();
-    }, [isDisplayingPrimaryActionsText, isDisplayingSecondaryActionsText]);
+    }, [resizeObserver]);
 
     return (
         <div className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite py-5 pl-6 md:overflow-x-hidden'>
