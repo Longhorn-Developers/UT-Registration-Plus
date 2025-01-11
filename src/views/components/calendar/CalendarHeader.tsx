@@ -51,34 +51,33 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                 const width = Math.round(entry.contentRect.width);
 
                 if (
-                    width < SECONDARY_ACTIONS_WITH_TEXT_WIDTH &&
+                    // Collapses the primary action section
                     isDisplayingPrimaryActionsText &&
-                    isDisplayingSecondaryActionsText
+                    width < SECONDARY_ACTIONS_WITH_TEXT_WIDTH
                 ) {
-                    setIsDisplayingPrimaryActionsText(() => false);
-                    setIsDisplayingSecondaryActionsText(() => true);
+                    setIsDisplayingPrimaryActionsText(false);
                     return;
                 }
 
                 if (
-                    isDisplayingSecondaryActionsText &&
+                    // Expands the primary action section if there is enough room for it to expand
+                    !isDisplayingPrimaryActionsText &&
                     width - SECONDARY_ACTIONS_WITH_TEXT_WIDTH >=
                         PRIMARY_ACTION_WITH_TEXT_WIDTH - PRIMARY_ACTION_WITHOUT_TEXT_WIDTH
                 ) {
-                    setIsDisplayingPrimaryActionsText(() => true);
-                    setIsDisplayingSecondaryActionsText(() => true);
+                    setIsDisplayingPrimaryActionsText(true);
                     return;
                 }
 
-                if (width < SECONDARY_ACTIONS_WITH_TEXT_WIDTH && isDisplayingSecondaryActionsText) {
-                    setIsDisplayingPrimaryActionsText(() => false);
-                    setIsDisplayingSecondaryActionsText(() => false);
+                // Contracts the secondary action section
+                if (isDisplayingSecondaryActionsText && width < SECONDARY_ACTIONS_WITH_TEXT_WIDTH) {
+                    setIsDisplayingSecondaryActionsText(false);
                     return;
                 }
 
-                if (width >= SECONDARY_ACTIONS_WITH_TEXT_WIDTH && !isDisplayingSecondaryActionsText) {
-                    setIsDisplayingPrimaryActionsText(() => false);
-                    setIsDisplayingSecondaryActionsText(() => true);
+                // Expands the secondary action section if there is enough room for it to expand
+                if (!isDisplayingSecondaryActionsText && width >= SECONDARY_ACTIONS_WITH_TEXT_WIDTH) {
+                    setIsDisplayingSecondaryActionsText(true);
                 }
             }),
         [isDisplayingPrimaryActionsText, isDisplayingSecondaryActionsText]
