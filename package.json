@@ -9,6 +9,7 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
+        "build:firefox": "tsc && BROWSER_TARGET=firefox vite build",
         "build:watch": "NODE_ENV='development' vite build --mode development -w",
         "zip": "PROD=true pnpm build && pnpm gulp zipProdBuild",
         "prettier": "prettier src --check",
@@ -77,6 +78,7 @@
         "@svgr/plugin-jsx": "^8.1.0",
         "@types/chrome": "^0.0.273",
         "@types/conventional-changelog": "^3.1.5",
+        "@types/firefox-webext-browser": "^120.0.4",
         "@types/gulp": "^4.0.17",
         "@types/gulp-zip": "^4.0.4",
         "@types/node": "^22.9.0",

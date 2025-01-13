@@ -164,6 +164,9 @@ importers:
       '@types/conventional-changelog':
         specifier: ^3.1.5
         version: 3.1.5
+      '@types/firefox-webext-browser':
+        specifier: ^120.0.4
+        version: 120.0.4
       '@types/gulp':
         specifier: ^4.0.17
         version: 4.0.17
@@ -1992,6 +1995,9 @@ packages:
 
   '@types/filewriter@0.0.33':
     resolution: {integrity: sha512-xFU8ZXTw4gd358lb2jw25nxY9QAgqn2+bKKjKOYfNCzN4DKCFetK7sPtrlpg66Ywe3vWY9FNxprZawAh9wfJ3g==}
+
+  '@types/firefox-webext-browser@120.0.4':
+    resolution: {integrity: sha512-lBrpf08xhiZBigrtdQfUaqX1UauwZ+skbFiL8u2Tdra/rklkKadYmIzTwkNZSWtuZ7OKpFqbE2HHfDoFqvZf6w==}
 
   '@types/git-raw-commits@2.0.4':
     resolution: {integrity: sha512-PYmTK156j6TilbwtnO2JErH4TCC1izpgP3kRE3KUX35bjBOD2A+syCGeercqHXBcM6wL+DU0WbJB2Gz8fPR+8A==}
@@ -8576,6 +8582,8 @@ snapshots:
       '@types/filewriter': 0.0.33
 
   '@types/filewriter@0.0.33': {}
+
+  '@types/firefox-webext-browser@120.0.4': {}
 
   '@types/git-raw-commits@2.0.4':
     dependencies:

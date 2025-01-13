@@ -10,6 +10,8 @@ import inspect from 'vite-plugin-inspect';
 
 import packageJson from './package.json';
 import manifest from './src/manifest';
+// import browserExtensionManifestPlugin from './utils/plugins/browser-extension-manifest';
+import firefoxManifestV3 from './utils/plugins/firefox-manifest';
 import vitePluginRunCommandOnDemand from './utils/plugins/run-command-on-demand';
 
 const root = resolve(__dirname, 'src');
@@ -162,6 +164,10 @@ export default defineConfig({
             // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
             closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',
         }),
+        firefoxManifestV3({
+            // geckoId: 'utrp-admin@lhd.org',
+        }),
+        // browserExtensionManifestPlugin(),
     ],
     resolve: {
         alias: {
@@ -205,6 +211,7 @@ export default defineConfig({
     },
     build: {
         target: ['chrome120', 'edge120', 'firefox120'],
+        outDir: `dist/${process.env.BROWSER_TARGET || 'chrome'}`,
         emptyOutDir: true,
         reportCompressedSize: false,
         sourcemap: true,
