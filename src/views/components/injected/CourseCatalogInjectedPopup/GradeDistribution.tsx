@@ -140,7 +140,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             tickWidth: 1,
             tickLength: 10,
             tickColor: '#9CADB7',
-            crosshair: true,
+            crosshair: { color: "rgba(214, 210, 196, 0.25)" },
             lineColor: '#9CADB7',
         },
         yAxis: {
@@ -173,12 +173,26 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
         credits: { enabled: false },
         accessibility: { enabled: true },
         tooltip: {
-            headerFormat: '<span style="font-size:small; font-weight:bold">{point.key}</span><table>',
+            headerFormat:
+                '<span style="display:block; font-weight:700;">{point.key}</span>',
             pointFormat:
-                '<td style="color:{black};padding:0;font-size:small; font-weight:bold;"><b>{point.y:.0f} Students</b></td>',
-            footerFormat: '</table>',
+                '<span style="display:block; font-weight:500;">{point.y:.0f} Students</span>',
             shared: true,
             useHTML: true,
+            style: {
+                color: 'var(--Other-Colors-UTRP-Black, #1A2024)',
+                textAlign: 'center',
+                fontFamily: 'Roboto Flex, Roboto Flex Local',
+                fontSize: '0.88875rem',
+                lineHeight: 'normal',
+            },
+            backgroundColor: "white",
+            borderRadius: 4,
+            shadow: {
+                offsetX: 0,
+                offsetY: 1,
+                color: 'rgba(51, 63, 72, 0.30)',
+            },
         },
         plotOptions: {
             bar: { pointPadding: 0.2, borderWidth: 0 },
