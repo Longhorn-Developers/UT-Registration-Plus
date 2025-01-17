@@ -59,7 +59,7 @@ function Item<T>(props: {
             {...props.provided.draggableProps}
             ref={props.provided.innerRef}
             style={getStyle(props.provided, props.style)}
-            className={props.isDragging ? 'is-dragging' : ''}
+            className={props.isDragging ? 'group is-dragging' : ''}
         >
             {props.children}
         </div>
@@ -104,7 +104,7 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
     );
 
     return (
-        <div style={{ overflow: 'hidden' }}>
+        <div style={{ overflow: 'clip', overflowClipMargin: `${gap}px` }}>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable
                     droppableId='droppable'
