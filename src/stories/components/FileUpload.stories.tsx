@@ -45,6 +45,62 @@ export const Default: Story = {
     },
 };
 
+export const Small: Story = {
+    // @ts-ignore
+    args: {
+        children: '',
+    },
+    render: props => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <FileUpload {...props} variant='filled' color='ut-black' size='small'>
+                    Upload File
+                </FileUpload>
+                <FileUpload {...props} variant='outline' color='ut-black' size='small'>
+                    Upload File
+                </FileUpload>
+                <FileUpload {...props} variant='minimal' color='ut-black' size='small'>
+                    Upload File
+                </FileUpload>
+            </div>
+            <hr />
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <FileUpload {...props} icon={ImageSquare} variant='filled' color='ut-black' size='small' />
+                <FileUpload {...props} icon={ImageSquare} variant='outline' color='ut-black' size='small' />
+                <FileUpload {...props} icon={ImageSquare} variant='minimal' color='ut-black' size='small' />
+            </div>
+        </div>
+    ),
+};
+
+export const Mini: Story = {
+    // @ts-ignore
+    args: {
+        children: '',
+    },
+    render: props => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <FileUpload {...props} variant='filled' color='ut-black' size='mini'>
+                    Button
+                </FileUpload>
+                <FileUpload {...props} variant='outline' color='ut-black' size='mini'>
+                    Button
+                </FileUpload>
+                <FileUpload {...props} variant='minimal' color='ut-black' size='mini'>
+                    Button
+                </FileUpload>
+            </div>
+            <hr />
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <FileUpload {...props} icon={ImageSquare} variant='filled' color='ut-black' size='mini' />
+                <FileUpload {...props} icon={ImageSquare} variant='outline' color='ut-black' size='mini' />
+                <FileUpload {...props} icon={ImageSquare} variant='minimal' color='ut-black' size='mini' />
+            </div>
+        </div>
+    ),
+};
+
 export const Disabled: Story = {
     args: {
         variant: 'filled',
@@ -60,7 +116,7 @@ export const Grid: Story = {
             <div style={{ display: 'flex', gap: '15px' }}>
                 <FileUpload {...props} variant='filled' color='ut-black' />
                 <FileUpload {...props} variant='outline' color='ut-black' />
-                <FileUpload {...props} variant='single' color='ut-black' />
+                <FileUpload {...props} variant='minimal' color='ut-black' />
             </div>
 
             <hr />
@@ -68,7 +124,7 @@ export const Grid: Story = {
             <div style={{ display: 'flex', gap: '15px' }}>
                 <FileUpload {...props} variant='filled' color='ut-black' disabled />
                 <FileUpload {...props} variant='outline' color='ut-black' disabled />
-                <FileUpload {...props} variant='single' color='ut-black' disabled />
+                <FileUpload {...props} variant='minimal' color='ut-black' disabled />
             </div>
         </div>
     ),
@@ -92,7 +148,7 @@ export const PrettyColors: Story = {
                         <FileUpload {...props} variant='outline' color={color}>
                             Button
                         </FileUpload>
-                        <FileUpload {...props} variant='single' color={color}>
+                        <FileUpload {...props} variant='minimal' color={color}>
                             Button
                         </FileUpload>
                     </div>

@@ -57,7 +57,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
     return (
         <div className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
             <Button
-                variant='single'
+                variant='minimal'
                 icon={Sidebar}
                 color='ut-gray'
                 onClick={onSidebarToggle}
@@ -83,7 +83,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
 
                 {/* <Button variant='single' icon={UndoIcon} color='ut-black' />
                 <Button variant='single' icon={RedoIcon} color='ut-black' /> */}
-                <Button variant='single' icon={GearSix} color='theme-black' onClick={handleOpenOptions} />
+                <Button variant='minimal' icon={GearSix} color='theme-black' onClick={handleOpenOptions} />
             </div>
         </div>
     );
