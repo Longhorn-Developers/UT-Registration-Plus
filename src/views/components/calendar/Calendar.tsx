@@ -11,6 +11,7 @@ import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import { MessageListener } from 'chrome-extension-toolkit';
+import Text from '@views/components/common/Text/Text';
 import React, { useEffect, useState } from 'react';
 
 import CalendarFooter from './CalendarFooter';
@@ -26,6 +27,8 @@ export default function Calendar(): JSX.Element {
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const [showSidebar, setShowSidebar] = useState<boolean>(true);
+
+    const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
@@ -72,11 +75,32 @@ export default function Calendar(): JSX.Element {
                             <CalendarFooter />
                         </div>
                     )}
-                    <div className='h-full min-w-5xl flex flex-grow flex-col overflow-y-auto'>
-                        <div className='min-h-2xl flex-grow overflow-auto pl-2 pr-4 pt-6 screenshot:min-h-xl'>
-                            <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
+                    <div className='h-full flex flex-grow flex-col pl-2'>
+                        <div className='min-w-5xl flex flex-col pr-7.5'>
+                            <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto] pt-6'>
+                                {/* Displaying day labels */}
+                                <div className='w-12 pr-1 border-b border-gray-300' />
+                                <div className='w-4 border-b border-r border-gray-300' />
+                                {daysOfWeek.map(day => (
+                                    <div className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5'>
+                                        <Text
+                                            key={day}
+                                            variant='small'
+                                            className='text-center text-ut-burntorange'
+                                            as='div'
+                                        >
+                                            {day}
+                                        </Text>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                        <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
+                        <div className='min-w-5xl flex flex-grow flex-col overflow-y-auto pr-4'>
+                            <div className='min-h-xl h-full flex-grow overflow-auto screenshot:min-h-xl'>
+                                <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
+                            </div>
+                            <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
+                        </div>
                     </div>
                 </div>
 
