@@ -17,7 +17,7 @@ interface Props {
 
 function CalendarHour({ hour }: { hour: number }) {
     return (
-        <div className='w-12 grid-row-span-2 pr-1'>
+        <div className='grid-row-span-2 w-12 pr-1'>
             <Text variant='small' className='inline-block w-full text-right -translate-y-2.25'>
                 {(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}
             </Text>
@@ -60,7 +60,7 @@ export default function CalendarGrid({
             <div />
             <div className='w-4 border-b border-r border-gray-300' />
             {daysOfWeek.map(day => (
-                <div className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5'></div>
+                <div className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5' />
             ))}
             {[...Array(13).keys()].map(i => makeGridRow(i, 5))}
             <CalendarHour hour={21} />

@@ -6,12 +6,12 @@ import CalendarHeader from '@views/components/calendar/CalendarHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import Divider from '@views/components/common/Divider';
+import Text from '@views/components/common/Text/Text';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import { MessageListener } from 'chrome-extension-toolkit';
-import Text from '@views/components/common/Text/Text';
 import React, { useEffect, useState } from 'react';
 
 import CalendarFooter from './CalendarFooter';
@@ -79,7 +79,7 @@ export default function Calendar(): JSX.Element {
                         <div className='min-w-5xl flex flex-col pr-7.5'>
                             <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto] pt-6'>
                                 {/* Displaying day labels */}
-                                <div className='w-12 pr-1 border-b border-gray-300' />
+                                <div className='w-12 border-b border-gray-300 pr-1' />
                                 <div className='w-4 border-b border-r border-gray-300' />
                                 {daysOfWeek.map(day => (
                                     <div className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5'>
@@ -96,7 +96,7 @@ export default function Calendar(): JSX.Element {
                             </div>
                         </div>
                         <div className='min-w-5xl flex flex-grow flex-col overflow-y-auto pr-4'>
-                            <div className='min-h-xl h-full flex-grow overflow-auto screenshot:min-h-xl'>
+                            <div className='h-full min-h-xl flex-grow overflow-auto screenshot:min-h-xl'>
                                 <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                             </div>
                             <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
