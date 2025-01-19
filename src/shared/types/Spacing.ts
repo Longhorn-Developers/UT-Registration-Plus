@@ -12,3 +12,15 @@ export const spacing = {
     'spacing-7': '1.5rem',
     'spacing-8': '2rem',
 } as const;
+
+type SpacingKey = keyof typeof spacing;
+
+/**
+ * Converts a spacing value from rem to pixels
+ * @param key - The spacing key to convert
+ * @returns The spacing value in pixels
+ */
+export function getSpacingInPx(key: SpacingKey): number {
+    const remValue = parseFloat(spacing[key]);
+    return remValue * 16; // 1rem = 16px
+}

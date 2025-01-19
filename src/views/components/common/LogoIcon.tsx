@@ -54,9 +54,9 @@ export function SmallLogo({ className }: LogoIconProps): JSX.Element {
  */
 export function LargeLogo({ className }: LogoIconProps): JSX.Element {
     return (
-        <div className={clsx('flex items-center gap-2', className)}>
+        <div className={clsx('flex items-center gap-spacing-3', className)}>
             <LogoIcon className='h-12 w-12' />
-            <div className='mt-1 hidden flex-col text-[1.35rem] font-medium leading-[1em] md:flex screenshot:flex'>
+            <div className='mt-1 flex flex-col text-[1.35rem] font-medium leading-[1em] screenshot:flex'>
                 <p className='text-nowrap text-ut-burntorange'>UT Registration</p>
                 <p className='text-ut-burntorange'>
                     Plus{' '}
