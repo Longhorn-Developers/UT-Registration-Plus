@@ -65,6 +65,14 @@ export interface UserScheduleMessages {
     renameSchedule: (data: { scheduleId: string; newName: string }) => string | undefined;
 
     /**
+     * Checks the login status by making a request to the provided URL.
+     *
+     * @param data - The URL to check the login status against.
+     * @returns true if user was already logged into the provided URL, false otherwise
+     */
+    validateLoginStatus: (data: { url: string }) => boolean;
+
+    /**
      * Exports the current schedule to a JSON file for backing up and sharing
      *
      * @param data - Id of schedule that will be exported
