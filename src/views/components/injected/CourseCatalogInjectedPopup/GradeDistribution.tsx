@@ -252,10 +252,10 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                         </Link>
                     </div>
                     {distributions[semester] && !distributions[semester]!.instructorIncluded && (
-                        <div className='mt-3 flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
-                            <Text variant='mini' className='text-theme-red italic!'>
-                                Instructor-specific data is not available for this course
-                                {semester !== 'Aggregate' && ` for ${semester}`}, showing course-wide data instead
+                        <div className='mt-3 flex flex-wrap content-center items-center self-stretch justify-center gap-3 text-center'>
+                            <Text variant='small' className='text-theme-red'>
+                                We couldn&apos;t find {semester !== 'Aggregate' && ` ${semester}`} grades for this
+                                instructor, so here are the grades for all {course.department} {course.number} sections.
                             </Text>
                         </div>
                     )}
