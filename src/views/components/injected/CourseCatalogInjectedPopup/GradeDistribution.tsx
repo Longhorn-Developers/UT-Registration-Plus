@@ -140,7 +140,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             tickWidth: 1,
             tickLength: 10,
             tickColor: '#9CADB7',
-            crosshair: { color: "rgba(214, 210, 196, 0.25)" },
+            crosshair: { color: 'rgba(214, 210, 196, 0.25)' },
             lineColor: '#9CADB7',
         },
         yAxis: {
@@ -173,10 +173,8 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
         credits: { enabled: false },
         accessibility: { enabled: true },
         tooltip: {
-            headerFormat:
-                '<span style="display:block; font-weight:700;">{point.key}</span>',
-            pointFormat:
-                '<span style="display:block; font-weight:500;">{point.y:.0f} Students</span>',
+            headerFormat: '<span style="display:block; font-weight:700;">{point.key}</span>',
+            pointFormat: '<span style="display:block; font-weight:500;">{point.y:.0f} Students</span>',
             shared: true,
             useHTML: true,
             style: {
@@ -186,7 +184,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                 fontSize: '0.88875rem',
                 lineHeight: 'normal',
             },
-            backgroundColor: "white",
+            backgroundColor: 'white',
             borderRadius: 4,
             shadow: {
                 offsetX: 0,
