@@ -6,6 +6,7 @@ import NewSearchLink from '@views/components/injected/NewSearchLink';
 import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from '@views/components/injected/TableHead';
 import TableRow from '@views/components/injected/TableRow/TableRow';
+import { useInteractionStatsCollecting } from '@views/hooks/useInteractionStatsCollecting';
 // import TableSubheading from '@views/components/injected/TableSubheading/TableSubheading';
 import useSchedules from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
@@ -42,6 +43,8 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
         const scrapedRows = ccs.scrape(tableRows, true);
         setRows(scrapedRows);
     }, [support]);
+
+    useInteractionStatsCollecting();
 
     const addRows = (newRows: ScrapedRow[]) => {
         newRows.forEach(row => {
