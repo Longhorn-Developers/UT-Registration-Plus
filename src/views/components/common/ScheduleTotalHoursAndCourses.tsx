@@ -24,36 +24,19 @@ export default function ScheduleTotalHoursAndCourses({
     totalCourses,
 }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div className='flex flex-col gap-1'>
+        <div className='flex flex-col items-start gap-1 whitespace-nowrap'>
             <Text className='w-full truncate text-ut-burntorange normal-case!' variant='h1' as='span'>
-                {scheduleName}
+                {`${scheduleName} `}
             </Text>
-            <div className='flex flex-shrink-0 flex-row items-center gap-2.5 whitespace-nowrap text-theme-black'>
-                <div className='flex flex-row items-center gap-1.25 text-theme-black'>
-                    <Text variant='h3' as='span' className='capitalize screenshot:inline sm:inline'>
-                        {totalHours}
-                    </Text>
-                    <Text
-                        variant='h3'
-                        as='span'
-                        className='capitalize screenshot:inline sm:inline font-all-small-caps!'
-                    >
-                        {totalHours === 1 ? 'HOUR' : 'HOURS'}
-                    </Text>
-                </div>
-                <div className='flex flex-row items-center gap-1.25 text-theme-black'>
-                    <Text variant='h3' as='span' className='capitalize screenshot:inline sm:inline'>
-                        {totalCourses}
-                    </Text>
-                    <Text
-                        variant='h3'
-                        as='span'
-                        className='capitalize screenshot:inline sm:inline font-all-small-caps!'
-                    >
-                        {totalCourses === 1 ? 'COURSE' : 'COURSES'}
-                    </Text>
-                </div>
-            </div>
+            <Text variant='h3' as='div' className='flex flex-row items-center gap-2.5 text-theme-black'>
+                <Text variant='h4' as='span' className='hidden text-ut-black uppercase screenshot:inline sm:inline'>
+                    {totalHours} {totalHours === 1 ? 'Hour' : 'Hours'}
+                </Text>
+
+                <Text variant='h4' as='span' className='hidden text-ut-black uppercase screenshot:inline sm:inline'>
+                    {totalCourses} {totalCourses === 1 ? 'Course' : 'Courses'}
+                </Text>
+            </Text>
         </div>
     );
 }

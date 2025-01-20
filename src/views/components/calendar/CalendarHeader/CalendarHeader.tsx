@@ -27,6 +27,7 @@ import React from 'react';
  */
 
 interface CalendarHeaderProps {
+    sidebarOpen?: boolean;
     onSidebarToggle?: () => void;
 }
 
@@ -34,18 +35,20 @@ interface CalendarHeaderProps {
  * Renders the header component for the calendar.
  * @returns The JSX element representing the calendar header.
  */
-export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps): JSX.Element {
+export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const [activeSchedule] = useSchedules();
 
     return (
-        <div className='flex items-center gap-5 py-5 pl-6'>
-            <Button
-                variant='minimal'
-                icon={Sidebar}
-                color='ut-black'
-                onClick={onSidebarToggle}
-                className='flex-shrink-0 screenshot:hidden'
-            />
+        <div className='min-h-[91px] flex items-center gap-5 bg-red py-5 pl-6'>
+            {!sidebarOpen && (
+                <Button
+                    variant='minimal'
+                    color='theme-black'
+                    onClick={onSidebarToggle}
+                    className='h-fit w-fit screenshot:hidden !p-0'
+                    icon={Sidebar}
+                />
+            )}
             <div className='min-w-[10.9375rem] screenshot:transform-origin-left screenshot:scale-120'>
                 <ScheduleTotalHoursAndCourses
                     scheduleName={activeSchedule.name}
@@ -121,7 +124,10 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                 </div>
                 <Divider className='border-theme-offwhite1' size='1.75rem' orientation='vertical' />
                 <div
-                    className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 items-center justify-end gap-5')}
+                    className={clsx(
+                        styles.secondaryActions,
+                        'min-w-fit flex flex-1 items-center justify-end gap-5 bg-red'
+                    )}
                     role='group'
                 >
                     <Button variant='minimal' color='ut-black' icon={BookmarkSimple}>
