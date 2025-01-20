@@ -1,5 +1,4 @@
 import { Status } from '@shared/types/Course';
-import { getCourseColors } from '@shared/util/colors';
 import type { Meta, StoryObj } from '@storybook/react';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
@@ -31,7 +30,6 @@ const meta = {
         className: ExampleCourse.number,
         status: ExampleCourse.status,
         timeAndLocation: ExampleCourse.schedule.meetings[0]!.getTimeString({ separator: '–' }),
-        colors: getCourseColors('emerald', 500),
     },
 } satisfies Meta<typeof CalendarCourseCell>;
 export default meta;
