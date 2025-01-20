@@ -92,7 +92,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
     }, [resizeObserver]);
 
     return (
-        <div className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite py-5 pl-6 md:overflow-x-hidden'>
+        <div className='flex items-center gap-5 overflow-x-auto overflow-y-hidden py-5 pl-6 md:overflow-x-hidden'>
             <Button
                 variant='minimal'
                 icon={Sidebar}
