@@ -153,7 +153,7 @@ export function getColorwayFromColor(color: HexColor): {
  * @returns An array of [hue (0-360), saturation (0-100), lightness (0-100)]
  * @throws If the hex color cannot be converted to RGB
  */
-const hexToHSL = (hex: HexColor): HSL => {
+export const hexToHSL = (hex: HexColor): HSL => {
     const rgb = hexToRGB(hex);
 
     if (!rgb) {
