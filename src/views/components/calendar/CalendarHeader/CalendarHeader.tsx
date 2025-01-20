@@ -45,13 +45,8 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                 color='ut-black'
                 onClick={onSidebarToggle}
                 className='flex-shrink-0 screenshot:hidden'
-                aria-label='Toggle Sidebar'
             />
-            <div
-                className='min-w-[10.9375rem] screenshot:transform-origin-left screenshot:scale-120'
-                aria-label={`Active schedule: ${activeSchedule.name}, Total hours: ${activeSchedule.hours}, Total courses: ${activeSchedule.courses.length}`}
-                role='group'
-            >
+            <div className='min-w-[10.9375rem] screenshot:transform-origin-left screenshot:scale-120'>
                 <ScheduleTotalHoursAndCourses
                     scheduleName={activeSchedule.name}
                     totalHours={activeSchedule.hours}
@@ -59,30 +54,18 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                 />
             </div>
 
-            <Divider className='border-theme-offwhite1' size='1.75rem' orientation='vertical' aria-hidden='true' />
+            <Divider className='border-theme-offwhite1' size='1.75rem' orientation='vertical' />
             <div className={clsx(styles.cqInline, 'mr-5 flex flex-1 items-center gap-5')}>
                 <div className={clsx(styles.primaryActions, 'flex flex-shrink-0 items-center gap-5')} role='group'>
-                    <Button
-                        variant='minimal'
-                        color='ut-black'
-                        icon={PlusCircle}
-                        className='flex-shrink-0'
-                        aria-label='Quick Add'
-                    >
+                    <Button variant='minimal' color='ut-black' icon={PlusCircle} className='flex-shrink-0'>
                         <Text variant='small'>Quick Add</Text>
                     </Button>
-                    <Button
-                        variant='minimal'
-                        color='ut-black'
-                        icon={SelectionPlus}
-                        className='flex-shrink-0'
-                        aria-label='Add Block'
-                    >
+                    <Button variant='minimal' color='ut-black' icon={SelectionPlus} className='flex-shrink-0'>
                         <Text variant='small'>Add Block</Text>
                     </Button>
                     <DialogProvider>
                         <Menu>
-                            <MenuButton className='h-fit bg-transparent p-0' aria-label='Export Options'>
+                            <MenuButton className='h-fit bg-transparent p-0'>
                                 <Button variant='minimal' color='ut-black' icon={Export} className='flex-shrink-0'>
                                     <Text variant='small'>Export</Text>
                                 </Button>
@@ -107,7 +90,6 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                                         as='button'
                                         variant='small'
                                         className='w-full flex items-center gap-2 rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
-                                        aria-label='Save schedule as PNG'
                                     >
                                         <FilePng className='h-4 w-4' />
                                         Save as .png
@@ -119,7 +101,6 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                                         onClick={saveAsCal}
                                         variant='small'
                                         className='w-full flex items-center gap-2 rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
-                                        aria-label='Save schedule as CAL file'
                                     >
                                         <CalendarDots className='h-4 w-4' />
                                         Save as .cal
@@ -130,7 +111,6 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                                         as='button'
                                         variant='small'
                                         className='w-full flex items-center gap-2 rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
-                                        aria-label='Export Unique IDs'
                                     >
                                         <FileText className='h-4 w-4' />
                                         Export Unique IDs
@@ -140,15 +120,15 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                         </Menu>
                     </DialogProvider>
                 </div>
-                <Divider className='border-theme-offwhite1' size='1.75rem' orientation='vertical' aria-hidden='true' />
+                <Divider className='border-theme-offwhite1' size='1.75rem' orientation='vertical' />
                 <div
                     className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 items-center justify-end gap-5')}
                     role='group'
                 >
-                    <Button variant='minimal' color='ut-black' icon={BookmarkSimple} aria-label='View Bookmarks'>
+                    <Button variant='minimal' color='ut-black' icon={BookmarkSimple}>
                         <Text variant='small'>Bookmarks</Text>
                     </Button>
-                    <Button variant='minimal' color='ut-black' icon={MapPinArea} aria-label='Open UT Map'>
+                    <Button variant='minimal' color='ut-black' icon={MapPinArea}>
                         <Text variant='small'>UT Map</Text>
                     </Button>
                 </div>

@@ -1,15 +1,27 @@
 .cqInline {
     container-type: inline-size;
 
+    @mixin visually-hidden {
+        border: 0;
+        clip: rect(0 0 0 0);
+        height: auto;
+        margin: 0;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+        white-space: nowrap;
+    }
+
     @container (width < 720px) {
         .primaryActions span {
-            display: none;
+            @include visually-hidden;
         }
     }
 
     @container (width < 520px) {
         .secondaryActions span {
-            display: none;
+            @include visually-hidden;
         }
     }
 }
