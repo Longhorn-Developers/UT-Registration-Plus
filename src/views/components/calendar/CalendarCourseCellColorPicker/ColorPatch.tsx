@@ -1,5 +1,4 @@
 import { Check } from '@phosphor-icons/react';
-import { getThemeColorHexByName } from '@shared/util/themeColors';
 import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import React from 'react';
 
