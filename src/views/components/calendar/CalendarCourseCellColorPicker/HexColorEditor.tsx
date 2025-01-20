@@ -27,13 +27,14 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
     const tagColor = pickFontColor(previewColor.slice(1) as `#${string}`);
 
     const [localHexCode, setLocalHexCode] = React.useState(hexCode);
-
-    // Debounced version of setHexCode
     const debouncedSetHexCode = useDebounce((value: string) => setHexCode(value), 500);
 
     React.useEffect(() => {
         debouncedSetHexCode(localHexCode);
-    }, [localHexCode, debouncedSetHexCode]);
+
+        // This is on purpose
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [localHexCode]);
 
     return (
         <>
