@@ -10,7 +10,10 @@ type DebouncedCallback<T extends unknown[]> = (...args: T) => void;
  * @param delay - The delay (in ms) for the function to return.
  * @returns The debounced function, which will run only if the debounced function has not been called in the last (delay) ms.
  */
-export function useDebounce<T extends unknown[]>(func: DebouncedCallback<T>, delay: number = 1000): SomeFunction<T> {
+export function useDebounce<T extends unknown[]>(
+    func: DebouncedCallback<T>,
+    delay: number = 1000
+): DebouncedCallback<T> {
     const timer = useRef<Timer>();
 
     useEffect(
