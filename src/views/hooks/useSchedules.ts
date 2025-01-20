@@ -124,7 +124,7 @@ export async function switchScheduleByName(name: string): Promise<void> {
  * @param color - The new color to set for the course.
  * @throws If the course with the given ID is not found.
  */
-export async function updateCourseColors(courseID: number, primaryColor: `#${string}`) {
+export async function updateCourseColors(courseID: number, primaryColor: HexColor) {
     const activeSchedule = getActiveSchedule();
     const updatedCourseIndex = activeSchedule.courses.findIndex(c => c.uniqueId === courseID);
 
