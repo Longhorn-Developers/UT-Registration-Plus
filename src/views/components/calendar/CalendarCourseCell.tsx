@@ -1,4 +1,4 @@
-import { ClockUser, LockKey, Prohibit } from '@phosphor-icons/react';
+import { ClockUser, LockKey, Palette, Prohibit } from '@phosphor-icons/react';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
@@ -8,6 +8,9 @@ import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
+
+import { Button } from '../common/Button';
+import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellColorPicker';
 
 /**
  * Props for the CalendarCourseCell component.
@@ -172,7 +175,11 @@ export default function CalendarCourseCell({
                                 setSelectedCourse(courseID, dayIndex, startIndex);
                             }
                         }}
-                        icon={PaletteIcon}
+                        icon={Palette}
+                        iconProps={{
+                            fill: colors.secondaryColor,
+                            weight: 'fill',
+                        }}
                         variant='outline'
                         className={clsx(
                             'size-8 border border-white rounded-full !p-1 bg-opacity-100 !hover:enabled:bg-opacity-100 rounded-full shadow-lg shadow-black/20'
