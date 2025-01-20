@@ -1,15 +1,8 @@
+import { CalendarDots, ChatText, FileText, ImageSquare, Minus, Plus, Smiley } from '@phosphor-icons/react';
 import { colorsFlattened } from '@shared/util/themeColors';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@views/components/common/Button';
 import React from 'react';
-
-import AddIcon from '~icons/material-symbols/add';
-import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
-import DescriptionIcon from '~icons/material-symbols/description';
-import ImagePlaceholderIcon from '~icons/material-symbols/image';
-import HappyFaceIcon from '~icons/material-symbols/mood';
-import RemoveIcon from '~icons/material-symbols/remove';
-import ReviewsIcon from '~icons/material-symbols/reviews';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -24,7 +17,7 @@ const meta = {
     // More on argTypes: https://storybook.js.org/docs/api/argtypes
     args: {
         children: 'Button',
-        icon: ImagePlaceholderIcon,
+        icon: ImageSquare,
     },
     argTypes: {
         children: { control: 'text' },
@@ -42,6 +35,62 @@ export const Default: Story = {
     },
 };
 
+export const Small: Story = {
+    // @ts-ignore
+    args: {
+        children: '',
+    },
+    render: props => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <Button {...props} variant='filled' color='ut-black' size='small'>
+                    Button
+                </Button>
+                <Button {...props} variant='outline' color='ut-black' size='small'>
+                    Button
+                </Button>
+                <Button {...props} variant='minimal' color='ut-black' size='small'>
+                    Button
+                </Button>
+            </div>
+            <hr />
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <Button {...props} icon={ImageSquare} variant='filled' color='ut-black' size='small' />
+                <Button {...props} icon={ImageSquare} variant='outline' color='ut-black' size='small' />
+                <Button {...props} icon={ImageSquare} variant='minimal' color='ut-black' size='small' />
+            </div>
+        </div>
+    ),
+};
+
+export const Mini: Story = {
+    // @ts-ignore
+    args: {
+        children: '',
+    },
+    render: props => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <Button {...props} variant='filled' color='ut-black' size='mini'>
+                    Button
+                </Button>
+                <Button {...props} variant='outline' color='ut-black' size='mini'>
+                    Button
+                </Button>
+                <Button {...props} variant='minimal' color='ut-black' size='mini'>
+                    Button
+                </Button>
+            </div>
+            <hr />
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <Button {...props} icon={ImageSquare} variant='filled' color='ut-black' size='mini' />
+                <Button {...props} icon={ImageSquare} variant='outline' color='ut-black' size='mini' />
+                <Button {...props} icon={ImageSquare} variant='minimal' color='ut-black' size='mini' />
+            </div>
+        </div>
+    ),
+};
+
 export const Disabled: Story = {
     args: {
         variant: 'filled',
@@ -57,7 +106,7 @@ export const Grid: Story = {
             <div style={{ display: 'flex', gap: '15px' }}>
                 <Button {...props} variant='filled' color='ut-black' />
                 <Button {...props} variant='outline' color='ut-black' />
-                <Button {...props} variant='single' color='ut-black' />
+                <Button {...props} variant='minimal' color='ut-black' />
             </div>
 
             <hr />
@@ -65,7 +114,7 @@ export const Grid: Story = {
             <div style={{ display: 'flex', gap: '15px' }}>
                 <Button {...props} variant='filled' color='ut-black' disabled />
                 <Button {...props} variant='outline' color='ut-black' disabled />
-                <Button {...props} variant='single' color='ut-black' disabled />
+                <Button {...props} variant='minimal' color='ut-black' disabled />
             </div>
         </div>
     ),
@@ -89,12 +138,12 @@ export const PrettyColors: Story = {
                         <Button {...props} variant='outline' color={color}>
                             Button
                         </Button>
-                        <Button {...props} variant='single' color={color}>
+                        <Button {...props} variant='minimal' color={color}>
                             Button
                         </Button>
                         <Button {...props} variant='filled' color={color} />
                         <Button {...props} variant='outline' color={color} />
-                        <Button {...props} variant='single' color={color} />
+                        <Button {...props} variant='minimal' color={color} />
                     </div>
                 ))}
             </div>
@@ -106,10 +155,10 @@ export const PrettyColors: Story = {
 export const CourseButtons: Story = {
     render: props => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
-            <Button {...props} variant='filled' color='ut-green' icon={AddIcon}>
+            <Button {...props} variant='filled' color='ut-green' icon={Plus}>
                 Add Course
             </Button>
-            <Button {...props} variant='filled' color='theme-red' icon={RemoveIcon}>
+            <Button {...props} variant='filled' color='theme-red' icon={Minus}>
                 Remove Course
             </Button>
         </div>
@@ -129,17 +178,17 @@ export const CourseCatalogActionButtons: Story = {
     },
     render: props => (
         <div style={{ display: 'flex', gap: '15px' }}>
-            <Button {...props} variant='filled' color='ut-burntorange' icon={CalendarMonthIcon} />
-            <Button {...props} variant='outline' color='ut-blue' icon={ReviewsIcon}>
+            <Button {...props} variant='filled' color='ut-burntorange' icon={CalendarDots} />
+            <Button {...props} variant='outline' color='ut-blue' icon={ChatText}>
                 RateMyProf
             </Button>
-            <Button {...props} variant='outline' color='ut-teal' icon={HappyFaceIcon}>
+            <Button {...props} variant='outline' color='ut-teal' icon={Smiley}>
                 CES
             </Button>
-            <Button {...props} variant='outline' color='ut-orange' icon={DescriptionIcon}>
+            <Button {...props} variant='outline' color='ut-orange' icon={FileText}>
                 Past Syllabi
             </Button>
-            <Button {...props} variant='filled' color='ut-green' icon={AddIcon}>
+            <Button {...props} variant='filled' color='ut-green' icon={Plus}>
                 Add Course
             </Button>
         </div>
