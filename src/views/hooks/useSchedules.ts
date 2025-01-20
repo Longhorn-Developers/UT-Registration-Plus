@@ -139,23 +139,19 @@ export async function updateCourseColors(courseID: number, primaryColor: `#${str
         throw new Error(`Course with ID ${courseID} not found`);
     }
 
-    const determineSecondaryColor = (color: HexColor): HexColor => {
-        try {
-            const { colorway: primaryColorWay, index: primaryIndex } = getColorwayFromColor(color);
-            const { secondaryColor } = getCourseColors(primaryColorWay, primaryIndex, 400);
+    let secondaryColor: HexColor;
+    try {
+        const { colorway: primaryColorWay, index: primaryIndex } = getColorwayFromColor(primaryColor);
+        const { secondaryColor: colorFromWay } = getCourseColors(primaryColorWay, primaryIndex, 400);
 
-            if (!secondaryColor) {
-                throw new Error('Secondary color not found');
-            }
-
-            return secondaryColor;
-        } catch (e) {
-            const secondaryColor = getDarkerShade(color, 80);
-            return secondaryColor;
+        if (!colorFromWay) {
+            throw new Error('Secondary color not found');
         }
-    };
 
-    const secondaryColor = determineSecondaryColor(primaryColor);
+        secondaryColor = colorFromWay;
+    } catch (e) {
+        secondaryColor = getDarkerShade(primaryColor, 80);
+    }
 
     updatedCourse.colors.primaryColor = primaryColor;
     updatedCourse.colors.secondaryColor = secondaryColor;
