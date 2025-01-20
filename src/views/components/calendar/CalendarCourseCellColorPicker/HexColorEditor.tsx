@@ -41,7 +41,7 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
                 style={{ backgroundColor: previewColor }}
                 className='h-6.5 w-6.5 flex items-center justify-center rounded-l-1'
             >
-                <Hash className={clsx('h-4 w-4 text-color-white', tagColor)} />
+                <Hash className={clsx('h-5 w-5 text-color-white', tagColor)} />
             </div>
             <div className='h-6.5 w-[53px] flex flex-1 items-center justify-center border-b border-r border-t rounded-br rounded-tr p-1.25'>
                 <input
