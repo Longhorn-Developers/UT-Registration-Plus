@@ -36,8 +36,8 @@ export interface ColorPickerInterface {
     /**
      * Function to check if a course is selected.
      *
-     * @param {number} courseID - The ID of the course.
-     * @returns {boolean} True if the course is selected, false otherwise.
+     * @param courseID - The ID of the course.
+     * @returns True if the course is selected, false otherwise.
      */
     isSelectedCourse: (courseID: number) => boolean;
 

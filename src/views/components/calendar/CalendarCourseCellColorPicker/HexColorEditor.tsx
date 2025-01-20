@@ -1,5 +1,5 @@
-import { isValidHexColor, pickFontColor } from '@shared/util/colors';
 import { Hash } from '@phosphor-icons/react';
+import { isValidHexColor, pickFontColor } from '@shared/util/colors';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import { useDebounce } from '@views/hooks/useDebounce';
 import clsx from 'clsx';

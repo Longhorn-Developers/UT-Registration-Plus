@@ -22,7 +22,7 @@ interface ColorPickerProviderProps {
  * Provides the color picker context to its children.
  *
  * @param props - The properties for the ColorPickerProvider component.
- * @param props.children - The child components that will have access to the color picker context.
+ * @param children - The child components that will have access to the color picker context.
  * @returns The provider component that supplies the color picker context to its children.
  */
 export const ColorPickerProvider = ({ children }: ColorPickerProviderProps) => {
@@ -34,7 +34,7 @@ export const ColorPickerProvider = ({ children }: ColorPickerProviderProps) => {
 /**
  * Custom hook to use the ColorPicker context.
  * Throws an error if used outside of a ColorPickerProvider.
- * @returns {ColorPickerInterface} The color picker context value.
+ * @returns The color picker context value.
  */
 export const useColorPickerContext = () => {
     const context = React.useContext(ColorPickerContext);
