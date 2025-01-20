@@ -38,7 +38,7 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
     const [activeSchedule] = useSchedules();
 
     return (
-        <div className='flex items-center gap-5 overflow-x-auto overflow-y-hidden py-5 pl-6'>
+        <div className='flex items-center gap-5 py-5 pl-6'>
             <Button
                 variant='minimal'
                 icon={Sidebar}
@@ -53,9 +53,8 @@ export default function CalendarHeader({ onSidebarToggle }: CalendarHeaderProps)
                     totalCourses={activeSchedule.courses.length}
                 />
             </div>
-
             <Divider className='border-theme-offwhite1' size='1.75rem' orientation='vertical' />
-            <div className={clsx(styles.cqInline, 'mr-5 flex flex-1 items-center gap-5')}>
+            <div className={clsx(styles.cqInline, 'mr-5 flex flex-1 items-center gap-5 min-w-[380px]')}>
                 <div className={clsx(styles.primaryActions, 'flex flex-shrink-0 items-center gap-5')} role='group'>
                     <Button variant='minimal' color='ut-black' icon={PlusCircle} className='flex-shrink-0'>
                         <Text variant='small'>Quick Add</Text>
