@@ -1,0 +1,15 @@
+.cqInline {
+    container-type: inline-size;
+
+    @container (width < 720px) {
+        .primaryActions span {
+            display: none;
+        }
+    }
+
+    @container (width < 520px) {
+        .secondaryActions span {
+            display: none;
+        }
+    }
+}

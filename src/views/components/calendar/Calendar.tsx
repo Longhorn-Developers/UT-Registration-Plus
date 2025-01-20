@@ -2,7 +2,6 @@ import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import type { Course } from '@shared/types/Course';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
-import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import Divider from '@views/components/common/Divider';
@@ -14,6 +13,7 @@ import { MessageListener } from 'chrome-extension-toolkit';
 import React, { useEffect, useState } from 'react';
 
 import CalendarFooter from './CalendarFooter';
+import CalendarHeader from './CalendarHeader/CalendarHeader';
 import TeamLinks from './TeamLinks';
 
 /**
