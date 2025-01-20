@@ -2,7 +2,7 @@ import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import type { Course } from '@shared/types/Course';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
-import CalendarHeader from '@views/components/calendar/CalendarHeader';
+import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
 import ImportantLinks from '@views/components/calendar/ImportantLinks';
 import Divider from '@views/components/common/Divider';
