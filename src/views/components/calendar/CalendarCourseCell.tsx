@@ -151,7 +151,6 @@ export default function CalendarCourseCell({
             )}
 
             <div
-                ref={colorPickerRef}
                 onClick={e => {
                     e.stopPropagation();
                 }}
@@ -194,6 +193,7 @@ export default function CalendarCourseCell({
 
                     {selectedBlock && (
                         <div
+                            ref={colorPickerRef}
                             className={
                                 startIndex < 21 && !blockData.async
                                     ? 'relative top-0.75 w-max'
