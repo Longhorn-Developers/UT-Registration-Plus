@@ -200,8 +200,19 @@ export function getUnusedColor(
 
     const scheduleCourses = schedule.courses.map(c => ({
         ...c,
-        colorway: getColorwayFromColor(c.colors.primaryColor),
+        colorway: (() => {
+            try {
+                return getColorwayFromColor(c.colors.primaryColor);
+            } catch (error) {
+                // Default to emerald colorway with index 500
+                return {
+                    colorway: 'emerald' as TWColorway,
+                    index: 500 as TWIndex,
+                };
+            }
+        })(),
     }));
+
     const usedColorways = new Set(scheduleCourses.map(c => c.colorway.colorway));
     const availableColorways = new Set(useableColorways.filter(c => !usedColorways.has(c)));
 

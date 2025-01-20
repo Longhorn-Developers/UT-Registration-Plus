@@ -12,7 +12,7 @@ import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
     addCourse({ data, sendResponse }) {
-        addCourse(data.scheduleId, new Course(data.course)).then(sendResponse);
+        addCourse(data.scheduleId, new Course(data.course), data.hasColor ?? false).then(sendResponse);
     },
     removeCourse({ data, sendResponse }) {
         removeCourse(data.scheduleId, new Course(data.course)).then(sendResponse);
