@@ -1,4 +1,4 @@
-import { hexToHSL, isValidHexColor } from '@shared/util/colors';
+import { getLighterShade, hexToHSL, isValidHexColor } from '@shared/util/colors';
 import { describe, expect, it } from 'vitest';
 
 describe('hexToHSL', () => {
@@ -77,5 +77,36 @@ describe('isValidHexColor', () => {
         expect(isValidHexColor('#1234567')).toBe(false);
         expect(isValidHexColor('not a color')).toBe(false);
         expect(isValidHexColor('')).toBe(false);
+    });
+});
+
+describe('getLighterShade', () => {
+    it('should lighten a color by default offset (20%)', () => {
+        const result = getLighterShade('#BF5700');
+        expect(result).toBe('#ff8624');
+    });
+
+    it('should lighten black correctly', () => {
+        const result = getLighterShade('#000000');
+        expect(result).toBe('#333333');
+    });
+
+    it('should not exceed 100% lightness', () => {
+        const result = getLighterShade('#FFFFFF', 20);
+        expect(result).toBe('#ffffff');
+    });
+
+    it('should handle custom offset values', () => {
+        const result = getLighterShade('#BF5700', 40);
+        expect(result).toBe('#ffbe8a');
+    });
+
+    it('should maintain hue while increasing lightness', () => {
+        const result = getLighterShade('#00FF00', 20); // Pure green
+        expect(result.toLowerCase()).toBe('#66ff66');
+    });
+
+    it('should throw error for invalid hex color', () => {
+        expect(() => getLighterShade('#GGGGGG' as any)).toThrow('color: Invalid hex.');
     });
 });

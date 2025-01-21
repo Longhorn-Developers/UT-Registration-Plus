@@ -1,7 +1,7 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { HexColor } from '@shared/types/Color';
 import { UserSchedule } from '@shared/types/UserSchedule';
-import { getColorwayFromColor, getCourseColors, getDarkerShade } from '@shared/util/colors';
+import { getColorwayFromColor, getCourseColors, getDarkerShade, getLighterShade } from '@shared/util/colors';
 import { useEffect, useState } from 'react';
 
 let schedulesCache: UserSchedule[] = [];
@@ -150,7 +150,12 @@ export async function updateCourseColors(courseID: number, primaryColor: HexColo
 
         secondaryColor = colorFromWay;
     } catch (e) {
-        secondaryColor = getDarkerShade(primaryColor, 80);
+        secondaryColor = getDarkerShade(primaryColor, 20);
+
+        // primaryColor is too dark, so get lighter shade
+        if (secondaryColor === '#000000') {
+            secondaryColor = getLighterShade(primaryColor, 35);
+        }
     }
 
     updatedCourse.colors.primaryColor = primaryColor;
