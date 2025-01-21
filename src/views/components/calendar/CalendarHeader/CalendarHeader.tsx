@@ -33,7 +33,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     const [activeSchedule] = useSchedules();
 
     return (
-        <div className='min-h-[91px] flex items-center gap-5 overflow-x-auto overflow-y-hidden py-5 pl-6 md:overflow-x-hidden'>
+        <div className='min-h-[91px] flex items-center gap-5 overflow-x-auto overflow-y-hidden py-5 pl-6'>
             {!sidebarOpen && (
                 <Button
                     variant='minimal'
