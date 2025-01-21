@@ -39,7 +39,7 @@ export default function PopupCourseBlock({
     dragHandleProps,
 }: PopupCourseBlockProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [isCopied, setIsCopied] = useState(false);
+    const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
     const ref = useRef<HTMLDivElement>(null);
 
