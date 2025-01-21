@@ -47,9 +47,9 @@ export function Button({
             ref={ref}
             style={
                 {
-                    ...style,
                     color: colorHex,
                     backgroundColor: `rgb(${colorRgb} / var(--un-bg-opacity)`,
+                    ...style,
                 } satisfies React.CSSProperties
             }
             className={clsx(

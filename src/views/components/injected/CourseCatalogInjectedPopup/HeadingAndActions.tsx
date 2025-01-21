@@ -41,7 +41,7 @@ interface HeadingAndActionProps {
  * @returns The rendered component.
  */
 export default function HeadingAndActions({ course, activeSchedule, onClose }: HeadingAndActionProps): JSX.Element {
-    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule, core } = course;
+    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, core } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
     const isInCalendar = useCalendar();

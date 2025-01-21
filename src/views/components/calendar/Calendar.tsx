@@ -5,6 +5,7 @@ import { CRX_PAGES } from '@shared/types/CRXPages';
 import { openReportWindow } from '@shared/util/openReportWindow';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
+import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
 import ResourceLinks from '@views/components/calendar/ResourceLinks';
 import Divider from '@views/components/common/Divider';
@@ -22,7 +23,6 @@ import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
-import CalendarHeader from './CalendarHeader/CalendarHeader';
 
 /**
  * Calendar page component
@@ -65,7 +65,7 @@ export default function Calendar(): JSX.Element {
                 <div className='h-screen flex overflow-auto'>
                     <div
                         className={clsx(
-                            'py-spacing-6 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-theme-offwhite1 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] duration-300 ease-out-expo transition-property-max-width screenshot:hidden bg-red',
+                            'py-spacing-6 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-theme-offwhite1 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] duration-300 ease-out-expo transition-property-max-width screenshot:hidden',
                             {
                                 'max-w-[20.3125rem] ': showSidebar,
                                 'max-w-0 pointer-events-none': !showSidebar,
@@ -117,14 +117,14 @@ export default function Calendar(): JSX.Element {
                         <CalendarFooter />
                     </div>
 
-                    <div className='h-full min-w-5xl flex flex-grow flex-col overflow-y-auto'>
+                    <div className='h-full flex flex-grow flex-col overflow-y-auto'>
                         <CalendarHeader
                             sidebarOpen={showSidebar}
                             onSidebarToggle={() => {
                                 setShowSidebar(!showSidebar);
                             }}
                         />
-                        <div className='min-h-2xl flex-grow overflow-auto pl-2 pr-4 pt-6 screenshot:min-h-xl'>
+                        <div className='min-h-2xl min-w-5xl flex-grow overflow-auto pl-2 pr-4 pt-6 screenshot:min-h-xl'>
                             <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                         </div>
                         <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
