@@ -44,7 +44,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 />
             )}
 
-            <div className='min-w-[10.9375rem] screenshot:transform-origin-left screenshot:scale-120'>
+            <div className='min-w-[11.5rem] screenshot:transform-origin-left screenshot:scale-120'>
                 <ScheduleTotalHoursAndCourses
                     scheduleName={activeSchedule.name}
                     totalHours={activeSchedule.hours}
