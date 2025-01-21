@@ -1,5 +1,5 @@
 import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd';
-import { DotsSixVertical } from '@phosphor-icons/react';
+import { Copy, DotsSixVertical } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
@@ -98,16 +98,26 @@ export default function PopupCourseBlock({
                 {course.instructors.length > 0 ? <> &ndash; </> : ''}
                 {course.instructors.map(v => v.toString({ format: 'last' })).join('; ')}
             </Text>
-            {enableCourseStatusChips && course.status !== Status.OPEN && (
+            {true && course.status !== Status.OPEN && (
                 <div
                     style={{
                         backgroundColor: colors.secondaryColor,
                     }}
-                    className='ml-1 flex items-center justify-center justify-self-end rounded p-1px text-white'
+                    className='ml-1 flex items-center justify-center justify-self-end rounded p-[3px] text-white'
                 >
-                    <StatusIcon status={course.status} className='h-5 w-5' />
+                    <StatusIcon status={course.status} className='h-6 w-6' />
                 </div>
             )}
+
+            <div
+                className='flex items-center justify-between gap-spacing-3 rounded px-spacing-3 py-spacing-2 text-white'
+                style={{
+                    backgroundColor: colors.secondaryColor,
+                }}
+            >
+                <Copy weight='fill' className='h-5.5 w-5.5 stroke-white text-white' />
+                <span className='font-medium'>{course.uniqueId}</span>
+            </div>
         </div>
     );
 }
