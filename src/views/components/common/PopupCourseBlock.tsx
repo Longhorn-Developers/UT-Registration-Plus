@@ -137,7 +137,7 @@ export default function PopupCourseBlock({
                 <div className='relative h-5.5 w-5.5'>
                     <Check
                         className={clsx(
-                            'absolute size-full  inset-0 text-white transition-all duration-250 ease-in-out',
+                            'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out',
                             isCopied ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
                         )}
                     />
