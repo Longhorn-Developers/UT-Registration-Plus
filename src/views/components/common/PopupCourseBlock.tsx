@@ -79,14 +79,14 @@ export default function PopupCourseBlock({
     const handleCopy = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.stopPropagation();
         const now = Date.now();
-        if (now - lastCopyTime.current < 1500) {
+        if (now - lastCopyTime.current < 500) {
             return;
         }
 
         lastCopyTime.current = now;
-        await navigator.clipboard.writeText(course.uniqueId.toString().padStart(5, '0'));
+        await navigator.clipboard.writeText(formattedUniqueId);
         setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 1500);
+        setTimeout(() => setIsCopied(false), 500);
     };
 
     return (
@@ -150,7 +150,7 @@ export default function PopupCourseBlock({
                     />
                 </div>
                 <Text variant='h2' className='text-base!'>
-                    {course.uniqueId.toString().padStart(5, '0')}
+                    {formattedUniqueId}
                 </Text>
             </Button>
         </div>
