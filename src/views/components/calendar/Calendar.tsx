@@ -5,7 +5,7 @@ import { CRX_PAGES } from '@shared/types/CRXPages';
 import { openReportWindow } from '@shared/util/openReportWindow';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
-import CalendarHeader from '@views/components/calendar/CalendarHeader';
+import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
 import ResourceLinks from '@views/components/calendar/ResourceLinks';
 import Divider from '@views/components/common/Divider';
