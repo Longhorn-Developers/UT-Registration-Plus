@@ -39,7 +39,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 />
             </div>
             <Divider className='self-center screenshot:hidden' size='1.75rem' orientation='vertical' />
-            <div className={clsx(styles.cqInline, 'flex flex-1 gap-5')}>
+            <div className={clsx(styles.cqInline, 'flex flex-1 gap-5 min-w-[320px]')}>
                 <div className={clsx(styles.primaryActions, 'min-w-fit flex gap-5')}>
                     <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
                         Quick Add
