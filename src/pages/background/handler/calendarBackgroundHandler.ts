@@ -29,7 +29,7 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
 
         const openCalendarTabInfo = allTabs.find(tab => tab.url?.startsWith(calendarUrl));
 
-        if (openCalendarTabInfo !== undefined && !OptionsStore.get('alwaysOpenCalendarInNewTab')) {
+        if (openCalendarTabInfo !== undefined && !(await OptionsStore.get('alwaysOpenCalendarInNewTab'))) {
             const tabid = openCalendarTabInfo.tab.id;
 
             await chrome.tabs.update(tabid, { active: true });
