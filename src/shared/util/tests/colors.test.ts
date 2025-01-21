@@ -107,6 +107,6 @@ describe('getLighterShade', () => {
     });
 
     it('should throw error for invalid hex color', () => {
-        expect(() => getLighterShade('#GGGGGG' as any)).toThrow('color: Invalid hex.');
+        expect(() => getLighterShade('#GGGGGG')).toThrow('color: Invalid hex.');
     });
 });
