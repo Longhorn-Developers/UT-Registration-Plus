@@ -152,7 +152,7 @@ export async function updateCourseColors(courseID: number, primaryColor: HexColo
     } catch (e) {
         secondaryColor = getDarkerShade(primaryColor, 20);
 
-        // primaryColor is too dark, so get lighter shade
+        // if primaryColor is too dark, get lighter shade instead
         if (secondaryColor === '#000000') {
             secondaryColor = getLighterShade(primaryColor, 35);
         }
