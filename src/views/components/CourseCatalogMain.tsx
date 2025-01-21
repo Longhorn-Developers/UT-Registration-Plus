@@ -1,3 +1,4 @@
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import AutoLoad from '@views/components/injected/AutoLoad/AutoLoad';
@@ -25,6 +26,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
     const [showPopup, setShowPopup] = useState(false);
+    const [enableScrollToLoad, setEnableScrollToLoad] = useState<boolean>(false);
 
     useEffect(() => {
         populateSearchInputs();
@@ -42,6 +44,10 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
         const scrapedRows = ccs.scrape(tableRows, true);
         setRows(scrapedRows);
     }, [support]);
+
+    useEffect(() => {
+        OptionsStore.get('enableScrollToLoad').then(setEnableScrollToLoad);
+    }, []);
 
     const addRows = (newRows: ScrapedRow[]) => {
         newRows.forEach(row => {
@@ -83,7 +89,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
                 onClose={() => setShowPopup(false)}
                 afterLeave={() => setSelectedCourse(null)}
             />
-            <AutoLoad addRows={addRows} />
+            {enableScrollToLoad && <AutoLoad addRows={addRows} />}
         </ExtensionRoot>
     );
 }
