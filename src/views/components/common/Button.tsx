@@ -10,7 +10,7 @@ interface Props {
     style?: React.CSSProperties;
     variant?: 'filled' | 'outline' | 'minimal';
     size?: 'regular' | 'small' | 'mini';
-    onClick?: () => void;
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     icon?: Icon;
     iconProps?: IconProps;
     disabled?: boolean;
@@ -68,7 +68,7 @@ export function Button({
             )}
             title={title}
             disabled={disabled}
-            onClick={disabled ? undefined : onClick}
+            onClick={disabled ? undefined : e => onClick?.(e)}
         >
             {Icon && <Icon {...iconProps} className={clsx('h-6 w-6', iconProps?.className)} />}
             {!isIconOnly && (
