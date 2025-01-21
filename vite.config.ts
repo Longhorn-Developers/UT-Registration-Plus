@@ -14,6 +14,8 @@ import manifest from './src/manifest';
 import firefoxManifestV3 from './utils/plugins/firefox-manifest';
 import vitePluginRunCommandOnDemand from './utils/plugins/run-command-on-demand';
 
+const BROWSER_TARGET = process.env.BROWSER_TARGET || 'chrome';
+
 const root = resolve(__dirname, 'src');
 const pagesDir = resolve(root, 'pages');
 const assetsDir = resolve(root, 'assets');
