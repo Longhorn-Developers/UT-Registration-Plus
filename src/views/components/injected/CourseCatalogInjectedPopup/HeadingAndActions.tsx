@@ -1,3 +1,15 @@
+import {
+    ArrowUpRight,
+    CalendarDots,
+    ChatText,
+    Check,
+    Copy,
+    FileText,
+    Minus,
+    Plus,
+    Smiley,
+    X,
+} from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
@@ -8,17 +20,8 @@ import Divider from '@views/components/common/Divider';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import { useCalendar } from '@views/contexts/CalendarContext';
-import React from 'react';
-
-import Add from '~icons/material-symbols/add';
-import CalendarMonth from '~icons/material-symbols/calendar-month';
-import CloseIcon from '~icons/material-symbols/close';
-import Copy from '~icons/material-symbols/content-copy';
-import Description from '~icons/material-symbols/description';
-import Mood from '~icons/material-symbols/mood';
-import OpenNewIcon from '~icons/material-symbols/open-in-new';
-import Remove from '~icons/material-symbols/remove';
-import Reviews from '~icons/material-symbols/reviews';
+import clsx from 'clsx';
+import React, { useRef, useState } from 'react';
 
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
@@ -50,15 +53,27 @@ interface HeadingAndActionProps {
  * @returns The rendered component.
  */
 export default function HeadingAndActions({ course, activeSchedule, onClose }: HeadingAndActionProps): JSX.Element {
-    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule, core } = course;
+    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, core } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
     const isInCalendar = useCalendar();
 
+    const [isCopied, setIsCopied] = useState<boolean>(false);
+    const lastCopyTime = useRef<number>(0);
+
     const getInstructorFullName = (instructor: Instructor) => instructor.toString({ format: 'first_last' });
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(formattedUniqueId);
+    const handleCopy = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.stopPropagation();
+        const now = Date.now();
+        if (now - lastCopyTime.current < 500) {
+            return;
+        }
+
+        lastCopyTime.current = now;
+        await navigator.clipboard.writeText(formattedUniqueId);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 500);
     };
 
     const handleOpenRateMyProf = async () => {
@@ -116,11 +131,25 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     <Text variant='h1' className='flex-1 whitespace-nowrap text-theme-black'>
                         ({department} {courseNumber})
                     </Text>
-                    <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
+                    <Button color='ut-burntorange' variant='minimal' onClick={handleCopy}>
+                        <div className='relative h-5.5 w-5.5'>
+                            <Check
+                                className={clsx(
+                                    'absolute size-full inset-0 text-ut-burntorange transition-all duration-250 ease-in-out',
+                                    isCopied ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+                                )}
+                            />
+                            <Copy
+                                className={clsx(
+                                    'absolute size-full inset-0 text-ut-burntorange transition-all duration-250 ease-in-out',
+                                    isCopied ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
+                                )}
+                            />
+                        </div>
                         {formattedUniqueId}
                     </Button>
                     <button className='bg-transparent p-0 text-ut-black btn' onClick={onClose}>
-                        <CloseIcon className='h-7 w-7' />
+                        <X className='h-6 w-6' />
                     </button>
                 </div>
                 <div className='flex items-center gap-2'>
@@ -168,7 +197,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 <Button
                     variant='filled'
                     color='ut-burntorange'
-                    icon={isInCalendar ? OpenNewIcon : CalendarMonth}
+                    icon={isInCalendar ? ArrowUpRight : CalendarDots}
                     onClick={() => {
                         if (isInCalendar) {
                             openNewTab({
@@ -183,7 +212,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 <Button
                     variant='outline'
                     color='ut-blue'
-                    icon={Reviews}
+                    icon={ChatText}
                     onClick={handleOpenRateMyProf}
                     disabled={instructors.length === 0}
                 >
@@ -192,19 +221,19 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 <Button
                     variant='outline'
                     color='ut-teal'
-                    icon={Mood}
+                    icon={Smiley}
                     onClick={handleOpenCES}
                     disabled={instructors.length === 0}
                 >
                     CES
                 </Button>
-                <Button variant='outline' color='ut-orange' icon={Description} onClick={handleOpenPastSyllabi}>
+                <Button variant='outline' color='ut-orange' icon={FileText} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
                 </Button>
                 <Button
                     variant='filled'
                     color={!courseAdded ? 'ut-green' : 'theme-red'}
-                    icon={!courseAdded ? Add : Remove}
+                    icon={!courseAdded ? Plus : Minus}
                     onClick={handleAddOrRemoveCourse}
                 >
                     {!courseAdded ? 'Add Course' : 'Remove Course'}

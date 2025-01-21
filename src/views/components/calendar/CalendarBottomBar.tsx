@@ -1,14 +1,13 @@
+import { CalendarDots, ImageSquare } from '@phosphor-icons/react';
 import type { Course } from '@shared/types/Course';
 import { saveAsCal, saveCalAsPng } from '@views/components/calendar/utils';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
+import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
 import React from 'react';
-
-import CalendarMonthIcon from '~icons/material-symbols/calendar-month';
-import ImageIcon from '~icons/material-symbols/image';
 
 import CalendarCourseBlock from './CalendarCourseCell';
 
@@ -43,33 +42,35 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                             —
                         </Text>
                         <div className='inline-flex gap-2.5'>
-                            {asyncCourseCells.map(block => {
-                                const { courseDeptAndInstr, status, colors, className } = block.componentProps;
-                                return (
-                                    <CalendarCourseBlock
-                                        courseDeptAndInstr={courseDeptAndInstr}
-                                        status={status}
-                                        colors={colors}
-                                        key={courseDeptAndInstr}
-                                        className={clsx(className, 'w-35! h-15!')}
-                                        onClick={() => setCourse(block.course)}
-                                    />
-                                );
-                            })}
+                            <ColorPickerProvider>
+                                {asyncCourseCells.map(block => {
+                                    const { courseDeptAndInstr, status, className } = block.componentProps;
+                                    return (
+                                        <CalendarCourseBlock
+                                            courseDeptAndInstr={courseDeptAndInstr}
+                                            status={status}
+                                            key={courseDeptAndInstr}
+                                            className={clsx(className, 'w-35! h-15!')}
+                                            onClick={() => setCourse(block.course)}
+                                            blockData={block}
+                                        />
+                                    );
+                                })}
+                            </ColorPickerProvider>
                         </div>
                     </>
                 )}
             </div>
             <div className='flex items-center screenshot:hidden'>
                 {displayCourses && <Divider orientation='vertical' size='1rem' className='mx-1.25' />}
-                <Button variant='single' color='ut-black' icon={CalendarMonthIcon} onClick={saveAsCal}>
+                <Button variant='minimal' color='ut-black' icon={CalendarDots} onClick={saveAsCal}>
                     Save as .CAL
                 </Button>
                 <Divider orientation='vertical' size='1rem' className='mx-1.25' />
                 <Button
-                    variant='single'
+                    variant='minimal'
                     color='ut-black'
-                    icon={ImageIcon}
+                    icon={ImageSquare}
                     onClick={() => requestAnimationFrame(() => saveCalAsPng())}
                 >
                     Save as .PNG

@@ -3,6 +3,7 @@ import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
+import { Trash } from '@phosphor-icons/react';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { downloadBlob } from '@shared/util/downloadBlob';
@@ -26,9 +27,8 @@ import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import IconoirGitFork from '~icons/iconoir/git-fork';
-// import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
-import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 
+// import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';;
 import FileUpload from '../common/FileUpload';
 import { useMigrationDialog } from '../common/MigrationDialog';
 // import RefreshIcon from '~icons/material-symbols/refresh';
@@ -90,6 +90,7 @@ export default function Settings(): JSX.Element {
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    const [calendarNewTab, setCalendarNewTab] = useState<boolean>(false);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -122,12 +123,14 @@ export default function Settings(): JSX.Element {
                 enableHighlightConflicts,
                 enableScrollToLoad,
                 enableDataRefreshing,
+                alwaysOpenCalendarInNewTab,
             } = await initSettings();
             setEnableCourseStatusChips(enableCourseStatusChips);
             setShowTimeLocation(enableTimeAndLocationInPopup);
             setHighlightConflicts(enableHighlightConflicts);
             setLoadAllCourses(enableScrollToLoad);
             setEnableDataRefreshing(enableDataRefreshing);
+            setCalendarNewTab(alwaysOpenCalendarInNewTab);
         };
 
         fetchGitHubStats();
@@ -167,6 +170,11 @@ export default function Settings(): JSX.Element {
             // console.log('enableDataRefreshing', newValue);
         });
 
+        const l6 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
+            setCalendarNewTab(newValue);
+            // console.log('alwaysOpenCalendarInNewTab', newValue);
+        });
+
         // Remove listeners when the component is unmounted
         return () => {
             OptionsStore.removeListener(l1);
@@ -174,6 +182,7 @@ export default function Settings(): JSX.Element {
             OptionsStore.removeListener(l3);
             OptionsStore.removeListener(l4);
             OptionsStore.removeListener(l5);
+            OptionsStore.removeListener(l6);
 
             window.removeEventListener('keydown', handleKeyPress);
         };
@@ -260,7 +269,7 @@ export default function Settings(): JSX.Element {
                     UTRP SETTINGS & CREDITS PAGE
                 </Text>
                 <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
-                    <Button variant='single' color='theme-black' onClick={handleChangelogOnClick}>
+                    <Button variant='minimal' color='theme-black' onClick={handleChangelogOnClick}>
                         <IconoirGitFork className='h-6 w-6 text-ut-gray' />
                         <Text variant='small' className='text-ut-gray font-normal'>
                             v{manifest.version} - {process.env.NODE_ENV}
@@ -434,18 +443,34 @@ export default function Settings(): JSX.Element {
                                 <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
                                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Always Open Calendar in New Tab
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>
+                                            Always opens the calendar view in a new tab when navigating to the calendar
+                                            page. May prevent issues where the calendar refuses to open.
+                                        </p>
+                                    </div>
+                                    <SwitchButton
+                                        isChecked={calendarNewTab}
+                                        onChange={() => {
+                                            setCalendarNewTab(!calendarNewTab);
+                                            OptionsStore.set('alwaysOpenCalendarInNewTab', !calendarNewTab);
+                                        }}
+                                    />
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
                                             Reset All Data
                                         </Text>
                                         <p className='text-sm text-gray-600'>
                                             Erases all schedules and courses you have.
                                         </p>
                                     </div>
-                                    <Button
-                                        variant='outline'
-                                        color='theme-red'
-                                        icon={DeleteForeverIcon}
-                                        onClick={handleEraseAll}
-                                    >
+                                    <Button variant='outline' color='theme-red' icon={Trash} onClick={handleEraseAll}>
                                         Erase All
                                     </Button>
                                 </div>

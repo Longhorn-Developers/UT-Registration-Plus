@@ -140,7 +140,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             tickWidth: 1,
             tickLength: 10,
             tickColor: '#9CADB7',
-            crosshair: true,
+            crosshair: { color: extendedColors.theme.offwhite2 },
             lineColor: '#9CADB7',
         },
         yAxis: {
@@ -173,12 +173,24 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
         credits: { enabled: false },
         accessibility: { enabled: true },
         tooltip: {
-            headerFormat: '<span style="font-size:small; font-weight:bold">{point.key}</span><table>',
-            pointFormat:
-                '<td style="color:{black};padding:0;font-size:small; font-weight:bold;"><b>{point.y:.0f} Students</b></td>',
-            footerFormat: '</table>',
+            headerFormat: '<span style="display:block; font-weight:700;">{point.key}</span>',
+            pointFormat: '<span style="display:block; font-weight:500;">{point.y:.0f} Students</span>',
             shared: true,
             useHTML: true,
+            style: {
+                color: 'var(--Other-Colors-UTRP-Black, #1A2024)',
+                textAlign: 'center',
+                fontFamily: 'Roboto Flex, Roboto Flex Local',
+                fontSize: '0.88875rem',
+                lineHeight: 'normal',
+            },
+            backgroundColor: 'white',
+            borderRadius: 4,
+            shadow: {
+                offsetX: 0,
+                offsetY: 1,
+                color: 'rgba(51, 63, 72, 0.30)',
+            },
         },
         plotOptions: {
             bar: { pointPadding: 0.2, borderWidth: 0 },
@@ -252,10 +264,10 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                         </Link>
                     </div>
                     {distributions[semester] && !distributions[semester]!.instructorIncluded && (
-                        <div className='mt-3 flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
-                            <Text variant='mini' className='text-theme-red italic!'>
-                                Instructor-specific data is not available for this course
-                                {semester !== 'Aggregate' && ` for ${semester}`}, showing course-wide data instead
+                        <div className='mt-3 flex flex-wrap content-center items-center self-stretch justify-center gap-3 text-center'>
+                            <Text variant='small' className='text-theme-red'>
+                                We couldn&apos;t find {semester !== 'Aggregate' && ` ${semester}`} grades for this
+                                instructor, so here are the grades for all {course.department} {course.number} sections.
                             </Text>
                         </div>
                     )}

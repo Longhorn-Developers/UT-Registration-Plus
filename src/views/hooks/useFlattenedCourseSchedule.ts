@@ -126,7 +126,12 @@ function processAsyncCourses({
             componentProps: {
                 courseDeptAndInstr,
                 status,
-                colors: course.colors,
+                blockData: {
+                    calendarGridPoint: { dayIndex: -1, startIndex: -1, endIndex: -1 },
+                    componentProps: { courseDeptAndInstr, status, blockData: {} as CalendarGridCourse },
+                    course,
+                    async: true,
+                },
             },
             course,
             async: true,
@@ -170,7 +175,7 @@ function processInPersonMeetings(
             courseDeptAndInstr,
             timeAndLocation,
             status,
-            colors: course.colors,
+            blockData: {} as CalendarGridCourse,
         },
         course,
         async: false,
