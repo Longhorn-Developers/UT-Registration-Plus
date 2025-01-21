@@ -110,8 +110,8 @@ export default function PopupCourseBlock({
             >
                 <DotsSixVertical weight='bold' className='h-6 w-6 text-white' />
             </div>
-            <Text className={clsx('flex-1 py-spacing-5 truncate', fontColor)} variant='h1-course'>
-                <span className='px-0.5 font-450'>{formattedUniqueId}</span> {course.department} {course.number}
+            <Text className={clsx('flex-1 py-spacing-5 truncate ml-spacing-3', fontColor)} variant='h1-course'>
+                {course.department} {course.number}
                 {course.instructors.length > 0 ? <> &ndash; </> : ''}
                 {course.instructors.map(v => v.toString({ format: 'last' })).join('; ')}
             </Text>
