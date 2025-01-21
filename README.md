@@ -200,3 +200,17 @@ Special thanks to the developers and contributors behind these amazing tools and
 -   [Figma Designs](https://www.figma.com/design/8tsCay2FRqctrdcZ3r9Ahw/UTRP) by @IsaDavRod
 -   [Longhorn Developers](https://github.com/Longhorn-Developers) - established in 2024
 -   The UTRP devs, beta testers, and all supporters of the project!
+
+## Activity
+
+![Alt](https://repobeats.axiom.co/api/embed/47930fa3916ac1b475cd63a05948c449eb5ad502.svg "Repobeats analytics image")
+
+## Star History
+
+<a href="https://star-history.com/#Longhorn-Developers/UT-Registration-Plus&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Longhorn-Developers/UT-Registration-Plus&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Longhorn-Developers/UT-Registration-Plus&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Longhorn-Developers/UT-Registration-Plus&type=Date" />
+ </picture>
+</a>
