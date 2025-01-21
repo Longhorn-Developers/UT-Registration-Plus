@@ -14,7 +14,7 @@ export async function validateLoginStatus(url: string) {
         // Check if the response is redirecting to a login page or returning a 401/403
         if (response.redirected || response.status === 401 || response.status === 403) {
             // User is not logged in
-            chrome.tabs.create({ url });
+            browser.tabs.create({ url });
             return false;
         }
 

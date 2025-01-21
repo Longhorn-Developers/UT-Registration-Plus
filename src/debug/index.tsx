@@ -3,7 +3,7 @@ import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
-const manifest = chrome.runtime.getManifest();
+const manifest = browser.runtime.getManifest();
 
 /**
  * Handles editing the storage for a specific area.
@@ -12,7 +12,7 @@ const manifest = chrome.runtime.getManifest();
  * @returns A function that accepts changes and sets them in the storage.
  */
 const handleEditStorage = (areaName: 'local' | 'sync' | 'session') => (changes: Record<string, unknown>) => {
-    chrome.storage[areaName].set(changes);
+    browser.storage[areaName].set(changes);
 };
 
 interface JSONEditorProps {
@@ -91,22 +91,26 @@ function DevDashboard() {
     }, []);
 
     useEffect(() => {
-        chrome.storage.local.get(null, result => {
+        // Chrome uses callbacks while Firefox uses promises
+        // browser.storage.local.get(null, result => {
+        //     setLocalStorage(result);
+        // });
+        browser.storage.local.get(null).then(result => {
             setLocalStorage(result);
         });
 
-        chrome.storage.sync.get(null, result => {
+        browser.storage.sync.get(null).then(result => {
             setSyncStorage(result);
         });
 
-        chrome.storage.session.get(null, result => {
+        browser.storage.session.get(null).then(result => {
             setSessionStorage(result);
         });
     }, []);
 
-    // listen for changes to the chrome storage to update the local storage state displayed in the dashboard
+    // listen for changes to the browser storage to update the local storage state displayed in the dashboard
     useEffect(() => {
-        const onChanged = (changes: chrome.storage.StorageChange, areaName: chrome.storage.AreaName) => {
+        const onChanged = (changes: browser.storage.StorageChange, areaName: string) => {
             let copy: Record<string, unknown> = {};
 
             if (areaName === 'local') {
@@ -127,15 +131,19 @@ function DevDashboard() {
             if (areaName === 'sync') {
                 setSyncStorage(copy);
             }
-            if (areaName === 'session') {
-                setSessionStorage(copy);
+
+            // Chrome only
+            if (process.env.BROWSER_TARGET === 'chrome') {
+                if (areaName === 'session') {
+                    setSessionStorage(copy);
+                }
             }
         };
 
-        chrome.storage.onChanged.addListener(onChanged);
+        browser.storage.onChanged.addListener(onChanged);
 
         return () => {
-            chrome.storage.onChanged.removeListener(onChanged);
+            browser.storage.onChanged.removeListener(onChanged);
         };
     }, [localStorage, syncStorage, sessionStorage]);
 

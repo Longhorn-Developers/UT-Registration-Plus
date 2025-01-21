@@ -7,7 +7,7 @@ export default interface TabManagementMessages {
      *
      * @param data - The URL to open
      */
-    openNewTab: (data: { url: string }) => chrome.tabs.Tab;
+    openNewTab: (data: { url: string }) => browser.tabs.Tab;
 
     /**
      * Gets the ID of the current tab (the tab that sent the message)

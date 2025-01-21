@@ -11,7 +11,7 @@ interface IExtensionStore {
 }
 
 export const ExtensionStore = createLocalStore<IExtensionStore>({
-    version: chrome.runtime.getManifest().version,
+    version: browser.runtime.getManifest().version,
     lastUpdate: Date.now(),
 });
 

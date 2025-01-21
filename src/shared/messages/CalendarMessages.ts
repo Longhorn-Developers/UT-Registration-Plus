@@ -4,7 +4,7 @@ interface CalendarBackgroundMessages {
      *
      * @param data - The unique id of the course to open the calendar page for (optional)
      */
-    switchToCalendarTab: (data: { uniqueId?: number }) => chrome.tabs.Tab;
+    switchToCalendarTab: (data: { uniqueId?: number }) => browser.tabs.Tab;
 }
 
 interface CalendarTabMessages {
@@ -13,7 +13,7 @@ interface CalendarTabMessages {
      *
      * @param data - The unique id of the course to open on the calendar page
      */
-    openCoursePopup: (data: { uniqueId: number }) => chrome.tabs.Tab;
+    openCoursePopup: (data: { uniqueId: number }) => browser.tabs.Tab;
 }
 
 export type { CalendarBackgroundMessages, CalendarTabMessages };

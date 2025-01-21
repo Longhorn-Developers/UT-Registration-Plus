@@ -39,7 +39,7 @@ const socialLinks: SocialLink[] = [
  * @returns A promise that resolves when the options page is opened.
  */
 const handleOpenOptions = async (): Promise<void> => {
-    const url = chrome.runtime.getURL('/options.html');
+    const url = browser.runtime.getURL('/options.html');
     await openTabFromContentScript(url);
 };
 

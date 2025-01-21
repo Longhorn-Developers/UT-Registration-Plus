@@ -7,7 +7,7 @@ import { CRX_PAGES } from '@shared/types/CRXPages';
 import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const getAllTabInfos = async () => {
-    const openTabs = (await chrome.tabs.query({})).filter((tab): tab is TabWithId => tab.id !== undefined);
+    const openTabs = (await browser.tabs.query({})).filter((tab): tab is TabWithId => tab.id !== undefined);
     const results = await Promise.allSettled(openTabs.map(tab => tabs.getTabInfo(undefined, tab.id)));
 
     type TabInfo = PromiseFulfilledResult<Awaited<ReturnType<typeof tabs.getTabInfo>>>;
@@ -23,7 +23,7 @@ const getAllTabInfos = async () => {
 const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
     async switchToCalendarTab({ data, sendResponse }) {
         const { uniqueId } = data;
-        const calendarUrl = chrome.runtime.getURL(CRX_PAGES.CALENDAR);
+        const calendarUrl = browser.runtime.getURL(CRX_PAGES.CALENDAR);
 
         const allTabs = await getAllTabInfos();
 
@@ -32,8 +32,10 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
         if (openCalendarTabInfo !== undefined && !(await OptionsStore.get('alwaysOpenCalendarInNewTab'))) {
             const tabid = openCalendarTabInfo.tab.id;
 
-            await chrome.tabs.update(tabid, { active: true });
-            await chrome.windows.update(openCalendarTabInfo.tab.windowId, { focused: true, drawAttention: true });
+            await browser.tabs.update(tabid, { active: true });
+            if (openCalendarTabInfo.tab.windowId !== undefined) {
+                await browser.windows.update(openCalendarTabInfo.tab.windowId, { focused: true, drawAttention: true });
+            }
             if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, tabid);
 
             sendResponse(openCalendarTabInfo.tab);

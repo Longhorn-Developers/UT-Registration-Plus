@@ -13,7 +13,7 @@ const tabManagementHandler: MessageHandler<TabManagementMessages> = {
     },
     removeTab({ data, sendResponse }) {
         const { tabId } = data;
-        chrome.tabs.remove(tabId).then(sendResponse);
+        browser.tabs.remove(tabId).then(sendResponse);
     },
 };
 

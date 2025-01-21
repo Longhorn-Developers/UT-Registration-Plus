@@ -26,7 +26,7 @@ export default function ReportIssueMain(): JSX.Element {
                 message: feedback || 'No feedback provided',
                 email,
                 tags: {
-                    version: chrome.runtime.getManifest().version,
+                    version: browser.runtime.getManifest().version,
                 },
             },
             {

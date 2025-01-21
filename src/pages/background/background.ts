@@ -18,7 +18,7 @@ onServiceWorkerAlive();
  * will be triggered on either install or update
  * (will also be triggered on a user's sync'd browsers (on other devices)))
  */
-chrome.runtime.onInstalled.addListener(details => {
+browser.runtime.onInstalled.addListener(details => {
     switch (details.reason) {
         case 'install':
             onInstall();
@@ -32,16 +32,16 @@ chrome.runtime.onInstalled.addListener(details => {
 });
 
 // migration/login logic
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
     // console.log(changeInfo);
     if (changeInfo.url === 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/') {
         function openPopupAction() {
-            chrome.tabs.onActivated.removeListener(openPopupAction);
-            chrome.action.openPopup();
+            browser.tabs.onActivated.removeListener(openPopupAction);
+            browser.action.openPopup();
         }
 
-        chrome.tabs.onActivated.addListener(openPopupAction);
-        await chrome.tabs.remove(tabId);
+        browser.tabs.onActivated.addListener(openPopupAction);
+        await browser.tabs.remove(tabId);
     }
 });
 

@@ -43,7 +43,7 @@ export default function Calendar(): JSX.Element {
                 setCourse(course);
                 setShowPopup(true);
 
-                const currentTab = await chrome.tabs.getCurrent();
+                const currentTab = await browser.tabs.getCurrent();
                 if (currentTab === undefined) return;
                 sendResponse(currentTab);
             },

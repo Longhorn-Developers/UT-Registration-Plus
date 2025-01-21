@@ -38,7 +38,7 @@ import Preview from './Preview';
 const DISPLAY_PREVIEWS = false;
 const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS ? 'w-1/2 space-y-4' : 'flex-grow space-y-4';
 
-const manifest = chrome.runtime.getManifest();
+const manifest = browser.runtime.getManifest();
 const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
 
 const gitHubStatsService = new GitHubStatsService();

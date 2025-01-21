@@ -10,11 +10,11 @@ export async function openDebugTab() {
             DevStore.get('wasDebugTabVisible'),
         ]);
 
-        const isAlreadyOpen = (await chrome.tabs.query({})).some(tab => tab.id === debugTabId);
+        const isAlreadyOpen = (await browser.tabs.query({})).some(tab => tab.id === debugTabId);
         if (isAlreadyOpen) return;
 
-        const tab = await chrome.tabs.create({
-            url: chrome.runtime.getURL('debug.html'),
+        const tab = await browser.tabs.create({
+            url: browser.runtime.getURL('debug.html'),
             active: wasDebugTabVisible,
             pinned: true,
             index: 0,

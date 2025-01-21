@@ -9,7 +9,7 @@ const CESHandler: MessageHandler<CESMessage> = {
         const { instructorFirstName, instructorLastName } = data;
         openNewTab(CESFall2023Url).then(tab => {
             const instructorFirstAndLastName = [instructorFirstName, instructorLastName];
-            chrome.scripting.executeScript({
+            browser.scripting.executeScript({
                 target: { tabId: tab.id },
                 func: (...instructorFirstAndLastName: string[]) => {
                     const inputElement = document.getElementById(

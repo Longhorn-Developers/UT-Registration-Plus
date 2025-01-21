@@ -103,7 +103,7 @@ export default defineConfig({
                     return {
                         code: code.replace(
                             /(['"])(\/public\/.*?)(['"])/g,
-                            (_, quote1, path, quote2) => `chrome.runtime.getURL(${quote1}${path}${quote2})`
+                            (_, quote1, path, quote2) => `browser.runtime.getURL(${quote1}${path}${quote2})`
                         ),
                         map: null,
                     };
@@ -118,7 +118,7 @@ export default defineConfig({
                     return {
                         code: code.replace(
                             /(['"])(__VITE_ASSET__.*?__)(['"])/g,
-                            (_, quote1, path, quote2) => `chrome.runtime.getURL(${quote1}${path}${quote2})`
+                            (_, quote1, path, quote2) => `browser.runtime.getURL(${quote1}${path}${quote2})`
                         ),
                         map: null,
                     };
@@ -135,7 +135,7 @@ export default defineConfig({
                         code: code.replace(
                             /url\((.*?)\)/g,
                             (_, path) =>
-                                `url(\\"" + chrome.runtime.getURL(${path
+                                `url(\\"" + browser.runtime.getURL(${path
                                     .replaceAll(`\\"`, `"`)
                                     .replace(/public\//, '')}) + "\\")`
                         ),
