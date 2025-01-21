@@ -9,7 +9,7 @@ export interface UserScheduleMessages {
      *
      * @param data - The schedule id and course to add
      */
-    addCourse: (data: { scheduleId: string; course: Course }) => void;
+    addCourse: (data: { scheduleId: string; course: Course; hasColor?: boolean }) => void;
 
     /**
      * Adds a course by URL

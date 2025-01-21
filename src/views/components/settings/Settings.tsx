@@ -3,6 +3,7 @@ import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
+import { Trash } from '@phosphor-icons/react';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { downloadBlob } from '@shared/util/downloadBlob';
@@ -26,9 +27,8 @@ import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import IconoirGitFork from '~icons/iconoir/git-fork';
-// import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
-import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 
+// import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';;
 import FileUpload from '../common/FileUpload';
 import { useMigrationDialog } from '../common/MigrationDialog';
 // import RefreshIcon from '~icons/material-symbols/refresh';
@@ -260,7 +260,7 @@ export default function Settings(): JSX.Element {
                     UTRP SETTINGS & CREDITS PAGE
                 </Text>
                 <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
-                    <Button variant='single' color='theme-black' onClick={handleChangelogOnClick}>
+                    <Button variant='minimal' color='theme-black' onClick={handleChangelogOnClick}>
                         <IconoirGitFork className='h-6 w-6 text-ut-gray' />
                         <Text variant='small' className='text-ut-gray font-normal'>
                             v{manifest.version} - {process.env.NODE_ENV}
@@ -440,12 +440,7 @@ export default function Settings(): JSX.Element {
                                             Erases all schedules and courses you have.
                                         </p>
                                     </div>
-                                    <Button
-                                        variant='outline'
-                                        color='theme-red'
-                                        icon={DeleteForeverIcon}
-                                        onClick={handleEraseAll}
-                                    >
+                                    <Button variant='outline' color='theme-red' icon={Trash} onClick={handleEraseAll}>
                                         Erase All
                                     </Button>
                                 </div>
