@@ -149,7 +149,9 @@ export default function PopupCourseBlock({
                         )}
                     />
                 </div>
-                <span className='font-medium text-base!'>{course.uniqueId.toString().padStart(5, '0')}</span>
+                <Text variant='h2' className='text-base!'>
+                    {course.uniqueId.toString().padStart(5, '0')}
+                </Text>
             </Button>
         </div>
     );
