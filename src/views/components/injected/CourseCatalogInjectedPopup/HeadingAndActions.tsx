@@ -41,7 +41,7 @@ interface HeadingAndActionProps {
  * @returns The rendered component.
  */
 export default function HeadingAndActions({ course, activeSchedule, onClose }: HeadingAndActionProps): JSX.Element {
-    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule, core } = course;
+    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, core } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
     const isInCalendar = useCalendar();
@@ -107,7 +107,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     <Text variant='h1' className='flex-1 whitespace-nowrap text-theme-black'>
                         ({department} {courseNumber})
                     </Text>
-                    <Button color='ut-burntorange' variant='single' icon={Copy} onClick={handleCopy}>
+                    <Button color='ut-burntorange' variant='minimal' icon={Copy} onClick={handleCopy}>
                         {formattedUniqueId}
                     </Button>
                     <button className='bg-transparent p-0 text-ut-black btn' onClick={onClose}>

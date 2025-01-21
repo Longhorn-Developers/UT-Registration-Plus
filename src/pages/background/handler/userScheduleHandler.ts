@@ -8,11 +8,12 @@ import renameSchedule from '@pages/background/lib/renameSchedule';
 import switchSchedule from '@pages/background/lib/switchSchedule';
 import type { UserScheduleMessages } from '@shared/messages/UserScheduleMessages';
 import { Course } from '@shared/types/Course';
+import { validateLoginStatus } from '@shared/util/checkLoginStatus';
 import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
     addCourse({ data, sendResponse }) {
-        addCourse(data.scheduleId, new Course(data.course)).then(sendResponse);
+        addCourse(data.scheduleId, new Course(data.course), data.hasColor ?? false).then(sendResponse);
     },
     removeCourse({ data, sendResponse }) {
         removeCourse(data.scheduleId, new Course(data.course)).then(sendResponse);
@@ -40,6 +41,9 @@ const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
         })
             .then(res => (response === 'json' ? res.json() : res.text()))
             .then(sendResponse);
+    },
+    validateLoginStatus({ data, sendResponse }) {
+        validateLoginStatus(data.url).then(sendResponse);
     },
     exportSchedule({ data, sendResponse }) {
         exportSchedule(data.scheduleId).then(sendResponse);

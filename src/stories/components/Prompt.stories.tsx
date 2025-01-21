@@ -56,10 +56,10 @@ export const AreYouSure: StoryObj<PromptDialogProps> = {
             </Text>
         ),
         children: [
-            <Button key='yes' variant='single' color='ut-burntorange'>
+            <Button key='yes' variant='minimal' color='ut-burntorange'>
                 Yes
             </Button>,
-            <Button key='no' variant='single' color='ut-black'>
+            <Button key='no' variant='minimal' color='ut-black'>
                 No
             </Button>,
         ],
@@ -76,7 +76,7 @@ export const YouHave10ActiveSchedules: StoryObj<PromptDialogProps> = {
             </Text>
         ),
         children: [
-            <Button key='yes' variant='single' color='ut-black'>
+            <Button key='yes' variant='minimal' color='ut-black'>
                 I understand
             </Button>,
         ],
@@ -94,10 +94,10 @@ export const WelcomeToUTRPV2: StoryObj<PromptDialogProps> = {
             </Text>
         ),
         children: [
-            <Button key='migrate' variant='single' color='ut-black'>
+            <Button key='migrate' variant='minimal' color='ut-black'>
                 Don&apos;t Migrate
             </Button>,
-            <Button key='start-fresh' variant='single' color='ut-burntorange'>
+            <Button key='start-fresh' variant='minimal' color='ut-burntorange'>
                 Migrate
             </Button>,
         ],

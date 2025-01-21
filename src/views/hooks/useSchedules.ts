@@ -1,5 +1,7 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import type { HexColor } from '@shared/types/Color';
 import { UserSchedule } from '@shared/types/UserSchedule';
+import { getColorwayFromColor, getCourseColors, getDarkerShade } from '@shared/util/colors';
 import { useEffect, useState } from 'react';
 
 let schedulesCache: UserSchedule[] = [];
@@ -89,7 +91,6 @@ export async function replaceSchedule(oldSchedule: UserSchedule, newSchedule: Us
     oldIndex = oldIndex !== -1 ? oldIndex : 0;
     schedules[oldIndex] = newSchedule;
     await UserScheduleStore.set('schedules', schedules);
-    console.log('schedule replaced');
 }
 
 /**
@@ -114,4 +115,47 @@ export async function switchScheduleByName(name: string): Promise<void> {
     const schedules = await UserScheduleStore.get('schedules');
     const activeIndex = schedules.findIndex(s => s.name === name);
     await UserScheduleStore.set('activeIndex', activeIndex);
+}
+
+/**
+ * Updates the color of a course in the active schedule.
+ *
+ * @param courseID - The ID of the course to update.
+ * @param color - The new color to set for the course.
+ * @throws If the course with the given ID is not found.
+ */
+export async function updateCourseColors(courseID: number, primaryColor: HexColor) {
+    const activeSchedule = getActiveSchedule();
+    const updatedCourseIndex = activeSchedule.courses.findIndex(c => c.uniqueId === courseID);
+
+    if (updatedCourseIndex === -1) {
+        throw new Error(`Course with ID ${courseID} not found`);
+    }
+
+    const newSchedule = new UserSchedule(activeSchedule);
+    const updatedCourse = newSchedule.courses[updatedCourseIndex];
+
+    if (!updatedCourse) {
+        throw new Error(`Course with ID ${courseID} not found`);
+    }
+
+    let secondaryColor: HexColor;
+    try {
+        const { colorway: primaryColorWay, index: primaryIndex } = getColorwayFromColor(primaryColor);
+        const { secondaryColor: colorFromWay } = getCourseColors(primaryColorWay, primaryIndex, 400);
+
+        if (!colorFromWay) {
+            throw new Error('Secondary color not found');
+        }
+
+        secondaryColor = colorFromWay;
+    } catch (e) {
+        secondaryColor = getDarkerShade(primaryColor, 80);
+    }
+
+    updatedCourse.colors.primaryColor = primaryColor;
+    updatedCourse.colors.secondaryColor = secondaryColor;
+    newSchedule.courses[updatedCourseIndex] = updatedCourse;
+
+    await replaceSchedule(activeSchedule, newSchedule);
 }

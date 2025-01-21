@@ -73,7 +73,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
             // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <>
-                    <Button variant='single' color='ut-black' onClick={close}>
+                    <Button variant='minimal' color='ut-black' onClick={close}>
                         Cancel
                     </Button>
                     <Button
@@ -92,23 +92,27 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     };
 
     return (
-        <div className='rounded bg-white'>
-            <li className='w-full flex cursor-pointer items-center text-ut-burntorange'>
-                <div className='h-full cursor-move focusable' {...dragHandleProps}>
+        <div className='h-7.5 rounded bg-white'>
+            <li className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
+                <div className='flex cursor-move items-center justify-center focusable' {...dragHandleProps}>
                     <DotsSixVertical
                         weight='bold'
                         className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400'
                     />
                 </div>
+
                 <div className='group relative flex flex-1 items-center overflow-x-hidden'>
                     <div
-                        className='group/circle flex flex-grow items-center gap-1.5 overflow-x-hidden'
+                        className='group/circle flex flex-grow items-center gap-spacing-3 overflow-x-hidden'
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         {isActive ? (
-                            <RadioButton className='h-7.5 w-7.5 btn-transition active:scale-95' weight='fill' />
+                            <RadioButton
+                                className='h-7.5 w-7.5 shrink-0 btn-transition active:scale-95'
+                                weight='fill'
+                            />
                         ) : (
-                            <Circle className='h-7.5 w-7.5 btn-transition active:scale-95' />
+                            <Circle className='h-7.5 w-7.5 shrink-0 btn-transition active:scale-95' />
                         )}
                         {isEditing && (
                             <Text
