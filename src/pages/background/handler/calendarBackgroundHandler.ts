@@ -2,6 +2,8 @@ import type { TabWithId } from '@background/util/openNewTab';
 import openNewTab from '@background/util/openNewTab';
 import { tabs } from '@shared/messages';
 import type { CalendarBackgroundMessages } from '@shared/messages/CalendarMessages';
+import { OptionsStore } from '@shared/storage/OptionsStore';
+import { CRX_PAGES } from '@shared/types/CRXPages';
 import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const getAllTabInfos = async () => {
@@ -21,13 +23,13 @@ const getAllTabInfos = async () => {
 const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
     async switchToCalendarTab({ data, sendResponse }) {
         const { uniqueId } = data;
-        const calendarUrl = chrome.runtime.getURL(`calendar.html`);
+        const calendarUrl = chrome.runtime.getURL(CRX_PAGES.CALENDAR);
 
         const allTabs = await getAllTabInfos();
 
         const openCalendarTabInfo = allTabs.find(tab => tab.url?.startsWith(calendarUrl));
 
-        if (openCalendarTabInfo !== undefined) {
+        if (openCalendarTabInfo !== undefined && !OptionsStore.get('alwaysOpenCalendarInNewTab')) {
             const tabid = openCalendarTabInfo.tab.id;
 
             await chrome.tabs.update(tabid, { active: true });
