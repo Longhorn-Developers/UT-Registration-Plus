@@ -1,5 +1,5 @@
 import { GearSix } from '@phosphor-icons/react';
-import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
+import { handleOpenOptions } from '@shared/util/openOptionsPage';
 import React from 'react';
 
 import DiscordIcon from '~icons/bi/discord';
@@ -33,15 +33,6 @@ const socialLinks: SocialLink[] = [
         url: 'https://www.linkedin.com/company/longhorn-developers/posts/?feedView=all',
     },
 ];
-
-/**
- * Opens the options page in a new tab.
- * @returns A promise that resolves when the options page is opened.
- */
-const handleOpenOptions = async (): Promise<void> => {
-    const url = browser.runtime.getURL('/options.html');
-    await openTabFromContentScript(url);
-};
 
 /**
  * The footer section of the calendar's sidebar

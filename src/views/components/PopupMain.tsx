@@ -4,6 +4,7 @@ import { CalendarDots, Flag, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { handleOpenOptions } from '@shared/util/openOptionsPage';
 import { openReportWindow } from '@shared/util/openReportWindow';
 import Divider from '@views/components/common/Divider';
 import List from '@views/components/common/List';
@@ -72,11 +73,6 @@ export default function PopupMain(): JSX.Element {
             splashText[randomIndex] ?? 'If you are seeing this, something has gone horribly wrong behind the scenes.'
         );
     }, []);
-
-    const handleOpenOptions = async () => {
-        const url = browser.runtime.getURL('/options.html');
-        background.openNewTab({ url });
-    };
 
     const handleCalendarOpenOnClick = async () => {
         await background.switchToCalendarTab({});
