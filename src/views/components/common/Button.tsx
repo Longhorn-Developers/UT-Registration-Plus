@@ -68,7 +68,7 @@ export function Button({
             )}
             title={title}
             disabled={disabled}
-            onClick={disabled ? undefined : e => onClick?.(e)}
+            onClick={disabled ? undefined : onClick}
         >
             {Icon && <Icon {...iconProps} className={clsx('h-6 w-6', iconProps?.className)} />}
             {!isIconOnly && (
