@@ -1,7 +1,20 @@
-import { BookmarkSimple, Export, MapPinArea, PlusCircle, SelectionPlus, Sidebar } from '@phosphor-icons/react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import {
+    BookmarkSimple,
+    CalendarDots,
+    Export,
+    FilePng,
+    FileTxt,
+    MapPinArea,
+    PlusCircle,
+    SelectionPlus,
+    Sidebar,
+} from '@phosphor-icons/react';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
+import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import Divider from '@views/components/common/Divider';
+import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
@@ -47,9 +60,44 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     <Button color='ut-black' size='small' variant='minimal' icon={SelectionPlus}>
                         Block
                     </Button>
-                    <Button color='ut-black' size='small' variant='minimal' icon={Export}>
-                        Export
-                    </Button>
+                    <DialogProvider>
+                        <Menu>
+                            <MenuButton className='bg-transparent'>
+                                <Button color='ut-black' size='small' variant='minimal' icon={Export}>
+                                    Export
+                                </Button>
+                            </MenuButton>
+                            <MenuItems
+                                as={ExtensionRootWrapper}
+                                className={clsx([
+                                    styleResetClass,
+                                    'mt-spacing-3',
+                                    'min-w-fit w-fit cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite focus:outline-none',
+                                    'data-[closed]:(opacity-0 scale-95)',
+                                    'data-[enter]:(ease-out-expo duration-150)',
+                                    'data-[leave]:(ease-out duration-50)',
+                                ])}
+                                transition
+                                anchor='bottom start'
+                            >
+                                <MenuItem>
+                                    <Button color='ut-black' size='small' variant='minimal' icon={FilePng}>
+                                        Save as .png
+                                    </Button>
+                                </MenuItem>
+                                <MenuItem>
+                                    <Button color='ut-black' size='small' variant='minimal' icon={CalendarDots}>
+                                        Save as .cal
+                                    </Button>
+                                </MenuItem>
+                                <MenuItem>
+                                    <Button color='ut-black' size='small' variant='minimal' icon={FileTxt}>
+                                        Export Unique IDs
+                                    </Button>
+                                </MenuItem>
+                            </MenuItems>
+                        </Menu>
+                    </DialogProvider>
                 </div>
                 <Divider className='self-center screenshot:hidden' size='1.75rem' orientation='vertical' />
                 <div className={clsx(styles.secondaryActions, 'mr-5 min-w-fit flex flex-1 justify-end gap-5')}>
