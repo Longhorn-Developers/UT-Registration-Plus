@@ -203,7 +203,7 @@ Special thanks to the developers and contributors behind these amazing tools and
 
 ## Activity
 
-![Alt](https://repobeats.axiom.co/api/embed/47930fa3916ac1b475cd63a05948c449eb5ad502.svg "Repobeats analytics image")
+![UT-Registration-Plus Activity](https://repobeats.axiom.co/api/embed/47930fa3916ac1b475cd63a05948c449eb5ad502.svg "UT-Registration-Plus Repobeats analytics image")
 
 ## Star History
 
