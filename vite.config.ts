@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
+import { execSync } from 'child_process';
 import { resolve } from 'path';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
@@ -13,8 +14,12 @@ import manifest from './src/manifest';
 // import browserExtensionManifestPlugin from './utils/plugins/browser-extension-manifest';
 import firefoxManifestV3 from './utils/plugins/firefox-manifest';
 import vitePluginRunCommandOnDemand from './utils/plugins/run-command-on-demand';
+import { buildLogger } from './utils/plugins/vite-build-logger';
 
 const BROWSER_TARGET = process.env.BROWSER_TARGET || 'chrome';
+
+// Set browser target environment variable default
+process.env.BROWSER_TARGET = BROWSER_TARGET;
 
 const root = resolve(__dirname, 'src');
 const pagesDir = resolve(root, 'pages');
@@ -170,6 +175,23 @@ export default defineConfig({
             // geckoId: 'utrp-admin@lhd.org',
         }),
         // browserExtensionManifestPlugin(),
+        buildLogger({
+            includeEnvVars: [
+                'VITE_PACKAGE_VERSION',
+                'NODE_ENV',
+                'BROWSER_TARGET',
+                'PROD',
+                'VITE_SENTRY_ENVIRONMENT',
+                'VITE_BETA_BUILD',
+            ],
+            includeTimestamp: true,
+            includeBuildTime: true,
+            customMetadata: {
+                gitBranch: () => execSync('git rev-parse --abbrev-ref HEAD').toString().trim(),
+                gitCommit: () => execSync('git rev-parse --short HEAD').toString().trim(),
+                nodeVersion: () => process.version,
+            },
+        }),
     ],
     resolve: {
         alias: {
