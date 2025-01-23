@@ -59,9 +59,6 @@ export default function CalendarGrid({
             {/* Displaying day labels */}
             <div />
             <div className='w-4 border-b border-r border-gray-300' />
-            {daysOfWeek.map(day => (
-                <div className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5' />
-            ))}
             {[...Array(13).keys()].map(i => makeGridRow(i, 5))}
             <CalendarHour hour={21} />
             {Array(6)

@@ -75,22 +75,24 @@ export default function Calendar(): JSX.Element {
                             <CalendarFooter />
                         </div>
                     )}
-                    <div className='h-full flex flex-grow flex-col pl-2'>
-                        <div className='min-w-5xl flex flex-col pr-7.5'>
-                            <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto] pt-6'>
+                    <div className='h-full flex flex-grow flex-col pl-2 relative'>
+                        <div className='z-2 w-full flex flex-col absolute top-0 left-0 pr-7.5 pl-2'>
+                            <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto]'>
                                 {/* Displaying day labels */}
-                                <div className='w-12 border-b border-gray-300 pr-1' />
-                                <div className='w-4 border-b border-r border-gray-300' />
+                                <div className='w-12 bg-opacity-0' />
+                                <div className='w-4 bg-opacity-0' />
                                 {daysOfWeek.map(day => (
-                                    <div className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5'>
-                                        <Text
-                                            key={day}
-                                            variant='small'
-                                            className='text-center text-ut-burntorange'
-                                            as='div'
-                                        >
-                                            {day}
-                                        </Text>
+                                    <div className='bg-white'>
+                                        <div className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5 b'>
+                                            <Text
+                                                key={day}
+                                                variant='small'
+                                                className='text-center text-ut-burntorange'
+                                                as='div'
+                                            >
+                                                {day}
+                                            </Text>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
