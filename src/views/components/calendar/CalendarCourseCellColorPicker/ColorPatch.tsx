@@ -1,5 +1,5 @@
 import { Check } from '@phosphor-icons/react';
-import { getThemeColorHexByName } from '@shared/util/themeColors';
+import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import React from 'react';
 
 /**
@@ -8,7 +8,8 @@ import React from 'react';
 interface ColorPatchProps {
     color: string;
     isSelected: boolean;
-    handleSetSelectedColor: (color: string) => void;
+    handleSelectColorPatch: (color: string) => void;
+    defaultColor: string;
 }
 
 /**
@@ -19,13 +20,25 @@ interface ColorPatchProps {
  * @param handleSetSelectedColor - Function from parent component to control selection state of a patch.
  * @returns The rendered color patch button.
  */
-export default function ColorPatch({ color, isSelected, handleSetSelectedColor }: ColorPatchProps): JSX.Element {
-    const handleClick = () => {
-        handleSetSelectedColor(isSelected ? getThemeColorHexByName('ut-gray') : color);
+export default function ColorPatch({
+    color,
+    isSelected,
+    handleSelectColorPatch,
+    defaultColor,
+}: ColorPatchProps): JSX.Element {
+    const { handleCloseColorPicker } = useColorPickerContext();
+
+    const handleClick = async () => {
+        // If the color patch is already selected, close the color picker
+        if (isSelected) {
+            handleCloseColorPicker();
+        } else {
+            handleSelectColorPatch(isSelected ? defaultColor : color);
+        }
     };
     return (
         <button
-            className='h-5.5 w-5.5 p-0 transition-all duration-200 hover:scale-110 btn'
+            className='size-6.5 p-0 transition-all duration-200 hover:scale-110 btn'
             style={{ backgroundColor: color }}
             onClick={handleClick}
         >

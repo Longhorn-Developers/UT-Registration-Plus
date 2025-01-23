@@ -1,4 +1,15 @@
-import { ArrowUpRight, CalendarDots, ChatText, Copy, FileText, Minus, Plus, Smiley, X } from '@phosphor-icons/react';
+import {
+    ArrowUpRight,
+    CalendarDots,
+    ChatText,
+    Check,
+    Copy,
+    FileText,
+    Minus,
+    Plus,
+    Smiley,
+    X,
+} from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
@@ -9,7 +20,8 @@ import Divider from '@views/components/common/Divider';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import { useCalendar } from '@views/contexts/CalendarContext';
-import React from 'react';
+import clsx from 'clsx';
+import React, { useRef, useState } from 'react';
 
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
@@ -41,15 +53,27 @@ interface HeadingAndActionProps {
  * @returns The rendered component.
  */
 export default function HeadingAndActions({ course, activeSchedule, onClose }: HeadingAndActionProps): JSX.Element {
-    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, schedule, core } = course;
+    const { courseName, department, number: courseNumber, uniqueId, instructors, flags, core } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
     const isInCalendar = useCalendar();
 
+    const [isCopied, setIsCopied] = useState<boolean>(false);
+    const lastCopyTime = useRef<number>(0);
+
     const getInstructorFullName = (instructor: Instructor) => instructor.toString({ format: 'first_last' });
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(formattedUniqueId);
+    const handleCopy = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.stopPropagation();
+        const now = Date.now();
+        if (now - lastCopyTime.current < 500) {
+            return;
+        }
+
+        lastCopyTime.current = now;
+        await navigator.clipboard.writeText(formattedUniqueId);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 500);
     };
 
     const handleOpenRateMyProf = async () => {
@@ -107,7 +131,21 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     <Text variant='h1' className='flex-1 whitespace-nowrap text-theme-black'>
                         ({department} {courseNumber})
                     </Text>
-                    <Button color='ut-burntorange' variant='minimal' icon={Copy} onClick={handleCopy}>
+                    <Button color='ut-burntorange' variant='minimal' onClick={handleCopy}>
+                        <div className='relative h-5.5 w-5.5'>
+                            <Check
+                                className={clsx(
+                                    'absolute size-full inset-0 text-ut-burntorange transition-all duration-250 ease-in-out',
+                                    isCopied ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+                                )}
+                            />
+                            <Copy
+                                className={clsx(
+                                    'absolute size-full inset-0 text-ut-burntorange transition-all duration-250 ease-in-out',
+                                    isCopied ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
+                                )}
+                            />
+                        </div>
                         {formattedUniqueId}
                     </Button>
                     <button className='bg-transparent p-0 text-ut-black btn' onClick={onClose}>

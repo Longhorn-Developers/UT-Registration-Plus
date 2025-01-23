@@ -1,6 +1,7 @@
 import type { Course } from '@shared/types/Course';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
+import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React from 'react';
 
@@ -66,7 +67,9 @@ export default function CalendarGrid({
                 .map(() => (
                     <div className='h-4 flex items-end justify-center border-r border-gray-300' />
                 ))}
-            {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} /> : null}
+            <ColorPickerProvider>
+                {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
+            </ColorPickerProvider>
         </div>
     );
 }
@@ -140,8 +143,8 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                         courseDeptAndInstr={courseDeptAndInstr}
                         timeAndLocation={timeAndLocation}
                         status={status}
-                        colors={block.course.colors}
                         onClick={() => setCourse(block.course)}
+                        blockData={block}
                     />
                 </div>
             );

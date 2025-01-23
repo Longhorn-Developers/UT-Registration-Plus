@@ -23,7 +23,9 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
     if (!link) link = prompt('Enter course link') || undefined;
 
     // Exit if the user cancels the prompt
-    if (!link) return;
+    if (!link) {
+        return;
+    }
 
     try {
         let htmlText: string;
@@ -46,17 +48,16 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
         const scrapedCourses = scraper.scrape(tableRows, false);
 
         if (scrapedCourses.length !== 1) return;
-
         const description = scraper.getDescription(doc);
         const row = scrapedCourses[0]!;
         const course = row.course!;
         course.description = description;
 
         if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-            console.log('adding course');
+            console.log('Adding course');
             await addCourse(activeSchedule.id, course);
         } else {
-            console.log('course already exists');
+            console.log('Course already exists');
         }
     } catch (error) {
         console.error('Error scraping course:', error);
