@@ -9,7 +9,6 @@ import CalendarHeader from '@views/components/calendar/CalendarHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
 import ResourceLinks from '@views/components/calendar/ResourceLinks';
 import Divider from '@views/components/common/Divider';
-import Text from '@views/components/common/Text/Text';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
@@ -34,8 +33,6 @@ export default function Calendar(): JSX.Element {
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const [showSidebar, setShowSidebar] = useState<boolean>(true);
-
-    const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
@@ -115,6 +112,7 @@ export default function Calendar(): JSX.Element {
                                 <OutwardArrowIcon className='h-4 w-4' />
                             </a>
                         </div>
+
                         <CalendarFooter />
                     </div>
 
@@ -128,6 +126,7 @@ export default function Calendar(): JSX.Element {
                         <div className='min-h-2xl flex-grow overflow-auto pl-2 pr-4 pt-6 screenshot:min-h-xl'>
                             <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                         </div>
+                        <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
                     </div>
                 </div>
 
