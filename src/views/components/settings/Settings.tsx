@@ -3,7 +3,7 @@ import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
-import { Trash } from '@phosphor-icons/react';
+import { CalendarDots, Trash } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
@@ -28,7 +28,6 @@ import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import IconoirGitFork from '~icons/iconoir/git-fork';
-import CalendarIcon from '~icons/material-symbols/calendar-month';
 
 // import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';;
 import FileUpload from '../common/FileUpload';
@@ -278,7 +277,7 @@ export default function Settings(): JSX.Element {
                     </Button>
                     <Button
                         variant='filled'
-                        icon={CalendarIcon}
+                        icon={CalendarDots}
                         color='ut-burntorange'
                         onClick={() => background.switchToCalendarTab({})}
                     >
