@@ -11,6 +11,8 @@ export type TabWithId = Omit<browser.tabs.Tab, 'id'> & { id: number };
 export default async function openNewTab(url: string, tabIndex?: number): Promise<TabWithId> {
     const tab = (await browser.tabs.create({ url, index: tabIndex, active: true })) as TabWithId;
 
+    console.log('Opened new tab:', tab);
+
     if (tab.windowId !== undefined) {
         await browser.windows.update(tab.windowId, { focused: true });
     }

@@ -4,6 +4,7 @@ import { CalendarDots, Flag, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { CRX_PAGES } from '@shared/types/CRXPages';
 import { handleOpenOptions } from '@shared/util/openOptionsPage';
 import { openReportWindow } from '@shared/util/openReportWindow';
 import Divider from '@views/components/common/Divider';
@@ -74,8 +75,29 @@ export default function PopupMain(): JSX.Element {
         );
     }, []);
 
-    const handleCalendarOpenOnClick = async () => {
-        await background.switchToCalendarTab({});
+    // const handleCalendarOpenOnClick = async () => {
+    //     console.log('handleCalendarOpenOnClick');
+    //     console.log('browser:', browser);
+    //     await background.switchToCalendarTab({});
+    //     window.close();
+    // };
+
+    const handleCalendarOpenOnClick = () => {
+        const calendarUrl = browser.runtime.getURL(CRX_PAGES.CALENDAR);
+        console.log('calendarUrl:', calendarUrl);
+        browser.runtime
+            .sendMessage({
+                action: 'openTab',
+                url: calendarUrl,
+                active: true,
+            })
+            .then(response => {
+                if (response.success) {
+                    console.log('Tab opened successfully:', response.tabId);
+                } else {
+                    console.error('Failed to open tab:', response.error);
+                }
+            });
         window.close();
     };
 

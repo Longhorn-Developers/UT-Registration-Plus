@@ -54,6 +54,8 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...calendarBackgroundHandler,
 });
 
+console.log('background.ts: messageListener:', messageListener);
+
 messageListener.listen();
 
 UserScheduleStore.listen('schedules', async schedules => {
@@ -66,4 +68,21 @@ UserScheduleStore.listen('activeIndex', async ({ newValue }) => {
     const schedules = await UserScheduleStore.get('schedules');
     const numCourses = schedules[newValue]?.courses?.length;
     updateBadgeText(numCourses || 0);
+});
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'openTab') {
+        browser.tabs
+            .create({
+                url: message.url || 'about:blank',
+                active: message.active || true,
+            })
+            .then(tab => {
+                sendResponse({ success: true, tabId: tab.id });
+            })
+            .catch(error => {
+                sendResponse({ success: false, error: error.message });
+            });
+        return true; // Required for async sendResponse
+    }
 });

@@ -24,6 +24,9 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
     async switchToCalendarTab({ data, sendResponse }) {
         const { uniqueId } = data;
         const calendarUrl = browser.runtime.getURL(CRX_PAGES.CALENDAR);
+        console.log('calendarUrl:', calendarUrl);
+
+        console.log('Switching to calendar tab');
 
         const allTabs = await getAllTabInfos();
 
@@ -44,6 +47,8 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
             if (uniqueId !== undefined) urlParams.set('uniqueId', uniqueId.toString());
             const url = `${calendarUrl}?${urlParams.toString()}`.replace(/\?$/, '');
             const tab = await openNewTab(url);
+
+            console.log('Opened new calendar tab:', tab);
 
             sendResponse(tab);
         }

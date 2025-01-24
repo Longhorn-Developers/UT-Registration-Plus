@@ -90,6 +90,7 @@
         "@types/semantic-release": "^20.0.6",
         "@types/semver": "^7.5.8",
         "@types/sql.js": "^1.4.9",
+        "@types/webextension-polyfill": "^0.12.1",
         "@typescript-eslint/eslint-plugin": "^7.18.0",
         "@typescript-eslint/parser": "^7.18.0",
         "@unocss/eslint-config": "^0.63.6",
@@ -140,7 +141,8 @@
         "unplugin-icons": "^0.19.3",
         "vite": "^5.4.11",
         "vite-plugin-inspect": "^0.8.9",
-        "vitest": "^2.1.8"
+        "vitest": "^2.1.8",
+        "webextension-polyfill": "^0.12.0"
     },
     "pnpm": {
         "patchedDependencies": {
