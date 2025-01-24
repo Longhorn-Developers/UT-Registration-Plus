@@ -86,10 +86,15 @@
 //         return true; // Required for async sendResponse
 //     }
 // });
-import type { MessageTypes} from 'browser-extension-toolkit';
+import { openDebugTab } from '@shared/util/openDebugTab';
+import type { MessageTypes } from 'browser-extension-toolkit';
 import { MESSAGE_TYPES, MessagingProxy, tabProxyHandlers } from 'browser-extension-toolkit';
 
 const backgroundProxy = new MessagingProxy<MessageTypes>('background');
+
+openDebugTab();
+
+console.log('background.ts loaded');
 
 // Register handlers
 backgroundProxy.registerProxyHandler(MESSAGE_TYPES.TAB.OPEN, tabProxyHandlers.openTab);
