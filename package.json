@@ -22,7 +22,6 @@
         "coverage": "vitest run --coverage",
         "preview": "vite preview",
         "generate-changelog": "bun run scripts/generateChangelog.ts",
-        "preinstall": "npx only-allow pnpm",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
         "prepare": "husky"
@@ -144,13 +143,11 @@
         "vitest": "^2.1.8",
         "webextension-polyfill": "^0.12.0"
     },
-    "pnpm": {
-        "patchedDependencies": {
-            "@crxjs/vite-plugin@2.0.0-beta.21": "patches/@crxjs__vite-plugin@2.0.0-beta.21.patch",
-            "@unocss/vite": "patches/@unocss__vite.patch"
-        },
-        "overrides": {
-            "es-module-lexer": "^1.5.4"
-        }
+    "overrides": {
+        "es-module-lexer": "^1.5.4"
+    },
+    "patchedDependencies": {
+        "@crxjs/vite-plugin@2.0.0-beta.21": "patches/@crxjs%2Fvite-plugin@2.0.0-beta.21.patch",
+        "@unocss/vite@0.63.6": "patches/@unocss%2Fvite@0.63.6.patch"
     }
 }
