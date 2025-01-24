@@ -25,3 +25,8 @@ export type sRGB = [r: number, g: number, b: number];
  * Represents a Lab color value.
  */
 export type Lab = [l: number, a: number, b: number];
+
+/**
+ * Represents a HSL color value.
+ */
+export type HSL = [h: number, s: number, l: number];

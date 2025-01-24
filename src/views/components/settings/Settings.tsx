@@ -102,6 +102,7 @@ export default function Settings(): JSX.Element {
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    const [calendarNewTab, setCalendarNewTab] = useState<boolean>(false);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -134,12 +135,14 @@ export default function Settings(): JSX.Element {
                 enableHighlightConflicts,
                 enableScrollToLoad,
                 enableDataRefreshing,
+                alwaysOpenCalendarInNewTab,
             } = await initSettings();
             setEnableCourseStatusChips(enableCourseStatusChips);
             setShowTimeLocation(enableTimeAndLocationInPopup);
             setHighlightConflicts(enableHighlightConflicts);
             setLoadAllCourses(enableScrollToLoad);
             setEnableDataRefreshing(enableDataRefreshing);
+            setCalendarNewTab(alwaysOpenCalendarInNewTab);
         };
 
         fetchGitHubStats();
@@ -179,6 +182,11 @@ export default function Settings(): JSX.Element {
             // console.log('enableDataRefreshing', newValue);
         });
 
+        const l6 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
+            setCalendarNewTab(newValue);
+            // console.log('alwaysOpenCalendarInNewTab', newValue);
+        });
+
         // Remove listeners when the component is unmounted
         return () => {
             OptionsStore.removeListener(l1);
@@ -186,6 +194,7 @@ export default function Settings(): JSX.Element {
             OptionsStore.removeListener(l3);
             OptionsStore.removeListener(l4);
             OptionsStore.removeListener(l5);
+            OptionsStore.removeListener(l6);
 
             window.removeEventListener('keydown', handleKeyPress);
         };
@@ -439,6 +448,27 @@ export default function Settings(): JSX.Element {
                                         onChange={() => {
                                             setLoadAllCourses(!loadAllCourses);
                                             OptionsStore.set('enableScrollToLoad', !loadAllCourses);
+                                        }}
+                                    />
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Always Open Calendar in New Tab
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>
+                                            Always opens the calendar view in a new tab when navigating to the calendar
+                                            page. May prevent issues where the calendar refuses to open.
+                                        </p>
+                                    </div>
+                                    <SwitchButton
+                                        isChecked={calendarNewTab}
+                                        onChange={() => {
+                                            setCalendarNewTab(!calendarNewTab);
+                                            OptionsStore.set('alwaysOpenCalendarInNewTab', !calendarNewTab);
                                         }}
                                     />
                                 </div>

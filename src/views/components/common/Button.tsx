@@ -10,7 +10,7 @@ interface Props {
     style?: React.CSSProperties;
     variant?: 'filled' | 'outline' | 'minimal';
     size?: 'regular' | 'small' | 'mini';
-    onClick?: () => void;
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     icon?: Icon;
     iconProps?: IconProps;
     disabled?: boolean;
@@ -44,9 +44,9 @@ export function Button({
         <button
             style={
                 {
-                    ...style,
                     color: colorHex,
                     backgroundColor: `rgb(${colorRgb} / var(--un-bg-opacity)`,
+                    ...style,
                 } satisfies React.CSSProperties
             }
             className={clsx(

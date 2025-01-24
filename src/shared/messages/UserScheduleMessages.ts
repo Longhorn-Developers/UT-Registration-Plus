@@ -9,7 +9,7 @@ export interface UserScheduleMessages {
      *
      * @param data - The schedule id and course to add
      */
-    addCourse: (data: { scheduleId: string; course: Course }) => void;
+    addCourse: (data: { scheduleId: string; course: Course; hasColor?: boolean }) => void;
 
     /**
      * Adds a course by URL
@@ -63,6 +63,14 @@ export interface UserScheduleMessages {
      * @returns Undefined if successful, otherwise an error message
      */
     renameSchedule: (data: { scheduleId: string; newName: string }) => string | undefined;
+
+    /**
+     * Checks the login status by making a request to the provided URL.
+     *
+     * @param data - The URL to check the login status against.
+     * @returns true if user was already logged into the provided URL, false otherwise
+     */
+    validateLoginStatus: (data: { url: string }) => boolean;
 
     /**
      * Exports the current schedule to a JSON file for backing up and sharing
