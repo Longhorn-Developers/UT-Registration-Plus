@@ -26,6 +26,9 @@ const pagesDir = resolve(root, 'pages');
 const assetsDir = resolve(root, 'assets');
 const publicDir = resolve(__dirname, 'public');
 
+// Set default environment variables
+process.env.PROD = process.env.NODE_ENV === 'production' ? 'true' : 'false';
+
 const isBeta = !!process.env.BETA;
 if (isBeta) {
     process.env.VITE_BETA_BUILD = 'true';
