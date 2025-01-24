@@ -129,7 +129,7 @@ export default function Calendar(): JSX.Element {
                                 setShowSidebar(!showSidebar);
                             }}
                         />
-                        <div className='min-h-2xl min-w-5xl flex-grow overflow-auto pl-2 pr-4 pt-6 screenshot:min-h-xl'>
+                        <div className='min-h-2xl min-w-5xl flex-grow overflow-auto pl-2 pt-6 screenshot:min-h-xl'>
                             <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                         </div>
                         <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />

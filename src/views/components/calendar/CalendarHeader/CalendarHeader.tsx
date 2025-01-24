@@ -33,7 +33,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     const [activeSchedule] = useSchedules();
 
     return (
-        <div className='min-h-[91px] flex items-center gap-5 overflow-x-auto overflow-y-hidden py-spacing-6 pl-spacing-7'>
+        <div className='sticky min-h-[91px] flex items-center gap-5 overflow-x-auto overflow-y-hidden py-spacing-6 pl-spacing-7'>
             {!sidebarOpen && (
                 <Button
                     variant='minimal'
@@ -52,7 +52,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 />
             </div>
             <Divider className='self-center screenshot:hidden' size='1.75rem' orientation='vertical' />
-            <div className={clsx(styles.cqInline, 'flex flex-1 gap-5 min-w-[320px]')}>
+            <div className={clsx(styles.cqInline, 'flex flex-1 gap-5 min-w-[300px]')}>
                 <div className={clsx(styles.primaryActions, 'min-w-fit flex gap-5')}>
                     <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
                         Quick Add
@@ -100,7 +100,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     </DialogProvider>
                 </div>
                 <Divider className='self-center screenshot:hidden' size='1.75rem' orientation='vertical' />
-                <div className={clsx(styles.secondaryActions, 'mr-5 min-w-fit flex flex-1 justify-end gap-5')}>
+                <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 justify-end gap-5')}>
                     <Button color='ut-black' size='small' variant='minimal' icon={BookmarkSimple}>
                         Bookmarks
                     </Button>

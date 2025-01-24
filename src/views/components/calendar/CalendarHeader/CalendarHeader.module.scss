@@ -13,13 +13,13 @@
         white-space: nowrap;
     }
 
-    @container (width < 630px) {
+    @container (width < 610px) {
         .primaryActions span {
             @include visually-hidden;
         }
     }
 
-    @container (width < 455px) {
+    @container (width < 445px) {
         .secondaryActions span {
             @include visually-hidden;
         }
