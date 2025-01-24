@@ -46,14 +46,6 @@ const gitHubStatsService = new GitHubStatsService();
 const includeMergedPRs = false;
 
 /**
- * Opens the calendar page.
- * @returns A promise that resolves when the calendar page is opened.
- */
-const handleOpenCalendar = async (): Promise<void> => {
-    await background.switchToCalendarTab({});
-};
-
-/**
  * Custom hook for enabling developer mode.
  *
  * @param targetCount - The target count to activate developer mode.
@@ -284,7 +276,12 @@ export default function Settings(): JSX.Element {
                             v{manifest.version} - {process.env.NODE_ENV}
                         </Text>
                     </Button>
-                    <Button variant='filled' icon={CalendarIcon} color='ut-burntorange' onClick={handleOpenCalendar}>
+                    <Button
+                        variant='filled'
+                        icon={CalendarIcon}
+                        color='ut-burntorange'
+                        onClick={() => background.switchToCalendarTab({})}
+                    >
                         Calendar
                     </Button>
                 </div>
