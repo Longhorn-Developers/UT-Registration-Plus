@@ -171,8 +171,8 @@ export default defineConfig({
         renameFile('src/pages/report/index.html', 'report.html'),
         renameFile('src/pages/404/index.html', '404.html'),
         vitePluginRunCommandOnDemand({
-            // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
-            closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',
+            // afterServerStart: 'bun gulp forceDisableUseDynamicUrl',
+            closeBundle: 'bun gulp forceDisableUseDynamicUrl',
         }),
         firefoxManifestV3({
             // geckoId: 'utrp-admin@lhd.org',

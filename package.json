@@ -11,7 +11,7 @@
         "build": "tsc && vite build",
         "build:firefox": "tsc && BROWSER_TARGET=firefox vite build",
         "build:watch": "NODE_ENV='development' vite build --mode development -w",
-        "zip": "PROD=true pnpm build && pnpm gulp zipProdBuild",
+        "zip": "PROD=true bun build && bun gulp zipProdBuild",
         "prettier": "prettier src --check",
         "prettier:fix": "prettier src --write",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
