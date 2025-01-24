@@ -4,6 +4,7 @@ import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
 import { Trash } from '@phosphor-icons/react';
+import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { downloadBlob } from '@shared/util/downloadBlob';
@@ -22,15 +23,12 @@ import useSchedules from '@views/hooks/useSchedules';
 // import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 // import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
-import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 // import { SiteSupport } from '@views/lib/getSiteSupport';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import IconoirGitFork from '~icons/iconoir/git-fork';
 import CalendarIcon from '~icons/material-symbols/calendar-month';
-// import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
-import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 
 // import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';;
 import FileUpload from '../common/FileUpload';
@@ -48,12 +46,11 @@ const gitHubStatsService = new GitHubStatsService();
 const includeMergedPRs = false;
 
 /**
- * Opens the calendar page in a new tab.
- * @returns A promise that resolves when the options page is opened.
+ * Opens the calendar page.
+ * @returns A promise that resolves when the calendar page is opened.
  */
 const handleOpenCalendar = async (): Promise<void> => {
-    const url = chrome.runtime.getURL('/calendar.html');
-    await openTabFromContentScript(url);
+    await background.switchToCalendarTab({});
 };
 
 /**
