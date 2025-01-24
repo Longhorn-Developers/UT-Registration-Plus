@@ -117,7 +117,12 @@ export default function Calendar(): JSX.Element {
                         <CalendarFooter />
                     </div>
 
-                    <div className='h-full flex flex-grow flex-col overflow-y-auto px-spacing-5'>
+                    <div
+                        style={{
+                            scrollbarGutter: 'stable',
+                        }}
+                        className='h-full flex flex-grow flex-col overflow-y-auto px-spacing-5'
+                    >
                         <CalendarHeader
                             sidebarOpen={showSidebar}
                             onSidebarToggle={() => {
