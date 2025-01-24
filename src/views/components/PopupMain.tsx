@@ -5,6 +5,7 @@ import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
+import { openNewTab } from '@shared/util/openNewTab';
 import { handleOpenOptions } from '@shared/util/openOptionsPage';
 import { openReportWindow } from '@shared/util/openReportWindow';
 import Divider from '@views/components/common/Divider';
@@ -83,21 +84,25 @@ export default function PopupMain(): JSX.Element {
     // };
 
     const handleCalendarOpenOnClick = () => {
-        const calendarUrl = browser.runtime.getURL(CRX_PAGES.CALENDAR);
-        console.log('calendarUrl:', calendarUrl);
-        browser.runtime
-            .sendMessage({
-                action: 'openTab',
-                url: calendarUrl,
-                active: true,
-            })
-            .then(response => {
-                if (response.success) {
-                    console.log('Tab opened successfully:', response.tabId);
-                } else {
-                    console.error('Failed to open tab:', response.error);
-                }
-            });
+        // const calendarUrl = browser.runtime.getURL(CRX_PAGES.CALENDAR);
+        // console.log('calendarUrl:', calendarUrl);
+        // browser.runtime
+        //     .sendMessage({
+        //         action: 'openTab',
+        //         url: calendarUrl,
+        //         active: true,
+        //     })
+        //     .then(response => {
+        //         if (response.success) {
+        //             console.log('Tab opened successfully:', response.tabId);
+        //         } else {
+        //             console.error('Failed to open tab:', response.error);
+        //         }
+        //     });
+        openNewTab({
+            url: CRX_PAGES.CALENDAR,
+            active: true,
+        });
         window.close();
     };
 

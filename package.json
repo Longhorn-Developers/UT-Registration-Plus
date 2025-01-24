@@ -34,6 +34,7 @@
         "@sentry/react": "^8.38.0",
         "@unocss/vite": "^0.63.6",
         "@vitejs/plugin-react": "^4.3.4",
+        "browser-extension-toolkit": "^0.1.0",
         "chrome-extension-toolkit": "^0.0.54",
         "clsx": "^2.1.1",
         "conventional-changelog": "^6.0.0",
