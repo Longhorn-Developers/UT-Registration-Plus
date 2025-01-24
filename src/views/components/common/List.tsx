@@ -1,9 +1,7 @@
-import type { DraggableProvided, DraggableProvidedDragHandleProps, OnDragEndResponder } from '@hello-pangea/dnd';
+import type { DraggableProvidedDragHandleProps, OnDragEndResponder } from '@hello-pangea/dnd';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import type { ReactElement } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
-
-import ExtensionRoot from './ExtensionRoot/ExtensionRoot';
 
 /*
  * Ctrl + f dragHandleProps on PopupCourseBlock.tsx for example implementation of drag handle (two lines of code)
@@ -36,34 +34,6 @@ function reorder<T>(list: T[], startIndex: number, endIndex: number) {
     }
 
     return listCopy;
-}
-
-function getStyle(provided: DraggableProvided, style: React.CSSProperties) {
-    const combined = {
-        ...style,
-        ...provided.draggableProps.style,
-    };
-
-    return combined;
-}
-
-function Item<T>(props: {
-    provided: DraggableProvided;
-    style: React.CSSProperties;
-    item: T;
-    isDragging: boolean;
-    children: React.ReactElement;
-}) {
-    return (
-        <div
-            {...props.provided.draggableProps}
-            ref={props.provided.innerRef}
-            style={getStyle(props.provided, props.style)}
-            className={props.isDragging ? 'group is-dragging' : ''}
-        >
-            {props.children}
-        </div>
-    );
 }
 
 /**
@@ -106,35 +76,7 @@ function List<T>({ draggables, itemKey, children, onReordered, gap }: ListProps<
     return (
         <div style={{ overflow: 'clip', overflowClipMargin: `${gap}px` }}>
             <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable
-                    droppableId='droppable'
-                    direction='vertical'
-                    renderClone={(provided, snapshot, rubric) => {
-                        let { style } = provided.draggableProps;
-                        const transform = style?.transform;
-
-                        if (snapshot.isDragging && transform) {
-                            let [, , y] = transform.match(/translate\(([-\d]+)px, ([-\d]+)px\)/) || [];
-
-                            style.transform = `translate3d(0px, ${y}px, 0px)`; // Apply constrained y value
-                        }
-
-                        return (
-                            <Item
-                                provided={provided}
-                                isDragging={snapshot.isDragging}
-                                item={items[rubric.source.index]}
-                                style={{
-                                    ...style,
-                                }}
-                            >
-                                <ExtensionRoot>
-                                    {transformFunction(items[rubric.source.index]!.content, provided.dragHandleProps!)}
-                                </ExtensionRoot>
-                            </Item>
-                        );
-                    }}
-                >
+                <Droppable droppableId='droppable' direction='vertical'>
                     {provided => (
                         <div {...provided.droppableProps} ref={provided.innerRef} style={{ marginBottom: `-${gap}px` }}>
                             {items.map((item, index) => (
