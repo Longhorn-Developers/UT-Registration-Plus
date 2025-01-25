@@ -34,7 +34,10 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     const [activeSchedule] = useSchedules();
 
     return (
-        <div className='sticky left-0 right-0 min-h-[91px] flex items-center gap-5 overflow-x-auto overflow-y-hidden pb-spacing-2 pl-spacing-7'>
+        <div
+            style={{ scrollbarGutter: 'stable' }}
+            className='sticky left-0 right-0 min-h-[85px] flex items-center gap-5 overflow-x-scroll overflow-y-hidden pl-spacing-7 pt-spacing-5'
+        >
             {!sidebarOpen && (
                 <Button
                     variant='minimal'
