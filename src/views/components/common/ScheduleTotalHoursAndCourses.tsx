@@ -31,13 +31,13 @@ export default function ScheduleTotalHoursAndCourses({
                 </Text>
             </div>
             <Text variant='h3' as='div' className='flex flex-row items-center gap-2.5 text-theme-black'>
-                <Text variant='h3' as='span' className='inline text-theme-black'>
+                <Text variant='h4' as='span' className='inline text-theme-black'>
                     {totalHours}&nbsp;
                     <Text variant='h3' as='span' className='inline text-theme-black font-all-small-caps!'>
                         {totalHours === 1 ? 'Hour' : 'Hours'}
                     </Text>
                 </Text>
-                <Text variant='h3' as='span' className='inline text-theme-black'>
+                <Text variant='h4' as='span' className='inline text-theme-black'>
                     {totalCourses}&nbsp;
                     <Text variant='h3' as='span' className='inline text-theme-black font-all-small-caps!'>
                         {totalCourses === 1 ? 'Course' : 'Courses'}
