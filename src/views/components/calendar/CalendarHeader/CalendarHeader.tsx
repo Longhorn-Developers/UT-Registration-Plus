@@ -4,7 +4,6 @@ import {
     CalendarDots,
     Export,
     FilePng,
-    FileTxt,
     MapPinArea,
     PlusCircle,
     SelectionPlus,
@@ -19,6 +18,8 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React from 'react';
+
+import { saveAsCal, saveCalAsPng } from '../utils';
 
 interface CalendarHeaderProps {
     sidebarOpen?: boolean;
@@ -52,7 +53,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 />
             </div>
             <Divider className='self-center screenshot:hidden' size='1.75rem' orientation='vertical' />
-            <div className={clsx(styles.cqInline, 'flex flex-1 gap-5 min-w-[310px]')}>
+            <div className={clsx(styles.cqInline, 'flex flex-1 gap-5 min-w-[310px] screenshot:hidden')}>
                 <div className={clsx(styles.primaryActions, 'min-w-fit flex gap-5')}>
                     <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
                         Quick Add
@@ -81,25 +82,39 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                 anchor='bottom start'
                             >
                                 <MenuItem>
-                                    <Button color='ut-black' size='small' variant='minimal' icon={FilePng}>
+                                    <Button
+                                        className='w-full flex justify-start'
+                                        onClick={() => requestAnimationFrame(() => saveCalAsPng())}
+                                        color='ut-black'
+                                        size='small'
+                                        variant='minimal'
+                                        icon={FilePng}
+                                    >
                                         Save as .png
                                     </Button>
                                 </MenuItem>
                                 <MenuItem>
-                                    <Button color='ut-black' size='small' variant='minimal' icon={CalendarDots}>
+                                    <Button
+                                        className='w-full flex justify-start'
+                                        onClick={saveAsCal}
+                                        color='ut-black'
+                                        size='small'
+                                        variant='minimal'
+                                        icon={CalendarDots}
+                                    >
                                         Save as .cal
                                     </Button>
                                 </MenuItem>
-                                <MenuItem>
+                                {/* <MenuItem>
                                     <Button color='ut-black' size='small' variant='minimal' icon={FileTxt}>
                                         Export Unique IDs
                                     </Button>
-                                </MenuItem>
+                                </MenuItem> */}
                             </MenuItems>
                         </Menu>
                     </DialogProvider>
                 </div>
-                <Divider className='self-center screenshot:hidden' size='1.75rem' orientation='vertical' />
+                <Divider className='self-center' size='1.75rem' orientation='vertical' />
                 <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 justify-end gap-5')}>
                     <Button color='ut-black' size='small' variant='minimal' icon={BookmarkSimple}>
                         Bookmarks
