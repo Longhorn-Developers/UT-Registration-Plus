@@ -3,7 +3,8 @@ import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
-import { Trash } from '@phosphor-icons/react';
+import { CalendarDots, Trash } from '@phosphor-icons/react';
+import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { downloadBlob } from '@shared/util/downloadBlob';
@@ -39,7 +40,6 @@ const DISPLAY_PREVIEWS = false;
 const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS ? 'w-1/2 space-y-4' : 'flex-grow space-y-4';
 
 const manifest = chrome.runtime.getManifest();
-const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
 
 const gitHubStatsService = new GitHubStatsService();
 const includeMergedPRs = false;
@@ -265,8 +265,8 @@ export default function Settings(): JSX.Element {
             <header className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
                 <LargeLogo />
                 <Divider className='mx-2 self-center md:mx-4' size='2.5rem' orientation='vertical' />
-                <Text variant='h1' className='flex-1 text-ut-burntorange'>
-                    UTRP SETTINGS & CREDITS PAGE
+                <Text variant='h1' className='flex-1 text-ut-burntorange normal-case!'>
+                    Settings and Credits
                 </Text>
                 <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
                     <Button variant='minimal' color='theme-black' onClick={handleChangelogOnClick}>
@@ -275,7 +275,14 @@ export default function Settings(): JSX.Element {
                             v{manifest.version} - {process.env.NODE_ENV}
                         </Text>
                     </Button>
-                    <img src={LDIconURL} alt='LD Icon' className='h-10 w-10 rounded-lg' />
+                    <Button
+                        variant='filled'
+                        icon={CalendarDots}
+                        color='ut-burntorange'
+                        onClick={() => background.switchToCalendarTab({})}
+                    >
+                        Calendar
+                    </Button>
                 </div>
             </header>
 
