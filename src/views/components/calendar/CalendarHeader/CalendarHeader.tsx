@@ -76,7 +76,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                 className={clsx([
                                     styleResetClass,
                                     'mt-spacing-3',
-                                    'w-[175px] cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite focus:outline-none',
+                                    'w-fit cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite focus:outline-none',
                                     'data-[closed]:(opacity-0 scale-95)',
                                     'data-[enter]:(ease-out-expo duration-150)',
                                     'data-[leave]:(ease-out duration-50)',
