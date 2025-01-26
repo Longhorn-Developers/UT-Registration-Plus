@@ -34,6 +34,7 @@ if (isBeta) {
     process.env.VITE_BETA_BUILD = 'true';
 }
 process.env.VITE_PACKAGE_VERSION = packageJson.version;
+// TODO: Debug this. If PROD is false, VITE_SENTRY_ENVIRONMENT is in production mode
 if (process.env.PROD) {
     process.env.VITE_SENTRY_ENVIRONMENT = 'production';
 } else if (isBeta) {

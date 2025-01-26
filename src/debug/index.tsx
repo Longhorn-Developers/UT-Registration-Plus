@@ -132,11 +132,8 @@ function DevDashboard() {
                 setSyncStorage(copy);
             }
 
-            // Chrome only
-            if (process.env.BROWSER_TARGET === 'chrome') {
-                if (areaName === 'session') {
-                    setSessionStorage(copy);
-                }
+            if (areaName === 'session') {
+                setSessionStorage(copy);
             }
         };
 
