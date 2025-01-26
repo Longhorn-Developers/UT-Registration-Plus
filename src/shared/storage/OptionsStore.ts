@@ -1,9 +1,11 @@
-import { createSyncStore, debugStore } from 'chrome-extension-toolkit';
+import { ExtensionStorage } from 'browser-extension-toolkit';
+
+import type { ExtensionStorageData } from '../types/ExtensionStorage';
 
 /**
  * A store that is used for storing user options
  */
-export interface IOptionsStore {
+export interface IOptionsStore extends ExtensionStorageData {
     /** whether we should enable course status chips (indicator for waitlisted, cancelled, and closed courses) */
     enableCourseStatusChips: boolean;
 
@@ -23,7 +25,12 @@ export interface IOptionsStore {
     alwaysOpenCalendarInNewTab: boolean;
 }
 
-export const OptionsStore = createSyncStore<IOptionsStore>({
+export const OptionsStore = new ExtensionStorage<IOptionsStore>({
+    area: 'sync',
+    serialize: true,
+});
+
+OptionsStore.bulkSet({
     enableCourseStatusChips: false,
     enableTimeAndLocationInPopup: false,
     enableHighlightConflicts: true,
@@ -39,14 +46,10 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
  */
 export const initSettings = async () =>
     ({
-        enableCourseStatusChips: await OptionsStore.get('enableCourseStatusChips'),
-        enableTimeAndLocationInPopup: await OptionsStore.get('enableTimeAndLocationInPopup'),
-        enableHighlightConflicts: await OptionsStore.get('enableHighlightConflicts'),
-        enableScrollToLoad: await OptionsStore.get('enableScrollToLoad'),
-        enableDataRefreshing: await OptionsStore.get('enableDataRefreshing'),
-        alwaysOpenCalendarInNewTab: await OptionsStore.get('alwaysOpenCalendarInNewTab'),
+        enableCourseStatusChips: (await OptionsStore.get('enableCourseStatusChips')) ?? false,
+        enableTimeAndLocationInPopup: (await OptionsStore.get('enableTimeAndLocationInPopup')) ?? false,
+        enableHighlightConflicts: (await OptionsStore.get('enableHighlightConflicts')) ?? true,
+        enableScrollToLoad: (await OptionsStore.get('enableScrollToLoad')) ?? true,
+        enableDataRefreshing: (await OptionsStore.get('enableDataRefreshing')) ?? true,
+        alwaysOpenCalendarInNewTab: (await OptionsStore.get('alwaysOpenCalendarInNewTab')) ?? false,
     }) satisfies IOptionsStore;
-
-// Clothing retailer right
-
-debugStore({ OptionsStore });

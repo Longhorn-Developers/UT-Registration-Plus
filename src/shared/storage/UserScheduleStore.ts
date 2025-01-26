@@ -1,17 +1,23 @@
 import { UserSchedule } from '@shared/types/UserSchedule';
-import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
+import { ExtensionStorage } from 'browser-extension-toolkit';
 
+import type { ExtensionStorageData } from '../types/ExtensionStorage';
 import { generateRandomId } from '../util/random';
 
-interface IUserScheduleStore {
+/**
+ * A store that is used for storing user schedules
+ */
+export interface IUserScheduleStore extends ExtensionStorageData {
     schedules: UserSchedule[];
     activeIndex: number;
 }
 
-/**
- * A store that is used for storing user schedules (and the active schedule)
- */
-export const UserScheduleStore = createLocalStore<IUserScheduleStore>({
+export const UserScheduleStore = new ExtensionStorage<IUserScheduleStore>({
+    area: 'local',
+    serialize: true,
+});
+
+UserScheduleStore.bulkSet({
     schedules: [
         new UserSchedule({
             courses: [],
@@ -23,5 +29,3 @@ export const UserScheduleStore = createLocalStore<IUserScheduleStore>({
     ],
     activeIndex: 0,
 });
-
-debugStore({ userScheduleStore: UserScheduleStore });

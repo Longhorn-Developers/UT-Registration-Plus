@@ -1,8 +1,6 @@
 import { ExtensionStorage } from 'browser-extension-toolkit';
 
-type ExtensionStorageData = {
-    [key: string]: unknown;
-};
+import type { ExtensionStorageData } from '../types/ExtensionStorage';
 
 /**
  * A store that is used to store data that is only relevant during development
