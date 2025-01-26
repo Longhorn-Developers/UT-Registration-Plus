@@ -20,20 +20,18 @@ export interface IDevStore extends ExtensionStorageData {
     reloadTabId?: number;
 }
 
-// export const DevStore = createLocalStore<IDevStore>({
-//     debugTabId: undefined,
-//     isTabReloading: true,
-//     wasDebugTabVisible: false,
-//     isExtensionReloading: true,
-//     reloadTabId: undefined,
-// });
-//
-// debugStore({ devStore: DevStore });
-
 export const DevStore = new ExtensionStorage<IDevStore>({
     area: 'local',
     serialize: true,
 
     // Storage namespace isolation
     // prefix: 'devStore',
+});
+
+DevStore.bulkSet({
+    debugTabId: undefined,
+    isTabReloading: true,
+    wasDebugTabVisible: false,
+    isExtensionReloading: true,
+    reloadTabId: undefined,
 });
