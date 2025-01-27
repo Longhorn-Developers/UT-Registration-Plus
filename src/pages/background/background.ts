@@ -14,22 +14,6 @@
 //
 // onServiceWorkerAlive();
 //
-// /**
-//  * will be triggered on either install or update
-//  * (will also be triggered on a user's sync'd browsers (on other devices)))
-//  */
-// browser.runtime.onInstalled.addListener(details => {
-//     switch (details.reason) {
-//         case 'install':
-//             onInstall();
-//             break;
-//         case 'update':
-//             onUpdate();
-//             break;
-//         default:
-//             break;
-//     }
-// });
 //
 // // migration/login logic
 // browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
@@ -90,19 +74,40 @@ import { openDebugTab } from '@shared/util/openDebugTab';
 import type { MessageTypes } from 'browser-extension-toolkit';
 import { MESSAGE_TYPES, MessagingProxy, tabProxyHandlers } from 'browser-extension-toolkit';
 
+import onInstall from './events/onInstall';
+import onUpdate from './events/onUpdate';
 import {
     SCHEDULE_HANDLER_MESSAGE_TYPES,
     ScheduleHandler,
     type ScheduleHandlerMessageTypes,
 } from './handlers/UserScheduleHandler';
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+/**
+ * Unified message types for the background script
+ */
 export type UnifiedMessageTypes = MessageTypes & ScheduleHandlerMessageTypes;
 
 export const UNIFIED_MESSAGE_TYPES = {
     ...MESSAGE_TYPES,
     ...SCHEDULE_HANDLER_MESSAGE_TYPES,
 };
+
+/**
+ * will be triggered on either install or update
+ * (will also be triggered on a user's sync'd browsers (on other devices)))
+ */
+browser.runtime.onInstalled.addListener(details => {
+    switch (details.reason) {
+        case 'install':
+            onInstall();
+            break;
+        case 'update':
+            onUpdate();
+            break;
+        default:
+            break;
+    }
+});
 
 const backgroundProxy = new MessagingProxy<UnifiedMessageTypes>('background');
 
