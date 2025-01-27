@@ -90,11 +90,41 @@ import { openDebugTab } from '@shared/util/openDebugTab';
 import type { MessageTypes } from 'browser-extension-toolkit';
 import { MESSAGE_TYPES, MessagingProxy, tabProxyHandlers } from 'browser-extension-toolkit';
 
-const backgroundProxy = new MessagingProxy<MessageTypes>('background');
+import {
+    SCHEDULE_HANDLER_MESSAGE_TYPES,
+    ScheduleHandler,
+    type ScheduleHandlerMessageTypes,
+} from './handlers/UserScheduleHandler';
 
-openDebugTab();
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type UnifiedMessageTypes = MessageTypes & ScheduleHandlerMessageTypes;
+
+export const UNIFIED_MESSAGE_TYPES = {
+    ...MESSAGE_TYPES,
+    ...SCHEDULE_HANDLER_MESSAGE_TYPES,
+};
+
+const backgroundProxy = new MessagingProxy<UnifiedMessageTypes>('background');
 
 console.log('background.ts loaded');
 
 // Register handlers
-backgroundProxy.registerProxyHandler(MESSAGE_TYPES.TAB.OPEN, tabProxyHandlers.openTab);
+backgroundProxy.registerProxyHandler(UNIFIED_MESSAGE_TYPES.TAB.OPEN, tabProxyHandlers.openTab);
+
+// BUG: Doesn't open right away
+// Interestingly enough it opens when the calendra page is opened
+// openDebugTab();
+
+const scheduleHandler = new ScheduleHandler();
+const scheduleMessageToHandler: Record<keyof typeof UNIFIED_MESSAGE_TYPES.SCHEDULE, unknown> = {
+    ADD_COURSE: scheduleHandler.addCourse,
+    REMOVE_COURSE: scheduleHandler.removeCourse,
+};
+
+// Register all schedule handlers at once
+Object.entries(UNIFIED_MESSAGE_TYPES.SCHEDULE).forEach(([key, type]) => {
+    // @ts-ignore
+    backgroundProxy.registerProxyHandler(type, scheduleMessageToHandler[key]);
+    // @ts-ignore
+    console.log('Registered handler for', type, scheduleMessageToHandler[key]);
+});
