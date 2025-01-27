@@ -1,4 +1,4 @@
-import { background } from '@shared/messages';
+import { openNewTab } from '@shared/util/openNewTab';
 import type { TextProps } from '@views/components/common/Text/Text';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
@@ -19,7 +19,7 @@ export default function Link(props: PropsWithChildren<Props>): JSX.Element {
     if (href && !props.onClick) {
         passedProps.onClick = e => {
             e.preventDefault();
-            background.openNewTab({ url: href });
+            openNewTab({ url: href });
         };
     }
     const isDisabled = props.disabled || (!href && !props.onClick);

@@ -14,6 +14,7 @@ import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { openNewTab } from '@shared/util/openNewTab';
 import { Button } from '@views/components/common/Button';
 import { Chip, coreMap, flagMap } from '@views/components/common/Chip';
 import Divider from '@views/components/common/Divider';
@@ -25,7 +26,7 @@ import React, { useRef, useState } from 'react';
 
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
-const { openNewTab, addCourse, removeCourse, openCESPage } = background;
+const { addCourse, removeCourse, openCESPage } = background;
 
 /**
  * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.
