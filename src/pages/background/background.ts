@@ -117,7 +117,6 @@ console.log('background.ts loaded');
 backgroundProxy.registerProxyHandler(UNIFIED_MESSAGE_TYPES.TAB.OPEN, tabProxyHandlers.openTab);
 
 // BUG: Doesn't open right away
-// Interestingly enough it opens when the calendra page is opened
 // openDebugTab();
 
 const scheduleHandler = new ScheduleHandler();

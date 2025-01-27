@@ -9,6 +9,7 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
+        "build:dev": "tsc && NODE_ENV='development' vite build",
         "build:firefox": "tsc && BROWSER_TARGET=firefox vite build",
         "build:firefox-dev": "tsc && NODE_ENV='development' BROWSER_TARGET=firefox vite build",
         "build:watch": "NODE_ENV='development' vite build --mode development -w",
