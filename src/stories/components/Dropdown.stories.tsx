@@ -21,13 +21,13 @@ const schedules: UserSchedule[] = new Array(10).fill(exampleSchedule).map(
         })
 );
 
-UserScheduleStore.set(
-    'schedules',
-    schedules.reduce((acc, schedule) => {
-        acc.push(schedule);
-        return acc;
-    }, [] as Serialized<UserSchedule>[])
-);
+// UserScheduleStore.set(
+//     'schedules',
+//     schedules.reduce((acc, schedule) => {
+//         acc.push(schedule);
+//         return acc;
+//     }, [] as Serialized<UserSchedule>[])
+// );
 
 UserScheduleStore.set('activeIndex', 0);
 

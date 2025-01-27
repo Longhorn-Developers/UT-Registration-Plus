@@ -29,21 +29,21 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     const { element, course } = row;
 
-    useEffect(() => {
-        initSettings().then(({ enableHighlightConflicts }) => {
-            setHighlightConflicts(enableHighlightConflicts);
-        });
-
-        const l1 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
-            setHighlightConflicts(newValue);
-            // console.log('enableHighlightConflicts', newValue);
-        });
-
-        // Remove listeners when the component is unmounted
-        return () => {
-            OptionsStore.removeListener(l1);
-        };
-    }, []);
+    // useEffect(() => {
+    //     initSettings().then(({ enableHighlightConflicts }) => {
+    //         setHighlightConflicts(enableHighlightConflicts);
+    //     });
+    //
+    //     const l1 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
+    //         setHighlightConflicts(newValue);
+    //         // console.log('enableHighlightConflicts', newValue);
+    //     });
+    //
+    //     // Remove listeners when the component is unmounted
+    //     return () => {
+    //         OptionsStore.removeListener(l1);
+    //     };
+    // }, []);
 
     useEffect(() => {
         element.classList.add(styles.row!);

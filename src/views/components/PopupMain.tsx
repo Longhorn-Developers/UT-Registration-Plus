@@ -33,30 +33,30 @@ export default function PopupMain(): JSX.Element {
     const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
     useKC_DABR_WASM();
 
-    useEffect(() => {
-        const initAllSettings = async () => {
-            const { enableCourseStatusChips, enableDataRefreshing } = await initSettings();
-            setEnableCourseStatusChips(enableCourseStatusChips);
-            setEnableDataRefreshing(enableDataRefreshing);
-        };
-
-        initAllSettings();
-
-        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
-        });
-
-        const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
-            setEnableDataRefreshing(newValue);
-            // console.log('enableDataRefreshing', newValue);
-        });
-
-        return () => {
-            OptionsStore.removeListener(l1);
-            OptionsStore.removeListener(l2);
-        };
-    }, []);
+    // useEffect(() => {
+    //     const initAllSettings = async () => {
+    //         const { enableCourseStatusChips, enableDataRefreshing } = await initSettings();
+    //         setEnableCourseStatusChips(enableCourseStatusChips);
+    //         setEnableDataRefreshing(enableDataRefreshing);
+    //     };
+    //
+    //     initAllSettings();
+    //
+    //     const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+    //         setEnableCourseStatusChips(newValue);
+    //         // console.log('enableCourseStatusChips', newValue);
+    //     });
+    //
+    //     const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
+    //         setEnableDataRefreshing(newValue);
+    //         // console.log('enableDataRefreshing', newValue);
+    //     });
+    //
+    //     return () => {
+    //         OptionsStore.removeListener(l1);
+    //         OptionsStore.removeListener(l2);
+    //     };
+    // }, []);
 
     const [activeSchedule, schedules] = useSchedules();
     // const [isRefreshing, setIsRefreshing] = useState(false);

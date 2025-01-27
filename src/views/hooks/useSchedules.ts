@@ -47,22 +47,22 @@ export default function useSchedules(): [active: UserSchedule, schedules: UserSc
         });
     }
 
-    useEffect(() => {
-        const l1 = UserScheduleStore.listen('schedules', ({ newValue }) => {
-            schedulesCache = newValue.map(s => new UserSchedule(s));
-            setSchedules(schedulesCache);
-        });
-
-        const l2 = UserScheduleStore.listen('activeIndex', ({ newValue }) => {
-            activeIndexCache = newValue;
-            setActiveIndex(newValue);
-        });
-
-        return () => {
-            UserScheduleStore.removeListener(l1);
-            UserScheduleStore.removeListener(l2);
-        };
-    }, []);
+    // useEffect(() => {
+    //     const l1 = UserScheduleStore.listen('schedules', ({ newValue }) => {
+    //         schedulesCache = newValue.map(s => new UserSchedule(s));
+    //         setSchedules(schedulesCache);
+    //     });
+    //
+    //     const l2 = UserScheduleStore.listen('activeIndex', ({ newValue }) => {
+    //         activeIndexCache = newValue;
+    //         setActiveIndex(newValue);
+    //     });
+    //
+    //     return () => {
+    //         UserScheduleStore.removeListener(l1);
+    //         UserScheduleStore.removeListener(l2);
+    //     };
+    // }, []);
 
     // recompute active schedule on a schedule/index change
     useEffect(() => {

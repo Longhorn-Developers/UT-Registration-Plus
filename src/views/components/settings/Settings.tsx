@@ -144,48 +144,48 @@ export default function Settings(): JSX.Element {
 
         window.addEventListener('keydown', handleKeyPress);
 
-        // Listen for changes in the settings
-        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
-        });
-
-        const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
-            setShowTimeLocation(newValue);
-            // console.log('enableTimeAndLocationInPopup', newValue);
-        });
-
-        const l3 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
-            setHighlightConflicts(newValue);
-            // console.log('enableHighlightConflicts', newValue);
-        });
-
-        const l4 = OptionsStore.listen('enableScrollToLoad', async ({ newValue }) => {
-            setLoadAllCourses(newValue);
-            // console.log('enableScrollToLoad', newValue);
-        });
-
-        const l5 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
-            setEnableDataRefreshing(newValue);
-            // console.log('enableDataRefreshing', newValue);
-        });
-
-        const l6 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
-            setCalendarNewTab(newValue);
-            // console.log('alwaysOpenCalendarInNewTab', newValue);
-        });
-
-        // Remove listeners when the component is unmounted
-        return () => {
-            OptionsStore.removeListener(l1);
-            OptionsStore.removeListener(l2);
-            OptionsStore.removeListener(l3);
-            OptionsStore.removeListener(l4);
-            OptionsStore.removeListener(l5);
-            OptionsStore.removeListener(l6);
-
-            window.removeEventListener('keydown', handleKeyPress);
-        };
+        // // Listen for changes in the settings
+        // const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+        //     setEnableCourseStatusChips(newValue);
+        //     // console.log('enableCourseStatusChips', newValue);
+        // });
+        //
+        // const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
+        //     setShowTimeLocation(newValue);
+        //     // console.log('enableTimeAndLocationInPopup', newValue);
+        // });
+        //
+        // const l3 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
+        //     setHighlightConflicts(newValue);
+        //     // console.log('enableHighlightConflicts', newValue);
+        // });
+        //
+        // const l4 = OptionsStore.listen('enableScrollToLoad', async ({ newValue }) => {
+        //     setLoadAllCourses(newValue);
+        //     // console.log('enableScrollToLoad', newValue);
+        // });
+        //
+        // const l5 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
+        //     setEnableDataRefreshing(newValue);
+        //     // console.log('enableDataRefreshing', newValue);
+        // });
+        //
+        // const l6 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
+        //     setCalendarNewTab(newValue);
+        //     // console.log('alwaysOpenCalendarInNewTab', newValue);
+        // });
+        //
+        // // Remove listeners when the component is unmounted
+        // return () => {
+        //     OptionsStore.removeListener(l1);
+        //     OptionsStore.removeListener(l2);
+        //     OptionsStore.removeListener(l3);
+        //     OptionsStore.removeListener(l4);
+        //     OptionsStore.removeListener(l5);
+        //     OptionsStore.removeListener(l6);
+        //
+        //     window.removeEventListener('keydown', handleKeyPress);
+        // };
     }, []);
 
     const handleEraseAll = () => {
