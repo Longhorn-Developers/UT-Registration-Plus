@@ -154,16 +154,7 @@ export default function PopupMain(): JSX.Element {
                         renderItem={course => (
                             <PopupCourseBlock key={course.id} course={course} colors={course.colors} />
                         )}
-                    >
-                        {/* {(course, handleProps) => (
-                            <PopupCourseBlock
-                                key={course.uniqueId}
-                                course={course}
-                                colors={course.colors}
-                                dragHandleProps={handleProps}
-                            />
-                        )} */}
-                    </SortableList>
+                    />
                 )}
             </div>
             <div className='w-full flex flex-col items-center gap-1.25 p-5 pt-3.75'>

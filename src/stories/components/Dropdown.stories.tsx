@@ -2,10 +2,10 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import { generateRandomId } from '@shared/util/random';
 import type { Meta, StoryObj } from '@storybook/react';
-import List from 'src/views/components/common/SortableList';
 import type { ScheduleDropdownProps } from '@views/components/common/ScheduleDropdown';
 import ScheduleDropdown from '@views/components/common/ScheduleDropdown';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
+import { SortableList } from '@views/components/common/SortableList';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import type { Serialized } from 'chrome-extension-toolkit';
 import React, { useEffect } from 'react';
@@ -48,10 +48,10 @@ const meta: Meta<typeof ScheduleDropdown> = {
         return (
             <div className='w-80'>
                 <ScheduleDropdown {...args}>
-                    <List
+                    <SortableList
+                        className='gap-spacing-3'
                         draggables={schedules}
-                        itemKey={s => s.id}
-                        onReordered={reordered => {
+                        onChange={reordered => {
                             const activeSchedule = getActiveSchedule();
                             const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
@@ -59,18 +59,10 @@ const meta: Meta<typeof ScheduleDropdown> = {
                             UserScheduleStore.set('schedules', reordered);
                             UserScheduleStore.set('activeIndex', activeIndex);
                         }}
-                        gap={10}
-                    >
-                        {(schedule, handleProps) => (
-                            <ScheduleListItem
-                                schedule={schedule}
-                                onClick={() => {
-                                    switchSchedule(schedule.id);
-                                }}
-                                dragHandleProps={handleProps}
-                            />
+                        renderItem={schedule => (
+                            <ScheduleListItem schedule={schedule} onClick={() => switchSchedule(schedule.id)} />
                         )}
-                    </List>
+                    />
                 </ScheduleDropdown>
             </div>
         );

@@ -14,7 +14,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { SortableItemOverlay } from './SortableItemOverlay';
 import { SortableListItem } from './SortableListItem';
 
-interface BaseItem {
+/**
+ * Extendable Prop for Sortable Item Id
+ */
+export interface BaseItem {
     id: UniqueIdentifier;
 }
 

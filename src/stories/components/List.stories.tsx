@@ -1,16 +1,15 @@
-import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd';
 import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import { tailwindColorways } from '@shared/util/storybook';
 import type { Meta, StoryObj } from '@storybook/react';
-import List from 'src/views/components/common/SortableList';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
+import type { BaseItem } from '@views/components/common/SortableList';
+import { SortableList } from '@views/components/common/SortableList';
 import React from 'react';
 
 const numberOfCourses = 5;
 
-// TODO: move into utils
 /**
  * Generates an array of courses.
  *
@@ -73,36 +72,34 @@ const generateCourses = (count: number): Course[] => {
 };
 
 const exampleCourses = generateCourses(numberOfCourses);
-const generateCourseBlocks = (course: Course, dragHandleProps: DraggableProvidedDragHandleProps) => (
-    <PopupCourseBlock key={course.uniqueId} course={course} colors={course.colors} dragHandleProps={dragHandleProps} />
-);
+
+type CourseWithId = Course & BaseItem;
 
 const meta = {
     title: 'Components/Common/List',
-    component: List,
+    component: SortableList,
     parameters: {
         layout: 'centered',
     },
     tags: ['autodocs'],
-    argTypes: {
-        gap: { control: 'number' },
-    },
-} satisfies Meta<typeof List<Course>>;
+} satisfies Meta<typeof SortableList<CourseWithId>>;
 export default meta;
 
-type Story = StoryObj<Meta<typeof List<Course>>>;
+type Story = StoryObj<Meta<typeof SortableList<CourseWithId>>>;
 
 export const Default: Story = {
     args: {
-        draggables: exampleCourses,
-        children: generateCourseBlocks,
-        itemKey: item => item.uniqueId,
-        gap: 12,
-        onReordered: () => {},
+        draggables: exampleCourses.map(course => ({
+            id: course.uniqueId,
+            ...course,
+            getConflicts: course.getConflicts,
+        })),
+        onChange: () => {},
+        renderItem: course => <PopupCourseBlock key={course.id} course={course} colors={course.colors} />,
     },
     render: args => (
-        <div className='w-sm'>
-            <List {...args} />
+        <div className='h-3xl w-3xl transform-none'>
+            <SortableList {...args} />
         </div>
     ),
 };
