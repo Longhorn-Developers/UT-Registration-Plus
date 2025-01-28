@@ -6,7 +6,6 @@ import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { openReportWindow } from '@shared/util/openReportWindow';
 import Divider from '@views/components/common/Divider';
-import List from '@views/components/common/List';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
@@ -20,6 +19,7 @@ import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown';
 import ScheduleListItem from './common/ScheduleListItem';
+import { SortableList } from './common/SortableList';
 
 /**
  * Renders the main popup component.
@@ -56,6 +56,7 @@ export default function PopupMain(): JSX.Element {
     }, []);
 
     const [activeSchedule, schedules] = useSchedules();
+
     // const [isRefreshing, setIsRefreshing] = useState(false);
     const [funny, setFunny] = useState<string>('');
 
@@ -103,10 +104,9 @@ export default function PopupMain(): JSX.Element {
             <Divider orientation='horizontal' size='100%' />
             <div className='px-5 pb-2.5 pt-3.75'>
                 <ScheduleDropdown>
-                    <List
+                    <SortableList
                         draggables={schedules}
-                        itemKey={schedule => schedule.id}
-                        onReordered={reordered => {
+                        onChange={reordered => {
                             const activeSchedule = getActiveSchedule();
                             const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
@@ -114,18 +114,10 @@ export default function PopupMain(): JSX.Element {
                             UserScheduleStore.set('schedules', reordered);
                             UserScheduleStore.set('activeIndex', activeIndex);
                         }}
-                        gap={10}
-                    >
-                        {(schedule, handleProps) => (
-                            <ScheduleListItem
-                                schedule={schedule}
-                                onClick={() => {
-                                    switchSchedule(schedule.id);
-                                }}
-                                dragHandleProps={handleProps}
-                            />
+                        renderItem={schedule => (
+                            <ScheduleListItem schedule={schedule} onClick={() => switchSchedule(schedule.id)} />
                         )}
-                    </List>
+                    />
                     <div className='bottom-0 right-0 mt-2.5 w-full flex justify-end'>
                         <Button
                             variant='filled'
@@ -149,24 +141,29 @@ export default function PopupMain(): JSX.Element {
             )}
             <div className='flex-1 self-stretch overflow-y-auto px-5'>
                 {activeSchedule?.courses?.length > 0 && (
-                    <List
-                        draggables={activeSchedule.courses}
-                        onReordered={reordered => {
-                            activeSchedule.courses = reordered;
+                    <SortableList
+                        draggables={activeSchedule.courses.map(course => ({
+                            id: course.uniqueId,
+                            ...course,
+                            getConflicts: course.getConflicts,
+                        }))}
+                        onChange={reordered => {
+                            activeSchedule.courses = reordered.map(({ id: _id, ...course }) => course);
                             replaceSchedule(getActiveSchedule(), activeSchedule);
                         }}
-                        itemKey={e => e.uniqueId}
-                        gap={10}
+                        renderItem={course => (
+                            <PopupCourseBlock key={course.id} course={course} colors={course.colors} />
+                        )}
                     >
-                        {(course, handleProps) => (
+                        {/* {(course, handleProps) => (
                             <PopupCourseBlock
                                 key={course.uniqueId}
                                 course={course}
                                 colors={course.colors}
                                 dragHandleProps={handleProps}
                             />
-                        )}
-                    </List>
+                        )} */}
+                    </SortableList>
                 )}
             </div>
             <div className='w-full flex flex-col items-center gap-1.25 p-5 pt-3.75'>

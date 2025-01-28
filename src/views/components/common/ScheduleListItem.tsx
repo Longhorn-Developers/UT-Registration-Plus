@@ -13,21 +13,20 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from './Button';
 import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
+import { SortableListDragHandle } from './SortableListDragHandle';
 
 /**
  * Props for the ScheduleListItem component.
  */
-export type Props = {
-    style?: React.CSSProperties;
+interface ScheduleListItemProps {
     schedule: UserSchedule;
-    dragHandleProps?: Omit<React.HTMLAttributes<HTMLDivElement>, 'className'>;
     onClick?: React.DOMAttributes<HTMLDivElement>['onClick'];
-};
+}
 
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
-export default function ScheduleListItem({ schedule, dragHandleProps, onClick }: Props): JSX.Element {
+export default function ScheduleListItem({ schedule, onClick }: ScheduleListItemProps): JSX.Element {
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
@@ -92,14 +91,14 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     };
 
     return (
-        <div className='h-7.5 rounded bg-white'>
+        <div className='h-7.5 rounded'>
             <li className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
-                <div className='flex cursor-move items-center justify-center focusable' {...dragHandleProps}>
+                <SortableListDragHandle className='flex cursor-move items-center justify-center'>
                     <DotsSixVertical
                         weight='bold'
                         className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400'
                     />
-                </div>
+                </SortableListDragHandle>
 
                 <div className='group relative flex flex-1 items-center overflow-x-hidden'>
                     <div
@@ -132,7 +131,11 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                             />
                         )}
                         {!isEditing && (
-                            <Text variant='p' className='flex-1 truncate' onDoubleClick={() => setIsEditing(true)}>
+                            <Text
+                                variant='p'
+                                className='flex-1 select-none truncate'
+                                onDoubleClick={() => setIsEditing(true)}
+                            >
                                 {schedule.name}
                             </Text>
                         )}
