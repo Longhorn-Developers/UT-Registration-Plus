@@ -1,0 +1,13 @@
+diff --git a/dist/lib/storage/storage.d.ts b/dist/lib/storage/storage.d.ts
+index a385bd732807932b77a979a15fc91e2e556e8493..9a320fc6d648e9eb3ab4c71fbf702fdda902f027 100644
+--- a/dist/lib/storage/storage.d.ts
++++ b/dist/lib/storage/storage.d.ts
+@@ -8,7 +8,7 @@ export declare class ExtensionStorage<T extends Record<string, unknown>> {
+     /**
+      * Get a value from storage
+      */
+-    get<K extends keyof T>(key: K): Promise<T[K] | undefined>;
++    get<K extends keyof T>(key: K): Promise<T[K]>;
+     /**
+      * Get multiple values from storage
+      */
