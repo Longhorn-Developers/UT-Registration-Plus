@@ -30,6 +30,12 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
     const debouncedSetHexCode = useDebounce((value: string) => setHexCode(value), 500);
 
     React.useEffect(() => {
+        if (hexCode !== localHexCode) {
+            setLocalHexCode(hexCode);
+        }
+    }, [hexCode]);
+
+    React.useEffect(() => {
         debouncedSetHexCode(localHexCode);
 
         // This is on purpose
