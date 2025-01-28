@@ -14,6 +14,7 @@ import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { openCESPage } from '@shared/util/openCESPage';
 import { openNewTab } from '@shared/util/openNewTab';
 import { Button } from '@views/components/common/Button';
 import { Chip, coreMap, flagMap } from '@views/components/common/Chip';
@@ -26,7 +27,7 @@ import React, { useRef, useState } from 'react';
 
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
-const { addCourse, removeCourse, openCESPage } = background;
+const { addCourse, removeCourse } = background;
 
 /**
  * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.
@@ -205,6 +206,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                 url: course.url,
                             });
                         } else {
+                            // TODO: fix this
                             background.switchToCalendarTab({});
                         }
                     }}
