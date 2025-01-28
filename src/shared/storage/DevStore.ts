@@ -33,3 +33,8 @@ DevStore.bulkSet({
     isExtensionReloading: true,
     reloadTabId: undefined,
 });
+
+// Listen for changes
+DevStore.addChangeListener(changes => {
+    console.log('DevStore changes: ', changes);
+});

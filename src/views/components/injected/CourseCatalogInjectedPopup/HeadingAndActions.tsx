@@ -1,3 +1,4 @@
+import { addCourse } from '@pages/background/util/addCourse';
 import {
     ArrowUpRight,
     CalendarDots,
@@ -27,7 +28,7 @@ import React, { useRef, useState } from 'react';
 
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
-const { addCourse, removeCourse } = background;
+const { removeCourse } = background;
 
 /**
  * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.
@@ -115,9 +116,16 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     };
 
     const handleAddOrRemoveCourse = async () => {
+        console.log('handleAddOrRemoveCourse called');
         if (!activeSchedule) return;
         if (!courseAdded) {
-            addCourse({ course, scheduleId: activeSchedule.id });
+            // BUG: This line is causing this error:
+            // TypeError: can't access property "addListener", browser.runtime.onInstalled is undefined <anonymous> background.ts:99
+            // Commenting out that block of code in background.ts fixes the error
+            addCourse({ scheduleId: activeSchedule.id, course });
+            console.log('Adding course');
+            console.log('activeSchedule', activeSchedule);
+            console.log('course', course);
         } else {
             removeCourse({ course, scheduleId: activeSchedule.id });
         }

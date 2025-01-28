@@ -29,3 +29,8 @@ UserScheduleStore.bulkSet({
     ],
     activeIndex: 0,
 });
+
+// Listen for changes
+UserScheduleStore.addChangeListener(changes => {
+    console.log('UserScheduleStore changes: ', changes);
+});

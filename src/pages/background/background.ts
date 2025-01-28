@@ -96,18 +96,18 @@ export const UNIFIED_MESSAGE_TYPES = {
  * will be triggered on either install or update
  * (will also be triggered on a user's sync'd browsers (on other devices)))
  */
-browser.runtime.onInstalled.addListener(details => {
-    switch (details.reason) {
-        case 'install':
-            onInstall();
-            break;
-        case 'update':
-            onUpdate();
-            break;
-        default:
-            break;
-    }
-});
+// browser.runtime.onInstalled.addListener(details => {
+//     switch (details.reason) {
+//         case 'install':
+//             onInstall();
+//             break;
+//         case 'update':
+//             onUpdate();
+//             break;
+//         default:
+//             break;
+//     }
+// });
 
 const backgroundProxy = new MessagingProxy<UnifiedMessageTypes>('background');
 
