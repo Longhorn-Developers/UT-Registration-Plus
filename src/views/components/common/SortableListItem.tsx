@@ -25,13 +25,12 @@ export function SortableListItem({ children, id }: PropsWithChildren<Props>) {
         [attributes, listeners, setActivatorNodeRef]
     );
 
-    const style: CSSProperties = {
+    const style = {
         listStyle: 'none',
-        backgroundColor: 'white',
         visibility: isDragging ? 'hidden' : 'visible',
         transform: CSS.Translate.toString(transform),
         transition,
-    };
+    } satisfies CSSProperties;
 
     return (
         <SortableItemProvider value={context}>
