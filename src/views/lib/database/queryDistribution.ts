@@ -19,7 +19,10 @@ type GradeDistributionParams = {
  * an array of semesters that we have the distribution for
  */
 export async function queryAggregateDistribution(course: Course): Promise<[Distribution, Semester[], boolean]> {
+    console.log('queryAggregateDistribution called');
+    // BUG: The error is in this line
     const db = await initializeDB();
+    console.log('db initialized successfully');
     const [query, params] = generateQuery(course, null, true);
 
     let res: QueryExecResult | undefined;
@@ -82,6 +85,8 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
 
     // get unique semesters from the data
     const rawSemesters = res.values.reduce((acc, cur) => acc.add(cur[0] as string), new Set<string>());
+
+    console.log('rawSemesters fetched');
 
     const semesters: Semester[] = [];
 
