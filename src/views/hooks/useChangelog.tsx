@@ -1,9 +1,8 @@
+import { X } from '@phosphor-icons/react';
 import ChangelogPopup from '@views/components/common/ChangelogPopup';
 import Text from '@views/components/common/Text/Text';
 import { useDialog } from '@views/contexts/DialogContext';
 import React from 'react';
-
-import MaterialSymbolsClose from '~icons/material-symbols/close';
 
 import { Button } from '../components/common/Button';
 
@@ -22,8 +21,8 @@ export default function useChangelog(): () => void {
                     <Text variant='h1' className='text-theme-black'>
                         Changelog
                     </Text>
-                    <Button variant='single' onClick={close} color='theme-black' className='p-1 text-gray-700'>
-                        <MaterialSymbolsClose className='h-7 w-7' />
+                    <Button variant='minimal' onClick={close} color='theme-black' className='p-1 text-gray-700'>
+                        <X className='h-6 w-6' />
                     </Button>
                 </div>
             ),

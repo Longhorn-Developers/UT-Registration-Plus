@@ -1,6 +1,7 @@
 import type { Course } from '@shared/types/Course';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
+import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React from 'react';
 
@@ -43,7 +44,11 @@ function makeGridRow(row: number, cols: number): JSX.Element {
 
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
- * @param props
+ *
+ * @param courseCells - The courses to display on the calendar
+ * @param saturdayClass - Whether the user has a Saturday class
+ * @param setCourse - Function to set the course to display in the course details panel
+ * @returns The CalendarGrid component
  */
 export default function CalendarGrid({
     courseCells,
@@ -69,7 +74,9 @@ export default function CalendarGrid({
                 .map(() => (
                     <div className='h-4 flex items-end justify-center border-r border-gray-300' />
                 ))}
-            {courseCells ? <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} /> : null}
+            <ColorPickerProvider>
+                {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
+            </ColorPickerProvider>
         </div>
     );
 }
@@ -143,8 +150,8 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                         courseDeptAndInstr={courseDeptAndInstr}
                         timeAndLocation={timeAndLocation}
                         status={status}
-                        colors={block.course.colors}
                         onClick={() => setCourse(block.course)}
+                        blockData={block}
                     />
                 </div>
             );

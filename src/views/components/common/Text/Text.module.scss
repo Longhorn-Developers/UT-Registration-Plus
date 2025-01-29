@@ -34,13 +34,12 @@
     font-size: 0.6875rem;
     font-weight: 400;
     letter-spacing: 0;
-    line-height: 100%; /* 0.6875rem */
+    line-height: 0.75rem;
 }
 
 .h3 {
     font-size: 1.26563rem;
     font-weight: 600;
-    text-transform: uppercase;
     letter-spacing: 0;
 }
 
@@ -48,7 +47,6 @@
     font-size: 1rem;
     font-weight: 500;
     letter-spacing: 0.03125em;
-    text-transform: capitalize;
 }
 
 .h2 {
@@ -58,15 +56,13 @@
 }
 
 .h1-course {
-    font-size: 1rem;
-    font-weight: 550;
-    text-transform: capitalize;
+    font-size: 0.875rem;
+    font-weight: 600;
     letter-spacing: 0;
 }
 
 .h1 {
     font-size: 1.60188rem;
     font-weight: 700;
-    text-transform: uppercase;
     letter-spacing: 0;
 }

@@ -1,6 +1,14 @@
-import addCourse from '@pages/background/lib/addCourse';
+// import addCourse from '@pages/background/lib/addCourse';
+import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
+import exportSchedule from '@pages/background/lib/exportSchedule';
+import importSchedule from '@pages/background/lib/importSchedule';
+import { CalendarDots, Trash } from '@phosphor-icons/react';
+import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { downloadBlob } from '@shared/util/downloadBlob';
+// import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
 // import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import { Button } from '@views/components/common/Button';
@@ -12,18 +20,17 @@ import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
 import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
-import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-import getCourseTableRows from '@views/lib/getCourseTableRows';
+// import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
+// import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
-import { SiteSupport } from '@views/lib/getSiteSupport';
-import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
+// import { SiteSupport } from '@views/lib/getSiteSupport';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import IconoirGitFork from '~icons/iconoir/git-fork';
-// import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';
-import DeleteForeverIcon from '~icons/material-symbols/delete-forever';
 
+// import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';;
+import FileUpload from '../common/FileUpload';
 import { useMigrationDialog } from '../common/MigrationDialog';
 // import RefreshIcon from '~icons/material-symbols/refresh';
 import DevMode from './DevMode';
@@ -33,7 +40,6 @@ const DISPLAY_PREVIEWS = false;
 const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS ? 'w-1/2 space-y-4' : 'flex-grow space-y-4';
 
 const manifest = chrome.runtime.getManifest();
-const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
 
 const gitHubStatsService = new GitHubStatsService();
 const includeMergedPRs = false;
@@ -84,6 +90,7 @@ export default function Settings(): JSX.Element {
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    const [calendarNewTab, setCalendarNewTab] = useState<boolean>(false);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -116,12 +123,14 @@ export default function Settings(): JSX.Element {
                 enableHighlightConflicts,
                 enableScrollToLoad,
                 enableDataRefreshing,
+                alwaysOpenCalendarInNewTab,
             } = await initSettings();
             setEnableCourseStatusChips(enableCourseStatusChips);
             setShowTimeLocation(enableTimeAndLocationInPopup);
             setHighlightConflicts(enableHighlightConflicts);
             setLoadAllCourses(enableScrollToLoad);
             setEnableDataRefreshing(enableDataRefreshing);
+            setCalendarNewTab(alwaysOpenCalendarInNewTab);
         };
 
         fetchGitHubStats();
@@ -161,6 +170,11 @@ export default function Settings(): JSX.Element {
             // console.log('enableDataRefreshing', newValue);
         });
 
+        const l6 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
+            setCalendarNewTab(newValue);
+            // console.log('alwaysOpenCalendarInNewTab', newValue);
+        });
+
         // Remove listeners when the component is unmounted
         return () => {
             OptionsStore.removeListener(l1);
@@ -168,6 +182,7 @@ export default function Settings(): JSX.Element {
             OptionsStore.removeListener(l3);
             OptionsStore.removeListener(l4);
             OptionsStore.removeListener(l5);
+            OptionsStore.removeListener(l6);
 
             window.removeEventListener('keydown', handleKeyPress);
         };
@@ -202,51 +217,42 @@ export default function Settings(): JSX.Element {
         });
     };
 
-    // todo: move into a util/shared place, rather than specifically in settings
-    const handleAddCourseByUrl = async () => {
-        // todo: Use a proper modal instead of a prompt
-        // eslint-disable-next-line no-alert
-        const link: string | null = prompt('Enter course link');
-
-        // Exit if the user cancels the prompt
-        if (link === null) return;
-
-        try {
-            let response: Response;
-            try {
-                response = await fetch(link);
-            } catch (e) {
-                // eslint-disable-next-line no-alert
-                alert(`Failed to fetch url '${link}'`);
-                return;
-            }
-            const text = await response.text();
-            const doc = new DOMParser().parseFromString(text, 'text/html');
-
-            const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, link);
-            const tableRows = getCourseTableRows(doc);
-            const courses = scraper.scrape(tableRows, false);
-
-            if (courses.length === 1) {
-                const description = scraper.getDescription(doc);
-                const row = courses[0]!;
-                const course = row.course!;
-                course.description = description;
-                // console.log(course);
-
-                if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-                    console.log('adding course');
-                    addCourse(activeSchedule.id, course);
-                } else {
-                    console.log('course already exists');
-                }
-            } else {
-                console.log(courses);
-            }
-        } catch (error) {
-            console.error('Error scraping course:', error);
+    const handleExportClick = async (id: string) => {
+        const jsonString = await exportSchedule(id);
+        if (jsonString) {
+            const schedules = await UserScheduleStore.get('schedules');
+            const schedule = schedules.find(s => s.id === id);
+            const fileName = `${schedule?.name ?? `schedule_${id}`}_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+            await downloadBlob(jsonString, 'JSON', fileName);
+        } else {
+            console.error('Error exporting schedule: jsonString is undefined');
         }
     };
+
+    const handleImportClick = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async e => {
+                try {
+                    const result = e.target?.result as string;
+                    const jsonObject = JSON.parse(result);
+                    await importSchedule(jsonObject);
+                } catch (error) {
+                    console.error('Invalid import file!');
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+
+    // const handleAddCourseByLink = async () => {
+    //     // todo: Use a proper modal instead of a prompt
+    //     const link: string | null = prompt('Enter course link');
+    //     // Exit if the user cancels the prompt
+    //     if (link === null) return;
+    //     await addCourseByUrl(link, activeSchedule);
+    // };
 
     const [devMode, toggleDevMode] = useDevMode(10);
 
@@ -259,17 +265,24 @@ export default function Settings(): JSX.Element {
             <header className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
                 <LargeLogo />
                 <Divider className='mx-2 self-center md:mx-4' size='2.5rem' orientation='vertical' />
-                <Text variant='h1' className='flex-1 text-ut-burntorange'>
-                    UTRP SETTINGS & CREDITS PAGE
+                <Text variant='h1' className='flex-1 text-ut-burntorange normal-case!'>
+                    Settings and Credits
                 </Text>
                 <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
-                    <Button variant='single' color='theme-black' onClick={handleChangelogOnClick}>
+                    <Button variant='minimal' color='theme-black' onClick={handleChangelogOnClick}>
                         <IconoirGitFork className='h-6 w-6 text-ut-gray' />
                         <Text variant='small' className='text-ut-gray font-normal'>
                             v{manifest.version} - {process.env.NODE_ENV}
                         </Text>
                     </Button>
-                    <img src={LDIconURL} alt='LD Icon' className='h-10 w-10 rounded-lg' />
+                    <Button
+                        variant='filled'
+                        icon={CalendarDots}
+                        color='ut-burntorange'
+                        onClick={() => background.switchToCalendarTab({})}
+                    >
+                        Calendar
+                    </Button>
                 </div>
             </header>
 
@@ -362,6 +375,40 @@ export default function Settings(): JSX.Element {
                                 <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
                                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Export Current Schedule
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>
+                                            Backup your active schedule to a portable file
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant='outline'
+                                        color='ut-burntorange'
+                                        onClick={() => handleExportClick(activeSchedule.id)}
+                                    >
+                                        Export
+                                    </Button>
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Import Schedule
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>Import from a schedule file</p>
+                                    </div>
+                                    <FileUpload variant='filled' color='ut-burntorange' onChange={handleImportClick}>
+                                        Import Schedule
+                                    </FileUpload>
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
                                             Course Conflict Highlight
                                         </Text>
                                         <p className='text-sm text-gray-600'>
@@ -403,29 +450,40 @@ export default function Settings(): JSX.Element {
                                 <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
                                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Always Open Calendar in New Tab
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>
+                                            Always opens the calendar view in a new tab when navigating to the calendar
+                                            page. May prevent issues where the calendar refuses to open.
+                                        </p>
+                                    </div>
+                                    <SwitchButton
+                                        isChecked={calendarNewTab}
+                                        onChange={() => {
+                                            setCalendarNewTab(!calendarNewTab);
+                                            OptionsStore.set('alwaysOpenCalendarInNewTab', !calendarNewTab);
+                                        }}
+                                    />
+                                </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
                                             Reset All Data
                                         </Text>
                                         <p className='text-sm text-gray-600'>
                                             Erases all schedules and courses you have.
                                         </p>
                                     </div>
-                                    <Button
-                                        variant='outline'
-                                        color='theme-red'
-                                        icon={DeleteForeverIcon}
-                                        onClick={handleEraseAll}
-                                    >
+                                    <Button variant='outline' color='theme-red' icon={Trash} onClick={handleEraseAll}>
                                         Erase All
                                     </Button>
                                 </div>
                             </div>
                             {DISPLAY_PREVIEWS && (
                                 <Preview>
-                                    <div className='inline-flex items-center self-center gap-1'>
-                                        <Text variant='small' className='text-ut-gray !font-normal'>
-                                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
-                                        </Text>
-                                    </div>
                                     <Text
                                         variant='h2-course'
                                         className={clsx('text-center text-theme-red !font-normal', {
@@ -445,7 +503,7 @@ export default function Settings(): JSX.Element {
                         <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
                             Developer Mode
                         </h2>
-                        <Button variant='filled' color='ut-black' onClick={handleAddCourseByUrl}>
+                        <Button variant='filled' color='ut-black' onClick={() => addCourseByURL(activeSchedule)}>
                             Add course by link
                         </Button>
                         <Button variant='filled' color='ut-burntorange' onClick={showMigrationDialog}>
@@ -566,7 +624,7 @@ export default function Settings(): JSX.Element {
                                                 className='text-ut-burntorange font-semibold hover:cursor-pointer'
                                                 onClick={() => window.open(`https://github.com/${username}`, '_blank')}
                                             >
-                                                @{username}
+                                                {githubStats.names[username]}
                                             </Text>
                                             <p className='text-sm text-gray-600'>Contributor</p>
                                             {showGitHubStats && (

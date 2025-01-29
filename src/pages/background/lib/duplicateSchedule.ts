@@ -5,20 +5,24 @@ import handleDuplicate from './handleDuplicate';
 
 /**
  * Creates a new schedule with the given name
- * @param scheduleName the name of the schedule to create
- * @returns undefined if successful, otherwise an error message
+ *
+ * @param scheduleName - The name of the schedule to create
+ * @returns Undefined if successful, otherwise an error message
  */
 export default async function duplicateSchedule(scheduleId: string): Promise<string | undefined> {
     const schedules = await UserScheduleStore.get('schedules');
-    const schedule = schedules.find(schedule => schedule.id === scheduleId);
+    const scheduleIndex = schedules.findIndex(schedule => schedule.id === scheduleId);
 
-    if (schedule === undefined) {
+    if (scheduleIndex === -1) {
         throw new Error(`Schedule ${scheduleId} does not exist`);
     }
 
-    const updatedName = await handleDuplicate(schedule.name);
+    const schedule = schedules[scheduleIndex]!;
 
-    schedules.push({
+    const copyOfName = `Copy of ${schedule.name}`;
+    const updatedName = await handleDuplicate(copyOfName);
+
+    schedules.splice(scheduleIndex + 1, 0, {
         id: generateRandomId(),
         name: updatedName,
         courses: JSON.parse(JSON.stringify(schedule.courses)),

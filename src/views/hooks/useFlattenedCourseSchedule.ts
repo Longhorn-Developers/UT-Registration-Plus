@@ -48,7 +48,8 @@ export interface FlattenedCourseSchedule {
 
 /**
  * Converts minutes to an index value.
- * @param minutes The number of minutes.
+ *
+ * @param minutes - The number of minutes.
  * @returns The index value.
  */
 export const convertMinutesToIndex = (minutes: number): number => Math.floor((minutes - 420) / 30);
@@ -95,9 +96,9 @@ function extractCourseInfo(course: Course) {
 
     let courseDeptAndInstr = `${course.department} ${course.number}`;
 
-    const mainInstructor = course.instructors[0];
-    if (mainInstructor) {
-        courseDeptAndInstr += ` – ${mainInstructor.toString({ format: 'first_last', case: 'capitalize' })}`;
+    if (course.instructors.length > 0) {
+        courseDeptAndInstr += ' \u2013 ';
+        courseDeptAndInstr += course.instructors.map(instructor => instructor.toString({ format: 'last' })).join('; ');
     }
 
     return { status, courseDeptAndInstr, meetings, course };
@@ -125,7 +126,12 @@ function processAsyncCourses({
             componentProps: {
                 courseDeptAndInstr,
                 status,
-                colors: course.colors,
+                blockData: {
+                    calendarGridPoint: { dayIndex: -1, startIndex: -1, endIndex: -1 },
+                    componentProps: { courseDeptAndInstr, status, blockData: {} as CalendarGridCourse },
+                    course,
+                    async: true,
+                },
             },
             course,
             async: true,
@@ -145,10 +151,19 @@ function processInPersonMeetings(
     const { days, startTime, endTime, location } = meeting;
     const midnightIndex = 1440;
     const normalizingTimeFactor = 720;
-    const time = meeting.getTimeString({ separator: '-', capitalize: true });
-    const timeAndLocation = `${time}${location ? ` - ${location.building}` : ''}`;
+    const oneHour = 60;
+    const time = meeting.getTimeString({ separator: '–' });
     const normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
     const normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
+    const courseDuration = normalizedEndTime - normalizedStartTime;
+    let timeAndLocation = `${time}`;
+    if (location) {
+        if (courseDuration > oneHour) {
+            timeAndLocation += `\n${location.building} ${location.room}`;
+        } else {
+            timeAndLocation += `, ${location.building} ${location.room}`;
+        }
+    }
 
     return days.map(day => ({
         calendarGridPoint: {
@@ -160,7 +175,7 @@ function processInPersonMeetings(
             courseDeptAndInstr,
             timeAndLocation,
             status,
-            colors: course.colors,
+            blockData: {} as CalendarGridCourse,
         },
         course,
         async: false,

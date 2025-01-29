@@ -1,6 +1,7 @@
 import type { Course } from '@shared/types/Course';
 import type { Distribution, LetterGrade } from '@shared/types/Distribution';
 import { extendedColors } from '@shared/types/ThemeColors';
+import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import {
     NoDataError,
@@ -12,6 +13,8 @@ import HighchartsReact from 'highcharts-react-official';
 import type { ChangeEvent } from 'react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
+
+const UT_GRADE_DISTRIBUTION_URL = 'https://reports.utexas.edu/spotlight-data/ut-course-grade-distributions';
 
 interface GradeDistributionProps {
     course: Course;
@@ -45,10 +48,8 @@ const GRADE_COLORS = {
 /**
  * Renders the grade distribution chart for a specific course.
  *
- * @component
- * @param {GradeDistributionProps} props - The component props.
- * @param {Course} props.course - The course for which to display the grade distribution.
- * @returns {JSX.Element} The grade distribution chart component.
+ * @param course - The course for which to display the grade distribution.
+ * @returns The grade distribution chart component.
  */
 export default function GradeDistribution({ course }: GradeDistributionProps): JSX.Element {
     const [semester, setSemester] = useState('Aggregate');
@@ -136,10 +137,10 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             },
             categories: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F', 'Other'],
             tickInterval: 1,
-            tickWidth: 1.5,
+            tickWidth: 1,
             tickLength: 10,
             tickColor: '#9CADB7',
-            crosshair: true,
+            crosshair: { color: extendedColors.theme.offwhite2 },
             lineColor: '#9CADB7',
         },
         yAxis: {
@@ -166,17 +167,30 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             style: { fontFamily: 'Roboto Flex, Roboto Flex Local', fontWeight: '600' },
             spacingBottom: 25,
             spacingTop: 25,
+            spacingLeft: 1.5,
             height: 250,
         },
         credits: { enabled: false },
         accessibility: { enabled: true },
         tooltip: {
-            headerFormat: '<span style="font-size:small; font-weight:bold">{point.key}</span><table>',
-            pointFormat:
-                '<td style="color:{black};padding:0;font-size:small; font-weight:bold;"><b>{point.y:.0f} Students</b></td>',
-            footerFormat: '</table>',
+            headerFormat: '<span style="display:block; font-weight:700;">{point.key}</span>',
+            pointFormat: '<span style="display:block; font-weight:500;">{point.y:.0f} Students</span>',
             shared: true,
             useHTML: true,
+            style: {
+                color: 'var(--Other-Colors-UTRP-Black, #1A2024)',
+                textAlign: 'center',
+                fontFamily: 'Roboto Flex, Roboto Flex Local',
+                fontSize: '0.88875rem',
+                lineHeight: 'normal',
+            },
+            backgroundColor: 'white',
+            borderRadius: 4,
+            shadow: {
+                offsetX: 0,
+                offsetY: 1,
+                color: 'rgba(51, 63, 72, 0.30)',
+            },
         },
         plotOptions: {
             bar: { pointPadding: 0.2, borderWidth: 0 },
@@ -211,8 +225,11 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             {status === DataStatus.FOUND && (
                 <>
                     <div className='flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
-                        <Text variant='small'>
-                            Grade Distribution for {course.department} {course.number}
+                        <Text variant='small' className='text-ut-black'>
+                            Grade Distribution for{' '}
+                            <Text variant='small' className='font-extrabold!' as='strong'>
+                                {course.department} {course.number}
+                            </Text>
                         </Text>
                         <select
                             className='border border rounded border-solid px-3 py-2'
@@ -242,12 +259,15 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                                     </option>
                                 ))}
                         </select>
+                        <Link variant='small' href={UT_GRADE_DISTRIBUTION_URL} className='link'>
+                            About the data
+                        </Link>
                     </div>
                     {distributions[semester] && !distributions[semester]!.instructorIncluded && (
-                        <div className='mt-3 flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
-                            <Text variant='mini' className='text-theme-red italic!'>
-                                Instructor-specific data is not available for this course
-                                {semester !== 'Aggregate' && ` for ${semester}`}, showing course-wide data instead
+                        <div className='mt-3 flex flex-wrap content-center items-center self-stretch justify-center gap-3 text-center'>
+                            <Text variant='small' className='text-theme-red'>
+                                We couldn&apos;t find {semester !== 'Aggregate' && ` ${semester}`} grades for this
+                                instructor, so here are the grades for all {course.department} {course.number} sections.
                             </Text>
                         </div>
                     )}

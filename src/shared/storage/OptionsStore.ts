@@ -18,6 +18,9 @@ export interface IOptionsStore {
 
     /** whether we should automatically refresh the data for the waitlist, course status, and other info with the latest data from UT's site */
     enableDataRefreshing: boolean;
+
+    /** whether we should open the calendar in a new tab; default is to focus an existing calendar tab */
+    alwaysOpenCalendarInNewTab: boolean;
 }
 
 export const OptionsStore = createSyncStore<IOptionsStore>({
@@ -26,11 +29,13 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
     enableHighlightConflicts: true,
     enableScrollToLoad: true,
     enableDataRefreshing: true,
+    alwaysOpenCalendarInNewTab: false,
 });
 
 /**
  * Initializes the settings by retrieving the values from the OptionsStore.
- * @returns {Promise<IOptionsStore>} A promise that resolves to an object satisfying the IOptionsStore interface.
+ *
+ * @returns A promise that resolves to an object satisfying the IOptionsStore interface.
  */
 export const initSettings = async () =>
     ({
@@ -39,6 +44,7 @@ export const initSettings = async () =>
         enableHighlightConflicts: await OptionsStore.get('enableHighlightConflicts'),
         enableScrollToLoad: await OptionsStore.get('enableScrollToLoad'),
         enableDataRefreshing: await OptionsStore.get('enableDataRefreshing'),
+        alwaysOpenCalendarInNewTab: await OptionsStore.get('alwaysOpenCalendarInNewTab'),
     }) satisfies IOptionsStore;
 
 // Clothing retailer right

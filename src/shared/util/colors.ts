@@ -1,11 +1,11 @@
 import type { Serialized } from 'chrome-extension-toolkit';
 import { theme } from 'unocss/preset-mini';
 
-import type { HexColor, Lab, RGB, sRGB } from '../types/Color';
+import type { HexColor, HSL, Lab, RGB, sRGB } from '../types/Color';
 import { isHexColor } from '../types/Color';
 import type { Course } from '../types/Course';
 import type { CourseColors, TWColorway, TWIndex } from '../types/ThemeColors';
-import { colorwayIndexes } from '../types/ThemeColors';
+import { colors, colorwayIndexes } from '../types/ThemeColors';
 import type { UserSchedule } from '../types/UserSchedule';
 
 /**
@@ -26,6 +26,19 @@ export function hexToRGB(hex: HexColor): RGB | undefined {
     return [parseInt(result[1]!, 16), parseInt(result[2]!, 16), parseInt(result[3]!, 16)];
 }
 
+/**
+ * Checks if a given string is a valid hex color.
+ *
+ * A valid hex color is a string that starts with a '#' followed by either
+ * 3 or 6 hexadecimal characters (0-9, A-F, a-f).
+ *
+ * @param hex - The hex color string to validate.
+ * @returns True if the string is a valid hex color, false otherwise.
+ */
+export function isValidHexColor(hex: string): boolean {
+    return /^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
+}
+
 export const useableColorways = Object.keys(theme.colors)
     // check that the color is a colorway (is an object)
     .filter(color => typeof theme.colors[color as keyof typeof theme.colors] === 'object')
@@ -33,7 +46,9 @@ export const useableColorways = Object.keys(theme.colors)
 
 /**
  * Generate a Tailwind classname for the font color based on the background color
- * @param bgColor the hex color of the background
+ *
+ * @param bgColor - The hex color of the background
+ * @returns The Tailwind classname for the font color
  */
 export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 'text-theme-black' {
     const coefficients = [0.2126729, 0.7151522, 0.072175] as const;
@@ -54,9 +69,20 @@ export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 
     return Ys < 0.365 ? 'text-black' : 'text-theme-black';
 }
 
+// Mapping of Tailwind CSS class names to their corresponding hex values
+export const tailwindColorMap: Record<string, HexColor> = {
+    'text-white': '#FFFFFF',
+    'text-black': '#000000',
+    'text-theme-black': colors.theme.black,
+};
+
 /**
  * Get primary and secondary colors from a Tailwind colorway
- * @param colorway the Tailwind colorway ex. "emerald"
+ *
+ * @param colorway - The Tailwind colorway ex. "emerald"
+ * @param index - The index of the primary color in the colorway
+ * @param offset - The offset to get the secondary color
+ * @returns The primary and secondary colors
  */
 export function getCourseColors(colorway: TWColorway, index?: number, offset: number = 300): CourseColors {
     if (index === undefined) {
@@ -76,10 +102,15 @@ export function getCourseColors(colorway: TWColorway, index?: number, offset: nu
  * @param color - The hexadecimal color value.
  * @returns The Tailwind colorway.
  */
-export function getColorwayFromColor(color: HexColor): TWColorway {
+export function getColorwayFromColor(color: HexColor): {
+    colorway: TWColorway;
+    index: TWIndex;
+} {
     for (const colorway of useableColorways) {
-        if (Object.values(theme.colors[colorway]).includes(color)) {
-            return colorway as TWColorway;
+        const colorValues = Object.values(theme.colors[colorway]);
+        const index = colorValues.indexOf(color);
+        if (index !== -1) {
+            return { colorway: colorway as TWColorway, index: (index * 100) as TWIndex };
         }
     }
 
@@ -116,9 +147,131 @@ export function getColorwayFromColor(color: HexColor): TWColorway {
 }
 
 /**
+ * Converts a hexadecimal color value to HSL (Hue, Saturation, Lightness) format
+ *
+ * @param hex - The hexadecimal color string
+ * @returns An array of [hue (0-360), saturation (0-100), lightness (0-100)]
+ * @throws If the hex color cannot be converted to RGB
+ */
+export const hexToHSL = (hex: HexColor): HSL => {
+    const rgb = hexToRGB(hex);
+
+    if (!rgb) {
+        throw new Error('hexToRGB returned undefined');
+    }
+
+    // Convert RGB to decimals
+    const r = rgb[0] / 255;
+    const g = rgb[1] / 255;
+    const b = rgb[2] / 255;
+
+    // Find min/max/delta
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const delta = max - min;
+
+    // Calculate HSL values
+    let h = 0;
+    let s = 0;
+    let l = (max + min) / 2;
+
+    if (delta !== 0) {
+        // Calculate saturation
+        s = delta / (1 - Math.abs(2 * l - 1));
+
+        // Calculate hue
+        if (max === r) {
+            h = ((g - b) / delta) % 6;
+        } else if (max === g) {
+            h = (b - r) / delta + 2;
+        } else {
+            h = (r - g) / delta + 4;
+        }
+        h *= 60;
+    }
+
+    // Normalize values
+    h = Math.round(h < 0 ? h + 360 : h);
+    s = Math.round(s * 100);
+    l = Math.round(l * 100);
+
+    return [h, s, l];
+};
+
+/**
+ * Converts an HSL color value to RGB format.
+ *
+ * @param hsl - The HSL color value
+ * @returns An RGB color value
+ */
+function hslToRGB([hue, saturation, lightness]: HSL): RGB {
+    // Convert percentages to decimals
+    const s = saturation / 100;
+    const l = lightness / 100;
+
+    // Calculate intermediate values
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(((hue / 60) % 2) - 1));
+    const m = l - c / 2;
+
+    let r = 0;
+    let g = 0;
+    let b = 0;
+
+    // Determine RGB values based on hue
+    if (hue >= 0 && hue < 60) {
+        [r, g, b] = [c, x, 0];
+    } else if (hue >= 60 && hue < 120) {
+        [r, g, b] = [x, c, 0];
+    } else if (hue >= 120 && hue < 180) {
+        [r, g, b] = [0, c, x];
+    } else if (hue >= 180 && hue < 240) {
+        [r, g, b] = [0, x, c];
+    } else if (hue >= 240 && hue < 300) {
+        [r, g, b] = [x, 0, c];
+    } else {
+        [r, g, b] = [c, 0, x];
+    }
+
+    // Convert to 0-255 range and round
+    return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+}
+
+/**
+ * Returns a darker shade of the given hex color by reducing the lightness in HSL color space.
+ *
+ * @param color - The hexadecimal color value to darken.
+ * @param offset - The percentage to reduce the lightness by (default is 20).
+ * @returns The darker shade of the given hex color.
+ * @throws If the provided color is not a valid hex color.
+ */
+export function getDarkerShade(color: HexColor, offset: number = 20): HexColor {
+    const rgb = hexToRGB(color);
+    if (!rgb) {
+        throw new Error('color: Invalid hex.');
+    }
+
+    // Convert to HSL
+    const [h, s, l] = hexToHSL(color);
+
+    // Reduce lightness by offset percentage, ensuring it doesn't go below 0
+    const newL = Math.max(0, l - offset);
+
+    // Convert back to RGB
+    const newRGB = hslToRGB([h, s, newL]);
+
+    // Convert to hex
+    return `#${newRGB.map(c => Math.round(c).toString(16).padStart(2, '0')).join('')}`;
+}
+
+/**
  * Get next unused color in a tailwind colorway for a given schedule
- * @param schedule the schedule which the course is in
- * @param course the course to get the color for
+ *
+ * @param schedule - The schedule which the course is in
+ * @param course - The course to get the color for
+ * @param index - The index of the primary color in the colorway
+ * @param offset - The offset to get the secondary color
+ * @returns The primary and secondary colors
  */
 export function getUnusedColor(
     schedule: Serialized<UserSchedule>,
@@ -143,17 +296,28 @@ export function getUnusedColor(
 
     const scheduleCourses = schedule.courses.map(c => ({
         ...c,
-        colorway: getColorwayFromColor(c.colors.primaryColor),
+        theme: (() => {
+            try {
+                return getColorwayFromColor(c.colors.primaryColor);
+            } catch (error) {
+                // Default to emerald colorway with index 500
+                return {
+                    colorway: 'emerald' as TWColorway,
+                    index: 500 as TWIndex,
+                };
+            }
+        })(),
     }));
-    const usedColorways = new Set(scheduleCourses.map(c => c.colorway));
+
+    const usedColorways = new Set(scheduleCourses.map(c => c.theme.colorway));
     const availableColorways = new Set(useableColorways.filter(c => !usedColorways.has(c)));
 
     if (availableColorways.size > 0) {
         let sameDepartment = scheduleCourses.filter(c => c.department === course.department);
 
         sameDepartment.sort((a, b) => {
-            const aIndex = useableColorways.indexOf(a.colorway);
-            const bIndex = useableColorways.indexOf(b.colorway);
+            const aIndex = useableColorways.indexOf(a.theme.colorway);
+            const bIndex = useableColorways.indexOf(b.theme.colorway);
 
             return aIndex - bIndex;
         });
@@ -162,8 +326,8 @@ export function getUnusedColor(
             // check to see if any adjacent colorways are available
             const centerCourse = sameDepartment[Math.floor(Math.random() * sameDepartment.length)]!;
 
-            let nextColorway = getNextColorway(centerCourse.colorway);
-            let prevColorway = getPreviousColorway(centerCourse.colorway);
+            let nextColorway = getNextColorway(centerCourse.theme.colorway);
+            let prevColorway = getPreviousColorway(centerCourse.theme.colorway);
 
             // eslint-disable-next-line no-constant-condition
             while (true) {
@@ -221,8 +385,9 @@ function rgbToSrgb(rgb: RGB): sRGB {
 
 /**
  * Convert an RGB color to the OKLab color space
- * @param rgb the RGB color
- * @returns the color in the OKLab color space
+ *
+ * @param rgb - The RGB color
+ * @returns The color in the OKLab color space
  */
 function srgbToOKlab([r, g, b]: sRGB): Lab {
     let l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
