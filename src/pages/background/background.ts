@@ -70,7 +70,10 @@
 //         return true; // Required for async sendResponse
 //     }
 // });
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { UserSchedule } from '@shared/types/UserSchedule';
 import { openDebugTab } from '@shared/util/openDebugTab';
+import { generateRandomId } from '@shared/util/random';
 import type { MessageTypes } from 'browser-extension-toolkit';
 import { MESSAGE_TYPES, MessagingProxy, tabProxyHandlers } from 'browser-extension-toolkit';
 
@@ -131,4 +134,23 @@ Object.entries(UNIFIED_MESSAGE_TYPES.SCHEDULE).forEach(([key, type]) => {
     backgroundProxy.registerProxyHandler(type, scheduleMessageToHandler[key]);
     // @ts-ignore
     console.log('Registered handler for', type, scheduleMessageToHandler[key]);
+});
+
+// Initialize stores
+UserScheduleStore.bulkSet({
+    schedules: [
+        new UserSchedule({
+            courses: [],
+            id: generateRandomId(),
+            name: 'Schedule 1',
+            hours: 0,
+            updatedAt: Date.now(),
+        }),
+    ],
+    activeIndex: 0,
+});
+
+// Listen for changes
+UserScheduleStore.addChangeListener(changes => {
+    console.log('UserScheduleStore changes: ', changes);
 });
