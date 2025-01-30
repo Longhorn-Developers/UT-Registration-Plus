@@ -100,7 +100,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
 
     return (
         <div className='h-7.5 rounded bg-white'>
-            <li className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
+            <div className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
                 <SortableListDragHandle className='flex cursor-move items-center justify-center'>
                     <DotsSixVertical
                         weight='bold'
@@ -206,7 +206,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         </Menu>
                     </DialogProvider>
                 </div>
-            </li>
+            </div>
         </div>
     );
 }
