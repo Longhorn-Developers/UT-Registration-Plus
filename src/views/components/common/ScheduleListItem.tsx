@@ -2,7 +2,15 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
-import { Circle, DotsSixVertical, DotsThree, RadioButton } from '@phosphor-icons/react';
+import {
+    Circle,
+    CopySimple,
+    DotsSixVertical,
+    DotsThree,
+    PencilSimpleLine,
+    RadioButton,
+    Trash,
+} from '@phosphor-icons/react';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
@@ -147,7 +155,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                 as={ExtensionRootWrapper}
                                 className={clsx([
                                     styleResetClass,
-                                    'w-30 cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite focus:outline-none',
+                                    'w-fit cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-theme-offwhite1 focus:outline-none',
                                     'data-[closed]:(opacity-0 scale-95)',
                                     'data-[enter]:(ease-out-expo duration-150)',
                                     'data-[leave]:(ease-out duration-50)',
@@ -156,34 +164,40 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                 anchor='bottom end'
                             >
                                 <MenuItem>
-                                    <Text
-                                        as='button'
-                                        variant='small'
+                                    <Button
+                                        className='w-full flex justify-start'
                                         onClick={() => setIsEditing(true)}
-                                        className='w-full rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
+                                        color='ut-black'
+                                        size='small'
+                                        variant='minimal'
+                                        icon={PencilSimpleLine}
                                     >
                                         Rename
-                                    </Text>
+                                    </Button>
                                 </MenuItem>
                                 <MenuItem>
-                                    <Text
-                                        as='button'
-                                        variant='small'
+                                    <Button
+                                        className='w-full flex justify-start'
                                         onClick={() => handleDuplicateSchedule(schedule.id)}
-                                        className='w-full rounded bg-transparent p-2 text-left data-[focus]:bg-gray-200/40'
+                                        color='ut-black'
+                                        size='small'
+                                        variant='minimal'
+                                        icon={CopySimple}
                                     >
                                         Duplicate
-                                    </Text>
+                                    </Button>
                                 </MenuItem>
                                 <MenuItem>
-                                    <Text
-                                        as='button'
-                                        variant='small'
+                                    <Button
+                                        className='w-full flex justify-start'
                                         onClick={handleDelete}
-                                        className='w-full rounded bg-transparent p-2 text-left text-theme-red data-[focus]:bg-red-200/40'
+                                        color='theme-red'
+                                        size='small'
+                                        variant='minimal'
+                                        icon={Trash}
                                     >
-                                        Delete
-                                    </Text>
+                                        Delete Schedule
+                                    </Button>
                                 </MenuItem>
                             </MenuItems>
                         </Menu>

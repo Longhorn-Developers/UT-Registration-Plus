@@ -50,6 +50,8 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
 ] as const satisfies TeamMember[];
 
 export const LONGHORN_DEVELOPERS_SWE = [
+    { name: 'Preston Cook', role: 'Software Engineer', githubUsername: 'Preston-Cook' },
+    { name: 'Ethan Lanting', role: 'Software Engineer', githubUsername: 'EthanL06' },
     { name: 'Casey Charleston', role: 'Software Engineer', githubUsername: 'caseycharleston' },
     { name: 'Vinson', role: 'Software Engineer', githubUsername: 'vinsonzheng499' },
     { name: 'Vivek', role: 'Software Engineer', githubUsername: 'vivek12311' },

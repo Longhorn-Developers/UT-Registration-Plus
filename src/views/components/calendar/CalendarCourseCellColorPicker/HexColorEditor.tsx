@@ -30,6 +30,12 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
     const debouncedSetHexCode = useDebounce((value: string) => setHexCode(value), 500);
 
     React.useEffect(() => {
+        if (hexCode !== localHexCode) {
+            setLocalHexCode(hexCode);
+        }
+    }, [hexCode]);
+
+    React.useEffect(() => {
         debouncedSetHexCode(localHexCode);
 
         // This is on purpose
@@ -48,7 +54,7 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
                 <input
                     type='text'
                     maxLength={6}
-                    className='w-full border-none bg-transparent font-size-2.75 font-normal outline-none focus:outline-none'
+                    className='w-full border-none bg-transparent font-size-2.75 font-normal font-mono outline-none focus:outline-none'
                     value={localHexCode}
                     onChange={e => setLocalHexCode(e.target.value)}
                 />
