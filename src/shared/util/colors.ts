@@ -265,6 +265,33 @@ export function getDarkerShade(color: HexColor, offset: number = 20): HexColor {
 }
 
 /**
+ * Returns a lighter shade of the given hex color by increasing the lightness in HSL color space.
+ *
+ * @param color - The hexadecimal color value to lighten.
+ * @param offset - The percentage to increase the lightness by (default is 20).
+ * @returns The lighter shade of the given hex color.
+ * @throws If the provided color is not a valid hex color.
+ */
+export function getLighterShade(color: HexColor, offset: number = 20): HexColor {
+    const rgb = hexToRGB(color);
+    if (!rgb) {
+        throw new Error('color: Invalid hex.');
+    }
+
+    // Convert to HSL
+    const [h, s, l] = hexToHSL(color);
+
+    // Increase lightness by offset percentage, ensuring it doesn't go above 100
+    const newL = Math.min(100, l + offset);
+
+    // Convert back to RGB
+    const newRGB = hslToRGB([h, s, newL]);
+
+    // Convert to hex
+    return `#${newRGB.map(c => Math.round(c).toString(16).padStart(2, '0')).join('')}`;
+}
+
+/**
  * Get next unused color in a tailwind colorway for a given schedule
  *
  * @param schedule - The schedule which the course is in
