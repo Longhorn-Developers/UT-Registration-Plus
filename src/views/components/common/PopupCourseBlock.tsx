@@ -101,15 +101,15 @@ export default function PopupCourseBlock({
             ref={ref}
         >
             {isStorybook ? (
-                <DotsSixVertical weight='bold' className='h-6 w-6 text-white cursor-move' />
+                <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
             ) : (
                 <SortableListDragHandle
                     style={{
                         backgroundColor: colors.secondaryColor,
                     }}
-                    className='flex items-center self-stretch rounded rounded-r-0 cursor-move'
+                    className='flex cursor-move items-center self-stretch rounded rounded-r-0'
                 >
-                    <DotsSixVertical weight='bold' className='h-6 w-6 text-white cursor-move' />
+                    <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
                 </SortableListDragHandle>
             )}
 
