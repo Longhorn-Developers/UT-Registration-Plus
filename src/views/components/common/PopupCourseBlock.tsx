@@ -98,9 +98,9 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                 style={{
                     backgroundColor: colors.secondaryColor,
                 }}
-                className='flex items-center self-stretch rounded rounded-r-0 cursor-move!'
+                className='flex items-center self-stretch rounded rounded-r-0 cursor-move'
             >
-                <DotsSixVertical weight='bold' className='h-6 w-6 text-white cursor-move!' />
+                <DotsSixVertical weight='bold' className='h-6 w-6 text-white cursor-move' />
             </SortableListDragHandle>
 
             <Text

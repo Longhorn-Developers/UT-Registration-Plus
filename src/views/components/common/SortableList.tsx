@@ -49,6 +49,7 @@ export function SortableList<T extends BaseItem>({
     className,
 }: ListProps<T>): JSX.Element {
     const [active, setActive] = useState<Active | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
     const [items, setItems] = useState<T[]>(draggables);
 
     useEffect(() => {
@@ -65,41 +66,50 @@ export function SortableList<T extends BaseItem>({
     );
 
     return (
-        <ul className={clsx('overflow-clip flex gap-spacing-3 flex-col', className)}>
-            <DndContext
-                modifiers={[restrictToParentElement]}
-                sensors={sensors}
-                onDragStart={({ active }) => {
-                    setActive(active);
-                }}
-                onDragEnd={({ active, over }) => {
-                    if (over && active.id !== over.id) {
-                        const activeIndex = items.findIndex(({ id }) => id === active.id);
-                        const overIndex = items.findIndex(({ id }) => id === over.id);
-                        const reorderedItems = arrayMove(items, activeIndex, overIndex);
-                        console.log(activeIndex, overIndex);
-                        onChange(reorderedItems);
-                        setItems(reorderedItems);
-                    }
-                    setActive(null);
-                }}
-                onDragCancel={() => {
-                    setActive(null);
-                }}
-            >
-                <SortableContext items={items} strategy={verticalListSortingStrategy}>
-                    {items.map(item => (
-                        <SortableListItem key={item.id} id={item.id}>
-                            {renderItem(item)}
-                        </SortableListItem>
-                    ))}
-                </SortableContext>
-                <SortableItemOverlay>
-                    {activeItem ? (
-                        <SortableListItem id={activeItem.id}>{renderItem(activeItem)}</SortableListItem>
-                    ) : null}
-                </SortableItemOverlay>
-            </DndContext>
-        </ul>
+        <div
+            className={clsx('h-full w-full', {
+                'cursor-grabbing [&_*]:cursor-grabbing': isDragging,
+                'cursor-default': !isDragging,
+            })}
+        >
+            <ul className={clsx('overflow-clip flex gap-spacing-3 flex-col', className)}>
+                <DndContext
+                    modifiers={[restrictToParentElement]}
+                    sensors={sensors}
+                    onDragStart={({ active }) => {
+                        setIsDragging(true);
+                        setActive(active);
+                    }}
+                    onDragEnd={({ active, over }) => {
+                        setIsDragging(false);
+                        if (over && active.id !== over.id) {
+                            const activeIndex = items.findIndex(({ id }) => id === active.id);
+                            const overIndex = items.findIndex(({ id }) => id === over.id);
+                            const reorderedItems = arrayMove(items, activeIndex, overIndex);
+                            onChange(reorderedItems);
+                            setItems(reorderedItems);
+                        }
+                        setActive(null);
+                    }}
+                    onDragCancel={() => {
+                        setIsDragging(false);
+                        setActive(null);
+                    }}
+                >
+                    <SortableContext items={items} strategy={verticalListSortingStrategy}>
+                        {items.map(item => (
+                            <SortableListItem key={item.id} id={item.id}>
+                                {renderItem(item)}
+                            </SortableListItem>
+                        ))}
+                    </SortableContext>
+                    <SortableItemOverlay>
+                        {activeItem ? (
+                            <SortableListItem id={activeItem.id}>{renderItem(activeItem)}</SortableListItem>
+                        ) : null}
+                    </SortableItemOverlay>
+                </DndContext>
+            </ul>
+        </div>
     );
 }
