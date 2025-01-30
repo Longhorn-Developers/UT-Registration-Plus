@@ -1,9 +1,8 @@
 import type { PropsOf, ReactTag } from '@headlessui/react/dist/types';
+import styles from '@views/components/common/Text/Text.module.scss';
 import clsx from 'clsx';
 import type { ElementType, ReactNode, Ref } from 'react';
 import React from 'react';
-
-import styles from './Text.module.scss';
 
 type PropsWeControl = 'as' | 'children';
 type CleanProps<TTag extends ReactTag, TOmitableProps extends PropertyKey = never> = Omit<

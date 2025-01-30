@@ -1,8 +1,4 @@
-import { CalendarDots, ImageSquare } from '@phosphor-icons/react';
 import type { Course } from '@shared/types/Course';
-import { saveAsCal, saveCalAsPng } from '@views/components/calendar/utils';
-import { Button } from '@views/components/common/Button';
-import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
@@ -60,21 +56,6 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                         </div>
                     </>
                 )}
-            </div>
-            <div className='flex items-center screenshot:hidden'>
-                {displayCourses && <Divider orientation='vertical' size='1rem' className='mx-1.25' />}
-                <Button variant='minimal' color='ut-black' icon={CalendarDots} onClick={saveAsCal}>
-                    Save as .CAL
-                </Button>
-                <Divider orientation='vertical' size='1rem' className='mx-1.25' />
-                <Button
-                    variant='minimal'
-                    color='ut-black'
-                    icon={ImageSquare}
-                    onClick={() => requestAnimationFrame(() => saveCalAsPng())}
-                >
-                    Save as .PNG
-                </Button>
             </div>
         </div>
     );
