@@ -72,6 +72,7 @@ const meta = {
     args: {
         colors: getCourseColors('emerald'),
         course: ExampleCourse,
+        isStorybook: true,
     },
     argTypes: {
         colors: {

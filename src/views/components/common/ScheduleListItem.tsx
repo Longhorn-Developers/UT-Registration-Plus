@@ -28,13 +28,18 @@ import { SortableListDragHandle } from './SortableListDragHandle';
  */
 interface ScheduleListItemProps {
     schedule: UserSchedule;
+    isStorybook?: boolean;
     onClick?: React.DOMAttributes<HTMLDivElement>['onClick'];
 }
 
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
-export default function ScheduleListItem({ schedule, onClick }: ScheduleListItemProps): JSX.Element {
+export default function ScheduleListItem({
+    schedule,
+    onClick,
+    isStorybook = false,
+}: ScheduleListItemProps): JSX.Element {
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
@@ -101,13 +106,19 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
     return (
         <div className='h-7.5 rounded bg-white'>
             <div className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
-                <SortableListDragHandle className='flex cursor-move items-center justify-center'>
+                {isStorybook ? (
                     <DotsSixVertical
                         weight='bold'
                         className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400'
                     />
-                </SortableListDragHandle>
-
+                ) : (
+                    <SortableListDragHandle className='flex cursor-move items-center justify-center'>
+                        <DotsSixVertical
+                            weight='bold'
+                            className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400'
+                        />
+                    </SortableListDragHandle>
+                )}
                 <div className='group relative flex flex-1 items-center overflow-x-hidden'>
                     <div
                         className='group/circle flex flex-grow items-center gap-spacing-3 overflow-x-hidden'

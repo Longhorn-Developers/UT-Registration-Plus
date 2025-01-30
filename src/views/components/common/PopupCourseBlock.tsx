@@ -18,6 +18,7 @@ import { SortableListDragHandle } from './SortableListDragHandle';
  */
 export interface PopupCourseBlockProps {
     className?: string;
+    isStorybook?: boolean;
     course: Course;
     colors: CourseColors;
 }
@@ -31,7 +32,12 @@ export interface PopupCourseBlockProps {
  * @param dragHandleProps - The drag handle props for the course block.
  * @returns The rendered PopupCourseBlock component.
  */
-export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): JSX.Element {
+export default function PopupCourseBlock({
+    className,
+    course,
+    colors,
+    isStorybook = false,
+}: PopupCourseBlockProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
@@ -94,14 +100,18 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
             onClick={handleClick}
             ref={ref}
         >
-            <SortableListDragHandle
-                style={{
-                    backgroundColor: colors.secondaryColor,
-                }}
-                className='flex items-center self-stretch rounded rounded-r-0 cursor-move'
-            >
+            {isStorybook ? (
                 <DotsSixVertical weight='bold' className='h-6 w-6 text-white cursor-move' />
-            </SortableListDragHandle>
+            ) : (
+                <SortableListDragHandle
+                    style={{
+                        backgroundColor: colors.secondaryColor,
+                    }}
+                    className='flex items-center self-stretch rounded rounded-r-0 cursor-move'
+                >
+                    <DotsSixVertical weight='bold' className='h-6 w-6 text-white cursor-move' />
+                </SortableListDragHandle>
+            )}
 
             <Text
                 className={clsx('flex-1 py-spacing-5 truncate ml-spacing-3 select-none', fontColor)}
