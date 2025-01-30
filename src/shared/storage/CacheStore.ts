@@ -1,15 +1,16 @@
 import type { CachedData } from '@shared/types/CachedData';
-import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
+import { ExtensionStorage } from 'browser-extension-toolkit';
 
-interface ICacheStore {
+import type { ExtensionStorageData } from '../types/ExtensionStorage';
+
+/**
+ * A store that is used for storing cached data
+ */
+export interface ICacheStore extends ExtensionStorageData {
     github: Record<string, CachedData<unknown>>;
 }
 
-/**
- * A store that is used for storing cached data such as GitHub contributors
- */
-export const CacheStore = createLocalStore<ICacheStore>({
-    github: {},
+export const CacheStore = new ExtensionStorage<ICacheStore>({
+    area: 'local',
+    serialize: true,
 });
-
-debugStore({ cacheStore: CacheStore });

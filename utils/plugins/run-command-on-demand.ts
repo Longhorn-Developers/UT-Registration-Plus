@@ -41,6 +41,38 @@ const executeCommand = async (command: string | undefined, errorMessage: string)
     }
 };
 
+/**
+ * A Vite plugin that allows custom commands to be executed at various stages of the build and server lifecycle.
+ *
+ * @param options - Configuration options for the plugin.
+ * @returns The configured Vite plugin.
+ *
+ * @example
+ * ```ts
+ * import customCommandsPlugin from './utils/plugins/run-command-on-demand';
+ *
+ * export default {
+ *   plugins: [
+ *     customCommandsPlugin({
+ *       beforeServerStart: 'echo "Server is starting..."',
+ *       afterServerStart: 'echo "Server has started."',
+ *       onHotUpdate: 'echo "Hot update detected."',
+ *       beforeBuild: 'echo "Build is starting..."',
+ *       afterBuild: 'echo "Build has finished."',
+ *       closeBundle: 'echo "Bundle is closed."'
+ *     })
+ *   ]
+ * }
+ * ```
+ *
+ * The plugin supports the following lifecycle hooks:
+ * - `beforeServerStart`: Command to run before the server starts.
+ * - `afterServerStart`: Command to run after the server starts.
+ * - `onHotUpdate`: Command to run on hot updates.
+ * - `beforeBuild`: Command to run before the build starts.
+ * - `afterBuild`: Command to run after the build finishes.
+ * - `closeBundle`: Command to run when the bundle is closed.
+ */
 export default function customCommandsPlugin(options: CustomCommandsPluginOptions = {}): Plugin {
     return {
         name: pluginName,

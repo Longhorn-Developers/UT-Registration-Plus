@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
+import { execSync } from 'child_process';
 import { resolve } from 'path';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
@@ -10,18 +11,30 @@ import inspect from 'vite-plugin-inspect';
 
 import packageJson from './package.json';
 import manifest from './src/manifest';
+// import browserExtensionManifestPlugin from './utils/plugins/browser-extension-manifest';
+import firefoxManifestV3 from './utils/plugins/firefox-manifest';
 import vitePluginRunCommandOnDemand from './utils/plugins/run-command-on-demand';
+import { buildLogger } from './utils/plugins/vite-build-logger';
+
+const BROWSER_TARGET = process.env.BROWSER_TARGET || 'chrome';
+
+// Set browser target environment variable default
+process.env.BROWSER_TARGET = BROWSER_TARGET;
 
 const root = resolve(__dirname, 'src');
 const pagesDir = resolve(root, 'pages');
 const assetsDir = resolve(root, 'assets');
 const publicDir = resolve(__dirname, 'public');
 
+// Set default environment variables
+process.env.PROD = process.env.NODE_ENV === 'production' ? 'true' : 'false';
+
 const isBeta = !!process.env.BETA;
 if (isBeta) {
     process.env.VITE_BETA_BUILD = 'true';
 }
 process.env.VITE_PACKAGE_VERSION = packageJson.version;
+// TODO: Debug this. If PROD is false, VITE_SENTRY_ENVIRONMENT is in production mode
 if (process.env.PROD) {
     process.env.VITE_SENTRY_ENVIRONMENT = 'production';
 } else if (isBeta) {
@@ -99,7 +112,7 @@ export default defineConfig({
                     return {
                         code: code.replace(
                             /(['"])(\/public\/.*?)(['"])/g,
-                            (_, quote1, path, quote2) => `chrome.runtime.getURL(${quote1}${path}${quote2})`
+                            (_, quote1, path, quote2) => `browser.runtime.getURL(${quote1}${path}${quote2})`
                         ),
                         map: null,
                     };
@@ -114,7 +127,7 @@ export default defineConfig({
                     return {
                         code: code.replace(
                             /(['"])(__VITE_ASSET__.*?__)(['"])/g,
-                            (_, quote1, path, quote2) => `chrome.runtime.getURL(${quote1}${path}${quote2})`
+                            (_, quote1, path, quote2) => `browser.runtime.getURL(${quote1}${path}${quote2})`
                         ),
                         map: null,
                     };
@@ -131,7 +144,7 @@ export default defineConfig({
                         code: code.replace(
                             /url\((.*?)\)/g,
                             (_, path) =>
-                                `url(\\"" + chrome.runtime.getURL(${path
+                                `url(\\"" + browser.runtime.getURL(${path
                                     .replaceAll(`\\"`, `"`)
                                     .replace(/public\//, '')}) + "\\")`
                         ),
@@ -159,8 +172,29 @@ export default defineConfig({
         renameFile('src/pages/report/index.html', 'report.html'),
         renameFile('src/pages/404/index.html', '404.html'),
         vitePluginRunCommandOnDemand({
-            // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
-            closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',
+            // afterServerStart: 'bun gulp forceDisableUseDynamicUrl',
+            closeBundle: 'bun gulp forceDisableUseDynamicUrl',
+        }),
+        firefoxManifestV3({
+            // geckoId: 'utrp-admin@lhd.org',
+        }),
+        // browserExtensionManifestPlugin(),
+        buildLogger({
+            includeEnvVars: [
+                'VITE_PACKAGE_VERSION',
+                'NODE_ENV',
+                'BROWSER_TARGET',
+                'PROD',
+                'VITE_SENTRY_ENVIRONMENT',
+                'VITE_BETA_BUILD',
+            ],
+            includeTimestamp: true,
+            includeBuildTime: true,
+            customMetadata: {
+                gitBranch: () => execSync('git rev-parse --abbrev-ref HEAD').toString().trim(),
+                gitCommit: () => execSync('git rev-parse --short HEAD').toString().trim(),
+                nodeVersion: () => process.version,
+            },
         }),
     ],
     resolve: {
@@ -205,6 +239,7 @@ export default defineConfig({
     },
     build: {
         target: ['chrome120', 'edge120', 'firefox120'],
+        outDir: `dist/${process.env.BROWSER_TARGET || 'chrome'}`,
         emptyOutDir: true,
         reportCompressedSize: false,
         sourcemap: true,

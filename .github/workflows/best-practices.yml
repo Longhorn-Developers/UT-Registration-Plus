@@ -12,16 +12,14 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v3
-              with:
-                  version: 9
+            - name: Setup bun
+              uses: oven-sh/setup-bun@v2
 
             - name: Install dependencies
-              run: pnpm install
+              run: bun install
 
             - name: Run ESLint
-              run: pnpm run lint
+              run: bun run lint
     format:
         runs-on: ubuntu-latest
 
@@ -31,13 +29,11 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v3
-              with:
-                  version: 9
+            - name: Setup bun
+              uses: oven-sh/setup-bun@v2
 
             - name: Install dependencies
-              run: pnpm install
+              run: bun install
 
             - name: Run Prettier
-              run: pnpm run prettier
+              run: bun run prettier

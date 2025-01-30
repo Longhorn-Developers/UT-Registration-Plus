@@ -1,9 +1,11 @@
-import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
+import { ExtensionStorage } from 'browser-extension-toolkit';
+
+import type { ExtensionStorageData } from '../types/ExtensionStorage';
 
 /**
  * A store that is used to store data that is only relevant during development
  */
-interface IDevStore {
+export interface IDevStore extends ExtensionStorageData {
     /** the tabId for the debug tab */
     debugTabId?: number;
     /** whether the debug tab is visible */
@@ -16,7 +18,15 @@ interface IDevStore {
     reloadTabId?: number;
 }
 
-export const DevStore = createLocalStore<IDevStore>({
+export const DevStore = new ExtensionStorage<IDevStore>({
+    area: 'local',
+    serialize: true,
+
+    // Storage namespace isolation
+    // prefix: 'devStore',
+});
+
+DevStore.bulkSet({
     debugTabId: undefined,
     isTabReloading: true,
     wasDebugTabVisible: false,
@@ -24,4 +34,7 @@ export const DevStore = createLocalStore<IDevStore>({
     reloadTabId: undefined,
 });
 
-debugStore({ devStore: DevStore });
+// Listen for changes
+DevStore.addChangeListener(changes => {
+    console.log('DevStore changes: ', changes);
+});

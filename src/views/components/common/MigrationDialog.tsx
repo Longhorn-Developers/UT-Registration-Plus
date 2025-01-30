@@ -17,23 +17,23 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
         const handleMigration = async () => {
             if (processState === 1) {
                 try {
-                    await chrome.storage.session.set({ pendingMigration: true });
+                    await browser.storage.session.set({ pendingMigration: true });
                     const successful = await migrateUTRPv1Courses();
                     if (successful) {
-                        await chrome.storage.local.set({ finishedMigration: true });
-                        await chrome.storage.session.remove('pendingMigration');
+                        await browser.storage.local.set({ finishedMigration: true });
+                        await browser.storage.session.remove('pendingMigration');
                     }
                 } catch (error) {
                     console.error(error);
                     const sentryId = sentryScope.captureException(error);
                     setError(sentryId);
-                    await chrome.storage.session.remove('pendingMigration');
+                    await browser.storage.session.remove('pendingMigration');
                     return;
                 }
                 setProcessState(2);
                 close();
             } else if (processState === 0) {
-                const { pendingMigration } = await chrome.storage.session.get('pendingMigration');
+                const { pendingMigration } = await browser.storage.session.get('pendingMigration');
                 if (pendingMigration) setProcessState(1);
             }
         };
@@ -58,7 +58,7 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
                 onClick={() => {
                     close();
                     if (!error) {
-                        chrome.storage.local.set({ finishedMigration: true });
+                        browser.storage.local.set({ finishedMigration: true });
                     }
                 }}
             >
@@ -145,7 +145,7 @@ export function MigrationDialog(): JSX.Element {
     useEffect(() => {
         const checkMigration = async () => {
             // check if migration was already attempted
-            if ((await chrome.storage.local.get('finishedMigration')).finishedMigration) return;
+            if ((await browser.storage.local.get('finishedMigration')).finishedMigration) return;
 
             if ((await getUTRPv1Courses()).length > 0) showMigrationDialog();
         };

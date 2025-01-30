@@ -22,14 +22,14 @@ export default async function duplicateSchedule(scheduleId: string): Promise<str
     const copyOfName = `Copy of ${schedule.name}`;
     const updatedName = await handleDuplicate(copyOfName);
 
-    schedules.splice(scheduleIndex + 1, 0, {
-        id: generateRandomId(),
-        name: updatedName,
-        courses: JSON.parse(JSON.stringify(schedule.courses)),
-        hours: schedule.hours,
-        updatedAt: Date.now(),
-    } satisfies typeof schedule);
-
-    await UserScheduleStore.set('schedules', schedules);
+    // schedules.splice(scheduleIndex + 1, 0, {
+    //     id: generateRandomId(),
+    //     name: updatedName,
+    //     courses: JSON.parse(JSON.stringify(schedule.courses)),
+    //     hours: schedule.hours,
+    //     updatedAt: Date.now(),
+    // } satisfies typeof schedule);
+    //
+    // await UserScheduleStore.set('schedules', schedules);
     return undefined;
 }

@@ -1,4 +1,4 @@
-import { openDebugTab } from '@pages/background/util/openDebugTab';
+import { openDebugTab } from '@shared/util/openDebugTab';
 
 /**
  * Called whenever the background service worker comes alive

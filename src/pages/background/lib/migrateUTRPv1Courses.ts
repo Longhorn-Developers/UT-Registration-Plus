@@ -7,12 +7,12 @@ import createSchedule from './createSchedule';
 import switchSchedule from './switchSchedule';
 
 /**
- * Retrieves the saved courses from the extension's chrome sync storage (old store) and returns an array of course links.
+ * Retrieves the saved courses from the extension's browser sync storage (old store) and returns an array of course links.
  *
  * @returns A promise that resolves to an array of course links.
  */
 export async function getUTRPv1Courses(): Promise<string[]> {
-    const { savedCourses } = await chrome.storage.sync.get('savedCourses');
+    const { savedCourses } = await browser.storage.sync.get('savedCourses');
 
     // Check if the savedCourses array is empty
     if (!savedCourses || savedCourses.length === 0) {
@@ -66,7 +66,7 @@ async function migrateUTRPv1Courses() {
         }
 
         // Remove the old courses from storage :>
-        await chrome.storage.sync.remove('savedCourses');
+        await browser.storage.sync.remove('savedCourses');
         console.log('Successfully migrated UTRP v1 courses');
     } else {
         console.warn('No courses successfully found to migrate');

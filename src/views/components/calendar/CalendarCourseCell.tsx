@@ -58,18 +58,18 @@ export default function CalendarCourseCell({
         selectedBlock = isSelectedBlock(courseID, dayIndex, startIndex);
     }
 
-    useEffect(() => {
-        initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
-
-        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
-        });
-
-        return () => {
-            OptionsStore.removeListener(l1);
-        };
-    }, []);
+    // useEffect(() => {
+    //     initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
+    //
+    //     const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+    //         setEnableCourseStatusChips(newValue);
+    //         // console.log('enableCourseStatusChips', newValue);
+    //     });
+    //
+    //     return () => {
+    //         OptionsStore.removeListener(l1);
+    //     };
+    // }, []);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {

@@ -56,10 +56,19 @@ function zipDist() {
         .on('end', () => log(`Zip file created: ${path.join(PACKAGE_DIR, zipFileName)}`));
 }
 
-// Temp fix for CSP on Chrome 130
-// Manually remove them because there is no option to disable use_dynamic_url on @crxjs/vite-plugin
-// Force disable use_dynamic_url in manifest.json
+/**
+ * Force disable use_dynamic_url in manifest.json for Chrome only
+ * Manually remove them because there is no option to disable use_dynamic_url on @crxjs/vite-plugin
+ * Temp fix for CSP on Chrome 130
+ *
+ * @param cb - Callback function
+ */
 function forceDisableUseDynamicUrl(cb) {
+    if (process.env.BROWSER_TARGET !== 'chrome') {
+        log('forceDisableUseDynamicUrl is only for Chrome. Skipping modification.');
+        return cb();
+    }
+
     const manifestPath = path.join(DIST_DIR, 'manifest.json');
 
     if (!fs.existsSync(manifestPath)) {

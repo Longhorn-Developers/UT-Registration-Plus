@@ -22,27 +22,27 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
 
     const [activeSchedule] = useSchedules();
 
-    useEffect(() => {
-        initSettings().then(({ enableCourseStatusChips, enableDataRefreshing }) => {
-            setEnableCourseStatusChips(enableCourseStatusChips);
-            setEnableDataRefreshing(enableDataRefreshing);
-        });
-
-        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
-        });
-
-        const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
-            setEnableDataRefreshing(newValue);
-            // console.log('enableDataRefreshing', newValue);
-        });
-
-        return () => {
-            OptionsStore.removeListener(l1);
-            OptionsStore.removeListener(l2);
-        };
-    }, []);
+    // useEffect(() => {
+    //     initSettings().then(({ enableCourseStatusChips, enableDataRefreshing }) => {
+    //         setEnableCourseStatusChips(enableCourseStatusChips);
+    //         setEnableDataRefreshing(enableDataRefreshing);
+    //     });
+    //
+    //     const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+    //         setEnableCourseStatusChips(newValue);
+    //         // console.log('enableCourseStatusChips', newValue);
+    //     });
+    //
+    //     const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
+    //         setEnableDataRefreshing(newValue);
+    //         // console.log('enableDataRefreshing', newValue);
+    //     });
+    //
+    //     return () => {
+    //         OptionsStore.removeListener(l1);
+    //         OptionsStore.removeListener(l2);
+    //     };
+    // }, []);
 
     return (
         <div className='min-h-[91px] flex items-center gap-5 overflow-x-auto overflow-y-hidden px-7 py-4 md:overflow-x-hidden'>

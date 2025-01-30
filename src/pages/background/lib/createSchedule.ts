@@ -33,8 +33,8 @@ export default async function createSchedule(scheduleName: string) {
         hours: 0,
         updatedAt: Date.now(),
     };
-    schedules.push(newSchedule);
+    // schedules.push(newSchedule);
 
-    await UserScheduleStore.set('schedules', schedules);
+    // await UserScheduleStore.set('schedules', schedules);
     return newSchedule.id;
 }

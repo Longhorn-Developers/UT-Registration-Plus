@@ -43,7 +43,7 @@ export default function Calendar(): JSX.Element {
                 setCourse(course);
                 setShowPopup(true);
 
-                const currentTab = await chrome.tabs.getCurrent();
+                const currentTab = await browser.tabs.getCurrent();
                 if (currentTab === undefined) return;
                 sendResponse(currentTab);
             },
@@ -72,7 +72,7 @@ export default function Calendar(): JSX.Element {
                         )}
                         tabIndex={showSidebar ? 0 : -1}
                         aria-hidden={!showSidebar}
-                        {...{ inert: !showSidebar ? '' : undefined }}
+                        {...{ inert: !showSidebar }}
                     >
                         <div className='sticky top-0 z-50 w-full flex items-center justify-between gap-x-3xl bg-white px-spacing-8 pb-spacing-6'>
                             <LargeLogo />

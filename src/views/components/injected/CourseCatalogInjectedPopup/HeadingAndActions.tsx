@@ -1,3 +1,4 @@
+import { addCourse } from '@pages/background/util/addCourse';
 import {
     ArrowUpRight,
     CalendarDots,
@@ -14,6 +15,8 @@ import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { openCESPage } from '@shared/util/openCESPage';
+import { openNewTab } from '@shared/util/openNewTab';
 import { Button } from '@views/components/common/Button';
 import { Chip, coreMap, flagMap } from '@views/components/common/Chip';
 import Divider from '@views/components/common/Divider';
@@ -25,7 +28,7 @@ import React, { useRef, useState } from 'react';
 
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
-const { openNewTab, addCourse, removeCourse, openCESPage } = background;
+const { removeCourse } = background;
 
 /**
  * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.
@@ -113,9 +116,16 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     };
 
     const handleAddOrRemoveCourse = async () => {
+        console.log('handleAddOrRemoveCourse called');
         if (!activeSchedule) return;
         if (!courseAdded) {
-            addCourse({ course, scheduleId: activeSchedule.id });
+            // BUG: This line is causing this error:
+            // TypeError: can't access property "addListener", browser.runtime.onInstalled is undefined <anonymous> background.ts:99
+            // Commenting out that block of code in background.ts fixes the error
+            addCourse({ scheduleId: activeSchedule.id, course });
+            console.log('Adding course');
+            console.log('activeSchedule', activeSchedule);
+            console.log('course', course);
         } else {
             removeCourse({ course, scheduleId: activeSchedule.id });
         }
@@ -204,6 +214,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                 url: course.url,
                             });
                         } else {
+                            // TODO: fix this
                             background.switchToCalendarTab({});
                         }
                     }}

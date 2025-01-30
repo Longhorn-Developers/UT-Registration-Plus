@@ -2,7 +2,7 @@
  * Open the report window relative centered to the current window.
  */
 export function openReportWindow() {
-    chrome.windows.getCurrent({ populate: false }, currentWindow => {
+    browser.windows.getCurrent({ populate: false }).then(currentWindow => {
         const width = 400;
         const height = 600;
 
@@ -16,8 +16,8 @@ export function openReportWindow() {
                 ? Math.round(currentWindow.top + (currentWindow.height - height) / 2)
                 : undefined;
 
-        chrome.windows.create({
-            url: chrome.runtime.getURL(`report.html`),
+        browser.windows.create({
+            url: browser.runtime.getURL(`report.html`),
             type: 'popup',
             width,
             height,

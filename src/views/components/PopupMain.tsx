@@ -4,6 +4,9 @@ import { CalendarDots, Flag, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { CRX_PAGES } from '@shared/types/CRXPages';
+import { openNewTab } from '@shared/util/openNewTab';
+import { handleOpenOptions } from '@shared/util/openOptionsPage';
 import { openReportWindow } from '@shared/util/openReportWindow';
 import Divider from '@views/components/common/Divider';
 import List from '@views/components/common/List';
@@ -30,30 +33,30 @@ export default function PopupMain(): JSX.Element {
     const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
     useKC_DABR_WASM();
 
-    useEffect(() => {
-        const initAllSettings = async () => {
-            const { enableCourseStatusChips, enableDataRefreshing } = await initSettings();
-            setEnableCourseStatusChips(enableCourseStatusChips);
-            setEnableDataRefreshing(enableDataRefreshing);
-        };
-
-        initAllSettings();
-
-        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
-        });
-
-        const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
-            setEnableDataRefreshing(newValue);
-            // console.log('enableDataRefreshing', newValue);
-        });
-
-        return () => {
-            OptionsStore.removeListener(l1);
-            OptionsStore.removeListener(l2);
-        };
-    }, []);
+    // useEffect(() => {
+    //     const initAllSettings = async () => {
+    //         const { enableCourseStatusChips, enableDataRefreshing } = await initSettings();
+    //         setEnableCourseStatusChips(enableCourseStatusChips);
+    //         setEnableDataRefreshing(enableDataRefreshing);
+    //     };
+    //
+    //     initAllSettings();
+    //
+    //     const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+    //         setEnableCourseStatusChips(newValue);
+    //         // console.log('enableCourseStatusChips', newValue);
+    //     });
+    //
+    //     const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
+    //         setEnableDataRefreshing(newValue);
+    //         // console.log('enableDataRefreshing', newValue);
+    //     });
+    //
+    //     return () => {
+    //         OptionsStore.removeListener(l1);
+    //         OptionsStore.removeListener(l2);
+    //     };
+    // }, []);
 
     const [activeSchedule, schedules] = useSchedules();
     // const [isRefreshing, setIsRefreshing] = useState(false);
@@ -73,13 +76,33 @@ export default function PopupMain(): JSX.Element {
         );
     }, []);
 
-    const handleOpenOptions = async () => {
-        const url = chrome.runtime.getURL('/options.html');
-        background.openNewTab({ url });
-    };
+    // const handleCalendarOpenOnClick = async () => {
+    //     console.log('handleCalendarOpenOnClick');
+    //     console.log('browser:', browser);
+    //     await background.switchToCalendarTab({});
+    //     window.close();
+    // };
 
-    const handleCalendarOpenOnClick = async () => {
-        await background.switchToCalendarTab({});
+    const handleCalendarOpenOnClick = () => {
+        // const calendarUrl = browser.runtime.getURL(CRX_PAGES.CALENDAR);
+        // console.log('calendarUrl:', calendarUrl);
+        // browser.runtime
+        //     .sendMessage({
+        //         action: 'openTab',
+        //         url: calendarUrl,
+        //         active: true,
+        //     })
+        //     .then(response => {
+        //         if (response.success) {
+        //             console.log('Tab opened successfully:', response.tabId);
+        //         } else {
+        //             console.error('Failed to open tab:', response.error);
+        //         }
+        //     });
+        openNewTab({
+            url: CRX_PAGES.CALENDAR,
+            active: true,
+        });
         window.close();
     };
 

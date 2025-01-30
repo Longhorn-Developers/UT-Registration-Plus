@@ -33,7 +33,10 @@ const manifest = defineManifest(async () => ({
     version: `${major}.${minor}.${patch}.${label}`,
     description: packageJson.description,
     options_page: 'src/pages/options/index.html',
-    background: { service_worker: 'src/pages/background/background.ts' },
+    background: {
+        service_worker: 'src/pages/background/background.ts',
+        scripts: ['public/scripts/webextension-polyfill.js'],
+    },
     permissions: ['storage', 'unlimitedStorage', 'background', 'scripting'],
     host_permissions: process.env.MODE === 'development' ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
     action: {
@@ -49,7 +52,7 @@ const manifest = defineManifest(async () => ({
     content_scripts: [
         {
             matches: HOST_PERMISSIONS,
-            js: ['src/pages/content/index.tsx'],
+            js: ['src/pages/content/index.tsx', 'public/scripts/webextension-polyfill.js'],
         },
     ],
     web_accessible_resources: [
