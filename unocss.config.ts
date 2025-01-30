@@ -55,6 +55,7 @@ export default defineConfig({
             provider: 'none',
             fonts: {
                 sans: ['Roboto Flex', 'Roboto Flex Local'],
+                mono: ['Roboto Mono', 'Roboto Mono Local'],
             },
         }),
     ],
