@@ -15,7 +15,15 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Roboto Mono Local';
+    src: url('@public/fonts/roboto-mono.woff2') format('woff2');
+    font-display: swap;
+    font-style: normal;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 
 $medium_size: 16px;
 
