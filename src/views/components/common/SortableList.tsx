@@ -7,6 +7,7 @@ import {
     sortableKeyboardCoordinates,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { useCursor } from '@views/hooks/useCursor';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -49,8 +50,8 @@ export function SortableList<T extends BaseItem>({
     className,
 }: ListProps<T>): JSX.Element {
     const [active, setActive] = useState<Active | null>(null);
-    const [isDragging, setIsDragging] = useState(false);
     const [items, setItems] = useState<T[]>(draggables);
+    const { setCursor } = useCursor();
 
     useEffect(() => {
         setItems(draggables);
@@ -66,22 +67,17 @@ export function SortableList<T extends BaseItem>({
     );
 
     return (
-        <div
-            className={clsx('h-full w-full', {
-                'cursor-grabbing [&_*]:cursor-grabbing': isDragging,
-                'cursor-default': !isDragging,
-            })}
-        >
+        <div className={clsx('h-full w-full')}>
             <ul className={clsx('overflow-clip flex gap-spacing-3 flex-col', className)}>
                 <DndContext
                     modifiers={[restrictToParentElement]}
                     sensors={sensors}
                     onDragStart={({ active }) => {
-                        setIsDragging(true);
+                        setCursor('grabbing');
                         setActive(active);
                     }}
                     onDragEnd={({ active, over }) => {
-                        setIsDragging(false);
+                        setCursor('default');
                         if (over && active.id !== over.id) {
                             const activeIndex = items.findIndex(({ id }) => id === active.id);
                             const overIndex = items.findIndex(({ id }) => id === over.id);
@@ -92,7 +88,7 @@ export function SortableList<T extends BaseItem>({
                         setActive(null);
                     }}
                     onDragCancel={() => {
-                        setIsDragging(false);
+                        setCursor('default');
                         setActive(null);
                     }}
                 >
