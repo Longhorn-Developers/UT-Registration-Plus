@@ -1,10 +1,9 @@
 import createSchedule from '@pages/background/lib/createSchedule';
 import { Plus } from '@phosphor-icons/react';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { getSpacingInPx } from '@shared/types/Spacing';
 import { Button } from '@views/components/common/Button';
-import List from '@views/components/common/List';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
+import { SortableList } from '@views/components/common/SortableList';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
@@ -41,11 +40,10 @@ export function CalendarSchedules() {
                 />
             </div>
             <div className='w-full flex flex-col'>
-                <List
-                    gap={getSpacingInPx('spacing-3')}
+                <SortableList
+                    className='gap-spacing-3'
                     draggables={schedules}
-                    itemKey={s => s.id}
-                    onReordered={reordered => {
+                    onChange={reordered => {
                         const activeSchedule = getActiveSchedule();
                         const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
@@ -53,17 +51,10 @@ export function CalendarSchedules() {
                         UserScheduleStore.set('schedules', reordered);
                         UserScheduleStore.set('activeIndex', activeIndex);
                     }}
-                >
-                    {(schedule, handleProps) => (
-                        <ScheduleListItem
-                            schedule={schedule}
-                            onClick={() => {
-                                switchSchedule(schedule.id);
-                            }}
-                            dragHandleProps={handleProps}
-                        />
+                    renderItem={schedule => (
+                        <ScheduleListItem schedule={schedule} onClick={() => switchSchedule(schedule.id)} />
                     )}
-                </List>
+                />
             </div>
         </div>
     );

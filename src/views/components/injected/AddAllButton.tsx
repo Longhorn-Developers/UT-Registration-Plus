@@ -1,6 +1,5 @@
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { background } from '@shared/messages';
-import { validateLoginStatus } from '@shared/util/checkLoginStatus';
 import { Button } from '@views/components/common/Button';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import useSchedules from '@views/hooks/useSchedules';
