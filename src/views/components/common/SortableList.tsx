@@ -5,15 +5,17 @@ import {
     arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
+    useSortable,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { SortableItemProvider } from '@views/contexts/SortableItemContext';
 import { useCursor } from '@views/hooks/useCursor';
 import clsx from 'clsx';
-import type { ReactNode } from 'react';
+import type { CSSProperties, PropsWithChildren, ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { SortableItemOverlay } from './SortableItemOverlay';
-import { SortableListItem } from './SortableListItem';
 
 /**
  * Extendable Prop for Sortable Item Id
@@ -23,9 +25,9 @@ export interface BaseItem {
 }
 
 /**
- * Props for the List component.
+ * Props for the SortableList component.
  */
-export interface ListProps<T extends BaseItem> {
+export interface SortableListProps<T extends BaseItem> {
     draggables: T[];
     /**
      *
@@ -41,6 +43,42 @@ export interface ListProps<T extends BaseItem> {
 }
 
 /**
+ * Props for the SortableListItem Component
+ */
+export interface SortableListItemProps {
+    id: UniqueIdentifier;
+}
+
+function SortableListItem({ children, id }: PropsWithChildren<SortableListItemProps>) {
+    const { attributes, isDragging, listeners, setNodeRef, setActivatorNodeRef, transform, transition } = useSortable({
+        id,
+    });
+    const context = useMemo(
+        () => ({
+            attributes,
+            listeners,
+            ref: setActivatorNodeRef,
+        }),
+        [attributes, listeners, setActivatorNodeRef]
+    );
+
+    const style = {
+        listStyle: 'none',
+        visibility: isDragging ? 'hidden' : 'visible',
+        transform: CSS.Translate.toString(transform),
+        transition,
+    } satisfies CSSProperties;
+
+    return (
+        <SortableItemProvider value={context}>
+            <li ref={setNodeRef} style={style}>
+                {children}
+            </li>
+        </SortableItemProvider>
+    );
+}
+
+/**
  * SortableList is a component that renders a drag-and-drop sortable list restricted by its parent
  */
 export function SortableList<T extends BaseItem>({
@@ -48,7 +86,7 @@ export function SortableList<T extends BaseItem>({
     renderItem,
     onChange,
     className,
-}: ListProps<T>): JSX.Element {
+}: SortableListProps<T>): JSX.Element {
     const [active, setActive] = useState<Active | null>(null);
     const [items, setItems] = useState<T[]>(draggables);
     const { setCursorGrabbing } = useCursor();
