@@ -8,18 +8,19 @@ export const useCursor = () => {
         const html = document.documentElement;
         return () => {
             html.style.removeProperty('cursor');
-            html.classList.remove('[&_*]:!cursor-grabbing', '!cursor-grabbing');
+            html.classList.remove('[&_*]:!cursor-grabbing');
         };
     }, []);
 
-    const setCursor = (cursor: string) => {
+    const setCursorGrabbing = (isGrabbing: boolean) => {
         const html = document.documentElement;
-        if (cursor === 'grabbing') {
-            html.classList.add('[&_*]:!cursor-grabbing', '!cursor-grabbing');
+
+        if (isGrabbing) {
+            html.classList.add('[&_*]:!cursor-grabbing');
         } else {
-            html.classList.remove('[&_*]:!cursor-grabbing', '!cursor-grabbing');
+            html.classList.remove('[&_*]:!cursor-grabbing');
         }
     };
 
-    return { setCursor };
+    return { setCursorGrabbing };
 };

@@ -51,7 +51,7 @@ export function SortableList<T extends BaseItem>({
 }: ListProps<T>): JSX.Element {
     const [active, setActive] = useState<Active | null>(null);
     const [items, setItems] = useState<T[]>(draggables);
-    const { setCursor } = useCursor();
+    const { setCursorGrabbing } = useCursor();
 
     useEffect(() => {
         setItems(draggables);
@@ -73,11 +73,11 @@ export function SortableList<T extends BaseItem>({
                     modifiers={[restrictToParentElement]}
                     sensors={sensors}
                     onDragStart={({ active }) => {
-                        setCursor('grabbing');
+                        setCursorGrabbing(true);
                         setActive(active);
                     }}
                     onDragEnd={({ active, over }) => {
-                        setCursor('default');
+                        setCursorGrabbing(false);
                         if (over && active.id !== over.id) {
                             const activeIndex = items.findIndex(({ id }) => id === active.id);
                             const overIndex = items.findIndex(({ id }) => id === over.id);
@@ -88,7 +88,7 @@ export function SortableList<T extends BaseItem>({
                         setActive(null);
                     }}
                     onDragCancel={() => {
-                        setCursor('default');
+                        setCursorGrabbing(false);
                         setActive(null);
                     }}
                 >
