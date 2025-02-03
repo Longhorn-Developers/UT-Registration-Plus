@@ -18,10 +18,11 @@ import { SortableListDragHandle } from './SortableListDragHandle';
  */
 export interface PopupCourseBlockProps {
     className?: string;
-    isStorybook?: boolean;
     course: Course;
     colors: CourseColors;
 }
+
+const IS_STORYBOOK = import.meta.env.STORYBOOK;
 
 /**
  * The "course block" to be used in the extension popup.
@@ -32,12 +33,7 @@ export interface PopupCourseBlockProps {
  * @param dragHandleProps - The drag handle props for the course block.
  * @returns The rendered PopupCourseBlock component.
  */
-export default function PopupCourseBlock({
-    className,
-    course,
-    colors,
-    isStorybook = false,
-}: PopupCourseBlockProps): JSX.Element {
+export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
@@ -100,7 +96,7 @@ export default function PopupCourseBlock({
             onClick={handleClick}
             ref={ref}
         >
-            {isStorybook ? (
+            {IS_STORYBOOK ? (
                 <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
             ) : (
                 <SortableListDragHandle

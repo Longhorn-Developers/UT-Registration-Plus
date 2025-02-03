@@ -72,7 +72,6 @@ const meta = {
     args: {
         colors: getCourseColors('emerald'),
         course: ExampleCourse,
-        isStorybook: true,
     },
     argTypes: {
         colors: {
@@ -109,7 +108,7 @@ export const AllColors: Story = {
     render: () => (
         <div className='grid grid-flow-col grid-cols-2 grid-rows-9 max-w-2xl w-90vw gap-x-4 gap-y-2'>
             {tailwindColorways.map(color => (
-                <PopupCourseBlock isStorybook key={color.primaryColor} course={ExampleCourse} colors={color} />
+                <PopupCourseBlock key={color.primaryColor} course={ExampleCourse} colors={color} />
             ))}
         </div>
     ),
