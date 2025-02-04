@@ -58,12 +58,6 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
             <Divider className='self-center screenshot:hidden' size='1.75rem' orientation='vertical' />
             <div className={clsx(styles.cqInline, 'flex flex-1 gap-5 min-w-[310px] screenshot:hidden')}>
                 <div className={clsx(styles.primaryActions, 'min-w-fit flex gap-5')}>
-                    <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
-                        Quick Add
-                    </Button>
-                    <Button color='ut-black' size='small' variant='minimal' icon={SelectionPlus}>
-                        Block
-                    </Button>
                     <DialogProvider>
                         <Menu>
                             <MenuButton className='bg-transparent'>
@@ -116,13 +110,19 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             </MenuItems>
                         </Menu>
                     </DialogProvider>
+                    <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
+                        Quick Add
+                    </Button>
+                    <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={SelectionPlus}>
+                        Block
+                    </Button>
                 </div>
                 <Divider className='self-center' size='1.75rem' orientation='vertical' />
                 <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 justify-end gap-5')}>
-                    <Button color='ut-black' size='small' variant='minimal' icon={BookmarkSimple}>
+                    <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={BookmarkSimple}>
                         Bookmarks
                     </Button>
-                    <Button color='ut-black' size='small' variant='minimal' icon={MapPinArea}>
+                    <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={MapPinArea}>
                         UT Map
                     </Button>
                 </div>
