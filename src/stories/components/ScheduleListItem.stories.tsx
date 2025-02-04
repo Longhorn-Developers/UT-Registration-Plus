@@ -14,7 +14,6 @@ const meta = {
     },
     args: {
         schedule: exampleSchedule,
-        isStorybook: true,
     },
     tags: ['autodocs'],
 } satisfies Meta<typeof ScheduleListItem>;

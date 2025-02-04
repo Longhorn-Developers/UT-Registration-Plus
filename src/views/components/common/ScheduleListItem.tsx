@@ -28,18 +28,15 @@ import { SortableListDragHandle } from './SortableListDragHandle';
  */
 interface ScheduleListItemProps {
     schedule: UserSchedule;
-    isStorybook?: boolean;
     onClick?: React.DOMAttributes<HTMLDivElement>['onClick'];
 }
+
+const IS_STORYBOOK = import.meta.env.STORYBOOK;
 
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
-export default function ScheduleListItem({
-    schedule,
-    onClick,
-    isStorybook = false,
-}: ScheduleListItemProps): JSX.Element {
+export default function ScheduleListItem({ schedule, onClick }: ScheduleListItemProps): JSX.Element {
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
@@ -106,7 +103,7 @@ export default function ScheduleListItem({
     return (
         <div className='h-7.5 rounded bg-white'>
             <div className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
-                {isStorybook ? (
+                {IS_STORYBOOK ? (
                     <DotsSixVertical
                         weight='bold'
                         className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400'
