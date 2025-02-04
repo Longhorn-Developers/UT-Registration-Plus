@@ -1,14 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import {
-    BookmarkSimple,
-    CalendarDots,
-    Export,
-    FilePng,
-    MapPinArea,
-    PlusCircle,
-    SelectionPlus,
-    Sidebar,
-} from '@phosphor-icons/react';
+import { CalendarDots, Export, FilePng, Sidebar } from '@phosphor-icons/react';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
@@ -56,7 +47,8 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 />
             </div>
             <Divider className='self-center screenshot:hidden' size='1.75rem' orientation='vertical' />
-            <div className={clsx(styles.cqInline, 'flex flex-1 gap-5 min-w-[310px] screenshot:hidden')}>
+            {/* min-w-[310px] is the value with all the buttons */}
+            <div className={clsx(styles.cqInline, 'flex flex-1 gap-5 min-w-[45x] screenshot:hidden')}>
                 <div className={clsx(styles.primaryActions, 'min-w-fit flex gap-5')}>
                     <DialogProvider>
                         <Menu>
@@ -110,14 +102,14 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             </MenuItems>
                         </Menu>
                     </DialogProvider>
-                    <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
+                    {/* <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
                         Quick Add
                     </Button>
                     <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={SelectionPlus}>
                         Block
-                    </Button>
+                    </Button> */}
                 </div>
-                <Divider className='self-center' size='1.75rem' orientation='vertical' />
+                {/* <Divider className='self-center' size='1.75rem' orientation='vertical' />
                 <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 justify-end gap-5')}>
                     <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={BookmarkSimple}>
                         Bookmarks
@@ -125,7 +117,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={MapPinArea}>
                         UT Map
                     </Button>
-                </div>
+                </div> */}
             </div>
         </div>
     );

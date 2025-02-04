@@ -13,15 +13,16 @@
         white-space: nowrap;
     }
 
-    @container (width < 610px) {
+    // value with all buttons is 610px
+    @container (width < 90px) {
         .primaryActions span {
             @include visually-hidden;
         }
     }
 
-    @container (width < 445px) {
-        .secondaryActions span {
-            @include visually-hidden;
-        }
-    }
+    // @container (width < 445px) {
+    //     .secondaryActions span {
+    //         @include visually-hidden;
+    //     }
+    // }
 }
