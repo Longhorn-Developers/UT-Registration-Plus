@@ -15,12 +15,12 @@ export type ScheduleDropdownProps = {
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
-export default function ScheduleDropdown(props: ScheduleDropdownProps) {
+export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDropdownProps) {
     const [activeSchedule] = useSchedules();
 
     return (
         <div className='border border-ut-offwhite rounded border-solid bg-white'>
-            <Disclosure defaultOpen={props.defaultOpen}>
+            <Disclosure defaultOpen={defaultOpen}>
                 {({ open }) => (
                     <>
                         <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left'>
@@ -50,14 +50,17 @@ export default function ScheduleDropdown(props: ScheduleDropdownProps) {
 
                         <Transition
                             as='div'
-                            className='contain-paint max-h-55 origin-top overflow-auto transition-all duration-400 ease-in-out-expo'
-                            enterFrom='transform scale-98 opacity-0 max-h-0!'
-                            enterTo='transform scale-100 opacity-100 max-h-55'
-                            leave='ease-out-expo'
-                            leaveFrom='transform scale-100 opacity-100 max-h-55'
-                            leaveTo='transform scale-98 opacity-0 max-h-0!'
+                            className='overflow-hidden'
+                            enter='transition-[max-height,opacity,padding] duration-300 ease-in-out-expo'
+                            enterFrom='max-h-0 opacity-0 p-0.5'
+                            enterTo='max-h-[440px] opacity-100 p-0'
+                            leave='transition-[max-height,opacity,padding] duration-300 ease-in-out-expo'
+                            leaveFrom='max-h-[440px] opacity-100 p-0'
+                            leaveTo='max-h-0 opacity-0 p-0.5'
                         >
-                            <DisclosurePanel className='px-3.5 pb-2.5 pt-2'>{props.children}</DisclosurePanel>
+                            <div className='px-3.5 pb-2.5 pt-2'>
+                                <DisclosurePanel>{children}</DisclosurePanel>
+                            </div>
                         </Transition>
                     </>
                 )}
