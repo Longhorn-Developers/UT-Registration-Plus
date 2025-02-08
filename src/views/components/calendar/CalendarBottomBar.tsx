@@ -38,7 +38,7 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                         <Text variant='p' className='text-ut-black uppercase'>
                             Unscheduled
                         </Text>
-                        <Text variant='h4' className='text-theme-offwhite1'>
+                        <Text variant='h4' className='text-theme-offwhite/50'>
                             —
                         </Text>
                         <div className='inline-flex gap-2.5'>
