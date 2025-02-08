@@ -1,0 +1,28 @@
+.cqInline {
+    container-type: inline-size;
+
+    @mixin visually-hidden {
+        border: 0;
+        clip: rect(0 0 0 0);
+        height: auto;
+        margin: 0;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+        white-space: nowrap;
+    }
+
+    // value with all buttons is 610px
+    @container (width < 90px) {
+        .primaryActions span {
+            @include visually-hidden;
+        }
+    }
+
+    // @container (width < 445px) {
+    //     .secondaryActions span {
+    //         @include visually-hidden;
+    //     }
+    // }
+}
