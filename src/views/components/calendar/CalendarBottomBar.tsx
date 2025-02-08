@@ -23,9 +23,9 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
     const displayCourses = asyncCourseCells && asyncCourseCells.length > 0;
 
     return (
-        <div className='w-full flex pb-spacing-5 pl-spacing-7 pr-spacing-3 pt-spacing-4'>
+        <div className='w-full flex pl-spacing-7 pr-spacing-3 pt-spacing-4'>
             <div
-                className={clsx('flex flex-grow items-center gap-3.75 text-nowrap', {
+                className={clsx('flex flex-grow items-center gap-1 text-nowrap', {
                     'py-7.5': !displayCourses,
                 })}
             >
@@ -46,7 +46,7 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                                             courseDeptAndInstr={courseDeptAndInstr}
                                             status={status}
                                             key={courseDeptAndInstr}
-                                            className={clsx(className, 'w-35! h-12.5!')}
+                                            className={clsx(className, 'w-35! h-12.5! items-center')}
                                             onClick={() => setCourse(block.course)}
                                             blockData={block}
                                         />
