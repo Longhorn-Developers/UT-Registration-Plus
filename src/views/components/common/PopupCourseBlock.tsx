@@ -1,4 +1,3 @@
-import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd';
 import { Check, Copy, DotsSixVertical } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
@@ -12,6 +11,7 @@ import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Button } from './Button';
+import { SortableListDragHandle } from './SortableListDragHandle';
 
 /**
  * Props for PopupCourseBlock
@@ -20,8 +20,9 @@ export interface PopupCourseBlockProps {
     className?: string;
     course: Course;
     colors: CourseColors;
-    dragHandleProps?: DraggableProvidedDragHandleProps;
 }
+
+const IS_STORYBOOK = import.meta.env.STORYBOOK;
 
 /**
  * The "course block" to be used in the extension popup.
@@ -32,12 +33,7 @@ export interface PopupCourseBlockProps {
  * @param dragHandleProps - The drag handle props for the course block.
  * @returns The rendered PopupCourseBlock component.
  */
-export default function PopupCourseBlock({
-    className,
-    course,
-    colors,
-    dragHandleProps,
-}: PopupCourseBlockProps): JSX.Element {
+export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
@@ -48,7 +44,6 @@ export default function PopupCourseBlock({
 
         const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
         });
 
         // adds transition for shadow hover after three frames
@@ -101,16 +96,23 @@ export default function PopupCourseBlock({
             onClick={handleClick}
             ref={ref}
         >
-            <div
-                style={{
-                    backgroundColor: colors.secondaryColor,
-                }}
-                className='flex items-center self-stretch rounded rounded-r-0 cursor-move!'
-                {...dragHandleProps}
+            {IS_STORYBOOK ? (
+                <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
+            ) : (
+                <SortableListDragHandle
+                    style={{
+                        backgroundColor: colors.secondaryColor,
+                    }}
+                    className='flex cursor-move items-center self-stretch rounded rounded-r-0'
+                >
+                    <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
+                </SortableListDragHandle>
+            )}
+
+            <Text
+                className={clsx('flex-1 py-spacing-5 truncate ml-spacing-3 select-none', fontColor)}
+                variant='h1-course'
             >
-                <DotsSixVertical weight='bold' className='h-6 w-6 text-white' />
-            </div>
-            <Text className={clsx('flex-1 py-spacing-5 truncate ml-spacing-3', fontColor)} variant='h1-course'>
                 {course.department} {course.number}
                 {course.instructors.length > 0 ? <> &ndash; </> : ''}
                 {course.instructors.map(v => v.toString({ format: 'last' })).join('; ')}
@@ -149,7 +151,7 @@ export default function PopupCourseBlock({
                         )}
                     />
                 </div>
-                <Text variant='h2' className='text-base!'>
+                <Text variant='h2' className='no-select text-base!'>
                     {formattedUniqueId}
                 </Text>
             </Button>

@@ -7,6 +7,7 @@ import React from 'react';
 
 interface Props {
     className?: string;
+    ref?: React.ForwardedRef<HTMLButtonElement>;
     style?: React.CSSProperties;
     variant?: 'filled' | 'outline' | 'minimal';
     size?: 'regular' | 'small' | 'mini';
@@ -24,6 +25,7 @@ interface Props {
  */
 export function Button({
     className,
+    ref,
     style,
     variant = 'filled',
     size = 'regular',
@@ -42,6 +44,7 @@ export function Button({
 
     return (
         <button
+            ref={ref}
             style={
                 {
                     color: colorHex,
