@@ -1,10 +1,9 @@
 import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
-import { CalendarDots, Flag, GearSix, Plus } from '@phosphor-icons/react';
+import { CalendarDots, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { openReportWindow } from '@shared/util/openReportWindow';
 import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
@@ -86,7 +85,7 @@ export default function PopupMain(): JSX.Element {
 
     return (
         <div className='h-screen max-h-full flex flex-col bg-white'>
-            <div className='p-5 py-3.5'>
+            <div className='px-spacing-6 py-spacing-5'>
                 <div className='flex items-center justify-between bg-white'>
                     <SmallLogo />
                     <div className='flex items-center gap-2.5'>
@@ -95,9 +94,11 @@ export default function PopupMain(): JSX.Element {
                             color='ut-burntorange'
                             onClick={handleCalendarOpenOnClick}
                             icon={CalendarDots}
-                        />
+                            iconProps={{ weight: 'fill' }}
+                        >
+                            Calendar
+                        </Button>
                         <Button variant='minimal' color='ut-black' onClick={handleOpenOptions} icon={GearSix} />
-                        <Button variant='minimal' color='ut-black' onClick={openReportWindow} icon={Flag} />
                     </div>
                 </div>
             </div>
@@ -139,7 +140,10 @@ export default function PopupMain(): JSX.Element {
                     </Text>
                 </div>
             )}
-            <div className='flex-1 self-stretch overflow-y-auto px-5'>
+            <div
+                style={{ scrollbarGutter: 'stable' }}
+                className='flex-1 self-stretch overflow-y-scroll pl-spacing-6 pr-[6px]'
+            >
                 {activeSchedule?.courses?.length > 0 && (
                     <SortableList
                         draggables={activeSchedule.courses.map(course => ({

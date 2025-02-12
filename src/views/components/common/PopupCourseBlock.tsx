@@ -35,15 +35,27 @@ const IS_STORYBOOK = import.meta.env.STORYBOOK;
  */
 export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const [enableTimeAndLocationInPopup, setEnableTimeAndLocationInPopup] = useState<boolean>(false);
+
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
+        const initAllSettings = async () => {
+            const { enableCourseStatusChips, enableTimeAndLocationInPopup } = await initSettings();
+            setEnableCourseStatusChips(enableCourseStatusChips);
+            setEnableTimeAndLocationInPopup(enableTimeAndLocationInPopup);
+        };
+
+        initAllSettings();
 
         const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
+        });
+
+        const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
+            setEnableTimeAndLocationInPopup(newValue);
         });
 
         // adds transition for shadow hover after three frames
@@ -59,6 +71,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
 
         return () => {
             OptionsStore.removeListener(l1);
+            OptionsStore.removeListener(l2);
         };
     }, []);
 
@@ -90,7 +103,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                 backgroundColor: colors.primaryColor,
             }}
             className={clsx(
-                'h-full w-full inline-flex items-center justify-center gap-1 rounded pr-2 focusable cursor-pointer text-left hover:shadow-md ease-out group-[.is-dragging]:shadow-md',
+                'h-full w-full inline-flex items-center justify-center gap-1 rounded focusable cursor-pointer text-left hover:shadow-md ease-out group-[.is-dragging]:shadow-md min-h-[55px]',
                 className
             )}
             onClick={handleClick}
@@ -108,53 +121,66 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                     <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
                 </SortableListDragHandle>
             )}
-
-            <Text
-                className={clsx('flex-1 py-spacing-5 truncate ml-spacing-3 select-none', fontColor)}
-                variant='h1-course'
-            >
-                {course.department} {course.number}
-                {course.instructors.length > 0 ? <> &ndash; </> : ''}
-                {course.instructors.map(v => v.toString({ format: 'last' })).join('; ')}
-            </Text>
-            {enableCourseStatusChips && course.status !== Status.OPEN && (
-                <div
-                    style={{
-                        backgroundColor: colors.secondaryColor,
-                    }}
-                    className='ml-1 flex items-center justify-center justify-self-end rounded p-[3px] text-white'
-                >
-                    <StatusIcon status={course.status} className='h-6 w-6' />
+            <div className='flex flex-1 justify-center gap-spacing-3 p-spacing-3'>
+                <div className='flex flex-1 flex-col justify-center gap-spacing-1'>
+                    <Text
+                        className={clsx('flex-1 truncate select-none flex flex-col justify-center', fontColor)}
+                        variant='h1-course'
+                    >
+                        {course.department} {course.number}
+                        {course.instructors.length > 0 ? <> &ndash; </> : ''}
+                        {course.instructors.map(v => v.toString({ format: 'last' })).join('; ')}
+                    </Text>
+                    {enableTimeAndLocationInPopup && (
+                        <div className='flex flex-col'>
+                            {course.schedule.meetings.map(meeting => (
+                                <Text className={clsx('flex-1 truncate select-none', fontColor)} variant='h3-course'>
+                                    {`${meeting.getDaysString({ format: 'short' })} ${meeting.getTimeString({ separator: '-' })}${meeting.location ? `, ${meeting.location.building} ${meeting.location.room}` : ''}`}
+                                </Text>
+                            ))}
+                        </div>
+                    )}
                 </div>
-            )}
-
-            <Button
-                color='ut-gray'
-                onClick={handleCopy}
-                className='h-full max-h-[30px] w-fit gap-spacing-2 rounded py-spacing-2 text-white px-spacing-3!'
-                style={{
-                    backgroundColor: colors.secondaryColor,
-                }}
-            >
-                <div className='relative h-5.5 w-5.5'>
-                    <Check
-                        className={clsx(
-                            'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out',
-                            isCopied ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
-                        )}
-                    />
-                    <Copy
-                        weight='fill'
-                        className={clsx(
-                            'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out',
-                            isCopied ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
-                        )}
-                    />
+                {enableCourseStatusChips && course.status !== Status.OPEN && (
+                    <div
+                        style={{
+                            backgroundColor: colors.secondaryColor,
+                        }}
+                        className='ml-1 flex items-center justify-center justify-self-end rounded p-[3px] text-white'
+                    >
+                        <StatusIcon status={course.status} className='h-6 w-6' />
+                    </div>
+                )}
+                <div className='flex flex-col justify-center'>
+                    <Button
+                        color='ut-gray'
+                        onClick={handleCopy}
+                        className='h-full max-h-[30px] w-fit gap-spacing-2 rounded py-spacing-2 text-white'
+                        style={{
+                            backgroundColor: colors.secondaryColor,
+                        }}
+                    >
+                        <div className='relative h-5.5 w-5.5'>
+                            <Check
+                                className={clsx(
+                                    'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out',
+                                    isCopied ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+                                )}
+                            />
+                            <Copy
+                                weight='fill'
+                                className={clsx(
+                                    'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out',
+                                    isCopied ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
+                                )}
+                            />
+                        </div>
+                        <Text variant='h2' className='no-select text-base!'>
+                            {formattedUniqueId}
+                        </Text>
+                    </Button>
                 </div>
-                <Text variant='h2' className='no-select text-base!'>
-                    {formattedUniqueId}
-                </Text>
-            </Button>
+            </div>
         </div>
     );
 }
