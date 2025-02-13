@@ -161,22 +161,22 @@ export default function PopupMain(): JSX.Element {
                     />
                 )}
             </div>
-            <div className='w-full flex flex-col items-center gap-1.25 p-5 pt-3.75'>
-                <div className='flex gap-2.5'>
+            <div className='w-full flex flex-col items-center gap-1.25 px-spacing-6 py-spacing-5'>
+                <div className='flex gap-spacing-6'>
                     {enableCourseStatusChips && (
                         <>
-                            <CourseStatus status='WAITLISTED' size='mini' />
-                            <CourseStatus status='CLOSED' size='mini' />
-                            <CourseStatus status='CANCELLED' size='mini' />
+                            <CourseStatus status='WAITLISTED' size='small' />
+                            <CourseStatus status='CLOSED' size='small' />
+                            <CourseStatus status='CANCELLED' size='small' />
                         </>
                     )}
                 </div>
-                {enableDataRefreshing && (
+                {/* {enableDataRefreshing && (
                     <div className='inline-flex items-center self-center gap-1'>
                         <Text variant='mini' className='text-ut-gray !font-normal'>
-                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
-                        </Text>
-                        {/* <button
+                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)} */}
+                {/* </Text> */}
+                {/* <button
                             className='h-4 w-4 bg-transparent p-0 btn'
                             onClick={() => {
                                 setIsRefreshing(true);
@@ -188,8 +188,8 @@ export default function PopupMain(): JSX.Element {
                                 })}
                             />
                         </button> */}
-                    </div>
-                )}
+                {/* </div>
+                )} */}
             </div>
         </div>
     );
