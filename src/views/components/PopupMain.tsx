@@ -171,12 +171,12 @@ export default function PopupMain(): JSX.Element {
                         </>
                     )}
                 </div>
-                {enableDataRefreshing && (
-                    <div className='inline-flex items-center self-center gap-1'>
-                        <Text variant='mini' className='text-ut-gray !font-normal'>
+                {/* {enableDataRefreshing && (
+                    <div className='inline-flex items-center self-center gap-1'> */}
+                {/* <Text variant='mini' className='text-ut-gray !font-normal'>
                             LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
-                        </Text>
-                        {/* <button
+                        </Text> */}
+                {/* <button
                         className='h-4 w-4 bg-transparent p-0 btn'
                         onClick={() => {
                             setIsRefreshing(true);
@@ -188,8 +188,8 @@ export default function PopupMain(): JSX.Element {
                             })}
                         />
                     </button> */}
-                    </div>
-                )}
+                {/* </div>
+                )} */}
             </div>
         </div>
     );

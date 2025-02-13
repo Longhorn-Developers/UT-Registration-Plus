@@ -128,13 +128,20 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
             ref={ref}
         >
             {IS_STORYBOOK ? (
-                <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
+                <div
+                    style={{
+                        backgroundColor: colors.secondaryColor,
+                    }}
+                    className='flex cursor-move items-center self-stretch rounded rounded-r-0 px-spacing-2'
+                >
+                    <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
+                </div>
             ) : (
                 <SortableListDragHandle
                     style={{
                         backgroundColor: colors.secondaryColor,
                     }}
-                    className='flex cursor-move items-center self-stretch rounded rounded-r-0'
+                    className='flex cursor-move items-center self-stretch rounded rounded-r-0 px-spacing-2'
                 >
                     <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
                 </SortableListDragHandle>
@@ -142,7 +149,10 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
             <div className='h-full flex flex-1 justify-center gap-spacing-3 p-spacing-3'>
                 <div className='flex flex-1 flex-col justify-center gap-spacing-1'>
                     <Text
-                        className={clsx('truncate select-none justify-center mb-auto', fontColor)}
+                        className={clsx(
+                            `truncate select-none justify-center ${meetings.length > 0 ? 'mb-auto' : 'my-auto'}`,
+                            fontColor
+                        )}
                         variant='h1-course'
                     >
                         {course.department} {course.number}
@@ -165,12 +175,12 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                     <Button
                         color='ut-gray'
                         onClick={handleCopy}
-                        className='h-full max-h-[30px] w-fit gap-spacing-2 rounded py-spacing-2 text-white'
+                        className='h-full max-h-[30px] max-w-fit gap-spacing-2 rounded text-white px-spacing-3! py-spacing-2!'
                         style={{
                             backgroundColor: colors.secondaryColor,
                         }}
                     >
-                        <div className='relative h-5.5 w-5.5'>
+                        <div className='relative h-[21px] w-[21px]'>
                             <Check
                                 className={clsx(
                                     'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out',
@@ -185,7 +195,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                                 )}
                             />
                         </div>
-                        <Text variant='h2' className='no-select text-base!'>
+                        <Text variant='h2' className='select-none text-base!'>
                             {formattedUniqueId}
                         </Text>
                     </Button>

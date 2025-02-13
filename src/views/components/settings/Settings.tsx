@@ -86,7 +86,7 @@ const useDevMode = (targetCount: number): [boolean, () => void] => {
  */
 export default function Settings(): JSX.Element {
     const [_enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
+    // const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
