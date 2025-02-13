@@ -180,7 +180,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                             <Copy
                                 weight='fill'
                                 className={clsx(
-                                    'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out',
+                                    'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out select-none',
                                     isCopied ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
                                 )}
                             />
