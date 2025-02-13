@@ -43,9 +43,9 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                                     const { courseDeptAndInstr, status, className } = block.componentProps;
                                     return (
                                         <CalendarCourseBlock
+                                            key={block.course.uniqueId}
                                             courseDeptAndInstr={courseDeptAndInstr}
                                             status={status}
-                                            key={courseDeptAndInstr}
                                             className={clsx(className, 'w-35! h-12.5! items-center')}
                                             onClick={() => setCourse(block.course)}
                                             blockData={block}
