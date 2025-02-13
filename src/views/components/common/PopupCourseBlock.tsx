@@ -48,7 +48,6 @@ const CourseMeeting = memo(
  */
 export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [enableTimeAndLocationInPopup, setEnableTimeAndLocationInPopup] = useState<boolean>(false);
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
@@ -56,19 +55,14 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
 
     useEffect(() => {
         const initAllSettings = async () => {
-            const { enableCourseStatusChips, enableTimeAndLocationInPopup } = await initSettings();
+            const { enableCourseStatusChips } = await initSettings();
             setEnableCourseStatusChips(enableCourseStatusChips);
-            setEnableTimeAndLocationInPopup(enableTimeAndLocationInPopup);
         };
 
         initAllSettings();
 
         const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
-        });
-
-        const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
-            setEnableTimeAndLocationInPopup(newValue);
         });
 
         // adds transition for shadow hover after three frames
@@ -84,7 +78,6 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
 
         return () => {
             OptionsStore.removeListener(l1);
-            OptionsStore.removeListener(l2);
         };
     }, []);
 
@@ -128,7 +121,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                 backgroundColor: colors.primaryColor,
             }}
             className={clsx(
-                'w-full inline-flex items-center justify-center gap-1 rounded focusable cursor-pointer text-left hover:shadow-md ease-out group-[.is-dragging]:shadow-md h-[55px] min-h-[55px]',
+                'w-full inline-flex items-center justify-center gap-1 rounded focusable cursor-pointer text-left hover:shadow-md ease-out group-[.is-dragging]:shadow-md min-h-[55px]',
                 className
             )}
             onClick={handleClick}
@@ -146,17 +139,17 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                     <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
                 </SortableListDragHandle>
             )}
-            <div className='flex flex-1 justify-center gap-spacing-3 p-spacing-3'>
+            <div className='h-full flex flex-1 justify-center gap-spacing-3 p-spacing-3'>
                 <div className='flex flex-1 flex-col justify-center gap-spacing-1'>
                     <Text
-                        className={clsx('flex-1 truncate select-none flex flex-col justify-center', fontColor)}
+                        className={clsx('truncate select-none justify-center mb-auto', fontColor)}
                         variant='h1-course'
                     >
                         {course.department} {course.number}
                         {course.instructors.length > 0 ? <> &ndash; </> : ''}
                         {course.instructors.map(v => v.toString({ format: 'last' })).join('; ')}
                     </Text>
-                    {enableTimeAndLocationInPopup && <div className='flex flex-col'>{meetings}</div>}
+                    <div className='flex flex-col'>{meetings}</div>
                 </div>
                 {enableCourseStatusChips && course.status !== Status.OPEN && (
                     <div
