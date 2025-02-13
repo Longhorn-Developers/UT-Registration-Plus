@@ -101,7 +101,7 @@ export default function PopupMain(): JSX.Element {
                     </div>
                 </div>
             </div>
-            <Divider orientation='horizontal' size='100%' />
+            <Divider className='bg-ut-offwhite/50' orientation='horizontal' size='100%' />
             <div className='px-5 pb-2.5 pt-3.75'>
                 <ScheduleDropdown>
                     <SortableList
