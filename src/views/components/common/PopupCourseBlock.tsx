@@ -8,7 +8,7 @@ import { pickFontColor } from '@shared/util/colors';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Button } from './Button';
 import { SortableListDragHandle } from './SortableListDragHandle';
@@ -23,6 +23,19 @@ export interface PopupCourseBlockProps {
 }
 
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
+
+const CourseMeeting = memo(
+    ({ meeting, fontColor }: { meeting: Course['schedule']['meetings'][0]; fontColor: string }) => {
+        const dateString = meeting.getDaysString({ format: 'short' });
+        return (
+            <Text key={dateString} className={clsx('flex-1 truncate select-none', fontColor)} variant='h3-course'>
+                {`${dateString} ${meeting.getTimeString({ separator: '-' })}${
+                    meeting.location ? `, ${meeting.location.building} ${meeting.location.room}` : ''
+                }`}
+            </Text>
+        );
+    }
+);
 
 /**
  * The "course block" to be used in the extension popup.
@@ -97,13 +110,25 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
         setTimeout(() => setIsCopied(false), 500);
     };
 
+    const meetings = useMemo(
+        () =>
+            course.schedule.meetings.map(meeting => (
+                <CourseMeeting
+                    key={meeting.getDaysString({ format: 'short' })}
+                    meeting={meeting}
+                    fontColor={fontColor}
+                />
+            )),
+        [course.schedule.meetings, fontColor]
+    );
+
     return (
         <div
             style={{
                 backgroundColor: colors.primaryColor,
             }}
             className={clsx(
-                'h-full w-full inline-flex items-center justify-center gap-1 rounded focusable cursor-pointer text-left hover:shadow-md ease-out group-[.is-dragging]:shadow-md min-h-[55px]',
+                'w-full inline-flex items-center justify-center gap-1 rounded focusable cursor-pointer text-left hover:shadow-md ease-out group-[.is-dragging]:shadow-md h-[55px] min-h-[55px]',
                 className
             )}
             onClick={handleClick}
@@ -131,15 +156,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                         {course.instructors.length > 0 ? <> &ndash; </> : ''}
                         {course.instructors.map(v => v.toString({ format: 'last' })).join('; ')}
                     </Text>
-                    {enableTimeAndLocationInPopup && (
-                        <div className='flex flex-col'>
-                            {course.schedule.meetings.map(meeting => (
-                                <Text className={clsx('flex-1 truncate select-none', fontColor)} variant='h3-course'>
-                                    {`${meeting.getDaysString({ format: 'short' })} ${meeting.getTimeString({ separator: '-' })}${meeting.location ? `, ${meeting.location.building} ${meeting.location.room}` : ''}`}
-                                </Text>
-                            ))}
-                        </div>
-                    )}
+                    {enableTimeAndLocationInPopup && <div className='flex flex-col'>{meetings}</div>}
                 </div>
                 {enableCourseStatusChips && course.status !== Status.OPEN && (
                     <div
