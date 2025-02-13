@@ -8,10 +8,10 @@ import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect, useState } from 'react';
 
+import { getUpdatedAtDateTimeString } from '../lib/getUpdatedAtDateTimeString';
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
 import { SmallLogo } from './common/LogoIcon';
@@ -171,25 +171,25 @@ export default function PopupMain(): JSX.Element {
                         </>
                     )}
                 </div>
-                {/* {enableDataRefreshing && (
+                {enableDataRefreshing && (
                     <div className='inline-flex items-center self-center gap-1'>
                         <Text variant='mini' className='text-ut-gray !font-normal'>
-                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)} */}
-                {/* </Text> */}
-                {/* <button
-                            className='h-4 w-4 bg-transparent p-0 btn'
-                            onClick={() => {
-                                setIsRefreshing(true);
-                            }}
-                        >
-                            <RefreshIcon
-                                className={clsx('h-4 w-4 text-ut-black animate-duration-800', {
-                                    'animate-spin': isRefreshing,
-                                })}
-                            />
-                        </button> */}
-                {/* </div>
-                )} */}
+                            LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
+                        </Text>
+                        {/* <button
+                        className='h-4 w-4 bg-transparent p-0 btn'
+                        onClick={() => {
+                            setIsRefreshing(true);
+                        }}
+                    >
+                        <RefreshIcon
+                            className={clsx('h-4 w-4 text-ut-black animate-duration-800', {
+                                'animate-spin': isRefreshing,
+                            })}
+                        />
+                    </button> */}
+                    </div>
+                )}
             </div>
         </div>
     );

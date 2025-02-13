@@ -24,7 +24,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
     enableCourseStatusChips: false,
     enableHighlightConflicts: true,
     enableScrollToLoad: true,
-    enableDataRefreshing: true,
+    enableDataRefreshing: false,
     alwaysOpenCalendarInNewTab: false,
 });
 
