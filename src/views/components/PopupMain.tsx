@@ -11,7 +11,6 @@ import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect, useState } from 'react';
 
-import { getUpdatedAtDateTimeString } from '../lib/getUpdatedAtDateTimeString';
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
 import { SmallLogo } from './common/LogoIcon';
@@ -26,14 +25,14 @@ import { SortableList } from './common/SortableList';
  */
 export default function PopupMain(): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    // const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
     useKC_DABR_WASM();
 
     useEffect(() => {
         const initAllSettings = async () => {
-            const { enableCourseStatusChips, enableDataRefreshing } = await initSettings();
+            const { enableCourseStatusChips } = await initSettings();
             setEnableCourseStatusChips(enableCourseStatusChips);
-            setEnableDataRefreshing(enableDataRefreshing);
+            // setEnableDataRefreshing(enableDataRefreshing);
         };
 
         initAllSettings();
@@ -43,14 +42,14 @@ export default function PopupMain(): JSX.Element {
             // console.log('enableCourseStatusChips', newValue);
         });
 
-        const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
-            setEnableDataRefreshing(newValue);
-            // console.log('enableDataRefreshing', newValue);
-        });
+        // const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
+        //     setEnableDataRefreshing(newValue);
+        //     // console.log('enableDataRefreshing', newValue);
+        // });
 
         return () => {
             OptionsStore.removeListener(l1);
-            OptionsStore.removeListener(l2);
+            // OptionsStore.removeListener(l2);
         };
     }, []);
 
