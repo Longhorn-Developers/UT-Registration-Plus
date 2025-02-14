@@ -76,7 +76,7 @@ const exampleCourses = generateCourses(numberOfCourses);
 type CourseWithId = Course & BaseItem;
 
 const meta = {
-    title: 'Components/Common/List',
+    title: 'Components/Common/SortableList',
     component: SortableList,
     parameters: {
         layout: 'centered',
