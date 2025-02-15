@@ -11,6 +11,7 @@ import {
     RadioButton,
     Trash,
 } from '@phosphor-icons/react';
+import { background } from '@shared/messages';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
@@ -70,7 +71,12 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
         if (editorValue.trim() !== '' && editorValue.trim() !== schedule.name) {
             schedule.name = (await renameSchedule(schedule.id, editorValue.trim())) as string;
 
-            if (Math.random() < 1) {
+            if (schedule.name === '404') {
+                const url = chrome.runtime.getURL('/404.html');
+                background.openNewTab({ url });
+            }
+
+            if (Math.random() < 0.002) {
                 showDialog({
                     title: 'Schedule name already taken',
                     description: (
