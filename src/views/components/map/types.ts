@@ -17,8 +17,8 @@ export type NodeType = 'building' | 'intersection' | 'walkway';
 /**
  * Represents the coordinates of a node on a map.
  *
- * @property x - The x-coordinate of the node.
- * @property y - The y-coordinate of the node.
+ * @typeparam x - The x-coordinate of the node.
+ * @typeparam y - The y-coordinate of the node.
  */
 export type NodeCoordinates = {
     x: number;
@@ -28,9 +28,7 @@ export type NodeCoordinates = {
 /**
  * Represents a map node with specific coordinates and a type.
  *
- * @extends NodeCoordinates
- *
- * @property type - The type of the node.
+ * @typeparam type - The type of the node.
  */
 export type MapNode = NodeCoordinates & {
     type: NodeType;
@@ -56,16 +54,16 @@ export type NodeId = string;
 /**
  * A map that associates a node identifier with a distance.
  *
- * @property NodeId - The unique identifier for a node.
- * @property Distance - The distance associated with the node.
+ * @typeparam NodeId - The unique identifier for a node.
+ * @typeparam Distance - The distance associated with the node.
  */
 export type DistanceMap = Record<NodeId, Distance>;
 
 /**
  * A type representing a mapping of node identifiers to their previous node identifiers.
  *
- * @property NodeId - The identifier of the current node.
- * @property NodeId - The identifier of the previous node, or null if there is no previous node.
+ * @typeparam NodeId - The identifier of the current node.
+ * @typeparam NodeId - The identifier of the previous node, or null if there is no previous node.
  */
 export type PreviousMap = Record<NodeId, NodeId | null>;
 
@@ -99,17 +97,14 @@ export type DayCode = 'M' | 'T' | 'W' | 'TTH' | 'F';
 
 /**
  * An array of strings representing the days of the week.
- *
  * The days are ordered starting from Monday to Sunday.
- *
- * @constant {readonly string[]}
  */
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 
 /**
  * Represents a day of the week.
- * @type {string}
  *
+ * @remarks
  * This type is derived from the `DAYS` array, representing one of its elements.
  * It is used to ensure that only valid days of the week are assigned to variables of this type.
  */
@@ -119,12 +114,6 @@ type DayMapping = Record<DayCode, DAY>;
 
 /**
  * A constant object that maps single-letter day abbreviations to their full names.
- *
- * @property M - Represents Monday.
- * @property T - Represents Tuesday.
- * @property W - Represents Wednesday.
- * @property TTH - Represents Thursday.
- * @property F - Represents Friday.
  */
 export const DAY_MAPPING = {
     M: 'Monday',

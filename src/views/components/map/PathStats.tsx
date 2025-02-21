@@ -11,9 +11,8 @@ type PathStatsProps = {
 /**
  * Calculates the direct path statistics between two nodes.
  *
- * @param props - The properties object.
- * @param props.startId - The ID of the starting node.
- * @param props.endId - The ID of the ending node.
+ * @param startId - The ID of the starting node.
+ * @param endId - The ID of the ending node.
  *
  * @returns The distance in feet and walking time in minutes between the two nodes.
  */
@@ -41,9 +40,8 @@ export const calcDirectPathStats = ({ startId, endId }: PathStatsProps) => {
 /**
  * Component to display statistics about a path between two nodes on a map.
  *
- * @param props - The properties for the PathStats component.
- * @param props.startId - The ID of the starting node.
- * @param props.endId - The ID of the ending node.
+ * @param startId - The ID of the starting node.
+ * @param endId - The ID of the ending node.
  *
  * @returns A JSX element displaying the path statistics, or null if the nodes are invalid.
  */

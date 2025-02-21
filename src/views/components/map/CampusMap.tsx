@@ -20,9 +20,8 @@ type SelectedBuildings = {
 /**
  * DaySelector component allows users to select a day from a list of days.
  *
- * @param props - The component props.
- * @param props.selectedDay - The currently selected day.
- * @param props.onDaySelect - Callback function to handle day selection.
+ * @param selectedDay - The currently selected day.
+ * @param onDaySelect - Callback function to handle day selection.
  *
  * @returns The rendered DaySelector component.
  */
@@ -52,10 +51,9 @@ const DaySelector = ({
  * TimeWarningLabel component that renders a warning label on a map.
  * The label consists of a circle with a text inside it, indicating the number of minutes.
  *
- * @param props - The properties object.
- * @param props.x - The x-coordinate for the center of the circle.
- * @param props.y - The y-coordinate for the center of the circle.
- * @param props.minutes - The number of minutes to display inside the circle.
+ * @param x - The x-coordinate for the center of the circle.
+ * @param y - The y-coordinate for the center of the circle.
+ * @param minutes - The number of minutes to display inside the circle.
  * @returns A JSX element representing the warning label.
  */
 const TimeWarningLabel = ({ x, y, minutes }: { x: number; y: number; minutes: number }): JSX.Element => (
@@ -74,9 +72,7 @@ type CampusMapProps = {
 /**
  * Component representing the campus map with interactive features.
  *
- * @component
- * @param props - The properties for the CampusMap component.
- * @param props.processedCourses - Array of processed courses.
+ * @param processedCourses - Array of processed courses.
  * @returns The rendered CampusMap component.
  *
  * @remarks

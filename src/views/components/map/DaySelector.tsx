@@ -13,9 +13,8 @@ type DaySelectorProps = {
 /**
  * DaySelector component allows users to select a day from a predefined set of days.
  *
- * @param props - The properties object.
- * @param props.selectedDay - The currently selected day.
- * @param props.onDaySelect - Callback function to handle day selection.
+ * @param selectedDay - The currently selected day.
+ * @param onDaySelect - Callback function to handle day selection.
  *
  * @returns The rendered DaySelector component.
  */

@@ -14,12 +14,11 @@ type PathProps = {
 /**
  * Renders a path between two nodes in a graph.
  *
- * @param props - The properties object.
- * @param props.startId - The ID of the starting node.
- * @param props.endId - The ID of the ending node.
- * @param props.graph - The graph object containing nodes and edges.
- * @param props.color - The color of the path.
- * @param [props.className] - Additional CSS classes for the path.
+ * @param startId - The ID of the starting node.
+ * @param endId - The ID of the ending node.
+ * @param graph - The graph object containing nodes and edges.
+ * @param color - The color of the path.
+ * @param className - Additional CSS classes for the path.
  *
  * @returns The rendered path as a series of SVG lines, or null if an error occurs.
  */

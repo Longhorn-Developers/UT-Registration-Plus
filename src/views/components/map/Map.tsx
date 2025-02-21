@@ -33,19 +33,19 @@ const dayToNumber = {
 /**
  * Represents the details of an in-person meeting process.
  *
- * @property day - The day of the meeting.
- * @property dayIndex - The index of the day in the week.
- * @property fullName - The full name of the person.
- * @property uid - The unique identifier of the person.
- * @property time - The time of the meeting.
- * @property normalizedStartTime - The normalized start time of the meeting.
- * @property normalizedEndTime - The normalized end time of the meeting.
- * @property startIndex - The start index of the meeting.
- * @property endIndex - The end index of the meeting.
- * @property location - The location of the meeting.
- * @property status - The status of the meeting.
- * @property colors - The colors associated with the course.
- * @property course - The course details.
+ * day - The day of the meeting.
+ * dayIndex - The index of the day in the week.
+ * fullName - The full name of the person.
+ * uid - The unique identifier of the person.
+ * time - The time of the meeting.
+ * normalizedStartTime - The normalized start time of the meeting.
+ * normalizedEndTime - The normalized end time of the meeting.
+ * startIndex - The start index of the meeting.
+ * endIndex - The end index of the meeting.
+ * location - The location of the meeting.
+ * status - The status of the meeting.
+ * colors - The colors associated with the course.
+ * course - The course details.
  */
 export type ProcessInPersonMeetings = {
     day: DAY;
@@ -65,7 +65,7 @@ export type ProcessInPersonMeetings = {
 
 /**
  * Converts minutes to an index value.
- * @param minutes The number of minutes.
+ * @param minutes - The number of minutes.
  * @returns The index value.
  */
 const convertMinutesToIndex = (minutes: number): number => Math.floor((minutes - 420) / 30);
@@ -90,7 +90,7 @@ export default function Map(): JSX.Element {
 
         const mainInstructor = course.instructors[0];
         if (mainInstructor) {
-            courseDeptAndInstr += ` – ${mainInstructor.toString({ format: 'first_last', case: 'capitalize' })}`;
+            courseDeptAndInstr += ` – ${mainInstructor.toString({ format: 'first_last' })}`;
         }
 
         return { status, courseDeptAndInstr, meetings, course };
@@ -136,7 +136,7 @@ export default function Map(): JSX.Element {
         course: Course
     ) {
         const { days, location, startTime, endTime } = meeting;
-        const time = meeting.getTimeString({ separator: '-', capitalize: true });
+        const time = meeting.getTimeString({ separator: '-' });
         const timeAndLocation = `${time}${location ? ` - ${location.building} ${location.room}` : ''}`;
 
         const midnightIndex = 1440;
@@ -241,7 +241,7 @@ export default function Map(): JSX.Element {
                     UTRP Map
                 </Text>
                 <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
-                    <Button variant='single' color='theme-black' onClick={handleChangelogOnClick}>
+                    <Button variant='minimal' color='theme-black' onClick={handleChangelogOnClick}>
                         <IconoirGitFork className='h-6 w-6 text-ut-gray' />
                         <Text variant='small' className='text-ut-gray font-normal'>
                             v{manifest.version} - {process.env.NODE_ENV}
