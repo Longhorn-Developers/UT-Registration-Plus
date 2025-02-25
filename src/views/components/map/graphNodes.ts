@@ -50,6 +50,11 @@ const rawGraphNodes: Graph = {
         y: 268,
         type: 'building',
     },
+    WAG: {
+        x: 230,
+        y: 330,
+        type: 'building',
+    },
     BEL: {
         x: 365,
         y: 377,
@@ -135,9 +140,79 @@ const rawGraphNodes: Graph = {
         y: 355,
         type: 'building',
     },
+    CAL: {
+        x: 147,
+        y: 370,
+        type: 'building',
+    },
+    HRH: {
+        x: 147,
+        y: 387,
+        type: 'building',
+    },
+    BAT: {
+        x: 187,
+        y: 355,
+        type: 'building',
+    },
     MEZ: {
         x: 187,
         y: 370,
+        type: 'building',
+    },
+    BEN: {
+        x: 187,
+        y: 387,
+        type: 'building',
+    },
+    BTL: {
+        x: 137,
+        y: 327,
+        type: 'building',
+    },
+    WMB: {
+        x: 128,
+        y: 335,
+        type: 'building',
+    },
+    GOL: {
+        x: 105,
+        y: 330,
+        type: 'building',
+    },
+    SUT: {
+        x: 122,
+        y: 352,
+        type: 'building',
+    },
+    HMA: {
+        x: 122,
+        y: 278,
+        type: 'building',
+    },
+    GEB: {
+        x: 190,
+        y: 290,
+        type: 'building',
+    },
+    GAR: {
+        x: 198,
+        y: 335,
+        type: 'building',
+    },
+    BOT: {
+        x: 141,
+        y: 270,
+        type: 'building',
+    },
+    BIO: {
+        x: 148,
+        y: 258,
+        type: 'building',
+    },
+    PAI: {
+        x: 183,
+        y: 258,
         type: 'building',
     },
 
