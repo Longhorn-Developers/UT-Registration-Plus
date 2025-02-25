@@ -7,9 +7,6 @@ export interface IOptionsStore {
     /** whether we should enable course status chips (indicator for waitlisted, cancelled, and closed courses) */
     enableCourseStatusChips: boolean;
 
-    /** whether we should enable course's time and location in the extension's popup */
-    enableTimeAndLocationInPopup: boolean;
-
     /** whether we should automatically highlight conflicts on the course schedule page (adds a red strikethrough to courses that have conflicting times) */
     enableHighlightConflicts: boolean;
 
@@ -25,10 +22,9 @@ export interface IOptionsStore {
 
 export const OptionsStore = createSyncStore<IOptionsStore>({
     enableCourseStatusChips: false,
-    enableTimeAndLocationInPopup: false,
     enableHighlightConflicts: true,
     enableScrollToLoad: true,
-    enableDataRefreshing: true,
+    enableDataRefreshing: false,
     alwaysOpenCalendarInNewTab: false,
 });
 
@@ -40,7 +36,6 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
 export const initSettings = async () =>
     ({
         enableCourseStatusChips: await OptionsStore.get('enableCourseStatusChips'),
-        enableTimeAndLocationInPopup: await OptionsStore.get('enableTimeAndLocationInPopup'),
         enableHighlightConflicts: await OptionsStore.get('enableHighlightConflicts'),
         enableScrollToLoad: await OptionsStore.get('enableScrollToLoad'),
         enableDataRefreshing: await OptionsStore.get('enableDataRefreshing'),

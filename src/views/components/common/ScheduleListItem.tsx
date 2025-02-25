@@ -11,34 +11,40 @@ import {
     RadioButton,
     Trash,
 } from '@phosphor-icons/react';
+import { background } from '@shared/messages';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules from '@views/hooks/useSchedules';
+import { LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { Button } from './Button';
 import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
+import Link from './Link';
+import { SortableListDragHandle } from './SortableListDragHandle';
 
 /**
  * Props for the ScheduleListItem component.
  */
-export type Props = {
-    style?: React.CSSProperties;
+interface ScheduleListItemProps {
     schedule: UserSchedule;
-    dragHandleProps?: Omit<React.HTMLAttributes<HTMLDivElement>, 'className'>;
     onClick?: React.DOMAttributes<HTMLDivElement>['onClick'];
-};
+}
+
+const IS_STORYBOOK = import.meta.env.STORYBOOK;
+const teamMembers = [...LONGHORN_DEVELOPERS_ADMINS, ...LONGHORN_DEVELOPERS_SWE];
 
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
-export default function ScheduleListItem({ schedule, dragHandleProps, onClick }: Props): JSX.Element {
+export default function ScheduleListItem({ schedule, onClick }: ScheduleListItemProps): JSX.Element {
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
+    const teamMember = teamMembers[Math.floor(Math.random() * teamMembers.length)];
 
     const showDialog = usePrompt();
     const enforceScheduleLimit = useEnforceScheduleLimit();
@@ -64,13 +70,46 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
     const handleBlur = async () => {
         if (editorValue.trim() !== '' && editorValue.trim() !== schedule.name) {
             schedule.name = (await renameSchedule(schedule.id, editorValue.trim())) as string;
+
+            if (schedule.name === '404') {
+                const url = chrome.runtime.getURL('/404.html');
+                background.openNewTab({ url });
+            }
+
+            if (Math.random() < 0.002) {
+                showDialog({
+                    title: 'Schedule name already taken',
+                    description: (
+                        <>
+                            <Text>Schedule name</Text>
+                            <Text className='text-ut-burntorange'> {schedule.name} </Text>
+                            <Text>
+                                is already taken.
+                                <br />
+                                <br />
+                                Join the&nbsp;
+                            </Text>
+                            <Link className='link' href='https://discord.gg/7pQDBGdmb7'>
+                                <Text>Discord</Text>
+                            </Link>
+                            <Text> to contact {teamMember?.name as string}.</Text>
+                        </>
+                    ),
+                    // eslint-disable-next-line react/no-unstable-nested-components
+                    buttons: close => (
+                        <Button variant='minimal' color='ut-black' onClick={close}>
+                            Go Back
+                        </Button>
+                    ),
+                });
+            }
         }
         setIsEditing(false);
     };
 
     const handleDelete = () => {
         showDialog({
-            title: `Are you sure?`,
+            title: 'Are you sure?',
             description: (
                 <>
                     <Text>Deleting</Text>
@@ -101,14 +140,20 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
 
     return (
         <div className='h-7.5 rounded bg-white'>
-            <li className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
-                <div className='flex cursor-move items-center justify-center focusable' {...dragHandleProps}>
+            <div className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
+                {IS_STORYBOOK ? (
                     <DotsSixVertical
                         weight='bold'
                         className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400'
                     />
-                </div>
-
+                ) : (
+                    <SortableListDragHandle className='flex cursor-move items-center justify-center'>
+                        <DotsSixVertical
+                            weight='bold'
+                            className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400'
+                        />
+                    </SortableListDragHandle>
+                )}
                 <div className='group relative flex flex-1 items-center overflow-x-hidden'>
                     <div
                         className='group/circle flex flex-grow items-center gap-spacing-3 overflow-x-hidden'
@@ -140,7 +185,11 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                             />
                         )}
                         {!isEditing && (
-                            <Text variant='p' className='flex-1 truncate' onDoubleClick={() => setIsEditing(true)}>
+                            <Text
+                                variant='p'
+                                className='flex-1 select-none truncate'
+                                onDoubleClick={() => setIsEditing(true)}
+                            >
                                 {schedule.name}
                             </Text>
                         )}
@@ -155,7 +204,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                                 as={ExtensionRootWrapper}
                                 className={clsx([
                                     styleResetClass,
-                                    'w-fit cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-theme-offwhite1 focus:outline-none',
+                                    'w-fit cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
                                     'data-[closed]:(opacity-0 scale-95)',
                                     'data-[enter]:(ease-out-expo duration-150)',
                                     'data-[leave]:(ease-out duration-50)',
@@ -203,7 +252,7 @@ export default function ScheduleListItem({ schedule, dragHandleProps, onClick }:
                         </Menu>
                     </DialogProvider>
                 </div>
-            </li>
+            </div>
         </div>
     );
 }

@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
+import { execSync } from 'child_process';
 import { resolve } from 'path';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
@@ -11,17 +12,27 @@ import inspect from 'vite-plugin-inspect';
 import packageJson from './package.json';
 import manifest from './src/manifest';
 import vitePluginRunCommandOnDemand from './utils/plugins/run-command-on-demand';
+import { buildLogger } from './utils/plugins/vite-build-logger';
+
+const BROWSER_TARGET = process.env.BROWSER_TARGET || 'chrome';
+
+// Set browser target environment variable default
+process.env.BROWSER_TARGET = BROWSER_TARGET;
 
 const root = resolve(__dirname, 'src');
 const pagesDir = resolve(root, 'pages');
 const assetsDir = resolve(root, 'assets');
 const publicDir = resolve(__dirname, 'public');
 
+// Set default environment variables
+process.env.PROD = process.env.NODE_ENV === 'production' ? 'true' : 'false';
+
 const isBeta = !!process.env.BETA;
 if (isBeta) {
     process.env.VITE_BETA_BUILD = 'true';
 }
 process.env.VITE_PACKAGE_VERSION = packageJson.version;
+// TODO: Debug this. If PROD is false, VITE_SENTRY_ENVIRONMENT is in production mode
 if (process.env.PROD) {
     process.env.VITE_SENTRY_ENVIRONMENT = 'production';
 } else if (isBeta) {
@@ -162,6 +173,23 @@ export default defineConfig({
             // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
             closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',
         }),
+        buildLogger({
+            includeEnvVars: [
+                'VITE_PACKAGE_VERSION',
+                'NODE_ENV',
+                'BROWSER_TARGET',
+                'PROD',
+                'VITE_SENTRY_ENVIRONMENT',
+                'VITE_BETA_BUILD',
+            ],
+            includeTimestamp: true,
+            includeBuildTime: true,
+            customMetadata: {
+                gitBranch: () => execSync('git rev-parse --abbrev-ref HEAD').toString().trim(),
+                gitCommit: () => execSync('git rev-parse --short HEAD').toString().trim(),
+                nodeVersion: () => process.version,
+            },
+        }),
     ],
     resolve: {
         alias: {
@@ -205,6 +233,8 @@ export default defineConfig({
     },
     build: {
         target: ['chrome120', 'edge120', 'firefox120'],
+        // NOTE: Eventually we will add this back once we support multiple browsers
+        // outDir: `dist/${process.env.BROWSER_TARGET || 'chrome'}`,
         emptyOutDir: true,
         reportCompressedSize: false,
         sourcemap: true,
