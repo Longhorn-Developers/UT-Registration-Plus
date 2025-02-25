@@ -546,6 +546,12 @@ const walkways: Walkway[] = [
     },
     {
         type: 'linear',
+        start: { x: 165, y: 255 },
+        end: { x: 165, y: 168 },
+        namePrefix: 'university-ave-walkway',
+    },
+    {
+        type: 'linear',
         start: { x: 167, y: 310 },
         end: { x: 166, y: 400 },
         namePrefix: 's-mall-walkway',
