@@ -60,6 +60,26 @@ const rawGraphNodes: Graph = {
         y: 377,
         type: 'building',
     },
+    NEZ: {
+        x: 403,
+        y: 335,
+        type: 'building',
+    },
+    SEZ: {
+        x: 403,
+        y: 408,
+        type: 'building',
+    },
+    STD: {
+        x: 430,
+        y: 377,
+        type: 'building',
+    },
+    MNC: {
+        x: 405,
+        y: 430,
+        type: 'building',
+    },
     WCP: {
         x: 260,
         y: 343,
