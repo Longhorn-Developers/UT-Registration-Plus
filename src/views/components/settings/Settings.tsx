@@ -7,6 +7,7 @@ import { CalendarDots, Trash } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import MIMEType from '@shared/types/MIMEType';
 import { downloadBlob } from '@shared/util/downloadBlob';
 // import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
@@ -397,7 +398,12 @@ export default function Settings(): JSX.Element {
                                         </Text>
                                         <p className='text-sm text-gray-600'>Import from a schedule file</p>
                                     </div>
-                                    <FileUpload variant='filled' color='ut-burntorange' onChange={handleImportClick}>
+                                    <FileUpload
+                                        variant='filled'
+                                        color='ut-burntorange'
+                                        onChange={handleImportClick}
+                                        accept={MIMEType.JSON}
+                                    >
                                         Import Schedule
                                     </FileUpload>
                                 </div>
