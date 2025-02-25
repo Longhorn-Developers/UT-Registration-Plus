@@ -53,9 +53,8 @@ export class CourseMeeting {
      * @param meeting - The meeting to check for conflicts with
      * @returns True if the given meeting conflicts with this meeting, false otherwise
      */
-    isConflicting(meeting: CourseMeeting): boolean {
+    isConflicting({ days: otherDays, startTime: otherStartTime, endTime: otherEndTime }: CourseMeeting): boolean {
         const { days, startTime, endTime } = this;
-        const { days: otherDays, startTime: otherStartTime, endTime: otherEndTime } = meeting;
 
         const hasDayConflict = days.some(day => otherDays.includes(day));
         const hasTimeConflict = startTime < otherEndTime && endTime > otherStartTime;
@@ -69,14 +68,13 @@ export class CourseMeeting {
      * @param options - Options for the string representation
      * @returns String representation of the days of the week that this meeting is taught
      */
-    getDaysString(options: DaysStringOptions): string {
-        let { format, separator } = options;
+    getDaysString({ format, separator }: DaysStringOptions): string {
         let { days } = this;
 
         if (format === 'short') {
             days = Object.keys(DAY_MAP).filter(day => days.includes(DAY_MAP[day as keyof typeof DAY_MAP])) as Day[];
         }
-        if (separator === 'none') {
+        if (!separator) {
             return days.join('');
         }
         const listFormat = new Intl.ListFormat('en-US', {
@@ -92,7 +90,7 @@ export class CourseMeeting {
      * @param options - Options for the string representation
      * @returns String representation of the time range for the course
      */
-    getTimeString(options: TimeStringOptions): string {
+    getTimeString({ separator = '-' }: TimeStringOptions): string {
         const { startTime, endTime } = this;
         const startHour = Math.floor(startTime / 60);
         const startMinute = startTime % 60;
@@ -124,7 +122,7 @@ export class CourseMeeting {
         endTimeString += endMinute === 0 ? ':00' : `:${endMinute}`;
         endTimeString += endHour >= 12 ? 'pm' : 'am';
 
-        return `${startTimeString} ${options.separator} ${endTimeString}`;
+        return `${startTimeString} ${separator} ${endTimeString}`;
     }
 }
 
@@ -153,5 +151,5 @@ type DaysStringOptions = {
      *
      * 'narrow' = `Monday Wednesday Friday`
      */
-    separator: Intl.ListFormatStyle | 'none';
+    separator?: Intl.ListFormatStyle;
 };

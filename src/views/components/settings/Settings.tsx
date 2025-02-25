@@ -86,7 +86,7 @@ const useDevMode = (targetCount: number): [boolean, () => void] => {
  */
 export default function Settings(): JSX.Element {
     const [_enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
+    // const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
@@ -119,14 +119,13 @@ export default function Settings(): JSX.Element {
         const initAndSetSettings = async () => {
             const {
                 enableCourseStatusChips,
-                enableTimeAndLocationInPopup,
                 enableHighlightConflicts,
                 enableScrollToLoad,
                 enableDataRefreshing,
                 alwaysOpenCalendarInNewTab,
             } = await initSettings();
             setEnableCourseStatusChips(enableCourseStatusChips);
-            setShowTimeLocation(enableTimeAndLocationInPopup);
+            // setShowTimeLocation(enableTimeAndLocationInPopup);
             setHighlightConflicts(enableHighlightConflicts);
             setLoadAllCourses(enableScrollToLoad);
             setEnableDataRefreshing(enableDataRefreshing);
@@ -150,27 +149,27 @@ export default function Settings(): JSX.Element {
             // console.log('enableCourseStatusChips', newValue);
         });
 
-        const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
-            setShowTimeLocation(newValue);
-            // console.log('enableTimeAndLocationInPopup', newValue);
-        });
+        // const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
+        //     setShowTimeLocation(newValue);
+        //     // console.log('enableTimeAndLocationInPopup', newValue);
+        // });
 
-        const l3 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
+        const l2 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
             setHighlightConflicts(newValue);
             // console.log('enableHighlightConflicts', newValue);
         });
 
-        const l4 = OptionsStore.listen('enableScrollToLoad', async ({ newValue }) => {
+        const l3 = OptionsStore.listen('enableScrollToLoad', async ({ newValue }) => {
             setLoadAllCourses(newValue);
             // console.log('enableScrollToLoad', newValue);
         });
 
-        const l5 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
+        const l4 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
             setEnableDataRefreshing(newValue);
             // console.log('enableDataRefreshing', newValue);
         });
 
-        const l6 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
+        const l5 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
             setCalendarNewTab(newValue);
             // console.log('alwaysOpenCalendarInNewTab', newValue);
         });
@@ -182,7 +181,6 @@ export default function Settings(): JSX.Element {
             OptionsStore.removeListener(l3);
             OptionsStore.removeListener(l4);
             OptionsStore.removeListener(l5);
-            OptionsStore.removeListener(l6);
 
             window.removeEventListener('keydown', handleKeyPress);
         };

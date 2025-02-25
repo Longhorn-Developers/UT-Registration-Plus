@@ -18,8 +18,7 @@ export const colors = {
     theme: {
         red: '#D10000',
         black: '#1A2024',
-        offwhite1: ' #D6D2C450',
-        offwhite2: '#D6D2C420',
+        offwhite: '#D6D2C4',
         black1: '#333F4850',
         black2: '#333F4820',
         staticwhite: '#FFFFFF',

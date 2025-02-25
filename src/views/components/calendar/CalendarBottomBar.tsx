@@ -1,8 +1,4 @@
-import { CalendarDots, ImageSquare } from '@phosphor-icons/react';
 import type { Course } from '@shared/types/Course';
-import { saveAsCal, saveCalAsPng } from '@views/components/calendar/utils';
-import { Button } from '@views/components/common/Button';
-import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
@@ -27,18 +23,18 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
     const displayCourses = asyncCourseCells && asyncCourseCells.length > 0;
 
     return (
-        <div className='w-full flex py-1.25 pl-7.5 pr-6.25'>
+        <div className='w-full flex pl-spacing-7 pr-spacing-3 pt-spacing-4'>
             <div
-                className={clsx('flex flex-grow items-center gap-3.75 text-nowrap', {
+                className={clsx('flex flex-grow items-center gap-1 text-nowrap', {
                     'py-7.5': !displayCourses,
                 })}
             >
                 {displayCourses && (
                     <>
-                        <Text variant='p' className='text-ut-black'>
-                            ASYNC / OTHER
+                        <Text variant='p' className='text-ut-black uppercase'>
+                            Unscheduled
                         </Text>
-                        <Text variant='h4' className='text-gray-300'>
+                        <Text variant='h4' className='text-theme-offwhite/50'>
                             —
                         </Text>
                         <div className='inline-flex gap-2.5'>
@@ -47,10 +43,10 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                                     const { courseDeptAndInstr, status, className } = block.componentProps;
                                     return (
                                         <CalendarCourseBlock
+                                            key={block.course.uniqueId}
                                             courseDeptAndInstr={courseDeptAndInstr}
                                             status={status}
-                                            key={courseDeptAndInstr}
-                                            className={clsx(className, 'w-35! h-15!')}
+                                            className={clsx(className, 'w-35! h-12.5! items-center')}
                                             onClick={() => setCourse(block.course)}
                                             blockData={block}
                                         />
@@ -60,21 +56,6 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                         </div>
                     </>
                 )}
-            </div>
-            <div className='flex items-center screenshot:hidden'>
-                {displayCourses && <Divider orientation='vertical' size='1rem' className='mx-1.25' />}
-                <Button variant='minimal' color='ut-black' icon={CalendarDots} onClick={saveAsCal}>
-                    Save as .CAL
-                </Button>
-                <Divider orientation='vertical' size='1rem' className='mx-1.25' />
-                <Button
-                    variant='minimal'
-                    color='ut-black'
-                    icon={ImageSquare}
-                    onClick={() => requestAnimationFrame(() => saveCalAsPng())}
-                >
-                    Save as .PNG
-                </Button>
             </div>
         </div>
     );
