@@ -39,10 +39,9 @@ const DaySelector = ({ selectedDay, onDaySelect }: DaySelectorProps): JSX.Elemen
                 key={day}
                 onClick={() => onDaySelect(day)}
                 color='ut-burntorange'
+                variant={selectedDay === day ? 'filled' : 'minimal'}
                 size='mini'
-                className={`px-3 py-1 ${
-                    selectedDay === day ? 'bg-ut-burntorange text-white' : 'hover:bg-ut-burntorange/10'
-                }`}
+                className='px-3 py-1'
             >
                 {day}
             </Button>
