@@ -12,6 +12,7 @@ import { getMidpoint } from './utils';
 
 // Image: 784x754
 const UTMapURL = new URL('/src/assets/UT-Map.png', import.meta.url).href;
+const showDebugNodes = false;
 
 type SelectedBuildings = {
     start: NodeId | null;
@@ -36,8 +37,9 @@ const DaySelector = ({ selectedDay, onDaySelect }: DaySelectorProps): JSX.Elemen
         {(Object.keys(DAY_MAPPING) as DayCode[]).map(day => (
             <Button
                 key={day}
-                color='ut-burntorange'
                 onClick={() => onDaySelect(day)}
+                color='ut-burntorange'
+                size='mini'
                 className={`px-3 py-1 ${
                     selectedDay === day ? 'bg-ut-burntorange text-white' : 'hover:bg-ut-burntorange/10'
                 }`}
@@ -187,7 +189,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                                           ? '#9CADB7'
                                           : '#D6D2C400'
                             }
-                            stroke={node.type !== 'walkway' ? 'white' : 'none'}
+                            stroke={node.type !== 'walkway' ? 'white' : showDebugNodes ? 'green' : 'transparent'}
                             strokeWidth='2'
                             className='cursor-pointer opacity-90'
                             onClick={() => {
