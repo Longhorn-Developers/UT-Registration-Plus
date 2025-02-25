@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useMemo, useState } from 'react';
 
+import { Button } from '../common/Button';
 import { graphNodes } from './graphNodes';
 import type { ProcessInPersonMeetings } from './Map';
 import { Path } from './Path';
@@ -17,6 +18,11 @@ type SelectedBuildings = {
     end: NodeId | null;
 };
 
+interface DaySelectorProps {
+    selectedDay: DayCode | null;
+    onDaySelect: (day: DayCode) => void;
+}
+
 /**
  * DaySelector component allows users to select a day from a list of days.
  *
@@ -25,24 +31,19 @@ type SelectedBuildings = {
  *
  * @returns The rendered DaySelector component.
  */
-const DaySelector = ({
-    selectedDay,
-    onDaySelect,
-}: {
-    selectedDay: DayCode | null;
-    onDaySelect: (day: DayCode) => void;
-}): JSX.Element => (
+const DaySelector = ({ selectedDay, onDaySelect }: DaySelectorProps): JSX.Element => (
     <div className='flex gap-2 rounded-md bg-white/90 p-2 shadow-sm'>
         {(Object.keys(DAY_MAPPING) as DayCode[]).map(day => (
-            <div
+            <Button
                 key={day}
+                color='ut-burntorange'
                 onClick={() => onDaySelect(day)}
                 className={`px-3 py-1 ${
                     selectedDay === day ? 'bg-ut-burntorange text-white' : 'hover:bg-ut-burntorange/10'
                 }`}
             >
                 {day}
-            </div>
+            </Button>
         ))}
     </div>
 );

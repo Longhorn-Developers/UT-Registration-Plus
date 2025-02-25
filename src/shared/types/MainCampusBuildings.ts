@@ -1,13 +1,13 @@
 type None = 'None';
 
-type Buildings = {
-    [key: string]: {
-        name: string;
-        number: string;
-        year: number | None;
-        zone: number | None | 'LBJ';
-    };
+type BuildingInfo = {
+    name: string;
+    number: string;
+    year: number | None;
+    zone: number | None | 'LBJ';
 };
+
+type Buildings = Record<string, BuildingInfo>;
 
 /**
  * An object representing the main campus buildings with their respective details.

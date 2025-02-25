@@ -90,10 +90,10 @@ export const isValidNode = (node: MapNode | undefined): node is MapNode =>
  * - 'M'   : Monday
  * - 'T'   : Tuesday
  * - 'W'   : Wednesday
- * - 'TTH' : Thursday
+ * - 'TH' : Thursday
  * - 'F'   : Friday
  */
-export type DayCode = 'M' | 'T' | 'W' | 'TTH' | 'F';
+export type DayCode = 'M' | 'T' | 'W' | 'TH' | 'F';
 
 /**
  * An array of strings representing the days of the week.
@@ -119,6 +119,6 @@ export const DAY_MAPPING = {
     M: 'Monday',
     T: 'Tuesday',
     W: 'Wednesday',
-    TTH: 'Thursday',
+    TH: 'Thursday',
     F: 'Friday',
 } as const satisfies DayMapping;
