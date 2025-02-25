@@ -399,7 +399,12 @@ export default function Settings(): JSX.Element {
                                         </Text>
                                         <p className='text-sm text-gray-600'>Import from a schedule file</p>
                                     </div>
-                                    <FileUpload variant='filled' color='ut-burntorange' onChange={handleImportClick}>
+                                    <FileUpload
+                                        variant='filled'
+                                        color='ut-burntorange'
+                                        onChange={handleImportClick}
+                                        accept='application/json'
+                                    >
                                         Import Schedule
                                     </FileUpload>
                                 </div>

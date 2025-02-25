@@ -16,6 +16,7 @@ interface Props {
     disabled?: boolean;
     title?: string;
     color: ThemeColor;
+    accept?: string;
 }
 
 /**
@@ -34,6 +35,7 @@ export default function FileUpload({
     disabled,
     title,
     color,
+    accept,
     children,
 }: React.PropsWithChildren<Props>): JSX.Element {
     const Icon = icon;
@@ -51,7 +53,7 @@ export default function FileUpload({
                 } satisfies React.CSSProperties
             }
             className={clsx(
-                'btn',
+                'btn has-enabled:active:scale-96',
                 {
                     'text-white! bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20':
                         variant === 'filled',
@@ -78,7 +80,13 @@ export default function FileUpload({
                     {children}
                 </Text>
             )}
-            <input type='file' className='hidden' disabled={disabled} onChange={disabled ? undefined : onChange} />
+            <input
+                type='file'
+                accept={accept}
+                className='hidden'
+                disabled={disabled}
+                onChange={disabled ? undefined : onChange}
+            />
         </label>
     );
 }
