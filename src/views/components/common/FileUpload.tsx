@@ -1,10 +1,10 @@
 import type { Icon, IconProps } from '@phosphor-icons/react';
+import type { MIMETypeValue } from '@shared/types/MIMEType';
 import type { ThemeColor } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/themeColors';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
-import { MIMETypeValue } from 'src/shared/types/MIMEType';
 
 interface Props {
     className?: string;
