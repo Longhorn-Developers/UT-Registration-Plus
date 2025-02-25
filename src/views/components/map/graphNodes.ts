@@ -90,6 +90,66 @@ const rawGraphNodes: Graph = {
         y: 335,
         type: 'building',
     },
+    POB: {
+        x: 258,
+        y: 265,
+        type: 'building',
+    },
+    PPE: {
+        x: 282,
+        y: 265,
+        type: 'building',
+    },
+    PPL: {
+        x: 302,
+        y: 280,
+        type: 'building',
+    },
+    CS6: {
+        x: 287,
+        y: 280,
+        type: 'building',
+    },
+    JGB: {
+        x: 287,
+        y: 298,
+        type: 'building',
+    },
+    LTH: {
+        x: 305,
+        y: 296,
+        type: 'building',
+    },
+    PPA: {
+        x: 330,
+        y: 258,
+        type: 'building',
+    },
+    WIN: {
+        x: 330,
+        y: 295,
+        type: 'building',
+    },
+    EPS: {
+        x: 258,
+        y: 308,
+        type: 'building',
+    },
+    BRB: {
+        x: 258,
+        y: 328,
+        type: 'building',
+    },
+    UTX: {
+        x: 337,
+        y: 358,
+        type: 'building',
+    },
+    MHD: {
+        x: 308,
+        y: 388,
+        type: 'building',
+    },
     UTC: {
         x: 197,
         y: 410,
@@ -122,7 +182,12 @@ const rawGraphNodes: Graph = {
     },
     ECJ: {
         x: 289,
-        y: 280,
+        y: 180,
+        type: 'building',
+    },
+    GLT: {
+        x: 285,
+        y: 237,
         type: 'building',
     },
     UNB: {
