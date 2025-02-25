@@ -1,10 +1,10 @@
 import type { Icon, IconProps } from '@phosphor-icons/react';
-import type { MIMETypeValue } from '@shared/types/MIMEType';
 import type { ThemeColor } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/themeColors';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import React from 'react';
+import { MIMETypeValue } from 'src/shared/types/MIMEType';
 
 interface Props {
     className?: string;
@@ -17,7 +17,7 @@ interface Props {
     disabled?: boolean;
     title?: string;
     color: ThemeColor;
-    accept?: MIMETypeValue;
+    accept?: MIMETypeValue | MIMETypeValue[];
 }
 
 /**
@@ -43,6 +43,9 @@ export default function FileUpload({
     const isIconOnly = !children && !!icon;
     const colorHex = getThemeColorHexByName(color);
     const colorRgb = getThemeColorRgbByName(color)?.join(' ');
+
+    // Convert accept to a comma-separated string if it's an array
+    const acceptValue = Array.isArray(accept) ? accept.join(',') : accept;
 
     return (
         <label
@@ -83,7 +86,7 @@ export default function FileUpload({
             )}
             <input
                 type='file'
-                accept={accept}
+                {...(accept ? { accept: acceptValue } : {})}
                 className='hidden'
                 disabled={disabled}
                 onChange={disabled ? undefined : onChange}
