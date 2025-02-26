@@ -280,6 +280,11 @@ const rawGraphNodes: Graph = {
         y: 290,
         type: 'building',
     },
+    WCH: {
+        x: 200,
+        y: 300,
+        type: 'building',
+    },
     GAR: {
         x: 198,
         y: 335,
@@ -298,6 +303,106 @@ const rawGraphNodes: Graph = {
     PAI: {
         x: 183,
         y: 258,
+        type: 'building',
+    },
+    GEA: {
+        x: 166,
+        y: 235,
+        type: 'building',
+    },
+    GWB: {
+        x: 142,
+        y: 238,
+        type: 'building',
+    },
+    NHB: {
+        x: 205,
+        y: 235,
+        type: 'building',
+    },
+    FNT: {
+        x: 205,
+        y: 227,
+        type: 'building',
+    },
+    AHG: {
+        x: 212,
+        y: 212,
+        type: 'building',
+    },
+    PHR: {
+        x: 186,
+        y: 224,
+        type: 'building',
+    },
+    MBB: {
+        x: 230,
+        y: 200,
+        type: 'building',
+    },
+    NMS: {
+        x: 215,
+        y: 175,
+        type: 'building',
+    },
+    BUR: {
+        x: 189,
+        y: 187,
+        type: 'building',
+    },
+    BME: {
+        x: 175,
+        y: 175,
+        type: 'building',
+    },
+    WWH: {
+        x: 75,
+        y: 185,
+        type: 'building',
+    },
+    CMB: {
+        x: 98,
+        y: 189,
+        type: 'building',
+    },
+    CMA: {
+        x: 112,
+        y: 180,
+        type: 'building',
+    },
+    HSM: {
+        x: 112,
+        y: 199,
+        type: 'building',
+    },
+    LCH: {
+        x: 111,
+        y: 213,
+        type: 'building',
+    },
+    LFH: {
+        x: 114,
+        y: 230,
+        type: 'building',
+    },
+    AND: {
+        x: 143,
+        y: 221,
+        type: 'building',
+    },
+    BLD: {
+        x: 156,
+        y: 202,
+        type: 'building',
+    },
+    CRD: {
+        x: 132,
+        y: 201,
+        type: 'building',
+    },
+    LTD: {
+        x: 142,
+        y: 177,
         type: 'building',
     },
 
