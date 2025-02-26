@@ -59,12 +59,75 @@ const DaySelector = ({ selectedDay, onDaySelect }: DaySelectorProps): JSX.Elemen
     </div>
 );
 
+/**
+ * FullscreenButton component provides a toggle for fullscreen mode
+ */
+const FullscreenButton = ({ containerRef }: { containerRef: React.RefObject<HTMLDivElement> }): JSX.Element => {
+    const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+        };
+    }, []);
+
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement && containerRef.current) {
+            containerRef.current.requestFullscreen().catch(err => {
+                console.error(`Error attempting to enable fullscreen: ${err.message}`);
+            });
+        } else if (document.fullscreenElement) {
+            document.exitFullscreen().catch(err => {
+                console.error(`Error attempting to exit fullscreen: ${err.message}`);
+            });
+        }
+    };
+
+    return (
+        <div className='rounded-md bg-white/90 p-2 shadow-sm'>
+            <Button
+                onClick={toggleFullscreen}
+                color='ut-burntorange'
+                variant='minimal'
+                size='mini'
+                className='flex items-center gap-1 px-3 py-1'
+            >
+                <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='16'
+                    height='16'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                >
+                    {isFullscreen ? (
+                        <path d='M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3' />
+                    ) : (
+                        <path d='M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3' />
+                    )}
+                </svg>
+                {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+            </Button>
+        </div>
+    );
+};
+
 interface DevTogglesProps {
+    dynamicRendering: boolean;
     showBuildings: boolean;
     showIntersections: boolean;
     showWalkways: boolean;
     showBuildingText: boolean;
     showPrioritizedOnly: boolean;
+    onToggleDynamicRendering: () => void;
     onToggleBuildings: () => void;
     onToggleIntersections: () => void;
     onToggleWalkways: () => void;
@@ -75,9 +138,11 @@ interface DevTogglesProps {
 /**
  * DevToggles component allows developers to toggle visibility of map elements.
  *
+ * @param dynamicRendering - Whether to enable dynamic rendering.
  * @param showBuildings - Whether to show buildings on the map.
  * @param showIntersections - Whether to show intersections on the map.
  * @param showWalkways - Whether to show walkways on the map.
+ * @param onToggleDynamicRendering - Callback function to toggle dynamic rendering.
  * @param onToggleBuildings - Callback function to toggle buildings visibility.
  * @param onToggleIntersections - Callback function to toggle intersections visibility.
  * @param onToggleWalkways - Callback function to toggle walkways visibility.
@@ -85,11 +150,13 @@ interface DevTogglesProps {
  * @returns The rendered DevToggles component.
  */
 const DevToggles = ({
+    dynamicRendering,
     showBuildings,
     showIntersections,
     showWalkways,
     showBuildingText,
     showPrioritizedOnly,
+    onToggleDynamicRendering,
     onToggleBuildings,
     onToggleIntersections,
     onToggleWalkways,
@@ -123,6 +190,10 @@ const DevToggles = ({
             </div>
             {!isCollapsed && (
                 <div className='flex flex-col gap-1'>
+                    <label className='flex cursor-pointer items-center gap-2 text-xs'>
+                        <input type='checkbox' checked={dynamicRendering} onChange={onToggleDynamicRendering} />
+                        Dynamic Rendering
+                    </label>
                     <label className='flex cursor-pointer items-center gap-2 text-xs'>
                         <input type='checkbox' checked={showBuildings} onChange={onToggleBuildings} />
                         Show Buildings
@@ -277,6 +348,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
     const [toggledPathIndex, setToggledPathIndex] = useState<number | null>(null);
 
     // Dev toggle state
+    const [dynamicRendering, setDynamicRendering] = useState<boolean>(true);
     const [showBuildings, setShowBuildings] = useState<boolean>(true);
     const [showBuildingText, setShowBuildingText] = useState<boolean>(true);
     const [showPrioritizedOnly, setShowPrioritizedOnly] = useState<boolean>(false);
@@ -407,6 +479,15 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
         const result = new Set<NodeId>(importantBuildings);
         const viewport = calculateViewport();
 
+        if (!dynamicRendering) {
+            Object.entries(graphNodes).forEach(([id, node]) => {
+                if (node.type === 'building' && isNodeInViewport(node, viewport)) {
+                    result.add(id);
+                }
+            });
+            return result;
+        }
+
         // If showing prioritized buildings only, return just the important ones
         if (showPrioritizedOnly) {
             return result;
@@ -488,7 +569,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
         });
 
         return result;
-    }, [zoomLevel, importantBuildings, calculateViewport, isNodeInViewport, showPrioritizedOnly]);
+    }, [importantBuildings, calculateViewport, dynamicRendering, showPrioritizedOnly, zoomLevel, isNodeInViewport]);
 
     // Determine which intersections to show based on zoom level
     const visibleIntersections = useMemo(() => {
@@ -497,6 +578,15 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
 
         // Only process if intersections should be shown
         if (!showIntersections) return result;
+
+        if (!dynamicRendering) {
+            Object.entries(graphNodes).forEach(([id, node]) => {
+                if (node.type === 'intersection' && isNodeInViewport(node, viewport)) {
+                    result.add(id);
+                }
+            });
+            return result;
+        }
 
         // Show all intersections at high zoom
         if (zoomLevel >= ZOOM_LEVELS.HIGH) {
@@ -534,7 +624,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
         });
 
         return result;
-    }, [zoomLevel, showIntersections, calculateViewport, isNodeInViewport]);
+    }, [calculateViewport, dynamicRendering, showIntersections, zoomLevel, isNodeInViewport]);
 
     // Determine which walkways to show based on zoom level
     const visibleWalkways = useMemo(() => {
@@ -543,6 +633,15 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
 
         // Only process if walkways should be shown
         if (!showWalkways) return result;
+
+        if (!dynamicRendering) {
+            Object.entries(graphNodes).forEach(([id, node]) => {
+                if (node.type === 'walkway' && isNodeInViewport(node, viewport)) {
+                    result.add(id);
+                }
+            });
+            return result;
+        }
 
         // Show all walkways at high zoom
         if (zoomLevel >= ZOOM_LEVELS.HIGH) {
@@ -580,7 +679,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
         });
 
         return result;
-    }, [zoomLevel, showWalkways, calculateViewport, isNodeInViewport]);
+    }, [calculateViewport, dynamicRendering, showWalkways, zoomLevel, isNodeInViewport]);
 
     // Determine if a node should be shown based on type and zoom level
     const shouldShowNode = useCallback(
@@ -880,13 +979,18 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                     zoomLevel={zoomLevel}
                 />
 
+                {/* Fullscreen Button */}
+                <FullscreenButton containerRef={mapContainerRef} />
+
                 {/* Dev Toggles */}
                 <DevToggles
+                    dynamicRendering={dynamicRendering}
                     showBuildings={showBuildings}
                     showIntersections={showIntersections}
                     showWalkways={showWalkways}
                     showBuildingText={showBuildingText}
                     showPrioritizedOnly={showPrioritizedOnly}
+                    onToggleDynamicRendering={() => setDynamicRendering(prev => !prev)}
                     onToggleBuildings={() => setShowBuildings(prev => !prev)}
                     onToggleIntersections={() => setShowIntersections(prev => !prev)}
                     onToggleWalkways={() => setShowWalkways(prev => !prev)}
