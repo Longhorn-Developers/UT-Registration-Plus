@@ -405,6 +405,62 @@ const rawGraphNodes: Graph = {
         y: 177,
         type: 'building',
     },
+    KIN: {
+        x: 148,
+        y: 140,
+        type: 'building',
+    },
+    // JCD has two places on the map so we will use the center of the two
+    JCD: {
+        x: 280,
+        y: 440,
+        type: 'building',
+    },
+    LDH: {
+        x: 285,
+        y: 425,
+        type: 'building',
+    },
+    BHD: {
+        x: 293,
+        y: 405,
+        type: 'building',
+    },
+    RHD: {
+        x: 312,
+        y: 405,
+        type: 'building',
+    },
+    PHD: {
+        x: 322,
+        y: 432,
+        type: 'building',
+    },
+    SJH: {
+        x: 348,
+        y: 425,
+        type: 'building',
+    },
+    CCF: {
+        x: 348,
+        y: 471,
+        type: 'building',
+    },
+    BMA: {
+        x: 249,
+        y: 491,
+        type: 'building',
+    },
+    BMS: {
+        x: 222,
+        y: 488,
+        type: 'building',
+    },
+    SZB: {
+        x: 202,
+        y: 470,
+        type: 'building',
+    },
 
     // Intersection nodes
     'speedway-dean-keeton': {
