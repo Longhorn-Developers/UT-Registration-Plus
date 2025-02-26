@@ -17,6 +17,13 @@ const minZoom = 0.5;
 const maxZoom = 5;
 const zoomStep = 1.2;
 
+// Define zoom level thresholds for showing different levels of detail
+const ZOOM_LEVELS = {
+    LOW: 0.8, // Show minimal buildings at this zoom level and below
+    MEDIUM: 1.5, // Show moderate amount of buildings
+    HIGH: 2.5, // Show all buildings with full details
+} as const;
+
 type SelectedBuildings = {
     start: NodeId | null;
     end: NodeId | null;
@@ -56,9 +63,13 @@ interface DevTogglesProps {
     showBuildings: boolean;
     showIntersections: boolean;
     showWalkways: boolean;
+    showBuildingText: boolean;
+    showPrioritizedOnly: boolean;
     onToggleBuildings: () => void;
     onToggleIntersections: () => void;
     onToggleWalkways: () => void;
+    onToggleBuildingText: () => void;
+    onTogglePrioritizedOnly: () => void;
 }
 
 /**
@@ -77,28 +88,66 @@ const DevToggles = ({
     showBuildings,
     showIntersections,
     showWalkways,
+    showBuildingText,
+    showPrioritizedOnly,
     onToggleBuildings,
     onToggleIntersections,
     onToggleWalkways,
-}: DevTogglesProps): JSX.Element => (
-    <div className='flex flex-col gap-2 rounded-md bg-white/90 p-2 shadow-sm'>
-        <div className='text-xs text-gray-700 font-semibold'>Dev Controls</div>
-        <div className='flex flex-col gap-1'>
-            <label className='flex cursor-pointer items-center gap-2 text-xs'>
-                <input type='checkbox' checked={showBuildings} onChange={onToggleBuildings} />
-                Show Buildings
-            </label>
-            <label className='flex cursor-pointer items-center gap-2 text-xs'>
-                <input type='checkbox' checked={showIntersections} onChange={onToggleIntersections} />
-                Show Intersections
-            </label>
-            <label className='flex cursor-pointer items-center gap-2 text-xs'>
-                <input type='checkbox' checked={showWalkways} onChange={onToggleWalkways} />
-                Show Walkways
-            </label>
+    onToggleBuildingText,
+    onTogglePrioritizedOnly,
+}: DevTogglesProps): JSX.Element => {
+    const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+
+    return (
+        <div className='flex flex-col gap-2 rounded-md bg-white/90 p-2 shadow-sm'>
+            <div className='flex items-center justify-between text-xs text-gray-700 font-semibold'>
+                <span>Dev Controls</span>
+                <button
+                    onClick={() => setIsCollapsed(prev => !prev)}
+                    className='ml-2 p-1 text-gray-500 hover:text-gray-800'
+                >
+                    <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        width='14'
+                        height='14'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth='2'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                    >
+                        {isCollapsed ? <polyline points='6 9 12 15 18 9' /> : <polyline points='18 15 12 9 6 15' />}
+                    </svg>
+                </button>
+            </div>
+            {!isCollapsed && (
+                <div className='flex flex-col gap-1'>
+                    <label className='flex cursor-pointer items-center gap-2 text-xs'>
+                        <input type='checkbox' checked={showBuildings} onChange={onToggleBuildings} />
+                        Show Buildings
+                    </label>
+                    <label className='flex cursor-pointer items-center gap-2 text-xs'>
+                        <input type='checkbox' checked={showBuildingText} onChange={onToggleBuildingText} />
+                        Show Building Text
+                    </label>
+                    <label className='flex cursor-pointer items-center gap-2 text-xs'>
+                        <input type='checkbox' checked={showPrioritizedOnly} onChange={onTogglePrioritizedOnly} />
+                        Prioritized Buildings Only
+                    </label>
+                    <label className='flex cursor-pointer items-center gap-2 text-xs'>
+                        <input type='checkbox' checked={showIntersections} onChange={onToggleIntersections} />
+                        Show Intersections
+                    </label>
+                    <label className='flex cursor-pointer items-center gap-2 text-xs'>
+                        <input type='checkbox' checked={showWalkways} onChange={onToggleWalkways} />
+                        Show Walkways
+                    </label>
+                </div>
+            )}
         </div>
-    </div>
-);
+    );
+};
 
 /**
  * TimeWarningLabel component that renders a warning label on a map.
@@ -229,7 +278,9 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
 
     // Dev toggle state
     const [showBuildings, setShowBuildings] = useState<boolean>(true);
-    const [showIntersections, setShowIntersections] = useState<boolean>(true);
+    const [showBuildingText, setShowBuildingText] = useState<boolean>(true);
+    const [showPrioritizedOnly, setShowPrioritizedOnly] = useState<boolean>(false);
+    const [showIntersections, setShowIntersections] = useState<boolean>(false);
     const [showWalkways, setShowWalkways] = useState<boolean>(false);
 
     // Zoom and pan state
@@ -241,55 +292,58 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
     // Refs
     const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
-    // Zoom and pan handlers
-    const handleZoomIn = useCallback(() => {
-        setZoomLevel(prev => Math.min(prev * zoomStep, maxZoom)); // Limit max zoom
-    }, []);
+    // Function to calculate the current viewport in SVG coordinates
+    const calculateViewport = useCallback(() => {
+        if (!mapContainerRef.current) return null;
 
-    const handleZoomOut = useCallback(() => {
-        setZoomLevel(prev => Math.max(prev / zoomStep, minZoom)); // Limit min zoom
-    }, []);
+        const container = mapContainerRef.current;
+        const rect = container.getBoundingClientRect();
 
-    const handleResetZoomPan = useCallback(() => {
-        setZoomLevel(1);
-        setPanPosition({ x: 0, y: 0 });
-    }, []);
+        // SVG dimensions from viewBox
+        const svgWidth = 783;
+        const svgHeight = 753;
 
-    const handleWheel = useCallback((e: React.WheelEvent) => {
-        e.preventDefault();
-        if (e.deltaY < 0) {
-            setZoomLevel(prev => Math.min(prev * zoomStep, maxZoom)); // Zoom in, limit max zoom
-        } else {
-            setZoomLevel(prev => Math.max(prev / zoomStep, minZoom)); // Zoom out, limit min zoom
-        }
-    }, []);
+        // Calculate visible area in SVG coordinates
+        const scaleFactor = 1 / zoomLevel;
+        const visibleWidth = rect.width * scaleFactor;
+        const visibleHeight = rect.height * scaleFactor;
 
-    const handleMouseDown = useCallback((e: React.MouseEvent) => {
-        if (e.button !== 0) return; // Only handle left mouse button
-        setIsDragging(true);
-        setDragStart({ x: e.clientX, y: e.clientY });
-    }, []);
+        // Calculate the center point in SVG coordinates after pan
+        const centerX = svgWidth / 2 - panPosition.x * scaleFactor;
+        const centerY = svgHeight / 2 - panPosition.y * scaleFactor;
 
-    const handleMouseMove = useCallback(
-        (e: React.MouseEvent) => {
-            if (!isDragging) return;
+        return {
+            left: centerX - visibleWidth / 2,
+            right: centerX + visibleWidth / 2,
+            top: centerY - visibleHeight / 2,
+            bottom: centerY + visibleHeight / 2,
+            width: visibleWidth,
+            height: visibleHeight,
+        };
+    }, [zoomLevel, panPosition]);
 
-            const dx = e.clientX - dragStart.x;
-            const dy = e.clientY - dragStart.y;
+    // Check if a node is in the viewport
+    const isNodeInViewport = useCallback(
+        (
+            node: { x: number; y: number },
+            viewport: {
+                left: number;
+                right: number;
+                top: number;
+                bottom: number;
+            } | null
+        ) => {
+            if (!viewport) return true;
 
-            setPanPosition(prev => ({ x: prev.x + dx, y: prev.y + dy }));
-            setDragStart({ x: e.clientX, y: e.clientY });
+            return (
+                node.x >= viewport.left &&
+                node.x <= viewport.right &&
+                node.y >= viewport.top &&
+                node.y <= viewport.bottom
+            );
         },
-        [isDragging, dragStart]
+        []
     );
-
-    const handleMouseUp = useCallback(() => {
-        setIsDragging(false);
-    }, []);
-
-    const handleMouseLeave = useCallback(() => {
-        setIsDragging(false);
-    }, []);
 
     // Path calculations
     const getDailyPaths = useCallback((courses: ProcessInPersonMeetings[]) => {
@@ -330,6 +384,335 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
         }));
     }, [selectedDay, processedCourses, getDailyPaths]);
 
+    // Memoized set of important buildings - buildings in active paths or daily routes
+    const importantBuildings = useMemo(() => {
+        const result = new Set<NodeId>();
+
+        // Add selected buildings
+        if (selected.start) result.add(selected.start);
+        if (selected.end) result.add(selected.end);
+
+        // Add buildings in the daily paths
+        relevantPaths?.forEach(path => {
+            result.add(path.start);
+            result.add(path.end);
+        });
+
+        return result;
+    }, [selected.start, selected.end, relevantPaths]);
+
+    // Memoized set of buildings to show based on zoom level and grid clustering
+    const visibleBuildings = useMemo(() => {
+        // Start with important buildings (selected or in active paths)
+        const result = new Set<NodeId>(importantBuildings);
+        const viewport = calculateViewport();
+
+        // If showing prioritized buildings only, return just the important ones
+        if (showPrioritizedOnly) {
+            return result;
+        }
+
+        // If we're zoomed in enough, show all buildings in viewport
+        if (zoomLevel >= ZOOM_LEVELS.HIGH) {
+            Object.entries(graphNodes).forEach(([id, node]) => {
+                if (node.type === 'building' && isNodeInViewport(node, viewport)) {
+                    result.add(id);
+                }
+            });
+            return result;
+        }
+
+        // At medium zoom, show more buildings but still cluster them
+        if (zoomLevel >= ZOOM_LEVELS.MEDIUM) {
+            // Create a grid-based clustering with medium density
+            const gridSize = 40;
+            const grid: Record<string, NodeId[]> = {};
+
+            Object.entries(graphNodes).forEach(([id, node]) => {
+                if (node.type === 'building' && isNodeInViewport(node, viewport)) {
+                    const gridX = Math.floor(node.x / gridSize);
+                    const gridY = Math.floor(node.y / gridSize);
+                    const gridId = `${gridX}-${gridY}`;
+
+                    if (!grid[gridId]) {
+                        grid[gridId] = [];
+                    }
+                    grid[gridId].push(id);
+                }
+            });
+
+            // Select one building per grid cell
+            Object.values(grid).forEach(buildings => {
+                if (buildings.length > 0) {
+                    // Sort to ensure consistent selection
+                    const sorted = [...buildings].sort();
+                    if (sorted[0]) {
+                        result.add(sorted[0]);
+                    }
+                }
+            });
+            return result;
+        }
+
+        // At low zoom, create a sparser grid
+        const gridSize = 70;
+        const grid: Record<string, NodeId[]> = {};
+
+        Object.entries(graphNodes).forEach(([id, node]) => {
+            if (node.type === 'building' && isNodeInViewport(node, viewport)) {
+                const gridX = Math.floor(node.x / gridSize);
+                const gridY = Math.floor(node.y / gridSize);
+                const gridId = `${gridX}-${gridY}`;
+
+                if (!grid[gridId]) {
+                    grid[gridId] = [];
+                }
+                grid[gridId].push(id);
+            }
+        });
+
+        // Select one building per grid cell
+        Object.values(grid).forEach(buildings => {
+            if (buildings.length > 0) {
+                // Sort to ensure consistent selection
+                const sorted = [...buildings].sort();
+                if (sorted[0]) {
+                    result.add(sorted[0]);
+                }
+
+                // For grid cells with many buildings, maybe show a second one too
+                if (sorted.length > 3 && zoomLevel > ZOOM_LEVELS.LOW && sorted[1]) {
+                    result.add(sorted[1]);
+                }
+            }
+        });
+
+        return result;
+    }, [zoomLevel, importantBuildings, calculateViewport, isNodeInViewport, showPrioritizedOnly]);
+
+    // Determine which intersections to show based on zoom level
+    const visibleIntersections = useMemo(() => {
+        const result = new Set<NodeId>();
+        const viewport = calculateViewport();
+
+        // Only process if intersections should be shown
+        if (!showIntersections) return result;
+
+        // Show all intersections at high zoom
+        if (zoomLevel >= ZOOM_LEVELS.HIGH) {
+            Object.entries(graphNodes).forEach(([id, node]) => {
+                if (node.type === 'intersection' && isNodeInViewport(node, viewport)) {
+                    result.add(id);
+                }
+            });
+            return result;
+        }
+
+        // At medium zoom, show a subset
+        if (zoomLevel >= ZOOM_LEVELS.MEDIUM) {
+            Object.entries(graphNodes).forEach(([id, node]) => {
+                if (node.type === 'intersection' && isNodeInViewport(node, viewport)) {
+                    // Show every 2nd intersection
+                    const nodeIndex = parseInt(id.replace(/\D/g, '') || '0', 10);
+                    if (nodeIndex % 2 === 0) {
+                        result.add(id);
+                    }
+                }
+            });
+            return result;
+        }
+
+        // At low zoom, show very few intersections
+        Object.entries(graphNodes).forEach(([id, node]) => {
+            if (node.type === 'intersection' && isNodeInViewport(node, viewport)) {
+                // Show only every 4th intersection
+                const nodeIndex = parseInt(id.replace(/\D/g, '') || '0', 10);
+                if (nodeIndex % 4 === 0) {
+                    result.add(id);
+                }
+            }
+        });
+
+        return result;
+    }, [zoomLevel, showIntersections, calculateViewport, isNodeInViewport]);
+
+    // Determine which walkways to show based on zoom level
+    const visibleWalkways = useMemo(() => {
+        const result = new Set<NodeId>();
+        const viewport = calculateViewport();
+
+        // Only process if walkways should be shown
+        if (!showWalkways) return result;
+
+        // Show all walkways at high zoom
+        if (zoomLevel >= ZOOM_LEVELS.HIGH) {
+            Object.entries(graphNodes).forEach(([id, node]) => {
+                if (node.type === 'walkway' && isNodeInViewport(node, viewport)) {
+                    result.add(id);
+                }
+            });
+            return result;
+        }
+
+        // At medium zoom, show a subset
+        if (zoomLevel >= ZOOM_LEVELS.MEDIUM) {
+            Object.entries(graphNodes).forEach(([id, node]) => {
+                if (node.type === 'walkway' && isNodeInViewport(node, viewport)) {
+                    // Show every 3rd walkway
+                    const nodeIndex = parseInt(id.replace(/\D/g, '') || '0', 10);
+                    if (nodeIndex % 3 === 0) {
+                        result.add(id);
+                    }
+                }
+            });
+            return result;
+        }
+
+        // At low zoom, show very few walkways
+        Object.entries(graphNodes).forEach(([id, node]) => {
+            if (node.type === 'walkway' && isNodeInViewport(node, viewport)) {
+                // Show only every 5th walkway
+                const nodeIndex = parseInt(id.replace(/\D/g, '') || '0', 10);
+                if (nodeIndex % 5 === 0) {
+                    result.add(id);
+                }
+            }
+        });
+
+        return result;
+    }, [zoomLevel, showWalkways, calculateViewport, isNodeInViewport]);
+
+    // Determine if a node should be shown based on type and zoom level
+    const shouldShowNode = useCallback(
+        (type: NodeType, id: NodeId): boolean => {
+            // Always show selected buildings
+            if (id === selected.start || id === selected.end) return true;
+
+            switch (type) {
+                case 'building':
+                    return showBuildings && visibleBuildings.has(id);
+                case 'intersection':
+                    return visibleIntersections.has(id);
+                case 'walkway':
+                    return visibleWalkways.has(id);
+                default:
+                    return false;
+            }
+        },
+        [showBuildings, selected, visibleBuildings, visibleIntersections, visibleWalkways]
+    );
+
+    // Get the appropriate node size based on zoom level with maximum cap
+    const getNodeSize = useCallback(
+        (type: NodeType): number => {
+            const baseSize = type === 'building' ? 6 : 4;
+            const minSize = baseSize * 0.8; // Minimum size at low zoom
+            const maxSize = baseSize * 0.5; // Maximum size cap
+
+            // If below minimum zoom level
+            if (zoomLevel <= ZOOM_LEVELS.LOW) {
+                return minSize;
+            }
+
+            // If above maximum zoom level, cap the size
+            if (zoomLevel >= ZOOM_LEVELS.HIGH) {
+                return maxSize;
+            }
+
+            // Scale size gradually between LOW and HIGH zoom levels
+            const zoomRatio = (zoomLevel - ZOOM_LEVELS.LOW) / (ZOOM_LEVELS.HIGH - ZOOM_LEVELS.LOW);
+            return minSize + zoomRatio * (maxSize - minSize);
+        },
+        [zoomLevel]
+    );
+
+    // Get the appropriate text size based on zoom level with maximum cap
+    const getTextSize = useCallback((): number => {
+        const minSize = 12; // Minimum text size at low zoom
+        const maxSize = 8; // Maximum text size cap
+
+        // If below minimum zoom level
+        if (zoomLevel <= ZOOM_LEVELS.LOW) {
+            return minSize;
+        }
+
+        // If above maximum zoom level, cap the size
+        if (zoomLevel >= ZOOM_LEVELS.HIGH) {
+            return maxSize;
+        }
+
+        // Scale text size gradually between LOW and HIGH zoom levels
+        const zoomRatio = (zoomLevel - ZOOM_LEVELS.LOW) / (ZOOM_LEVELS.HIGH - ZOOM_LEVELS.LOW);
+        return minSize + zoomRatio * (maxSize - minSize);
+    }, [zoomLevel]);
+
+    // Determine if text should be shown for a node
+    const shouldShowText = useCallback(
+        (type: NodeType, id: NodeId): boolean => {
+            // If building text is disabled in dev controls, don't show any text
+            if (!showBuildingText) return false;
+
+            if (type !== 'building') return false;
+
+            // Always show text for selected buildings
+            if (id === selected.start || id === selected.end) return true;
+
+            // Show text based on zoom level
+            return zoomLevel >= ZOOM_LEVELS.LOW;
+        },
+        [zoomLevel, selected, showBuildingText]
+    );
+
+    // Zoom and pan handlers
+    const handleZoomIn = useCallback(() => {
+        setZoomLevel(prev => Math.min(prev * zoomStep, maxZoom));
+    }, []);
+
+    const handleZoomOut = useCallback(() => {
+        setZoomLevel(prev => Math.max(prev / zoomStep, minZoom));
+    }, []);
+
+    const handleResetZoomPan = useCallback(() => {
+        setZoomLevel(1);
+        setPanPosition({ x: 0, y: 0 });
+    }, []);
+
+    const handleWheel = useCallback((e: React.WheelEvent) => {
+        e.preventDefault();
+        if (e.deltaY < 0) {
+            setZoomLevel(prev => Math.min(prev * zoomStep, maxZoom));
+        } else {
+            setZoomLevel(prev => Math.max(prev / zoomStep, minZoom));
+        }
+    }, []);
+
+    const handleMouseDown = useCallback((e: React.MouseEvent) => {
+        if (e.button !== 0) return; // Only handle left mouse button
+        setIsDragging(true);
+        setDragStart({ x: e.clientX, y: e.clientY });
+    }, []);
+
+    const handleMouseMove = useCallback(
+        (e: React.MouseEvent) => {
+            if (!isDragging) return;
+
+            const dx = e.clientX - dragStart.x;
+            const dy = e.clientY - dragStart.y;
+
+            setPanPosition(prev => ({ x: prev.x + dx, y: prev.y + dy }));
+            setDragStart({ x: e.clientX, y: e.clientY });
+        },
+        [isDragging, dragStart]
+    );
+
+    const handleMouseUp = useCallback(() => {
+        setIsDragging(false);
+    }, []);
+
+    const handleMouseLeave = useCallback(() => {
+        setIsDragging(false);
+    }, []);
+
     // Event handlers
     const handleDaySelect = useCallback((day: DayCode) => {
         setSelectedDay(prevDay => (prevDay === day ? null : day));
@@ -348,22 +731,6 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
     const handlePathClick = useCallback((index: number) => {
         setToggledPathIndex(prevIndex => (prevIndex === index ? null : index));
     }, []);
-
-    const shouldShowNode = useCallback(
-        (type: NodeType): boolean => {
-            switch (type) {
-                case 'building':
-                    return showBuildings;
-                case 'intersection':
-                    return showIntersections;
-                case 'walkway':
-                    return showWalkways;
-                default:
-                    return false;
-            }
-        },
-        [showBuildings, showIntersections, showWalkways]
-    );
 
     const shouldShowPath = useCallback(
         (index: number) => {
@@ -418,12 +785,12 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                     {/* Render buildings, intersections, and walkways */}
                     {Object.entries(graphNodes).map(
                         ([id, node]) =>
-                            shouldShowNode(node.type) && (
+                            shouldShowNode(node.type, id) && (
                                 <g key={id}>
                                     <circle
                                         cx={node.x}
                                         cy={node.y}
-                                        r={node.type === 'building' ? 6 : 4}
+                                        r={getNodeSize(node.type)}
                                         fill={
                                             id === selected.start
                                                 ? '#579D42'
@@ -436,17 +803,21 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                                                       : '#D6D2C400'
                                         }
                                         stroke={node.type !== 'walkway' ? 'white' : 'green'}
-                                        strokeWidth='2'
+                                        strokeWidth={zoomLevel < ZOOM_LEVELS.MEDIUM ? '1.5' : '2'}
                                         className='cursor-pointer opacity-90'
                                         onClick={() => handleBuildingSelect(id)}
                                     />
-                                    {node.type === 'building' && (
+                                    {node.type === 'building' && shouldShowText(node.type, id) && (
                                         <text
                                             x={node.x + 12}
                                             y={node.y + 4}
                                             fill='#000000'
-                                            fontSize='14'
+                                            fontSize={getTextSize()}
                                             className='font-bold'
+                                            style={{
+                                                // Fade in text based on zoom level for smooth transition
+                                                opacity: zoomLevel < ZOOM_LEVELS.LOW ? zoomLevel / ZOOM_LEVELS.LOW : 1,
+                                            }}
                                         >
                                             {id}
                                         </text>
@@ -498,7 +869,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
 
             {/* Fixed position controls that don't move with zoom/pan */}
             <div className='absolute left-8 top-8 z-10 flex flex-col gap-4'>
-                {/* Day Selector - now positioned separately from the dynamic controls */}
+                {/* Day Selector */}
                 <DaySelector selectedDay={selectedDay} onDaySelect={handleDaySelect} />
 
                 {/* Zoom and Pan Controls */}
@@ -514,13 +885,17 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                     showBuildings={showBuildings}
                     showIntersections={showIntersections}
                     showWalkways={showWalkways}
+                    showBuildingText={showBuildingText}
+                    showPrioritizedOnly={showPrioritizedOnly}
                     onToggleBuildings={() => setShowBuildings(prev => !prev)}
                     onToggleIntersections={() => setShowIntersections(prev => !prev)}
                     onToggleWalkways={() => setShowWalkways(prev => !prev)}
+                    onToggleBuildingText={() => setShowBuildingText(prev => !prev)}
+                    onTogglePrioritizedOnly={() => setShowPrioritizedOnly(prev => !prev)}
                 />
             </div>
 
-            {/* Path information - now separate from day selector to avoid movement */}
+            {/* Path information */}
             <div className='absolute right-8 top-8 z-10 max-h-[calc(100vh-120px)] flex flex-col gap-4 overflow-y-auto'>
                 {/* Path Statistics - show when a path is selected */}
                 {selected.start && selected.end && <PathStats startId={selected.start} endId={selected.end} />}
