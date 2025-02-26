@@ -8,6 +8,7 @@ import { graphNodes } from './graphNodes';
 import type { ProcessInPersonMeetings } from './Map';
 import { Path } from './Path';
 import { calcDirectPathStats, PathStats } from './PathStats';
+import TimeWarningLabel from './TimeWarningLabel';
 import type { DayCode, NodeId, NodeType } from './types';
 import { DAY_MAPPING } from './types';
 import { getMidpoint } from './utils';
