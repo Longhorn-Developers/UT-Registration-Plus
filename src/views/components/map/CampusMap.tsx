@@ -405,6 +405,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                 bottom: number;
             } | null
         ) => {
+            if (!dynamicRendering) return true;
             if (!viewport) return true;
 
             return (
@@ -414,7 +415,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                 node.y <= viewport.bottom
             );
         },
-        []
+        [dynamicRendering]
     );
 
     // Path calculations
