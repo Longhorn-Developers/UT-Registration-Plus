@@ -5,6 +5,7 @@ export const CRX_PAGES = {
     DEBUG: '/debug.html',
     CALENDAR: '/calendar.html',
     OPTIONS: '/options.html',
+    MAP: '/map.html',
     REPORT: '/report.html',
 } as const;
 
