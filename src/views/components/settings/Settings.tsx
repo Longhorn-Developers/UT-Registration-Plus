@@ -7,6 +7,7 @@ import { CalendarDots, Trash } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { CRX_PAGES } from '@shared/types/CRXPages';
 import MIMEType from '@shared/types/MIMEType';
 import { downloadBlob } from '@shared/util/downloadBlob';
 // import { addCourseByUrl } from '@shared/util/courseUtils';
@@ -507,6 +508,60 @@ export default function Settings(): JSX.Element {
                         <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
                             Developer Mode
                         </h2>
+
+                        <div className='flex items-center justify-between'>
+                            <div className='max-w-xs'>
+                                <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                    UTRP Map
+                                </Text>
+                                <span className='mx-2 border border-ut-burntorange rounded px-2 py-0.5 text-xs text-ut-burntorange font-medium'>
+                                    BETA
+                                </span>
+                                <p className='text-sm text-gray-600'>
+                                    Navigate campus efficiently with our interactive map tool that integrates with your
+                                    schedule
+                                </p>
+                            </div>
+                            <Button
+                                variant='outline'
+                                color='ut-burntorange'
+                                onClick={() => {
+                                    const mapPageUrl = chrome.runtime.getURL(CRX_PAGES.MAP);
+                                    background.openNewTab({ url: mapPageUrl });
+                                }}
+                            >
+                                Try UTRP Map
+                            </Button>
+                        </div>
+
+                        <Divider size='auto' orientation='horizontal' />
+
+                        <div className='flex items-center justify-between'>
+                            <div className='max-w-xs'>
+                                <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                    Debug Page
+                                </Text>
+                                <span className='mx-2 border border-ut-gray rounded px-2 py-0.5 text-xs text-ut-gray font-medium'>
+                                    DEV
+                                </span>
+                                <p className='text-sm text-gray-600'>
+                                    Open the developer debug page to view extension storage and debug logs
+                                </p>
+                            </div>
+                            <Button
+                                variant='outline'
+                                color='ut-burntorange'
+                                onClick={() => {
+                                    const debugPageUrl = chrome.runtime.getURL(CRX_PAGES.DEBUG);
+                                    background.openNewTab({ url: debugPageUrl });
+                                }}
+                            >
+                                Open Debug Page
+                            </Button>
+                        </div>
+
+                        <Divider size='auto' orientation='horizontal' />
+
                         <Button variant='filled' color='ut-black' onClick={() => addCourseByURL(activeSchedule)}>
                             Add course by link
                         </Button>

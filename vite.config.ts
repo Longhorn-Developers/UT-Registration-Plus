@@ -168,6 +168,7 @@ export default defineConfig({
         renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
         renameFile('src/pages/report/index.html', 'report.html'),
+        renameFile('src/pages/map/index.html', 'map.html'),
         renameFile('src/pages/404/index.html', '404.html'),
         vitePluginRunCommandOnDemand({
             // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
@@ -225,6 +226,10 @@ export default defineConfig({
                 target: 'http://localhost:5173',
                 rewrite: path => path.replace('report', 'src/pages/report/index'),
             },
+            '/map.html': {
+                target: 'http://localhost:5173',
+                rewrite: path => path.replace('map', 'src/pages/map/index'),
+            },
             '/404.html': {
                 target: 'http://localhost:5173',
                 rewrite: path => path.replace('404', 'src/pages/404/index'),
@@ -244,6 +249,7 @@ export default defineConfig({
                 calendar: 'src/pages/calendar/index.html',
                 options: 'src/pages/options/index.html',
                 report: 'src/pages/report/index.html',
+                map: 'src/pages/map/index.html',
                 404: 'src/pages/404/index.html',
             },
             output: {
