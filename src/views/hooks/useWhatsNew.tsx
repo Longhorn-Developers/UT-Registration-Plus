@@ -1,9 +1,9 @@
-import WhatsNewPopup from '@views/components/common/WhatsNewPopup';
+import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
+import WhatsNewPopup from '@views/components/common/WhatsNewPopup';
 import { useDialog } from '@views/contexts/DialogContext';
 import React from 'react';
 
-import { Button } from '@views/components/common/Button';
 import { LogoIcon } from '../components/common/LogoIcon';
 import useChangelog from './useChangelog';
 import useVersion from './useVersion';
@@ -16,16 +16,16 @@ import useVersion from './useVersion';
 export default function useWhatsNew(): () => void {
     const showDialog = useDialog();
     const showChangeLog = useChangelog();
-    const version = useVersion();
+    const version = useVersion() || 'v2.1.0';
 
     const handleOnClick = () => {
         showDialog(close => ({
-            className: 'p-spacing-8',
+            className: 'w-[830px] flex flex-col items-center gap-spacing-7 p-spacing-8',
             title: (
                 <div className='flex items-center justify-between gap-4'>
                     <LogoIcon width='48' height='48' />
                     <Text variant='h1' className='text-theme-black'>
-                        What's New in UT Registration Plus
+                        What&apos;s New in UT Registration Plus
                     </Text>
                 </div>
             ),
