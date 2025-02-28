@@ -5,7 +5,17 @@ import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import type { Serialized } from 'chrome-extension-toolkit';
 import type { DateArg, Day } from 'date-fns';
-import { addDays, formatISO, getDay, nextDay, set as setMultiple, toDate } from 'date-fns';
+import {
+    addDays,
+    eachDayOfInterval,
+    format as formatDate,
+    formatISO,
+    getDay,
+    nextDay,
+    parse,
+    set as setMultiple,
+    toDate,
+} from 'date-fns';
 import { toBlob } from 'html-to-image';
 
 import { academicCalendars } from './academic-calendars';
@@ -56,6 +66,9 @@ export const formatToHHMMSS = (minutes: number) => {
     return `${hours}${mins}00`;
 };
 
+const iCalDateFormat = <DateType extends Date>(date: DateArg<DateType>) =>
+    formatDate(date, "yyyyMMdd'T'HHmmss", { in: tz(TIMEZONE) });
+
 const nextDayInclusive = <DateType extends Date, ResultDate extends Date = DateType>(
     date: DateArg<DateType>,
     day: Day
@@ -105,16 +118,24 @@ export const saveAsCal = async () => {
             }
 
             const startDate = nextDayInclusive(
-                new TZDate(academicCalendar.firstClassDate, TIMEZONE),
+                new TZDate(parse(academicCalendar.firstClassDate, 'yyyy-MM-dd', new Date()), TIMEZONE),
                 DAY_NAME_TO_NUMBER[days[0]!]
             );
 
-            const startTimeDate = setMultiple(startDate, {
-                hours: Math.floor(startTime / 60),
-                minutes: startTime % 60,
-            });
+            const startTimeDate = setMultiple(
+                startDate,
+                {
+                    hours: Math.floor(startTime / 60),
+                    minutes: startTime % 60,
+                },
+                { in: tz(TIMEZONE) }
+            );
 
-            const endTimeDate = setMultiple(startDate, { hours: Math.floor(endTime / 60), minutes: endTime % 60 });
+            const endTimeDate = setMultiple(
+                startDate,
+                { hours: Math.floor(endTime / 60), minutes: endTime % 60 },
+                { in: tz(TIMEZONE) }
+            );
 
             // // Format start and end times to HHMMSS
             // const formattedStartTime = formatToHHMMSS(startTime);
@@ -130,19 +151,53 @@ export const saveAsCal = async () => {
             //     endTimeDate: formatISO(endTimeDate, { format: 'basic' /* , in: tz('utc') */ }),
             // });
 
-            const untilDate = addDays(new TZDate(academicCalendar.lastClassDate, TIMEZONE), 1);
+            // const untilDate = addDays(new TZDate(academicCalendar.lastClassDate, TIMEZONE), 1);
+            const untilDate = addDays(
+                new TZDate(parse(academicCalendar.lastClassDate, 'yyyy-MM-dd', new Date()), TIMEZONE),
+                1
+            );
 
             // Assuming course has date started and ended, adapt as necessary
             // const year = new Date().getFullYear(); // Example year, adapt accordingly
             // Example event date, adapt startDate according to your needs
-            const startDateFormatted = formatISO(startTimeDate, { format: 'basic', in: tz('utc') });
-            const endDateFormatted = formatISO(endTimeDate, { format: 'basic', in: tz('utc') });
+            const startDateFormatted = iCalDateFormat(startTimeDate);
+            const endDateFormatted = iCalDateFormat(endTimeDate);
             const untilDateFormatted = formatISO(untilDate, { format: 'basic', in: tz('utc') });
 
+            console.log({ hours: Math.floor(startTime / 60), minutes: startTime % 60 });
+
+            const excludedDates = academicCalendar.breakDates
+                .flatMap(breakDate => {
+                    if (Array.isArray(breakDate)) {
+                        return eachDayOfInterval({
+                            // start: new TZDate(breakDate[0], TIMEZONE),
+                            // end: new TZDate(breakDate[1], TIMEZONE),
+                            start: new TZDate(parse(breakDate[0], 'yyyy-MM-dd', new Date()), TIMEZONE),
+                            end: new TZDate(parse(breakDate[1], 'yyyy-MM-dd', new Date()), TIMEZONE),
+                        });
+                    }
+
+                    // return new TZDate(breakDate, TIMEZONE);
+                    return new TZDate(parse(breakDate, 'yyyy-MM-dd', new Date()), TIMEZONE);
+                })
+                .map(date =>
+                    iCalDateFormat(
+                        setMultiple(
+                            date,
+                            {
+                                hours: Math.floor(startTime / 60),
+                                minutes: startTime % 60,
+                            },
+                            { in: tz(TIMEZONE) }
+                        )
+                    )
+                );
+
             icsString += `BEGIN:VEVENT\n`;
-            icsString += `DTSTART:${startDateFormatted}\n`;
-            icsString += `DTEND:${endDateFormatted}\n`;
+            icsString += `DTSTART;TZID=America/Chicago:${startDateFormatted}\n`;
+            icsString += `DTEND;TZID=America/Chicago:${endDateFormatted}\n`;
             icsString += `RRULE:FREQ=WEEKLY;BYDAY=${icsDays};UNTIL=${untilDateFormatted}\n`;
+            icsString += `EXDATE;TZID=America/Chicago:${excludedDates.join(',')}\n`;
             icsString += `SUMMARY:${course.fullName}\n`;
             icsString += `LOCATION:${location?.building ?? ''} ${location?.room ?? ''}\n`;
             icsString += `END:VEVENT\n`;
