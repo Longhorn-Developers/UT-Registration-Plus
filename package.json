@@ -145,7 +145,7 @@
     },
     "engineStrict": true,
     "engines": {
-        "pnpm": "10.5.2"
+        "pnpm": "^10"
     },
     "pnpm": {
         "patchedDependencies": {
