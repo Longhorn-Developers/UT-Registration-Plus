@@ -260,7 +260,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                                 ))}
                         </select>
                         <Link variant='small' href={UT_GRADE_DISTRIBUTION_URL} className='link'>
-                            About the data
+                            Data Source
                         </Link>
                     </div>
                     {distributions[semester] && !distributions[semester]!.instructorIncluded && (
