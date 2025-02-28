@@ -1,9 +1,8 @@
 import { LockKey, Palette, PlusCircle, SelectionPlus } from '@phosphor-icons/react';
+import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import Text from '@views/components/common/Text/Text';
-import React from 'react';
-import { useEffect } from 'react';
-import { ExtensionStore } from 'src/shared/storage/ExtensionStore';
-import useWhatsNew from 'src/views/hooks/useWhatsNew';
+import useWhatsNew from '@views/hooks/useWhatsNew';
+import React, { useEffect } from 'react';
 
 /**
  * WhatsNewPopupContent component.
