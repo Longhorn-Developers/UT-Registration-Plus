@@ -9,16 +9,22 @@ overrides:
 
 patchedDependencies:
   '@crxjs/vite-plugin@2.0.0-beta.21':
-    hash: xq4uab3o3kbvv4gixvawl2aj5q
+    hash: 638b2575ead9e3df6bf5df962712f1fcbddf1d7ac61ce8dce0cfcc471d404a03
     path: patches/@crxjs__vite-plugin@2.0.0-beta.21.patch
   '@unocss/vite':
-    hash: 5ptgy7mbavmjf7zwexb7dph4ji
+    hash: 9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95
     path: patches/@unocss__vite.patch
 
 importers:
 
   .:
     dependencies:
+      '@date-fns/tz':
+        specifier: ^1.2.0
+        version: 1.2.0
+      '@date-fns/utc':
+        specifier: ^2.1.0
+        version: 2.1.0
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -45,7 +51,7 @@ importers:
         version: 8.55.0(react@18.3.1)
       '@unocss/vite':
         specifier: ^0.63.6
-        version: 0.63.6(patch_hash=5ptgy7mbavmjf7zwexb7dph4ji)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
+        version: 0.63.6(patch_hash=9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
       '@vitejs/plugin-react':
         specifier: ^4.3.4
         version: 4.3.4(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
@@ -58,6 +64,9 @@ importers:
       conventional-changelog:
         specifier: ^6.0.0
         version: 6.0.0(conventional-commits-filter@5.0.0)
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       highcharts:
         specifier: ^11.4.8
         version: 11.4.8
@@ -70,6 +79,9 @@ importers:
       husky:
         specifier: ^9.1.7
         version: 9.1.7
+      ics:
+        specifier: ^3.8.1
+        version: 3.8.1
       kc-dabr-wasm:
         specifier: ^0.1.2
         version: 0.1.2
@@ -118,7 +130,7 @@ importers:
         version: 19.5.0
       '@crxjs/vite-plugin':
         specifier: 2.0.0-beta.21
-        version: 2.0.0-beta.21(patch_hash=xq4uab3o3kbvv4gixvawl2aj5q)
+        version: 2.0.0-beta.21(patch_hash=638b2575ead9e3df6bf5df962712f1fcbddf1d7ac61ce8dce0cfcc471d404a03)
       '@iconify-json/bi':
         specifier: ^1.2.2
         version: 1.2.2
@@ -570,6 +582,12 @@ packages:
 
   '@crxjs/vite-plugin@2.0.0-beta.21':
     resolution: {integrity: sha512-kSXgHHqCXASqJ8NmY94+KLGVwdtkJ0E7KsRQ+vbMpRliJ5ze0xnSk0l41p4txlUysmEoqaeo4Xb7rEFdcU2zjQ==}
+
+  '@date-fns/tz@1.2.0':
+    resolution: {integrity: sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==}
+
+  '@date-fns/utc@2.1.0':
+    resolution: {integrity: sha512-176grgAgU2U303rD2/vcOmNg0kGPbhzckuH1TEP2al7n0AQipZIy9P15usd2TKQCG1g+E1jX/ZVQSzs4sUDwgA==}
 
   '@dnd-kit/accessibility@3.1.1':
     resolution: {integrity: sha512-2P+YgaXF+gRsIihwwY1gCsQSYnu9Zyj2py8kY5fFvUM1qm2WA2u639R6YNVfU4GWr+ZM5mqEsfHZZLoRONbemw==}
@@ -3269,6 +3287,9 @@ packages:
     resolution: {integrity: sha512-BS8PfmtDGnrgYdOonGZQdLZslWIeCGFP9tpan0hi1Co2Zr2NKADsvGYA8XxuG/4UWgJ6Cjtv+YJnB6MM69QGlQ==}
     engines: {node: '>= 0.4'}
 
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
+
   debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
     peerDependencies:
@@ -4281,6 +4302,9 @@ packages:
   iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
+
+  ics@3.8.1:
+    resolution: {integrity: sha512-UqQlfkajfhrS4pUGQfGIJMYz/Jsl/ob3LqcfEhUmLbwumg+ZNkU0/6S734Vsjq3/FYNpEcZVKodLBoe+zBM69g==}
 
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
@@ -5836,6 +5860,9 @@ packages:
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
 
+  property-expr@2.0.6:
+    resolution: {integrity: sha512-SVtmxhRE/CGkn3eZY1T6pC8Nln6Fr/lu1mKSgRud0eC73whjGfoAogbn78LkD8aFL0zz3bAFerKSnOl7NlErBA==}
+
   property-information@5.6.0:
     resolution: {integrity: sha512-YUHSPk+A30YPv+0Qf8i9Mbfe/C0hdPXk1s1jPVToV8pk8BQtpw10ct89Eo7OWkutrwqvT0eicAxlOg3dOAu8JA==}
 
@@ -6086,6 +6113,9 @@ packages:
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
+
+  runes2@1.1.4:
+    resolution: {integrity: sha512-LNPnEDPOOU4ehF71m5JoQyzT2yxwD6ZreFJ7MxZUAoMKNMY1XrAo60H1CUoX5ncSm0rIuKlqn9JZNRrRkNou2g==}
 
   rxjs@7.5.7:
     resolution: {integrity: sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==}
@@ -6538,6 +6568,9 @@ packages:
     resolution: {integrity: sha512-75voc/9G4rDIJleOo4jPvN4/YC4GRZrY8yy1uU4lwrB3XEQbWve8zXoO5No4eFrGcTAMYyoY67p8jRQdtA1HbA==}
     engines: {node: '>=12'}
 
+  tiny-case@1.0.3:
+    resolution: {integrity: sha512-Eet/eeMhkO6TX8mnUteS9zgPbUMQa4I6Kkp5ORiBD5476/m+PIRiumP5tmh5ioJpH7k51Kehawy2UDfsnxxY8Q==}
+
   tiny-invariant@1.3.3:
     resolution: {integrity: sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==}
 
@@ -6570,6 +6603,9 @@ packages:
   to-through@3.0.0:
     resolution: {integrity: sha512-y8MN937s/HVhEoBU1SxfHC+wxCHkV1a9gW8eAdTadYh/bGyesZIVcbjI+mSpFbSVwQici/XjBjuUyri1dnXwBw==}
     engines: {node: '>=10.13.0'}
+
+  toposort@2.0.2:
+    resolution: {integrity: sha512-0a5EOkAUp8D4moMi2W8ZF8jcga7BgZd91O/yabJCFY8az+XSzeGyTKs0Aoo897iV1Nj6guFq8orWDS96z91oGg==}
 
   totalist@3.0.1:
     resolution: {integrity: sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==}
@@ -7062,6 +7098,9 @@ packages:
     resolution: {integrity: sha512-GQHQqAopRhwU8Kt1DDM8NjibDXHC8eoh1erhGAJPEyveY9qqVeXvVikNKrDz69sHowPMorbPUrH/mx8c50eiBQ==}
     engines: {node: '>=18'}
 
+  yup@1.6.1:
+    resolution: {integrity: sha512-JED8pB50qbA4FOkDol0bYF/p60qSEDQqBD0/qeIrUCG1KbPBIQ776fCUNb9ldbPcSTxA69g/47XTo4TqWiuXOA==}
+
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
@@ -7344,7 +7383,7 @@ snapshots:
       conventional-commits-filter: 5.0.0
       conventional-commits-parser: 6.1.0
 
-  '@crxjs/vite-plugin@2.0.0-beta.21(patch_hash=xq4uab3o3kbvv4gixvawl2aj5q)':
+  '@crxjs/vite-plugin@2.0.0-beta.21(patch_hash=638b2575ead9e3df6bf5df962712f1fcbddf1d7ac61ce8dce0cfcc471d404a03)':
     dependencies:
       '@rollup/pluginutils': 4.2.1
       '@webcomponents/custom-elements': 1.6.0
@@ -7364,6 +7403,10 @@ snapshots:
       rxjs: 7.5.7
     transitivePeerDependencies:
       - supports-color
+
+  '@date-fns/tz@1.2.0': {}
+
+  '@date-fns/utc@2.1.0': {}
 
   '@dnd-kit/accessibility@3.1.1(react@18.3.1)':
     dependencies:
@@ -9029,7 +9072,7 @@ snapshots:
     dependencies:
       '@unocss/core': 0.63.6
       '@unocss/reset': 0.63.6
-      '@unocss/vite': 0.63.6(patch_hash=5ptgy7mbavmjf7zwexb7dph4ji)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
+      '@unocss/vite': 0.63.6(patch_hash=9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
     optionalDependencies:
       vite: 5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0)
     transitivePeerDependencies:
@@ -9182,7 +9225,7 @@ snapshots:
     dependencies:
       '@unocss/core': 0.63.6
 
-  '@unocss/vite@0.63.6(patch_hash=5ptgy7mbavmjf7zwexb7dph4ji)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))':
+  '@unocss/vite@0.63.6(patch_hash=9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@rollup/pluginutils': 5.1.4(rollup@4.34.8)
@@ -10236,6 +10279,8 @@ snapshots:
       call-bound: 1.0.3
       es-errors: 1.3.0
       is-data-view: 1.0.2
+
+  date-fns@4.1.0: {}
 
   debug@2.6.9:
     dependencies:
@@ -11537,6 +11582,12 @@ snapshots:
   iconv-lite@0.6.3:
     dependencies:
       safer-buffer: 2.1.2
+
+  ics@3.8.1:
+    dependencies:
+      nanoid: 3.3.8
+      runes2: 1.1.4
+      yup: 1.6.1
 
   ieee754@1.2.1: {}
 
@@ -13149,6 +13200,8 @@ snapshots:
       object-assign: 4.1.1
       react-is: 16.13.1
 
+  property-expr@2.0.6: {}
+
   property-information@5.6.0:
     dependencies:
       xtend: 4.0.2
@@ -13490,6 +13543,8 @@ snapshots:
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
+
+  runes2@1.1.4: {}
 
   rxjs@7.5.7:
     dependencies:
@@ -14025,6 +14080,8 @@ snapshots:
     dependencies:
       convert-hrtime: 5.0.0
 
+  tiny-case@1.0.3: {}
+
   tiny-invariant@1.3.3: {}
 
   tinybench@2.9.0: {}
@@ -14049,6 +14106,8 @@ snapshots:
   to-through@3.0.0:
     dependencies:
       streamx: 2.22.0
+
+  toposort@2.0.2: {}
 
   totalist@3.0.1: {}
 
@@ -14252,7 +14311,7 @@ snapshots:
       '@unocss/transformer-compile-class': 0.63.6
       '@unocss/transformer-directives': 0.63.6
       '@unocss/transformer-variant-group': 0.63.6
-      '@unocss/vite': 0.63.6(patch_hash=5ptgy7mbavmjf7zwexb7dph4ji)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
+      '@unocss/vite': 0.63.6(patch_hash=9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
     optionalDependencies:
       vite: 5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0)
     transitivePeerDependencies:
@@ -14623,5 +14682,12 @@ snapshots:
   yocto-queue@1.1.1: {}
 
   yoctocolors@2.1.1: {}
+
+  yup@1.6.1:
+    dependencies:
+      property-expr: 2.0.6
+      tiny-case: 1.0.3
+      toposort: 2.0.2
+      type-fest: 2.19.0
 
   zwitch@2.0.4: {}

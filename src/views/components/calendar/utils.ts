@@ -1,8 +1,16 @@
+import { tz, TZDate } from '@date-fns/tz';
+import { utc, UTCDate } from '@date-fns/utc';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import type { Serialized } from 'chrome-extension-toolkit';
+import type { DateArg, Day } from 'date-fns';
+import { addDays, formatISO, getDay, nextDay, set as setMultiple, toDate } from 'date-fns';
 import { toBlob } from 'html-to-image';
+
+import { academicCalendars } from './academic-calendars';
+
+const TIMEZONE = 'America/Chicago';
 
 export const CAL_MAP = {
     Sunday: 'SU',
@@ -13,6 +21,16 @@ export const CAL_MAP = {
     Friday: 'FR',
     Saturday: 'SA',
 } as const satisfies Record<string, string>;
+
+export const DAY_NAME_TO_NUMBER = {
+    Sunday: 0,
+    Monday: 1,
+    Tuesday: 2,
+    Wednesday: 3,
+    Thursday: 4,
+    Friday: 5,
+    Saturday: 6,
+} as const satisfies Record<string, number>;
 
 /**
  * Retrieves the schedule from the UserScheduleStore based on the active index.
@@ -38,6 +56,17 @@ export const formatToHHMMSS = (minutes: number) => {
     return `${hours}${mins}00`;
 };
 
+const nextDayInclusive = <DateType extends Date, ResultDate extends Date = DateType>(
+    date: DateArg<DateType>,
+    day: Day
+): ResultDate => {
+    if (getDay(date) === day) {
+        return toDate(date);
+    }
+
+    return nextDay(date, day);
+};
+
 /**
  * Saves the current schedule as a calendar file in the iCalendar format (ICS).
  * Fetches the current active schedule and converts it into an ICS string.
@@ -55,26 +84,65 @@ export const saveAsCal = async () => {
     schedule.courses.forEach(course => {
         course.schedule.meetings.forEach(meeting => {
             const { startTime, endTime, days, location } = meeting;
+            console.log(course.semester.code);
 
-            // Format start and end times to HHMMSS
-            const formattedStartTime = formatToHHMMSS(startTime);
-            const formattedEndTime = formatToHHMMSS(endTime);
+            if (!course.semester.code) {
+                console.error(`No semester found for course uniqueId: ${course.uniqueId}`);
+                return;
+            }
+
+            if (days.length === 0) {
+                console.error(`No days found for course uniqueId: ${course.uniqueId}`);
+                return;
+            }
+
+            const academicCalendar = academicCalendars[course.semester.code as keyof typeof academicCalendars];
+
+            if (!academicCalendar) {
+                console.error(
+                    `No academic calendar found for semester code: ${course.semester.code}; course uniqueId: ${course.uniqueId}`
+                );
+            }
+
+            const startDate = nextDayInclusive(
+                new TZDate(academicCalendar.firstClassDate, TIMEZONE),
+                DAY_NAME_TO_NUMBER[days[0]!]
+            );
+
+            const startTimeDate = setMultiple(startDate, {
+                hours: Math.floor(startTime / 60),
+                minutes: startTime % 60,
+            });
+
+            const endTimeDate = setMultiple(startDate, { hours: Math.floor(endTime / 60), minutes: endTime % 60 });
+
+            // // Format start and end times to HHMMSS
+            // const formattedStartTime = formatToHHMMSS(startTime);
+            // const formattedEndTime = formatToHHMMSS(endTime);
 
             // Map days to ICS compatible format
             console.log(days);
             const icsDays = days.map(day => CAL_MAP[day]).join(',');
             console.log(icsDays);
 
+            // console.log({
+            //     startTimeDate: formatISO(startTimeDate, { format: 'basic' /* , in: tz('utc') */ }),
+            //     endTimeDate: formatISO(endTimeDate, { format: 'basic' /* , in: tz('utc') */ }),
+            // });
+
+            const untilDate = addDays(new TZDate(academicCalendar.lastClassDate, TIMEZONE), 1);
+
             // Assuming course has date started and ended, adapt as necessary
             // const year = new Date().getFullYear(); // Example year, adapt accordingly
             // Example event date, adapt startDate according to your needs
-            const startDate = `20240101T${formattedStartTime}`;
-            const endDate = `20240101T${formattedEndTime}`;
+            const startDateFormatted = formatISO(startTimeDate, { format: 'basic', in: tz('utc') });
+            const endDateFormatted = formatISO(endTimeDate, { format: 'basic', in: tz('utc') });
+            const untilDateFormatted = formatISO(untilDate, { format: 'basic', in: tz('utc') });
 
             icsString += `BEGIN:VEVENT\n`;
-            icsString += `DTSTART:${startDate}\n`;
-            icsString += `DTEND:${endDate}\n`;
-            icsString += `RRULE:FREQ=WEEKLY;BYDAY=${icsDays}\n`;
+            icsString += `DTSTART:${startDateFormatted}\n`;
+            icsString += `DTEND:${endDateFormatted}\n`;
+            icsString += `RRULE:FREQ=WEEKLY;BYDAY=${icsDays};UNTIL=${untilDateFormatted}\n`;
             icsString += `SUMMARY:${course.fullName}\n`;
             icsString += `LOCATION:${location?.building ?? ''} ${location?.room ?? ''}\n`;
             icsString += `END:VEVENT\n`;
