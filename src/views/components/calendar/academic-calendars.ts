@@ -1,7 +1,7 @@
 type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 type Year = `20${Digit}${Digit}`;
 type Month = `0${Exclude<Digit, 0>}` | `1${'0' | '1' | '2'}`;
-type Day = `0${Exclude<Digit, 0>}` | `1${Digit}` | `2${Digit}` | `30` | `31`;
+type Day = `0${Exclude<Digit, 0>}` | `${1 | 2}${Digit}` | '30' | '31';
 type DateStr = `${Year}-${Month}-${Day}`;
 type SemesterDigit = 2 | 6 | 9;
 type SemesterIdentifier = `20${Digit}${Digit}${SemesterDigit}`;

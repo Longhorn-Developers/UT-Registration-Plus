@@ -1,5 +1,4 @@
-import { tz, TZDate } from '@date-fns/tz';
-import { utc, UTCDate } from '@date-fns/utc';
+import { tz } from '@date-fns/tz';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
@@ -21,6 +20,7 @@ import { toBlob } from 'html-to-image';
 import { academicCalendars } from './academic-calendars';
 
 const TIMEZONE = 'America/Chicago';
+const TZ = tz(TIMEZONE);
 
 export const CAL_MAP = {
     Sunday: 'SU',
@@ -67,7 +67,7 @@ export const formatToHHMMSS = (minutes: number) => {
 };
 
 const iCalDateFormat = <DateType extends Date>(date: DateArg<DateType>) =>
-    formatDate(date, "yyyyMMdd'T'HHmmss", { in: tz(TIMEZONE) });
+    formatDate(date, "yyyyMMdd'T'HHmmss", { in: TZ });
 
 const nextDayInclusive = <DateType extends Date, ResultDate extends Date = DateType>(
     date: DateArg<DateType>,
@@ -97,7 +97,6 @@ export const saveAsCal = async () => {
     schedule.courses.forEach(course => {
         course.schedule.meetings.forEach(meeting => {
             const { startTime, endTime, days, location } = meeting;
-            console.log(course.semester.code);
 
             if (!course.semester.code) {
                 console.error(`No semester found for course uniqueId: ${course.uniqueId}`);
@@ -118,7 +117,7 @@ export const saveAsCal = async () => {
             }
 
             const startDate = nextDayInclusive(
-                new TZDate(parse(academicCalendar.firstClassDate, 'yyyy-MM-dd', new Date()), TIMEZONE),
+                parse(academicCalendar.firstClassDate, 'yyyy-MM-dd', new Date()),
                 DAY_NAME_TO_NUMBER[days[0]!]
             );
 
@@ -128,76 +127,52 @@ export const saveAsCal = async () => {
                     hours: Math.floor(startTime / 60),
                     minutes: startTime % 60,
                 },
-                { in: tz(TIMEZONE) }
+                { in: TZ }
             );
 
             const endTimeDate = setMultiple(
                 startDate,
                 { hours: Math.floor(endTime / 60), minutes: endTime % 60 },
-                { in: tz(TIMEZONE) }
+                { in: TZ }
             );
 
-            // // Format start and end times to HHMMSS
-            // const formattedStartTime = formatToHHMMSS(startTime);
-            // const formattedEndTime = formatToHHMMSS(endTime);
-
-            // Map days to ICS compatible format
-            console.log(days);
-            const icsDays = days.map(day => CAL_MAP[day]).join(',');
-            console.log(icsDays);
-
-            // console.log({
-            //     startTimeDate: formatISO(startTimeDate, { format: 'basic' /* , in: tz('utc') */ }),
-            //     endTimeDate: formatISO(endTimeDate, { format: 'basic' /* , in: tz('utc') */ }),
-            // });
-
-            // const untilDate = addDays(new TZDate(academicCalendar.lastClassDate, TIMEZONE), 1);
-            const untilDate = addDays(
-                new TZDate(parse(academicCalendar.lastClassDate, 'yyyy-MM-dd', new Date()), TIMEZONE),
-                1
-            );
-
-            // Assuming course has date started and ended, adapt as necessary
-            // const year = new Date().getFullYear(); // Example year, adapt accordingly
-            // Example event date, adapt startDate according to your needs
-            const startDateFormatted = iCalDateFormat(startTimeDate);
-            const endDateFormatted = iCalDateFormat(endTimeDate);
-            const untilDateFormatted = formatISO(untilDate, { format: 'basic', in: tz('utc') });
-
-            console.log({ hours: Math.floor(startTime / 60), minutes: startTime % 60 });
+            const untilDate = addDays(parse(academicCalendar.lastClassDate, 'yyyy-MM-dd', new Date()), 1);
 
             const excludedDates = academicCalendar.breakDates
                 .flatMap(breakDate => {
                     if (Array.isArray(breakDate)) {
                         return eachDayOfInterval({
-                            // start: new TZDate(breakDate[0], TIMEZONE),
-                            // end: new TZDate(breakDate[1], TIMEZONE),
-                            start: new TZDate(parse(breakDate[0], 'yyyy-MM-dd', new Date()), TIMEZONE),
-                            end: new TZDate(parse(breakDate[1], 'yyyy-MM-dd', new Date()), TIMEZONE),
+                            start: parse(breakDate[0], 'yyyy-MM-dd', new Date()),
+                            end: parse(breakDate[1], 'yyyy-MM-dd', new Date()),
                         });
                     }
 
-                    // return new TZDate(breakDate, TIMEZONE);
-                    return new TZDate(parse(breakDate, 'yyyy-MM-dd', new Date()), TIMEZONE);
+                    return parse(breakDate, 'yyyy-MM-dd', new Date());
                 })
                 .map(date =>
-                    iCalDateFormat(
-                        setMultiple(
-                            date,
-                            {
-                                hours: Math.floor(startTime / 60),
-                                minutes: startTime % 60,
-                            },
-                            { in: tz(TIMEZONE) }
-                        )
+                    setMultiple(
+                        date,
+                        {
+                            hours: Math.floor(startTime / 60),
+                            minutes: startTime % 60,
+                        },
+                        { in: TZ }
                     )
                 );
+
+            const startDateFormatted = iCalDateFormat(startTimeDate);
+            const endDateFormatted = iCalDateFormat(endTimeDate);
+            // Map days to ICS compatible format, e.g. MO,WE,FR
+            const icsDays = days.map(day => CAL_MAP[day]).join(',');
+            // per spec, UNTIL must be in UTC
+            const untilDateFormatted = formatISO(untilDate, { format: 'basic', in: tz('utc') });
+            const excludedDatesFormatted = excludedDates.map(date => iCalDateFormat(date));
 
             icsString += `BEGIN:VEVENT\n`;
             icsString += `DTSTART;TZID=America/Chicago:${startDateFormatted}\n`;
             icsString += `DTEND;TZID=America/Chicago:${endDateFormatted}\n`;
             icsString += `RRULE:FREQ=WEEKLY;BYDAY=${icsDays};UNTIL=${untilDateFormatted}\n`;
-            icsString += `EXDATE;TZID=America/Chicago:${excludedDates.join(',')}\n`;
+            icsString += `EXDATE;TZID=America/Chicago:${excludedDatesFormatted.join(',')}\n`;
             icsString += `SUMMARY:${course.fullName}\n`;
             icsString += `LOCATION:${location?.building ?? ''} ${location?.room ?? ''}\n`;
             icsString += `END:VEVENT\n`;
