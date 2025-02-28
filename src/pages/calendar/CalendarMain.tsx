@@ -7,6 +7,7 @@ import SentryProvider from '@views/contexts/SentryContext';
 import { MessageListener } from 'chrome-extension-toolkit';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect } from 'react';
+import { WhatsNewDialog } from 'src/views/components/common/WhatsNewPopup';
 
 /**
  * Calendar page
@@ -34,6 +35,7 @@ export default function CalendarMain() {
             <ExtensionRoot className='h-full w-full'>
                 <DialogProvider>
                     <MigrationDialog />
+                    <WhatsNewDialog />
                     <Calendar />
                 </DialogProvider>
             </ExtensionRoot>

@@ -7,5 +7,6 @@ export default async function onUpdate() {
     await ExtensionStore.set({
         version: chrome.runtime.getManifest().version,
         lastUpdate: Date.now(),
+        newFeaturesDialogShown: false,
     });
 }

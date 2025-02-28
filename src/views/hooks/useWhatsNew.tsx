@@ -1,6 +1,6 @@
 import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
-import WhatsNewPopup from '@views/components/common/WhatsNewPopup';
+import WhatsNewPopupContent from '@views/components/common/WhatsNewPopup';
 import { useDialog } from '@views/contexts/DialogContext';
 import React from 'react';
 
@@ -29,7 +29,7 @@ export default function useWhatsNew(): () => void {
                     </Text>
                 </div>
             ),
-            description: <WhatsNewPopup />,
+            description: <WhatsNewPopupContent />,
             buttons: (
                 <>
                     <Button onClick={showChangeLog} variant='minimal' color='ut-black'>
