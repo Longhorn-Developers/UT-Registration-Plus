@@ -32,7 +32,7 @@ export const CAL_MAP = {
     Saturday: 'SA',
 } as const satisfies Record<string, string>;
 
-export const DAY_NAME_TO_NUMBER = {
+const DAY_NAME_TO_NUMBER = {
     Sunday: 0,
     Monday: 1,
     Tuesday: 2,
@@ -66,9 +66,28 @@ export const formatToHHMMSS = (minutes: number) => {
     return `${hours}${mins}00`;
 };
 
+/**
+ * Formats a date in the format YYYYMMDD'T'HHmmss.
+ *
+ * @param date - The date to format.
+ * @returns
+ */
 const iCalDateFormat = <DateType extends Date>(date: DateArg<DateType>) =>
     formatDate(date, "yyyyMMdd'T'HHmmss", { in: TZ });
 
+const ISO_DATE_FORMAT = 'yyyy-MM-dd';
+
+/**
+ * Returns the next day of the given date, inclusive of the given day.
+ *
+ * If the given date is the given day, the same date is returned.
+ *
+ * For example, a Monday targeting a Wednesday will return the next Wednesday, but if it was targeting a Monday it would return the same date.
+ *
+ * @param date - The date to increment.
+ * @param day - The day to increment to. (0 = Sunday, 1 = Monday, etc.)
+ * @returns The next day of the given date, inclusive of the given day.
+ */
 const nextDayInclusive = <DateType extends Date, ResultDate extends Date = DateType>(
     date: DateArg<DateType>,
     day: Day
@@ -117,7 +136,7 @@ export const saveAsCal = async () => {
             }
 
             const startDate = nextDayInclusive(
-                parse(academicCalendar.firstClassDate, 'yyyy-MM-dd', new Date()),
+                parse(academicCalendar.firstClassDate, ISO_DATE_FORMAT, new Date()),
                 DAY_NAME_TO_NUMBER[days[0]!]
             );
 
@@ -136,18 +155,18 @@ export const saveAsCal = async () => {
                 { in: TZ }
             );
 
-            const untilDate = addDays(parse(academicCalendar.lastClassDate, 'yyyy-MM-dd', new Date()), 1);
+            const untilDate = addDays(parse(academicCalendar.lastClassDate, ISO_DATE_FORMAT, new Date()), 1);
 
             const excludedDates = academicCalendar.breakDates
                 .flatMap(breakDate => {
                     if (Array.isArray(breakDate)) {
                         return eachDayOfInterval({
-                            start: parse(breakDate[0], 'yyyy-MM-dd', new Date()),
-                            end: parse(breakDate[1], 'yyyy-MM-dd', new Date()),
+                            start: parse(breakDate[0], ISO_DATE_FORMAT, new Date()),
+                            end: parse(breakDate[1], ISO_DATE_FORMAT, new Date()),
                         });
                     }
 
-                    return parse(breakDate, 'yyyy-MM-dd', new Date());
+                    return parse(breakDate, ISO_DATE_FORMAT, new Date());
                 })
                 .map(date =>
                     setMultiple(
