@@ -11,16 +11,19 @@ import {
     RadioButton,
     Trash,
 } from '@phosphor-icons/react';
+import { background } from '@shared/messages';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules from '@views/hooks/useSchedules';
+import { LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { Button } from './Button';
 import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
+import Link from './Link';
 import { SortableListDragHandle } from './SortableListDragHandle';
 
 /**
@@ -32,6 +35,7 @@ interface ScheduleListItemProps {
 }
 
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
+const teamMembers = [...LONGHORN_DEVELOPERS_ADMINS, ...LONGHORN_DEVELOPERS_SWE];
 
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
@@ -40,6 +44,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
+    const teamMember = teamMembers[Math.floor(Math.random() * teamMembers.length)];
 
     const showDialog = usePrompt();
     const enforceScheduleLimit = useEnforceScheduleLimit();
@@ -65,13 +70,46 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
     const handleBlur = async () => {
         if (editorValue.trim() !== '' && editorValue.trim() !== schedule.name) {
             schedule.name = (await renameSchedule(schedule.id, editorValue.trim())) as string;
+
+            if (schedule.name === '404') {
+                const url = chrome.runtime.getURL('/404.html');
+                background.openNewTab({ url });
+            }
+
+            if (Math.random() < 0.002) {
+                showDialog({
+                    title: 'Schedule name already taken',
+                    description: (
+                        <>
+                            <Text>Schedule name</Text>
+                            <Text className='text-ut-burntorange'> {schedule.name} </Text>
+                            <Text>
+                                is already taken.
+                                <br />
+                                <br />
+                                Join the&nbsp;
+                            </Text>
+                            <Link className='link' href='https://discord.gg/7pQDBGdmb7'>
+                                <Text>Discord</Text>
+                            </Link>
+                            <Text> to contact {teamMember?.name as string}.</Text>
+                        </>
+                    ),
+                    // eslint-disable-next-line react/no-unstable-nested-components
+                    buttons: close => (
+                        <Button variant='minimal' color='ut-black' onClick={close}>
+                            Go Back
+                        </Button>
+                    ),
+                });
+            }
         }
         setIsEditing(false);
     };
 
     const handleDelete = () => {
         showDialog({
-            title: `Are you sure?`,
+            title: 'Are you sure?',
             description: (
                 <>
                     <Text>Deleting</Text>
@@ -166,7 +204,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                                 as={ExtensionRootWrapper}
                                 className={clsx([
                                     styleResetClass,
-                                    'w-fit cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-theme-offwhite1 focus:outline-none',
+                                    'w-fit cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
                                     'data-[closed]:(opacity-0 scale-95)',
                                     'data-[enter]:(ease-out-expo duration-150)',
                                     'data-[leave]:(ease-out duration-50)',

@@ -140,7 +140,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             tickWidth: 1,
             tickLength: 10,
             tickColor: '#9CADB7',
-            crosshair: { color: extendedColors.theme.offwhite2 },
+            crosshair: { color: extendedColors.theme.offwhite },
             lineColor: '#9CADB7',
         },
         yAxis: {
@@ -260,7 +260,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                                 ))}
                         </select>
                         <Link variant='small' href={UT_GRADE_DISTRIBUTION_URL} className='link'>
-                            About the data
+                            Data Source
                         </Link>
                     </div>
                     {distributions[semester] && !distributions[semester]!.instructorIncluded && (

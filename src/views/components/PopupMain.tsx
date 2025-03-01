@@ -1,15 +1,13 @@
 import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
-import { CalendarDots, Flag, GearSix, Plus } from '@phosphor-icons/react';
+import { CalendarDots, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { openReportWindow } from '@shared/util/openReportWindow';
 import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect, useState } from 'react';
 
@@ -27,14 +25,14 @@ import { SortableList } from './common/SortableList';
  */
 export default function PopupMain(): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
+    // const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
     useKC_DABR_WASM();
 
     useEffect(() => {
         const initAllSettings = async () => {
-            const { enableCourseStatusChips, enableDataRefreshing } = await initSettings();
+            const { enableCourseStatusChips } = await initSettings();
             setEnableCourseStatusChips(enableCourseStatusChips);
-            setEnableDataRefreshing(enableDataRefreshing);
+            // setEnableDataRefreshing(enableDataRefreshing);
         };
 
         initAllSettings();
@@ -44,14 +42,14 @@ export default function PopupMain(): JSX.Element {
             // console.log('enableCourseStatusChips', newValue);
         });
 
-        const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
-            setEnableDataRefreshing(newValue);
-            // console.log('enableDataRefreshing', newValue);
-        });
+        // const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
+        //     setEnableDataRefreshing(newValue);
+        //     // console.log('enableDataRefreshing', newValue);
+        // });
 
         return () => {
             OptionsStore.removeListener(l1);
-            OptionsStore.removeListener(l2);
+            // OptionsStore.removeListener(l2);
         };
     }, []);
 
@@ -86,7 +84,7 @@ export default function PopupMain(): JSX.Element {
 
     return (
         <div className='h-screen max-h-full flex flex-col bg-white'>
-            <div className='p-5 py-3.5'>
+            <div className='px-spacing-6 py-spacing-5'>
                 <div className='flex items-center justify-between bg-white'>
                     <SmallLogo />
                     <div className='flex items-center gap-2.5'>
@@ -95,13 +93,15 @@ export default function PopupMain(): JSX.Element {
                             color='ut-burntorange'
                             onClick={handleCalendarOpenOnClick}
                             icon={CalendarDots}
-                        />
+                            iconProps={{ weight: 'fill' }}
+                        >
+                            Calendar
+                        </Button>
                         <Button variant='minimal' color='ut-black' onClick={handleOpenOptions} icon={GearSix} />
-                        <Button variant='minimal' color='ut-black' onClick={openReportWindow} icon={Flag} />
                     </div>
                 </div>
             </div>
-            <Divider orientation='horizontal' size='100%' />
+            <Divider className='bg-ut-offwhite/50' orientation='horizontal' size='100%' />
             <div className='px-5 pb-2.5 pt-3.75'>
                 <ScheduleDropdown>
                     <SortableList
@@ -139,7 +139,10 @@ export default function PopupMain(): JSX.Element {
                     </Text>
                 </div>
             )}
-            <div className='flex-1 self-stretch overflow-y-auto px-5'>
+            <div
+                style={{ scrollbarGutter: 'stable' }}
+                className='flex-1 self-stretch overflow-y-scroll pl-spacing-6 pr-[6px]'
+            >
                 {activeSchedule?.courses?.length > 0 && (
                     <SortableList
                         draggables={activeSchedule.courses.map(course => ({
@@ -157,35 +160,35 @@ export default function PopupMain(): JSX.Element {
                     />
                 )}
             </div>
-            <div className='w-full flex flex-col items-center gap-1.25 p-5 pt-3.75'>
-                <div className='flex gap-2.5'>
+            <div className='w-full flex flex-col items-center gap-1.25 px-spacing-6 py-spacing-5'>
+                <div className='flex gap-spacing-6'>
                     {enableCourseStatusChips && (
                         <>
-                            <CourseStatus status='WAITLISTED' size='mini' />
-                            <CourseStatus status='CLOSED' size='mini' />
-                            <CourseStatus status='CANCELLED' size='mini' />
+                            <CourseStatus status='WAITLISTED' size='small' />
+                            <CourseStatus status='CLOSED' size='small' />
+                            <CourseStatus status='CANCELLED' size='small' />
                         </>
                     )}
                 </div>
-                {enableDataRefreshing && (
-                    <div className='inline-flex items-center self-center gap-1'>
-                        <Text variant='mini' className='text-ut-gray !font-normal'>
+                {/* {enableDataRefreshing && (
+                    <div className='inline-flex items-center self-center gap-1'> */}
+                {/* <Text variant='mini' className='text-ut-gray !font-normal'>
                             LAST UPDATED: {getUpdatedAtDateTimeString(activeSchedule.updatedAt)}
-                        </Text>
-                        {/* <button
-                            className='h-4 w-4 bg-transparent p-0 btn'
-                            onClick={() => {
-                                setIsRefreshing(true);
-                            }}
-                        >
-                            <RefreshIcon
-                                className={clsx('h-4 w-4 text-ut-black animate-duration-800', {
-                                    'animate-spin': isRefreshing,
-                                })}
-                            />
-                        </button> */}
-                    </div>
-                )}
+                        </Text> */}
+                {/* <button
+                        className='h-4 w-4 bg-transparent p-0 btn'
+                        onClick={() => {
+                            setIsRefreshing(true);
+                        }}
+                    >
+                        <RefreshIcon
+                            className={clsx('h-4 w-4 text-ut-black animate-duration-800', {
+                                'animate-spin': isRefreshing,
+                            })}
+                        />
+                    </button> */}
+                {/* </div>
+                )} */}
             </div>
         </div>
     );

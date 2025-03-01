@@ -7,6 +7,8 @@ import { CalendarDots, Trash } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { CRX_PAGES } from '@shared/types/CRXPages';
+import MIMEType from '@shared/types/MIMEType';
 import { downloadBlob } from '@shared/util/downloadBlob';
 // import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
@@ -86,7 +88,7 @@ const useDevMode = (targetCount: number): [boolean, () => void] => {
  */
 export default function Settings(): JSX.Element {
     const [_enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
+    // const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
@@ -119,14 +121,13 @@ export default function Settings(): JSX.Element {
         const initAndSetSettings = async () => {
             const {
                 enableCourseStatusChips,
-                enableTimeAndLocationInPopup,
                 enableHighlightConflicts,
                 enableScrollToLoad,
                 enableDataRefreshing,
                 alwaysOpenCalendarInNewTab,
             } = await initSettings();
             setEnableCourseStatusChips(enableCourseStatusChips);
-            setShowTimeLocation(enableTimeAndLocationInPopup);
+            // setShowTimeLocation(enableTimeAndLocationInPopup);
             setHighlightConflicts(enableHighlightConflicts);
             setLoadAllCourses(enableScrollToLoad);
             setEnableDataRefreshing(enableDataRefreshing);
@@ -150,27 +151,27 @@ export default function Settings(): JSX.Element {
             // console.log('enableCourseStatusChips', newValue);
         });
 
-        const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
-            setShowTimeLocation(newValue);
-            // console.log('enableTimeAndLocationInPopup', newValue);
-        });
+        // const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
+        //     setShowTimeLocation(newValue);
+        //     // console.log('enableTimeAndLocationInPopup', newValue);
+        // });
 
-        const l3 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
+        const l2 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
             setHighlightConflicts(newValue);
             // console.log('enableHighlightConflicts', newValue);
         });
 
-        const l4 = OptionsStore.listen('enableScrollToLoad', async ({ newValue }) => {
+        const l3 = OptionsStore.listen('enableScrollToLoad', async ({ newValue }) => {
             setLoadAllCourses(newValue);
             // console.log('enableScrollToLoad', newValue);
         });
 
-        const l5 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
+        const l4 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
             setEnableDataRefreshing(newValue);
             // console.log('enableDataRefreshing', newValue);
         });
 
-        const l6 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
+        const l5 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
             setCalendarNewTab(newValue);
             // console.log('alwaysOpenCalendarInNewTab', newValue);
         });
@@ -182,7 +183,6 @@ export default function Settings(): JSX.Element {
             OptionsStore.removeListener(l3);
             OptionsStore.removeListener(l4);
             OptionsStore.removeListener(l5);
-            OptionsStore.removeListener(l6);
 
             window.removeEventListener('keydown', handleKeyPress);
         };
@@ -399,7 +399,12 @@ export default function Settings(): JSX.Element {
                                         </Text>
                                         <p className='text-sm text-gray-600'>Import from a schedule file</p>
                                     </div>
-                                    <FileUpload variant='filled' color='ut-burntorange' onChange={handleImportClick}>
+                                    <FileUpload
+                                        variant='filled'
+                                        color='ut-burntorange'
+                                        onChange={handleImportClick}
+                                        accept={MIMEType.JSON}
+                                    >
                                         Import Schedule
                                     </FileUpload>
                                 </div>
@@ -503,6 +508,60 @@ export default function Settings(): JSX.Element {
                         <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
                             Developer Mode
                         </h2>
+
+                        <div className='flex items-center justify-between'>
+                            <div className='max-w-xs'>
+                                <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                    UTRP Map
+                                </Text>
+                                <span className='mx-2 border border-ut-burntorange rounded px-2 py-0.5 text-xs text-ut-burntorange font-medium'>
+                                    BETA
+                                </span>
+                                <p className='text-sm text-gray-600'>
+                                    Navigate campus efficiently with our interactive map tool that integrates with your
+                                    schedule
+                                </p>
+                            </div>
+                            <Button
+                                variant='outline'
+                                color='ut-burntorange'
+                                onClick={() => {
+                                    const mapPageUrl = chrome.runtime.getURL(CRX_PAGES.MAP);
+                                    background.openNewTab({ url: mapPageUrl });
+                                }}
+                            >
+                                Try UTRP Map
+                            </Button>
+                        </div>
+
+                        <Divider size='auto' orientation='horizontal' />
+
+                        <div className='flex items-center justify-between'>
+                            <div className='max-w-xs'>
+                                <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                    Debug Page
+                                </Text>
+                                <span className='mx-2 border border-ut-gray rounded px-2 py-0.5 text-xs text-ut-gray font-medium'>
+                                    DEV
+                                </span>
+                                <p className='text-sm text-gray-600'>
+                                    Open the developer debug page to view extension storage and debug logs
+                                </p>
+                            </div>
+                            <Button
+                                variant='outline'
+                                color='ut-burntorange'
+                                onClick={() => {
+                                    const debugPageUrl = chrome.runtime.getURL(CRX_PAGES.DEBUG);
+                                    background.openNewTab({ url: debugPageUrl });
+                                }}
+                            >
+                                Open Debug Page
+                            </Button>
+                        </div>
+
+                        <Divider size='auto' orientation='horizontal' />
+
                         <Button variant='filled' color='ut-black' onClick={() => addCourseByURL(activeSchedule)}>
                             Add course by link
                         </Button>

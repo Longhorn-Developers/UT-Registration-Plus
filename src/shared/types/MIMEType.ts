@@ -17,4 +17,9 @@ const MIMEType = {
  */
 export type MIMETypeKey = keyof typeof MIMEType;
 
+/**
+ * Represents a value of the MIMEType object
+ */
+export type MIMETypeValue = (typeof MIMEType)[MIMETypeKey];
+
 export default MIMEType;
