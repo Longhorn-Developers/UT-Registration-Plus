@@ -143,6 +143,10 @@
         "vite-plugin-inspect": "^0.8.9",
         "vitest": "^2.1.9"
     },
+    "engineStrict": true,
+    "engines": {
+        "pnpm": "^10"
+    },
     "pnpm": {
         "patchedDependencies": {
             "@crxjs/vite-plugin@2.0.0-beta.21": "patches/@crxjs__vite-plugin@2.0.0-beta.21.patch",
