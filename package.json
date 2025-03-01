@@ -155,5 +155,8 @@
         "overrides": {
             "es-module-lexer": "^1.5.4"
         }
+    },
+    "volta": {
+        "node": "20.9.0"
     }
 }
