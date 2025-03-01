@@ -9,10 +9,10 @@ overrides:
 
 patchedDependencies:
   '@crxjs/vite-plugin@2.0.0-beta.21':
-    hash: xq4uab3o3kbvv4gixvawl2aj5q
+    hash: 638b2575ead9e3df6bf5df962712f1fcbddf1d7ac61ce8dce0cfcc471d404a03
     path: patches/@crxjs__vite-plugin@2.0.0-beta.21.patch
   '@unocss/vite':
-    hash: 5ptgy7mbavmjf7zwexb7dph4ji
+    hash: 9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95
     path: patches/@unocss__vite.patch
 
 importers:
@@ -45,7 +45,7 @@ importers:
         version: 8.55.0(react@18.3.1)
       '@unocss/vite':
         specifier: ^0.63.6
-        version: 0.63.6(patch_hash=5ptgy7mbavmjf7zwexb7dph4ji)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
+        version: 0.63.6(patch_hash=9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
       '@vitejs/plugin-react':
         specifier: ^4.3.4
         version: 4.3.4(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
@@ -118,7 +118,7 @@ importers:
         version: 19.5.0
       '@crxjs/vite-plugin':
         specifier: 2.0.0-beta.21
-        version: 2.0.0-beta.21(patch_hash=xq4uab3o3kbvv4gixvawl2aj5q)
+        version: 2.0.0-beta.21(patch_hash=638b2575ead9e3df6bf5df962712f1fcbddf1d7ac61ce8dce0cfcc471d404a03)
       '@iconify-json/bi':
         specifier: ^1.2.2
         version: 1.2.2
@@ -7344,7 +7344,7 @@ snapshots:
       conventional-commits-filter: 5.0.0
       conventional-commits-parser: 6.1.0
 
-  '@crxjs/vite-plugin@2.0.0-beta.21(patch_hash=xq4uab3o3kbvv4gixvawl2aj5q)':
+  '@crxjs/vite-plugin@2.0.0-beta.21(patch_hash=638b2575ead9e3df6bf5df962712f1fcbddf1d7ac61ce8dce0cfcc471d404a03)':
     dependencies:
       '@rollup/pluginutils': 4.2.1
       '@webcomponents/custom-elements': 1.6.0
@@ -9029,7 +9029,7 @@ snapshots:
     dependencies:
       '@unocss/core': 0.63.6
       '@unocss/reset': 0.63.6
-      '@unocss/vite': 0.63.6(patch_hash=5ptgy7mbavmjf7zwexb7dph4ji)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
+      '@unocss/vite': 0.63.6(patch_hash=9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
     optionalDependencies:
       vite: 5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0)
     transitivePeerDependencies:
@@ -9182,7 +9182,7 @@ snapshots:
     dependencies:
       '@unocss/core': 0.63.6
 
-  '@unocss/vite@0.63.6(patch_hash=5ptgy7mbavmjf7zwexb7dph4ji)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))':
+  '@unocss/vite@0.63.6(patch_hash=9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@rollup/pluginutils': 5.1.4(rollup@4.34.8)
@@ -14252,7 +14252,7 @@ snapshots:
       '@unocss/transformer-compile-class': 0.63.6
       '@unocss/transformer-directives': 0.63.6
       '@unocss/transformer-variant-group': 0.63.6
-      '@unocss/vite': 0.63.6(patch_hash=5ptgy7mbavmjf7zwexb7dph4ji)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
+      '@unocss/vite': 0.63.6(patch_hash=9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0))
     optionalDependencies:
       vite: 5.4.14(@types/node@22.13.5)(sass@1.85.1)(terser@5.39.0)
     transitivePeerDependencies:
