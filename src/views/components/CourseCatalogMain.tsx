@@ -53,7 +53,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
         let lastCourse: Course | null = null;
 
         newRows.forEach(row => {
-            const course = row.course;
+            const { course } = row;
 
             if (course !== lastCourse) {
                 document.querySelector('table tbody')!.appendChild(row.element);
