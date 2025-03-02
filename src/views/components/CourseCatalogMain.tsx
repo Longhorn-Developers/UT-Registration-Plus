@@ -51,17 +51,16 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
 
     const addRows = (newRows: ScrapedRow[]) => {
         let lastCourse: Course | null = null;
-    
+
         newRows.forEach(row => {
             const course = row.course;
-    
-            // Only append the row if the course is different from the last one
+
             if (course !== lastCourse) {
                 document.querySelector('table tbody')!.appendChild(row.element);
                 lastCourse = course;
             }
         });
-    
+
         setRows([...rows, ...newRows]);
     };
 
