@@ -57,7 +57,7 @@ export default function FileUpload({
                 } satisfies React.CSSProperties
             }
             className={clsx(
-                'btn has-enabled:active:scale-96',
+                'btn',
                 {
                     'text-white! bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20':
                         variant === 'filled',
