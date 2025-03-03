@@ -5,6 +5,7 @@ import exportSchedule from '@pages/background/lib/exportSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
 import { CalendarDots, Trash } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
+import { DevStore } from '@shared/storage/DevStore';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
@@ -38,13 +39,13 @@ import { useMigrationDialog } from '../common/MigrationDialog';
 import DevMode from './DevMode';
 import Preview from './Preview';
 
-const DISPLAY_PREVIEWS = false;
-const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS ? 'w-1/2 space-y-4' : 'flex-grow space-y-4';
-
 const manifest = chrome.runtime.getManifest();
 
 const gitHubStatsService = new GitHubStatsService();
 const includeMergedPRs = false;
+
+const DISPLAY_PREVIEWS = false;
+const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS ? 'w-1/2 space-y-4' : 'flex-grow space-y-4';
 
 /**
  * Custom hook for enabling developer mode.
@@ -105,6 +106,8 @@ export default function Settings(): JSX.Element {
     const [activeSchedule] = useSchedules();
     // const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
+    const [isDeveloper, setIsDeveloper] = useState<boolean>(false);
+
     const showDialog = usePrompt();
     const handleChangelogOnClick = useChangelog();
 
@@ -134,6 +137,16 @@ export default function Settings(): JSX.Element {
             setCalendarNewTab(alwaysOpenCalendarInNewTab);
         };
 
+        const initDS = async () => {
+            const isDev = await DevStore.get('isDeveloper');
+            setIsDeveloper(isDev);
+        };
+
+        const ds_l1 = DevStore.listen('isDeveloper', async ({ newValue }) => {
+            setIsDeveloper(newValue);
+        });
+
+        initDS();
         fetchGitHubStats();
         initAndSetSettings();
 
@@ -183,6 +196,8 @@ export default function Settings(): JSX.Element {
             OptionsStore.removeListener(l3);
             OptionsStore.removeListener(l4);
             OptionsStore.removeListener(l5);
+
+            DevStore.removeListener(ds_l1);
 
             window.removeEventListener('keydown', handleKeyPress);
         };
@@ -257,6 +272,7 @@ export default function Settings(): JSX.Element {
     const [devMode, toggleDevMode] = useDevMode(10);
 
     if (devMode) {
+        DevStore.set('isDeveloper', true);
         return <DevMode />;
     }
 
@@ -534,31 +550,35 @@ export default function Settings(): JSX.Element {
                             </Button>
                         </div>
 
-                        <Divider size='auto' orientation='horizontal' />
+                        {isDeveloper && (
+                            <>
+                                <Divider size='auto' orientation='horizontal' />
 
-                        <div className='flex items-center justify-between'>
-                            <div className='max-w-xs'>
-                                <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                                    Debug Page
-                                </Text>
-                                <span className='mx-2 border border-ut-gray rounded px-2 py-0.5 text-xs text-ut-gray font-medium'>
-                                    DEV
-                                </span>
-                                <p className='text-sm text-gray-600'>
-                                    Open the developer debug page to view extension storage and debug logs
-                                </p>
-                            </div>
-                            <Button
-                                variant='outline'
-                                color='ut-burntorange'
-                                onClick={() => {
-                                    const debugPageUrl = chrome.runtime.getURL(CRX_PAGES.DEBUG);
-                                    background.openNewTab({ url: debugPageUrl });
-                                }}
-                            >
-                                Open Debug Page
-                            </Button>
-                        </div>
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Debug Page
+                                        </Text>
+                                        <span className='mx-2 border border-ut-gray rounded px-2 py-0.5 text-xs text-ut-gray font-medium'>
+                                            DEV
+                                        </span>
+                                        <p className='text-sm text-gray-600'>
+                                            Open the developer debug page to view extension storage and debug logs
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant='outline'
+                                        color='ut-burntorange'
+                                        onClick={() => {
+                                            const debugPageUrl = chrome.runtime.getURL(CRX_PAGES.DEBUG);
+                                            background.openNewTab({ url: debugPageUrl });
+                                        }}
+                                    >
+                                        Open Debug Page
+                                    </Button>
+                                </div>
+                            </>
+                        )}
 
                         <Divider size='auto' orientation='horizontal' />
 

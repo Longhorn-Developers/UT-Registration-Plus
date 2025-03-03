@@ -27,8 +27,8 @@ interface Props {
 /**
  * Generates a changelog using the conventional-changelog command.
  *
- * @returns {Promise<void>} A promise that resolves when the changelog is generated.
- * @throws {Error} If there is an error generating the changelog.
+ * @returns A promise that resolves when the changelog is generated.
+ * @throws If there is an error generating the changelog.
  */
 async function generateChangelog({ preset, outFile = 'CHANGELOG.md', releaseCount = 1 }: Props): Promise<void> {
     try {
