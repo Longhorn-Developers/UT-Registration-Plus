@@ -1,8 +1,10 @@
-import { LockKey, Palette, PlusCircle, SelectionPlus } from '@phosphor-icons/react';
+import { Exam, MapPinArea, Palette, SelectionPlus } from '@phosphor-icons/react';
 import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import Text from '@views/components/common/Text/Text';
 import useWhatsNew from '@views/hooks/useWhatsNew';
 import React, { useEffect } from 'react';
+
+const WhatsNewVideoURL = new URL('/src/assets/whats-new.mp4', import.meta.url).href;
 
 /**
  * WhatsNewPopupContent component.
@@ -21,22 +23,22 @@ export default function WhatsNewPopupContent(): JSX.Element {
             description: 'Paint your schedule in your favorite color theme',
         },
         {
-            id: 'custom-blocks',
+            id: 'quick-copy',
             icon: SelectionPlus,
-            title: 'Custom Blocks',
-            description: 'Reserve time for personal or work commitments',
+            title: 'Quick Copy',
+            description: 'Quickly copy a course unique number to your clipboard',
         },
         {
-            id: 'quick-add',
-            icon: PlusCircle,
-            title: 'Quick Add',
-            description: 'Quickly add a course with the unique number and skip the course schedule',
+            id: 'updated-grades',
+            icon: Exam,
+            title: 'Updated Grades',
+            description: 'Fall 2024 grades are now available in the grade distribution',
         },
         {
-            id: 'course-statuses',
-            icon: LockKey,
-            title: 'Course Statuses',
-            description: 'Know when a course is waitlisted, closed, or cancelled',
+            id: 'ut-map',
+            icon: MapPinArea,
+            title: 'UT Map (beta)',
+            description: 'Find directions to your classes with our new map feature',
         },
     ];
 
@@ -58,12 +60,14 @@ export default function WhatsNewPopupContent(): JSX.Element {
                         </div>
                     ))}
                 </div>
-                <img
-                    // TODO: Replace with actual image/video
-                    src='https://placehold.co/464x315'
-                    alt='UT Registration Plus Demo'
+                <video
                     className='border-ut-theme-offwhite1 max-w-[464px] w-full border rounded object-cover'
-                />
+                    autoPlay
+                    loop
+                    muted
+                >
+                    <source src={WhatsNewVideoURL} type='video/mp4' />
+                </video>
             </div>
         </div>
     );
