@@ -49,19 +49,16 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
         OptionsStore.get('enableScrollToLoad').then(setEnableScrollToLoad);
     }, []);
 
-
-
     const lastCourseRef = useRef<Course | null>(null);
     const addRows = (newRows: ScrapedRow[]) => {
         newRows.forEach(row => {
             if (row.course === null) {
                 const courseTitle = row.element.querySelector('.course-title')?.textContent;
-                if(courseTitle !== lastCourseRef.current?.courseName){
+                if (courseTitle !== lastCourseRef.current?.courseName) {
                     document.querySelector('table tbody')!.appendChild(row.element);
                     lastCourseRef.current = row.course;
                 }
-            }
-            else{
+            } else {
                 document.querySelector('table tbody')!.appendChild(row.element);
                 lastCourseRef.current = row.course;
             }
