@@ -19,7 +19,7 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
     const [activeSchedule] = useSchedules();
 
     return (
-        <div className='border border-ut-offwhite/50 rounded bg-white'>
+        <div className='border border-ut-offwhite/50 rounded bg-white max-h-[280px] overflow-scroll'>
             <Disclosure defaultOpen={defaultOpen}>
                 {({ open }) => (
                     <>
