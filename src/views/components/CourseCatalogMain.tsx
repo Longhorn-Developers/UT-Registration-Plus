@@ -13,7 +13,7 @@ import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import type { SiteSupportType } from '@views/lib/getSiteSupport';
 import { populateSearchInputs } from '@views/lib/populateSearchInputs';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 interface Props {
     support: Extract<SiteSupportType, 'COURSE_CATALOG_DETAILS' | 'COURSE_CATALOG_LIST'>;
@@ -49,15 +49,21 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
         OptionsStore.get('enableScrollToLoad').then(setEnableScrollToLoad);
     }, []);
 
+
+
+    const lastCourseRef = useRef<Course | null>(null);
     const addRows = (newRows: ScrapedRow[]) => {
-        let lastCourse: Course | null = null;
-
         newRows.forEach(row => {
-            const { course } = row;
-
-            if (course !== lastCourse) {
+            if (row.course === null) {
+                const courseTitle = row.element.querySelector('.course-title')?.textContent;
+                if(courseTitle !== lastCourseRef.current?.courseName){
+                    document.querySelector('table tbody')!.appendChild(row.element);
+                    lastCourseRef.current = row.course;
+                }
+            }
+            else{
                 document.querySelector('table tbody')!.appendChild(row.element);
-                lastCourse = course;
+                lastCourseRef.current = row.course;
             }
         });
 
