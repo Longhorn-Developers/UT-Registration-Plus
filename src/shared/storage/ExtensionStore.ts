@@ -8,11 +8,14 @@ interface IExtensionStore {
     version: string;
     /** When was the last update */
     lastUpdate: number;
+    /** User was shown the new features dialog */
+    newFeaturesDialogShown: boolean;
 }
 
 export const ExtensionStore = createLocalStore<IExtensionStore>({
     version: chrome.runtime.getManifest().version,
     lastUpdate: Date.now(),
+    newFeaturesDialogShown: false,
 });
 
 debugStore({ ExtensionStore });
