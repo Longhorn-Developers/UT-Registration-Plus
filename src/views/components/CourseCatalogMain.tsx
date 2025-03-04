@@ -50,16 +50,17 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
     }, []);
 
     const lastCourseRef = useRef<Course | null>(null);
+    const tbody = document.querySelector('table tbody')!;
     const addRows = (newRows: ScrapedRow[]) => {
         newRows.forEach(row => {
             if (row.course === null) {
                 const courseTitle = row.element.querySelector('.course-title')?.textContent;
                 if (courseTitle !== lastCourseRef.current?.courseName) {
-                    document.querySelector('table tbody')!.appendChild(row.element);
+                    tbody.appendChild(row.element);
                     lastCourseRef.current = row.course;
                 }
             } else {
-                document.querySelector('table tbody')!.appendChild(row.element);
+                tbody.appendChild(row.element);
                 lastCourseRef.current = row.course;
             }
         });
