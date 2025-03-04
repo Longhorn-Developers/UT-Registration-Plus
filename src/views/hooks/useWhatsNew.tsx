@@ -6,7 +6,6 @@ import React from 'react';
 
 import { LogoIcon } from '../components/common/LogoIcon';
 import useChangelog from './useChangelog';
-import useVersion from './useVersion';
 
 /**
  * Custom hook that provides a function to display a what's new dialog.
@@ -16,7 +15,7 @@ import useVersion from './useVersion';
 export default function useWhatsNew(): () => void {
     const showDialog = useDialog();
     const showChangeLog = useChangelog();
-    const version = useVersion() || 'v2.1.0';
+    const { version } = chrome.runtime.getManifest();
 
     const handleOnClick = () => {
         showDialog(close => ({
