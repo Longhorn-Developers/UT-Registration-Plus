@@ -68,7 +68,7 @@ export default function WhatsNewPopupContent(): JSX.Element {
                     ))}
                 </div>
                 <video
-                    className='border-ut-theme-offwhite1/50 max-w-[464px] w-full border rounded object-cover'
+                    className='border-ut-theme-offwhite/50 max-w-[464px] w-full border rounded object-cover'
                     autoPlay
                     loop
                     muted
