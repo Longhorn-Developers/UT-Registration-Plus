@@ -55,7 +55,7 @@ export default function WhatsNewPopupContent(): JSX.Element {
                 <div className='w-[277px] flex flex-col items-center gap-spacing-6'>
                     {newFeatures.map(({ id, icon: Icon, title, description }) => (
                         <div key={id} className='w-full flex items-center justify-between gap-spacing-5'>
-                            <Icon width='32' height='32' className='text-ut-burntorange' />
+                            <Icon width='40' height='40' className='text-ut-burntorange' />
                             <div className='w-full flex flex-col gap-spacing-1'>
                                 <Text variant='h4' className='text-ut-burntorange font-bold!'>
                                     {title}

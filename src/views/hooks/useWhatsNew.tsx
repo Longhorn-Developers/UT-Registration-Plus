@@ -32,7 +32,7 @@ export default function useWhatsNew(): () => void {
             buttons: (
                 <div className='flex flex-row items-end gap-spacing-4'>
                     <Button onClick={showChangeLog} variant='minimal' color='ut-black'>
-                        Read Changelog {version}
+                        Read Changelog v{version}
                     </Button>
                     <Button onClick={close} color='ut-burntorange'>
                         Get started
