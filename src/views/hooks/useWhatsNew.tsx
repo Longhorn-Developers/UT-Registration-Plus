@@ -30,14 +30,14 @@ export default function useWhatsNew(): () => void {
             ),
             description: <WhatsNewPopupContent />,
             buttons: (
-                <>
+                <div className='flex flex-row items-end gap-spacing-4'>
                     <Button onClick={showChangeLog} variant='minimal' color='ut-black'>
                         Read Changelog {version}
                     </Button>
                     <Button onClick={close} color='ut-burntorange'>
                         Get started
                     </Button>
-                </>
+                </div>
             ),
         }));
     };

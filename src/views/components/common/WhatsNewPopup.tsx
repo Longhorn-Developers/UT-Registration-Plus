@@ -1,4 +1,4 @@
-import { Exam, MapPinArea, Palette, SelectionPlus } from '@phosphor-icons/react';
+import { Copy, Exam, MapPinArea, Palette } from '@phosphor-icons/react';
 import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import Text from '@views/components/common/Text/Text';
 import useWhatsNew from '@views/hooks/useWhatsNew';
@@ -24,7 +24,7 @@ export default function WhatsNewPopupContent(): JSX.Element {
         },
         {
             id: 'quick-copy',
-            icon: SelectionPlus,
+            icon: Copy,
             title: 'Quick Copy',
             description: 'Quickly copy a course unique number to your clipboard',
         },
@@ -37,19 +37,26 @@ export default function WhatsNewPopupContent(): JSX.Element {
         {
             id: 'ut-map',
             icon: MapPinArea,
-            title: 'UT Map (beta)',
-            description: 'Find directions to your classes with our new map feature',
+            title: (
+                <div className='flex flex-row items-center'>
+                    UT Map
+                    <span className='mx-2 border border-ut-burntorange rounded px-2 py-0.5 text-xs text-ut-burntorange font-medium'>
+                        BETA
+                    </span>
+                </div>
+            ),
+            description: 'Find directions to your classes with our beta map feature in the settings page',
         },
     ];
 
     return (
         <div className='w-full flex flex-row justify-between'>
-            <div className='w-full flex flex-row justify-between'>
+            <div className='w-full flex flex-row justify-between gap-spacing-7'>
                 <div className='w-[277px] flex flex-col items-center gap-spacing-6'>
                     {newFeatures.map(({ id, icon: Icon, title, description }) => (
                         <div key={id} className='w-full flex items-center justify-between gap-spacing-5'>
                             <Icon width='32' height='32' className='text-ut-burntorange' />
-                            <div className='w-full flex flex-col gap-spacing-2'>
+                            <div className='w-full flex flex-col gap-spacing-1'>
                                 <Text variant='h4' className='text-ut-burntorange font-bold!'>
                                     {title}
                                 </Text>
