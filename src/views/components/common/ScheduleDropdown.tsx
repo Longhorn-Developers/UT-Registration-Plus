@@ -19,7 +19,7 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
     const [activeSchedule] = useSchedules();
 
     return (
-        <div className='border border-ut-offwhite/50 rounded bg-white max-h-[280px] overflow-scroll'>
+        <div className='border border-ut-offwhite/50 rounded bg-white'>
             <Disclosure defaultOpen={defaultOpen}>
                 {({ open }) => (
                     <>
@@ -53,13 +53,13 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
                             className='overflow-hidden'
                             enter='transition-[max-height,opacity,padding] duration-300 ease-in-out-expo'
                             enterFrom='max-h-0 opacity-0 p-0.5'
-                            enterTo='max-h-[440px] opacity-100 p-0'
+                            enterTo='max-h-[135px] opacity-100 p-0'
                             leave='transition-[max-height,opacity,padding] duration-300 ease-in-out-expo'
-                            leaveFrom='max-h-[440px] opacity-100 p-0'
+                            leaveFrom='max-h-[135px] opacity-100 p-0'
                             leaveTo='max-h-0 opacity-0 p-0.5'
                         >
                             <div className='px-3.5 pb-2.5 pt-2'>
-                                <DisclosurePanel>{children}</DisclosurePanel>
+                                <div className='overflow-y-scroll max-h-[115px]'>{children}</div>
                             </div>
                         </Transition>
                     </>
