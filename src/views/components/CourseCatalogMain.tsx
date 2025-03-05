@@ -45,16 +45,15 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
         const ccs = new CourseCatalogScraper(support);
         const scrapedRows = ccs.scrape(tableRows, true);
         setRows(scrapedRows);
-        prevCourseTitleRef.current = scrapedRows
-        .findLast(row => row.course === null)
-        ?.element.querySelector('.course_header')?.textContent!;
+        prevCourseTitleRef.current =
+            scrapedRows.findLast(row => row.course === null)?.element.querySelector('.course_header')?.textContent ??
+            null;
     }, [support]);
 
     useEffect(() => {
         OptionsStore.get('enableScrollToLoad').then(setEnableScrollToLoad);
     }, []);
 
-    
     const addRows = (newRows: ScrapedRow[]) => {
         newRows.forEach(row => {
             const courseTitle = row.element.querySelector('.course_header')?.textContent ?? null;
