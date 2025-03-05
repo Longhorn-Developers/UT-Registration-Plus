@@ -39,7 +39,7 @@ export default function WhatsNewPopupContent(): JSX.Element {
             icon: MapPinArea,
             title: (
                 <div className='flex flex-row items-center'>
-                    UT Map
+                    UTRP Map
                     <span className='mx-2 border border-ut-burntorange rounded px-2 py-0.5 text-xs text-ut-burntorange font-medium'>
                         BETA
                     </span>
