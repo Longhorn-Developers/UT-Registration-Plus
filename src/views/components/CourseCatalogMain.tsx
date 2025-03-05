@@ -27,6 +27,8 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
     const [showPopup, setShowPopup] = useState(false);
     const [enableScrollToLoad, setEnableScrollToLoad] = useState<boolean>(false);
+    const prevCourseTitleRef = useRef<string | null>(null);
+    const tbody = document.querySelector('table tbody')!;
 
     useEffect(() => {
         populateSearchInputs();
@@ -43,25 +45,26 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
         const ccs = new CourseCatalogScraper(support);
         const scrapedRows = ccs.scrape(tableRows, true);
         setRows(scrapedRows);
+        prevCourseTitleRef.current = scrapedRows
+        .findLast(row => row.course === null)
+        ?.element.querySelector('.course_header')?.textContent!;
     }, [support]);
 
     useEffect(() => {
         OptionsStore.get('enableScrollToLoad').then(setEnableScrollToLoad);
     }, []);
 
-    const lastCourseRef = useRef<Course | null>(null);
-    const tbody = document.querySelector('table tbody')!;
+    
     const addRows = (newRows: ScrapedRow[]) => {
         newRows.forEach(row => {
+            const courseTitle = row.element.querySelector('.course_header')?.textContent ?? null;
             if (row.course === null) {
-                const courseTitle = row.element.querySelector('.course-title')?.textContent;
-                if (courseTitle !== lastCourseRef.current?.courseName) {
+                if (courseTitle !== prevCourseTitleRef.current) {
                     tbody.appendChild(row.element);
-                    lastCourseRef.current = row.course;
+                    prevCourseTitleRef.current = courseTitle;
                 }
             } else {
                 tbody.appendChild(row.element);
-                lastCourseRef.current = row.course;
             }
         });
 
