@@ -12,7 +12,7 @@ import useChangelog from './useChangelog';
  *
  * @returns A function that, when called, shows a dialog with the changelog.
  */
-export default function useWhatsNew(): () => void {
+export default function useWhatsNewPopUp(): () => void {
     const showDialog = useDialog();
     const showChangeLog = useChangelog();
     const { version } = chrome.runtime.getManifest();

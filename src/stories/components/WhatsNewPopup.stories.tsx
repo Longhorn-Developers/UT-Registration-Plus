@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@views/components/common/Button';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import WhatsNewPopup from '@views/components/common/WhatsNewPopup';
-import useWhatsNew from '@views/hooks/useWhatsNew';
+import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import React from 'react';
 
 const meta = {
@@ -28,7 +28,7 @@ export const Primary: Story = {
 };
 
 const InnerComponent = () => {
-    const handleOnClick = useWhatsNew();
+    const handleOnClick = useWhatsNewPopUp();
 
     return (
         <Button color='ut-burntorange' onClick={handleOnClick}>

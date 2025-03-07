@@ -1,10 +1,19 @@
 import { Copy, Exam, MapPinArea, Palette } from '@phosphor-icons/react';
 import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import Text from '@views/components/common/Text/Text';
-import useWhatsNew from '@views/hooks/useWhatsNew';
+import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import React, { useEffect } from 'react';
 
-const WhatsNewVideoURL = new URL('/src/assets/whats-new.mp4', import.meta.url).href;
+/**
+ * This is the version of the 'What's New' features popup.
+ *
+ * It is used to check if the popup has already been shown to the user or not
+ *
+ * It should be incremented every time the "What's New" popup is updated.
+ */
+const WHATSNEW_POPUP_VERSION = 1;
+
+const WHATSNEW_VIDEO_URL = new URL('/src/assets/whats-new.mp4', import.meta.url).href;
 
 /**
  * WhatsNewPopupContent component.
@@ -73,7 +82,7 @@ export default function WhatsNewPopupContent(): JSX.Element {
                     loop
                     muted
                 >
-                    <source src={WhatsNewVideoURL} type='video/mp4' />
+                    <source src={WHATSNEW_VIDEO_URL} type='video/mp4' />
                 </video>
             </div>
         </div>
@@ -95,13 +104,13 @@ export default function WhatsNewPopupContent(): JSX.Element {
  * to view the state of the dialog.
  */
 export function WhatsNewDialog(): JSX.Element {
-    const showPopUp = useWhatsNew();
+    const showPopUp = useWhatsNewPopUp();
 
     useEffect(() => {
         const checkUpdate = async () => {
-            const shown = await ExtensionStore.get('newFeaturesDialogShown');
-            if (!shown) {
-                ExtensionStore.set('newFeaturesDialogShown', true);
+            const version = await ExtensionStore.get('lastWhatsNewPopupVersion');
+            if (version !== WHATSNEW_POPUP_VERSION) {
+                await ExtensionStore.set('lastWhatsNewPopupVersion', WHATSNEW_POPUP_VERSION);
                 showPopUp();
             }
         };
