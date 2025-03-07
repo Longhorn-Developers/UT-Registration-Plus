@@ -13,7 +13,7 @@ import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalog
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
-import useWhatsNew from '@views/hooks/useWhatsNew';
+import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import { MessageListener } from 'chrome-extension-toolkit';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
@@ -35,7 +35,7 @@ export default function Calendar(): JSX.Element {
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const [showSidebar, setShowSidebar] = useState<boolean>(true);
-    const showWhatsNewDialog = useWhatsNew();
+    const showWhatsNewDialog = useWhatsNewPopUp();
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
