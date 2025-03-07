@@ -4,6 +4,8 @@ import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
  * A store that is used to store data that is only relevant during development
  */
 interface IDevStore {
+    /** whether the user is a developer */
+    isDeveloper: boolean;
     /** the tabId for the debug tab */
     debugTabId?: number;
     /** whether the debug tab is visible */
@@ -17,6 +19,7 @@ interface IDevStore {
 }
 
 export const DevStore = createLocalStore<IDevStore>({
+    isDeveloper: false,
     debugTabId: undefined,
     isTabReloading: true,
     wasDebugTabVisible: false,
