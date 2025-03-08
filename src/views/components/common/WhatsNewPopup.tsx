@@ -14,7 +14,7 @@ import React, { useEffect } from 'react';
  */
 const WHATSNEW_POPUP_VERSION = 1;
 
-const WHATSNEW_VIDEO_URL = new URL('/src/assets/whats-new.mp4', import.meta.url).href;
+const WHATSNEW_VIDEO_URL = 'https://cdn.longhorns.dev/whats-new-v2.1.2.mp4';
 
 type Feature = {
     id: string;
