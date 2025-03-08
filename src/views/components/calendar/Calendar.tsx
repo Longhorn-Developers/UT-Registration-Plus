@@ -13,6 +13,7 @@ import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalog
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
+import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import { MessageListener } from 'chrome-extension-toolkit';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
@@ -34,6 +35,7 @@ export default function Calendar(): JSX.Element {
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const [showSidebar, setShowSidebar] = useState<boolean>(true);
+    const showWhatsNewDialog = useWhatsNewPopUp();
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
@@ -99,19 +101,34 @@ export default function Calendar(): JSX.Element {
                             <ResourceLinks />
                             <Divider orientation='horizontal' size='100%' />
                             {/* <TeamLinks /> */}
-                            <a
-                                href={CRX_PAGES.REPORT}
-                                className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
-                                target='_blank'
-                                rel='noreferrer'
-                                onClick={event => {
-                                    event.preventDefault();
-                                    openReportWindow();
-                                }}
-                            >
-                                <Text variant='p'>Send us Feedback!</Text>
-                                <OutwardArrowIcon className='h-4 w-4' />
-                            </a>
+                            <div className='flex flex-col gap-spacing-3'>
+                                <a
+                                    href={CRX_PAGES.REPORT}
+                                    className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
+                                    target='_blank'
+                                    rel='noreferrer'
+                                    onClick={event => {
+                                        event.preventDefault();
+                                        openReportWindow();
+                                    }}
+                                >
+                                    <Text variant='p'>Send us Feedback!</Text>
+                                    <OutwardArrowIcon className='h-4 w-4' />
+                                </a>
+                                <a
+                                    href=''
+                                    className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
+                                    target='_blank'
+                                    rel='noreferrer'
+                                    onClick={event => {
+                                        event.preventDefault();
+                                        showWhatsNewDialog();
+                                    }}
+                                >
+                                    <Text variant='p'>What&apos;s New!</Text>
+                                    <OutwardArrowIcon className='h-4 w-4' />
+                                </a>
+                            </div>
                         </div>
 
                         <CalendarFooter />
