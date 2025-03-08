@@ -23,7 +23,7 @@ type Feature = {
     description: string;
 };
 
-const NEW_FEATURES: Feature[] = [
+const NEW_FEATURES = [
     {
         id: 'custom-course-colors',
         icon: Palette,
@@ -55,7 +55,7 @@ const NEW_FEATURES: Feature[] = [
         ),
         description: 'Find directions to your classes with our beta map feature in the settings page',
     },
-];
+] as const satisfies readonly Feature[];
 
 /**
  * WhatsNewPopupContent component.
