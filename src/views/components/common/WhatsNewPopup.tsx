@@ -86,16 +86,23 @@ export default function WhatsNewPopupContent(): JSX.Element {
                         </div>
                     ))}
                 </div>
-                <div className='max-w-[464px] w-full flex items-center justify-center border border-ut-offwhite/50 rounded'>
+                <div className='h-full max-w-[464px] w-full flex items-center justify-center'>
                     {videoError ? (
-                        <div className='flex flex-col items-center justify-center gap-2 p-spacing-3'>
-                            <CloudX size={64} className='text-ut-gray' />
-                            <Text variant='h4' className='text-center text-ut-gray'>
-                                Video failed to load. Please try again later.
-                            </Text>
+                        <div className='h-full max-w-[464px] w-full flex items-center justify-center border border-ut-offwhite/50 rounded'>
+                            <div className='flex flex-col items-center justify-center p-spacing-2'>
+                                <CloudX size={52} className='text-ut-black/50' />
+                                <Text variant='h4' className='text-center text-ut-black/50'>
+                                    Failed to load video. Please try again later.
+                                </Text>
+                            </div>
                         </div>
                     ) : (
-                        <video className='w-full rounded object-cover' autoPlay loop muted>
+                        <video
+                            className='h-fit max-w-[464px] w-full flex items-center justify-center border border-ut-offwhite/50 rounded object-cover'
+                            autoPlay
+                            loop
+                            muted
+                        >
                             <source src={WHATSNEW_VIDEO_URL} type='video/mp4' onError={() => setVideoError(true)} />
                         </video>
                     )}
