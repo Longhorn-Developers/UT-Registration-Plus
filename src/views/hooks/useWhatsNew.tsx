@@ -17,7 +17,7 @@ export default function useWhatsNewPopUp(): () => void {
     const showChangeLog = useChangelog();
     const { version } = chrome.runtime.getManifest();
 
-    const handleOnClick = () => {
+    const showPopUp = () => {
         showDialog(close => ({
             className: 'w-[830px] flex flex-col items-center gap-spacing-7 p-spacing-8',
             title: (
@@ -42,5 +42,5 @@ export default function useWhatsNewPopUp(): () => void {
         }));
     };
 
-    return handleOnClick;
+    return showPopUp;
 }
