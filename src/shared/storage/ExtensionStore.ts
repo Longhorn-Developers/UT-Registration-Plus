@@ -8,11 +8,14 @@ interface IExtensionStore {
     version: string;
     /** When was the last update */
     lastUpdate: number;
+    /** The last version of the "What's New" popup that was shown to the user */
+    lastWhatsNewPopupVersion: number;
 }
 
 export const ExtensionStore = createLocalStore<IExtensionStore>({
     version: chrome.runtime.getManifest().version,
     lastUpdate: Date.now(),
+    lastWhatsNewPopupVersion: 0,
 });
 
 debugStore({ ExtensionStore });
