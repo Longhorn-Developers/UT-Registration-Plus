@@ -1,9 +1,9 @@
 import type { IconProps } from '@phosphor-icons/react';
-import { Copy, Exam, MapPinArea, Palette } from '@phosphor-icons/react';
+import { CloudX, Copy, Exam, MapPinArea, Palette } from '@phosphor-icons/react';
 import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import Text from '@views/components/common/Text/Text';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 /**
  * This is the version of the 'What's New' features popup.
@@ -66,6 +66,8 @@ const NEW_FEATURES: Feature[] = [
  * @returns A JSX of WhatsNewPopupContent component.
  */
 export default function WhatsNewPopupContent(): JSX.Element {
+    const [videoError, setVideoError] = useState(false);
+
     return (
         <div className='w-full flex flex-row justify-between'>
             <div className='w-full flex flex-row justify-between gap-spacing-7'>
@@ -84,14 +86,20 @@ export default function WhatsNewPopupContent(): JSX.Element {
                         </div>
                     ))}
                 </div>
-                <video
-                    className='max-w-[464px] w-full border border-ut-offwhite/50 rounded object-cover'
-                    autoPlay
-                    loop
-                    muted
-                >
-                    <source src={WHATSNEW_VIDEO_URL} type='video/mp4' />
-                </video>
+                <div className='max-w-[464px] w-full flex items-center justify-center border border-ut-offwhite/50 rounded'>
+                    {videoError ? (
+                        <div className='flex flex-col items-center justify-center gap-2 p-spacing-3'>
+                            <CloudX size={64} className='text-ut-gray' />
+                            <Text variant='h4' className='text-center text-ut-gray'>
+                                Video failed to load. Please try again later.
+                            </Text>
+                        </div>
+                    ) : (
+                        <video className='w-full rounded object-cover' autoPlay loop muted>
+                            <source src={WHATSNEW_VIDEO_URL} type='video/mp4' onError={() => setVideoError(true)} />
+                        </video>
+                    )}
+                </div>
             </div>
         </div>
     );
