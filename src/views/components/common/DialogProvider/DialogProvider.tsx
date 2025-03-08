@@ -46,7 +46,7 @@ export function usePrompt(): (info: PromptInfo, options?: DialogOptions) => void
                         {info.description}
                     </Text>
                 ),
-                className: 'max-w-[400px] flex flex-col gap-2.5 p-6.25',
+                className: 'max-w-[415px] flex flex-col gap-2.5 p-6.25',
             },
             options
         );
