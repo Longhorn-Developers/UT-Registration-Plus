@@ -70,8 +70,8 @@ export default function WhatsNewPopupContent(): JSX.Element {
 
     return (
         <div className='w-full flex flex-row justify-between'>
-            <div className='w-full flex flex-row justify-between gap-spacing-7'>
-                <div className='w-[277px] flex flex-col items-center gap-spacing-6'>
+            <div className='w-full flex flex-col-reverse items-center justify-between gap-spacing-7 md:flex-row'>
+                <div className='grid grid-cols-1 w-fit items-center gap-spacing-6 sm:grid-cols-2 md:w-[277px] md:flex md:flex-col md:flex-nowrap'>
                     {NEW_FEATURES.map(({ id, icon: Icon, title, description }) => (
                         <div key={id} className='w-full flex items-center justify-between gap-spacing-5'>
                             <Icon width='40' height='40' className='text-ut-burntorange' />
@@ -88,7 +88,7 @@ export default function WhatsNewPopupContent(): JSX.Element {
                 </div>
                 <div className='h-full max-w-[464px] w-full flex items-center justify-center'>
                     {videoError ? (
-                        <div className='h-full max-w-[464px] w-full flex items-center justify-center border border-ut-offwhite/50 rounded'>
+                        <div className='h-full w-full flex items-center justify-center border border-ut-offwhite/50 rounded'>
                             <div className='flex flex-col items-center justify-center p-spacing-2'>
                                 <CloudX size={52} className='text-ut-black/50' />
                                 <Text variant='h4' className='text-center text-ut-black/50'>
@@ -98,7 +98,7 @@ export default function WhatsNewPopupContent(): JSX.Element {
                         </div>
                     ) : (
                         <video
-                            className='h-fit max-w-[464px] w-full flex items-center justify-center border border-ut-offwhite/50 rounded object-cover'
+                            className='h-fit w-full flex items-center justify-center border border-ut-offwhite/50 rounded object-cover'
                             autoPlay
                             loop
                             muted
