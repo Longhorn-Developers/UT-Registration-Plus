@@ -13,6 +13,7 @@ export const SiteSupport = {
     MY_CALENDAR: 'MY_CALENDAR',
     REPORT_ISSUE: 'REPORT_ISSUE',
     MY_UT: 'MY_UT',
+    COURSE_CATALOG_SEARCH: 'COURSE_CATALOG_SEARCH',
     CLASSLIST: 'CLASSLIST',
 } as const;
 
@@ -45,6 +46,7 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
         if (document.querySelector('#details')) {
             return SiteSupport.COURSE_CATALOG_DETAILS;
         }
+        return SiteSupport.COURSE_CATALOG_SEARCH;
     }
     if (url.includes('utdirect.utexas.edu') && (url.includes('waitlist') || url.includes('classlist'))) {
         return SiteSupport.WAITLIST;

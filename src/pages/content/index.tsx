@@ -1,5 +1,6 @@
 import CourseCatalogMain from '@views/components/CourseCatalogMain';
 import InjectedButton from '@views/components/injected/AddAllButton';
+import DaysCheckbox from '@views/components/injected/DaysCheckbox';
 import getSiteSupport, { SiteSupport } from '@views/lib/getSiteSupport';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
@@ -24,4 +25,8 @@ if (support === SiteSupport.COURSE_CATALOG_DETAILS || support === SiteSupport.CO
 
 if (support === SiteSupport.MY_UT) {
     renderComponent(InjectedButton);
+}
+
+if (support === SiteSupport.COURSE_CATALOG_SEARCH) {
+    renderComponent(DaysCheckbox);
 }
