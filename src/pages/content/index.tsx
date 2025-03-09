@@ -1,5 +1,6 @@
 import CourseCatalogMain from '@views/components/CourseCatalogMain';
 import InjectedButton from '@views/components/injected/AddAllButton';
+import DaysCheckbox from 'src/views/components/injected/DaysCheckbox';
 import getSiteSupport, { SiteSupport } from '@views/lib/getSiteSupport';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
@@ -7,6 +8,9 @@ import { createRoot } from 'react-dom/client';
 const support = getSiteSupport(window.location.href);
 
 const renderComponent = (Component: React.ComponentType) => {
+    // Simple console log for component rendering
+    console.log('Rendering component:', Component.name || 'Anonymous');
+
     const container = document.createElement('div');
     container.id = 'extension-root';
     document.body.appendChild(container);
@@ -24,4 +28,8 @@ if (support === SiteSupport.COURSE_CATALOG_DETAILS || support === SiteSupport.CO
 
 if (support === SiteSupport.MY_UT) {
     renderComponent(InjectedButton);
+}
+
+if (support === SiteSupport.COURSE_CATALOG_SEARCH) {
+    renderComponent(DaysCheckbox);
 }
