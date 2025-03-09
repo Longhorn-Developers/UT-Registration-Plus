@@ -109,12 +109,14 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
 
     const handleDelete = () => {
         showDialog({
-            title: 'Are you sure?',
+            title: 'Delete schedule?',
             description: (
                 <>
-                    <Text>Deleting</Text>
-                    <Text className='text-ut-burntorange'> {schedule.name} </Text>
-                    <Text>is permanent and will remove all added courses from that schedule.</Text>
+                    <Text>Deleting </Text>
+                    <Text className='text-ut-burntorange'>{schedule.name}</Text>
+                    <Text> is permanent and will remove all added courses from </Text>
+                    <Text className='text-ut-burntorange'>{schedule.name}</Text>
+                    <Text>.</Text>
                 </>
             ),
             // eslint-disable-next-line react/no-unstable-nested-components
@@ -126,12 +128,13 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                     <Button
                         variant='filled'
                         color='theme-red'
+                        icon={Trash}
                         onClick={() => {
                             close();
                             deleteSchedule(schedule.id);
                         }}
                     >
-                        Delete Permanently
+                        Delete permanently
                     </Button>
                 </>
             ),

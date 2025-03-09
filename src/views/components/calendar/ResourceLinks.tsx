@@ -15,6 +15,14 @@ interface LinkItem {
 
 const links: LinkItem[] = [
     {
+        text: "Fall '25 Course Schedule",
+        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20259/',
+    },
+    {
+        text: "Summer '25 Course Schedule",
+        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20256/',
+    },
+    {
         text: "Spring '25 Course Schedule",
         url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/',
     },
@@ -26,10 +34,6 @@ const links: LinkItem[] = [
         text: 'My Degree Audit (IDA)',
         url: 'https://utdirect.utexas.edu/apps/degree/audits/',
     },
-    // {
-    //     text: "Summer '24 Course Schedule",
-    //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20246/',
-    // },
     // {
     //     text: "'24-'25 Academic Calendar",
     //     url: 'https://registrar.utexas.edu/calendars/24-25',

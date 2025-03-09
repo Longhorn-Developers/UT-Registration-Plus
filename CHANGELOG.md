@@ -1,3 +1,14 @@
+## [2.1.1](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.1.0...v2.1.1) (2025-03-03)
+
+### Features
+
+- add isDeveloper ([c6452c4](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/c6452c4f2b174487e6f51ad546ca1c3f8b4dbc1f))
+- map page ([#390](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/390)) ([2184774](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/218477404fdeacda7b39cd233e4e1e65995935d4))
+
+### Bug Fixes
+
+- import schedule file upload button ([#515](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/515)) ([766c0bc](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/766c0bc1b4a75f8146a922cb2eca8871032c1dc9))
+
 ## [2.1.0](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.0.2...v2.1.0) (2025-02-20)
 
 ### Features
