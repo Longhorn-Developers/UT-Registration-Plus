@@ -78,7 +78,7 @@ export default function DaysCheckbox(): JSX.Element | null {
                         <input
                             type='checkbox'
                             id={`day_${day}`}
-                            checked={daysValue !== '000000' && daysValue.charAt(index) === '1'}
+                            checked={daysValue.charAt(index) === '1'}
                             onChange={e => {
                                 handleDayChange(index, e.target.checked);
                             }}

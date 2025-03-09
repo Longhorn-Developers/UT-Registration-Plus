@@ -8,9 +8,6 @@ import { createRoot } from 'react-dom/client';
 const support = getSiteSupport(window.location.href);
 
 const renderComponent = (Component: React.ComponentType) => {
-    // Simple console log for component rendering
-    console.log('Rendering component:', Component.name || 'Anonymous');
-
     const container = document.createElement('div');
     container.id = 'extension-root';
     document.body.appendChild(container);
