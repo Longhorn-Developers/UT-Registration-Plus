@@ -25,6 +25,7 @@ import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 import Link from './Link';
 import { SortableListDragHandle } from './SortableListDragHandle';
+import createSchedule from 'src/pages/background/lib/createSchedule';
 
 /**
  * Props for the ScheduleListItem component.
@@ -41,7 +42,7 @@ const teamMembers = [...LONGHORN_DEVELOPERS_ADMINS, ...LONGHORN_DEVELOPERS_SWE];
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
 export default function ScheduleListItem({ schedule, onClick }: ScheduleListItemProps): JSX.Element {
-    const [activeSchedule] = useSchedules();
+    const [activeSchedule, schedules] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
     const teamMember = teamMembers[Math.floor(Math.random() * teamMembers.length)];
@@ -129,9 +130,14 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         variant='filled'
                         color='theme-red'
                         icon={Trash}
-                        onClick={() => {
+                        onClick={async () => {
                             close();
-                            deleteSchedule(schedule.id);
+                            await deleteSchedule(schedule.id);
+
+                            // By default, there is always one schedule in schedules array. Create a new schedule if there are no schedules left.
+                            if (schedules.length <= 1) {
+                                createSchedule('New Schedule');
+                            }
                         }}
                     >
                         Delete permanently
