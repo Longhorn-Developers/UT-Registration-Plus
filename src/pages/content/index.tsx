@@ -1,6 +1,6 @@
 import CourseCatalogMain from '@views/components/CourseCatalogMain';
 import InjectedButton from '@views/components/injected/AddAllButton';
-import DaysCheckbox from 'src/views/components/injected/DaysCheckbox';
+import DaysCheckbox from '@views/components/injected/DaysCheckbox';
 import getSiteSupport, { SiteSupport } from '@views/lib/getSiteSupport';
 import React from 'react';
 import { createRoot } from 'react-dom/client';

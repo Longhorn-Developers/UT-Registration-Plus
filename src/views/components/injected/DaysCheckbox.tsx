@@ -72,7 +72,7 @@ export default function DaysCheckbox(): JSX.Element | null {
 
     return ReactDOM.createPortal(
         <ExtensionRoot>
-            <div className='flex flex-col gap-0.5 mt-1'>
+            <div className='mt-1 flex flex-col gap-0.5'>
                 {days.map((day, index) => (
                     <div key={day} className='flex items-center'>
                         <input
