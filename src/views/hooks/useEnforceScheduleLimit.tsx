@@ -21,19 +21,19 @@ export function useEnforceScheduleLimit(): () => boolean {
     return useCallback(() => {
         if (schedules.length >= SCHEDULE_LIMIT) {
             showDialog({
-                title: `You have ${SCHEDULE_LIMIT} active schedules!`,
+                title: `You have too many schedules!`,
 
                 description: (
                     <>
                         To encourage organization,{' '}
-                        <span className='text-ut-burntorange'>please consider removing some unused schedules</span> you
+                        <span className='text-ut-burntorange'>please consider deleting any unused schedules</span> you
                         may have.
                     </>
                 ),
 
                 buttons: close => (
                     <Button variant='filled' color='ut-burntorange' onClick={close}>
-                        I Understand
+                        I understand
                     </Button>
                 ),
             });

@@ -13,7 +13,7 @@ import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import type { SiteSupportType } from '@views/lib/getSiteSupport';
 import { populateSearchInputs } from '@views/lib/populateSearchInputs';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface Props {
     support: Extract<SiteSupportType, 'COURSE_CATALOG_DETAILS' | 'COURSE_CATALOG_LIST'>;
@@ -27,6 +27,8 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
     const [showPopup, setShowPopup] = useState(false);
     const [enableScrollToLoad, setEnableScrollToLoad] = useState<boolean>(false);
+    const prevCourseTitleRef = useRef<string | null>(null);
+    const tbody = document.querySelector('table tbody')!;
 
     useEffect(() => {
         populateSearchInputs();
@@ -43,6 +45,9 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
         const ccs = new CourseCatalogScraper(support);
         const scrapedRows = ccs.scrape(tableRows, true);
         setRows(scrapedRows);
+        prevCourseTitleRef.current =
+            scrapedRows.findLast(row => row.course === null)?.element.querySelector('.course_header')?.textContent ??
+            null;
     }, [support]);
 
     useEffect(() => {
@@ -51,8 +56,17 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
 
     const addRows = (newRows: ScrapedRow[]) => {
         newRows.forEach(row => {
-            document.querySelector('table tbody')!.appendChild(row.element);
+            const courseTitle = row.element.querySelector('.course_header')?.textContent ?? null;
+            if (row.course === null) {
+                if (courseTitle !== prevCourseTitleRef.current) {
+                    tbody.appendChild(row.element);
+                    prevCourseTitleRef.current = courseTitle;
+                }
+            } else {
+                tbody.appendChild(row.element);
+            }
         });
+
         setRows([...rows, ...newRows]);
     };
 
