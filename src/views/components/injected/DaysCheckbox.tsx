@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom';
  */
 export default function DaysCheckbox(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
-    const [daysValue, setDaysValue] = useState<string>('000000');
+    const [daysValue, setDaysValue] = useState<number[]>([0, 0, 0, 0, 0, 0]);
 
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -54,16 +54,12 @@ export default function DaysCheckbox(): JSX.Element | null {
         // Update hidden input when daysValue changes
         const hiddenInput = document.getElementById('mtg_days_st_hidden') as HTMLInputElement | null;
         if (hiddenInput) {
-            hiddenInput.value = daysValue;
+            hiddenInput.value = daysValue.join('');
         }
     }, [daysValue]);
 
     const handleDayChange = (position: number, checked: boolean) => {
-        setDaysValue(prev => {
-            const currentValue = prev.split('');
-            currentValue[position] = checked ? '1' : '0';
-            return currentValue.join('');
-        });
+        setDaysValue(prev => prev.with(position, checked ? 1 : 0));
     };
 
     if (!container) {
@@ -78,7 +74,7 @@ export default function DaysCheckbox(): JSX.Element | null {
                         <input
                             type='checkbox'
                             id={`day_${day}`}
-                            checked={daysValue.charAt(index) === '1'}
+                            checked={daysValue[index] === 1}
                             onChange={e => {
                                 handleDayChange(index, e.target.checked);
                             }}
