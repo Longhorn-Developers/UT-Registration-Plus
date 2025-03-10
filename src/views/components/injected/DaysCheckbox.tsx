@@ -68,7 +68,7 @@ export default function DaysCheckbox(): JSX.Element | null {
 
     return ReactDOM.createPortal(
         <ExtensionRoot>
-            <div className='mt-1 flex flex-col gap-0.5'>
+            <div className='flex flex-col gap-0.5'>
                 {days.map((day, index) => (
                     <div key={day} className='flex items-center'>
                         <input
@@ -78,9 +78,12 @@ export default function DaysCheckbox(): JSX.Element | null {
                             onChange={e => {
                                 handleDayChange(index, e.target.checked);
                             }}
-                            className='form-checkbox'
+                            className='form-checkbox m-[3px_3px_3px_4px]'
                         />
-                        <label htmlFor={`day_${day}`} className='ml-1'>
+                        <label
+                            htmlFor={`day_${day}`}
+                            className='ml-1 text-black font-normal font-[Verdana,_"Helvetica_Neue",_Helvetica,_Arial,_sans-serif]'
+                        >
                             {day}
                         </label>
                     </div>
