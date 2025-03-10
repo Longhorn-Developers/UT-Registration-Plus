@@ -82,7 +82,7 @@ export default function DaysCheckbox(): JSX.Element | null {
                         />
                         <label
                             htmlFor={`day_${day}`}
-                            className='ml-1 text-black font-normal font-[Verdana,_"Helvetica_Neue",_Helvetica,_Arial,_sans-serif]'
+                            className='ml-1 text-black font-[Verdana,_"Helvetica_Neue",_Helvetica,_Arial,_sans-serif]'
                         >
                             {day}
                         </label>
