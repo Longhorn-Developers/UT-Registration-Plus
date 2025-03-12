@@ -348,7 +348,7 @@ export default function Settings(): JSX.Element {
                                 <Preview>
                                     <CalendarCourseCell
                                         colors={getCourseColors('orange')}
-                                        courseDeptAndInstr={ExampleCourse.department}
+                                        courseDetail={ExampleCourse.department}
                                         className={ExampleCourse.number}
                                         status={ExampleCourse.status}
                                         timeAndLocation={ExampleCourse.schedule.meetings[0]!.getTimeString({

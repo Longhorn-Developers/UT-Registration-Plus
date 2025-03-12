@@ -28,7 +28,7 @@ const testData: CalendarGridCourse[] = [
             endIndex: 11,
         },
         componentProps: {
-            courseDeptAndInstr: 'Course 1',
+            courseDetail: 'Course 1',
             timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
             status: Status.OPEN,
             blockData: {
@@ -38,7 +38,7 @@ const testData: CalendarGridCourse[] = [
                     endIndex: 11,
                 },
                 componentProps: {
-                    courseDeptAndInstr: 'Course 1',
+                    courseDetail: 'Course 1',
                     timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
                     status: Status.OPEN,
                     blockData: {} as CalendarGridCourse,
@@ -57,7 +57,7 @@ const testData: CalendarGridCourse[] = [
             endIndex: 6,
         },
         componentProps: {
-            courseDeptAndInstr: 'Course 1',
+            courseDetail: 'Course 1',
             timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
             status: Status.OPEN,
             blockData: {
@@ -67,7 +67,7 @@ const testData: CalendarGridCourse[] = [
                     endIndex: 6,
                 },
                 componentProps: {
-                    courseDeptAndInstr: 'Course 1',
+                    courseDetail: 'Course 1',
                     timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
                     status: Status.OPEN,
                     blockData: {} as CalendarGridCourse,
@@ -86,7 +86,7 @@ const testData: CalendarGridCourse[] = [
             endIndex: 12,
         },
         componentProps: {
-            courseDeptAndInstr: 'Course 2',
+            courseDetail: 'Course 2',
             timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
             status: Status.CLOSED,
             blockData: {
@@ -96,7 +96,7 @@ const testData: CalendarGridCourse[] = [
                     endIndex: 12,
                 },
                 componentProps: {
-                    courseDeptAndInstr: 'Course 2',
+                    courseDetail: 'Course 2',
                     timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
                     status: Status.CLOSED,
                     blockData: {} as CalendarGridCourse,
@@ -115,7 +115,7 @@ const testData: CalendarGridCourse[] = [
             endIndex: 11,
         },
         componentProps: {
-            courseDeptAndInstr: 'Course 1',
+            courseDetail: 'Course 1',
             timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
             status: Status.OPEN,
             blockData: {
@@ -125,7 +125,7 @@ const testData: CalendarGridCourse[] = [
                     endIndex: 11,
                 },
                 componentProps: {
-                    courseDeptAndInstr: 'Course 1',
+                    courseDetail: 'Course 1',
                     timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
                     status: Status.OPEN,
                     blockData: {} as CalendarGridCourse,
@@ -144,7 +144,7 @@ const testData: CalendarGridCourse[] = [
             endIndex: 12,
         },
         componentProps: {
-            courseDeptAndInstr: 'Course 2',
+            courseDetail: 'Course 2',
             timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
             status: Status.CLOSED,
             blockData: {
@@ -154,7 +154,7 @@ const testData: CalendarGridCourse[] = [
                     endIndex: 12,
                 },
                 componentProps: {
-                    courseDeptAndInstr: 'Course 2',
+                    courseDetail: 'Course 2',
                     timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
                     status: Status.CLOSED,
                     blockData: {} as CalendarGridCourse,
@@ -173,7 +173,7 @@ const testData: CalendarGridCourse[] = [
             endIndex: 12,
         },
         componentProps: {
-            courseDeptAndInstr: 'Course 3',
+            courseDetail: 'Course 3',
             timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
             status: Status.CLOSED,
             blockData: {
@@ -183,7 +183,7 @@ const testData: CalendarGridCourse[] = [
                     endIndex: 12,
                 },
                 componentProps: {
-                    courseDeptAndInstr: 'Course 3',
+                    courseDetail: 'Course 3',
                     timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
                     status: Status.CLOSED,
                     blockData: {} as CalendarGridCourse,
@@ -202,7 +202,7 @@ const testData: CalendarGridCourse[] = [
             endIndex: 12,
         },
         componentProps: {
-            courseDeptAndInstr: 'Course 4',
+            courseDetail: 'Course 4',
             timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
             status: Status.CLOSED,
             blockData: {
@@ -212,7 +212,7 @@ const testData: CalendarGridCourse[] = [
                     endIndex: 12,
                 },
                 componentProps: {
-                    courseDeptAndInstr: 'Course 4',
+                    courseDetail: 'Course 4',
                     timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
                     status: Status.CLOSED,
                     blockData: {} as CalendarGridCourse,
