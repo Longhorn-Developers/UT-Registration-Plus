@@ -22,6 +22,8 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
     const asyncCourseCells = courseCells?.filter(block => block.async);
     const displayCourses = asyncCourseCells && asyncCourseCells.length > 0;
 
+    if (!displayCourses) return <div></div>;
+
     return (
         <div className='w-full flex pl-spacing-7 pr-spacing-3 pt-spacing-4'>
             <div
