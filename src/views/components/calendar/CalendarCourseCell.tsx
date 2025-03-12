@@ -16,7 +16,7 @@ import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellCol
  * Props for the CalendarCourseCell component.
  */
 export interface CalendarCourseCellProps {
-    courseDeptAndInstr: string;
+    courseDetail: string;
     timeAndLocation?: string;
     status: StatusType;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
@@ -27,7 +27,7 @@ export interface CalendarCourseCellProps {
 /**
  * Renders a cell for a calendar course.
  *
- * @param courseDeptAndInstr - The course department and instructor.
+ * @param courseDetail - The course department and instructor.
  * @param timeAndLocation - The time and location of the course.
  * @param status - The status of the course.
  * @param colors - The colors for styling the cell.
@@ -35,7 +35,7 @@ export interface CalendarCourseCellProps {
  * @returns The rendered component.
  */
 export default function CalendarCourseCell({
-    courseDeptAndInstr,
+    courseDetail,
     timeAndLocation,
     status,
     onClick,
@@ -131,7 +131,7 @@ export default function CalendarCourseCell({
                         'text-wrap': !timeAndLocation,
                     })}
                 >
-                    {courseDeptAndInstr}
+                    {courseDetail}
                 </Text>
                 {timeAndLocation && (
                     <Text variant='h3-course' as='p' className='whitespace-pre-line'>
