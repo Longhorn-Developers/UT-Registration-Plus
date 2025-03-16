@@ -2,6 +2,7 @@ import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot'
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const;
 /**
  * Component that transforms the days dropdown into a series of checkboxes
  * on the course catalog search page
@@ -11,8 +12,6 @@ import ReactDOM from 'react-dom';
 export default function DaysCheckbox(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const [daysValue, setDaysValue] = useState<number[]>([0, 0, 0, 0, 0, 0]);
-
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     useEffect(() => {
         const daysDropdown = document.getElementById('mtg_days_st') as HTMLSelectElement | null;
@@ -68,9 +67,9 @@ export default function DaysCheckbox(): JSX.Element | null {
 
     return ReactDOM.createPortal(
         <ExtensionRoot>
-            <div className='flex flex-col gap-0.5'>
+            <ul className='text-black font-[Verdana,_"Helvetica_Neue",_Helvetica,_Arial,_sans-serif]'>
                 {days.map((day, index) => (
-                    <div key={day} className='flex items-center'>
+                    <li key={day}>
                         <input
                             type='checkbox'
                             id={`day_${day}`}
@@ -79,16 +78,11 @@ export default function DaysCheckbox(): JSX.Element | null {
                                 handleDayChange(index, e.target.checked);
                             }}
                             className='form-checkbox m-[3px_3px_3px_4px]'
-                        />
-                        <label
-                            htmlFor={`day_${day}`}
-                            className='ml-1 text-black font-[Verdana,_"Helvetica_Neue",_Helvetica,_Arial,_sans-serif]'
-                        >
-                            {day}
-                        </label>
-                    </div>
+                        />{' '}
+                        <label htmlFor={`day_${day}`}>{day}</label>
+                    </li>
                 ))}
-            </div>
+            </ul>
         </ExtensionRoot>,
         container
     );
