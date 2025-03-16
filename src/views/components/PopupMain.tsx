@@ -66,11 +66,19 @@ export default function PopupMain(): JSX.Element {
     };
 
     useEffect(() => {
-        const randomIndex = Math.floor(Math.random() * splashText.length);
-        setFunny(
-            splashText[randomIndex] ?? 'If you are seeing this, something has gone horribly wrong behind the scenes.'
-        );
-    }, []);
+        setFunny(prevFunny => {
+            // Ensure that the next splash text is not the same as the previous one
+            const splashTextWithoutCurrent = splashText.filter(text => text !== prevFunny);
+            const randomIndex = Math.floor(Math.random() * splashTextWithoutCurrent.length);
+
+            return (
+                splashTextWithoutCurrent[randomIndex] ??
+                'If you are seeing this, something has gone horribly wrong behind the scenes.'
+            );
+        });
+
+        // Generate a new splash text every time the active schedule changes
+    }, [activeSchedule.id]);
 
     const handleOpenOptions = async () => {
         const url = chrome.runtime.getURL('/options.html');
