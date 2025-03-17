@@ -3,8 +3,7 @@ import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
-import React from 'react';
-
+import React, { ReactNode } from 'react';
 import CalendarCourseBlock from './CalendarCourseCell';
 
 type CalendarBottomBarProps = {
@@ -18,11 +17,11 @@ type CalendarBottomBarProps = {
  * @param courses - The list of courses to display in the calendar.
  * @returns The rendered bottom bar component.
  */
-export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBottomBarProps): JSX.Element {
+export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBottomBarProps): ReactNode {
     const asyncCourseCells = courseCells?.filter(block => block.async);
     const displayCourses = asyncCourseCells && asyncCourseCells.length > 0;
 
-    if (!displayCourses) return <div />;
+    if (!displayCourses) return null;
 
     return (
         <div className='w-full flex pl-spacing-7 pr-spacing-3 pt-spacing-4'>
