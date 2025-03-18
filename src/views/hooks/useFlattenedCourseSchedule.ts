@@ -63,18 +63,18 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
 
     const processedCourses = activeSchedule.courses
         .flatMap(course => {
-            const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
+            const { status, courseDetail, meetings } = extractCourseInfo(course);
 
             if (meetings.length === 0) {
-                return processAsyncCourses({ courseDeptAndInstr, status, course });
+                return processAsyncCourses({ courseDetail, status, course });
             }
 
             return meetings.flatMap(meeting => {
                 if (meeting.days.includes(DAY_MAP.S) || meeting.startTime < 480) {
-                    return processAsyncCourses({ courseDeptAndInstr, status, course });
+                    return processAsyncCourses({ courseDetail, status, course });
                 }
 
-                return processInPersonMeetings(meeting, courseDeptAndInstr, status, course);
+                return processInPersonMeetings(meeting, courseDetail, status, course);
             });
         })
         .sort(sortCourses);
@@ -94,25 +94,25 @@ function extractCourseInfo(course: Course) {
         schedule: { meetings },
     } = course;
 
-    let courseDeptAndInstr = `${course.department} ${course.number}`;
+    let courseDetail = `${course.department}, ${course.number} ${course.uniqueId}`;
 
     if (course.instructors.length > 0) {
-        courseDeptAndInstr += ' \u2013 ';
-        courseDeptAndInstr += course.instructors.map(instructor => instructor.toString({ format: 'last' })).join('; ');
+        courseDetail += ' \u2013 ';
+        courseDetail += course.instructors.map(instructor => instructor.toString({ format: 'last' })).join('; ');
     }
 
-    return { status, courseDeptAndInstr, meetings, course };
+    return { status, courseDetail, meetings, course };
 }
 
 /**
  * Function to process each in-person class into its distinct meeting objects for calendar grid
  */
 function processAsyncCourses({
-    courseDeptAndInstr,
+    courseDetail,
     status,
     course,
 }: {
-    courseDeptAndInstr: string;
+    courseDetail: string;
     status: StatusType;
     course: Course;
 }): CalendarGridCourse[] {
@@ -124,11 +124,11 @@ function processAsyncCourses({
                 endIndex: -1,
             },
             componentProps: {
-                courseDeptAndInstr,
+                courseDetail,
                 status,
                 blockData: {
                     calendarGridPoint: { dayIndex: -1, startIndex: -1, endIndex: -1 },
-                    componentProps: { courseDeptAndInstr, status, blockData: {} as CalendarGridCourse },
+                    componentProps: { courseDetail, status, blockData: {} as CalendarGridCourse },
                     course,
                     async: true,
                 },
@@ -144,7 +144,7 @@ function processAsyncCourses({
  */
 function processInPersonMeetings(
     meeting: CourseMeeting,
-    courseDeptAndInstr: string,
+    courseDetail: string,
     status: StatusType,
     course: Course
 ): CalendarGridCourse[] {
@@ -172,7 +172,7 @@ function processInPersonMeetings(
             endIndex: convertMinutesToIndex(normalizedEndTime),
         },
         componentProps: {
-            courseDeptAndInstr,
+            courseDetail,
             timeAndLocation,
             status,
             blockData: {} as CalendarGridCourse,

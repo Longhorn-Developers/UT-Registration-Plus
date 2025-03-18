@@ -133,7 +133,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
     return courseCells
         .filter(block => !block.async)
         .map(block => {
-            const { courseDeptAndInstr, timeAndLocation, status } = block.componentProps;
+            const { courseDetail, timeAndLocation, status } = block.componentProps;
 
             return (
                 <div
@@ -147,7 +147,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                     className='pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5'
                 >
                     <CalendarCourseCell
-                        courseDeptAndInstr={courseDeptAndInstr}
+                        courseDetail={courseDetail}
                         timeAndLocation={timeAndLocation}
                         status={status}
                         onClick={() => setCourse(block.course)}
