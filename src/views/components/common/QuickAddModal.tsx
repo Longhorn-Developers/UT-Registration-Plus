@@ -1,4 +1,4 @@
-import { Input, Menu, MenuButton, MenuItems } from '@headlessui/react';
+import { Input, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChalkboardTeacher, GraduationCap, HashStraight, ListNumbers, Plus, PlusCircle } from '@phosphor-icons/react';
 import clsx from 'clsx';
 import React from 'react';
@@ -269,7 +269,7 @@ export default function QuickAddModal(): JSX.Element {
                     className={clsx([
                         styleResetClass,
                         'mt-spacing-3',
-                        'min-w-max origin-top-right rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
+                        'min-w-max origin-top-left rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
                         'data-[closed]:(opacity-0 scale-95)',
                         'data-[enter]:(ease-out-expo duration-150)',
                         'data-[leave]:(ease-out duration-50)',
@@ -337,10 +337,37 @@ export default function QuickAddModal(): JSX.Element {
                         </div>
                     </div>
                     <div className='w-full flex flex-row justify-end gap-spacing-5'>
-                        <Button color='ut-black' size='regular' variant='minimal'>
-                            Cancel
-                        </Button>
-                        <Button color='ut-green' size='regular' variant='filled' icon={Plus}>
+                        <MenuItem>
+                            {({ close }) => (
+                                <Button
+                                    color='ut-black'
+                                    size='regular'
+                                    variant='minimal'
+                                    onClick={() => {
+                                        setField(undefined);
+                                        setCourseNumber(undefined);
+                                        setSection(undefined);
+                                        setUnique('');
+                                        close();
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                            )}
+                        </MenuItem>
+                        <Button
+                            color='ut-green'
+                            size='regular'
+                            variant='filled'
+                            icon={Plus}
+                            onClick={() => {
+                                setField(undefined);
+                                setCourseNumber(undefined);
+                                setSection(undefined);
+                                setUnique('');
+                            }}
+                            disabled={!section && unique.length !== 5}
+                        >
                             Add Course
                         </Button>
                     </div>
