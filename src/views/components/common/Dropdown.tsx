@@ -18,7 +18,7 @@ export type DropdownOption = {
 interface Props {
     className?: string;
     placeholderText?: string;
-    options?: DropdownOption[];
+    options?: readonly DropdownOption[];
     selectedOption: DropdownOption | undefined;
     onOptionChange?: (newOption: DropdownOption) => void;
     icon?: Icon;
