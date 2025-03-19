@@ -81,11 +81,12 @@ export default function Calendar(): JSX.Element {
                             <LargeLogo />
                             <Button
                                 variant='minimal'
+                                size='small'
                                 color='theme-black'
                                 onClick={() => {
                                     setShowSidebar(!showSidebar);
                                 }}
-                                className='h-fit screenshot:hidden !p-0'
+                                className='screenshot:hidden'
                                 icon={Sidebar}
                             />
                         </div>
