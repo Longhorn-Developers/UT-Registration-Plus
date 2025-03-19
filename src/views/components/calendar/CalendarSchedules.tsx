@@ -33,8 +33,9 @@ export function CalendarSchedules() {
                 </Text>
                 <Button
                     variant='minimal'
+                    size='small'
                     color='theme-black'
-                    className='h-fit w-fit !p-0 btn'
+                    className='btn'
                     onClick={handleAddSchedule}
                     icon={Plus}
                 />
