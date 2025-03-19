@@ -32,9 +32,10 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
             {!sidebarOpen && (
                 <Button
                     variant='minimal'
+                    size='small'
                     color='theme-black'
                     onClick={onSidebarToggle}
-                    className='h-fit w-fit screenshot:hidden !p-0'
+                    className='screenshot:hidden'
                     icon={Sidebar}
                 />
             )}
