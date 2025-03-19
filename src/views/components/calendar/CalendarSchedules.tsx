@@ -26,8 +26,8 @@ export function CalendarSchedules() {
     };
 
     return (
-        <div className='min-w-full w-0 flex flex-col items-center gap-y-spacing-3'>
-            <div className='m0 w-full flex justify-between'>
+        <div className='min-w-full w-0 flex flex-col items-center gap-y-spacing-2'>
+            <div className='m0 w-full flex justify-between items-center'>
                 <Text variant='h3' className='text-nowrap text-theme-black'>
                     MY SCHEDULES
                 </Text>
@@ -35,7 +35,7 @@ export function CalendarSchedules() {
                     variant='minimal'
                     size='small'
                     color='theme-black'
-                    className='btn'
+                    className='!p-0 btn'
                     onClick={handleAddSchedule}
                     icon={Plus}
                 />
