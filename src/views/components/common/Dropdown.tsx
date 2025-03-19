@@ -49,9 +49,11 @@ export default function Dropdown({
             onChange={onOptionChange}
             className={clsx('h-9 w-full flex flex-row items-center justify-between gap-spacing-5', className)}
         >
-            <div className='h-7 w-7'>
-                {Icon && <Icon {...iconProps} className={clsx('h-7 w-7', iconProps?.className)} />}
-            </div>
+            {Icon && (
+                <div className='h-7 w-7'>
+                    {Icon && <Icon {...iconProps} className={clsx('h-7 w-7', iconProps?.className)} />}
+                </div>
+            )}
             <ListboxButton
                 className={clsx(
                     'flex h-full w-full flex-row items-center justify-between gap-spacing-3 px-spacing-4',

@@ -1,4 +1,4 @@
-import { Input, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChalkboardTeacher, GraduationCap, HashStraight, ListNumbers, Plus, PlusCircle } from '@phosphor-icons/react';
 import { FIELDS_OF_STUDY } from '@shared/studyFields';
 import clsx from 'clsx';
@@ -10,6 +10,7 @@ import Divider from './Divider';
 import type { DropdownOption } from './Dropdown';
 import Dropdown from './Dropdown';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
+import Input from './Input';
 import Text from './Text/Text';
 
 const COURSE_NUMBERS = [
@@ -95,20 +96,17 @@ export default function QuickAddModal(): JSX.Element {
                             </Text>
                             <Divider orientation='horizontal' size='100%' />
                         </div>
-                        <div className='h-9 w-full flex flex-row items-center justify-start gap-spacing-5'>
-                            <HashStraight className='h-7 w-7' />
-                            <Input
-                                value={unique}
-                                onChange={e => {
-                                    if (e.target.value === '' || /^\d+$/.test(e.target.value)) {
-                                        setUnique(e.target.value);
-                                    }
-                                }}
-                                maxLength={5}
-                                placeholder='Enter Unique Number...'
-                                className='h-full w-full border border-ut-offwhite/50 border-rounded px-spacing-4 py-spacing-1 focus:border-ut-black/50 disabled:bg-ut-offwhite/20 focus:outline-none focus:ring-0'
-                            />
-                        </div>
+                        <Input
+                            value={unique}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                if (e.target.value === '' || /^\d+$/.test(e.target.value)) {
+                                    setUnique(e.target.value);
+                                }
+                            }}
+                            maxLength={5}
+                            placeholder='Enter Unique Number...'
+                            icon={HashStraight}
+                        />
                     </div>
                     <div className='w-full flex flex-row justify-end gap-spacing-5'>
                         <MenuItem>
