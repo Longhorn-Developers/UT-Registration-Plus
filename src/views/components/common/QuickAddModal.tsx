@@ -1,5 +1,6 @@
 import { Input, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChalkboardTeacher, GraduationCap, HashStraight, ListNumbers, Plus, PlusCircle } from '@phosphor-icons/react';
+import { FIELDS_OF_STUDY } from '@shared/studyFields';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -10,7 +11,6 @@ import type { DropdownOption } from './Dropdown';
 import Dropdown from './Dropdown';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 import Text from './Text/Text';
-import { FIELDS_OF_STUDY } from 'src/shared/studyFields';
 
 const COURSE_NUMBERS = [
     { id: '1', label: 'CS101' },
@@ -46,7 +46,7 @@ export default function QuickAddModal(): JSX.Element {
                     className={clsx([
                         styleResetClass,
                         'mt-spacing-3',
-                        'min-w-max origin-top-left rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
+                        'origin-top-left rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
                         'data-[closed]:(opacity-0 scale-95)',
                         'data-[enter]:(ease-out-expo duration-150)',
                         'data-[leave]:(ease-out duration-50)',
@@ -58,7 +58,6 @@ export default function QuickAddModal(): JSX.Element {
                     <div className='flex flex-col gap-spacing-6'>
                         <div className='flex flex-col gap-spacing-5'>
                             <Dropdown
-                                className='w-full'
                                 placeholderText='Select Field of Study...'
                                 options={FIELDS_OF_STUDY}
                                 selectedOption={field}
@@ -70,7 +69,6 @@ export default function QuickAddModal(): JSX.Element {
                                 icon={GraduationCap}
                             />
                             <Dropdown
-                                className='w-full'
                                 placeholderText='Select Course Number...'
                                 options={COURSE_NUMBERS}
                                 selectedOption={courseNumber}
@@ -82,7 +80,6 @@ export default function QuickAddModal(): JSX.Element {
                                 disabled={!field}
                             />
                             <Dropdown
-                                className='w-full'
                                 placeholderText='Select Section...'
                                 options={SECTIONS}
                                 selectedOption={section}
