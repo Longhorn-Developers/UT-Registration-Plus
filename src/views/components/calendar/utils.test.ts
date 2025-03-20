@@ -1,4 +1,6 @@
 import { tz } from '@date-fns/tz';
+import { Course } from '@shared/types/Course';
+import { UserSchedule } from '@shared/types/UserSchedule';
 import type { Serialized } from 'chrome-extension-toolkit';
 import { format as formatDate, parseISO } from 'date-fns';
 import {
@@ -6,7 +8,7 @@ import {
     multiMeetingMultiInstructorCourse,
     multiMeetingMultiInstructorSchedule,
 } from 'src/stories/injected/mocked';
-import { describe, expect, it } from 'vitest';
+import { afterEach,describe, expect, it, vi } from 'vitest';
 
 import {
     allDatesInRanges,
@@ -231,9 +233,7 @@ describe('allDatesInRanges', () => {
             ['2023-02-27', '2023-03-02'],
             ['2023-12-27', '2024-01-03'],
         ] satisfies (string | [string, string])[];
-        console.log(dateRanges);
         const result = allDatesInRanges(dateRanges);
-        console.log(result);
         const expected = [
             '2023-02-27', // ['2023-02-27', '2023-03-2']
             '2023-02-28',
@@ -333,6 +333,22 @@ describe('meetingToIcsString', () => {
         expect(result).toBe(expected);
     });
 
+    it('should gracefully error on an out of range semester code', () => {
+        const course = serde(multiMeetingMultiInstructorCourse);
+        const meeting = course.schedule.meetings[0]!;
+        vi.spyOn(console, 'error').mockReturnValue(undefined);
+        course.semester = {
+            season: 'Fall',
+            year: 2010,
+            code: '20109',
+        };
+        const result = meetingToIcsString(course, meeting);
+        expect(result).toBeNull();
+        expect(console.error).toBeCalledWith(
+            `No academic calendar found for semester code: 20109; course uniqueId: ${course.uniqueId}`
+        );
+    });
+
     it('should handle a multi-day meeting with multiple instructors', () => {
         const course = serde(multiMeetingMultiInstructorCourse);
         const meeting = course.schedule.meetings[0]!;
@@ -348,9 +364,87 @@ describe('meetingToIcsString', () => {
             END:VEVENT`.replaceAll(/^\s+/gm, '');
         expect(result).toBe(expected);
     });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
 });
 
 describe('scheduleToIcsString', () => {
+    it('should handle an empty schedule', () => {
+        const schedule = serde(
+            new UserSchedule({
+                courses: [],
+                hours: 0,
+                id: 'fajowe',
+                name: 'fajowe',
+                updatedAt: Date.now(),
+            })
+        );
+        const result = scheduleToIcsString(schedule);
+        const expected = `BEGIN:VCALENDAR
+                VERSION:2.0
+                CALSCALE:GREGORIAN
+                X-WR-CALNAME:My Schedule
+                END:VCALENDAR`.replaceAll(/^\s+/gm, '');
+        expect(result).toBe(expected);
+    });
+
+    it('should handle a schedule with courses but no meetings', () => {
+        const schedule = serde(
+            new UserSchedule({
+                courses: [
+                    new Course({
+                        ...multiMeetingMultiInstructorCourse,
+                        schedule: {
+                            meetings: [],
+                        },
+                    }),
+                ],
+                hours: 0,
+                id: 'fajowe',
+                name: 'fajowe',
+                updatedAt: Date.now(),
+            })
+        );
+        const result = scheduleToIcsString(schedule);
+        const expected = `BEGIN:VCALENDAR
+                VERSION:2.0
+                CALSCALE:GREGORIAN
+                X-WR-CALNAME:My Schedule
+                END:VCALENDAR`.replaceAll(/^\s+/gm, '');
+        expect(result).toBe(expected);
+    });
+
+    it('should handle a schedule with courses but out-of-range semester', () => {
+        vi.spyOn(console, 'error').mockReturnValue(undefined);
+        const schedule = serde(
+            new UserSchedule({
+                courses: [
+                    new Course({
+                        ...multiMeetingMultiInstructorCourse,
+                        semester: {
+                            season: 'Fall',
+                            year: 2010,
+                            code: '20109',
+                        },
+                    }),
+                ],
+                hours: 0,
+                id: 'fajowe',
+                name: 'fajowe',
+                updatedAt: Date.now(),
+            })
+        );
+        const result = scheduleToIcsString(schedule);
+        const expected = `BEGIN:VCALENDAR
+                VERSION:2.0
+                CALSCALE:GREGORIAN
+                X-WR-CALNAME:My Schedule
+                END:VCALENDAR`.replaceAll(/^\s+/gm, '');
+        expect(result).toBe(expected);
+    });
+
     it('should handle a single course with multiple meetings', () => {
         const schedule = serde(multiMeetingMultiInstructorSchedule);
         const result = scheduleToIcsString(schedule);
@@ -430,5 +524,9 @@ describe('scheduleToIcsString', () => {
             END:VCALENDAR`
         ).replaceAll(/^\s+/gm, '');
         expect(result).toBe(expected);
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
     });
 });
