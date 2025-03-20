@@ -1,20 +1,21 @@
-import { describe, expect, it } from 'vitest';
-import {
-    formatToHHMMSS,
-    nextDayInclusive,
-    englishStringifyList,
-    allDatesInRanges,
-    meetingToIcsString,
-    scheduleToIcsString,
-} from './utils';
-import { format as formatDate, parseISO } from 'date-fns';
 import { tz } from '@date-fns/tz';
+import type { Serialized } from 'chrome-extension-toolkit';
+import { format as formatDate, parseISO } from 'date-fns';
 import {
     chatterjeeCS429Course,
     multiMeetingMultiInstructorCourse,
     multiMeetingMultiInstructorSchedule,
 } from 'src/stories/injected/mocked';
-import { Serialized } from 'chrome-extension-toolkit';
+import { describe, expect, it } from 'vitest';
+
+import {
+    allDatesInRanges,
+    englishStringifyList,
+    formatToHHMMSS,
+    meetingToIcsString,
+    nextDayInclusive,
+    scheduleToIcsString,
+} from './utils';
 
 // Do all timezone calculations relative to UT's timezone
 const TIMEZONE = 'America/Chicago';

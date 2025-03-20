@@ -1,5 +1,7 @@
 import { tz } from '@date-fns/tz';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import type { Course } from '@shared/types/Course';
+import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
@@ -19,8 +21,6 @@ import {
 import { toBlob } from 'html-to-image';
 
 import { academicCalendars } from './academic-calendars';
-import type { CourseMeeting } from '@shared/types/CourseMeeting';
-import type { Course } from '@shared/types/Course';
 
 // Do all timezone calculations relative to UT's timezone
 const TIMEZONE_ID = 'America/Chicago';
