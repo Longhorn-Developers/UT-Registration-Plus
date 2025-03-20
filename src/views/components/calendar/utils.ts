@@ -1,4 +1,4 @@
-import { tz } from '@date-fns/tz';
+import { tz, TZDate } from '@date-fns/tz';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Course } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
@@ -16,7 +16,6 @@ import {
     nextDay,
     parseISO,
     set as setMultiple,
-    toDate,
 } from 'date-fns';
 import { toBlob } from 'html-to-image';
 
@@ -97,15 +96,12 @@ const iCalDateFormat = <DateType extends Date>(date: DateArg<DateType>) =>
  * @param day - The day to increment to. (0 = Sunday, 1 = Monday, etc.)
  * @returns The next day of the given date, inclusive of the given day.
  */
-export const nextDayInclusive = <DateType extends Date, ResultDate extends Date = DateType>(
-    date: DateArg<DateType>,
-    day: Day
-): ResultDate => {
-    if (getDay(date) === day) {
-        return toDate(date);
+export const nextDayInclusive = (date: Date, day: Day): TZDate => {
+    if (getDay(date, { in: TZ }) === day) {
+        return new TZDate(date, TIMEZONE_ID);
     }
 
-    return nextDay(date, day);
+    return nextDay(date, day, { in: TZ });
 };
 
 /**
