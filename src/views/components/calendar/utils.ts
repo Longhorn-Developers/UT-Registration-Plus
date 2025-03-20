@@ -277,7 +277,7 @@ export const saveAsCal = async () => {
         throw new Error('No schedule found');
     }
 
-    let icsString = 'BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nX-WR-CALNAME:My Schedule\n';
+    const icsString = scheduleToIcsString(schedule);
 
     downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
 };
