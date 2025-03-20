@@ -1,5 +1,6 @@
 import { tz } from '@date-fns/tz';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import type { Serialized } from 'chrome-extension-toolkit';
@@ -19,9 +20,11 @@ import { toBlob } from 'html-to-image';
 
 import { academicCalendars } from './academic-calendars';
 
+// Do all timezone calculations relative to UT's timezone
 const TIMEZONE = 'America/Chicago';
 const TZ = tz(TIMEZONE);
 
+// iCal uses two-letter codes for days of the week
 export const CAL_MAP = {
     Sunday: 'SU',
     Monday: 'MO',
@@ -67,14 +70,15 @@ export const formatToHHMMSS = (minutes: number) => {
 };
 
 /**
- * Formats a date in the format YYYYMMDD'T'HHmmss.
+ * Formats a date in the format YYYYMMDD'T'HHmmss, which is the format used by iCal.
  *
  * @param date - The date to format.
- * @returns
+ * @returns The formatted date string.
  */
 const iCalDateFormat = <DateType extends Date>(date: DateArg<DateType>) =>
     formatDate(date, "yyyyMMdd'T'HHmmss", { in: TZ });
 
+// Date format used by iCal
 const ISO_DATE_FORMAT = 'yyyy-MM-dd';
 
 /**
@@ -82,13 +86,14 @@ const ISO_DATE_FORMAT = 'yyyy-MM-dd';
  *
  * If the given date is the given day, the same date is returned.
  *
- * For example, a Monday targeting a Wednesday will return the next Wednesday, but if it was targeting a Monday it would return the same date.
+ * For example, a Monday targeting a Wednesday will return the next Wednesday,
+ * but if it was targeting a Monday it would return the same date.
  *
  * @param date - The date to increment.
  * @param day - The day to increment to. (0 = Sunday, 1 = Monday, etc.)
  * @returns The next day of the given date, inclusive of the given day.
  */
-const nextDayInclusive = <DateType extends Date, ResultDate extends Date = DateType>(
+export const nextDayInclusive = <DateType extends Date, ResultDate extends Date = DateType>(
     date: DateArg<DateType>,
     day: Day
 ): ResultDate => {
@@ -100,18 +105,37 @@ const nextDayInclusive = <DateType extends Date, ResultDate extends Date = DateT
 };
 
 /**
+ *  Stringifies a list of items in English format.
+ *
+ * @param items - The list of items to stringify.
+ * @returns A string representation of the list in English format.
+ * @example
+ * englishStringifyList([]) // ''
+ * englishStringifyList(['Alice']) // 'Alice'
+ * englishStringifyList(['Alice', 'Bob']) // 'Alice and Bob'
+ * englishStringifyList(['Alice', 'Bob', 'Charlie']) // 'Alice, Bob, and Charlie'
+ */
+export const englishStringifyList = (items: string[]): string => {
+    if (items.length === 0) return '';
+    if (items.length === 1) return items[0]!;
+    if (items.length === 2) return `${items[0]} and ${items[1]}`;
+
+    return `${items.slice(0, -1).join(', ')}, and ${items.at(-1)}`;
+};
+
+/**
  * Saves the current schedule as a calendar file in the iCalendar format (ICS).
  * Fetches the current active schedule and converts it into an ICS string.
  * Downloads the ICS file to the user's device.
  */
 export const saveAsCal = async () => {
-    const schedule = await getSchedule(); // Assumes this fetches the current active schedule
-
-    let icsString = 'BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nX-WR-CALNAME:My Schedule\n';
+    const schedule = await getSchedule();
 
     if (!schedule) {
         throw new Error('No schedule found');
     }
+
+    let icsString = 'BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nX-WR-CALNAME:My Schedule\n';
 
     schedule.courses.forEach(course => {
         course.schedule.meetings.forEach(meeting => {
@@ -187,6 +211,12 @@ export const saveAsCal = async () => {
             const untilDateFormatted = formatISO(untilDate, { format: 'basic', in: tz('utc') });
             const excludedDatesFormatted = excludedDates.map(date => iCalDateFormat(date));
 
+            const instructorsList = englishStringifyList(
+                course.instructors
+                    .map(instructor => Instructor.prototype.toString.call(instructor, { format: 'first_last' }))
+                    .filter(name => name !== '')
+            );
+
             icsString += `BEGIN:VEVENT\n`;
             icsString += `DTSTART;TZID=America/Chicago:${startDateFormatted}\n`;
             icsString += `DTEND;TZID=America/Chicago:${endDateFormatted}\n`;
@@ -194,6 +224,7 @@ export const saveAsCal = async () => {
             icsString += `EXDATE;TZID=America/Chicago:${excludedDatesFormatted.join(',')}\n`;
             icsString += `SUMMARY:${course.fullName}\n`;
             icsString += `LOCATION:${location?.building ?? ''} ${location?.room ?? ''}\n`;
+            icsString += `DESCRIPTION:Unique number: ${course.uniqueId}\\nTaught by ${instructorsList}\n`;
             icsString += `END:VEVENT\n`;
         });
     });
