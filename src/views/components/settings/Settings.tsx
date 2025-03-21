@@ -493,6 +493,24 @@ export default function Settings(): JSX.Element {
                                     />
                                 </div>
 
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Reduced Motion
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>
+                                            Disable animations and transitions for users who prefer reduced motion.
+                                        </p>
+                                    </div>
+                                    <SwitchButton
+                                        isChecked={reducedMotion}
+                                        onChange={() => {
+                                            setReducedMotion(!reducedMotion);
+                                            OptionsStore.set('enableReducedMotion', !reducedMotion);
+                                        }}
+                                    />
+                                </div>
+
                                 <Divider size='auto' orientation='horizontal' />
 
                                 <div className='flex items-center justify-between'>
