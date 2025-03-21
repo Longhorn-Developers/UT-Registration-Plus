@@ -1,6 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChalkboardTeacher, GraduationCap, HashStraight, ListNumbers, Plus, PlusCircle } from '@phosphor-icons/react';
 import { FIELDS_OF_STUDY } from '@shared/studyFields';
+import { useNumericInput, useQuickAddDropdowns } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -23,16 +24,21 @@ const SECTIONS = [
     { id: '2', label: 'Section B' },
 ] as const satisfies DropdownOption[];
 
+const UNIQUE_ID_LENGTH = 5;
+
 /**
  * QuickAddModal component
  *
  * This component renders a button with a PlusCircle icon and the label "Quick Add".
  */
 export default function QuickAddModal(): JSX.Element {
-    const [field, setField] = React.useState<DropdownOption | undefined>(undefined);
-    const [courseNumber, setCourseNumber] = React.useState<DropdownOption | undefined>(undefined);
-    const [section, setSection] = React.useState<DropdownOption | undefined>(undefined);
-    const [unique, setUnique] = React.useState<string>('');
+    const uniqueNumber = useNumericInput('', UNIQUE_ID_LENGTH);
+    const dropdowns = useQuickAddDropdowns(
+        FIELDS_OF_STUDY,
+        () => COURSE_NUMBERS,
+        () => SECTIONS,
+        () => uniqueNumber.reset()
+    );
 
     return (
         <DialogProvider>
@@ -60,33 +66,27 @@ export default function QuickAddModal(): JSX.Element {
                         <div className='flex flex-col gap-spacing-5'>
                             <Dropdown
                                 placeholderText='Select Field of Study...'
-                                options={FIELDS_OF_STUDY}
-                                selectedOption={field}
-                                onOptionChange={f => {
-                                    setField(f === field ? undefined : f);
-                                    setCourseNumber(undefined);
-                                    setSection(undefined);
-                                }}
+                                options={dropdowns.options.level1}
+                                selectedOption={dropdowns.selections.level1}
+                                onOptionChange={dropdowns.handleChange.level1}
+                                disabled={dropdowns.disabled.level1}
                                 icon={GraduationCap}
                             />
                             <Dropdown
                                 placeholderText='Select Course Number...'
-                                options={COURSE_NUMBERS}
-                                selectedOption={courseNumber}
-                                onOptionChange={c => {
-                                    setCourseNumber(c === courseNumber ? undefined : c);
-                                    setSection(undefined);
-                                }}
+                                options={dropdowns.options.level2}
+                                selectedOption={dropdowns.selections.level2}
+                                onOptionChange={dropdowns.handleChange.level2}
+                                disabled={dropdowns.disabled.level2}
                                 icon={ListNumbers}
-                                disabled={!field}
                             />
                             <Dropdown
                                 placeholderText='Select Section...'
-                                options={SECTIONS}
-                                selectedOption={section}
-                                onOptionChange={s => setSection(s === section ? undefined : s)}
+                                options={dropdowns.options.level3}
+                                selectedOption={dropdowns.selections.level3}
+                                onOptionChange={dropdowns.handleChange.level3}
+                                disabled={dropdowns.disabled.level3}
                                 icon={ChalkboardTeacher}
-                                disabled={!courseNumber}
                             />
                         </div>
                         <div className='w-full flex flex-row items-center justify-center gap-spacing-4'>
@@ -97,13 +97,9 @@ export default function QuickAddModal(): JSX.Element {
                             <Divider orientation='horizontal' size='100%' />
                         </div>
                         <Input
-                            value={unique}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                if (e.target.value === '' || /^\d+$/.test(e.target.value)) {
-                                    setUnique(e.target.value);
-                                }
-                            }}
-                            maxLength={5}
+                            value={uniqueNumber.value}
+                            onChange={uniqueNumber.handleChange}
+                            maxLength={UNIQUE_ID_LENGTH}
                             placeholder='Enter Unique Number...'
                             icon={HashStraight}
                         />
@@ -116,10 +112,8 @@ export default function QuickAddModal(): JSX.Element {
                                     size='regular'
                                     variant='minimal'
                                     onClick={() => {
-                                        setField(undefined);
-                                        setCourseNumber(undefined);
-                                        setSection(undefined);
-                                        setUnique('');
+                                        uniqueNumber.reset();
+                                        dropdowns.resetDropdowns();
                                         close();
                                     }}
                                 >
@@ -133,12 +127,10 @@ export default function QuickAddModal(): JSX.Element {
                             variant='filled'
                             icon={Plus}
                             onClick={() => {
-                                setField(undefined);
-                                setCourseNumber(undefined);
-                                setSection(undefined);
-                                setUnique('');
+                                uniqueNumber.reset();
+                                dropdowns.resetDropdowns();
                             }}
-                            disabled={!section && unique.length !== 5}
+                            disabled={!dropdowns.selections.level3 && uniqueNumber.value.length !== UNIQUE_ID_LENGTH}
                         >
                             Add Course
                         </Button>

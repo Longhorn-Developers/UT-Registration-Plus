@@ -233,4 +233,4 @@ export const FIELDS_OF_STUDY = [
     { id: 'WRT', label: 'WRT - Writing' },
     { id: 'YID', label: 'YID - Yiddish' },
     { id: 'YOR', label: 'YOR - Yoruba' },
-] as const satisfies readonly Field[];
+] as const satisfies Field[];
