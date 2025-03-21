@@ -1,7 +1,9 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { ChalkboardTeacher, GraduationCap, HashStraight, ListNumbers, Plus, PlusCircle } from '@phosphor-icons/react';
 import { FIELDS_OF_STUDY } from '@shared/studyFields';
 import { useNumericInput, useQuickAddDropdowns } from '@views/hooks/useQuickAdd';
+import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -32,6 +34,7 @@ const UNIQUE_ID_LENGTH = 5;
  * This component renders a button with a PlusCircle icon and the label "Quick Add".
  */
 export default function QuickAddModal(): JSX.Element {
+    const [activeSchedule] = useSchedules();
     const uniqueNumber = useNumericInput('', UNIQUE_ID_LENGTH);
     const dropdowns = useQuickAddDropdowns(
         FIELDS_OF_STUDY,
@@ -39,6 +42,16 @@ export default function QuickAddModal(): JSX.Element {
         () => SECTIONS,
         () => uniqueNumber.reset()
     );
+
+    const handleAddCourse = async () => {
+        if (uniqueNumber.value.length === UNIQUE_ID_LENGTH) {
+            const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/${uniqueNumber.value}/`;
+            await addCourseByURL(activeSchedule, courseUrl);
+        }
+
+        uniqueNumber.reset();
+        dropdowns.resetDropdowns();
+    };
 
     return (
         <DialogProvider>
@@ -126,10 +139,7 @@ export default function QuickAddModal(): JSX.Element {
                             size='regular'
                             variant='filled'
                             icon={Plus}
-                            onClick={() => {
-                                uniqueNumber.reset();
-                                dropdowns.resetDropdowns();
-                            }}
+                            onClick={handleAddCourse}
                             disabled={!dropdowns.selections.level3 && uniqueNumber.value.length !== UNIQUE_ID_LENGTH}
                         >
                             Add Course
