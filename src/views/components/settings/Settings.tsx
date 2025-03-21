@@ -94,6 +94,7 @@ export default function Settings(): JSX.Element {
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
     const [calendarNewTab, setCalendarNewTab] = useState<boolean>(false);
+    const [reducedMotion, setReducedMotion] = useState<boolean>(false);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -189,6 +190,10 @@ export default function Settings(): JSX.Element {
             // console.log('alwaysOpenCalendarInNewTab', newValue);
         });
 
+        const l6 = OptionsStore.listen('enableReducedMotion', async ({ newValue }) => {
+            setReducedMotion(newValue);
+        });
+
         // Remove listeners when the component is unmounted
         return () => {
             OptionsStore.removeListener(l1);
@@ -196,6 +201,7 @@ export default function Settings(): JSX.Element {
             OptionsStore.removeListener(l3);
             OptionsStore.removeListener(l4);
             OptionsStore.removeListener(l5);
+            OptionsStore.removeListener(l6);
 
             DevStore.removeListener(ds_l1);
 
