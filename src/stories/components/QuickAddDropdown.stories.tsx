@@ -1,6 +1,7 @@
 import { ImageSquare } from '@phosphor-icons/react';
 import type { Meta, StoryObj } from '@storybook/react';
 import Dropdown from '@views/components/common/Dropdown';
+import React, { type ComponentProps, useState } from 'react';
 
 const meta = {
     title: 'Components/Common/QuickAddDropdown',
@@ -14,26 +15,36 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const InnerComponent = (args: React.ComponentProps<typeof Dropdown>) => {
+    const [option, setOption] = useState(args.selectedOption);
+
+    return (
+        <Dropdown
+            {...args}
+            selectedOption={option}
+            onOptionChange={newOption => {
+                setOption(newOption);
+                args.onOptionChange?.(newOption);
+            }}
+        />
+    );
+};
+
 export const Primary: Story = {
+    render: (args: ComponentProps<typeof Dropdown>) => <InnerComponent {...args} />,
     args: {
         placeholderText: 'Select an option...',
-        options: Array(30)
+        options: Array(10)
             .fill(null)
             .map((_, i) => ({ id: `${i + 1}`, label: `Option ${i + 1}` })),
-        // { id: '1', label: 'Option 1' },
-        // { id: '2', label: 'Option 2' },
-        // { id: '3', label: 'Option 3' },
-        // ,
         selectedOption: undefined,
         icon: ImageSquare,
         disabled: false,
-        className: '',
-        onOptionChange: newOption => console.log(newOption),
-        iconProps: {},
     },
 };
 
 export const Disabled: Story = {
+    render: (args: ComponentProps<typeof Dropdown>) => <InnerComponent {...args} />,
     args: {
         placeholderText: 'Select an option...',
         options: [
@@ -44,13 +55,11 @@ export const Disabled: Story = {
         selectedOption: undefined,
         icon: ImageSquare,
         disabled: true,
-        className: '',
-        onOptionChange: newOption => console.log(newOption),
-        iconProps: {},
     },
 };
 
 export const NoIcon: Story = {
+    render: (args: ComponentProps<typeof Dropdown>) => <InnerComponent {...args} />,
     args: {
         placeholderText: 'Select an option...',
         options: [
@@ -59,10 +68,5 @@ export const NoIcon: Story = {
             { id: '3', label: 'Option 3' },
         ],
         selectedOption: undefined,
-        icon: undefined,
-        disabled: false,
-        className: '',
-        onOptionChange: newOption => console.log(newOption),
-        iconProps: {},
     },
 };

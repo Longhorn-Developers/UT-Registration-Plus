@@ -14,18 +14,14 @@ import type { DropdownOption } from '../components/common/Dropdown';
  * @param onChange - Optional callback function to be called when the value changes.
  * @returns An object containing the input value, a function to set the value, and event handlers for change and paste events.
  */
-export const useNumericInput = (
-    initialValue: string = '',
-    maxLength: number = 5,
-    onChange?: (value: string) => void
-) => {
+export const useNumericInput = (initialValue: string = '', maxLength?: number, onChange?: (value: string) => void) => {
     const [value, setValue] = useState<string>(initialValue);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
 
         // Only allow if the value consists of numbers and is within length limit
-        if (/^\d*$/.test(newValue) && newValue.length <= maxLength) {
+        if (/^\d*$/.test(newValue) && (maxLength === undefined || newValue.length <= maxLength)) {
             setValue(newValue);
             onChange?.(newValue);
         }
@@ -53,7 +49,7 @@ export const useNumericInput = (
                 currentValue.substring(0, selectionStart) + pastedText + currentValue.substring(selectionEnd);
 
             // Only update if the new value is within length limit
-            if (newValue.length <= maxLength) {
+            if (maxLength === undefined || newValue.length <= maxLength) {
                 setValue(newValue);
                 onChange?.(newValue);
             }
