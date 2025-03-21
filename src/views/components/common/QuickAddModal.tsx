@@ -1,6 +1,16 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
-import { ChalkboardTeacher, GraduationCap, HashStraight, ListNumbers, Plus, PlusCircle } from '@phosphor-icons/react';
+import {
+    Calendar,
+    ChalkboardTeacher,
+    GraduationCap,
+    HashStraight,
+    ListNumbers,
+    Plus,
+    PlusCircle,
+} from '@phosphor-icons/react';
+import type { Semester } from '@shared/util/generateSemesters';
+import { generateSemesterFields } from '@shared/util/generateSemesters';
 import { useNumericInput, useQuickAddDropdowns } from '@views/hooks/useQuickAdd';
 import useSchedules from '@views/hooks/useSchedules';
 import { FIELDS_OF_STUDY } from '@views/resources/studyFields';
@@ -16,17 +26,24 @@ import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/Extension
 import Input from './Input';
 import Text from './Text/Text';
 
+// TODO: Replace with actual course numbers
 const COURSE_NUMBERS = [
     { id: '1', label: 'CS101' },
     { id: '2', label: 'MATH202' },
 ] as const satisfies DropdownOption[];
 
+// TODO: Replace with actual sections
 const SECTIONS = [
     { id: '1', label: 'Section A' },
     { id: '2', label: 'Section B' },
 ] as const satisfies DropdownOption[];
 
 const UNIQUE_ID_LENGTH = 5;
+
+const AVAILABLE_SEMESTERS = generateSemesterFields(
+    { year: 2024, term: 'fall' } as Semester,
+    { year: 2025, term: 'fall' } as Semester
+) as DropdownOption[];
 
 /**
  * QuickAddModal component
@@ -36,6 +53,7 @@ const UNIQUE_ID_LENGTH = 5;
 export default function QuickAddModal(): JSX.Element {
     const [activeSchedule] = useSchedules();
     const uniqueNumber = useNumericInput('', UNIQUE_ID_LENGTH);
+    const [semester, setSemester] = React.useState<DropdownOption>(AVAILABLE_SEMESTERS[0] as DropdownOption);
     const dropdowns = useQuickAddDropdowns(
         FIELDS_OF_STUDY,
         () => COURSE_NUMBERS,
@@ -45,7 +63,7 @@ export default function QuickAddModal(): JSX.Element {
 
     const handleAddCourse = async () => {
         if (uniqueNumber.value.length === UNIQUE_ID_LENGTH) {
-            const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/${uniqueNumber.value}/`;
+            const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semester.id}/${uniqueNumber.value}/`;
             await addCourseByURL(activeSchedule, courseUrl);
         }
 
@@ -78,11 +96,18 @@ export default function QuickAddModal(): JSX.Element {
                     <div className='flex flex-col gap-spacing-6'>
                         <div className='flex flex-col gap-spacing-5'>
                             <Dropdown
+                                placeholderText='Select Semester...'
+                                options={AVAILABLE_SEMESTERS}
+                                selectedOption={semester}
+                                onOptionChange={setSemester}
+                                icon={Calendar}
+                            />
+                            <Dropdown
                                 placeholderText='Select Field of Study...'
                                 options={dropdowns.options.level1}
                                 selectedOption={dropdowns.selections.level1}
                                 onOptionChange={dropdowns.handleChange.level1}
-                                disabled={dropdowns.disabled.level1}
+                                disabled={dropdowns.disabled.level1 || uniqueNumber.value !== ''}
                                 icon={GraduationCap}
                             />
                             <Dropdown
@@ -90,7 +115,7 @@ export default function QuickAddModal(): JSX.Element {
                                 options={dropdowns.options.level2}
                                 selectedOption={dropdowns.selections.level2}
                                 onOptionChange={dropdowns.handleChange.level2}
-                                disabled={dropdowns.disabled.level2}
+                                disabled={dropdowns.disabled.level2 || uniqueNumber.value !== ''}
                                 icon={ListNumbers}
                             />
                             <Dropdown
@@ -98,7 +123,7 @@ export default function QuickAddModal(): JSX.Element {
                                 options={dropdowns.options.level3}
                                 selectedOption={dropdowns.selections.level3}
                                 onOptionChange={dropdowns.handleChange.level3}
-                                disabled={dropdowns.disabled.level3}
+                                disabled={dropdowns.disabled.level3 || uniqueNumber.value !== ''}
                                 icon={ChalkboardTeacher}
                             />
                         </div>
