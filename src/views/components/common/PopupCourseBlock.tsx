@@ -67,13 +67,11 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
 
         // adds transition for shadow hover after three frames
         requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    if (ref.current) {
-                        ref.current.classList.add('transition-shadow-100');
-                    }
-                });
-            });
+            setTimeout(() => {
+                if (ref.current) {
+                    ref.current.classList.add('transition-shadow-100');
+                }
+            }, 0);
         });
 
         return () => {
