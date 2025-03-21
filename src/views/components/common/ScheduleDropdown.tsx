@@ -24,8 +24,12 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
                 {({ open }) => (
                     <>
                         <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left'>
-                            <div className='flex-1'>
-                                <Text as='div' variant='h3' className='w-100% text-ut-burntorange normal-case!'>
+                            <div className='flex-1 min-w-0 overflow-hidden'>
+                                <Text
+                                    as='div'
+                                    variant='h3'
+                                    className='w-full truncate whitespace-nowrap text-ut-burntorange normal-case!'
+                                >
                                     {activeSchedule ? activeSchedule.name : 'Schedule'}
                                 </Text>
                                 <div className='flex gap-2.5 text-theme-black leading-[75%]!'>
