@@ -68,8 +68,8 @@ export default function CalendarGrid({
             {/* Extra Grid Cells */}
             {Array(6)
                 .fill(1)
-                .map((_, i) => (
-                    <div key={i} className='h-4 flex items-end justify-center border-r border-gray-300' />
+                .map(() => (
+                    <div className='h-4 flex items-end justify-center border-r border-gray-300' />
                 ))}
 
             <ColorPickerProvider>
