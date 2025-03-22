@@ -10,14 +10,7 @@ import {
 } from 'src/stories/injected/mocked';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import {
-    allDatesInRanges,
-    englishStringifyList,
-    formatToHHMMSS,
-    meetingToIcsString,
-    nextDayInclusive,
-    scheduleToIcsString,
-} from './utils';
+import { allDatesInRanges, formatToHHMMSS, meetingToIcsString, nextDayInclusive, scheduleToIcsString } from './utils';
 
 // Do all timezone calculations relative to UT's timezone
 const TIMEZONE = 'America/Chicago';
@@ -123,52 +116,6 @@ describe('nextDayInclusive', () => {
 
         for (let i = 0; i < days.length; i++) {
             expect(resultsFormatted[i]).toBe(expectedResults[i]);
-        }
-    });
-});
-
-describe('englishStringifyList', () => {
-    it('should handle an empty array', () => {
-        const data = [] satisfies string[];
-        const result = englishStringifyList(data);
-        const expected = '';
-        expect(result).toBe(expected);
-    });
-
-    it('should handle 1 element', () => {
-        const data = ['Alice'] satisfies string[];
-        const result = englishStringifyList(data);
-        const expected = 'Alice';
-        expect(result).toBe(expected);
-    });
-
-    it('should handle 2 elements', () => {
-        const data = ['Alice', 'Bob'] satisfies string[];
-        const result = englishStringifyList(data);
-        const expected = 'Alice and Bob';
-        expect(result).toBe(expected);
-    });
-
-    it('should handle 3 elements', () => {
-        const data = ['Alice', 'Bob', 'Charlie'] satisfies string[];
-        const result = englishStringifyList(data);
-        const expected = 'Alice, Bob, and Charlie';
-        expect(result).toBe(expected);
-    });
-
-    it('should handle n elements', () => {
-        const testcases = [
-            { data: [], expected: '' },
-            { data: ['foo'], expected: 'foo' },
-            { data: ['foo', 'bar'], expected: 'foo and bar' },
-            { data: ['foo', 'bar', 'baz'], expected: 'foo, bar, and baz' },
-            { data: ['a', 'b', 'c', 'd'], expected: 'a, b, c, and d' },
-            { data: 'abcdefghijk'.split(''), expected: 'a, b, c, d, e, f, g, h, i, j, and k' },
-        ] satisfies { data: string[]; expected: string }[];
-
-        for (const { data, expected } of testcases) {
-            const result = englishStringifyList(data);
-            expect(result).toBe(expected);
         }
     });
 });

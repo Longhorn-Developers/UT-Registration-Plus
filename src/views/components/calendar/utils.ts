@@ -5,6 +5,7 @@ import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
+import { englishStringifyList } from '@shared/util/string';
 import type { Serialized } from 'chrome-extension-toolkit';
 import type { DateArg, Day } from 'date-fns';
 import {
@@ -102,25 +103,6 @@ export const nextDayInclusive = (date: Date, day: Day): TZDate => {
     }
 
     return nextDay(date, day, { in: TZ });
-};
-
-/**
- *  Stringifies a list of items in English format.
- *
- * @param items - The list of items to stringify.
- * @returns A string representation of the list in English format.
- * @example
- * englishStringifyList([]) // ''
- * englishStringifyList(['Alice']) // 'Alice'
- * englishStringifyList(['Alice', 'Bob']) // 'Alice and Bob'
- * englishStringifyList(['Alice', 'Bob', 'Charlie']) // 'Alice, Bob, and Charlie'
- */
-export const englishStringifyList = (items: readonly string[]): string => {
-    if (items.length === 0) return '';
-    if (items.length === 1) return items[0]!;
-    if (items.length === 2) return `${items[0]} and ${items[1]}`;
-
-    return `${items.slice(0, -1).join(', ')}, and ${items.at(-1)}`;
 };
 
 /**
