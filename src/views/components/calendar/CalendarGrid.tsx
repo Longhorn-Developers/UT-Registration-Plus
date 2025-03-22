@@ -7,7 +7,6 @@ import React from 'react';
 
 import CalendarCell from './CalendarGridCell';
 
-const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 
 interface Props {
@@ -57,23 +56,22 @@ export default function CalendarGrid({
 }: React.PropsWithChildren<Props>): JSX.Element {
     return (
         <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto_repeat(26,1fr)] h-full'>
-            {/* Displaying day labels */}
-            <div />
-            <div className='w-4 border-b border-r border-gray-300' />
-            {daysOfWeek.map(day => (
-                <div className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5'>
-                    <Text key={day} variant='small' className='text-center text-ut-burntorange' as='div'>
-                        {day}
-                    </Text>
-                </div>
+            {/* Empty spacers */}
+            {[...Array(7).keys()].map(() => (
+                <div />
             ))}
+
+            {/* Rest of the Grid */}
             {[...Array(13).keys()].map(i => makeGridRow(i, 5))}
             <CalendarHour hour={21} />
+
+            {/* Extra Grid Cells */}
             {Array(6)
                 .fill(1)
-                .map(() => (
-                    <div className='h-4 flex items-end justify-center border-r border-gray-300' />
+                .map((_, i) => (
+                    <div key={i} className='h-4 flex items-end justify-center border-r border-gray-300' />
                 ))}
+
             <ColorPickerProvider>
                 {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
             </ColorPickerProvider>

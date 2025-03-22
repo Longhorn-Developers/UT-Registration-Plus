@@ -25,6 +25,8 @@ import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
 
+const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
+
 /**
  * Calendar page component
  */
@@ -148,7 +150,21 @@ export default function Calendar(): JSX.Element {
                                 setShowSidebar(!showSidebar);
                             }}
                         />
-                        <div className='min-h-2xl min-w-5xl flex-grow overflow-auto pl-spacing-3 pt-spacing-3 screenshot:min-h-xl'>
+                        <div className='grid grid-cols-[auto_auto_repeat(5,minmax(190px,1fr))] grid-rows-[auto_repeat(26,1fr)] sticky top-0 pt-spacing-3 pl-spacing-3 bg-white'>
+                            <div className='w-[49.32px]' />
+                            <div className='w-4 border-b border-r border-gray-300' />
+                            {daysOfWeek.map(day => (
+                                <div
+                                    key={day}
+                                    className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5'
+                                >
+                                    <Text variant='small' className='text-center text-ut-burntorange' as='div'>
+                                        {day}
+                                    </Text>
+                                </div>
+                            ))}
+                        </div>
+                        <div className='min-h-2xl min-w-5xl flex-grow overflow-auto pl-spacing-3 screenshot:min-h-xl'>
                             <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                         </div>
                         <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
