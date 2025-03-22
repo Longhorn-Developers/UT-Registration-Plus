@@ -140,7 +140,7 @@ export default function Calendar(): JSX.Element {
                                 // scrollbarGutter: 'stable',
                             }
                         }
-                        className='h-full flex flex-grow flex-col overflow-x-scroll px-spacing-5'
+                        className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5'
                     >
                         <CalendarHeader
                             sidebarOpen={showSidebar}
@@ -148,7 +148,8 @@ export default function Calendar(): JSX.Element {
                                 setShowSidebar(!showSidebar);
                             }}
                         />
-                        <div className='min-h-2xl min-w-5xl flex-grow pl-spacing-3 pt-spacing-3 screenshot:min-h-xl'>
+                        <div className='min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl'>
+                            <div className='sticky top-[85px] z-999 h-2 w-full bg-white' />
                             <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                         </div>
                         <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />

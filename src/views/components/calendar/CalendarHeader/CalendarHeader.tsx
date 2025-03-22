@@ -27,7 +27,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     return (
         <div
             style={{ scrollbarGutter: 'stable' }}
-            className='sticky left-0 right-0 min-h-[85px] flex items-center gap-5 overflow-x-scroll overflow-y-hidden pl-spacing-7 pt-spacing-5'
+            className='sticky left-0 right-0 top-0 z-999 min-h-[85px] flex items-center gap-5 overflow-x-scroll overflow-y-hidden bg-white pl-spacing-7 pt-spacing-5'
         >
             {!sidebarOpen && (
                 <Button
