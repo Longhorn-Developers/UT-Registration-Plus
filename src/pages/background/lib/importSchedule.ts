@@ -5,6 +5,9 @@ import type { Serialized } from 'chrome-extension-toolkit';
 import addCourse from './addCourse';
 import createSchedule from './createSchedule';
 import switchSchedule from './switchSchedule';
+import { useEnforceSameSemesterCourse } from '@views/hooks/useEnforceSameSemesterCourse'
+
+const showSemesterWarningDialog = useEnforceSameSemesterCourse();
 
 function isValidSchedule(data: unknown): data is Serialized<UserSchedule> {
     if (typeof data !== 'object' || data === null) return false;
@@ -25,7 +28,7 @@ export default async function importSchedule(scheduleData: unknown): Promise<voi
         for (const c of scheduleData.courses) {
             const course = new Course(c);
             // eslint-disable-next-line no-await-in-loop
-            await addCourse(newScheduleId, course, true);
+            await addCourse(newScheduleId, course, showSemesterWarningDialog, true);
         }
         console.log('Course schedule successfully parsed!');
     } else {
