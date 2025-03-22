@@ -149,7 +149,6 @@ export default function Calendar(): JSX.Element {
                             }}
                         />
                         <div className='min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl'>
-                            <div className='sticky top-[85px] z-999 h-2 w-full bg-white' />
                             <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                         </div>
                         <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
