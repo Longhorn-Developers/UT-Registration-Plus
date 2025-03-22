@@ -61,8 +61,11 @@ export default function CalendarGrid({
             <div />
             <div className='w-4 border-b border-r border-gray-300' />
             {daysOfWeek.map(day => (
-                <div className='h-4 flex items-end justify-center border-b border-r border-gray-300 pb-1.5'>
-                    <Text key={day} variant='small' className='text-center text-ut-burntorange' as='div'>
+                <div
+                    className='h-7 flex items-center justify-center border-b border-r border-gray-300 sticky top-0 bg-white self-start z-999'
+                    key={day}
+                >
+                    <Text variant='small' className='text-center text-ut-burntorange' as='div'>
                         {day}
                     </Text>
                 </div>
