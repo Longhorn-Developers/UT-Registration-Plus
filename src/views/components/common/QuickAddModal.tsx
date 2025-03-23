@@ -9,8 +9,7 @@ import {
     Plus,
     PlusCircle,
 } from '@phosphor-icons/react';
-import type { Semester } from '@shared/util/generateSemesters';
-import { generateSemesterFields } from '@shared/util/generateSemesters';
+import { generateSemesters } from '@shared/util/generateSemesters';
 import { useNumericInput, useQuickAddDropdowns } from '@views/hooks/useQuickAdd';
 import useSchedules from '@views/hooks/useSchedules';
 import { FIELDS_OF_STUDY } from '@views/resources/studyFields';
@@ -40,9 +39,9 @@ const SECTIONS = [
 
 const UNIQUE_ID_LENGTH = 5;
 
-const AVAILABLE_SEMESTERS = generateSemesterFields(
-    { year: 2024, term: 'fall' } as Semester,
-    { year: 2025, term: 'fall' } as Semester
+const AVAILABLE_SEMESTERS = generateSemesters(
+    { year: 2024, season: 'Fall' },
+    { year: 2025, season: 'Fall' }
 ) as DropdownOption[];
 
 /**

@@ -1,23 +1,10 @@
-/**
- * A type that represents a semester in UT
- */
-export type Semester = {
-    year: number;
-    term: 'spring' | 'summer' | 'fall';
-};
-
-/**
- * A type that represents a field with an id and label
- */
-export type SemesterField = {
-    id: string;
-    label: string;
-};
+import type { Semester } from '../types/Course';
+import type { SemesterItem } from '../types/CourseData';
 
 const TERM_TO_ID_MAP = {
-    spring: 2,
-    summer: 6,
-    fall: 9,
+    Spring: 2,
+    Summer: 6,
+    Fall: 9,
 };
 
 /**
@@ -28,40 +15,41 @@ const TERM_TO_ID_MAP = {
  * fromSemester - the starting semester
  * toSemester - the ending semester (inclusive)
  *
- * @returns a list of fields of these terms, along with their corresponding ids.
+ * @returns a list of items of these terms, along with their corresponding ids.
  */
-export function generateSemesterFields(fromSemester: Semester, toSemester: Semester): SemesterField[] {
+export function generateSemesters(fromSemester: Semester, toSemester: Semester): SemesterItem[] {
     // Capitalize the first letter of a string
     const capitalize = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1);
 
     // Generate a single field for a given year and semester
-    const generateField = (semester: Semester): SemesterField => {
-        const id = `${semester.year}${TERM_TO_ID_MAP[semester.term]}`;
-        const label = `${capitalize(semester.term)}, ${semester.year}`;
-        return { id, label };
+    const generateField = (semester: Semester): SemesterItem => {
+        const id = `${semester.year}${TERM_TO_ID_MAP[semester.season]}`;
+        const label = `${capitalize(semester.season)}, ${semester.year}`;
+        return { id, label, ...semester, code: id };
     };
 
     if (
         fromSemester.year > toSemester.year ||
-        (fromSemester.year === toSemester.year && TERM_TO_ID_MAP[fromSemester.term] > TERM_TO_ID_MAP[toSemester.term])
+        (fromSemester.year === toSemester.year &&
+            TERM_TO_ID_MAP[fromSemester.season] > TERM_TO_ID_MAP[toSemester.season])
     ) {
         return [];
     }
 
-    const result: SemesterField[] = [];
+    const result: SemesterItem[] = [];
     for (let { year } = fromSemester; year <= toSemester.year; year++) {
-        const terms = Object.keys(TERM_TO_ID_MAP).values().toArray();
+        const seasons = Object.keys(TERM_TO_ID_MAP).values().toArray();
 
         if (year === fromSemester.year) {
-            terms.splice(0, terms.indexOf(fromSemester.term));
+            seasons.splice(0, seasons.indexOf(fromSemester.season));
         }
 
         if (year === toSemester.year) {
-            terms.splice(terms.indexOf(toSemester.term) + 1);
+            seasons.splice(seasons.indexOf(toSemester.season) + 1);
         }
 
-        for (const term of terms) {
-            result.push(generateField({ year, term } as Semester));
+        for (const season of seasons) {
+            result.push(generateField({ year, season } as Semester));
         }
     }
 
