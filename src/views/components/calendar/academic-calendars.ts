@@ -14,7 +14,72 @@ type AcademicCalendarSemester = {
     breakDates: (DateStr | [DateStr, DateStr])[];
 };
 
+/**
+ * UT Austin's academic calendars, split by semester.
+ *
+ * See https://registrar.utexas.edu/calendars for future years.
+ */
 export const academicCalendars = {
+    '20229': {
+        year: 2022,
+        semester: 'Fall',
+        firstClassDate: '2022-08-22',
+        lastClassDate: '2022-12-05',
+        breakDates: [
+            '2022-09-05', // Labor Day holiday
+            ['2022-11-21', '2022-11-26'], // Fall break / Thanksgiving
+        ],
+    },
+    '20232': {
+        year: 2023,
+        semester: 'Spring',
+        firstClassDate: '2023-01-09',
+        lastClassDate: '2023-04-24',
+        breakDates: [
+            '2023-01-16', // Martin Luther King, Jr. Day
+            ['2023-03-13', '2023-03-18'], // Spring Break
+        ],
+    },
+    '20236': {
+        year: 2023,
+        semester: 'Summer',
+        firstClassDate: '2023-06-01',
+        lastClassDate: '2023-08-11',
+        breakDates: [
+            '2023-06-19', // Juneteenth holiday
+            '2023-07-04', // Independence Day holiday
+        ],
+    },
+    '20239': {
+        year: 2023,
+        semester: 'Fall',
+        firstClassDate: '2023-08-21',
+        lastClassDate: '2023-12-04',
+        breakDates: [
+            '2023-09-04', // Labor Day holiday
+            ['2023-11-20', '2023-11-25'], // Fall break / Thanksgiving
+        ],
+    },
+    '20242': {
+        year: 2024,
+        semester: 'Spring',
+        firstClassDate: '2024-01-16',
+        lastClassDate: '2024-04-29',
+        breakDates: [
+            '2024-01-15', // Martin Luther King, Jr. Day
+            ['2024-03-11', '2024-03-16'], // Spring Break
+        ],
+    },
+    '20246': {
+        year: 2024,
+        semester: 'Summer',
+        firstClassDate: '2024-06-06',
+        lastClassDate: '2024-08-16',
+        breakDates: [
+            '2024-06-19', // Juneteenth holiday
+            '2024-07-04', // Independence Day holiday
+        ],
+    },
     '20249': {
         year: 2024,
         semester: 'Fall',
