@@ -202,7 +202,7 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
     icsString += `DTEND;TZID=${TIMEZONE_ID}:${endDateFormatted}\n`;
     icsString += `RRULE:FREQ=WEEKLY;BYDAY=${icsDays};UNTIL=${untilDateFormatted}\n`;
     icsString += `EXDATE;TZID=${TIMEZONE_ID}:${excludedDatesFormatted.join(',')}\n`;
-    icsString += `SUMMARY:${course.department} ${course.number} — ${course.courseName}\n`;
+    icsString += `SUMMARY:${course.department} ${course.number} \u2013 ${course.courseName}\n`;
 
     if (location?.building || location?.building) {
         const locationFormatted = `${location?.building ?? ''} ${location?.room ?? ''}`.trim();
