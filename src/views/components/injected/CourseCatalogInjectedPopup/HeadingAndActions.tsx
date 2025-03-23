@@ -22,7 +22,7 @@ import Text from '@views/components/common/Text/Text';
 import { useCalendar } from '@views/contexts/CalendarContext';
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
-
+import { useEnforceSameSemesterCourse } from '@views/hooks/useEnforceSameSemesterCourse'
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
@@ -112,10 +112,21 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
         }
     };
 
+    const enforceSameSemCourse = useEnforceSameSemesterCourse();
+    const handleAddCourse = () => {
+        console.log("Reached handleAddCourse in Heading and actions");
+        if (enforceSameSemCourse(course, () => {
+            addCourse({ course, scheduleId: activeSchedule.id });
+          })) {
+            addCourse({ course, scheduleId: activeSchedule.id });
+          }
+    };
+
     const handleAddOrRemoveCourse = async () => {
         if (!activeSchedule) return;
         if (!courseAdded) {
-            addCourse({ course, scheduleId: activeSchedule.id });
+            handleAddCourse();
+            // addCourse({course, scheduleId: activeSchedule.id});
         } else {
             removeCourse({ course, scheduleId: activeSchedule.id });
         }

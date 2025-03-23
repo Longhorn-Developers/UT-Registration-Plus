@@ -1,7 +1,10 @@
 import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import { Button } from '@views/components/common/Button';
 import React, { useCallback } from 'react';
-
+import { UserSchedule } from 'src/shared/types/UserSchedule';
+import useSchedules from '@views/hooks/useSchedules';
+import type { Course } from '@shared/types/Course';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 /**
  * Hook that enforces adding courses only within the same semester.
  *
@@ -11,14 +14,16 @@ import React, { useCallback } from 'react';
  * @returns a callback function that enforces the semester rule via a dialog.
  */
 export function useEnforceSameSemesterCourse(): (
-  classSemesterCode: string | undefined,
-  currentSemesterCode: string | undefined,
-  addCourseCallback: () => void
-) => boolean {
-  const showPrompt = usePrompt();
+    course: Course, addCourseCallback: () => void) => boolean {
+    const showPrompt = usePrompt();
+    const [activeSchedule, schedules] = useSchedules();
+    console.log("Reached inside of useEnforceSameSemesterCourse");
 
   return useCallback(
-    (classSemesterCode, currentSemesterCode, addCourseCallback) => {
+    (course, addCourseCallback) => {
+    const classSemesterCode = course.semester.code;
+    const currentSemesterCode = activeSchedule.courses[0]?.semester.code;
+
       if (classSemesterCode === currentSemesterCode) {
         return true;
       }

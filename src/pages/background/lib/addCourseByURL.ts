@@ -4,9 +4,7 @@ import type { UserSchedule } from '@shared/types/UserSchedule';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { SiteSupport } from '@views/lib/getSiteSupport';
-import { useEnforceSameSemesterCourse } from '@views/hooks/useEnforceSameSemesterCourse'
 
-const showSemesterWarningDialog = useEnforceSameSemesterCourse();
 /**
  * Adds a course to the active schedule by fetching course details from a provided URL.
  * If no URL is provided, prompts the user to enter one.
@@ -57,7 +55,7 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
 
         if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
             console.log('Adding course');
-            await addCourse(activeSchedule.id, course, showSemesterWarningDialog);
+            await addCourse(activeSchedule.id, course);
         } else {
             console.log('Course already exists');
         }

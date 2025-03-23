@@ -5,9 +5,7 @@ import { courseMigration } from '@views/lib/courseMigration';
 import addCourse from './addCourse';
 import createSchedule from './createSchedule';
 import switchSchedule from './switchSchedule';
-import { useEnforceSameSemesterCourse } from '@views/hooks/useEnforceSameSemesterCourse'
 
-const showSemesterWarningDialog = useEnforceSameSemesterCourse();
 /**
  * Retrieves the saved courses from the extension's chrome sync storage (old store) and returns an array of course links.
  *
@@ -63,7 +61,7 @@ async function migrateUTRPv1Courses() {
             if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
                 // ignore eslint, as we *do* want to spend time on each iteration
                 // eslint-disable-next-line no-await-in-loop
-                await addCourse(activeSchedule.id, course, showSemesterWarningDialog);
+                await addCourse(activeSchedule.id, course);
             }
         }
 
