@@ -27,7 +27,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     return (
         <div
             style={{ scrollbarGutter: 'stable' }}
-            className='sticky left-0 right-0 top-0 z-999 min-h-[85px] flex items-center gap-5 overflow-x-scroll overflow-y-hidden bg-white pl-spacing-7 pt-spacing-5'
+            className='sticky left-0 right-0 top-0 z-10 min-h-[85px] flex items-center gap-5 overflow-x-scroll overflow-y-hidden bg-white pl-spacing-7 pt-spacing-5'
         >
             {!sidebarOpen && (
                 <Button
@@ -62,7 +62,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                 className={clsx([
                                     styleResetClass,
                                     'mt-spacing-3',
-                                    'min-w-max cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
+                                    'min-w-max cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none z-20',
                                     'data-[closed]:(opacity-0 scale-95)',
                                     'data-[enter]:(ease-out-expo duration-150)',
                                     'data-[leave]:(ease-out duration-50)',
