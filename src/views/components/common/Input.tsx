@@ -43,9 +43,8 @@ export default function Input({
                 placeholder={placeholder}
                 onChange={onChange}
                 className={clsx(
-                    'h-full w-full flex flex-row items-center justify-between gap-spacing-5',
-                    'border border-ut-offwhite/50 border-rounded bg-transparent disabled:bg-ut-offwhite/20',
-                    'px-spacing-4 focus:outline-none focus:ring-0'
+                    'h-full w-full px-spacing-4 bg-transparent disabled:bg-ut-offwhite/20 text-[1rem]',
+                    'border border-ut-offwhite/50 border-rounded focus:outline-none focus:ring-0'
                 )}
                 disabled={disabled}
                 maxLength={maxLength}
