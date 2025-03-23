@@ -238,7 +238,7 @@ describe('meetingToIcsString', () => {
             EXDATE;TZID=America/Chicago:20251128T130000
             ` +
             // Only skips one Thanksgiving break day
-            `SUMMARY:J 395 44-REPORTING TEXAS
+            `SUMMARY:J 395 — 44-REPORTING TEXAS
             LOCATION:DMC 3.208
             DESCRIPTION:Unique number: 10335\\nTaught by John Schwartz
             END:VEVENT`
@@ -257,7 +257,7 @@ describe('meetingToIcsString', () => {
             DTEND;TZID=America/Chicago:20250829T160000
             RRULE:FREQ=WEEKLY;BYDAY=FR;UNTIL=20251209T060000Z
             EXDATE;TZID=America/Chicago:20251128T130000
-            SUMMARY:J 395 44-REPORTING TEXAS
+            SUMMARY:J 395 — 44-REPORTING TEXAS
             LOCATION:DMC 3.208
             DESCRIPTION:Unique number: 04269\\nTaught by John Schwartz
             END:VEVENT`.replaceAll(/^\s+/gm, '');
@@ -273,7 +273,7 @@ describe('meetingToIcsString', () => {
             DTEND;TZID=America/Chicago:20250829T160000
             RRULE:FREQ=WEEKLY;BYDAY=FR;UNTIL=20251209T060000Z
             EXDATE;TZID=America/Chicago:20251128T130000
-            SUMMARY:J 395 44-REPORTING TEXAS
+            SUMMARY:J 395 — 44-REPORTING TEXAS
             LOCATION:DMC 3.208
             DESCRIPTION:Unique number: 10335\\nTaught by John Schwartz and John Bridges
             END:VEVENT`.replaceAll(/^\s+/gm, '');
@@ -305,7 +305,7 @@ describe('meetingToIcsString', () => {
             DTEND;TZID=America/Chicago:20250826T110000
             RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20251209T060000Z
             EXDATE;TZID=America/Chicago:20251125T093000,20251127T093000
-            SUMMARY:J 395 44-REPORTING TEXAS
+            SUMMARY:J 395 — 44-REPORTING TEXAS
             LOCATION:CMA 6.146
             DESCRIPTION:Unique number: 10335\\nTaught by John Schwartz and John Bridges
             END:VEVENT`.replaceAll(/^\s+/gm, '');
@@ -404,7 +404,7 @@ describe('scheduleToIcsString', () => {
             DTEND;TZID=America/Chicago:20250826T110000
             RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20251209T060000Z
             EXDATE;TZID=America/Chicago:20251125T093000,20251127T093000
-            SUMMARY:J 395 44-REPORTING TEXAS
+            SUMMARY:J 395 — 44-REPORTING TEXAS
             LOCATION:CMA 6.146
             DESCRIPTION:Unique number: 10335\\nTaught by John Schwartz and John Bridges
             END:VEVENT
@@ -413,7 +413,7 @@ describe('scheduleToIcsString', () => {
             DTEND;TZID=America/Chicago:20250829T160000
             RRULE:FREQ=WEEKLY;BYDAY=FR;UNTIL=20251209T060000Z
             EXDATE;TZID=America/Chicago:20251128T130000
-            SUMMARY:J 395 44-REPORTING TEXAS
+            SUMMARY:J 395 — 44-REPORTING TEXAS
             LOCATION:DMC 3.208
             DESCRIPTION:Unique number: 10335\\nTaught by John Schwartz and John Bridges
             END:VEVENT
@@ -435,7 +435,7 @@ describe('scheduleToIcsString', () => {
             DTEND;TZID=America/Chicago:20250826T110000
             RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20251209T060000Z
             EXDATE;TZID=America/Chicago:20251125T093000,20251127T093000
-            SUMMARY:J 395 44-REPORTING TEXAS
+            SUMMARY:J 395 — 44-REPORTING TEXAS
             LOCATION:CMA 6.146
             DESCRIPTION:Unique number: 10335\\nTaught by John Schwartz and John Bridges
             END:VEVENT
@@ -444,7 +444,7 @@ describe('scheduleToIcsString', () => {
             DTEND;TZID=America/Chicago:20250829T160000
             RRULE:FREQ=WEEKLY;BYDAY=FR;UNTIL=20251209T060000Z
             EXDATE;TZID=America/Chicago:20251128T130000
-            SUMMARY:J 395 44-REPORTING TEXAS
+            SUMMARY:J 395 — 44-REPORTING TEXAS
             LOCATION:DMC 3.208
             DESCRIPTION:Unique number: 10335\\nTaught by John Schwartz and John Bridges
             END:VEVENT
@@ -455,7 +455,7 @@ describe('scheduleToIcsString', () => {
             ` +
             // Skips Labor Day and only relevant days of Thanksgiving
             `EXDATE;TZID=America/Chicago:20250901T160000,20251124T160000,20251125T160000,20251126T160000,20251127T160000
-            SUMMARY:C S 429 COMP ORGANIZATN AND ARCH
+            SUMMARY:C S 429 — COMP ORGANIZATN AND ARCH
             LOCATION:UTC 3.102
             DESCRIPTION:Unique number: 54795\\nTaught by Siddhartha Chatterjee
             END:VEVENT
@@ -464,7 +464,7 @@ describe('scheduleToIcsString', () => {
             DTEND;TZID=America/Chicago:20250829T110000
             RRULE:FREQ=WEEKLY;BYDAY=FR;UNTIL=20251209T060000Z
             EXDATE;TZID=America/Chicago:20251128T090000
-            SUMMARY:C S 429 COMP ORGANIZATN AND ARCH
+            SUMMARY:C S 429 — COMP ORGANIZATN AND ARCH
             LOCATION:GSB 2.122
             DESCRIPTION:Unique number: 54795\\nTaught by Siddhartha Chatterjee
             END:VEVENT
