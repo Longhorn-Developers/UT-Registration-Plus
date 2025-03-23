@@ -1,4 +1,4 @@
-import { capitalize, capitalizeFirstLetter, ellipsify } from '@shared/util/string';
+import { capitalize, capitalizeFirstLetter, ellipsify, englishStringifyList } from '@shared/util/string';
 import { describe, expect, it } from 'vitest';
 
 // TODO: Fix `string.ts` and `string.test.ts` to make the tests pass
@@ -52,5 +52,51 @@ describe('ellipsify', () => {
 
         // Test case 4: Input string is empty
         expect(ellipsify('', 5)).toBe('');
+    });
+});
+
+describe('englishStringifyList', () => {
+    it('should handle an empty array', () => {
+        const data = [] satisfies string[];
+        const result = englishStringifyList(data);
+        const expected = '';
+        expect(result).toBe(expected);
+    });
+
+    it('should handle 1 element', () => {
+        const data = ['Alice'] satisfies string[];
+        const result = englishStringifyList(data);
+        const expected = 'Alice';
+        expect(result).toBe(expected);
+    });
+
+    it('should handle 2 elements', () => {
+        const data = ['Alice', 'Bob'] satisfies string[];
+        const result = englishStringifyList(data);
+        const expected = 'Alice and Bob';
+        expect(result).toBe(expected);
+    });
+
+    it('should handle 3 elements', () => {
+        const data = ['Alice', 'Bob', 'Charlie'] satisfies string[];
+        const result = englishStringifyList(data);
+        const expected = 'Alice, Bob, and Charlie';
+        expect(result).toBe(expected);
+    });
+
+    it('should handle n elements', () => {
+        const testcases = [
+            { data: [], expected: '' },
+            { data: ['foo'], expected: 'foo' },
+            { data: ['foo', 'bar'], expected: 'foo and bar' },
+            { data: ['foo', 'bar', 'baz'], expected: 'foo, bar, and baz' },
+            { data: ['a', 'b', 'c', 'd'], expected: 'a, b, c, and d' },
+            { data: 'abcdefghijk'.split(''), expected: 'a, b, c, d, e, f, g, h, i, j, and k' },
+        ] satisfies { data: string[]; expected: string }[];
+
+        for (const { data, expected } of testcases) {
+            const result = englishStringifyList(data);
+            expect(result).toBe(expected);
+        }
     });
 });
