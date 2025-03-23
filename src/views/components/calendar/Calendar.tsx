@@ -1,8 +1,10 @@
 import { Sidebar } from '@phosphor-icons/react';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import { openReportWindow } from '@shared/util/openReportWindow';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
@@ -16,6 +18,7 @@ import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSched
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import { MessageListener } from 'chrome-extension-toolkit';
 import clsx from 'clsx';
+import type { ReactNode } from 'react';
 import React, { useEffect, useState } from 'react';
 
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
@@ -28,14 +31,30 @@ import CalendarFooter from './CalendarFooter';
 /**
  * Calendar page component
  */
-export default function Calendar(): JSX.Element {
+export default function Calendar(): ReactNode {
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
 
     const [course, setCourse] = useState<Course | null>(useCourseFromUrl());
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
-    const [showSidebar, setShowSidebar] = useState<boolean>(true);
     const showWhatsNewDialog = useWhatsNewPopUp();
+
+    const queryClient = useQueryClient();
+    const { data: showSidebar, isPending: isSidebarStatePending } = useQuery({
+        queryKey: ['settings', 'showCalendarSidebar'],
+        queryFn: () => OptionsStore.get('showCalendarSidebar'),
+        staleTime: Infinity, // Prevent loading state on refocus
+    });
+
+    const { mutate: setShowSidebar } = useMutation({
+        mutationKey: ['settings', 'showCalendarSidebar'],
+        mutationFn: async (showSidebar: boolean) => {
+            OptionsStore.set('showCalendarSidebar', showSidebar);
+        },
+        onSuccess: (_, showSidebar) => {
+            queryClient.setQueryData(['settings', 'showCalendarSidebar'], showSidebar);
+        },
+    });
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
@@ -60,6 +79,8 @@ export default function Calendar(): JSX.Element {
     useEffect(() => {
         if (course) setShowPopup(true);
     }, [course]);
+
+    if (isSidebarStatePending) return null;
 
     return (
         <CalendarContext.Provider value>
