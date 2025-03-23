@@ -94,7 +94,7 @@ function extractCourseInfo(course: Course) {
         schedule: { meetings },
     } = course;
 
-    let courseDetail = `${course.department}, ${course.number} ${course.uniqueId}`;
+    let courseDetail = `${course.department}, ${course.number} ${course.uniqueId.toString().padStart(5, '0')}`;
 
     if (course.instructors.length > 0) {
         courseDetail += ' \u2013 ';
