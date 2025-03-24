@@ -174,3 +174,137 @@ export const mikeScottCS314Schedule: UserSchedule = new UserSchedule({
     hours: 3,
     updatedAt: Date.now(),
 });
+
+export const multiMeetingMultiInstructorCourse: Course = new Course({
+    colors: {
+        primaryColor: '#ef4444',
+        secondaryColor: '#991b1b',
+    },
+    core: [],
+    courseName: '44-REPORTING TEXAS',
+    creditHours: 3,
+    department: 'J',
+    description: [
+        "Contemporary social, professional, and intellectual concerns with the practice of journalism. Students work as online reporters, photographers, and editors for the School of Journalism's Reporting Texas Web site.",
+        'Prerequisite: Graduate standing; additional prerequisites vary with the topic.',
+        'Designed to accommodate 35 or fewer students. Course number may be repeated for credit when the topics vary.',
+    ],
+    flags: [],
+    fullName: 'J 395 44-REPORTING TEXAS',
+    instructionMode: 'In Person',
+    instructors: [
+        {
+            firstName: 'JOHN',
+            fullName: 'SCHWARTZ, JOHN R',
+            lastName: 'SCHWARTZ',
+            middleInitial: 'R',
+        },
+        {
+            firstName: 'JOHN',
+            fullName: 'BRIDGES, JOHN A III',
+            lastName: 'BRIDGES',
+            middleInitial: 'A',
+        },
+    ],
+    isReserved: true,
+    number: '395',
+    schedule: {
+        meetings: [
+            {
+                days: ['Tuesday', 'Thursday'],
+                endTime: 660,
+                location: {
+                    building: 'CMA',
+                    room: '6.146',
+                },
+                startTime: 570,
+            },
+            {
+                days: ['Friday'],
+                endTime: 960,
+                location: {
+                    building: 'DMC',
+                    room: '3.208',
+                },
+                startTime: 780,
+            },
+        ],
+    },
+    scrapedAt: 1742491957535,
+    semester: {
+        code: '20259',
+        season: 'Fall',
+        year: 2025,
+    },
+    status: 'OPEN',
+    uniqueId: 10335,
+    url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20259/10335/',
+});
+
+export const multiMeetingMultiInstructorSchedule: UserSchedule = new UserSchedule({
+    courses: [multiMeetingMultiInstructorCourse],
+    id: 'mmmis',
+    name: 'Multi Meeting Multi Instructor Schedule',
+    hours: 3,
+    updatedAt: Date.now(),
+});
+
+export const chatterjeeCS429Course: Course = new Course({
+    colors: {
+        primaryColor: '#0284c7',
+        secondaryColor: '#0c4a6e',
+    },
+    core: [],
+    courseName: 'COMP ORGANIZATN AND ARCH',
+    creditHours: 4,
+    department: 'C S',
+    description: [
+        'Restricted to computer science majors.',
+        'An introduction to low-level computer design ranging from the basics of digital design to the hardware/software interface for application programs. Includes basic systems principles of pipelining and caching, and requires writing and understanding programs at multiple levels.',
+        'Computer Science 429 and 429H may not both be counted.',
+        'Prerequisite: The following courses with a grade of at least C-: Computer Science 311 or 311H; and Computer Science 314 or 314H.',
+    ],
+    flags: [],
+    fullName: 'C S 429 COMP ORGANIZATN AND ARCH',
+    instructionMode: 'In Person',
+    instructors: [
+        {
+            firstName: 'SIDDHARTHA',
+            fullName: 'CHATTERJEE, SIDDHARTHA',
+            lastName: 'CHATTERJEE',
+        },
+    ],
+    isReserved: true,
+    number: '429',
+    schedule: {
+        meetings: [
+            {
+                days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'],
+                endTime: 1020,
+                location: {
+                    building: 'UTC',
+                    room: '3.102',
+                },
+                startTime: 960,
+            },
+            {
+                days: ['Friday'],
+                endTime: 660,
+                location: {
+                    building: 'GSB',
+                    room: '2.122',
+                },
+                startTime: 540,
+            },
+        ],
+    },
+    scrapedAt: 1742496630445,
+    semester: {
+        code: '20259',
+        season: 'Fall',
+        year: 2025,
+    },
+    status: 'OPEN',
+    uniqueId: 54795,
+    url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20259/54795/',
+});
