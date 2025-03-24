@@ -6,7 +6,6 @@ import addCourse from './addCourse';
 import createSchedule from './createSchedule';
 import switchSchedule from './switchSchedule';
 
-
 function isValidSchedule(data: unknown): data is Serialized<UserSchedule> {
     if (typeof data !== 'object' || data === null) return false;
     const schedule = data as Record<string, unknown>;
