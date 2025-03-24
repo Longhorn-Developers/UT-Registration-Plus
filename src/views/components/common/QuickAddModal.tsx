@@ -49,13 +49,10 @@ export default function QuickAddModal(): JSX.Element {
     );
 
     const handleAddCourse = async () => {
-        if (uniqueNumber.value.length === UNIQUE_ID_LENGTH && data.semester) {
-            const courseUrl =
-                `https://utdirect.utexas.edu/apps/registrar/course_schedule/` +
-                `${data.semester.id}/${uniqueNumber.value}/`;
-            await addCourseByURL(activeSchedule, courseUrl);
-        }
-
+        if (!data.semester || (uniqueNumber.value.length !== UNIQUE_ID_LENGTH && !data.section)) return;
+        const uniqueId = uniqueNumber.value.length === UNIQUE_ID_LENGTH ? uniqueNumber.value : data.section!.id;
+        const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${data.semester.id}/${uniqueId}/`;
+        await addCourseByURL(activeSchedule, courseUrl);
         uniqueNumber.reset();
         data.resetDropdowns();
     };
@@ -91,7 +88,7 @@ export default function QuickAddModal(): JSX.Element {
                                 onOptionChange={(newOpt: DropdownOption) =>
                                     data.handleSemesterChange(newOpt as SemesterItem)
                                 }
-                                disabled={data.semesterDisabled || uniqueNumber.value !== ''}
+                                disabled={data.semesterDisabled}
                                 icon={Calendar}
                             />
                             <Dropdown
@@ -164,9 +161,7 @@ export default function QuickAddModal(): JSX.Element {
                             icon={Plus}
                             onClick={handleAddCourse}
                             disabled={
-                                !data.semester ||
-                                (data.semester && !data.section) ||
-                                (data.semester && uniqueNumber.value.length !== UNIQUE_ID_LENGTH)
+                                !data.semester || (!data.section && uniqueNumber.value.length !== UNIQUE_ID_LENGTH)
                             }
                         >
                             Add Course

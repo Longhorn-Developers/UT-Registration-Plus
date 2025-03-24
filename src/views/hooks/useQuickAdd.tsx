@@ -241,9 +241,9 @@ export const useQuickAddDropdowns = (
         sections,
 
         semesterDisabled: false,
-        fieldOfStudyDisabled: !semester,
-        courseNumberDisabled: !fieldOfStudy,
-        sectionDisabled: !courseNumber,
+        fieldOfStudyDisabled: semester === undefined,
+        courseNumberDisabled: fieldOfStudy === undefined,
+        sectionDisabled: courseNumber === undefined,
 
         handleSemesterChange,
         handleFieldOfStudyChange,

@@ -1,6 +1,7 @@
 import { CourseDataStore } from '@shared/storage/courseDataStore';
 import type { ScrapedRow } from '@shared/types/Course';
 import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
+import { capitalize } from '@shared/util/string';
 
 import { FIELDS_OF_STUDY } from '../resources/studyFields';
 import { CourseCatalogScraper } from './CourseCatalogScraper';
@@ -10,7 +11,7 @@ import { SiteSupport } from './getSiteSupport';
  * Fetches study fields from the API (fake implementation)
  */
 async function fetchFieldsOfStudy(_semester: SemesterItem): Promise<FieldOfStudyItem[]> {
-    console.log('Fetched fields of study [Fake]', FIELDS_OF_STUDY);
+    // console.log('Fetched fields of study [Fake]', FIELDS_OF_STUDY);
     return FIELDS_OF_STUDY as FieldOfStudyItem[];
 }
 
@@ -29,7 +30,7 @@ async function fetchCourseNumbers(semester: SemesterItem, studyFieldId: string):
             return [];
         });
 
-    console.log('Fetched course numbers:', data);
+    // console.log('Fetched course numbers:', data);
 
     const processedData = data.map((item: { id: string; subjectId: string; displayTitle: string }) => ({
         id: item.id.replace('|', ' '),
@@ -62,24 +63,47 @@ async function fetchSections(
             console.error('Error fetching sections:', error);
         });
 
-    console.log('Fetched sections:', data);
+    // console.log('Fetched sections:', data);
 
     if (!data) {
         return [];
     }
 
     const courseCatalogScraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, data, url);
-    const rows = courseCatalogScraper.scrape(data.querySelectorAll('#inner_body > table > tbody'));
-    console.log('Scraped rows:', rows);
-    return rows
-        .filter((row: ScrapedRow) => row.course !== null)
-        .map(
-            (row: ScrapedRow) =>
-                ({
-                    id: row.course?.uniqueId ?? '',
-                    label: row.course?.fullName ?? '',
-                }) as SectionItem
+    const rows = courseCatalogScraper.scrape(data.querySelectorAll('table.results tbody tr'));
+
+    const processRow = ({ course }: ScrapedRow) => {
+        if (!course) {
+            return { id: '', label: '' };
+        }
+        const { uniqueId } = course;
+        const instructor = capitalize(
+            course.instructors
+                .map(instr => instr.fullName)
+                .filter(instr => instr)
+                .join(', ')
         );
+
+        const time = course.schedule.meetings
+            .map(meeting => {
+                const days = meeting.getDaysString({ format: 'short' });
+                const time = meeting.getTimeString({ separator: '-' });
+                const building = meeting.location?.building;
+                const room = meeting.location?.room;
+                return `${days} ${time}, ${building} ${room}`;
+            })
+            .join('\n');
+
+        return {
+            id: `${uniqueId}`,
+            label: `${uniqueId} with ${instructor} ${time}`,
+        };
+    };
+
+    // console.log('Scraped rows:', rows);
+    // console.log(rows);
+    // console.log(data);
+    return rows.filter((row: ScrapedRow) => row.course !== null).map(processRow);
 }
 
 /**
