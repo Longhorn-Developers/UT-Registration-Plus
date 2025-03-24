@@ -113,7 +113,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     };
 
     const enforceSameSemCourse = useEnforceSameSemesterCourse();
-    const handleAddCourse = () => {
+    const handleAddCourse = async () => {
         console.log("Reached handleAddCourse in Heading and actions");
         if (enforceSameSemCourse(course, () => {
             addCourse({ course, scheduleId: activeSchedule.id });

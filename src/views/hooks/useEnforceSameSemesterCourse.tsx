@@ -1,10 +1,10 @@
 import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import { Button } from '@views/components/common/Button';
 import React, { useCallback } from 'react';
-import { UserSchedule } from 'src/shared/types/UserSchedule';
+// import { UserSchedule } from 'src/shared/types/UserSchedule';
 import useSchedules from '@views/hooks/useSchedules';
 import type { Course } from '@shared/types/Course';
-import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+// import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 /**
  * Hook that enforces adding courses only within the same semester.
  *
@@ -13,9 +13,9 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
  *
  * @returns a callback function that enforces the semester rule via a dialog.
  */
-export function useEnforceSameSemesterCourse(): (
-    course: Course, addCourseCallback: () => void) => boolean {
-    const showPrompt = usePrompt();
+export function useEnforceSameSemesterCourse():
+    (course: Course, addCourseCallback: () => void) => boolean {
+    const showDialog = usePrompt();
     const [activeSchedule, schedules] = useSchedules();
     console.log("Reached inside of useEnforceSameSemesterCourse");
 
@@ -24,11 +24,11 @@ export function useEnforceSameSemesterCourse(): (
     const classSemesterCode = course.semester.code;
     const currentSemesterCode = activeSchedule.courses[0]?.semester.code;
 
-      if (classSemesterCode === currentSemesterCode) {
+      if (activeSchedule.courses.length === 0 || classSemesterCode === currentSemesterCode) {
         return true;
       }
 
-      showPrompt({
+      showDialog({
         title: 'Semester Mismatch',
         description: (
           <>
@@ -63,7 +63,7 @@ export function useEnforceSameSemesterCourse(): (
 
       return false;
     },
-    [showPrompt]
+    [activeSchedule, showDialog]
   );
 }
 
