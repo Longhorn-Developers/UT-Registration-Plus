@@ -9,10 +9,11 @@ import {
     Plus,
     PlusCircle,
 } from '@phosphor-icons/react';
+import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
 import { generateSemesters } from '@shared/util/generateSemesters';
 import { useNumericInput, useQuickAddDropdowns } from '@views/hooks/useQuickAdd';
 import useSchedules from '@views/hooks/useSchedules';
-import { FIELDS_OF_STUDY } from '@views/resources/studyFields';
+import { CourseDataService } from '@views/lib/getCoursesAndSections';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -25,24 +26,11 @@ import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/Extension
 import Input from './Input';
 import Text from './Text/Text';
 
-// TODO: Replace with actual course numbers
-const COURSE_NUMBERS = [
-    { id: '1', label: 'CS101' },
-    { id: '2', label: 'MATH202' },
-] as const satisfies DropdownOption[];
-
-// TODO: Replace with actual sections
-const SECTIONS = [
-    { id: '1', label: 'Section A' },
-    { id: '2', label: 'Section B' },
-] as const satisfies DropdownOption[];
-
 const UNIQUE_ID_LENGTH = 5;
 
-const AVAILABLE_SEMESTERS = generateSemesters(
-    { year: 2024, season: 'Fall' },
-    { year: 2025, season: 'Fall' }
-) as DropdownOption[];
+const AVAILABLE_SEMESTERS = generateSemesters({ year: 2024, season: 'Fall' }, { year: 2025, season: 'Fall' });
+
+const courseData = new CourseDataService();
 
 /**
  * QuickAddModal component
@@ -52,22 +40,24 @@ const AVAILABLE_SEMESTERS = generateSemesters(
 export default function QuickAddModal(): JSX.Element {
     const [activeSchedule] = useSchedules();
     const uniqueNumber = useNumericInput('', UNIQUE_ID_LENGTH);
-    const [semester, setSemester] = React.useState<DropdownOption>(AVAILABLE_SEMESTERS[0] as DropdownOption);
-    const dropdowns = useQuickAddDropdowns(
-        FIELDS_OF_STUDY,
-        () => COURSE_NUMBERS,
-        () => SECTIONS,
+    const data = useQuickAddDropdowns(
+        AVAILABLE_SEMESTERS,
+        courseData.getFieldsOfStudy,
+        courseData.getCourseNumbers,
+        courseData.getSections,
         () => uniqueNumber.reset()
     );
 
     const handleAddCourse = async () => {
-        if (uniqueNumber.value.length === UNIQUE_ID_LENGTH) {
-            const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semester.id}/${uniqueNumber.value}/`;
+        if (uniqueNumber.value.length === UNIQUE_ID_LENGTH && data.semester) {
+            const courseUrl =
+                `https://utdirect.utexas.edu/apps/registrar/course_schedule/` +
+                `${data.semester.id}/${uniqueNumber.value}/`;
             await addCourseByURL(activeSchedule, courseUrl);
         }
 
         uniqueNumber.reset();
-        dropdowns.resetDropdowns();
+        data.resetDropdowns();
     };
 
     return (
@@ -96,33 +86,42 @@ export default function QuickAddModal(): JSX.Element {
                         <div className='flex flex-col gap-spacing-5'>
                             <Dropdown
                                 placeholderText='Select Semester...'
-                                options={AVAILABLE_SEMESTERS}
-                                selectedOption={semester}
-                                onOptionChange={setSemester}
+                                options={data.semesters}
+                                selectedOption={data.semester}
+                                onOptionChange={(newOpt: DropdownOption) =>
+                                    data.handleSemesterChange(newOpt as SemesterItem)
+                                }
+                                disabled={data.semesterDisabled || uniqueNumber.value !== ''}
                                 icon={Calendar}
                             />
                             <Dropdown
                                 placeholderText='Select Field of Study...'
-                                options={dropdowns.options.level1}
-                                selectedOption={dropdowns.selections.level1}
-                                onOptionChange={dropdowns.handleChange.level1}
-                                disabled={dropdowns.disabled.level1 || uniqueNumber.value !== ''}
+                                options={data.fieldsOfStudy}
+                                selectedOption={data.fieldOfStudy}
+                                onOptionChange={(newOpt: DropdownOption) =>
+                                    data.handleFieldOfStudyChange(newOpt as FieldOfStudyItem)
+                                }
+                                disabled={data.fieldOfStudyDisabled || uniqueNumber.value !== ''}
                                 icon={GraduationCap}
                             />
                             <Dropdown
                                 placeholderText='Select Course Number...'
-                                options={dropdowns.options.level2}
-                                selectedOption={dropdowns.selections.level2}
-                                onOptionChange={dropdowns.handleChange.level2}
-                                disabled={dropdowns.disabled.level2 || uniqueNumber.value !== ''}
+                                options={data.courseNumbers}
+                                selectedOption={data.courseNumber}
+                                onOptionChange={(newOpt: DropdownOption) =>
+                                    data.handleCourseNumberChange(newOpt as CourseNumberItem)
+                                }
+                                disabled={data.courseNumberDisabled || uniqueNumber.value !== ''}
                                 icon={ListNumbers}
                             />
                             <Dropdown
                                 placeholderText='Select Section...'
-                                options={dropdowns.options.level3}
-                                selectedOption={dropdowns.selections.level3}
-                                onOptionChange={dropdowns.handleChange.level3}
-                                disabled={dropdowns.disabled.level3 || uniqueNumber.value !== ''}
+                                options={data.sections}
+                                selectedOption={data.section}
+                                onOptionChange={(newOpt: DropdownOption) =>
+                                    data.handleSectionChange(newOpt as SectionItem)
+                                }
+                                disabled={data.sectionDisabled || uniqueNumber.value !== ''}
                                 icon={ChalkboardTeacher}
                             />
                         </div>
@@ -150,7 +149,7 @@ export default function QuickAddModal(): JSX.Element {
                                     variant='minimal'
                                     onClick={() => {
                                         uniqueNumber.reset();
-                                        dropdowns.resetDropdowns();
+                                        data.resetDropdowns();
                                         close();
                                     }}
                                 >
@@ -164,7 +163,11 @@ export default function QuickAddModal(): JSX.Element {
                             variant='filled'
                             icon={Plus}
                             onClick={handleAddCourse}
-                            disabled={!dropdowns.selections.level3 && uniqueNumber.value.length !== UNIQUE_ID_LENGTH}
+                            disabled={
+                                !data.semester ||
+                                (data.semester && !data.section) ||
+                                (data.semester && uniqueNumber.value.length !== UNIQUE_ID_LENGTH)
+                            }
                         >
                             Add Course
                         </Button>

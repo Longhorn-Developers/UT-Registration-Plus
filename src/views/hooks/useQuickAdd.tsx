@@ -1,5 +1,8 @@
+import type { ICourseDataStore } from '@shared/storage/courseDataStore';
+import { CourseDataStore } from '@shared/storage/courseDataStore';
+import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
 import type { ChangeEvent, ClipboardEvent } from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import type { DropdownOption } from '../components/common/Dropdown';
 
@@ -69,124 +72,183 @@ export const useNumericInput = (initialValue: string = '', maxLength?: number, o
  *
  * A custom hook to manage the QuickAdd modal dropdowns.
  *
- * The hook takes the level 1 options only, and for each subsequent option, it calls the corresponding
- * getLevelOptions function to get its own options, based on the value of the prior level option. This
- * way, if the options are dynamically fetched, it can handle that.
+ * This hook manages the dropdowns for the QuickAdd modal. These dropdowns are hierarchical, which means that
+ * selecting an option in a higher level will affect the options available in the lower levels. For example,
+ * if a semester is selected, the available fields of study will change to only those available in that semester.
+ * Similarly, selecting a field of study will change the available course numbers to only those available in that field.
  *
  * In the context of the QuickAdd modal, these levels represent:
- * - Level 1: The Field of Study (C.S., GOV., etc.)
- * - Level 2: Course Number (CS 439, GOV 312L, etc.)
- * - Level 3: Section Number (unique sections of this course)
+ * - Level 1: The Semester (Fall 2024, Spring 2025, etc.)
+ * - Level 2: The Field of Study (C.S., GOV., etc.)
+ * - Level 3: Course Number (CS 439, GOV 312L, etc.)
+ * - Level 4: Section Number (unique sections of this course)
  *
- * @param level1Options - The initial options for the first dropdown.
- * @param getLevel2Options - A function that takes the first option selected and returns the second level options.
- * @param getLevel3Options - A function that takes the second option selected and returns the third level options.
+ * @param semesters - The list of semesters to choose from.
+ * @param getFieldsOfStudy - An async function that takes the semester selected and returns its corresponding fields of study.
+ * @param getCourseNumber - An async function that takes the previous options selected and returns their corresponding course numbers.
+ * @param getSections - An async function that takes the previous options selected and returns their corresponding sections.
  * @param onChange - An optional callback function to be called when any of the options change.
  */
 export const useQuickAddDropdowns = (
-    level1Options: DropdownOption[],
-    getLevel2Options: (selectedOption?: DropdownOption) => DropdownOption[],
-    getLevel3Options: (selectedOption?: DropdownOption) => DropdownOption[],
+    semesters: SemesterItem[],
+    getFieldsOfStudy: (semester: SemesterItem) => Promise<FieldOfStudyItem[]>,
+    getCourseNumbers: (semester: SemesterItem, fieldOfStudy: FieldOfStudyItem) => Promise<CourseNumberItem[]>,
+    getSections: (
+        semester: SemesterItem,
+        fieldOfStudy: FieldOfStudyItem,
+        courseNumber: CourseNumberItem
+    ) => Promise<SectionItem[]>,
     onChange?: () => void
 ) => {
-    // Selected values for each level
-    const [level1Selection, setLevel1Selection] = useState<DropdownOption | undefined>(undefined);
-    const [level2Selection, setLevel2Selection] = useState<DropdownOption | undefined>(undefined);
-    const [level3Selection, setLevel3Selection] = useState<DropdownOption | undefined>(undefined);
+    // Course Data Store
+    const [courseData, setCourseData] = useState<ICourseDataStore>({ courseData: {} });
 
-    // Available options for each level
-    const [level2Options, setLevel2Options] = useState<DropdownOption[]>([]);
-    const [level3Options, setLevel3Options] = useState<DropdownOption[]>([]);
+    // Selected values
+    const [semester, setSemester] = useState<SemesterItem | undefined>(undefined);
+    const [fieldOfStudy, setFieldOfStudy] = useState<FieldOfStudyItem | undefined>(undefined);
+    const [courseNumber, setCourseNumber] = useState<CourseNumberItem | undefined>(undefined);
+    const [section, setSection] = useState<SectionItem | undefined>(undefined);
 
-    // Handle level 1 selection
-    const handleLevel1Change = useCallback(
-        (value: DropdownOption) => {
-            if (value === level1Selection) {
+    // Available options
+    const [fieldsOfStudy, setFieldsOfStudy] = useState<FieldOfStudyItem[]>([]);
+    const [courseNumbers, setCourseNumbers] = useState<CourseNumberItem[]>([]);
+    const [sections, setSections] = useState<SectionItem[]>([]);
+
+    useEffect(() => {
+        const initializer = async () => {
+            const data = await CourseDataStore.get('courseData');
+            setCourseData({ courseData: data });
+        };
+
+        initializer();
+    }, []);
+
+    useEffect(() => {
+        const listener = CourseDataStore.listen('courseData', newCourseData => {
+            setCourseData(prev => ({
+                ...prev,
+                courseData: newCourseData.newValue || {},
+            }));
+        });
+
+        return () => {
+            CourseDataStore.removeListener(listener);
+        };
+    }, [semester, fieldOfStudy, courseNumber, section]);
+
+    useEffect(() => {
+        const data = courseData.courseData;
+
+        if (semester) {
+            const studyFields = data[semester.id]?.studyFields || [];
+            setFieldsOfStudy(Object.values(studyFields).map(f => f.info));
+        }
+
+        if (semester && fieldOfStudy) {
+            const courseNumbers = data[semester.id]?.studyFields[fieldOfStudy.id]?.courseNumbers || [];
+            setCourseNumbers(Object.values(courseNumbers).map(c => c.info));
+        }
+
+        if (semester && fieldOfStudy && courseNumber) {
+            const sections =
+                data[semester.id]?.studyFields[fieldOfStudy.id]?.courseNumbers[courseNumber.id]?.sections || [];
+            setSections(Object.values(sections));
+        }
+    }, [courseData, semester, fieldOfStudy, courseNumber]);
+
+    const handleSemesterChange = useCallback(
+        (newSemester: SemesterItem) => {
+            if (newSemester === semester) {
                 return;
             }
 
-            setLevel1Selection(value);
-            setLevel2Selection(undefined);
-            setLevel3Selection(undefined);
+            setSemester(newSemester);
+            setFieldOfStudy(undefined);
+            setCourseNumber(undefined);
 
-            // Update level 2 options based on level 1 selection
-            const newLevel2Options = value ? getLevel2Options(value) : [];
-            setLevel2Options(newLevel2Options);
-            setLevel3Options([]);
+            getFieldsOfStudy(newSemester);
 
             onChange?.();
         },
-        [getLevel2Options, level1Selection, onChange]
+        [getFieldsOfStudy, semester, onChange]
     );
 
-    // Handle level 2 selection
-    const handleLevel2Change = useCallback(
-        (value: DropdownOption) => {
-            if (value === level2Selection) {
+    const handleFieldOfStudyChange = useCallback(
+        (newFieldOfStudy: FieldOfStudyItem) => {
+            if (newFieldOfStudy === fieldOfStudy || !semester) {
                 return;
             }
 
-            setLevel2Selection(value);
-            setLevel3Selection(undefined);
+            setFieldOfStudy(newFieldOfStudy);
+            setCourseNumber(undefined);
+            setSection(undefined);
 
-            // Update level 3 options based on level 2 selection
-            const newLevel3Options = value ? getLevel3Options(value) : [];
-            setLevel3Options(newLevel3Options);
+            getCourseNumbers(semester, newFieldOfStudy);
 
             onChange?.();
         },
-        [getLevel3Options, level2Selection, onChange]
+        [getCourseNumbers, semester, fieldOfStudy, onChange]
     );
 
     // Handle level 3 selection
-    const handleLevel3Change = useCallback(
-        (value: DropdownOption) => {
-            if (value === level3Selection) {
+    const handleCourseNumberChange = useCallback(
+        (newCourseNumber: CourseNumberItem) => {
+            if (newCourseNumber === courseNumber || !semester || !fieldOfStudy) {
                 return;
             }
 
-            setLevel3Selection(value);
+            setCourseNumber(newCourseNumber);
+            setSection(undefined);
+
+            getSections(semester, fieldOfStudy, newCourseNumber);
 
             onChange?.();
         },
-        [level3Selection, onChange]
+        [getSections, semester, fieldOfStudy, courseNumber, onChange]
+    );
+
+    const handleSectionChange = useCallback(
+        (newSection: SectionItem) => {
+            if (newSection === section) {
+                return;
+            }
+
+            setSection(newSection);
+            onChange?.();
+        },
+        [section, onChange]
     );
 
     // Reset all selections and options
     const resetDropdowns = useCallback(() => {
-        setLevel1Selection(undefined);
-        setLevel2Selection(undefined);
-        setLevel3Selection(undefined);
-        setLevel2Options([]);
-        setLevel3Options([]);
+        setSemester(undefined);
+        setFieldOfStudy(undefined);
+        setCourseNumber(undefined);
+        setSection(undefined);
 
         onChange?.();
     }, [onChange]);
 
     return {
-        selections: {
-            level1: level1Selection,
-            level2: level2Selection,
-            level3: level3Selection,
-        },
+        semester,
+        fieldOfStudy,
+        courseNumber,
+        section,
 
-        options: {
-            level1: level1Options,
-            level2: level2Options,
-            level3: level3Options,
-        },
+        semesters,
+        fieldsOfStudy,
+        courseNumbers,
+        sections,
 
-        disabled: {
-            level1: false,
-            level2: level1Selection === undefined,
-            level3: level2Selection === undefined,
-        },
+        semesterDisabled: false,
+        fieldOfStudyDisabled: !semester,
+        courseNumberDisabled: !fieldOfStudy,
+        sectionDisabled: !courseNumber,
 
-        handleChange: {
-            level1: handleLevel1Change,
-            level2: handleLevel2Change,
-            level3: handleLevel3Change,
-        },
+        handleSemesterChange,
+        handleFieldOfStudyChange,
+        handleCourseNumberChange,
+        handleSectionChange,
 
         resetDropdowns,
     };

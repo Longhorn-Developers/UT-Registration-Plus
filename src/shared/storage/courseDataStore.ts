@@ -7,38 +7,40 @@ import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } fr
  * course numbers, and sections for each semester.
  *
  * The structure is as follows:
- * - semester
+ * - semester.id
  *   - info (the semester details)
- *   - field of study
+ *   - field of study.id
  *      - info (the field of study details)
- *      - course number
+ *      - course number.id
  *          - info (the course number details)
- *          - section
+ *          - section (the section details)
  *
  */
-export type ICourseDataStore = Record<
-    string,
-    {
-        info: SemesterItem;
-        studyFields: Record<
-            string,
-            {
-                info: FieldOfStudyItem;
-                courseNumbers: Record<
-                    string,
-                    {
-                        info: CourseNumberItem;
-                        sections: Record<string, SectionItem>;
-                    }
-                >;
-            }
-        >;
-    }
->;
+export type ICourseDataStore = {
+    courseData: Record<
+        string,
+        {
+            info: SemesterItem;
+            studyFields: Record<
+                string,
+                {
+                    info: FieldOfStudyItem;
+                    courseNumbers: Record<
+                        string,
+                        {
+                            info: CourseNumberItem;
+                            sections: Record<string, SectionItem>;
+                        }
+                    >;
+                }
+            >;
+        }
+    >;
+};
 
 /**
  * A store that is used for storing user schedules (and the active schedule)
  */
-export const CourseDataStore = createLocalStore<ICourseDataStore>({});
+export const CourseDataStore = createLocalStore<ICourseDataStore>({ courseData: {} });
 
 debugStore({ userScheduleStore: CourseDataStore });

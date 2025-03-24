@@ -7,6 +7,82 @@ import { CourseCatalogScraper } from './CourseCatalogScraper';
 import { SiteSupport } from './getSiteSupport';
 
 /**
+ * Fetches study fields from the API (fake implementation)
+ */
+async function fetchFieldsOfStudy(_semester: SemesterItem): Promise<FieldOfStudyItem[]> {
+    console.log('Fetched fields of study [Fake]', FIELDS_OF_STUDY);
+    return FIELDS_OF_STUDY as FieldOfStudyItem[];
+}
+
+/**
+ * Fetches course numbers from the API
+ */
+async function fetchCourseNumbers(semester: SemesterItem, studyFieldId: string): Promise<CourseNumberItem[]> {
+    const formattedSemester = `${semester.year}%20${semester.season}`;
+    const formattedStudyFieldId = studyFieldId.replace(' ', '%20');
+    const url = `https://utexas.collegescheduler.com/api/terms/${formattedSemester}/subjects/${formattedStudyFieldId}/courses`;
+
+    const data = await fetch(url)
+        .then(response => response.json())
+        .catch(error => {
+            console.error('Error fetching course numbers:', error);
+            return [];
+        });
+
+    console.log('Fetched course numbers:', data);
+
+    const processedData = data.map((item: { id: string; subjectId: string; displayTitle: string }) => ({
+        id: item.id.replace('|', ' '),
+        label: `${item.subjectId} ${item.displayTitle}`,
+    }));
+
+    return processedData;
+}
+
+/**
+ * Fetches sections from the API (fake implementation)
+ */
+async function fetchSections(
+    semester: SemesterItem,
+    fieldOfStudy: FieldOfStudyItem,
+    courseNumber: CourseNumberItem
+): Promise<SectionItem[]> {
+    const formattedDepartment = fieldOfStudy.id.replace(' ', '+');
+    const formattedCourseNumber = courseNumber.id.split(' ').pop();
+    const url =
+        `https://utdirect.utexas.edu/apps/registrar/` +
+        `course_schedule/${semester.id}/results/?search_type_main=COURSE&` +
+        `fos_cn=${formattedDepartment}` +
+        `&course_number=${formattedCourseNumber}`;
+
+    const data = await fetch(url)
+        .then(response => response.text())
+        .then(html => new DOMParser().parseFromString(html, 'text/html'))
+        .catch(error => {
+            console.error('Error fetching sections:', error);
+        });
+
+    console.log('Fetched sections:', data);
+
+    if (!data) {
+        return [];
+    }
+
+    const courseCatalogScraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, data, url);
+    const rows = courseCatalogScraper.scrape(data.querySelectorAll('#inner_body > table > tbody'));
+    console.log('Scraped rows:', rows);
+    return rows
+        .filter((row: ScrapedRow) => row.course !== null)
+        .map(
+            (row: ScrapedRow) =>
+                ({
+                    id: row.course?.uniqueId ?? '',
+                    label: row.course?.fullName ?? '',
+                }) as SectionItem
+        );
+}
+
+/**
  * A service that handles fetching and caching course data from UT.
  *
  * This service interacts with a local store to cache data and avoid unnecessary API calls.
@@ -16,78 +92,52 @@ export class CourseDataService {
     /**
      * Retrieves study fields for a specific semester
      */
-    async getFieldOfStudy(semester: SemesterItem): Promise<FieldOfStudyItem[]> {
-        let semesterData = await CourseDataStore.get(semester.id);
+    async getFieldsOfStudy(semester: SemesterItem): Promise<FieldOfStudyItem[]> {
+        const data = await CourseDataStore.get('courseData');
 
-        // Cache hit
-        if (semesterData.studyFields) {
-            return Object.values(semesterData.studyFields).map(field => field.info);
+        data[semester.id] = data[semester.id] || { info: semester, studyFields: {} };
+
+        if (!data[semester.id]!.studyFields || Object.keys(data[semester.id]!.studyFields).length === 0) {
+            const fieldsOfStudy = await fetchFieldsOfStudy(semester);
+            fieldsOfStudy.forEach(field => {
+                data[semester.id]!.studyFields[field.id] = { info: field, courseNumbers: {} };
+            });
+
+            console.log('Setting course data:', data);
+            await CourseDataStore.set('courseData', data);
         }
 
-        // Fetch and process if not in cache
-        const studyFields = await this.fetchFieldsOfStudy(semester);
-
-        // Update the store with the new study fields
-        if (!semesterData) {
-            semesterData = { info: semester, studyFields: {} };
-        }
-
-        // Add each study field to the store
-        for (const field of studyFields) {
-            semesterData.studyFields[field.id] = {
-                info: field,
-                courseNumbers: {},
-            };
-        }
-
-        await CourseDataStore.set(semester.id, semesterData);
-        return studyFields;
+        return Object.values(data[semester.id]!.studyFields).map(field => field.info);
     }
 
     /**
      * Retrieves course numbers for a specific study field
      */
     async getCourseNumbers(semester: SemesterItem, fieldOfStudy: FieldOfStudyItem): Promise<CourseNumberItem[]> {
-        let semesterData = await CourseDataStore.get(semester.id);
-        let fieldOfStudyData = semesterData.studyFields[fieldOfStudy.id];
+        const data = await CourseDataStore.get('courseData');
 
-        if (fieldOfStudyData) {
-            const courseNumbers = Object.values(fieldOfStudyData.courseNumbers).map(course => course.info);
+        data[semester.id] = data[semester.id] || { info: semester, studyFields: {} };
+        data[semester.id]!.studyFields[fieldOfStudy.id] = data[semester.id]!.studyFields[fieldOfStudy.id] || {
+            info: fieldOfStudy,
+            courseNumbers: {},
+        };
 
-            // Cache hit
-            if (courseNumbers.length > 0) {
-                return courseNumbers;
-            }
+        if (
+            !data[semester.id]!.studyFields[fieldOfStudy.id]!.courseNumbers ||
+            Object.keys(data[semester.id]!.studyFields[fieldOfStudy.id]!.courseNumbers).length === 0
+        ) {
+            const courseNumbers = await fetchCourseNumbers(semester, fieldOfStudy.id);
+            courseNumbers.forEach(courseNumber => {
+                data[semester.id]!.studyFields[fieldOfStudy.id]!.courseNumbers[courseNumber.id] = {
+                    info: courseNumber,
+                    sections: {},
+                };
+            });
+
+            await CourseDataStore.set('courseData', data);
         }
 
-        // Fetch and process if not in cache
-        const courseNumbers = await this.fetchCourseNumbers(semester, fieldOfStudy.id);
-
-        if (!semesterData) {
-            semesterData = { info: semester, studyFields: {} };
-        }
-
-        if (!fieldOfStudyData) {
-            fieldOfStudyData = {
-                info: fieldOfStudy,
-                courseNumbers: {},
-            };
-        }
-
-        if (!fieldOfStudyData.courseNumbers) {
-            fieldOfStudyData.courseNumbers = {};
-        }
-
-        for (const course of courseNumbers) {
-            fieldOfStudyData.courseNumbers[course.id] = {
-                info: course,
-                sections: {},
-            };
-        }
-
-        semesterData.studyFields[fieldOfStudy.id] = fieldOfStudyData;
-        await CourseDataStore.set(semester.id, semesterData);
-        return courseNumbers;
+        return Object.values(data[semester.id]!.studyFields[fieldOfStudy.id]!.courseNumbers).map(course => course.info);
     }
 
     /**
@@ -98,123 +148,34 @@ export class CourseDataService {
         studyField: FieldOfStudyItem,
         courseNumber: CourseNumberItem
     ): Promise<SectionItem[]> {
-        let semesterData = await CourseDataStore.get(semester.id);
-        let fieldOfStudyData = semesterData.studyFields[studyField.id];
-        let courseNumberData = fieldOfStudyData?.courseNumbers[courseNumber.id];
+        const data = await CourseDataStore.get('courseData');
 
-        // Check if data is in cache
-        if (!courseNumberData) {
-            throw new Error(
-                `Course number ${courseNumber.id} not found for study field ${studyField.id} in semester ${semester.id}`
-            );
-        }
+        data[semester.id] = data[semester.id] || { info: semester, studyFields: {} };
+        data[semester.id]!.studyFields[studyField.id] = data[semester.id]!.studyFields[studyField.id] || {
+            info: studyField,
+            courseNumbers: {},
+        };
+        data[semester.id]!.studyFields[studyField.id]!.courseNumbers[courseNumber.id] = data[semester.id]!.studyFields[
+            studyField.id
+        ]!.courseNumbers[courseNumber.id] || {
+            info: courseNumber,
+            sections: {},
+        };
 
-        if (courseNumberData && Object.keys(courseNumberData.sections).length > 0) {
-            return Object.values(courseNumberData.sections);
-        }
-
-        // Fetch and process if not in cache
-        const sections = await this.fetchSections(semester, studyField, courseNumber);
-
-        if (!semesterData) {
-            semesterData = { info: semester, studyFields: {} };
-        }
-
-        if (!fieldOfStudyData) {
-            fieldOfStudyData = {
-                info: studyField,
-                courseNumbers: {},
-            };
-        }
-
-        if (!courseNumberData) {
-            courseNumberData = {
-                info: courseNumber,
-                sections: {},
-            };
-        }
-
-        if (!courseNumberData.sections) {
-            courseNumberData.sections = {};
-        }
-
-        for (const section of sections) {
-            courseNumberData.sections[section.id] = section;
-        }
-
-        fieldOfStudyData.courseNumbers[courseNumber.id] = courseNumberData;
-        semesterData.studyFields[studyField.id] = fieldOfStudyData;
-        await CourseDataStore.set(semester.id, semesterData);
-        return sections;
-    }
-
-    /**
-     * Fetches study fields from the API (fake implementation)
-     */
-    private async fetchFieldsOfStudy(_semester: SemesterItem): Promise<FieldOfStudyItem[]> {
-        return FIELDS_OF_STUDY;
-    }
-
-    /**
-     * Fetches course numbers from the API (fake implementation)
-     */
-    private async fetchCourseNumbers(semester: SemesterItem, studyFieldId: string): Promise<CourseNumberItem[]> {
-        const formattedSemester = `${semester.year}%20${semester.season}`;
-        const formattedStudyFieldId = studyFieldId.replace(' ', '%20');
-        const url = `https://utexas.collegescheduler.com/api/terms/${formattedSemester}/subjects/${formattedStudyFieldId}/courses`;
-
-        const data = await fetch(url)
-            .then(response => response.json())
-            .catch(error => {
-                console.error('Error fetching course numbers:', error);
-                return [];
+        if (
+            !data[semester.id]!.studyFields[studyField.id]!.courseNumbers[courseNumber.id]!.sections ||
+            Object.keys(data[semester.id]!.studyFields[studyField.id]!.courseNumbers[courseNumber.id]!.sections)
+                .length === 0
+        ) {
+            const sections = await fetchSections(semester, studyField, courseNumber);
+            sections.forEach(section => {
+                data[semester.id]!.studyFields[studyField.id]!.courseNumbers[courseNumber.id]!.sections[section.id] =
+                    section;
             });
 
-        const processedData = data.map((item: { id: string; subjectId: string; displayTitle: string }) => ({
-            id: item.id.replace('|', ' '),
-            label: `${item.subjectId} ${item.displayTitle}`,
-        }));
-
-        return processedData;
-    }
-
-    /**
-     * Fetches sections from the API (fake implementation)
-     */
-    private async fetchSections(
-        semester: SemesterItem,
-        fieldOfStudy: FieldOfStudyItem,
-        courseNumber: CourseNumberItem
-    ): Promise<SectionItem[]> {
-        const formattedDepartment = fieldOfStudy.id.replace(' ', '+');
-        const formattedCourseNumber = courseNumber.id.split(' ').pop();
-        const url =
-            `https://utdirect.utexas.edu/apps/registrar/` +
-            `course_schedule/${semester.id}/results/?search_type_main=COURSE&` +
-            `fos_cn=${formattedDepartment}` +
-            `&course_number=${formattedCourseNumber}`;
-
-        const data = await fetch(url)
-            .then(response => response.text())
-            .then(html => new DOMParser().parseFromString(html, 'text/html'))
-            .catch(error => {
-                console.error('Error fetching sections:', error);
-            });
-
-        if (!data) {
-            return [];
+            await CourseDataStore.set('courseData', data);
         }
 
-        const courseCatalogScraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, data, url);
-        const rows = courseCatalogScraper.scrape(data.querySelectorAll('#inner_body > table > tbody'));
-        return rows
-            .filter((row: ScrapedRow) => row.course !== null)
-            .map(
-                (row: ScrapedRow) =>
-                    ({
-                        id: row.course?.uniqueId ?? '',
-                        label: row.course?.fullName ?? '',
-                    }) as SectionItem
-            );
+        return Object.values(data[semester.id]!.studyFields[studyField.id]!.courseNumbers[courseNumber.id]!.sections);
     }
 }
