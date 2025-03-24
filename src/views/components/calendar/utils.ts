@@ -1,9 +1,36 @@
+import { tz, TZDate } from '@date-fns/tz';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import type { Course } from '@shared/types/Course';
+import type { CourseMeeting } from '@shared/types/CourseMeeting';
+import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
+import { englishStringifyList } from '@shared/util/string';
 import type { Serialized } from 'chrome-extension-toolkit';
+import type { DateArg, Day } from 'date-fns';
+import {
+    addDays,
+    eachDayOfInterval,
+    format as formatDate,
+    formatISO,
+    getDay,
+    nextDay,
+    parseISO,
+    set as setMultiple,
+} from 'date-fns';
 import { toBlob } from 'html-to-image';
 
+import { academicCalendars } from './academic-calendars';
+
+// Do all timezone calculations relative to UT's timezone
+const TIMEZONE_ID = 'America/Chicago';
+const TZ = tz(TIMEZONE_ID);
+
+// Datetime format used by iCal, not directly supported by date-fns
+// (date-fns adds the timezone to the end, but iCal doesn't want it)
+const ISO_BASIC_DATETIME_FORMAT = "yyyyMMdd'T'HHmmss";
+
+// iCal uses two-letter codes for days of the week
 export const CAL_MAP = {
     Sunday: 'SU',
     Monday: 'MO',
@@ -13,6 +40,17 @@ export const CAL_MAP = {
     Friday: 'FR',
     Saturday: 'SA',
 } as const satisfies Record<string, string>;
+
+// Date objects' day field goes by index like this
+const DAY_NAME_TO_NUMBER = {
+    Sunday: 0,
+    Monday: 1,
+    Tuesday: 2,
+    Wednesday: 3,
+    Thursday: 4,
+    Friday: 5,
+    Saturday: 6,
+} as const satisfies Record<string, number>;
 
 /**
  * Retrieves the schedule from the UserScheduleStore based on the active index.
@@ -39,49 +77,185 @@ export const formatToHHMMSS = (minutes: number) => {
 };
 
 /**
+ * Formats a date in the format YYYYMMDD'T'HHmmss, which is the format used by iCal.
+ *
+ * @param date - The date to format.
+ * @returns The formatted date string.
+ */
+const iCalDateFormat = <DateType extends Date>(date: DateArg<DateType>) =>
+    formatDate(date, ISO_BASIC_DATETIME_FORMAT, { in: TZ });
+
+/**
+ * Returns the next day of the given date, inclusive of the given day.
+ *
+ * If the given date is the given day, the same date is returned.
+ *
+ * For example, a Monday targeting a Wednesday will return the next Wednesday,
+ * but if it was targeting a Monday it would return the same date.
+ *
+ * @param date - The date to increment.
+ * @param day - The day to increment to. (0 = Sunday, 1 = Monday, etc.)
+ * @returns The next day of the given date, inclusive of the given day.
+ */
+export const nextDayInclusive = (date: Date, day: Day): TZDate => {
+    if (getDay(date, { in: TZ }) === day) {
+        return new TZDate(date, TIMEZONE_ID);
+    }
+
+    return nextDay(date, day, { in: TZ });
+};
+
+/**
+ * Returns an array of all the dates (as Date objects) in the given date ranges.
+ *
+ * @param dateRanges - An array of date ranges.
+ * Each date range can be a string (in which case it is interpreted as a single date)
+ * or an array of two strings (in which case it is interpreted as a date range, inclusive).
+ * @returns An array of all the dates (as Date objects) in the given date ranges.
+ *
+ * @example
+ * allDatesInRanges(['2025-01-01', ['2025-03-14', '2025-03-16']]) // ['2025-01-01', '2025-03-14', '2025-03-15', '2025-03-16'] (as Date objects)
+ *
+ * @remarks Does not remove duplicate dates.
+ */
+export const allDatesInRanges = (dateRanges: readonly (string | [string, string])[]): Date[] =>
+    dateRanges.flatMap(breakDate => {
+        if (Array.isArray(breakDate)) {
+            return eachDayOfInterval({
+                start: parseISO(breakDate[0], { in: TZ }),
+                end: parseISO(breakDate[1], { in: TZ }),
+            });
+        }
+
+        return parseISO(breakDate, { in: TZ });
+    });
+
+/**
+ * Creates a VEVENT string for a meeting of a course.
+ *
+ * @param course - The course object
+ * @param meeting - The meeting object
+ * @returns A string representation of the meeting in the iCalendar format (ICS)
+ */
+export const meetingToIcsString = (course: Serialized<Course>, meeting: Serialized<CourseMeeting>): string | null => {
+    const { startTime, endTime, days, location } = meeting;
+    if (!course.semester.code) {
+        console.error(`No semester found for course uniqueId: ${course.uniqueId}`);
+        return null;
+    }
+
+    if (days.length === 0) {
+        console.error(`No days found for course uniqueId: ${course.uniqueId}`);
+        return null;
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(academicCalendars, course.semester.code)) {
+        console.error(
+            `No academic calendar found for semester code: ${course.semester.code}; course uniqueId: ${course.uniqueId}`
+        );
+        return null;
+    }
+    const academicCalendar = academicCalendars[course.semester.code as keyof typeof academicCalendars];
+
+    const startDate = nextDayInclusive(
+        parseISO(academicCalendar.firstClassDate, { in: TZ }),
+        DAY_NAME_TO_NUMBER[days[0]!]
+    );
+
+    const startTimeHours = Math.floor(startTime / 60);
+    const startTimeMinutes = startTime % 60;
+    const startTimeDate = setMultiple(startDate, { hours: startTimeHours, minutes: startTimeMinutes }, { in: TZ });
+
+    const endTimeHours = Math.floor(endTime / 60);
+    const endTimeMinutes = endTime % 60;
+    const endTimeDate = setMultiple(startDate, { hours: endTimeHours, minutes: endTimeMinutes }, { in: TZ });
+
+    const untilDate = addDays(parseISO(academicCalendar.lastClassDate, { in: TZ }), 1);
+
+    const daysNumSet = new Set(days.map(d => DAY_NAME_TO_NUMBER[d]));
+    const excludedDates = allDatesInRanges(academicCalendar.breakDates)
+        // Don't need to exclude Tues/Thurs if it's a MWF class, etc.
+        .filter(date => daysNumSet.has(getDay(date, { in: TZ }) as Day))
+        .map(date => setMultiple(date, { hours: startTimeHours, minutes: startTimeMinutes }, { in: TZ }));
+
+    const startDateFormatted = iCalDateFormat(startTimeDate);
+    const endDateFormatted = iCalDateFormat(endTimeDate);
+    // Convert days to ICS compatible format, e.g. MO,WE,FR
+    const icsDays = days.map(day => CAL_MAP[day]).join(',');
+
+    // per spec, UNTIL must be in UTC
+    const untilDateFormatted = formatISO(untilDate, { format: 'basic', in: tz('utc') });
+    const excludedDatesFormatted = excludedDates.map(date => iCalDateFormat(date));
+
+    const uniqueNumberFormatted = course.uniqueId.toString().padStart(5, '0');
+
+    // The list part of "Taught by Michael Scott and Siddhartha Chatterjee Beasley"
+    const instructorsFormatted = englishStringifyList(
+        course.instructors
+            .map(instructor => Instructor.prototype.toString.call(instructor, { format: 'first_last' }))
+            .filter(name => name !== '')
+    );
+
+    // Construct event string
+    let icsString = 'BEGIN:VEVENT\n';
+    icsString += `DTSTART;TZID=${TIMEZONE_ID}:${startDateFormatted}\n`;
+    icsString += `DTEND;TZID=${TIMEZONE_ID}:${endDateFormatted}\n`;
+    icsString += `RRULE:FREQ=WEEKLY;BYDAY=${icsDays};UNTIL=${untilDateFormatted}\n`;
+    icsString += `EXDATE;TZID=${TIMEZONE_ID}:${excludedDatesFormatted.join(',')}\n`;
+    icsString += `SUMMARY:${course.department} ${course.number} \u2013 ${course.courseName}\n`;
+
+    if (location?.building || location?.building) {
+        const locationFormatted = `${location?.building ?? ''} ${location?.room ?? ''}`.trim();
+        icsString += `LOCATION:${locationFormatted}\n`;
+    }
+
+    icsString += `DESCRIPTION:Unique number: ${uniqueNumberFormatted}`;
+    if (instructorsFormatted) {
+        // Newlines need to be double-escaped
+        icsString += `\\nTaught by ${instructorsFormatted}`;
+    }
+    icsString += '\n';
+
+    icsString += 'END:VEVENT';
+
+    return icsString;
+};
+
+/**
+ * Creates a VCALENDAR string for a schedule of a user.
+ * @param schedule - The schedule object
+ * @returns A string representation of the schedule in the iCalendar format (ICS)
+ */
+export const scheduleToIcsString = (schedule: Serialized<UserSchedule>) => {
+    let icsString = 'BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nX-WR-CALNAME:My Schedule\n';
+
+    const vevents = schedule.courses
+        .flatMap(course => course.schedule.meetings.map(meeting => meetingToIcsString(course, meeting)))
+        .filter(event => event !== null)
+        .join('\n');
+
+    if (vevents.length > 0) {
+        icsString += `${vevents}\n`;
+    }
+
+    icsString += 'END:VCALENDAR';
+
+    return icsString;
+};
+
+/**
  * Saves the current schedule as a calendar file in the iCalendar format (ICS).
  * Fetches the current active schedule and converts it into an ICS string.
  * Downloads the ICS file to the user's device.
  */
 export const saveAsCal = async () => {
-    const schedule = await getSchedule(); // Assumes this fetches the current active schedule
-
-    let icsString = 'BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nX-WR-CALNAME:My Schedule\n';
+    const schedule = await getSchedule();
 
     if (!schedule) {
         throw new Error('No schedule found');
     }
 
-    schedule.courses.forEach(course => {
-        course.schedule.meetings.forEach(meeting => {
-            const { startTime, endTime, days, location } = meeting;
-
-            // Format start and end times to HHMMSS
-            const formattedStartTime = formatToHHMMSS(startTime);
-            const formattedEndTime = formatToHHMMSS(endTime);
-
-            // Map days to ICS compatible format
-            console.log(days);
-            const icsDays = days.map(day => CAL_MAP[day]).join(',');
-            console.log(icsDays);
-
-            // Assuming course has date started and ended, adapt as necessary
-            // const year = new Date().getFullYear(); // Example year, adapt accordingly
-            // Example event date, adapt startDate according to your needs
-            const startDate = `20240101T${formattedStartTime}`;
-            const endDate = `20240101T${formattedEndTime}`;
-
-            icsString += `BEGIN:VEVENT\n`;
-            icsString += `DTSTART:${startDate}\n`;
-            icsString += `DTEND:${endDate}\n`;
-            icsString += `RRULE:FREQ=WEEKLY;BYDAY=${icsDays}\n`;
-            icsString += `SUMMARY:${course.fullName}\n`;
-            icsString += `LOCATION:${location?.building ?? ''} ${location?.room ?? ''}\n`;
-            icsString += `END:VEVENT\n`;
-        });
-    });
-
-    icsString += 'END:VCALENDAR';
+    const icsString = scheduleToIcsString(schedule);
 
     downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
 };
