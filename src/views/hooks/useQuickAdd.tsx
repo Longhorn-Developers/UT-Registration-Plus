@@ -1,71 +1,7 @@
 import type { ICourseDataStore } from '@shared/storage/courseDataStore';
 import { CourseDataStore } from '@shared/storage/courseDataStore';
 import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
-import type { ChangeEvent, ClipboardEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-
-import type { DropdownOption } from '../components/common/Dropdown';
-
-/**
- * useNumericInput
- *
- * A Custom hook to manage numeric input with length limit.
- * It stores and managed the value as a string.
- *
- * @param initialValue - The initial value of the input.
- * @param maxLength - The maximum length of the input.
- * @param onChange - Optional callback function to be called when the value changes.
- * @returns An object containing the input value, a function to set the value, and event handlers for change and paste events.
- */
-export const useNumericInput = (initialValue: string = '', maxLength?: number, onChange?: (value: string) => void) => {
-    const [value, setValue] = useState<string>(initialValue);
-
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value;
-
-        // Only allow if the value consists of numbers and is within length limit
-        if (/^\d*$/.test(newValue) && (maxLength === undefined || newValue.length <= maxLength)) {
-            setValue(newValue);
-            onChange?.(newValue);
-        }
-    };
-
-    const reset = () => {
-        setValue('');
-        onChange?.('');
-    };
-
-    const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
-        e.preventDefault();
-
-        // Get pasted content
-        const pastedText = e.clipboardData.getData('text');
-
-        // Check if pasted content is numeric and within length limits
-        if (/^\d*$/.test(pastedText)) {
-            // Calculate what the new value would be
-            const currentValue = e.currentTarget.value;
-            const selectionStart = e.currentTarget.selectionStart || 0;
-            const selectionEnd = e.currentTarget.selectionEnd || 0;
-
-            const newValue =
-                currentValue.substring(0, selectionStart) + pastedText + currentValue.substring(selectionEnd);
-
-            // Only update if the new value is within length limit
-            if (maxLength === undefined || newValue.length <= maxLength) {
-                setValue(newValue);
-                onChange?.(newValue);
-            }
-        }
-    };
-
-    return {
-        value,
-        handleChange,
-        handlePaste,
-        reset,
-    };
-};
 
 /**
  * useQuickAddDropdowns

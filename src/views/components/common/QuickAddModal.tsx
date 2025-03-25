@@ -11,7 +11,8 @@ import {
 } from '@phosphor-icons/react';
 import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
 import { generateSemesters } from '@shared/util/generateSemesters';
-import { useNumericInput, useQuickAddDropdowns } from '@views/hooks/useQuickAdd';
+import { useNumericInput } from '@views/hooks/useNumericInput';
+import { useQuickAddDropdowns } from '@views/hooks/useQuickAdd';
 import useSchedules from '@views/hooks/useSchedules';
 import { CourseDataService } from '@views/lib/getCoursesAndSections';
 import clsx from 'clsx';
