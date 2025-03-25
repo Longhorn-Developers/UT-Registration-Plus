@@ -37,7 +37,7 @@ export const Primary: Story = {
         options: Array(10)
             .fill(null)
             .map((_, i) => ({ id: `${i + 1}`, label: `Option ${i + 1}` })),
-        selectedOption: undefined,
+        selectedOption: null,
         icon: ImageSquare,
         disabled: false,
     },
@@ -52,7 +52,7 @@ export const Disabled: Story = {
             { id: '2', label: 'Option 2' },
             { id: '3', label: 'Option 3' },
         ],
-        selectedOption: undefined,
+        selectedOption: null,
         icon: ImageSquare,
         disabled: true,
     },
@@ -67,6 +67,6 @@ export const NoIcon: Story = {
             { id: '2', label: 'Option 2' },
             { id: '3', label: 'Option 3' },
         ],
-        selectedOption: undefined,
+        selectedOption: null,
     },
 };
