@@ -38,7 +38,7 @@ export function generateSemesters(fromSemester: Semester, toSemester: Semester):
 
     const result: SemesterItem[] = [];
     for (let { year } = fromSemester; year <= toSemester.year; year++) {
-        const seasons = Object.keys(TERM_TO_ID_MAP).values().toArray();
+        const seasons = Array.from(Object.keys(TERM_TO_ID_MAP).values());
 
         if (year === fromSemester.year) {
             seasons.splice(0, seasons.indexOf(fromSemester.season));
