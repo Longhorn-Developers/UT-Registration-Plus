@@ -40,10 +40,10 @@ export const useQuickAddDropdowns = (
     const [courseData, setCourseData] = useState<ICourseDataStore>({ courseData: {} });
 
     // Selected values
-    const [semester, setSemester] = useState<SemesterItem | undefined>(undefined);
-    const [fieldOfStudy, setFieldOfStudy] = useState<FieldOfStudyItem | undefined>(undefined);
-    const [courseNumber, setCourseNumber] = useState<CourseNumberItem | undefined>(undefined);
-    const [section, setSection] = useState<SectionItem | undefined>(undefined);
+    const [semester, setSemester] = useState<SemesterItem | null>(null);
+    const [fieldOfStudy, setFieldOfStudy] = useState<FieldOfStudyItem | null>(null);
+    const [courseNumber, setCourseNumber] = useState<CourseNumberItem | null>(null);
+    const [section, setSection] = useState<SectionItem | null>(null);
 
     // Available options
     const [fieldsOfStudy, setFieldsOfStudy] = useState<FieldOfStudyItem[]>([]);
@@ -99,8 +99,8 @@ export const useQuickAddDropdowns = (
             }
 
             setSemester(newSemester);
-            setFieldOfStudy(undefined);
-            setCourseNumber(undefined);
+            setFieldOfStudy(null);
+            setCourseNumber(null);
 
             getFieldsOfStudy(newSemester);
 
@@ -116,8 +116,8 @@ export const useQuickAddDropdowns = (
             }
 
             setFieldOfStudy(newFieldOfStudy);
-            setCourseNumber(undefined);
-            setSection(undefined);
+            setCourseNumber(null);
+            setSection(null);
 
             getCourseNumbers(semester, newFieldOfStudy);
 
@@ -134,7 +134,7 @@ export const useQuickAddDropdowns = (
             }
 
             setCourseNumber(newCourseNumber);
-            setSection(undefined);
+            setSection(null);
 
             getSections(semester, fieldOfStudy, newCourseNumber);
 
@@ -157,10 +157,10 @@ export const useQuickAddDropdowns = (
 
     // Reset all selections and options
     const resetDropdowns = useCallback(() => {
-        setSemester(undefined);
-        setFieldOfStudy(undefined);
-        setCourseNumber(undefined);
-        setSection(undefined);
+        setSemester(null);
+        setFieldOfStudy(null);
+        setCourseNumber(null);
+        setSection(null);
 
         onChange?.();
     }, [onChange]);
@@ -177,9 +177,9 @@ export const useQuickAddDropdowns = (
         sections,
 
         semesterDisabled: false,
-        fieldOfStudyDisabled: semester === undefined,
-        courseNumberDisabled: fieldOfStudy === undefined,
-        sectionDisabled: courseNumber === undefined,
+        fieldOfStudyDisabled: semester === null,
+        courseNumberDisabled: fieldOfStudy === null,
+        sectionDisabled: courseNumber === null,
 
         handleSemesterChange,
         handleFieldOfStudyChange,

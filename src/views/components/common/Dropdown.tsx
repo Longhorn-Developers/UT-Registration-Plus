@@ -20,7 +20,7 @@ interface Props {
     className?: string;
     placeholderText?: string;
     options?: readonly DropdownOption[];
-    selectedOption: DropdownOption | undefined;
+    selectedOption: DropdownOption | null;
     onOptionChange?: (newOption: DropdownOption) => void;
     icon?: Icon;
     iconProps?: IconProps;
@@ -100,6 +100,14 @@ export default function Dropdown({
                         <Text>{option.label}</Text>
                     </ListboxOption>
                 ))}
+                {(!options || options.length === 0) && (
+                    <ListboxOption
+                        value={null}
+                        className='select-none rounded p-spacing-3 text-center text-ut-black/50'
+                    >
+                        <Text>No options available</Text>
+                    </ListboxOption>
+                )}
             </ListboxOptions>
         </Listbox>
     );

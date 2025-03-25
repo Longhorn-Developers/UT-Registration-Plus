@@ -1,4 +1,4 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react';
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import {
     Calendar,
@@ -23,7 +23,7 @@ import DialogProvider from './DialogProvider/DialogProvider';
 import Divider from './Divider';
 import type { DropdownOption } from './Dropdown';
 import Dropdown from './Dropdown';
-import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
+import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 import Input from './Input';
 import Text from './Text/Text';
 
@@ -60,18 +60,17 @@ export default function QuickAddModal(): JSX.Element {
 
     return (
         <DialogProvider>
-            <Menu>
-                <MenuButton className='bg-transparent'>
+            <Popover>
+                <PopoverButton className='bg-transparent' as='div'>
                     <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
                         Quick Add
                     </Button>
-                </MenuButton>
-                <MenuItems
+                </PopoverButton>
+                <PopoverPanel
                     as={ExtensionRootWrapper}
                     className={clsx([
-                        styleResetClass,
                         'mt-spacing-3',
-                        'origin-top-left rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
+                        'origin-top rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
                         'data-[closed]:(opacity-0 scale-95)',
                         'data-[enter]:(ease-out-expo duration-150)',
                         'data-[leave]:(ease-out duration-50)',
@@ -81,7 +80,7 @@ export default function QuickAddModal(): JSX.Element {
                     anchor='bottom start'
                 >
                     <div className='flex flex-col gap-spacing-6'>
-                        <div className='flex flex-col gap-spacing-5'>
+                        <PopoverGroup className='flex flex-col gap-spacing-5'>
                             <Dropdown
                                 placeholderText='Select Semester...'
                                 options={data.semesters}
@@ -122,7 +121,7 @@ export default function QuickAddModal(): JSX.Element {
                                 disabled={data.sectionDisabled || uniqueNumber.value !== ''}
                                 icon={ChalkboardTeacher}
                             />
-                        </div>
+                        </PopoverGroup>
                         <div className='w-full flex flex-row items-center justify-center gap-spacing-4'>
                             <Divider orientation='horizontal' size='100%' />
                             <Text className='w-fit text-nowrap uppercase' variant='small'>
@@ -138,8 +137,8 @@ export default function QuickAddModal(): JSX.Element {
                             icon={HashStraight}
                         />
                     </div>
-                    <div className='w-full flex flex-row justify-end gap-spacing-5'>
-                        <MenuItem>
+                    <PopoverGroup className='w-full flex flex-row justify-end gap-spacing-5'>
+                        <PopoverPanel>
                             {({ close }) => (
                                 <Button
                                     color='ut-black'
@@ -154,7 +153,7 @@ export default function QuickAddModal(): JSX.Element {
                                     Cancel
                                 </Button>
                             )}
-                        </MenuItem>
+                        </PopoverPanel>
                         <Button
                             color='ut-green'
                             size='regular'
@@ -167,9 +166,9 @@ export default function QuickAddModal(): JSX.Element {
                         >
                             Add Course
                         </Button>
-                    </div>
-                </MenuItems>
-            </Menu>
+                    </PopoverGroup>
+                </PopoverPanel>
+            </Popover>
         </DialogProvider>
     );
 }
