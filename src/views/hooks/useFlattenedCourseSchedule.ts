@@ -52,7 +52,9 @@ export interface FlattenedCourseSchedule {
  * @param minutes - The number of minutes.
  * @returns The index value.
  */
-export const convertMinutesToIndex = (minutes: number): number => Math.floor((minutes - 420) / 30);
+export const convertMinutesToIndex = (minutes: number): number =>
+    // 480 = 8 a.m., 30 = 30 minute slots, 2 header rows, and grid rows start at 1
+    Math.floor((minutes - 480) / 30) + 2 + 1;
 
 /**
  * Get the active schedule, and convert it to be render-able into a calendar.
