@@ -18,6 +18,10 @@ export interface IOptionsStore {
 
     /** whether we should open the calendar in a new tab; default is to focus an existing calendar tab */
     alwaysOpenCalendarInNewTab: boolean;
+
+    /** whether animations should be reduced or not
+     */
+    enableReducedMotion: boolean;
 }
 
 export const OptionsStore = createSyncStore<IOptionsStore>({
@@ -26,6 +30,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
     enableScrollToLoad: true,
     enableDataRefreshing: false,
     alwaysOpenCalendarInNewTab: false,
+    enableReducedMotion: false,
 });
 
 /**
@@ -40,6 +45,7 @@ export const initSettings = async () =>
         enableScrollToLoad: await OptionsStore.get('enableScrollToLoad'),
         enableDataRefreshing: await OptionsStore.get('enableDataRefreshing'),
         alwaysOpenCalendarInNewTab: await OptionsStore.get('alwaysOpenCalendarInNewTab'),
+        enableReducedMotion: await OptionsStore.get('enableReducedMotion'),
     }) satisfies IOptionsStore;
 
 // Clothing retailer right
