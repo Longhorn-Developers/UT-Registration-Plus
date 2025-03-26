@@ -36,6 +36,7 @@
         "@octokit/rest": "^21.1.1",
         "@phosphor-icons/react": "^2.1.7",
         "@sentry/react": "^8.55.0",
+        "@tanstack/react-query": "^5.69.0",
         "@unocss/vite": "^0.63.6",
         "@vitejs/plugin-react": "^4.3.4",
         "chrome-extension-toolkit": "^0.0.54",
@@ -160,6 +161,7 @@
         }
     },
     "volta": {
-        "node": "20.9.0"
+        "node": "20.9.0",
+        "pnpm": "10.6.5"
     }
 }
