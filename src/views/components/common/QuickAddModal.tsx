@@ -74,7 +74,7 @@ export default function QuickAddModal(): JSX.Element {
                         'data-[closed]:(opacity-0 scale-95)',
                         'data-[enter]:(ease-out-expo duration-150)',
                         'data-[leave]:(ease-out duration-50)',
-                        'flex flex-col gap-spacing-7 px-spacing-7 py-spacing-6 w-[400px]',
+                        'flex flex-col gap-spacing-7 px-spacing-7 py-spacing-6 w-[400px] z-20',
                     ])}
                     transition
                     anchor='bottom start'
