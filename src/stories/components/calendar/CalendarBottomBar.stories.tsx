@@ -92,12 +92,12 @@ export const Default: Story = {
                 async: true,
                 calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
                 componentProps: {
-                    courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
+                    courseDetail: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
                     status: exampleGovCourse.status,
                     blockData: {
                         calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
                         componentProps: {
-                            courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
+                            courseDetail: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
                             status: exampleGovCourse.status,
                             blockData: {} as CalendarGridCourse,
                         },
@@ -111,12 +111,12 @@ export const Default: Story = {
                 async: true,
                 calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
                 componentProps: {
-                    courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
+                    courseDetail: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
                     status: examplePsyCourse.status,
                     blockData: {
                         calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
                         componentProps: {
-                            courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
+                            courseDetail: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
                             status: examplePsyCourse.status,
                             blockData: {} as CalendarGridCourse,
                         },
