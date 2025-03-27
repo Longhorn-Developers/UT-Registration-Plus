@@ -116,7 +116,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
         }
     };
 
-    const handleAddToNewSchedule = async (currentSemesterCode: string|undefined, close: () => void) => {
+    const handleAddToNewSchedule = async (currentSemesterCode: string | undefined, close: () => void) => {
         const newScheduleId = await createSchedule(`Semester${currentSemesterCode}`);
         switchSchedule(newScheduleId);
         addCourse({ course, scheduleId: newScheduleId });
