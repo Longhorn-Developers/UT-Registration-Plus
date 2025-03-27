@@ -17,7 +17,7 @@ export function useEnforceSameSemesterCourse():
     (course: Course, addCourseCallback: () => void) => boolean {
     const showDialog = usePrompt();
     const [activeSchedule, schedules] = useSchedules();
-    console.log("Reached inside of useEnforceSameSemesterCourse");
+    console.log("[DEBUG]: Reached inside of useEnforceSameSemesterCourse");
 
   return useCallback(
     (course, addCourseCallback) => {

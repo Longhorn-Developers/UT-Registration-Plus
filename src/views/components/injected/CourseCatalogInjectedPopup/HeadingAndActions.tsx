@@ -20,10 +20,13 @@ import Divider from '@views/components/common/Divider';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import { useCalendar } from '@views/contexts/CalendarContext';
+import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
+import createSchedule from '@pages/background/lib/createSchedule';
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
-import { useEnforceSameSemesterCourse } from '@views/hooks/useEnforceSameSemesterCourse'
 import DisplayMeetingInfo from './DisplayMeetingInfo';
+import switchSchedule from '@pages/background/lib/switchSchedule';
+
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
@@ -60,6 +63,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
+    const showDialog = usePrompt();
 
     const getInstructorFullName = (instructor: Instructor) => instructor.toString({ format: 'first_last' });
 
@@ -112,21 +116,57 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
         }
     };
 
-    const enforceSameSemCourse = useEnforceSameSemesterCourse();
-    const handleAddCourse = async () => {
-        console.log("Reached handleAddCourse in Heading and actions");
-        if (enforceSameSemCourse(course, () => {
-            addCourse({ course, scheduleId: activeSchedule.id });
-          })) {
-            addCourse({ course, scheduleId: activeSchedule.id });
-          }
-    };
-
     const handleAddOrRemoveCourse = async () => {
         if (!activeSchedule) return;
         if (!courseAdded) {
-            handleAddCourse();
-            // addCourse({course, scheduleId: activeSchedule.id});
+            // handleAddCourse();
+            const currentSemesterCode = course.semester.code;
+            if(activeSchedule.courses.some(otherCourse => otherCourse.semester.code !== currentSemesterCode)){
+                showDialog({
+                        title: 'Semester Mismatch',
+                        description: (
+                          <>
+                            <p>The class you are adding is in a different semester (Code: {currentSemesterCode}).</p>
+                          </>
+                        ),
+                        buttons: (close) => (
+                          <>
+                            <Button
+                              variant='filled'
+                              color='ut-burntorange'
+                              onClick={close}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              variant='filled'
+                              color='ut-burntorange'
+                              onClick={() => {
+                                addCourse({course, scheduleId: activeSchedule.id});
+                                close();
+                              }}
+                            >
+                              Add Anyways
+                            </Button>
+                            <Button
+                              variant='filled'
+                              color='ut-burntorange'
+                              onClick={async () => {
+                                const newScheduleId = await createSchedule("Semester" + currentSemesterCode);
+                                switchSchedule(newScheduleId);
+                                addCourse({course, scheduleId: newScheduleId});
+                                close();
+                              }}
+                            >
+                              Add to new schedule
+                            </Button>
+                          </>
+                        ),
+                      });
+            }
+            else{
+                addCourse({course, scheduleId: activeSchedule.id});
+            }
         } else {
             removeCourse({ course, scheduleId: activeSchedule.id });
         }
