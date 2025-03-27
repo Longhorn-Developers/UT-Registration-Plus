@@ -55,7 +55,7 @@ export function useEnforceSameSemesterCourse():
                 close();
               }}
             >
-              Proceed Anyway
+              Add Anyways
             </Button>
           </>
         ),
