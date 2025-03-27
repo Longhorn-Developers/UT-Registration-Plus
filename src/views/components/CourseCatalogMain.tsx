@@ -14,6 +14,7 @@ import getCourseTableRows from '@views/lib/getCourseTableRows';
 import type { SiteSupportType } from '@views/lib/getSiteSupport';
 import { populateSearchInputs } from '@views/lib/populateSearchInputs';
 import React, { useEffect, useRef, useState } from 'react';
+
 import DialogProvider from './common/DialogProvider/DialogProvider';
 
 interface Props {
@@ -106,7 +107,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
                     afterLeave={() => setSelectedCourse(null)}
                 />
                 {enableScrollToLoad && <AutoLoad addRows={addRows} />}
-                </DialogProvider>
+            </DialogProvider>
         </ExtensionRoot>
     );
 }

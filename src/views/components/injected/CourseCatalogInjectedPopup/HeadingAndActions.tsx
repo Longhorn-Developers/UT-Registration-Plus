@@ -1,3 +1,5 @@
+import createSchedule from '@pages/background/lib/createSchedule';
+import switchSchedule from '@pages/background/lib/switchSchedule';
 import {
     ArrowUpRight,
     CalendarDots,
@@ -16,17 +18,15 @@ import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { Button } from '@views/components/common/Button';
 import { Chip, coreMap, flagMap } from '@views/components/common/Chip';
+import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import Divider from '@views/components/common/Divider';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import { useCalendar } from '@views/contexts/CalendarContext';
-import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
-import createSchedule from '@pages/background/lib/createSchedule';
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
-import DisplayMeetingInfo from './DisplayMeetingInfo';
-import switchSchedule from '@pages/background/lib/switchSchedule';
 
+import DisplayMeetingInfo from './DisplayMeetingInfo';
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
@@ -116,56 +116,53 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
         }
     };
 
+    const handleAddToNewSchedule = async (currentSemesterCode: string|undefined, close: () => void) => {
+        const newScheduleId = await createSchedule(`Semester${currentSemesterCode}`);
+        switchSchedule(newScheduleId);
+        addCourse({ course, scheduleId: newScheduleId });
+        close();
+    };
+
     const handleAddOrRemoveCourse = async () => {
         if (!activeSchedule) return;
         if (!courseAdded) {
             // handleAddCourse();
             const currentSemesterCode = course.semester.code;
-            if(activeSchedule.courses.some(otherCourse => otherCourse.semester.code !== currentSemesterCode)){
+            if (activeSchedule.courses.some(otherCourse => otherCourse.semester.code !== currentSemesterCode)) {
                 showDialog({
-                        title: 'Semester Mismatch',
-                        description: (
-                          <>
-                            <p>The class you are adding is in a different semester (Code: {currentSemesterCode}).</p>
-                          </>
-                        ),
-                        buttons: (close) => (
-                          <>
-                            <Button
-                              variant='filled'
-                              color='ut-burntorange'
-                              onClick={close}
-                            >
-                              Cancel
+                    title: 'Semester Mismatch',
+                    description: (
+                        <p>The class you are adding is in a different semester (Code: {currentSemesterCode}).</p>
+                    ),
+                    buttons: close => (
+                        <>
+                            <Button variant='filled' color='ut-burntorange' onClick={close}>
+                                Cancel
                             </Button>
                             <Button
-                              variant='filled'
-                              color='ut-burntorange'
-                              onClick={() => {
-                                addCourse({course, scheduleId: activeSchedule.id});
-                                close();
-                              }}
+                                variant='filled'
+                                color='ut-burntorange'
+                                onClick={() => {
+                                    addCourse({ course, scheduleId: activeSchedule.id });
+                                    close();
+                                }}
                             >
-                              Add Anyways
+                                Add Anyways
                             </Button>
                             <Button
-                              variant='filled'
-                              color='ut-burntorange'
-                              onClick={async () => {
-                                const newScheduleId = await createSchedule("Semester" + currentSemesterCode);
-                                switchSchedule(newScheduleId);
-                                addCourse({course, scheduleId: newScheduleId});
-                                close();
-                              }}
+                                variant='filled'
+                                color='ut-burntorange'
+                                onClick={() => {
+                                    handleAddToNewSchedule(currentSemesterCode, close);
+                                }}
                             >
-                              Add to new schedule
+                                Add to new schedule
                             </Button>
-                          </>
-                        ),
-                      });
-            }
-            else{
-                addCourse({course, scheduleId: activeSchedule.id});
+                        </>
+                    ),
+                });
+            } else {
+                addCourse({ course, scheduleId: activeSchedule.id });
             }
         } else {
             removeCourse({ course, scheduleId: activeSchedule.id });
