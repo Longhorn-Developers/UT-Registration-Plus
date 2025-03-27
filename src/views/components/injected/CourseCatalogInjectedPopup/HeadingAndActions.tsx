@@ -126,40 +126,41 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     const handleAddOrRemoveCourse = async () => {
         if (!activeSchedule) return;
         if (!courseAdded) {
-            // handleAddCourse();
             const currentSemesterCode = course.semester.code;
             if (activeSchedule.courses.some(otherCourse => otherCourse.semester.code !== currentSemesterCode)) {
+                const dialogButtons = (close: () => void) => (
+                    <>
+                        <Button variant='filled' color='ut-burntorange' onClick={close}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant='filled'
+                            color='ut-burntorange'
+                            onClick={() => {
+                                addCourse({ course, scheduleId: activeSchedule.id });
+                                close();
+                            }}
+                        >
+                            Add Anyways
+                        </Button>
+                        <Button
+                            variant='filled'
+                            color='ut-burntorange'
+                            onClick={() => {
+                                handleAddToNewSchedule(currentSemesterCode, close);
+                            }}
+                        >
+                            Add to new schedule
+                        </Button>
+                    </>
+                );
+
                 showDialog({
                     title: 'Semester Mismatch',
                     description: (
                         <p>The class you are adding is in a different semester (Code: {currentSemesterCode}).</p>
                     ),
-                    buttons: close => (
-                        <>
-                            <Button variant='filled' color='ut-burntorange' onClick={close}>
-                                Cancel
-                            </Button>
-                            <Button
-                                variant='filled'
-                                color='ut-burntorange'
-                                onClick={() => {
-                                    addCourse({ course, scheduleId: activeSchedule.id });
-                                    close();
-                                }}
-                            >
-                                Add Anyways
-                            </Button>
-                            <Button
-                                variant='filled'
-                                color='ut-burntorange'
-                                onClick={() => {
-                                    handleAddToNewSchedule(currentSemesterCode, close);
-                                }}
-                            >
-                                Add to new schedule
-                            </Button>
-                        </>
-                    ),
+                    buttons: dialogButtons,
                 });
             } else {
                 addCourse({ course, scheduleId: activeSchedule.id });
