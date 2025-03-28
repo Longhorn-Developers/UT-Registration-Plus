@@ -156,15 +156,13 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     title: 'This course section is from a different semester!',
                     description: (
                         <>
-                            <p>
-                                The section you&apos;re adding is for{' '}
-                                <span className='text-ut-burntorange'>
-                                    {course.semester.season} {course.semester.year}
-                                </span>
-                                , but your current schedule contains sections in{' '}
-                                <span className='text-ut-burntorange'>{activeSemesters}</span>.
-                            </p>
-                            <p>Mixing semesters in one schedule may cause confusion.</p>
+                            The section you&apos;re adding is for{' '}
+                            <span className='text-ut-burntorange'>
+                                {course.semester.season} {course.semester.year}
+                            </span>
+                            , but your current schedule contains sections in{' '}
+                            <span className='text-ut-burntorange'>{activeSemesters}</span>. Mixing semesters in one
+                            schedule may cause confusion.
                         </>
                     ),
                     buttons: dialogButtons,
