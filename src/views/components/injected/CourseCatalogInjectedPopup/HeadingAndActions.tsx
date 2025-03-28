@@ -131,7 +131,10 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
         if (!activeSchedule) return;
         if (!courseAdded) {
             const currentSemesterCode = course.semester.code;
-            if (activeSchedule.courses.some(otherCourse => otherCourse.semester.code !== currentSemesterCode)) {
+            if (
+                activeSchedule.courses.length > 0 &&
+                activeSchedule.courses.every(otherCourse => otherCourse.semester.code !== currentSemesterCode)
+            ) {
                 const dialogButtons = (close: () => void) => (
                     <>
                         <Button variant='minimal' color='ut-black' onClick={close}>
