@@ -16,6 +16,7 @@ import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { englishStringifyList } from '@shared/util/string';
 import { Button } from '@views/components/common/Button';
 import { Chip, coreMap, flagMap } from '@views/components/common/Chip';
 import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
@@ -64,7 +65,10 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
     const showDialog = usePrompt();
-
+    const uniqueSemesters = [
+        ...new Set(activeSchedule.courses.map(course => `${course.semester.season} ${course.semester.year}`)),
+    ];
+    const activeSemesters = englishStringifyList(uniqueSemesters);
     const getInstructorFullName = (instructor: Instructor) => instructor.toString({ format: 'first_last' });
 
     const handleCopy = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -130,18 +134,8 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
             if (activeSchedule.courses.some(otherCourse => otherCourse.semester.code !== currentSemesterCode)) {
                 const dialogButtons = (close: () => void) => (
                     <>
-                        <Button variant='filled' color='ut-burntorange' onClick={close}>
+                        <Button variant='minimal' color='ut-black' onClick={close}>
                             Cancel
-                        </Button>
-                        <Button
-                            variant='filled'
-                            color='ut-burntorange'
-                            onClick={() => {
-                                addCourse({ course, scheduleId: activeSchedule.id });
-                                close();
-                            }}
-                        >
-                            Add Anyways
                         </Button>
                         <Button
                             variant='filled'
@@ -150,15 +144,25 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                                 handleAddToNewSchedule(currentSemesterCode, close);
                             }}
                         >
-                            Add to new schedule
+                            Start a new schedule
                         </Button>
                     </>
                 );
 
                 showDialog({
-                    title: 'Semester Mismatch',
+                    title: 'This course section is from a different semester!',
                     description: (
-                        <p>The class you are adding is in a different semester (Code: {currentSemesterCode}).</p>
+                        <>
+                            <p>
+                                The section you&apos;re adding is for{' '}
+                                <span className='text-ut-burntorange'>
+                                    {course.semester.season} {course.semester.year}
+                                </span>
+                                , but your current schedule contains sections in{' '}
+                                <span className='text-ut-burntorange'>{activeSemesters}</span>.
+                            </p>
+                            <p>Mixing semesters in one schedule may cause confusion.</p>
+                        </>
                     ),
                     buttons: dialogButtons,
                 });
