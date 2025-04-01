@@ -1,5 +1,6 @@
 import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+
 import createSchedule from '../lib/createSchedule';
 
 /**
