@@ -1,5 +1,4 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import createSchedule from '@pages/background/lib/createSchedule';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
@@ -42,7 +41,7 @@ const teamMembers = [...LONGHORN_DEVELOPERS_ADMINS, ...LONGHORN_DEVELOPERS_SWE];
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
 export default function ScheduleListItem({ schedule, onClick }: ScheduleListItemProps): JSX.Element {
-    const [activeSchedule, schedules] = useSchedules();
+    const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
     const teamMember = teamMembers[Math.floor(Math.random() * teamMembers.length)];
@@ -130,14 +129,9 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         variant='filled'
                         color='theme-red'
                         icon={Trash}
-                        onClick={async () => {
+                        onClick={() => {
                             close();
-                            await deleteSchedule(schedule.id);
-
-                            // By default, there is always one schedule in schedules array. Create a new schedule if there are no schedules left.
-                            if (schedules.length <= 1) {
-                                createSchedule('New Schedule');
-                            }
+                            deleteSchedule(schedule.id);
                         }}
                     >
                         Delete permanently
