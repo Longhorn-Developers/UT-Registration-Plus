@@ -22,6 +22,11 @@ export default async function deleteSchedule(scheduleId: string): Promise<string
     schedules.splice(scheduleIndex, 1);
     await UserScheduleStore.set('schedules', schedules);
 
+    // By invariant, there must always be at least one schedule
+    if (schedules.length === 0) {
+        createSchedule('Schedule 1');
+    }
+
     let newActiveIndex = activeIndex;
     if (scheduleIndex < activeIndex) {
         newActiveIndex = activeIndex - 1;
