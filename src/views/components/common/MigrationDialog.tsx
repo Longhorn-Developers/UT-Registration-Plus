@@ -102,7 +102,7 @@ export function useMigrationDialog() {
                 {
                     title: 'This extension has updated!',
                     description:
-                        "You may have already began planning your Spring '25 schedule. Click the button below to transfer your saved schedules into a new schedule. (You may be required to login to the UT Registrar)",
+                        "You may have already began planning your Fall '25 schedule. Click the button below to transfer your saved schedules into a new schedule. (You may be required to login to the UT Registrar)",
 
                     buttons: close => <MigrationButtons close={close} />,
                 },
