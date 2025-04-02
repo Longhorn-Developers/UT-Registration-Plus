@@ -161,7 +161,7 @@ export default function Calendar(): ReactNode {
                                 // scrollbarGutter: 'stable',
                             }
                         }
-                        className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5'
+                        className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5 [&>*]:screenshot:flex-grow-0'
                     >
                         <CalendarHeader
                             sidebarOpen={showSidebar}
