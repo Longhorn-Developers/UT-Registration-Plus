@@ -36,5 +36,11 @@ export default async function createSchedule(scheduleName: string) {
     schedules.push(newSchedule);
 
     await UserScheduleStore.set('schedules', schedules);
+
+    // If there is only one schedule, set the active index to the new schedule
+    if (schedules.length <= 1) {
+        await UserScheduleStore.set('activeIndex', 0);
+    }
+
     return newSchedule.id;
 }
