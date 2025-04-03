@@ -5,7 +5,7 @@ const TERM_TO_ID_MAP = {
     Spring: 2,
     Summer: 6,
     Fall: 9,
-};
+} as const;
 
 /**
  * generateSemesters
