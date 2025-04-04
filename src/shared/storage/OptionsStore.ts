@@ -22,6 +22,9 @@ export interface IOptionsStore {
     /** whether animations should be reduced or not
      */
     enableReducedMotion: boolean;
+  
+    /** whether the calendar sidebar should be shown when the calendar is opened */
+    showCalendarSidebar: boolean;
 }
 
 export const OptionsStore = createSyncStore<IOptionsStore>({
@@ -31,6 +34,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
     enableDataRefreshing: false,
     alwaysOpenCalendarInNewTab: false,
     enableReducedMotion: false,
+    showCalendarSidebar: true,
 });
 
 /**
@@ -46,6 +50,7 @@ export const initSettings = async () =>
         enableDataRefreshing: await OptionsStore.get('enableDataRefreshing'),
         alwaysOpenCalendarInNewTab: await OptionsStore.get('alwaysOpenCalendarInNewTab'),
         enableReducedMotion: await OptionsStore.get('enableReducedMotion'),
+        showCalendarSidebar: await OptionsStore.get('showCalendarSidebar'),
     }) satisfies IOptionsStore;
 
 // Clothing retailer right
