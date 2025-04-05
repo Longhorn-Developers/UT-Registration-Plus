@@ -86,25 +86,25 @@ export default function Map(): JSX.Element {
             schedule: { meetings },
         } = course;
 
-        let courseDeptAndInstr = `${course.department} ${course.number}`;
+        let courseDetail = `${course.department} ${course.number}`;
 
         const mainInstructor = course.instructors[0];
         if (mainInstructor) {
-            courseDeptAndInstr += ` – ${mainInstructor.toString({ format: 'first_last' })}`;
+            courseDetail += ` – ${mainInstructor.toString({ format: 'first_last' })}`;
         }
 
-        return { status, courseDeptAndInstr, meetings, course };
+        return { status, courseDetail, meetings, course };
     }
 
     // /**
     //  * Function to process each in-person class into its distinct meeting objects for calendar grid
     //  */
     // function processAsyncCourses({
-    //     courseDeptAndInstr,
+    //     courseDetail,
     //     status,
     //     course,
     // }: {
-    //     courseDeptAndInstr: string;
+    //     courseDetail: string;
     //     status: StatusType;
     //     course: Course;
     // }): CalendarGridCourse[] {
@@ -116,7 +116,7 @@ export default function Map(): JSX.Element {
     //                 endIndex: -1,
     //             },
     //             componentProps: {
-    //                 courseDeptAndInstr,
+    //                 courseDetail,
     //                 status,
     //                 colors: course.colors,
     //             },
@@ -129,12 +129,7 @@ export default function Map(): JSX.Element {
     /**
      * Function to process each in-person class into its distinct meeting objects for calendar grid
      */
-    function processInPersonMeetings(
-        meeting: CourseMeeting,
-        courseDeptAndInstr: string,
-        status: StatusType,
-        course: Course
-    ) {
+    function processInPersonMeetings(meeting: CourseMeeting, courseDetail: string, status: StatusType, course: Course) {
         const { days, location, startTime, endTime } = meeting;
         const time = meeting.getTimeString({ separator: '-' });
         const timeAndLocation = `${time}${location ? ` - ${location.building} ${location.room}` : ''}`;
@@ -147,8 +142,8 @@ export default function Map(): JSX.Element {
         return days.map(day => ({
             day,
             dayIndex: dayToNumber[day],
-            // fullName: `${courseDeptAndInstr} - ${timeAndLocation}`,
-            fullName: `${timeAndLocation} - ${courseDeptAndInstr}`,
+            // fullName: `${courseDetail} - ${timeAndLocation}`,
+            fullName: `${timeAndLocation} - ${courseDetail}`,
             uid: course.uniqueId,
             time,
             normalizedStartTime,
@@ -163,18 +158,18 @@ export default function Map(): JSX.Element {
     }
 
     const processedCourses: ProcessInPersonMeetings[] = activeSchedule.courses.flatMap(course => {
-        const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
+        const { status, courseDetail, meetings } = extractCourseInfo(course);
 
         // if (meetings.length === 0) {
-        //     return processAsyncCourses({ courseDeptAndInstr, status, course });
+        //     return processAsyncCourses({ courseDetail, status, course });
         // }
 
         return meetings.flatMap(meeting =>
             // if (meeting.days.includes(DAY_MAP.S) || meeting.startTime < 480) {
-            //     return processAsyncCourses({ courseDeptAndInstr, status, course });
+            //     return processAsyncCourses({ courseDetail, status, course });
             // }
 
-            processInPersonMeetings(meeting, courseDeptAndInstr, status, course)
+            processInPersonMeetings(meeting, courseDetail, status, course)
         );
     });
 
