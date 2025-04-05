@@ -47,6 +47,7 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
     { name: 'Isaiah Rodriguez', role: 'Chief Operations and Design Officer', githubUsername: 'IsaDavRod' },
     { name: 'Samuel Gunter', role: 'Senior Software Engineer', githubUsername: 'Samathingamajig' },
     { name: 'Derek Chen', role: 'Senior Software Engineer', githubUsername: 'DereC4' },
+    { name: 'Kabir Ramzan', role: 'Events Director', githubUsername: 'CMEONE' },
 ] as const satisfies TeamMember[];
 
 export const LONGHORN_DEVELOPERS_SWE = [
