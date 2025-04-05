@@ -614,7 +614,7 @@ export default function Settings(): JSX.Element {
                                         {admin.name}
                                     </Text>
                                     {admin.role.map(role => (
-                                        <p key={role} className='text-sm text-gray-600'>
+                                        <p key={admin.githubUsername} className='text-sm text-gray-600'>
                                             {role}
                                         </p>
                                     ))}
@@ -664,7 +664,7 @@ export default function Settings(): JSX.Element {
                                         {swe.name}
                                     </Text>
                                     {swe.role.map(role => (
-                                        <p key={role} className='text-sm text-gray-600'>
+                                        <p key={swe.githubUsername} className='text-sm text-gray-600'>
                                             {role}
                                         </p>
                                     ))}
