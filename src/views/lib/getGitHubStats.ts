@@ -5,7 +5,7 @@ import type { CachedData } from '@shared/types/CachedData';
 // Types
 type TeamMember = {
     name: string;
-    role: string;
+    role: string[];
     githubUsername: string;
 };
 
@@ -40,21 +40,38 @@ const REPO_NAME = 'UT-Registration-Plus';
 const CONTRIBUTORS_API_ROUTE = `/repos/${REPO_OWNER}/${REPO_NAME}/stats/contributors`;
 
 export const LONGHORN_DEVELOPERS_ADMINS = [
-    { name: 'Sriram Hariharan', role: 'Founder', githubUsername: 'sghsri' },
-    { name: 'Elie Soloveichik', role: 'Staff Engineer', githubUsername: 'Razboy20' },
-    { name: 'Diego Perez', role: 'Staff Engineer', githubUsername: 'doprz' },
-    { name: 'Lukas Zenick', role: 'Senior Software Engineer', githubUsername: 'Lukas-Zenick' },
-    { name: 'Isaiah Rodriguez', role: 'Chief Operations and Design Officer', githubUsername: 'IsaDavRod' },
-    { name: 'Samuel Gunter', role: 'Senior Software Engineer', githubUsername: 'Samathingamajig' },
-    { name: 'Derek Chen', role: 'Senior Software Engineer', githubUsername: 'DereC4' },
+    { name: 'Sriram Hariharan', role: ['LHD Co-Founder', 'UTRP Founder'], githubUsername: 'sghsri' },
+    {
+        name: 'Elie Soloveichik',
+        role: ['LHD Co-Founder', 'Learning and Development Director', 'UTRP Senior SWE'],
+        githubUsername: 'Razboy20',
+    },
+    {
+        name: 'Diego Perez',
+        role: ['LHD Co-Founder', 'Software Engineering Director', 'UTRP Senior SWE'],
+        githubUsername: 'doprz',
+    },
+    { name: 'Isaiah Rodriguez', role: ['LHD Co-Founder', 'President and UI/UX Director'], githubUsername: 'IsaDavRod' },
+    {
+        name: 'Samuel Gunter',
+        role: ['Administrative Director', 'UTRP Co-Lead', 'UTRP Senior SWE'],
+        githubUsername: 'Samathingamajig',
+    },
+    {
+        name: 'Derek Chen',
+        role: ['Communications Director', 'UTRP Co-Lead', 'UTRP Senior SWE'],
+        githubUsername: 'DereC4',
+    },
+    { name: 'Kabir Ramzan', role: ['Events Director'], githubUsername: 'CMEONE' },
 ] as const satisfies TeamMember[];
 
 export const LONGHORN_DEVELOPERS_SWE = [
-    { name: 'Preston Cook', role: 'Software Engineer', githubUsername: 'Preston-Cook' },
-    { name: 'Ethan Lanting', role: 'Software Engineer', githubUsername: 'EthanL06' },
-    { name: 'Casey Charleston', role: 'Software Engineer', githubUsername: 'caseycharleston' },
-    { name: 'Vinson', role: 'Software Engineer', githubUsername: 'vinsonzheng499' },
-    { name: 'Vivek', role: 'Software Engineer', githubUsername: 'vivek12311' },
+    { name: 'Preston Cook', role: ['Software Engineer'], githubUsername: 'Preston-Cook' },
+    { name: 'Ethan Lanting', role: ['Software Engineer'], githubUsername: 'EthanL06' },
+    { name: 'Casey Charleston', role: ['Software Engineer'], githubUsername: 'caseycharleston' },
+    { name: 'Lukas Zenick', role: ['LHD Alumni', 'Senior Software Engineer'], githubUsername: 'Lukas-Zenick' },
+    { name: 'Vinson', role: ['LHD Alumni', 'Software Engineer'], githubUsername: 'vinsonzheng499' },
+    { name: 'Vivek', role: ['LHD Alumni', 'Software Engineer'], githubUsername: 'vivek12311' },
 ] as const satisfies TeamMember[];
 
 /**
