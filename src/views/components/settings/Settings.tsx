@@ -595,7 +595,9 @@ export default function Settings(): JSX.Element {
 
                 <section className='my-8 lg:my-0 lg:ml-4 lg:w-1/2'>
                     <section>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>LONGHORN DEVELOPERS ADMINS</h2>
+                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>
+                            LONGHORN DEVELOPERS (LHD) Executive Board
+                        </h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3'>
                             {LONGHORN_DEVELOPERS_ADMINS.map(admin => (
                                 <div
