@@ -5,6 +5,7 @@ import { Button } from '@views/components/common/Button';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import Divider from '@views/components/common/Divider';
 import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import { LargeLogo } from '@views/components/common/LogoIcon';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
@@ -38,6 +39,9 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     icon={Sidebar}
                 />
             )}
+
+            <LargeLogo className='hidden! screenshot:flex!' />
+            <Divider className='self-center hidden! screenshot:block!' size='2.5rem' orientation='vertical' />
 
             <div className='min-w-[11.5rem] screenshot:transform-origin-left screenshot:scale-120'>
                 <ScheduleTotalHoursAndCourses
