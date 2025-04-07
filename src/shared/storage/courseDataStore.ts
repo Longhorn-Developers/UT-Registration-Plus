@@ -1,9 +1,8 @@
+import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
-import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } from '../types/CourseData';
-
 /**
- * A type that represents the course data store of the fields of study,
+ * An interface that represents the course data store of the fields of study,
  * course numbers, and sections for each semester.
  *
  * The structure is as follows:
@@ -16,7 +15,7 @@ import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } fr
  *          - section (the section details)
  *
  */
-export type ICourseDataStore = {
+export interface ICourseDataStore {
     courseData: Record<
         string,
         {
@@ -36,7 +35,7 @@ export type ICourseDataStore = {
             >;
         }
     >;
-};
+}
 
 /**
  * A store that is used for storing user schedules (and the active schedule)

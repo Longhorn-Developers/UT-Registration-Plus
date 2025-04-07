@@ -10,11 +10,9 @@ import {
     PlusCircle,
 } from '@phosphor-icons/react';
 import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
-import { generateSemesters } from '@shared/util/generateSemesters';
 import { useNumericInput } from '@views/hooks/useNumericInput';
 import { useQuickAddDropdowns } from '@views/hooks/useQuickAdd';
 import useSchedules from '@views/hooks/useSchedules';
-import { CourseDataService } from '@views/lib/getCoursesAndSections';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -29,25 +27,17 @@ import Text from './Text/Text';
 
 const UNIQUE_ID_LENGTH = 5;
 
-const AVAILABLE_SEMESTERS = generateSemesters({ year: 2024, season: 'Fall' }, { year: 2025, season: 'Fall' });
-
-const courseData = new CourseDataService();
-
 /**
  * QuickAddModal component
  *
- * This component renders a button with a PlusCircle icon and the label "Quick Add".
+ * This component renders a modal that allows users to quickly add courses to their schedule.
+ * It provides dropdowns for selecting semester, field of study, course number, and section.
+ * Alternatively, users can enter a unique number to add a course directly.
  */
 export default function QuickAddModal(): JSX.Element {
     const [activeSchedule] = useSchedules();
     const uniqueNumber = useNumericInput('', UNIQUE_ID_LENGTH);
-    const data = useQuickAddDropdowns(
-        AVAILABLE_SEMESTERS,
-        courseData.getFieldsOfStudy,
-        courseData.getCourseNumbers,
-        courseData.getSections,
-        () => uniqueNumber.reset()
-    );
+    const data = useQuickAddDropdowns();
 
     const handleAddCourse = async () => {
         if (!data.semester || (uniqueNumber.value.length !== UNIQUE_ID_LENGTH && !data.section)) return;

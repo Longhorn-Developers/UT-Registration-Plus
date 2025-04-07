@@ -1,7 +1,7 @@
 /**
  * A type representing a field of study at UT Austin.
  */
-export type Field = {
+export type StudyField = {
     id: string;
     label: string;
 };
@@ -233,4 +233,4 @@ export const FIELDS_OF_STUDY = [
     { id: 'WRT', label: 'WRT - Writing' },
     { id: 'YID', label: 'YID - Yiddish' },
     { id: 'YOR', label: 'YOR - Yoruba' },
-] as const satisfies Field[];
+] as const satisfies StudyField[];

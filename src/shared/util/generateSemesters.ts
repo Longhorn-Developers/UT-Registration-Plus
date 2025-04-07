@@ -1,5 +1,5 @@
-import type { Semester } from '../types/Course';
-import type { SemesterItem } from '../types/CourseData';
+import type { Semester } from '@shared/types/Course';
+import type { SemesterItem } from '@shared/types/CourseData';
 
 const TERM_TO_ID_MAP = {
     Spring: 2,

@@ -1,6 +1,7 @@
 import { CourseDataStore } from '@shared/storage/courseDataStore';
 import type { ScrapedRow } from '@shared/types/Course';
 import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
+import { generateSemesters } from '@shared/util/generateSemesters';
 import { capitalize } from '@shared/util/string';
 
 import { FIELDS_OF_STUDY } from '../resources/studyFields';
@@ -113,6 +114,13 @@ async function fetchSections(
  * It provides methods to retrieve the "Fields of Study", "course numbers", and sections for a given semester.
  */
 export class CourseDataService {
+    /**
+     * Retrieves semesters from the local store
+     */
+    getSemesters(): SemesterItem[] {
+        return generateSemesters({ year: 2025, season: 'Spring' }, { year: 2025, season: 'Fall' });
+    }
+
     /**
      * Retrieves study fields for a specific semester
      */

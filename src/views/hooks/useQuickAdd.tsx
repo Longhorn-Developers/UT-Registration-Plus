@@ -1,7 +1,10 @@
 import type { ICourseDataStore } from '@shared/storage/courseDataStore';
 import { CourseDataStore } from '@shared/storage/courseDataStore';
 import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
+import { CourseDataService } from '@views/lib/getCoursesAndSections';
 import { useCallback, useEffect, useState } from 'react';
+
+const courseDataService = new CourseDataService();
 
 /**
  * useQuickAddDropdowns
@@ -19,23 +22,9 @@ import { useCallback, useEffect, useState } from 'react';
  * - Level 3: Course Number (CS 439, GOV 312L, etc.)
  * - Level 4: Section Number (unique sections of this course)
  *
- * @param semesters - The list of semesters to choose from.
- * @param getFieldsOfStudy - An async function that takes the semester selected and returns its corresponding fields of study.
- * @param getCourseNumber - An async function that takes the previous options selected and returns their corresponding course numbers.
- * @param getSections - An async function that takes the previous options selected and returns their corresponding sections.
  * @param onChange - An optional callback function to be called when any of the options change.
  */
-export const useQuickAddDropdowns = (
-    semesters: SemesterItem[],
-    getFieldsOfStudy: (semester: SemesterItem) => Promise<FieldOfStudyItem[]>,
-    getCourseNumbers: (semester: SemesterItem, fieldOfStudy: FieldOfStudyItem) => Promise<CourseNumberItem[]>,
-    getSections: (
-        semester: SemesterItem,
-        fieldOfStudy: FieldOfStudyItem,
-        courseNumber: CourseNumberItem
-    ) => Promise<SectionItem[]>,
-    onChange?: () => void
-) => {
+export function useQuickAddDropdowns(onChange?: () => void) {
     // Course Data Store
     const [courseData, setCourseData] = useState<ICourseDataStore>({ courseData: {} });
 
@@ -46,21 +35,24 @@ export const useQuickAddDropdowns = (
     const [section, setSection] = useState<SectionItem | null>(null);
 
     // Available options
+    const [semesters, setSemesters] = useState<SemesterItem[]>([]);
     const [fieldsOfStudy, setFieldsOfStudy] = useState<FieldOfStudyItem[]>([]);
     const [courseNumbers, setCourseNumbers] = useState<CourseNumberItem[]>([]);
     const [sections, setSections] = useState<SectionItem[]>([]);
 
     useEffect(() => {
-        const initializer = async () => {
+        const initializeData = async () => {
             const data = await CourseDataStore.get('courseData');
             setCourseData({ courseData: data });
         };
+        const semesters = courseDataService.getSemesters();
+        setSemesters(semesters);
 
-        initializer();
+        initializeData();
     }, []);
 
     useEffect(() => {
-        const listener = CourseDataStore.listen('courseData', newCourseData => {
+        const dataListener = CourseDataStore.listen('courseData', newCourseData => {
             setCourseData(prev => ({
                 ...prev,
                 courseData: newCourseData.newValue || {},
@@ -68,9 +60,9 @@ export const useQuickAddDropdowns = (
         });
 
         return () => {
-            CourseDataStore.removeListener(listener);
+            CourseDataStore.removeListener(dataListener);
         };
-    }, [semester, fieldOfStudy, courseNumber, section]);
+    }, []);
 
     useEffect(() => {
         const data = courseData.courseData;
@@ -102,11 +94,11 @@ export const useQuickAddDropdowns = (
             setFieldOfStudy(null);
             setCourseNumber(null);
 
-            getFieldsOfStudy(newSemester);
+            courseDataService.getFieldsOfStudy(newSemester);
 
             onChange?.();
         },
-        [getFieldsOfStudy, semester, onChange]
+        [semester, onChange]
     );
 
     const handleFieldOfStudyChange = useCallback(
@@ -119,14 +111,13 @@ export const useQuickAddDropdowns = (
             setCourseNumber(null);
             setSection(null);
 
-            getCourseNumbers(semester, newFieldOfStudy);
+            courseDataService.getCourseNumbers(semester, newFieldOfStudy);
 
             onChange?.();
         },
-        [getCourseNumbers, semester, fieldOfStudy, onChange]
+        [semester, fieldOfStudy, onChange]
     );
 
-    // Handle level 3 selection
     const handleCourseNumberChange = useCallback(
         (newCourseNumber: CourseNumberItem) => {
             if (newCourseNumber === courseNumber || !semester || !fieldOfStudy) {
@@ -136,11 +127,11 @@ export const useQuickAddDropdowns = (
             setCourseNumber(newCourseNumber);
             setSection(null);
 
-            getSections(semester, fieldOfStudy, newCourseNumber);
+            courseDataService.getSections(semester, fieldOfStudy, newCourseNumber);
 
             onChange?.();
         },
-        [getSections, semester, fieldOfStudy, courseNumber, onChange]
+        [semester, fieldOfStudy, courseNumber, onChange]
     );
 
     const handleSectionChange = useCallback(
@@ -188,4 +179,4 @@ export const useQuickAddDropdowns = (
 
         resetDropdowns,
     };
-};
+}
