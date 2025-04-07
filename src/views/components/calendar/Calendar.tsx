@@ -33,6 +33,8 @@ import CalendarFooter from './CalendarFooter';
  */
 export default function Calendar(): ReactNode {
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
+    const asyncCourseCells = courseCells.filter(block => block.async);
+    const displayBottomBar = asyncCourseCells && asyncCourseCells.length > 0;
 
     const [course, setCourse] = useState<Course | null>(useCourseFromUrl());
 
@@ -85,7 +87,7 @@ export default function Calendar(): ReactNode {
     return (
         <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
-                <div className='h-screen flex overflow-auto'>
+                <div className='h-screen flex overflow-auto screenshot:calendar-target'>
                     <div
                         className={clsx(
                             'py-spacing-6 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
@@ -169,7 +171,11 @@ export default function Calendar(): ReactNode {
                                 setShowSidebar(!showSidebar);
                             }}
                         />
-                        <div className='min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl'>
+                        <div
+                            className={clsx('min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl', {
+                                'screenshot:flex-grow-0': displayBottomBar, // html-to-image seems to have a bug with flex-grow
+                            })}
+                        >
                             <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
                         </div>
                         <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
