@@ -19,6 +19,10 @@ export interface IOptionsStore {
     /** whether we should open the calendar in a new tab; default is to focus an existing calendar tab */
     alwaysOpenCalendarInNewTab: boolean;
 
+    /** whether animations should be reduced or not
+     */
+    enableReducedMotion: boolean;
+  
     /** whether the calendar sidebar should be shown when the calendar is opened */
     showCalendarSidebar: boolean;
 }
@@ -29,6 +33,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
     enableScrollToLoad: true,
     enableDataRefreshing: false,
     alwaysOpenCalendarInNewTab: false,
+    enableReducedMotion: false,
     showCalendarSidebar: true,
 });
 
@@ -44,6 +49,7 @@ export const initSettings = async () =>
         enableScrollToLoad: await OptionsStore.get('enableScrollToLoad'),
         enableDataRefreshing: await OptionsStore.get('enableDataRefreshing'),
         alwaysOpenCalendarInNewTab: await OptionsStore.get('alwaysOpenCalendarInNewTab'),
+        enableReducedMotion: await OptionsStore.get('enableReducedMotion'),
         showCalendarSidebar: await OptionsStore.get('showCalendarSidebar'),
     }) satisfies IOptionsStore;
 
