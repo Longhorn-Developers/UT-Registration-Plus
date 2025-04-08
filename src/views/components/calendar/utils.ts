@@ -266,31 +266,38 @@ export const saveAsCal = async () => {
  * @param calendarRef - The reference to the calendar component.
  */
 export const saveCalAsPng = () => {
+    const WIDTH_PX = 1165;
+    const HEIGHT_PX = 754;
+    const SCALE = 2;
+
     const rootNode = document.createElement('div');
     rootNode.style.backgroundColor = 'white';
     rootNode.style.position = 'fixed';
     rootNode.style.zIndex = '1000';
     rootNode.style.top = '-10000px';
     rootNode.style.left = '-10000px';
-    rootNode.style.width = '1165px';
-    rootNode.style.height = '754px';
+    rootNode.style.width = `${WIDTH_PX}px`;
+    rootNode.style.height = `${HEIGHT_PX}px`;
     document.body.appendChild(rootNode);
 
     const clonedNode = document.querySelector('#root')!.cloneNode(true) as HTMLDivElement;
     clonedNode.style.backgroundColor = 'white';
     (clonedNode.firstChild as HTMLDivElement).classList.add('screenshot-in-progress');
 
-    return new Promise<void>((resolve, reject) => {
-        requestAnimationFrame(async () => {
-            rootNode.appendChild(clonedNode);
+    const calendarTarget = clonedNode.querySelector('.screenshot\\:calendar-target') as HTMLDivElement;
+    calendarTarget.style.width = `${WIDTH_PX}px`;
+    calendarTarget.style.height = `${HEIGHT_PX}px`;
 
+    return new Promise<void>((resolve, reject) => {
+        rootNode.appendChild(clonedNode);
+        requestAnimationFrame(async () => {
             try {
                 const screenshotBlob = await toBlob(clonedNode, {
                     cacheBust: true,
-                    canvasWidth: 1165 * 2,
-                    canvasHeight: 754 * 2,
+                    canvasWidth: WIDTH_PX * SCALE,
+                    canvasHeight: HEIGHT_PX * SCALE,
                     skipAutoScale: true,
-                    pixelRatio: 2,
+                    pixelRatio: SCALE,
                 });
 
                 if (!screenshotBlob) {

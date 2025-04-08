@@ -595,7 +595,9 @@ export default function Settings(): JSX.Element {
 
                 <section className='my-8 lg:my-0 lg:ml-4 lg:w-1/2'>
                     <section>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>LONGHORN DEVELOPERS ADMINS</h2>
+                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>
+                            LONGHORN DEVELOPERS (LHD) EXECUTIVE BOARD
+                        </h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3'>
                             {LONGHORN_DEVELOPERS_ADMINS.map(admin => (
                                 <div
@@ -611,7 +613,11 @@ export default function Settings(): JSX.Element {
                                     >
                                         {admin.name}
                                     </Text>
-                                    <p className='text-sm text-gray-600'>{admin.role}</p>
+                                    {admin.role.map(role => (
+                                        <p key={admin.githubUsername} className='text-sm text-gray-600'>
+                                            {role}
+                                        </p>
+                                    ))}
                                     {showGitHubStats && githubStats && (
                                         <div className='mt-2'>
                                             <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
@@ -657,7 +663,11 @@ export default function Settings(): JSX.Element {
                                     >
                                         {swe.name}
                                     </Text>
-                                    <p className='text-sm text-gray-600'>{swe.role}</p>
+                                    {swe.role.map(role => (
+                                        <p key={swe.githubUsername} className='text-sm text-gray-600'>
+                                            {role}
+                                        </p>
+                                    ))}
                                     {showGitHubStats && githubStats && (
                                         <div className='mt-2'>
                                             <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
