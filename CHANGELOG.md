@@ -1,3 +1,22 @@
+## [2.2.0](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.1.1...v2.2.0) (2025-04-06)
+
+### Features
+
+- auto create empty schedule when deleted all schedules ([#552](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/552)) ([7c2beef](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/7c2beef1930fbc887e8ec1aea789016b3150cd21))
+- ensure unique splash text on schedule change ([#554](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/554)) ([9448072](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/94480721124e052426c1f3236e8605c7088df79c))
+- implement a What's New prompt ([#539](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/539)) ([f036d40](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/f036d409e60a39fd1d3cb2f0db53a6056615f336))
+- persist sidebar toggle state ([#569](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/569)) ([6957431](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/695743104c57951ba1957258c60c843f8fae793f))
+- recruitment banner for designer ([#578](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/578)) ([70d4fec](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/70d4fecad61ec3cd3ba839de302fd851e075d073))
+- rework start time to checkboxes ([#553](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/553)) ([ca734dc](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/ca734dcd39a433cfd2e930ea04adeba959b32c36))
+- sticky calendar header and days ([#568](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/568)) ([fa9f78b](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/fa9f78b46e3a2270a44d4cc0691195a7c695cb93))
+
+### Bug Fixes
+
+- ics calendar export dates ([#535](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/535)) ([4a5f67f](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/4a5f67f0fda9f0ef57f821e4b7a55d63f099f579))
+- include logo in screenshot, fix screenshots on small/zoomed windows ([#579](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/579)) ([76b6aa7](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/76b6aa7c150299dfcfa4b3dc00ce2de32f90f75c))
+- merge course labels across pages ([#541](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/541)) ([6c3139b](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/6c3139bf0f324c9a7be826b6c24e8bf142fc53b1))
+- **schedule:** truncate long schedule names in popup ([#564](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/564)) ([3bed9cc](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/3bed9cc27febfe795af0766a913c4845e74cc2da))
+
 ## [2.1.1](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.1.0...v2.1.1) (2025-03-03)
 
 ### Features
