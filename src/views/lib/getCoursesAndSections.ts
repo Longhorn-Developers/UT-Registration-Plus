@@ -1,27 +1,22 @@
 import { CourseDataStore } from '@shared/storage/courseDataStore';
 import type { ScrapedRow } from '@shared/types/Course';
-import type { CourseNumberItem, FieldOfStudyItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
-import { generateSemesters } from '@shared/util/generateSemesters';
+import type { CourseItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
 import { capitalize } from '@shared/util/string';
 
-import { FIELDS_OF_STUDY } from '../resources/studyFields';
 import { CourseCatalogScraper } from './CourseCatalogScraper';
 import { SiteSupport } from './getSiteSupport';
 
 /**
- * Fetches study fields from the API (fake implementation)
+ * Fetches course numbers from the UT Planner API.
+ *
+ * @param semester - The semester for which to fetch course numbers.
+ * @param studyFieldId - The ID of the study field.
+ *
+ * @returns A promise that resolves to an array of course numbers.
  */
-async function fetchFieldsOfStudy(_semester: SemesterItem): Promise<FieldOfStudyItem[]> {
-    // console.log('Fetched fields of study [Fake]', FIELDS_OF_STUDY);
-    return FIELDS_OF_STUDY as FieldOfStudyItem[];
-}
-
-/**
- * Fetches course numbers from the API
- */
-async function fetchCourseNumbers(semester: SemesterItem, studyFieldId: string): Promise<CourseNumberItem[]> {
+async function fetchCourseNumbers(semester: SemesterItem, fieldOfStudyId: string): Promise<CourseItem[]> {
     const formattedSemester = `${semester.year}%20${semester.season}`;
-    const formattedStudyFieldId = studyFieldId.replace(' ', '%20');
+    const formattedStudyFieldId = fieldOfStudyId.replace(' ', '%20');
     const url = `https://utexas.collegescheduler.com/api/terms/${formattedSemester}/subjects/${formattedStudyFieldId}/courses`;
 
     const data = await fetch(url)
@@ -31,10 +26,11 @@ async function fetchCourseNumbers(semester: SemesterItem, studyFieldId: string):
             return [];
         });
 
-    // console.log('Fetched course numbers:', data);
-
     const processedData = data.map((item: { id: string; subjectId: string; displayTitle: string }) => ({
         id: item.id.replace('|', ' '),
+        fieldOfStudyId,
+        courseNumber: item.id.split('|')[1] || '',
+        courseName: item.displayTitle,
         label: `${item.subjectId} ${item.displayTitle}`,
     }));
 
@@ -42,15 +38,20 @@ async function fetchCourseNumbers(semester: SemesterItem, studyFieldId: string):
 }
 
 /**
- * Fetches sections from the API (fake implementation)
+ * Scrapes the sections data from the UT Course Catalog page.
+ *
+ * It fetches the HTML content of the course catalog page for a specific
+ * semester and course number, and uses the CourseCatalogScraper to extract the
+ * relevant data.
+ *
+ * @param semester - The semester for which to fetch sections.
+ * @param fieldOfStudy - The field of study for the course.
+ *
+ * @returns A promise that resolves to an array of sections.
  */
-async function fetchSections(
-    semester: SemesterItem,
-    fieldOfStudy: FieldOfStudyItem,
-    courseNumber: CourseNumberItem
-): Promise<SectionItem[]> {
-    const formattedDepartment = fieldOfStudy.id.replace(' ', '+');
-    const formattedCourseNumber = courseNumber.id.split(' ').pop();
+async function fetchSections(semester: SemesterItem, course: CourseItem): Promise<SectionItem[]> {
+    const formattedDepartment = course.fieldOfStudyId.replace(' ', '+');
+    const formattedCourseNumber = course.id.split(' ').pop();
     const url =
         `https://utdirect.utexas.edu/apps/registrar/` +
         `course_schedule/${semester.id}/results/?search_type_main=COURSE&` +
@@ -64,8 +65,6 @@ async function fetchSections(
             console.error('Error fetching sections:', error);
         });
 
-    // console.log('Fetched sections:', data);
-
     if (!data) {
         return [];
     }
@@ -73,19 +72,19 @@ async function fetchSections(
     const courseCatalogScraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, data, url);
     const rows = courseCatalogScraper.scrape(data.querySelectorAll('table.results tbody tr'));
 
-    const processRow = ({ course }: ScrapedRow) => {
-        if (!course) {
+    const processRow = (row: ScrapedRow) => {
+        const { course: crs } = row;
+        if (!crs) {
             return { id: '', label: '' };
         }
-        const { uniqueId } = course;
-        const instructor = capitalize(
-            course.instructors
-                .map(instr => instr.fullName)
-                .filter(instr => instr)
-                .join(', ')
-        );
 
-        const time = course.schedule.meetings
+        const { uniqueId } = crs;
+        const instructors = crs.instructors
+            .map(instr => instr.fullName)
+            .filter(instr => instr !== undefined && instr !== null)
+            .map(capitalize);
+
+        const time = crs.schedule.meetings
             .map(meeting => {
                 const days = meeting.getDaysString({ format: 'short' });
                 const time = meeting.getTimeString({ separator: '-' });
@@ -95,119 +94,76 @@ async function fetchSections(
             })
             .join('\n');
 
+        const instructorsLabel = instructors.length > 0 ? ` with ${instructors.join(', ')}` : '';
+        const topicLabel =
+            crs.courseName?.trim().toLowerCase() !== course.courseName?.trim().toLowerCase()
+                ? ` (${capitalize(crs.courseName)})`
+                : '';
+
+        console.log('crs vs course names', crs.courseName, course.courseName);
+
         return {
             id: `${uniqueId}`,
-            label: `${uniqueId} with ${instructor} ${time}`,
+            fieldOfStudyId: course.fieldOfStudyId,
+            courseNumber: course.courseNumber,
+            courseName: crs.courseName,
+            instructors,
+            label: `${uniqueId}${topicLabel}${instructorsLabel} ${time}`,
         };
     };
 
-    // console.log('Scraped rows:', rows);
-    // console.log(rows);
-    // console.log(data);
-    return rows.filter((row: ScrapedRow) => row.course !== null).map(processRow);
+    console.log('Scraped rows:', rows);
+
+    return rows.filter((row: ScrapedRow) => row.course !== null).map(processRow) as SectionItem[];
 }
 
 /**
  * A service that handles fetching and caching course data from UT.
  *
  * This service interacts with a local store to cache data and avoid unnecessary API calls.
- * It provides methods to retrieve the "Fields of Study", "course numbers", and sections for a given semester.
+ * It provides methods to retrieve the courses & sections info for a given semester.
  */
 export class CourseDataService {
     /**
-     * Retrieves semesters from the local store
-     */
-    getSemesters(): SemesterItem[] {
-        return generateSemesters({ year: 2025, season: 'Spring' }, { year: 2025, season: 'Fall' });
-    }
-
-    /**
-     * Retrieves study fields for a specific semester
-     */
-    async getFieldsOfStudy(semester: SemesterItem): Promise<FieldOfStudyItem[]> {
-        const data = await CourseDataStore.get('courseData');
-
-        data[semester.id] = data[semester.id] || { info: semester, studyFields: {} };
-
-        if (!data[semester.id]!.studyFields || Object.keys(data[semester.id]!.studyFields).length === 0) {
-            const fieldsOfStudy = await fetchFieldsOfStudy(semester);
-            fieldsOfStudy.forEach(field => {
-                data[semester.id]!.studyFields[field.id] = { info: field, courseNumbers: {} };
-            });
-
-            console.log('Setting course data:', data);
-            await CourseDataStore.set('courseData', data);
-        }
-
-        return Object.values(data[semester.id]!.studyFields).map(field => field.info);
-    }
-
-    /**
      * Retrieves course numbers for a specific study field
      */
-    async getCourseNumbers(semester: SemesterItem, fieldOfStudy: FieldOfStudyItem): Promise<CourseNumberItem[]> {
+    static async getCourseNumbers(semester: SemesterItem, fieldOfStudyId: string) {
         const data = await CourseDataStore.get('courseData');
 
-        data[semester.id] = data[semester.id] || { info: semester, studyFields: {} };
-        data[semester.id]!.studyFields[fieldOfStudy.id] = data[semester.id]!.studyFields[fieldOfStudy.id] || {
-            info: fieldOfStudy,
-            courseNumbers: {},
-        };
+        data[semester.id] = data[semester.id] || { info: semester, courses: [], sections: [] };
 
-        if (
-            !data[semester.id]!.studyFields[fieldOfStudy.id]!.courseNumbers ||
-            Object.keys(data[semester.id]!.studyFields[fieldOfStudy.id]!.courseNumbers).length === 0
-        ) {
-            const courseNumbers = await fetchCourseNumbers(semester, fieldOfStudy.id);
-            courseNumbers.forEach(courseNumber => {
-                data[semester.id]!.studyFields[fieldOfStudy.id]!.courseNumbers[courseNumber.id] = {
-                    info: courseNumber,
-                    sections: {},
-                };
+        const curCourses = data[semester.id]!.courses.filter(
+            (course: CourseItem) => course.fieldOfStudyId === fieldOfStudyId
+        );
+
+        if (curCourses.length === 0) {
+            const newCourses = await fetchCourseNumbers(semester, fieldOfStudyId);
+            newCourses.forEach(course => {
+                data[semester.id]!.courses.push(course);
             });
-
             await CourseDataStore.set('courseData', data);
         }
-
-        return Object.values(data[semester.id]!.studyFields[fieldOfStudy.id]!.courseNumbers).map(course => course.info);
     }
 
     /**
      * Retrieves sections for a specific course number
      */
-    async getSections(
-        semester: SemesterItem,
-        studyField: FieldOfStudyItem,
-        courseNumber: CourseNumberItem
-    ): Promise<SectionItem[]> {
+    static async getSections(semester: SemesterItem, courseNumber: CourseItem) {
         const data = await CourseDataStore.get('courseData');
 
-        data[semester.id] = data[semester.id] || { info: semester, studyFields: {} };
-        data[semester.id]!.studyFields[studyField.id] = data[semester.id]!.studyFields[studyField.id] || {
-            info: studyField,
-            courseNumbers: {},
-        };
-        data[semester.id]!.studyFields[studyField.id]!.courseNumbers[courseNumber.id] = data[semester.id]!.studyFields[
-            studyField.id
-        ]!.courseNumbers[courseNumber.id] || {
-            info: courseNumber,
-            sections: {},
-        };
+        data[semester.id] = data[semester.id] || { info: semester, courses: [], sections: [] };
+        const curSections = data[semester.id]!.sections.filter(
+            (section: SectionItem) =>
+                section.fieldOfStudyId === courseNumber.fieldOfStudyId &&
+                section.courseNumber === courseNumber.courseNumber
+        );
 
-        if (
-            !data[semester.id]!.studyFields[studyField.id]!.courseNumbers[courseNumber.id]!.sections ||
-            Object.keys(data[semester.id]!.studyFields[studyField.id]!.courseNumbers[courseNumber.id]!.sections)
-                .length === 0
-        ) {
-            const sections = await fetchSections(semester, studyField, courseNumber);
-            sections.forEach(section => {
-                data[semester.id]!.studyFields[studyField.id]!.courseNumbers[courseNumber.id]!.sections[section.id] =
-                    section;
+        if (curSections.length === 0) {
+            const newSections = await fetchSections(semester, courseNumber);
+            newSections.forEach(section => {
+                data[semester.id]!.sections.push(section);
             });
-
             await CourseDataStore.set('courseData', data);
         }
-
-        return Object.values(data[semester.id]!.studyFields[studyField.id]!.courseNumbers[courseNumber.id]!.sections);
     }
 }
