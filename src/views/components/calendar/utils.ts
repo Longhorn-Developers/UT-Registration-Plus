@@ -6,6 +6,7 @@ import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import { englishStringifyList } from '@shared/util/string';
+import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import type { Serialized } from 'chrome-extension-toolkit';
 import type { DateArg, Day } from 'date-fns';
 import {
@@ -314,4 +315,139 @@ export const saveCalAsPng = () => {
             }
         });
     });
+};
+
+type IntervalEvent = {
+    kind: 'start' | 'end';
+    time: number;
+};
+
+/**
+ * TODO: write a thing here
+ * @param dayCells -
+ */
+export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
+    // Sort by start time, increasing
+    const cells = dayCells.toSorted((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
+
+    // Initialize metadata
+    for (let i = 0; i < cells.length; i++) {
+        const cell = cells[i]!;
+        cell.key = i;
+        cell.hasParent = false;
+        cell.concurrentCells = [];
+        cell.gridColumnStart = undefined;
+        cell.gridColumnEnd = undefined;
+    }
+
+    // Construct connected components, set concurrent neighbors
+    const connectedComponents: CalendarGridCourse[][] = [];
+
+    for (let i = 0; i < cells.length; i++) {
+        const cell = cells[i]!;
+
+        if (!cell.hasParent) {
+            connectedComponents.push([]);
+        }
+
+        connectedComponents.at(-1)!.push(cell);
+
+        for (let j = i + 1; j < cells.length; j++) {
+            const otherCell = cells[j]!;
+            if (otherCell.calendarGridPoint.startIndex >= cell.calendarGridPoint.endIndex) {
+                break;
+            }
+
+            // By ordering of cells array, we know cell.startTime <= other.startTime
+            // By the if check above, we know cell.endTime > other.endTime
+            // So, they're concurrent
+            // Also, by initializing j to i + 1, we know we don't have duplicates
+            cell.concurrentCells!.push(otherCell);
+            otherCell.concurrentCells!.push(cell);
+
+            otherCell.hasParent = true;
+        }
+    }
+
+    // console.log(
+    //     JSON.stringify(
+    //         connectedComponents.map(cc =>
+    //             cc.map(cell => {
+    //                 return {
+    //                     key: cell.key,
+    //                     concurrentCells: cell.concurrentCells!.map(otherCell => `cell ${otherCell.key}`),
+    //                 };
+    //             })
+    //         ),
+    //         null,
+    //         4
+    //     )
+    // );
+
+    for (const cc of connectedComponents) {
+        // const totalColumns = Math.max(
+        //     ...cc.map(cell => cell.concurrentCells!.filter(otherCell => otherCell.key! > cell.key!).length + 1)
+        // );
+
+        const events = cc
+            .flatMap<IntervalEvent>(cell => [
+                { kind: 'start', time: cell.calendarGridPoint.startIndex },
+                { kind: 'end', time: cell.calendarGridPoint.endIndex },
+            ])
+            .sort((a, b) => {
+                if (a.time !== b.time) {
+                    return a.time - b.time;
+                }
+
+                if (a.kind === b.kind) {
+                    return 0;
+                }
+
+                return a.kind === 'end' ? -1 : 1;
+            });
+
+        let currentOverlap = 0;
+        let maxOverlap = 0;
+        for (const event of events) {
+            if (event.kind === 'start') {
+                currentOverlap++;
+                if (currentOverlap > maxOverlap) {
+                    maxOverlap = currentOverlap;
+                }
+            } else {
+                currentOverlap--;
+            }
+        }
+
+        const totalColumns = maxOverlap;
+
+        const availableColumns = Array(totalColumns).fill(true);
+
+        for (const cell of cc) {
+            availableColumns.fill(true);
+            for (const otherCell of cell.concurrentCells!) {
+                if (otherCell.gridColumnStart !== undefined) {
+                    availableColumns[otherCell.gridColumnStart - 1] = false;
+                }
+            }
+
+            const column = availableColumns.indexOf(true);
+
+            if (column === -1) {
+                throw new Error('could not allocate column');
+            }
+
+            cell.totalColumns = totalColumns;
+            cell.gridColumnStart = column + 1;
+            cell.gridColumnEnd = column + 2;
+        }
+    }
+
+    // Clean up
+    for (const cell of cells) {
+        delete cell.key;
+        delete cell.hasParent;
+        // delete cell.links;
+        delete cell.concurrentCells;
+    }
 };

@@ -1,6 +1,7 @@
 import { tz } from '@date-fns/tz';
 import { Course } from '@shared/types/Course';
 import { UserSchedule } from '@shared/types/UserSchedule';
+import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import type { Serialized } from 'chrome-extension-toolkit';
 import { format as formatDate, parseISO } from 'date-fns';
 import {
@@ -8,9 +9,17 @@ import {
     multiMeetingMultiInstructorCourse,
     multiMeetingMultiInstructorSchedule,
 } from 'src/stories/injected/mocked';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { allDatesInRanges, formatToHHMMSS, meetingToIcsString, nextDayInclusive, scheduleToIcsString } from './utils';
+import type { CalendarCourseCellProps } from './CalendarCourseCell';
+import {
+    allDatesInRanges,
+    calculateCourseCellColumns,
+    formatToHHMMSS,
+    meetingToIcsString,
+    nextDayInclusive,
+    scheduleToIcsString,
+} from './utils';
 
 // Do all timezone calculations relative to UT's timezone
 const TIMEZONE = 'America/Chicago';
@@ -475,5 +484,141 @@ describe('scheduleToIcsString', () => {
 
     afterEach(() => {
         vi.restoreAllMocks();
+    });
+});
+
+describe('calculateCourseCellColumns', () => {
+    let testIdCounter = 0;
+
+    const makeCell = (startIndex: number, endIndex: number) => {
+        if (endIndex <= startIndex) {
+            throw new Error('Test writer error: startIndex must be strictly less than endIndex');
+        }
+
+        const cell = {
+            calendarGridPoint: {
+                dayIndex: 1,
+                startIndex,
+                endIndex,
+            },
+            componentProps: {} as unknown as CalendarCourseCellProps,
+            course: {} as unknown as Course,
+            async: false,
+        } satisfies CalendarGridCourse;
+
+        /* eslint no-underscore-dangle: ["error", { "allow": ["__test_id"] }] */
+        (cell as unknown as { __test_id: number }).__test_id = testIdCounter++;
+
+        return cell;
+    };
+
+    /**
+     * Creates expected cells with column configuration
+     * @param cells - Original cells to clone
+     * @param columnConfigs - Array of [totalColumns, gridColumnStart, gridColumnEnd] for each cell
+     */
+    const makeExpectedCells = (
+        cells: CalendarGridCourse[],
+        columnConfigs: Array<[number, number, number]>
+    ): CalendarGridCourse[] => {
+        const expectedCells = structuredClone<CalendarGridCourse[]>(cells);
+
+        columnConfigs.forEach((config, index) => {
+            const [totalColumns, gridColumnStart, gridColumnEnd] = config;
+            expectedCells[index]!.totalColumns = totalColumns;
+            expectedCells[index]!.gridColumnStart = gridColumnStart;
+            expectedCells[index]!.gridColumnEnd = gridColumnEnd;
+        });
+
+        return expectedCells;
+    };
+
+    beforeEach(() => {
+        // Ensure independence between tests
+        testIdCounter = 0;
+    });
+
+    it('should do nothing to an empty array if no courses are present', () => {
+        const cells = [] satisfies CalendarGridCourse[];
+        calculateCourseCellColumns(cells);
+        expect(cells).toEqual([]);
+    });
+
+    it('should set the right values for one course cell', () => {
+        const cells = [makeCell(13, 15)] satisfies CalendarGridCourse[];
+        const expectedCells = makeExpectedCells(cells, [[1, 1, 2]]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle two separated courses', () => {
+        const cells = [makeCell(13, 15), makeCell(15, 17)] satisfies CalendarGridCourse[];
+        const expectedCells = makeExpectedCells(cells, [
+            [1, 1, 2],
+            [1, 1, 2],
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle two concurrent courses', () => {
+        const cells = [makeCell(13, 15), makeCell(14, 16)] satisfies CalendarGridCourse[];
+        const expectedCells = makeExpectedCells(cells, [
+            [2, 1, 2],
+            [2, 2, 3],
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle a simple grid', () => {
+        const cells = [makeCell(13, 15), makeCell(15, 17), makeCell(13, 17)] satisfies CalendarGridCourse[];
+        const expectedCells = makeExpectedCells(cells, [
+            [2, 1, 2],
+            [2, 1, 2],
+            [2, 2, 3],
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle a simple grid, flipped', () => {
+        const cells = [makeCell(13, 17), makeCell(15, 17), makeCell(13, 15)] satisfies CalendarGridCourse[];
+        const expectedCells = makeExpectedCells(cells, [
+            [2, 1, 2],
+            [2, 2, 3],
+            [2, 2, 3],
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle a weird grid', () => {
+        const cells = [
+            makeCell(13, 15),
+            makeCell(14, 18),
+            makeCell(14, 16),
+            makeCell(15, 17),
+        ] satisfies CalendarGridCourse[];
+        const expectedCells = makeExpectedCells(cells, [
+            [3, 1, 2],
+            [3, 2, 3],
+            [3, 3, 4],
+            [3, 1, 2],
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
     });
 });
