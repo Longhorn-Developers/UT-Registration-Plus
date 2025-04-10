@@ -317,44 +317,31 @@ export const saveCalAsPng = () => {
     });
 };
 
-type IntervalEvent = {
-    kind: 'start' | 'end';
-    time: number;
-};
-
 /**
- * TODO: write a thing here
- * @param dayCells -
+ * Determines all the connected components in the list of cells, where two cells
+ * are "connected" if there is a path (potentially through other cells) where
+ * each neighboring cells have overlapping start/end times
+ *
+ * @param cells - An array of cells to go on the calendar grid
+ * @returns An array of connected components, where the inner array is a list of
+ * all cells that there's a path to (potentially through other intervals)
+ * without crossing a time gap
+ *
+ * @remarks The internal fields cell.concurrentCells and cell.hasParent are
+ * modified by this function
+ *
+ * @example [[8am, 9am), [8:30am, 10am), [9:30am, 11am)] // is all one connected component
+ * @example [[8am, 9am), [8:30am, 10am), [10am, 11am)] // has two connected component
  */
-export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
-    // Sort by start time, increasing
-    const cells = dayCells
-        .filter(
-            cell =>
-                !cell.async &&
-                cell.calendarGridPoint &&
-                typeof cell.calendarGridPoint.startIndex === 'number' &&
-                cell.calendarGridPoint.startIndex >= 0
-        )
-        .toSorted((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
-
-    // Initialize metadata
-    for (let i = 0; i < cells.length; i++) {
-        const cell = cells[i]!;
-        cell.key = i;
-        cell.hasParent = false;
-        cell.concurrentCells = [];
-        cell.gridColumnStart = undefined;
-        cell.gridColumnEnd = undefined;
-    }
-
-    // Construct connected components, set concurrent neighbors
+const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCourse[][] => {
     const connectedComponents: CalendarGridCourse[][] = [];
 
     for (let i = 0; i < cells.length; i++) {
         const cell = cells[i]!;
 
-        if (!cell.hasParent) {
+        if (!cell.concurrentCells || cell.concurrentCells.length === 0) {
+            // If this cell isn't already part of an existing connected component,
+            // then we need to make a new one.
             connectedComponents.push([]);
         }
 
@@ -372,90 +359,135 @@ export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
             // Also, by initializing j to i + 1, we know we don't have duplicates
             cell.concurrentCells!.push(otherCell);
             otherCell.concurrentCells!.push(cell);
-
-            otherCell.hasParent = true;
         }
     }
 
-    // console.log(
-    //     JSON.stringify(
-    //         connectedComponents.map(cc =>
-    //             cc.map(cell => {
-    //                 return {
-    //                     key: cell.key,
-    //                     concurrentCells: cell.concurrentCells!.map(otherCell => `cell ${otherCell.key}`),
-    //                 };
-    //             })
-    //         ),
-    //         null,
-    //         4
-    //     )
-    // );
+    return connectedComponents;
+};
 
+/**
+ * Calculates the maximum number of columns needed to display a set of calendar cells without overlap.
+ * This is determined by finding the maximum number of cells that overlap at any given point in time.
+ *
+ * Based upon the Sweep Line Algorithm for Interval Overlap Counting.
+ *
+ * @param cells - An array of calendar grid course cells to analyze
+ * @returns The total number of columns needed to display all cells without horizontal overlap
+ * @remarks The maximum number of columns needed is strictly equal to the minimum number of columns needed.
+ * Research Interval Graphs for more info https://en.wikipedia.org/wiki/Interval_graph
+ */
+const calculateTotalColumns = (cells: CalendarGridCourse[]): number => {
+    const events = cells
+        .flatMap<{
+            kind: 'start' | 'end';
+            time: number;
+        }>(cell => [
+            { kind: 'start', time: cell.calendarGridPoint.startIndex },
+            { kind: 'end', time: cell.calendarGridPoint.endIndex },
+        ])
+        .sort((a, b) => {
+            if (a.time !== b.time) {
+                return a.time - b.time;
+            }
+
+            if (a.kind === b.kind) {
+                return 0;
+            }
+
+            // prioritize 'end' events over 'start' events,
+            // since ending is an open interval
+            return a.kind === 'end' ? -1 : 1;
+        });
+
+    let currentOverlap = 0;
+    let maxOverlap = 0;
+    for (const event of events) {
+        if (event.kind === 'start') {
+            currentOverlap++;
+            if (currentOverlap > maxOverlap) {
+                maxOverlap = currentOverlap;
+            }
+        } else {
+            currentOverlap--;
+        }
+    }
+
+    return maxOverlap;
+};
+
+/**
+ * Assigns column positions to each cell in a set of calendar grid cells.
+ * Ensures that overlapping cells are placed in different columns.
+ *
+ * Inspired by the Greedy Interval-Scheduling algorithm.
+ *
+ * @param cells - An array of calendar grid course cells to position
+ * @throws Error if there's no available column for a cell (should never happen if totalColumns is calculated correctly)
+ */
+const assignColumns = (cells: CalendarGridCourse[]) => {
+    const totalColumns = calculateTotalColumns(cells);
+
+    const availableColumns = Array(totalColumns).fill(true);
+
+    for (const cell of cells) {
+        availableColumns.fill(true);
+        for (const otherCell of cell.concurrentCells!) {
+            if (otherCell.gridColumnStart !== undefined) {
+                availableColumns[otherCell.gridColumnStart - 1] = false;
+            }
+        }
+
+        const column = availableColumns.indexOf(true);
+
+        if (column === -1) {
+            throw new Error('could not allocate column');
+        }
+
+        cell.totalColumns = totalColumns;
+        cell.gridColumnStart = column + 1;
+        cell.gridColumnEnd = column + 2;
+    }
+};
+
+/**
+ * Calculates the column positions for course cells in a calendar grid.
+ * This function handles the layout algorithm for displaying overlapping course meetings
+ * in a calendar view. It identifies connected components of overlapping courses,
+ * determines the number of columns needed for each component, and assigns appropriate
+ * column positions to each cell.
+ *
+ * @param dayCells - An array of calendar grid course cells for a specific day
+ */
+export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
+    // Sort by start time, increasing
+    const cells = dayCells
+        .filter(
+            cell =>
+                !cell.async &&
+                cell.calendarGridPoint &&
+                typeof cell.calendarGridPoint.startIndex === 'number' &&
+                cell.calendarGridPoint.startIndex >= 0
+        )
+        .toSorted((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
+
+    // Initialize metadata
+    for (let i = 0; i < cells.length; i++) {
+        const cell = cells[i]!;
+        cell.concurrentCells = [];
+        cell.gridColumnStart = undefined;
+        cell.gridColumnEnd = undefined;
+    }
+
+    // Construct connected components, set concurrent neighbors
+    const connectedComponents = findConnectedComponents(cells);
+
+    // Assign columns for each connectedComponents
     for (const cc of connectedComponents) {
-        // const totalColumns = Math.max(
-        //     ...cc.map(cell => cell.concurrentCells!.filter(otherCell => otherCell.key! > cell.key!).length + 1)
-        // );
-
-        const events = cc
-            .flatMap<IntervalEvent>(cell => [
-                { kind: 'start', time: cell.calendarGridPoint.startIndex },
-                { kind: 'end', time: cell.calendarGridPoint.endIndex },
-            ])
-            .sort((a, b) => {
-                if (a.time !== b.time) {
-                    return a.time - b.time;
-                }
-
-                if (a.kind === b.kind) {
-                    return 0;
-                }
-
-                return a.kind === 'end' ? -1 : 1;
-            });
-
-        let currentOverlap = 0;
-        let maxOverlap = 0;
-        for (const event of events) {
-            if (event.kind === 'start') {
-                currentOverlap++;
-                if (currentOverlap > maxOverlap) {
-                    maxOverlap = currentOverlap;
-                }
-            } else {
-                currentOverlap--;
-            }
-        }
-
-        const totalColumns = maxOverlap;
-
-        const availableColumns = Array(totalColumns).fill(true);
-
-        for (const cell of cc) {
-            availableColumns.fill(true);
-            for (const otherCell of cell.concurrentCells!) {
-                if (otherCell.gridColumnStart !== undefined) {
-                    availableColumns[otherCell.gridColumnStart - 1] = false;
-                }
-            }
-
-            const column = availableColumns.indexOf(true);
-
-            if (column === -1) {
-                throw new Error('could not allocate column');
-            }
-
-            cell.totalColumns = totalColumns;
-            cell.gridColumnStart = column + 1;
-            cell.gridColumnEnd = column + 2;
-        }
+        assignColumns(cc);
     }
 
     // Clean up
     for (const cell of cells) {
-        delete cell.key;
-        delete cell.hasParent;
-        // delete cell.links;
         delete cell.concurrentCells;
     }
 };

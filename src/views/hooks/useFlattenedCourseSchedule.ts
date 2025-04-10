@@ -36,8 +36,6 @@ export interface CalendarGridCourse {
     gridColumnStart?: number;
     gridColumnEnd?: number;
     totalColumns?: number;
-    key?: number;
-    hasParent?: boolean;
     concurrentCells?: CalendarGridCourse[];
 }
 
