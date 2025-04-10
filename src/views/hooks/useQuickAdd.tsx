@@ -94,7 +94,7 @@ export function useQuickAddDropdowns() {
                 setFetchStatus(FetchStatus.LOADING);
                 const res = await CourseDataService.getCourseNumbers(semester, newFieldOfStudy.id);
                 setFetchStatus(res);
-            }
+            };
 
             fetchCourseNumbers();
         },
@@ -114,7 +114,7 @@ export function useQuickAddDropdowns() {
                 setFetchStatus(FetchStatus.LOADING);
                 const res = await CourseDataService.getSections(semester, newCourseNumber);
                 setFetchStatus(res);
-            }
+            };
             fetchSections();
         },
         [semester, fieldOfStudy, courseNumber]

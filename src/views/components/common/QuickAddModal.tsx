@@ -51,7 +51,7 @@ export default function QuickAddModal(): JSX.Element {
         data.resetDropdowns();
     };
 
-    console.log("data.fetchStatus", data.fetchStatus);
+    console.log('data.fetchStatus', data.fetchStatus);
     return (
         <DialogProvider>
             <Popover>
@@ -115,20 +115,17 @@ export default function QuickAddModal(): JSX.Element {
                                 disabled={data.sectionDisabled || uniqueNumber.value !== ''}
                                 icon={ChalkboardTeacher}
                             />
-                            {data.fetchStatus === FetchStatus.ERROR &&
+                            {data.fetchStatus === FetchStatus.ERROR && (
                                 <Text className='text-center text-red-500'>
                                     Failed to fetch Courses data. Check console for more details.
                                 </Text>
-                            }
-                            {data.fetchStatus === FetchStatus.LOADING &&
+                            )}
+                            {data.fetchStatus === FetchStatus.LOADING && (
                                 <div className='flex flex-row items-center justify-center gap-spacing-4'>
-                                    <Spinner className="h-4 w-4 text-ut-black" />
-                                    <Text className='text-center text-ut-black'>
-                                        Loading data...
-                                    </Text>
+                                    <Spinner className='h-4 w-4 text-ut-black' />
+                                    <Text className='text-center text-ut-black'>Loading data...</Text>
                                 </div>
-                            }
-
+                            )}
                         </PopoverGroup>
                         <div className='w-full flex flex-row items-center justify-center gap-spacing-4'>
                             <Divider orientation='horizontal' size='100%' />
