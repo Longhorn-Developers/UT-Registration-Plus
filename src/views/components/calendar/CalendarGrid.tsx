@@ -2,10 +2,12 @@ import type { Course } from '@shared/types/Course';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
+import { useSentryScope } from '@views/contexts/SentryContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React, { Fragment } from 'react';
 
 import CalendarCell from './CalendarGridCell';
+import { calculateCourseCellColumns } from './utils';
 
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
@@ -106,6 +108,8 @@ interface AccountForCourseConflictsProps {
 // TODO: Possibly refactor to be more concise
 // TODO: Deal with react strict mode (wacky movements)
 function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
+    const [sentryScope] = useSentryScope();
+
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce(
         (acc, cell: CalendarGridCourse) => {
@@ -120,31 +124,13 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
     );
 
     // Check for overlaps within each day and adjust gridColumnIndex and totalColumns
-    Object.values(days).forEach((dayCells: CalendarGridCourse[]) => {
-        // Sort by start time to ensure proper columnIndex assignment
-        dayCells.sort((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
-
-        dayCells.forEach((cell, _, arr) => {
-            let columnIndex = 1;
-            cell.totalColumns = 1;
-            // Check for overlaps and adjust columnIndex as needed
-            for (let otherCell of arr) {
-                if (otherCell !== cell) {
-                    const isOverlapping =
-                        otherCell.calendarGridPoint.startIndex < cell.calendarGridPoint.endIndex &&
-                        otherCell.calendarGridPoint.endIndex > cell.calendarGridPoint.startIndex;
-                    if (isOverlapping) {
-                        // Adjust columnIndex to not overlap with the otherCell
-                        if (otherCell.gridColumnStart && otherCell.gridColumnStart >= columnIndex) {
-                            columnIndex = otherCell.gridColumnStart + 1;
-                        }
-                        cell.totalColumns += 1;
-                    }
-                }
-            }
-            cell.gridColumnStart = columnIndex;
-            cell.gridColumnEnd = columnIndex + 1;
-        });
+    Object.values(days).forEach((dayCells: CalendarGridCourse[], idx) => {
+        try {
+            calculateCourseCellColumns(dayCells);
+        } catch (error) {
+            console.error(`Error calculating course cell columns ${idx}`, error);
+            sentryScope.captureException(error);
+        }
     });
 
     return courseCells
