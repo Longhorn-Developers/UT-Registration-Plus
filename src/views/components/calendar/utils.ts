@@ -419,7 +419,7 @@ const calculateTotalColumns = (cells: CalendarGridCourse[]): number => {
  * Assigns column positions to each cell in a set of calendar grid cells.
  * Ensures that overlapping cells are placed in different columns.
  *
- * Inspired by the Greedy Interval-Scheduling algorithm.
+ * Inspired by the Greedy Interval-Partitioning algorithm.
  *
  * @param cells - An array of calendar grid course cells to position, must be
  * sorted in increasing order of start time
