@@ -331,7 +331,7 @@ export const saveCalAsPng = () => {
  * modified by this function
  *
  * @example [[8am, 9am), [8:30am, 10am), [9:30am, 11am)] // is all one connected component
- * @example [[8am, 9am), [8:30am, 10am), [10am, 11am)] // has two connected component
+ * @example [[8am, 9am), [8:30am, 10am), [10am, 11am)] // has two connected components, [[8am, 9am), [8:30am, 10am)] and [[10am, 11am)]]
  */
 const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCourse[][] => {
     const connectedComponents: CalendarGridCourse[][] = [];
@@ -421,7 +421,8 @@ const calculateTotalColumns = (cells: CalendarGridCourse[]): number => {
  *
  * Inspired by the Greedy Interval-Scheduling algorithm.
  *
- * @param cells - An array of calendar grid course cells to position
+ * @param cells - An array of calendar grid course cells to position, must be
+ * sorted in increasing order of start time
  * @throws Error if there's no available column for a cell (should never happen if totalColumns is calculated correctly)
  */
 const assignColumns = (cells: CalendarGridCourse[]) => {
@@ -460,6 +461,7 @@ const assignColumns = (cells: CalendarGridCourse[]) => {
  */
 export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
     // Sort by start time, increasing
+    // This is necessary for the correctness of the column assignment
     const cells = dayCells
         .filter(
             cell =>
@@ -471,8 +473,7 @@ export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
         .toSorted((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
 
     // Initialize metadata
-    for (let i = 0; i < cells.length; i++) {
-        const cell = cells[i]!;
+    for (const cell of cells) {
         cell.concurrentCells = [];
         cell.gridColumnStart = undefined;
         cell.gridColumnEnd = undefined;
