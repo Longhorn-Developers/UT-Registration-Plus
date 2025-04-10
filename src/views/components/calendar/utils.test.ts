@@ -490,8 +490,8 @@ describe('scheduleToIcsString', () => {
 describe('calculateCourseCellColumns', () => {
     let testIdCounter = 0;
 
-    const makeCell = (startIndex: number, endIndex: number) => {
-        if (endIndex <= startIndex) {
+    const makeCell = (startIndex: number, endIndex: number): CalendarGridCourse => {
+        if (endIndex <= startIndex && !(startIndex === -1 && endIndex === -1)) {
             throw new Error('Test writer error: startIndex must be strictly less than endIndex');
         }
 
@@ -662,6 +662,17 @@ describe('calculateCourseCellColumns', () => {
             [14, 18, 8, 8, 9],
             [15, 19, 8, 2, 3], // compacts to be under new course
         ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it("shouldn't crash on courses without times", () => {
+        const cells = [makeCell(-1, -1), makeCell(-1, -1)];
+        cells[1]!.async = true; // see if we can ignore async and non-async courses without times
+
+        const expectedCells = structuredClone<CalendarGridCourse[]>(cells);
 
         calculateCourseCellColumns(cells);
 

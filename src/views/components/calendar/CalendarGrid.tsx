@@ -2,6 +2,7 @@ import type { Course } from '@shared/types/Course';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
+import { useSentryScope } from '@views/contexts/SentryContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React, { Fragment } from 'react';
 
@@ -107,6 +108,8 @@ interface AccountForCourseConflictsProps {
 // TODO: Possibly refactor to be more concise
 // TODO: Deal with react strict mode (wacky movements)
 function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
+    const [sentryScope] = useSentryScope();
+
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce(
         (acc, cell: CalendarGridCourse) => {
@@ -121,8 +124,13 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
     );
 
     // Check for overlaps within each day and adjust gridColumnIndex and totalColumns
-    Object.values(days).forEach((dayCells: CalendarGridCourse[]) => {
-        calculateCourseCellColumns(dayCells);
+    Object.values(days).forEach((dayCells: CalendarGridCourse[], idx) => {
+        try {
+            calculateCourseCellColumns(dayCells);
+        } catch (error) {
+            console.error(`Error calculating course cell columns ${idx}`, error);
+            sentryScope.captureException(error);
+        }
     });
 
     return courseCells

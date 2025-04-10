@@ -328,7 +328,15 @@ type IntervalEvent = {
  */
 export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
     // Sort by start time, increasing
-    const cells = dayCells.toSorted((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
+    const cells = dayCells
+        .filter(
+            cell =>
+                !cell.async &&
+                cell.calendarGridPoint &&
+                typeof cell.calendarGridPoint.startIndex === 'number' &&
+                cell.calendarGridPoint.startIndex >= 0
+        )
+        .toSorted((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
 
     // Initialize metadata
     for (let i = 0; i < cells.length; i++) {
