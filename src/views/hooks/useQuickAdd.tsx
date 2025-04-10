@@ -2,7 +2,8 @@ import type { ICourseDataStore } from '@shared/storage/courseDataStore';
 import { CourseDataStore } from '@shared/storage/courseDataStore';
 import type { CourseItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
 import { generateSemesters } from '@shared/util/generateSemesters';
-import { CourseDataService } from '@views/lib/getCoursesAndSections';
+import type { FetchStatusType } from '@views/lib/getCoursesAndSections';
+import { CourseDataService, FetchStatus } from '@views/lib/getCoursesAndSections';
 import { FIELDS_OF_STUDY, type StudyField } from '@views/resources/studyFields';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -36,6 +37,9 @@ export function useQuickAddDropdowns() {
     const [fieldOfStudy, setFieldOfStudy] = useState<StudyField | null>(null);
     const [courseNumber, setCourseNumber] = useState<CourseItem | null>(null);
     const [section, setSection] = useState<SectionItem | null>(null);
+
+    // Track fetching state
+    const [fetchStatus, setFetchStatus] = useState<FetchStatusType>(FetchStatus.DONE);
 
     // Available options
     const semesters = AVAILABLE_SEMESTERS;
@@ -86,7 +90,13 @@ export function useQuickAddDropdowns() {
             setCourseNumber(null);
             setSection(null);
 
-            CourseDataService.getCourseNumbers(semester, newFieldOfStudy.id);
+            const fetchCourseNumbers = async () => {
+                setFetchStatus(FetchStatus.LOADING);
+                const res = await CourseDataService.getCourseNumbers(semester, newFieldOfStudy.id);
+                setFetchStatus(res);
+            }
+
+            fetchCourseNumbers();
         },
         [semester, fieldOfStudy]
     );
@@ -100,7 +110,12 @@ export function useQuickAddDropdowns() {
             setCourseNumber(newCourseNumber);
             setSection(null);
 
-            CourseDataService.getSections(semester, newCourseNumber);
+            const fetchSections = async () => {
+                setFetchStatus(FetchStatus.LOADING);
+                const res = await CourseDataService.getSections(semester, newCourseNumber);
+                setFetchStatus(res);
+            }
+            fetchSections();
         },
         [semester, fieldOfStudy, courseNumber]
     );
@@ -122,6 +137,7 @@ export function useQuickAddDropdowns() {
         setFieldOfStudy(null);
         setCourseNumber(null);
         setSection(null);
+        setFetchStatus(FetchStatus.DONE);
     }, []);
 
     const courseNumbers =
@@ -131,10 +147,7 @@ export function useQuickAddDropdowns() {
 
     const sections =
         semester && fieldOfStudy && courseNumber
-            ? courseData[semester.id]?.sections.filter(
-                  (section: SectionItem) =>
-                      section.fieldOfStudyId === fieldOfStudy.id && section.courseNumber === courseNumber?.courseNumber
-              )
+            ? courseData[semester.id]?.courses.find((course: CourseItem) => course.id === courseNumber.id)?.sections
             : [];
 
     console.log('Course Numbers:', courseNumbers);
@@ -150,6 +163,8 @@ export function useQuickAddDropdowns() {
         fieldsOfStudy,
         courseNumbers,
         sections,
+
+        fetchStatus,
 
         semesterDisabled: false,
         fieldOfStudyDisabled: semester === null,

@@ -2,9 +2,27 @@ import { CourseDataStore } from '@shared/storage/courseDataStore';
 import type { ScrapedRow } from '@shared/types/Course';
 import type { CourseItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
 import { capitalize } from '@shared/util/string';
+import { tryCatch } from '@shared/util/tryCatch';
 
 import { CourseCatalogScraper } from './CourseCatalogScraper';
 import { SiteSupport } from './getSiteSupport';
+
+/**
+ * A type that represents a field with an id and label
+ */
+export const FetchStatus = {
+    LOADING: 'LOADING',
+    DONE: 'DONE',
+    ERROR: 'ERROR',
+} as const satisfies Record<string, string>;
+
+/**
+ * A type that represents the status of a fetch operation.
+ *
+ * This type is used to indicate the current status of a fetch operation,
+ * such as loading, done, or error.
+ */
+export type FetchStatusType = (typeof FetchStatus)[keyof typeof FetchStatus];
 
 /**
  * Fetches course numbers from the UT Planner API.
@@ -23,8 +41,12 @@ async function fetchCourseNumbers(semester: SemesterItem, fieldOfStudyId: string
         .then(response => response.json())
         .catch(error => {
             console.error('Error fetching course numbers:', error);
-            return [];
+            throw error;
         });
+
+    if (!data) {
+        throw new Error('No data returned from fetch');
+    }
 
     const processedData = data.map((item: { id: string; subjectId: string; displayTitle: string }) => ({
         id: item.id.replace('|', ' '),
@@ -32,6 +54,7 @@ async function fetchCourseNumbers(semester: SemesterItem, fieldOfStudyId: string
         courseNumber: item.id.split('|')[1] || '',
         courseName: item.displayTitle,
         label: `${item.subjectId} ${item.displayTitle}`,
+        sections: [],
     }));
 
     return processedData;
@@ -63,10 +86,11 @@ async function fetchSections(semester: SemesterItem, course: CourseItem): Promis
         .then(html => new DOMParser().parseFromString(html, 'text/html'))
         .catch(error => {
             console.error('Error fetching sections:', error);
+            throw error;
         });
 
     if (!data) {
-        return [];
+        throw new Error('No data returned from fetch');
     }
 
     const courseCatalogScraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, data, url);
@@ -126,44 +150,68 @@ async function fetchSections(semester: SemesterItem, course: CourseItem): Promis
 export class CourseDataService {
     /**
      * Retrieves course numbers for a specific study field
+     *
+     * @param semester - The semester for which to fetch course numbers.
+     * @param fieldOfStudyId - The ID of the study field, e.g. "C S" or "ECE".
+     *
+     * @returns A promise that resolves to FetchStatusType indicating the status of the fetch operation.
      */
-    static async getCourseNumbers(semester: SemesterItem, fieldOfStudyId: string) {
+    static async getCourseNumbers(semester: SemesterItem, fieldOfStudyId: string): Promise<FetchStatusType> {
         const data = await CourseDataStore.get('courseData');
 
-        data[semester.id] = data[semester.id] || { info: semester, courses: [], sections: [] };
+        data[semester.id] = data[semester.id] || { info: semester, courses: [] };
 
         const curCourses = data[semester.id]!.courses.filter(
             (course: CourseItem) => course.fieldOfStudyId === fieldOfStudyId
         );
 
         if (curCourses.length === 0) {
-            const newCourses = await fetchCourseNumbers(semester, fieldOfStudyId);
+            const [newCourses, err] = await tryCatch(fetchCourseNumbers(semester, fieldOfStudyId));
+            if (err) {
+                console.error('Failed to set course data in store', err);
+                return FetchStatus.ERROR;
+            }
             newCourses.forEach(course => {
                 data[semester.id]!.courses.push(course);
             });
             await CourseDataStore.set('courseData', data);
         }
+
+        return FetchStatus.DONE;
     }
 
     /**
      * Retrieves sections for a specific course number
+     *
+     * @param semester - The semester for which to fetch sections.
+     * @param courseNumber - The course number for which to fetch sections.
+     *
+     * @returns A promise that resolves to FetchStatusType indicating the status of the fetch operation.
      */
-    static async getSections(semester: SemesterItem, courseNumber: CourseItem) {
+    static async getSections(semester: SemesterItem, courseNumber: CourseItem): Promise<FetchStatusType> {
         const data = await CourseDataStore.get('courseData');
 
-        data[semester.id] = data[semester.id] || { info: semester, courses: [], sections: [] };
-        const curSections = data[semester.id]!.sections.filter(
-            (section: SectionItem) =>
-                section.fieldOfStudyId === courseNumber.fieldOfStudyId &&
-                section.courseNumber === courseNumber.courseNumber
-        );
+        data[semester.id] = data[semester.id] || { info: semester, courses: [] };
+        const curCourse = data[semester.id]!.courses.find((course: CourseItem) => course.id === courseNumber.id);
 
+        if (!curCourse) {
+            console.error('Course not found in data:', courseNumber);
+            return FetchStatus.ERROR;
+        }
+
+        const curSections = curCourse.sections;
         if (curSections.length === 0) {
-            const newSections = await fetchSections(semester, courseNumber);
+            const [newSections, err] = await tryCatch(fetchSections(semester, curCourse));
+            if (err) {
+                console.error('Failed to set course data in store', err);
+                return FetchStatus.ERROR;
+            }
             newSections.forEach(section => {
-                data[semester.id]!.sections.push(section);
+                curCourse.sections.push(section);
             });
             await CourseDataStore.set('courseData', data);
         }
+
+        return FetchStatus.DONE;
     }
 }

@@ -13,6 +13,7 @@ import type { CourseItem, SectionItem, SemesterItem } from '@shared/types/Course
 import { useNumericInput } from '@views/hooks/useNumericInput';
 import { useQuickAddDropdowns } from '@views/hooks/useQuickAdd';
 import useSchedules from '@views/hooks/useSchedules';
+import { FetchStatus } from '@views/lib/getCoursesAndSections';
 import type { StudyField } from '@views/resources/studyFields';
 import clsx from 'clsx';
 import React from 'react';
@@ -24,6 +25,7 @@ import type { DropdownOption } from './Dropdown';
 import Dropdown from './Dropdown';
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 import Input from './Input';
+import Spinner from './Spinner';
 import Text from './Text/Text';
 
 const UNIQUE_ID_LENGTH = 5;
@@ -49,6 +51,7 @@ export default function QuickAddModal(): JSX.Element {
         data.resetDropdowns();
     };
 
+    console.log("data.fetchStatus", data.fetchStatus);
     return (
         <DialogProvider>
             <Popover>
@@ -112,6 +115,20 @@ export default function QuickAddModal(): JSX.Element {
                                 disabled={data.sectionDisabled || uniqueNumber.value !== ''}
                                 icon={ChalkboardTeacher}
                             />
+                            {data.fetchStatus === FetchStatus.ERROR &&
+                                <Text className='text-center text-red-500'>
+                                    Failed to fetch Courses data. Check console for more details.
+                                </Text>
+                            }
+                            {data.fetchStatus === FetchStatus.LOADING &&
+                                <div className='flex flex-row items-center justify-center gap-spacing-4'>
+                                    <Spinner className="h-4 w-4 text-ut-black" />
+                                    <Text className='text-center text-ut-black'>
+                                        Loading data...
+                                    </Text>
+                                </div>
+                            }
+
                         </PopoverGroup>
                         <div className='w-full flex flex-row items-center justify-center gap-spacing-4'>
                             <Divider orientation='horizontal' size='100%' />
