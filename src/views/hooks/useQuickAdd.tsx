@@ -1,9 +1,8 @@
 import type { ICourseDataStore } from '@shared/storage/courseDataStore';
 import { CourseDataStore } from '@shared/storage/courseDataStore';
-import type { CourseItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
+import type { CourseItem, FieldOfStudyItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
 import type { FetchStatusType } from '@views/lib/getCoursesAndSections';
 import { CourseDataService, FetchStatus } from '@views/lib/getCoursesAndSections';
-import { FIELDS_OF_STUDY, type StudyField } from '@views/resources/studyFields';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 /**
@@ -31,16 +30,12 @@ export function useQuickAddDropdowns() {
 
     // Selected values
     const [semester, setSemester] = useState<SemesterItem | null>(null);
-    const [fieldOfStudy, setFieldOfStudy] = useState<StudyField | null>(null);
+    const [fieldOfStudy, setFieldOfStudy] = useState<FieldOfStudyItem | null>(null);
     const [courseNumber, setCourseNumber] = useState<CourseItem | null>(null);
     const [section, setSection] = useState<SectionItem | null>(null);
 
     // Track fetching state
     const [fetchStatus, setFetchStatus] = useState<FetchStatusType>(FetchStatus.DONE);
-
-    // Available options
-    const semesters = useMemo(() => semesterData.map(semester => semester.info), [semesterData]);
-    const fieldsOfStudy = FIELDS_OF_STUDY;
 
     useEffect(() => {
         const initializeData = async () => {
@@ -92,20 +87,24 @@ export function useQuickAddDropdowns() {
             setCourseNumber(null);
             setSection(null);
 
-            const fetchCourseNumbers = async () => {
+            const fetchData = async () => {
                 setFetchStatus(FetchStatus.LOADING);
-                const res = await CourseDataService.getAllCourseNumbers(newSemester);
-                setFetchStatus(res);
+                const res1 = await CourseDataService.getAllCourseNumbers(newSemester);
+                const res2 = await CourseDataService.getAllFieldsOfStudy(newSemester);
+                if (res1 !== FetchStatus.DONE || res2 !== FetchStatus.DONE) {
+                    setFetchStatus(FetchStatus.ERROR);
+                } else {
+                    setFetchStatus(FetchStatus.DONE);
+                }
             };
-
-            fetchCourseNumbers();
+            fetchData();
         },
         [semester]
     );
 
     const handleFieldOfStudyChange = useCallback(
-        (newFieldOfStudy: StudyField) => {
-            if (newFieldOfStudy.id === fieldOfStudy?.id || !semester) {
+        (newFieldOfStudy: FieldOfStudyItem) => {
+            if (newFieldOfStudy?.id === fieldOfStudy?.id || !semester) {
                 return;
             }
 
@@ -155,6 +154,18 @@ export function useQuickAddDropdowns() {
         setFetchStatus(FetchStatus.DONE);
     }, []);
 
+    const semesters = useMemo(() => semesterData.map(semester => semester.info), [semesterData]);
+
+    const fieldsOfStudy = useMemo(() => {
+        if (!semester) {
+            return [];
+        }
+
+        return semesterData
+            .find(semesterData => semesterData.info.id === semester.id)
+            ?.fieldsOfStudy;
+    }, [semesterData, semester]);
+
     const courseNumbers = useMemo(() => {
         if (!semester || !fieldOfStudy) {
             return [];
@@ -178,6 +189,7 @@ export function useQuickAddDropdowns() {
     }, [semesterData, semester, courseNumber]);
 
     // console.log('Course Numbers:', courseNumbers);
+    // console.log('Fields of Study:', fieldsOfStudy);
     // console.log('Sections:', sections);
     // console.log('Semesters:', semesters);
 

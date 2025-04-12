@@ -12,6 +12,15 @@ export interface CourseCatalogMessages {
     fetchAvailableSemesters: () => string;
 
     /**
+     * Fetch all the fields of study for a given semester.
+     *
+     * @param data - The semester to fetch fields of study for
+     *
+     * @returns The fields of study as a JSON string
+     */
+    fetchAllFieldsOfStudy: (data: { semester: SemesterItem }) => string;
+
+    /**
      * Fetch all the courses for a given semester.
      *
      * @param data - The semester to fetch courses for

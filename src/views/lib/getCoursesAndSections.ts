@@ -1,7 +1,7 @@
 import fetchSections from '@pages/background/lib/fetchSections';
 import { background } from '@shared/messages';
 import { CourseDataStore } from '@shared/storage/courseDataStore';
-import type { CourseItem, SemesterItem } from '@shared/types/CourseData';
+import type { CourseItem, FieldOfStudyItem, SemesterItem } from '@shared/types/CourseData';
 import { tryCatch } from '@shared/util/tryCatch';
 
 /**
@@ -47,10 +47,39 @@ export class CourseDataService {
             console.log('Fetched semesters:', newSemesters);
             await CourseDataStore.set(
                 'semesterData',
-                newSemesters.map(semester => ({ info: semester, courses: [] }))
+                newSemesters.map(semester => ({ info: semester, fieldsOfStudy: [], courses: [] }))
             );
         }
 
+        return FetchStatus.DONE;
+    }
+
+    /**
+     * Retrieves all fields of study for a specific semester
+     *
+     * @param semester - The semester for which to fetch field of study.
+     *
+     * @returns A promise that resolves to FetchStatusType indicating the status of the fetch operation.
+     */
+    static async getAllFieldsOfStudy(semester: SemesterItem): Promise<FetchStatusType> {
+        const data = await CourseDataStore.get('semesterData');
+        const semesterData = data.find(semesterData => semesterData.info.id === semester.id);
+        if (semesterData?.fieldsOfStudy && semesterData.fieldsOfStudy.length > 0) {
+            console.log('Cached fields of study:', semesterData.courses);
+            return FetchStatus.DONE;
+        }
+        const [fetchedFieldsOfStudy, err] = await tryCatch(background.fetchAllFieldsOfStudy({ semester }));
+        if (err) {
+            console.error('Failed to fetch fields of study', err);
+            return FetchStatus.ERROR;
+        }
+        const newFieldsOfStudy = JSON.parse(fetchedFieldsOfStudy) as FieldOfStudyItem[];
+        if (semesterData) {
+            semesterData.fieldsOfStudy = newFieldsOfStudy;
+        } else {
+            data.push({ info: semester, fieldsOfStudy: newFieldsOfStudy, courses: [] });
+        }
+        await CourseDataStore.set('semesterData', data);
         return FetchStatus.DONE;
     }
 
@@ -76,7 +105,7 @@ export class CourseDataService {
         const newCourses = JSON.parse(fetchedCourses) as CourseItem[];
         const semesterIndex = data.findIndex(semesterData => semesterData.info.id === semester.id);
         if (semesterIndex === -1) {
-            data.push({ info: semester, courses: newCourses });
+            data.push({ info: semester, courses: newCourses, fieldsOfStudy: [] });
         } else {
             data[semesterIndex]!.courses = newCourses;
         }
@@ -118,7 +147,7 @@ export class CourseDataService {
                 semesterData.courses[courseIndex]!.sections = newSections;
             }
         } else {
-            data.push({ info: semester, courses: [{ ...courseNumber, sections: newSections }] });
+            data.push({ info: semester, courses: [{ ...courseNumber, sections: newSections }], fieldsOfStudy: [] });
         }
         await CourseDataStore.set('semesterData', data);
         return FetchStatus.DONE;

@@ -1,4 +1,4 @@
-import type { CourseItem, SemesterItem } from '@shared/types/CourseData';
+import type { CourseItem, FieldOfStudyItem, SemesterItem } from '@shared/types/CourseData';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 /**
@@ -7,6 +7,8 @@ import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
  *
  * The structure is as follows:
  * - semesterData (array of available semesters)
+ *     - info (semester info)
+ *     - fieldsOfStudy (all fields of study in that semester)
  *     - courses (all courses in that semester) (filterable by field of study)
  *         - sections (all sections in that course)
  *
@@ -14,6 +16,7 @@ import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 export interface ICourseDataStore {
     semesterData: {
         info: SemesterItem;
+        fieldsOfStudy: FieldOfStudyItem[];
         courses: CourseItem[];
     }[];
 }

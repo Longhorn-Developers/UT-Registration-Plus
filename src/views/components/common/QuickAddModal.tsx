@@ -9,12 +9,11 @@ import {
     Plus,
     PlusCircle,
 } from '@phosphor-icons/react';
-import type { CourseItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
+import type { CourseItem, FieldOfStudyItem, SectionItem, SemesterItem } from '@shared/types/CourseData';
 import { useNumericInput } from '@views/hooks/useNumericInput';
 import { useQuickAddDropdowns } from '@views/hooks/useQuickAdd';
 import useSchedules from '@views/hooks/useSchedules';
 import { FetchStatus } from '@views/lib/getCoursesAndSections';
-import type { StudyField } from '@views/resources/studyFields';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -90,7 +89,7 @@ export default function QuickAddModal(): JSX.Element {
                                 options={data.fieldsOfStudy}
                                 selectedOption={data.fieldOfStudy}
                                 onOptionChange={(newOpt: DropdownOption) =>
-                                    data.handleFieldOfStudyChange(newOpt as StudyField)
+                                    data.handleFieldOfStudyChange(newOpt as FieldOfStudyItem)
                                 }
                                 disabled={data.fieldOfStudyDisabled || uniqueNumber.value !== ''}
                                 icon={GraduationCap}

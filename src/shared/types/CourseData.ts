@@ -12,6 +12,20 @@ export type SemesterItem = Semester & {
 };
 
 /**
+ * A type that represents a field of study in a course catalog.
+ */
+export type FieldOfStudyItem = {
+    /* id of the field of study, e.g. "C S" or "ECE" */
+    id: string;
+
+    /* name of the field of study, e.g. "Computer Science" or "Electrical and Computer Engineering" */
+    name: string;
+
+    /* formatted field of study details, e.g. "<FIELD_OF_STUDY> - <FIELD_OF_STUDY_NAME>" */
+    label: string;
+};
+
+/**
  * A type that represents a course in a course catalog. A course might contain multiple sections.
  */
 export type CourseItem = {
