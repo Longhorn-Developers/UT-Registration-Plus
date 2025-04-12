@@ -161,9 +161,7 @@ export function useQuickAddDropdowns() {
             return [];
         }
 
-        return semesterData
-            .find(semesterData => semesterData.info.id === semester.id)
-            ?.fieldsOfStudy;
+        return semesterData.find(semesterData => semesterData.info.id === semester.id)?.fieldsOfStudy;
     }, [semesterData, semester]);
 
     const courseNumbers = useMemo(() => {
