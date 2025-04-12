@@ -10,7 +10,7 @@ export interface CourseCatalogMessages {
      * @param data - The semester and fieldOfStudy id to fetch courses for
      * @returns The courses as a JSON string
      */
-    fetchCourses: (data: { semester: SemesterItem; fieldOfStudyId: string }) => Promise<string>;
+    fetchCourses: (data: { semester: SemesterItem }) => Promise<string>;
 
     /**
      * Fetch the sections data for a given course

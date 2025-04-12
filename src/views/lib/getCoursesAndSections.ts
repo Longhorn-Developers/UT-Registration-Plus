@@ -1,4 +1,4 @@
-import fetchCourseNumbers from '@pages/background/lib/fetchCourses';
+import fetchAllCourseNumbers from '@pages/background/lib/fetchCourses';
 import fetchSections from '@pages/background/lib/fetchSections';
 import fetchSemesters from '@pages/background/lib/fetchSemesters';
 import { CourseDataStore } from '@shared/storage/courseDataStore';
@@ -56,24 +56,20 @@ export class CourseDataService {
     }
 
     /**
-     * Retrieves course numbers for a specific study field
+     * Retrieves all course numbers for a specific semester
      *
      * @param semester - The semester for which to fetch course numbers.
-     * @param fieldOfStudyId - The ID of the study field, e.g. "C S" or "ECE".
      *
      * @returns A promise that resolves to FetchStatusType indicating the status of the fetch operation.
      */
-    static async getCourseNumbers(semester: SemesterItem, fieldOfStudyId: string): Promise<FetchStatusType> {
+    static async getAllCourseNumbers(semester: SemesterItem): Promise<FetchStatusType> {
         const data = await CourseDataStore.get('semesterData');
         const semesterData = data.find(semesterData => semesterData.info.id === semester.id);
-        if (
-            semesterData &&
-            semesterData.courses.find(course => course.fieldOfStudyId === fieldOfStudyId) !== undefined
-        ) {
+        if (semesterData?.courses && semesterData.courses.length > 0) {
             console.log('Cached course numbers:', semesterData.courses);
             return FetchStatus.DONE;
         }
-        const [fetchedCourses, err] = await tryCatch(fetchCourseNumbers(semester, fieldOfStudyId));
+        const [fetchedCourses, err] = await tryCatch(fetchAllCourseNumbers(semester));
         if (err) {
             console.error('Failed to fetch course numbers', err);
             return FetchStatus.ERROR;
