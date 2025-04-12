@@ -21,7 +21,7 @@ export default async function fetchSections(semester: SemesterItem, course: Cour
     const formattedCourseNumber = course.id.split(' ').pop();
     const url =
         `https://utdirect.utexas.edu/apps/registrar/` +
-        `course_schedule/${semester.id}/results/?search_type_main=COURSE&` +
+        `course_schedule/${semester.code}/results/?search_type_main=COURSE&` +
         `fos_cn=${formattedDepartment}` +
         `&course_number=${formattedCourseNumber}`;
 

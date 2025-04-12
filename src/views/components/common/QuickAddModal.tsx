@@ -45,7 +45,7 @@ export default function QuickAddModal(): JSX.Element {
     const handleAddCourse = async () => {
         if (!data.semester || (uniqueNumber.value.length !== UNIQUE_ID_LENGTH && !data.section)) return;
         const uniqueId = uniqueNumber.value.length === UNIQUE_ID_LENGTH ? uniqueNumber.value : data.section!.id;
-        const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${data.semester.id}/${uniqueId}/`;
+        const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${data.semester.code}/${uniqueId}/`;
         await addCourseByURL(activeSchedule, courseUrl);
         uniqueNumber.reset();
         data.resetDropdowns();

@@ -2,29 +2,25 @@ import type { CourseItem, SemesterItem } from '@shared/types/CourseData';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 /**
- * An interface that represents the course data store of the fields of study,
- * course numbers, and sections for each semester.
+ * An interface that represents the course data store of the courses and
+ * sections for each available semester.
  *
  * The structure is as follows:
- * - semester.id
- *   - info (the semester details)
- *     - courses (all courses in that semester) (filtered by field of study)
- *       - sections (all sections in that course)
+ * - semesterData (array of available semesters)
+ *     - courses (all courses in that semester) (filterable by field of study)
+ *         - sections (all sections in that course)
  *
  */
 export interface ICourseDataStore {
-    courseData: Record<
-        string,
-        {
-            info: SemesterItem;
-            courses: CourseItem[];
-        }
-    >;
+    semesterData: {
+        info: SemesterItem;
+        courses: CourseItem[];
+    }[];
 }
 
 /**
- * A store that is used for storing user schedules (and the active schedule)
+ * A store that is used for caching course data.
  */
-export const CourseDataStore = createLocalStore<ICourseDataStore>({ courseData: {} });
+export const CourseDataStore = createLocalStore<ICourseDataStore>({ semesterData: [] });
 
 debugStore({ userScheduleStore: CourseDataStore });
