@@ -1,6 +1,5 @@
-import fetchAllCourseNumbers from '@pages/background/lib/fetchCourses';
 import fetchSections from '@pages/background/lib/fetchSections';
-import fetchSemesters from '@pages/background/lib/fetchSemesters';
+import { background } from '@shared/messages';
 import { CourseDataStore } from '@shared/storage/courseDataStore';
 import type { CourseItem, SemesterItem } from '@shared/types/CourseData';
 import { tryCatch } from '@shared/util/tryCatch';
@@ -39,7 +38,7 @@ export class CourseDataService {
     static async getAvailableSemesters(): Promise<FetchStatusType> {
         const data = await CourseDataStore.get('semesterData');
         if (!data || data.length === 0) {
-            const [fetchedSemesters, err] = await tryCatch(fetchSemesters());
+            const [fetchedSemesters, err] = await tryCatch(background.fetchAvailableSemesters());
             if (err) {
                 console.error('Failed to fetch semesters', err);
                 return FetchStatus.ERROR;
@@ -69,12 +68,12 @@ export class CourseDataService {
             console.log('Cached course numbers:', semesterData.courses);
             return FetchStatus.DONE;
         }
-        const [fetchedCourses, err] = await tryCatch(fetchAllCourseNumbers(semester));
+        const [fetchedCourses, err] = await tryCatch(background.fetchAllCourses({ semester }));
         if (err) {
             console.error('Failed to fetch course numbers', err);
             return FetchStatus.ERROR;
         }
-        const newCourses = JSON.parse(fetchedCourses ?? '[]') as CourseItem[];
+        const newCourses = JSON.parse(fetchedCourses) as CourseItem[];
         const semesterIndex = data.findIndex(semesterData => semesterData.info.id === semester.id);
         if (semesterIndex === -1) {
             data.push({ info: semester, courses: newCourses });

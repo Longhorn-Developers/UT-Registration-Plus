@@ -5,12 +5,19 @@ import type { CourseItem, SemesterItem } from '@shared/types/CourseData';
  */
 export interface CourseCatalogMessages {
     /**
-     * Fetch the courses data for a given semester & major.
+     * Fetch all the available semesters.
      *
-     * @param data - The semester and fieldOfStudy id to fetch courses for
+     * @returns The semesters as a JSON string
+     */
+    fetchAvailableSemesters: () => string;
+
+    /**
+     * Fetch all the courses for a given semester.
+     *
+     * @param data - The semester to fetch courses for
      * @returns The courses as a JSON string
      */
-    fetchCourses: (data: { semester: SemesterItem }) => Promise<string>;
+    fetchAllCourses: (data: { semester: SemesterItem }) => string;
 
     /**
      * Fetch the sections data for a given course
@@ -18,5 +25,5 @@ export interface CourseCatalogMessages {
      * @param data - The course to fetch sections for
      * @returns The sections for that course as a JSON string
      */
-    fetchSections: (data: { semester: SemesterItem; course: CourseItem }) => Promise<string>;
+    fetchSections: (data: { semester: SemesterItem; course: CourseItem }) => string;
 }

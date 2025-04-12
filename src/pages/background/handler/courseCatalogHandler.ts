@@ -1,14 +1,18 @@
 import fetchAllCourseNumbers from '@pages/background/lib/fetchCourses';
 import fetchSections from '@pages/background/lib/fetchSections';
+import fetchAvailableSemesters from '@pages/background/lib/fetchSemesters';
 import type { CourseCatalogMessages } from '@shared/messages/CourseCatalogMessages';
 import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const courseCatalogHandler: MessageHandler<CourseCatalogMessages> = {
-    fetchCourses({ data, sendResponse }) {
-        sendResponse(fetchAllCourseNumbers(data.semester));
+    fetchAvailableSemesters({ sendResponse }) {
+        fetchAvailableSemesters().then(sendResponse);
+    },
+    fetchAllCourses({ data, sendResponse }) {
+        fetchAllCourseNumbers(data.semester).then(sendResponse);
     },
     fetchSections({ data, sendResponse }) {
-        sendResponse(fetchSections(data.semester, data.course));
+        fetchSections(data.semester, data.course).then(sendResponse);
     },
 };
 

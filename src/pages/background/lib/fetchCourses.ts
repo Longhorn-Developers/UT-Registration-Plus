@@ -7,7 +7,7 @@ import type { CourseItem, SemesterItem } from '@shared/types/CourseData';
  *
  * @returns A promise that resolves to json of courses.
  */
-export default async function fetchAllCourseNumbers(semester: SemesterItem): Promise<string | undefined> {
+export default async function fetchAllCourseNumbers(semester: SemesterItem): Promise<string> {
     const formattedSemester = `${semester.year}%20${semester.season}`;
     const url = `https://utexas.collegescheduler.com/api/terms/${formattedSemester}/courses`;
 
