@@ -65,10 +65,6 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
     const showDialog = usePrompt();
-    const uniqueSemesters = [
-        ...new Set(activeSchedule.courses.map(course => `${course.semester.season} ${course.semester.year}`)),
-    ];
-    const activeSemesters = englishStringifyList(uniqueSemesters);
     const getInstructorFullName = (instructor: Instructor) => instructor.toString({ format: 'first_last' });
 
     const handleCopy = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -120,17 +116,39 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
         }
     };
 
-    const handleAddToNewSchedule = async (currentSemesterCode: string | undefined, close: () => void) => {
-        const newScheduleId = await createSchedule(`Semester${currentSemesterCode}`);
+    const handleAddToNewSchedule = async (close: () => void) => {
+        const newScheduleId = await createSchedule(`${course.semester.season} ${course.semester.year}`);
         switchSchedule(newScheduleId);
         addCourse({ course, scheduleId: newScheduleId });
         close();
     };
 
     const handleAddOrRemoveCourse = async () => {
+        const uniqueSemesterCodes = [
+            ...new Set(
+                activeSchedule.courses
+                    .map(course => course.semester.code)
+                    .filter((code): code is string => code !== undefined)
+            ),
+        ];
+        uniqueSemesterCodes.sort();
+        const codeToReadableMap: Record<string, string> = {};
+        activeSchedule.courses.forEach(course => {
+            const { code } = course.semester;
+            if (code) {
+                const readable = `${course.semester.season} ${course.semester.year}`;
+                codeToReadableMap[code] = readable;
+            }
+        });
+        const sortedSemesters = uniqueSemesterCodes
+            .map(code => codeToReadableMap[code])
+            .filter((value): value is string => value !== undefined);
+        const activeSemesters = englishStringifyList(sortedSemesters);
+
         if (!activeSchedule) return;
         if (!courseAdded) {
             const currentSemesterCode = course.semester.code;
+            // Show warning if this course is for a different semester than the selected schedule
             if (
                 activeSchedule.courses.length > 0 &&
                 activeSchedule.courses.every(otherCourse => otherCourse.semester.code !== currentSemesterCode)
@@ -144,7 +162,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                             variant='filled'
                             color='ut-burntorange'
                             onClick={() => {
-                                handleAddToNewSchedule(currentSemesterCode, close);
+                                handleAddToNewSchedule(close);
                             }}
                         >
                             Start a new schedule
