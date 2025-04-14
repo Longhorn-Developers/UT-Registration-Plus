@@ -23,7 +23,7 @@ const splashText: string[] = [
     'Almost Turing complete',
     '#BF5700',
     'The waitlist is a lie!',
-    'bevo jockey',
+    'BEVO JOCKEY 🗣️🗣️🗣️',
     'RIP Domino, you beloved campus feline.',
     "The year is 2055 and Welch still isn't finished.",
     'Motivation dropping faster than ur GPA',
