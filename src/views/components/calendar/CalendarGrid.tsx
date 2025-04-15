@@ -12,6 +12,8 @@ import { calculateCourseCellColumns } from './utils';
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 
+const IS_STORYBOOK = import.meta.env.STORYBOOK;
+
 interface Props {
     courseCells?: CalendarGridCourse[];
     saturdayClass?: boolean;
@@ -108,7 +110,10 @@ interface AccountForCourseConflictsProps {
 // TODO: Possibly refactor to be more concise
 // TODO: Deal with react strict mode (wacky movements)
 function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
-    const [sentryScope] = useSentryScope();
+    // Sentry is not defined in storybook.
+    // This is a valid use case for a condition hook, since IS_STORYBOOK is determined at build time,
+    // it doesn't change between renders.
+    const [sentryScope] = IS_STORYBOOK ? [undefined] : useSentryScope();
 
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce(
@@ -129,7 +134,9 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
             calculateCourseCellColumns(dayCells);
         } catch (error) {
             console.error(`Error calculating course cell columns ${idx}`, error);
-            sentryScope.captureException(error);
+            if (sentryScope) {
+                sentryScope.captureException(error);
+            }
         }
     });
 
