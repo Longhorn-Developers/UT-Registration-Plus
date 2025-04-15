@@ -113,6 +113,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
     // Sentry is not defined in storybook.
     // This is a valid use case for a condition hook, since IS_STORYBOOK is determined at build time,
     // it doesn't change between renders.
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [sentryScope] = IS_STORYBOOK ? [undefined] : useSentryScope();
 
     //  Groups by dayIndex to identify overlaps
