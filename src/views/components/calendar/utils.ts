@@ -366,56 +366,6 @@ const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCours
 };
 
 /**
- * Calculates the maximum number of columns needed to display a set of calendar cells without overlap.
- * This is determined by finding the maximum number of cells that overlap at any given point in time.
- *
- * Based upon the Sweep Line Algorithm for Interval Overlap Counting.
- *
- * @param cells - An array of calendar grid course cells to analyze
- * @returns The total number of columns needed to display all cells without horizontal overlap
- * @remarks The maximum number of columns needed is strictly equal to the minimum number of columns needed.
- * Research Interval Graphs for more info https://en.wikipedia.org/wiki/Interval_graph
- */
-const calculateTotalColumns = (cells: CalendarGridCourse[]): number => {
-    const events = cells
-        .flatMap<{
-            kind: 'start' | 'end';
-            time: number;
-        }>(cell => [
-            { kind: 'start', time: cell.calendarGridPoint.startIndex },
-            { kind: 'end', time: cell.calendarGridPoint.endIndex },
-        ])
-        .sort((a, b) => {
-            if (a.time !== b.time) {
-                return a.time - b.time;
-            }
-
-            if (a.kind === b.kind) {
-                return 0;
-            }
-
-            // prioritize 'end' events over 'start' events,
-            // since ending is an open interval
-            return a.kind === 'end' ? -1 : 1;
-        });
-
-    let currentOverlap = 0;
-    let maxOverlap = 0;
-    for (const event of events) {
-        if (event.kind === 'start') {
-            currentOverlap++;
-            if (currentOverlap > maxOverlap) {
-                maxOverlap = currentOverlap;
-            }
-        } else {
-            currentOverlap--;
-        }
-    }
-
-    return maxOverlap;
-};
-
-/**
  * Assigns column positions to each cell in a set of calendar grid cells.
  * Ensures that overlapping cells are placed in different columns.
  *
@@ -424,11 +374,12 @@ const calculateTotalColumns = (cells: CalendarGridCourse[]): number => {
  * @param cells - An array of calendar grid course cells to position, must be
  * sorted in increasing order of start time
  * @throws Error if there's no available column for a cell (should never happen if totalColumns is calculated correctly)
+ * @remarks The number of columns created is strictly equal to the minimum needed by a perfectly optimal algorithm.
+ * The minimum number of columns needed is the maximum number of events that happen concurrently.
+ * Research Interval Graphs for more info https://en.wikipedia.org/wiki/Interval_graph
  */
 const assignColumns = (cells: CalendarGridCourse[]) => {
-    const totalColumns = calculateTotalColumns(cells);
-
-    const availableColumns = Array(totalColumns).fill(true);
+    const availableColumns = [true];
 
     for (const cell of cells) {
         availableColumns.fill(true);
@@ -438,15 +389,21 @@ const assignColumns = (cells: CalendarGridCourse[]) => {
             }
         }
 
-        const column = availableColumns.indexOf(true);
+        // Find an available column, or create one if all columns are full
+        let column = availableColumns.indexOf(true);
 
         if (column === -1) {
-            throw new Error('could not allocate column');
+            column = availableColumns.length;
+            availableColumns.push(true);
         }
 
-        cell.totalColumns = totalColumns;
+        // CSS Grid uses 1-based indexing
         cell.gridColumnStart = column + 1;
         cell.gridColumnEnd = column + 2;
+    }
+
+    for (const cell of cells) {
+        cell.totalColumns = availableColumns.length;
     }
 };
 
