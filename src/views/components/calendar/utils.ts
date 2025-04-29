@@ -1,4 +1,5 @@
 import { tz, TZDate } from '@date-fns/tz';
+import exportSchedule from '@pages/background/lib/exportSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Course } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
@@ -21,7 +22,6 @@ import {
 import { toBlob } from 'html-to-image';
 
 import { academicCalendars } from './academic-calendars';
-import exportSchedule from 'src/pages/background/lib/exportSchedule';
 
 // Do all timezone calculations relative to UT's timezone
 const TIMEZONE_ID = 'America/Chicago';
@@ -263,7 +263,7 @@ export const saveAsCal = async () => {
 
 /**
  * Saves current schedule to JSON that can be imported on other devices.
- * @param id Provided schedule ID to download
+ * @param id - Provided schedule ID to download
  */
 export const handleExportClick = async (id: string) => {
     const jsonString = await exportSchedule(id);
