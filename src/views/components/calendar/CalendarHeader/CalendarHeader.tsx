@@ -1,5 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { CalendarDots, Export, FilePng, Sidebar } from '@phosphor-icons/react';
+import { CalendarDots, Export, File, FilePng, Sidebar } from '@phosphor-icons/react';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
@@ -7,11 +7,11 @@ import Divider from '@views/components/common/Divider';
 import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { LargeLogo } from '@views/components/common/LogoIcon';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
-import useSchedules from '@views/hooks/useSchedules';
+import useSchedules, { getActiveSchedule } from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React from 'react';
 
-import { saveAsCal, saveCalAsPng } from '../utils';
+import { handleExportClick, saveAsCal, saveCalAsPng } from '../utils';
 
 interface CalendarHeaderProps {
     sidebarOpen?: boolean;
@@ -96,6 +96,18 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                         icon={CalendarDots}
                                     >
                                         Save as .cal
+                                    </Button>
+                                </MenuItem>
+                                <MenuItem>
+                                    <Button
+                                        className='w-full flex justify-start'
+                                        onClick={() => handleExportClick(getActiveSchedule().id)}
+                                        color='ut-black'
+                                        size='small'
+                                        variant='minimal'
+                                        icon={File}
+                                    >
+                                        Save as .JSON
                                     </Button>
                                 </MenuItem>
                                 {/* <MenuItem>
