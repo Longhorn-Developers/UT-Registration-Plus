@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { CourseCatalogScraper } from './CourseCatalogScraper';
 
 describe('CourseCatalogScraper::separateCourseName', () => {

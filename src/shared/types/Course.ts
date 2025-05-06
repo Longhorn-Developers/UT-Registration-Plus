@@ -106,15 +106,17 @@ export class Course {
      * UT prefixes summer courses with f, s, n, or w:
      * [f]irst term, [s]econd term, [n]ine week term, [w]hole term
      *
-     * @param department The course department code, like 'C S'
-     * @param number The course number, like '314H'
+     * @param department - The course department code, like 'C S'
+     * @param number - The course number, like '314H'
      * @returns The properly formatted department and course number
      * @example
+     * ```ts
      * cleanSummerTerm('C S',  '314H') // { department: 'C S', number: '314H' }
      * cleanSummerTerm('P R',  'f378') // { department: 'P R', number: 'f378' }
      * cleanSummerTerm('P R f', '378') // { department: 'P R', number: 'f378' }
      * cleanSummerTerm('P S',  'n303') // { department: 'P S', number: 'n303' }
      * cleanSummerTerm('P S n', '303') // { department: 'P S', number: 'n303' }
+     * ```
      */
     static cleanSummerTerm(department: string, number: string): { department: string; number: string } {
         // UT prefixes summer courses with f, s, n, or w:
