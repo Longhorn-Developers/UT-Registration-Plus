@@ -44,7 +44,12 @@ export type Semester = {
 export class Course {
     /** Every course has a uniqueId within UT's registrar system corresponding to each course section */
     uniqueId!: number;
-    /** This is the course number for a course, i.e CS 314 would be 314, MAL 306H would be 306H */
+    /**
+     * This is the course number for a course, i.e CS 314 would be 314, MAL 306H would be 306H.
+     * UT prefixes summer courses with f, s, n, or w:
+     * [f]irst term, [s]econd term, [n]ine week term, [w]hole term.
+     * So, the first term of PSY 301 over the summer would be 'f301'
+     */
     number!: string;
     /** The full name of the course, i.e. CS 314 Data Structures and Algorithms */
     fullName!: string;
