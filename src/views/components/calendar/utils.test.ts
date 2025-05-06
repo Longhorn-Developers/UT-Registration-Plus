@@ -1,6 +1,7 @@
 import { tz } from '@date-fns/tz';
 import { Course } from '@shared/types/Course';
 import { UserSchedule } from '@shared/types/UserSchedule';
+import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import type { Serialized } from 'chrome-extension-toolkit';
 import { format as formatDate, parseISO } from 'date-fns';
 import {
@@ -8,9 +9,17 @@ import {
     multiMeetingMultiInstructorCourse,
     multiMeetingMultiInstructorSchedule,
 } from 'src/stories/injected/mocked';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { allDatesInRanges, formatToHHMMSS, meetingToIcsString, nextDayInclusive, scheduleToIcsString } from './utils';
+import type { CalendarCourseCellProps } from './CalendarCourseCell';
+import {
+    allDatesInRanges,
+    calculateCourseCellColumns,
+    formatToHHMMSS,
+    meetingToIcsString,
+    nextDayInclusive,
+    scheduleToIcsString,
+} from './utils';
 
 // Do all timezone calculations relative to UT's timezone
 const TIMEZONE = 'America/Chicago';
@@ -475,5 +484,198 @@ describe('scheduleToIcsString', () => {
 
     afterEach(() => {
         vi.restoreAllMocks();
+    });
+});
+
+describe('calculateCourseCellColumns', () => {
+    let testIdCounter = 0;
+
+    const makeCell = (startIndex: number, endIndex: number): CalendarGridCourse => {
+        if (endIndex <= startIndex && !(startIndex === -1 && endIndex === -1)) {
+            throw new Error('Test writer error: startIndex must be strictly less than endIndex');
+        }
+
+        const cell = {
+            calendarGridPoint: {
+                dayIndex: 1,
+                startIndex,
+                endIndex,
+            },
+            componentProps: {} as unknown as CalendarCourseCellProps,
+            course: {} as unknown as Course,
+            async: false,
+        } satisfies CalendarGridCourse;
+
+        /* eslint no-underscore-dangle: ["error", { "allow": ["__test_id"] }] */
+        (cell as unknown as { __test_id: number }).__test_id = testIdCounter++;
+
+        return cell;
+    };
+
+    /**
+     * Creates test cases for calculateCourseCellColumns
+     * @param cellConfigs - Array of [startIndex, endIndex, totalColumns, gridColumnStart, gridColumnEnd]
+     * @returns Tuple of [cells, expectedCells]
+     */
+    const makeCellsTest = (
+        cellConfigs: Array<[number, number, number, number, number]>
+    ): [CalendarGridCourse[], CalendarGridCourse[]] => {
+        // Create cells with only start/end indices
+        const cells = cellConfigs.map(([startIndex, endIndex]) => makeCell(startIndex, endIndex));
+
+        // Create expected cells with all properties set
+        const expectedCells = structuredClone<CalendarGridCourse[]>(cells);
+        cellConfigs.forEach((config, index) => {
+            const [, , totalColumns, gridColumnStart, gridColumnEnd] = config;
+            expectedCells[index]!.totalColumns = totalColumns;
+            expectedCells[index]!.gridColumnStart = gridColumnStart;
+            expectedCells[index]!.gridColumnEnd = gridColumnEnd;
+        });
+
+        return [cells, expectedCells];
+    };
+
+    beforeEach(() => {
+        // Ensure independence between tests
+        testIdCounter = 0;
+    });
+
+    it('should do nothing to an empty array if no courses are present', () => {
+        const cells: CalendarGridCourse[] = [];
+        calculateCourseCellColumns(cells);
+        expect(cells).toEqual([]);
+    });
+
+    it('should set the right values for one course cell', () => {
+        const [cells, expectedCells] = makeCellsTest([[13, 15, 1, 1, 2]]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle two separated courses', () => {
+        // These two cells can share a column, because they aren't concurrent
+        const [cells, expectedCells] = makeCellsTest([
+            [13, 15, 1, 1, 2],
+            [16, 18, 1, 1, 2],
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle two back-to-back courses', () => {
+        // These two cells can share a column, because they aren't concurrent
+        const [cells, expectedCells] = makeCellsTest([
+            [13, 15, 1, 1, 2],
+            [15, 17, 1, 1, 2],
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle two concurrent courses', () => {
+        // These two cells must be in separate columns, because they are concurrent
+        const [cells, expectedCells] = makeCellsTest([
+            [13, 15, 2, 1, 2],
+            [14, 16, 2, 2, 3],
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle a simple grid', () => {
+        // Two columns
+        const [cells, expectedCells] = makeCellsTest([
+            [13, 15, 2, 1, 2], // start in left-most column
+            [15, 17, 2, 1, 2], // compact into left column
+            [13, 17, 2, 2, 3], // take up second column
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle a simple grid, flipped', () => {
+        // Ensures `totalColumns` is calculated correctly
+        const [cells, expectedCells] = makeCellsTest([
+            [13, 17, 2, 1, 2],
+            [15, 17, 2, 2, 3],
+            [13, 15, 2, 2, 3],
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle a weird grid', () => {
+        // Three columns
+        const [cells, expectedCells] = makeCellsTest([
+            [13, 15, 3, 1, 2],
+            [14, 18, 3, 2, 3],
+            [14, 16, 3, 3, 4],
+            [15, 17, 3, 1, 2], // compacted into left-most columns
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle many clean concurrent courses', () => {
+        // All cells here are concurrent, 8 columns
+        const [cells, expectedCells] = makeCellsTest([
+            [10, 16, 8, 1, 2],
+            [12, 16, 8, 2, 3],
+            [13, 16, 8, 3, 4],
+            [13, 16, 8, 4, 5],
+            [13, 19, 8, 5, 6],
+            [13, 19, 8, 6, 7],
+            [14, 18, 8, 7, 8],
+            [15, 19, 8, 8, 9],
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it('should handle many clean concurrent courses with one partially-concurrent', () => {
+        // Despite adding another course, we don't need to increase
+        // the number of columns, because we can compact
+        const [cells, expectedCells] = makeCellsTest([
+            [10, 16, 8, 1, 2],
+            [11, 15, 8, 2, 3], // new course, only overlaps with some
+            [12, 16, 8, 3, 4],
+            [13, 16, 8, 4, 5],
+            [13, 16, 8, 5, 6],
+            [13, 19, 8, 6, 7],
+            [13, 19, 8, 7, 8],
+            [14, 18, 8, 8, 9],
+            [15, 19, 8, 2, 3], // compacts to be under new course
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
+    it("shouldn't crash on courses without times", () => {
+        const cells = [makeCell(-1, -1), makeCell(-1, -1)];
+        cells[1]!.async = true; // see if we can ignore async and non-async courses without times
+
+        const expectedCells = structuredClone<CalendarGridCourse[]>(cells);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
     });
 });
