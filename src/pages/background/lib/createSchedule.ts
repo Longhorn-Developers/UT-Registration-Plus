@@ -37,6 +37,9 @@ export default async function createSchedule(scheduleName: string) {
 
     await UserScheduleStore.set('schedules', schedules);
 
+    // Automatically switch to the new schedule
+    await UserScheduleStore.set('activeIndex', schedules.length - 1);
+
     // If there is only one schedule, set the active index to the new schedule
     if (schedules.length <= 1) {
         await UserScheduleStore.set('activeIndex', 0);
