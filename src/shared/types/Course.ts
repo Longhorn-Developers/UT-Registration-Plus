@@ -91,6 +91,44 @@ export class Course {
         }
         this.colors = course.colors ? structuredClone(course.colors) : getCourseColors('emerald', 500);
         this.core = course.core ?? [];
+        if (course.semester.season === 'Summer') {
+            // A bug from and old version put the summer term in the course,
+            // so we need to handle that case
+            const { department, number } = Course.cleanSummerTerm(course.department, course.number);
+            this.department = department;
+            this.number = number;
+        }
+    }
+
+    /**
+     * Due to a bug in an older version, the summer term was included in the course department code,
+     * instead of the course number.
+     * UT prefixes summer courses with f, s, n, or w:
+     * [f]irst term, [s]econd term, [n]ine week term, [w]hole term
+     *
+     * @param department The course department code, like 'C S'
+     * @param number The course number, like '314H'
+     * @returns The properly formatted department and course number
+     * @example
+     * cleanSummerTerm('C S',  '314H') // { department: 'C S', number: '314H' }
+     * cleanSummerTerm('P R',  'f378') // { department: 'P R', number: 'f378' }
+     * cleanSummerTerm('P R f', '378') // { department: 'P R', number: 'f378' }
+     * cleanSummerTerm('P S',  'n303') // { department: 'P S', number: 'n303' }
+     * cleanSummerTerm('P S n', '303') // { department: 'P S', number: 'n303' }
+     */
+    static cleanSummerTerm(department: string, number: string): { department: string; number: string } {
+        // UT prefixes summer courses with f, s, n, or w:
+        // [f]irst term, [s]econd term, [n]ine week term, [w]hole term
+        const summerTerm = department.match(/[fsnw]$/);
+
+        if (!summerTerm) {
+            return { department, number };
+        }
+
+        return {
+            department: department.slice(0, -1).trim(),
+            number: summerTerm[0] + number,
+        };
     }
 
     /**
