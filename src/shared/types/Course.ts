@@ -156,6 +156,18 @@ export class Course {
 
         return conflicts;
     }
+
+    /**
+     * @returns The course number without the summer term
+     * @example
+     * ```ts
+     * const c = new Course({ number: 'f301', ... });
+     * c.getNumberWithoutTerm() // '301'
+     * ```
+     */
+    getNumberWithoutTerm(): string {
+        return this.number.replace(/^\D/, ''); // Remove nondigit at start, if it exists
+    }
 }
 
 /**

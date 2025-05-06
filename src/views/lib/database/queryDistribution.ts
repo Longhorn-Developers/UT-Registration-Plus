@@ -124,7 +124,7 @@ function generateQuery(
 
     const params: GradeDistributionParams = {
         ':department_code': course.department,
-        ':course_number': course.number.replace(/^\D/, ''), // Remove nondigit at start (for summer courses)
+        ':course_number': course.getNumberWithoutTerm(),
     };
 
     if (includeInstructor) {
