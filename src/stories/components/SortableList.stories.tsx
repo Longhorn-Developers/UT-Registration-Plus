@@ -73,7 +73,7 @@ const generateCourses = (count: number): Course[] => {
 
 const exampleCourses = generateCourses(numberOfCourses);
 
-type CourseWithId = Course & BaseItem;
+type CourseWithId = { course: Course } & BaseItem;
 
 const meta = {
     title: 'Components/Common/SortableList',
@@ -91,11 +91,10 @@ export const Default: Story = {
     args: {
         draggables: exampleCourses.map(course => ({
             id: course.uniqueId,
-            ...course,
-            getConflicts: course.getConflicts,
+            course,
         })),
         onChange: () => {},
-        renderItem: course => <PopupCourseBlock key={course.id} course={course} colors={course.colors} />,
+        renderItem: ({ id, course }) => <PopupCourseBlock key={id} course={course} colors={course.colors} />,
     },
     render: args => (
         <div className='h-3xl w-3xl transform-none'>
