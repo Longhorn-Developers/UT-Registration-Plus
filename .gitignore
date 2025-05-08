@@ -211,3 +211,5 @@ sketch
 package-lock.json
 storybook-static/
 package/
+
+.direnv/
