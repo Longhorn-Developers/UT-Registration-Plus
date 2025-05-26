@@ -6,6 +6,7 @@ import React from 'react';
 
 import { LogoIcon } from '../components/common/LogoIcon';
 import useChangelog from './useChangelog';
+import { APP_STORE_URL } from '../components/calendar/DiningAppPromo';
 
 /**
  * Custom hook that provides a function to display a what's new dialog.
@@ -24,18 +25,24 @@ export default function useWhatsNewPopUp(): () => void {
                 <div className='flex items-center justify-between gap-4'>
                     <LogoIcon width='48' height='48' />
                     <Text variant='h1' className='text-theme-black'>
-                        What&apos;s New in UT Registration Plus
+                        Download our new UT Dining app!
                     </Text>
                 </div>
             ),
             description: <WhatsNewPopupContent />,
             buttons: (
                 <div className='flex flex-row items-end gap-spacing-4'>
-                    <Button onClick={showChangeLog} variant='minimal' color='ut-black'>
-                        Read Changelog v{version}
+                    <Button
+                        onClick={() => {
+                            window.open(APP_STORE_URL, '_blank');
+                        }}
+                        variant='minimal'
+                        color='ut-black'
+                    >
+                        Download UT Dining on iOS
                     </Button>
                     <Button onClick={close} color='ut-burntorange'>
-                        Get started
+                        Close
                     </Button>
                 </div>
             ),
