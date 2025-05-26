@@ -16,7 +16,7 @@ interface DiningAppPromoProps {
  */
 export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
     return (
-        <div className='min-w-[16.25rem] w-full flex items-center gap-spacing-3 border border-ut-offwhite/50 rounded p-spacing-4 relative'>
+        <div className='relative min-w-[16.25rem] w-full flex items-center gap-spacing-3 border border-ut-offwhite/50 rounded p-spacing-4'>
             <div className='flex items-center justify-center'>
                 <ForkKnife className='h-6 w-6 text-ut-black' />
             </div>
@@ -62,7 +62,7 @@ export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
                 variant='minimal'
                 color='theme-black'
                 onClick={onClose}
-                className='absolute top-1 right-1 h-5 w-5 p-0'
+                className='absolute right-1 top-1 h-5 w-5 p-0'
                 icon={X}
                 aria-label='Close dining app promo'
                 title='Close'
