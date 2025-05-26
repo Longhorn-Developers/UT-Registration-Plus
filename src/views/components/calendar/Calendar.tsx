@@ -27,6 +27,7 @@ import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
+import DiningAppPromo from './DiningAppPromo';
 
 /**
  * Calendar page component
@@ -122,8 +123,8 @@ export default function Calendar(): ReactNode {
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' />
                             <ResourceLinks />
-                            <Divider orientation='horizontal' size='100%' />
                             {/* <TeamLinks /> */}
+                            <DiningAppPromo />
                             <div className='flex flex-col gap-spacing-3'>
                                 <a
                                     href={CRX_PAGES.REPORT}
@@ -138,7 +139,7 @@ export default function Calendar(): ReactNode {
                                     <Text variant='p'>Send us Feedback!</Text>
                                     <OutwardArrowIcon className='h-4 w-4' />
                                 </a>
-                                <a
+                                {/* <a
                                     href=''
                                     className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
                                     target='_blank'
@@ -150,7 +151,7 @@ export default function Calendar(): ReactNode {
                                 >
                                     <Text variant='p'>What&apos;s New!</Text>
                                     <OutwardArrowIcon className='h-4 w-4' />
-                                </a>
+                                </a> */}
                             </div>
                         </div>
 
