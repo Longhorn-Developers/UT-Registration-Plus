@@ -49,6 +49,7 @@ export const initSettings = async () =>
         enableDataRefreshing: await OptionsStore.get('enableDataRefreshing'),
         alwaysOpenCalendarInNewTab: await OptionsStore.get('alwaysOpenCalendarInNewTab'),
         showCalendarSidebar: await OptionsStore.get('showCalendarSidebar'),
+        showPromo: await OptionsStore.get('showPromo'),
     }) satisfies IOptionsStore;
 
 // Clothing retailer right
