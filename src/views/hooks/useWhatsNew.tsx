@@ -4,9 +4,9 @@ import WhatsNewPopupContent from '@views/components/common/WhatsNewPopup';
 import { useDialog } from '@views/contexts/DialogContext';
 import React from 'react';
 
+import { APP_STORE_URL } from '../components/calendar/DiningAppPromo';
 import { LogoIcon } from '../components/common/LogoIcon';
 import useChangelog from './useChangelog';
-import { APP_STORE_URL } from '../components/calendar/DiningAppPromo';
 
 /**
  * Custom hook that provides a function to display a what's new dialog.
