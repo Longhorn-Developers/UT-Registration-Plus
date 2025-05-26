@@ -1,4 +1,4 @@
-import { AppStoreLogo , ForkKnife , GooglePlayLogo } from '@phosphor-icons/react';
+import { AppStoreLogo, ForkKnife, GooglePlayLogo } from '@phosphor-icons/react';
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
 
