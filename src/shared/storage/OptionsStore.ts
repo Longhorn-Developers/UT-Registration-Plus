@@ -21,6 +21,9 @@ export interface IOptionsStore {
 
     /** whether the calendar sidebar should be shown when the calendar is opened */
     showCalendarSidebar: boolean;
+
+    /** whether the promo should be shown */
+    showPromo: boolean;
 }
 
 export const OptionsStore = createSyncStore<IOptionsStore>({
@@ -30,6 +33,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
     enableDataRefreshing: false,
     alwaysOpenCalendarInNewTab: false,
     showCalendarSidebar: true,
+    showPromo: true,
 });
 
 /**

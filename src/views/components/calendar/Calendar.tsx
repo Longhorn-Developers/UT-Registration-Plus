@@ -42,6 +42,8 @@ export default function Calendar(): ReactNode {
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const showWhatsNewDialog = useWhatsNewPopUp();
 
+    const [showPromo, setShowPromo] = useState<boolean>(false);
+
     const queryClient = useQueryClient();
     const { data: showSidebar, isPending: isSidebarStatePending } = useQuery({
         queryKey: ['settings', 'showCalendarSidebar'],
@@ -82,6 +84,13 @@ export default function Calendar(): ReactNode {
     useEffect(() => {
         if (course) setShowPopup(true);
     }, [course]);
+
+    useEffect(() => {
+        // Load the user's preference for the promo
+        OptionsStore.get('showPromo').then(show => {
+            setShowPromo(true);
+        });
+    }, []);
 
     if (isSidebarStatePending) return null;
 
@@ -124,7 +133,15 @@ export default function Calendar(): ReactNode {
                             <Divider orientation='horizontal' size='100%' />
                             <ResourceLinks />
                             {/* <TeamLinks /> */}
-                            <DiningAppPromo />
+                            {!showPromo && <Divider orientation='horizontal' size='100%' />}
+                            {showPromo && (
+                                <DiningAppPromo
+                                    onClose={() => {
+                                        setShowPromo(false);
+                                        OptionsStore.set('showPromo', false);
+                                    }}
+                                />
+                            )}
                             <div className='flex flex-col gap-spacing-3'>
                                 <a
                                     href={CRX_PAGES.REPORT}
@@ -139,7 +156,7 @@ export default function Calendar(): ReactNode {
                                     <Text variant='p'>Send us Feedback!</Text>
                                     <OutwardArrowIcon className='h-4 w-4' />
                                 </a>
-                                {/* <a
+                                <a
                                     href=''
                                     className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
                                     target='_blank'
@@ -151,7 +168,7 @@ export default function Calendar(): ReactNode {
                                 >
                                     <Text variant='p'>What&apos;s New!</Text>
                                     <OutwardArrowIcon className='h-4 w-4' />
-                                </a> */}
+                                </a>
                             </div>
                         </div>
 

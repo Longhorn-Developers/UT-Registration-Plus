@@ -1,16 +1,22 @@
-import { AppStoreLogo, ForkKnife, GooglePlayLogo } from '@phosphor-icons/react';
+import { AppStoreLogo, ForkKnife, GooglePlayLogo, X } from '@phosphor-icons/react';
+import { OptionsStore } from '@shared/storage/OptionsStore';
+import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 export const APP_STORE_URL = 'https://apps.apple.com/us/app/ut-dining/id6743042002';
 const GOOGLE_PLAY_URL = ''; // Placeholder for Google Play URL, Android app not available yet
 
+interface DiningAppPromoProps {
+    onClose: () => void;
+}
+
 /**
  * Promotional component for the UT Dining app
  */
-export default function DiningAppPromo() {
+export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
     return (
-        <div className='min-w-[16.25rem] w-full flex items-center gap-spacing-3 border border-ut-offwhite/50 rounded p-spacing-4'>
+        <div className='min-w-[16.25rem] w-full flex items-center gap-spacing-3 border border-ut-offwhite/50 rounded p-spacing-4 relative'>
             <div className='flex items-center justify-center'>
                 <ForkKnife className='h-6 w-6 text-ut-black' />
             </div>
@@ -52,6 +58,15 @@ export default function DiningAppPromo() {
                     </a> */}
                 </div>
             </div>
+            <Button
+                variant='minimal'
+                color='theme-black'
+                onClick={onClose}
+                className='absolute top-1 right-1 h-5 w-5 p-0'
+                icon={X}
+                aria-label='Close dining app promo'
+                title='Close'
+            />
         </div>
     );
 }
