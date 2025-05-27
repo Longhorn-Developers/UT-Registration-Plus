@@ -88,7 +88,7 @@ export default function Calendar(): ReactNode {
     useEffect(() => {
         // Load the user's preference for the promo
         OptionsStore.get('showPromo').then(show => {
-            setShowPromo(true);
+            setShowPromo(show);
         });
     }, []);
 
@@ -133,7 +133,7 @@ export default function Calendar(): ReactNode {
                             <Divider orientation='horizontal' size='100%' />
                             <ResourceLinks />
                             {/* <TeamLinks /> */}
-                            {!showPromo && <Divider orientation='horizontal' size='100%' />}
+                            <Divider orientation='horizontal' size='100%' />
                             {showPromo && (
                                 <DiningAppPromo
                                     onClose={() => {
