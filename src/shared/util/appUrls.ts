@@ -1,0 +1,14 @@
+/**
+ * This file contains URLs for external applications and resources.
+ * Centralizing these URLs makes it easier to track, update, and manage them in a single place.
+ */
+
+/**
+ * URL to the UT Dining app on the App Store
+ */
+export const UT_DINING_APP_STORE_URL = 'https://apps.apple.com/us/app/ut-dining/id6743042002';
+
+/**
+ * URL to the UT Dining app on the Google Play Store (currently not available)
+ */
+export const UT_DINING_GOOGLE_PLAY_URL = ''; // Placeholder for Google Play URL, Android app not available yet

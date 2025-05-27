@@ -1,11 +1,8 @@
-import { AppStoreLogo, ForkKnife, GooglePlayLogo, X } from '@phosphor-icons/react';
-import { OptionsStore } from '@shared/storage/OptionsStore';
+import { AppStoreLogo, ForkKnife, X as CloseIcon } from '@phosphor-icons/react';
+import { UT_DINING_APP_STORE_URL, UT_DINING_GOOGLE_PLAY_URL } from '@shared/util/appUrls';
 import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
-import React, { useEffect, useState } from 'react';
-
-export const APP_STORE_URL = 'https://apps.apple.com/us/app/ut-dining/id6743042002';
-const GOOGLE_PLAY_URL = ''; // Placeholder for Google Play URL, Android app not available yet
+import React from 'react';
 
 interface DiningAppPromoProps {
     onClose: () => void;
@@ -24,7 +21,7 @@ export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
                 <Text as='p' variant='small' className='whitespace-normal text-ut-black'>
                     Download our new{' '}
                     <a
-                        href={APP_STORE_URL}
+                        href={UT_DINING_APP_STORE_URL}
                         target='_blank'
                         rel='noreferrer'
                         aria-label='UT Dining app'
@@ -39,7 +36,7 @@ export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
                         Available on
                     </Text>
                     <a
-                        href={APP_STORE_URL}
+                        href={UT_DINING_APP_STORE_URL}
                         target='_blank'
                         rel='noreferrer'
                         aria-label='Download on App Store'
@@ -48,7 +45,7 @@ export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
                         <AppStoreLogo className='h-4.5 w-4.5' />
                     </a>
                     {/* <a
-                        href={GOOGLE_PLAY_URL}
+                        href={UT_DINING_GOOGLE_PLAY_URL}
                         target='_blank'
                         rel='noreferrer'
                         aria-label='Download on Google Play'
@@ -63,7 +60,7 @@ export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
                 color='theme-black'
                 onClick={onClose}
                 className='absolute right-1 top-1 h-5 w-5 p-0'
-                icon={X}
+                icon={CloseIcon}
                 aria-label='Close dining app promo'
                 title='Close'
             />

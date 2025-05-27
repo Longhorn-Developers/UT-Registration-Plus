@@ -4,7 +4,7 @@ import WhatsNewPopupContent from '@views/components/common/WhatsNewPopup';
 import { useDialog } from '@views/contexts/DialogContext';
 import React from 'react';
 
-import { APP_STORE_URL } from '../components/calendar/DiningAppPromo';
+import { UT_DINING_APP_STORE_URL } from 'src/shared/util/appUrls';
 import { LogoIcon } from '../components/common/LogoIcon';
 import useChangelog from './useChangelog';
 
@@ -34,7 +34,7 @@ export default function useWhatsNewPopUp(): () => void {
                 <div className='flex flex-row items-end gap-spacing-4'>
                     <Button
                         onClick={() => {
-                            window.open(APP_STORE_URL, '_blank');
+                            window.open(UT_DINING_APP_STORE_URL, '_blank');
                         }}
                         variant='minimal'
                         color='ut-black'
