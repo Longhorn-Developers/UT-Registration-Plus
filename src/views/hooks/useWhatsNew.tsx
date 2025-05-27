@@ -1,10 +1,10 @@
+import { UT_DINING_APP_STORE_URL } from '@shared/util/appUrls';
 import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
 import WhatsNewPopupContent from '@views/components/common/WhatsNewPopup';
 import { useDialog } from '@views/contexts/DialogContext';
 import React from 'react';
 
-import { UT_DINING_APP_STORE_URL } from 'src/shared/util/appUrls';
 import { LogoIcon } from '../components/common/LogoIcon';
 import useChangelog from './useChangelog';
 
