@@ -1,10 +1,10 @@
 import type { IconProps } from '@phosphor-icons/react';
 import { CloudX, Coffee, ForkKnife, MapTrifold, Storefront } from '@phosphor-icons/react';
 import { ExtensionStore } from '@shared/storage/ExtensionStore';
+import { UT_DINING_PROMO_IMAGE_URL } from '@shared/util/appUrls';
 import Text from '@views/components/common/Text/Text';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import React, { useEffect, useState } from 'react';
-import { UT_DINING_PROMO_IMAGE_URL } from 'src/shared/util/appUrls';
 
 /**
  * This is the version of the 'What's New' features popup.
@@ -92,7 +92,7 @@ export default function WhatsNewPopupContent(): JSX.Element {
                         </div>
                     ) : (
                         <img
-                            className='w-full h-full border border-ut-offwhite/50 rounded object-cover'
+                            className='h-full w-full border border-ut-offwhite/50 rounded object-cover'
                             src={UT_DINING_PROMO_IMAGE_URL}
                             alt='UT Dining Promo'
                         />
