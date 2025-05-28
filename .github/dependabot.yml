@@ -20,8 +20,10 @@ updates:
       directory: '/'
       schedule:
           interval: 'daily'
-      update-types:
-          - 'major'
-      exclude-patterns:
-          - '@crxjs/vite-plugin'
-          - '@unocss/vite'
+      groups:
+          major-updates:
+              update-types:
+                  - 'major'
+              exclude-patterns:
+                  - '@crxjs/vite-plugin'
+                  - '@unocss/vite'
