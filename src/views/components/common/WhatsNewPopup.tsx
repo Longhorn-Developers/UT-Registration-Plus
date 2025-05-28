@@ -35,7 +35,7 @@ const NEW_FEATURES = [
         id: 'coffee-shops',
         icon: Coffee,
         title: 'Coffee Shops',
-        description: 'Need a Coffee Fix? Check closing times for your favorite campus cafes.',
+        description: 'Need a Coffee Fix? Check operating times for your favorite campus cafes.',
     },
     {
         id: 'convenience-stores',
