@@ -42,7 +42,7 @@ export default function Calendar(): ReactNode {
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const showWhatsNewDialog = useWhatsNewPopUp();
 
-    const [showPromo, setShowPromo] = useState<boolean>(false);
+    const [showUTDiningPromo, setShowUTDiningPromo] = useState<boolean>(false);
 
     const queryClient = useQueryClient();
     const { data: showSidebar, isPending: isSidebarStatePending } = useQuery({
@@ -87,8 +87,8 @@ export default function Calendar(): ReactNode {
 
     useEffect(() => {
         // Load the user's preference for the promo
-        OptionsStore.get('showPromo').then(show => {
-            setShowPromo(show);
+        OptionsStore.get('showUTDiningPromo').then(show => {
+            setShowUTDiningPromo(show);
         });
     }, []);
 
@@ -134,11 +134,11 @@ export default function Calendar(): ReactNode {
                             <ResourceLinks />
                             {/* <TeamLinks /> */}
                             <Divider orientation='horizontal' size='100%' />
-                            {showPromo && (
+                            {showUTDiningPromo && (
                                 <DiningAppPromo
                                     onClose={() => {
-                                        setShowPromo(false);
-                                        OptionsStore.set('showPromo', false);
+                                        setShowUTDiningPromo(false);
+                                        OptionsStore.set('showUTDiningPromo', false);
                                     }}
                                 />
                             )}
