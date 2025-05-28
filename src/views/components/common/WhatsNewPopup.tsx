@@ -4,6 +4,7 @@ import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import Text from '@views/components/common/Text/Text';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import React, { useEffect, useState } from 'react';
+import { UT_DINING_PROMO_IMAGE_URL } from 'src/shared/util/appUrls';
 
 /**
  * This is the version of the 'What's New' features popup.
@@ -90,14 +91,11 @@ export default function WhatsNewPopupContent(): JSX.Element {
                             </div>
                         </div>
                     ) : (
-                        <video
-                            className='h-fit w-full flex items-center justify-center border border-ut-offwhite/50 rounded object-cover'
-                            autoPlay
-                            loop
-                            muted
-                        >
-                            <source src={WHATSNEW_VIDEO_URL} type='video/mp4' onError={() => setVideoError(true)} />
-                        </video>
+                        <img
+                            className='w-full h-full border border-ut-offwhite/50 rounded object-cover'
+                            src={UT_DINING_PROMO_IMAGE_URL}
+                            alt='UT Dining Promo'
+                        />
                     )}
                 </div>
             </div>
