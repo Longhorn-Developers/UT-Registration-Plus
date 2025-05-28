@@ -30,7 +30,7 @@ if (isBeta) {
 }
 process.env.VITE_PACKAGE_VERSION = packageJson.version;
 
-// special condition for production sentry instrumentation, as many of our devs like to use `pnpm build` directly. Production instrumentation is added and uploaded during `pnpm zip`.
+// special condition for production sentry instrumentation, as many of our devs like to use `pnpm build` directly. Production instrumentation is added and uploaded during `pnpm zip:to-publish`.
 if (process.env.SENTRY_ENV === 'production') {
     process.env.VITE_SENTRY_ENVIRONMENT = 'production';
 } else if (isBeta) {
