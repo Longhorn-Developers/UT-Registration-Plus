@@ -3,10 +3,10 @@ name: Updating Build Dependencies
 about: Updating Build Dependencies
 title: ''
 labels: build, dependencies
-assignees: Razboy20, doprz
+assignees: doprz, Razboy20
 
 ---
 
-[ ] - Update Nix Flake
-[ ] - Update Dockerfile
-[ ] - Update Docs
+- [ ] Updated Nix Flake
+- [ ] Update Dockerfile
+- [ ] Update Docs
