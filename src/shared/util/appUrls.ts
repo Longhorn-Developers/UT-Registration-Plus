@@ -6,7 +6,7 @@
 /**
  * URL to the UT Dining app on the App Store
  */
-export const UT_DINING_APP_STORE_URL = 'https://apps.apple.com/us/app/ut-dining/id6743042002';
+export const UT_DINING_APP_STORE_URL = new URL('https://apps.apple.com/us/app/ut-dining/id6743042002').toString();
 
 /**
  * URL to the UT Dining app on the Google Play Store (currently not available)
@@ -16,4 +16,4 @@ export const UT_DINING_GOOGLE_PLAY_URL = ''; // Placeholder for Google Play URL,
 /**
  * URL to the promo image
  */
-export const UT_DINING_PROMO_IMAGE_URL = 'https://cdn.longhorns.dev/ut-dining-advert1.png';
+export const UT_DINING_PROMO_IMAGE_URL = new URL('https://cdn.longhorns.dev/ut-dining-advert1.png').toString();
