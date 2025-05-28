@@ -12,18 +12,10 @@ updates:
               update-types:
                   - 'minor'
                   - 'patch'
-              exclude-patterns:
-                  - '@crxjs/vite-plugin'
-                  - '@unocss/vite'
-
-    - package-ecosystem: 'npm'
-      directory: '/'
-      schedule:
-          interval: 'daily'
-      groups:
           major-updates:
               update-types:
                   - 'major'
-              exclude-patterns:
-                  - '@crxjs/vite-plugin'
-                  - '@unocss/vite'
+
+      ignore:
+         - dependency-name: '@crxjs/vite-plugin'
+         - dependency-name: '@unocss/vite'
