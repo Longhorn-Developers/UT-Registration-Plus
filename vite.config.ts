@@ -24,16 +24,14 @@ const pagesDir = resolve(root, 'pages');
 const assetsDir = resolve(root, 'assets');
 const publicDir = resolve(__dirname, 'public');
 
-// Set default environment variables
-process.env.PROD = process.env.NODE_ENV === 'production' ? 'true' : 'false';
-
 const isBeta = !!process.env.BETA;
 if (isBeta) {
     process.env.VITE_BETA_BUILD = 'true';
 }
 process.env.VITE_PACKAGE_VERSION = packageJson.version;
-// TODO: Debug this. If PROD is false, VITE_SENTRY_ENVIRONMENT is in production mode
-if (process.env.PROD) {
+
+// special condition for production sentry instrumentation, as many of our devs like to use `pnpm build` directly. Production instrumentation is added and uploaded during `pnpm zip`.
+if (process.env.SENTRY_ENV === 'production') {
     process.env.VITE_SENTRY_ENVIRONMENT = 'production';
 } else if (isBeta) {
     process.env.VITE_SENTRY_ENVIRONMENT = 'beta';
