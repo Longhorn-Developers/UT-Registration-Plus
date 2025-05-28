@@ -8,7 +8,7 @@ import React from 'react';
 import { LogoIcon } from '../components/common/LogoIcon';
 import useChangelog from './useChangelog';
 
-const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
+const LDIconURL = new URL('/src/assets/LD-icon-new.png', import.meta.url).href;
 
 /**
  * Custom hook that provides a function to display a what's new dialog.
