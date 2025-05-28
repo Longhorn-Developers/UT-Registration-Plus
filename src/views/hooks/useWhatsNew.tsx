@@ -8,6 +8,8 @@ import React from 'react';
 import { LogoIcon } from '../components/common/LogoIcon';
 import useChangelog from './useChangelog';
 
+const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
+
 /**
  * Custom hook that provides a function to display a what's new dialog.
  *
@@ -23,7 +25,7 @@ export default function useWhatsNewPopUp(): () => void {
             className: 'w-[830px] flex flex-col items-center gap-spacing-7 p-spacing-8',
             title: (
                 <div className='flex items-center justify-between gap-4'>
-                    <LogoIcon width='48' height='48' />
+                    <img src={LDIconURL} alt='LD Icon' className='h-12 w-12 rounded-lg' />
                     <Text variant='h1' className='text-theme-black'>
                         Download our new UT Dining app!
                     </Text>
