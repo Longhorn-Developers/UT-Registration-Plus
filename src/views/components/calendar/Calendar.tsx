@@ -27,6 +27,7 @@ import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
+import DiningAppPromo from './DiningAppPromo';
 
 /**
  * Calendar page component
@@ -40,6 +41,8 @@ export default function Calendar(): ReactNode {
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const showWhatsNewDialog = useWhatsNewPopUp();
+
+    const [showUTDiningPromo, setShowUTDiningPromo] = useState<boolean>(false);
 
     const queryClient = useQueryClient();
     const { data: showSidebar, isPending: isSidebarStatePending } = useQuery({
@@ -82,12 +85,19 @@ export default function Calendar(): ReactNode {
         if (course) setShowPopup(true);
     }, [course]);
 
+    useEffect(() => {
+        // Load the user's preference for the promo
+        OptionsStore.get('showUTDiningPromo').then(show => {
+            setShowUTDiningPromo(show);
+        });
+    }, []);
+
     if (isSidebarStatePending) return null;
 
     return (
         <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
-                <div className='h-screen flex overflow-auto screenshot:calendar-target'>
+                <div className='screenshot:calendar-target h-screen flex overflow-auto'>
                     <div
                         className={clsx(
                             'py-spacing-6 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
@@ -122,8 +132,16 @@ export default function Calendar(): ReactNode {
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' />
                             <ResourceLinks />
-                            <Divider orientation='horizontal' size='100%' />
                             {/* <TeamLinks /> */}
+                            <Divider orientation='horizontal' size='100%' />
+                            {showUTDiningPromo && (
+                                <DiningAppPromo
+                                    onClose={() => {
+                                        setShowUTDiningPromo(false);
+                                        OptionsStore.set('showUTDiningPromo', false);
+                                    }}
+                                />
+                            )}
                             <div className='flex flex-col gap-spacing-3'>
                                 <a
                                     href={CRX_PAGES.REPORT}
