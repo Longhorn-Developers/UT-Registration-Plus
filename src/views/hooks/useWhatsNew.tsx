@@ -1,3 +1,4 @@
+import { UT_DINING_APP_STORE_URL } from '@shared/util/appUrls';
 import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
 import WhatsNewPopupContent from '@views/components/common/WhatsNewPopup';
@@ -6,6 +7,8 @@ import React from 'react';
 
 import { LogoIcon } from '../components/common/LogoIcon';
 import useChangelog from './useChangelog';
+
+const LDIconURL = new URL('/src/assets/LD-icon-new.png', import.meta.url).href;
 
 /**
  * Custom hook that provides a function to display a what's new dialog.
@@ -22,20 +25,26 @@ export default function useWhatsNewPopUp(): () => void {
             className: 'w-[830px] flex flex-col items-center gap-spacing-7 p-spacing-8',
             title: (
                 <div className='flex items-center justify-between gap-4'>
-                    <LogoIcon width='48' height='48' />
+                    <img src={LDIconURL} alt='LD Icon' className='h-12 w-12 rounded-lg' />
                     <Text variant='h1' className='text-theme-black'>
-                        What&apos;s New in UT Registration Plus
+                        Download our new UT Dining app!
                     </Text>
                 </div>
             ),
             description: <WhatsNewPopupContent />,
             buttons: (
                 <div className='flex flex-row items-end gap-spacing-4'>
-                    <Button onClick={showChangeLog} variant='minimal' color='ut-black'>
-                        Read Changelog v{version}
+                    <Button
+                        onClick={() => {
+                            window.open(UT_DINING_APP_STORE_URL, '_blank');
+                        }}
+                        variant='minimal'
+                        color='ut-black'
+                    >
+                        Download UT Dining on iOS
                     </Button>
                     <Button onClick={close} color='ut-burntorange'>
-                        Get started
+                        Close
                     </Button>
                 </div>
             ),
