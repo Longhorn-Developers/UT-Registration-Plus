@@ -21,6 +21,9 @@ export interface IOptionsStore {
 
     /** whether the calendar sidebar should be shown when the calendar is opened */
     showCalendarSidebar: boolean;
+
+    /** whether the promo should be shown */
+    showUTDiningPromo: boolean;
 }
 
 export const OptionsStore = createSyncStore<IOptionsStore>({
@@ -30,6 +33,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
     enableDataRefreshing: false,
     alwaysOpenCalendarInNewTab: false,
     showCalendarSidebar: true,
+    showUTDiningPromo: true,
 });
 
 /**
@@ -45,6 +49,7 @@ export const initSettings = async () =>
         enableDataRefreshing: await OptionsStore.get('enableDataRefreshing'),
         alwaysOpenCalendarInNewTab: await OptionsStore.get('alwaysOpenCalendarInNewTab'),
         showCalendarSidebar: await OptionsStore.get('showCalendarSidebar'),
+        showUTDiningPromo: await OptionsStore.get('showUTDiningPromo'),
     }) satisfies IOptionsStore;
 
 // Clothing retailer right

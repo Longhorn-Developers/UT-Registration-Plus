@@ -35,9 +35,13 @@ function removeExtraDatabaseDir(cb) {
 // Instrument with Sentry
 // Make sure sentry is configured https://docs.sentry.io/platforms/javascript/sourcemaps/uploading/typescript/#2-configure-sentry-cli
 async function instrumentWithSentry(cb) {
-    await exec(`sentry-cli sourcemaps inject ${DIST_DIR}`);
-    await exec(`sentry-cli sourcemaps upload ${DIST_DIR}`);
-    log('Sentry instrumentation completed.');
+    if (process.env.SENTRY_ENV && process.env.SENTRY_ENV !== 'development') {
+        await exec(`sentry-cli sourcemaps inject ${DIST_DIR}`);
+        await exec(`sentry-cli sourcemaps upload ${DIST_DIR}`);
+        log('Sentry instrumentation completed.');
+    } else {
+        logWarn('Skipping uploading/creating Sentry source maps. (development build)');
+    }
 
     cb();
 }
