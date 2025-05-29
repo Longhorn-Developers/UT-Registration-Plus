@@ -22,10 +22,10 @@ const links: LinkItem[] = [
         text: "Summer '25 Course Schedule",
         url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20256/',
     },
-    {
-        text: "Spring '25 Course Schedule",
-        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/',
-    },
+    // {
+    //     text: "Spring '25 Course Schedule",
+    //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/',
+    // },
     {
         text: 'Course Schedule Archives',
         url: 'https://registrar.utexas.edu/schedules/archive',
