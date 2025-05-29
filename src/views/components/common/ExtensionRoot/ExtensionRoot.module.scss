@@ -15,6 +15,11 @@
     @apply font-sans;
     color: #303030;
 
+    // fix font-family on injected pages
+    * {
+        @apply font-sans;
+    }
+
     [data-rfd-drag-handle-context-id=':r1:'] {
         cursor: move;
     }
