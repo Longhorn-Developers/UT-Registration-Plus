@@ -109,16 +109,22 @@ function generateQuery(
     includeInstructor: boolean
 ): [string, GradeDistributionParams] {
     const query = `
-        select * from grade_distributions
-        where Department_Code = :department_code
-        and Course_Number = :course_number
-        ${includeInstructor ? `and Instructor_Last = :instructor_last collate nocase` : ''}
-        ${semester ? `and Semester = :semester` : ''}
+        SELECT * FROM grade_distributions
+        WHERE Department_Code = :department_code
+        AND Course_Number COLLATE NOCASE IN (
+            :course_number,
+            concat('F', :course_number), -- Check summer courses with prefix, too
+            concat('S', :course_number),
+            concat('N', :course_number),
+            concat('W', :course_number)
+        )
+        ${includeInstructor ? `AND Instructor_Last = :instructor_last COLLATE NOCASE` : ''}
+        ${semester ? `AND Semester = :semester` : ''}
     `;
 
     const params: GradeDistributionParams = {
         ':department_code': course.department,
-        ':course_number': course.number,
+        ':course_number': course.getNumberWithoutTerm(),
     };
 
     if (includeInstructor) {

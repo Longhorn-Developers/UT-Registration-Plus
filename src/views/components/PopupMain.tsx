@@ -155,15 +155,14 @@ export default function PopupMain(): JSX.Element {
                     <SortableList
                         draggables={activeSchedule.courses.map(course => ({
                             id: course.uniqueId,
-                            ...course,
-                            getConflicts: course.getConflicts,
+                            course,
                         }))}
                         onChange={reordered => {
-                            activeSchedule.courses = reordered.map(({ id: _id, ...course }) => course);
+                            activeSchedule.courses = reordered.map(({ course }) => course);
                             replaceSchedule(getActiveSchedule(), activeSchedule);
                         }}
-                        renderItem={course => (
-                            <PopupCourseBlock key={course.id} course={course} colors={course.colors} />
+                        renderItem={({ id, course }) => (
+                            <PopupCourseBlock key={id} course={course} colors={course.colors} />
                         )}
                     />
                 )}
