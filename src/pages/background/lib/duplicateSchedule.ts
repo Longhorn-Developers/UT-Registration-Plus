@@ -31,5 +31,9 @@ export default async function duplicateSchedule(scheduleId: string): Promise<str
     } satisfies typeof schedule);
 
     await UserScheduleStore.set('schedules', schedules);
+
+    // Automatically switch to the duplicated schedule
+    await UserScheduleStore.set('activeIndex', scheduleIndex + 1);
+
     return undefined;
 }
