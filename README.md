@@ -26,8 +26,9 @@
 ## Toolchain
 
 -   React v20.9.0 (LTS)
--   TypeScript
--   Vite 5
+-   TypeScript v5.x
+-   Vite v5.x
+-   pnpm v10.x
 -   UnoCSS
 -   ESLint
 -   Prettier
@@ -184,8 +185,9 @@ We maintain a strict code of conduct. By contributing, you agree to adhere to th
 Special thanks to the developers and contributors behind these amazing tools and libraries:
 
 -   React v20.9.0 (LTS)
--   TypeScript
--   Vite 5
+-   TypeScript v5.x
+-   Vite v5.x
+-   pnpm v10.x
 -   UnoCSS
 -   ESLint
 -   Prettier
