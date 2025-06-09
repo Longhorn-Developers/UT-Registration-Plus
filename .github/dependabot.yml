@@ -1,0 +1,21 @@
+version: 2
+updates:
+    - package-ecosystem: 'npm'
+      directory: '/'
+      schedule:
+          interval: 'weekly'
+          day: 'monday'
+          time: '09:00'
+          timezone: 'America/Chicago'
+      groups:
+          minor-and-patch-updates:
+              update-types:
+                  - 'minor'
+                  - 'patch'
+          major-updates:
+              update-types:
+                  - 'major'
+
+      ignore:
+         - dependency-name: '@crxjs/vite-plugin'
+         - dependency-name: '@unocss/vite'
