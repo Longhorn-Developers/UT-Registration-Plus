@@ -15,7 +15,7 @@ const meta = {
     },
     tags: ['autodocs'],
     argTypes: {
-        courseDeptAndInstr: { control: { type: 'text' } },
+        courseDetail: { control: { type: 'text' } },
         className: { control: { type: 'text' } },
         status: { control: { type: 'select', options: Object.values(Status) } },
         timeAndLocation: { control: { type: 'text' } },
@@ -26,7 +26,7 @@ const meta = {
         </div>
     ),
     args: {
-        courseDeptAndInstr: ExampleCourse.department,
+        courseDetail: ExampleCourse.department,
         className: ExampleCourse.number,
         status: ExampleCourse.status,
         timeAndLocation: ExampleCourse.schedule.meetings[0]!.getTimeString({ separator: '–' }),
@@ -38,7 +38,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        courseDeptAndInstr: ExampleCourse.department,
+        courseDetail: ExampleCourse.department,
         className: ExampleCourse.number,
         status: ExampleCourse.status,
         timeAndLocation: ExampleCourse.schedule.meetings[0]!.getTimeString({ separator: '-' }),
@@ -51,7 +51,7 @@ export const Default: Story = {
             course: ExampleCourse,
             async: false,
             componentProps: {
-                courseDeptAndInstr: ExampleCourse.department,
+                courseDetail: ExampleCourse.department,
                 status: ExampleCourse.status,
                 timeAndLocation: ExampleCourse.schedule.meetings[0]!.getTimeString({ separator: '-' }),
                 blockData: {} as CalendarGridCourse,
@@ -62,7 +62,7 @@ export const Default: Story = {
 
 export const Variants: Story = {
     args: {
-        courseDeptAndInstr: ExampleCourse.department,
+        courseDetail: ExampleCourse.department,
         className: ExampleCourse.number,
         status: ExampleCourse.status,
         timeAndLocation: ExampleCourse.schedule.meetings[0]!.getTimeString({ separator: '-' }),
@@ -75,7 +75,7 @@ export const Variants: Story = {
             course: ExampleCourse,
             async: false,
             componentProps: {
-                courseDeptAndInstr: ExampleCourse.department,
+                courseDetail: ExampleCourse.department,
                 status: ExampleCourse.status,
                 timeAndLocation: ExampleCourse.schedule.meetings[0]!.getTimeString({ separator: '-' }),
                 blockData: {
@@ -85,7 +85,7 @@ export const Variants: Story = {
                         endIndex: 11,
                     },
                     componentProps: {
-                        courseDeptAndInstr: ExampleCourse.department,
+                        courseDetail: ExampleCourse.department,
                         status: ExampleCourse.status,
                         timeAndLocation: ExampleCourse.schedule.meetings[0]!.getTimeString({ separator: '-' }),
                         blockData: {} as CalendarGridCourse,
