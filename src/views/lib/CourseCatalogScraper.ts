@@ -75,7 +75,7 @@ export class CourseCatalogScraper {
 
             fullName = fullName.replace(/\s\s+/g, ' ').trim();
 
-            const [courseName, department, number] = this.separateCourseName(fullName);
+            const [courseName, department, number] = CourseCatalogScraper.separateCourseName(fullName);
             const [status, isReserved] = this.getStatus(row);
 
             const newCourse = new Course({
@@ -113,16 +113,31 @@ export class CourseCatalogScraper {
      *
      * @example
      * ```
-     * separateCourseName("CS 314H - Honors Discrete Structures") => ["Honors Discrete Structures", "CS", "314H"]
+     * separateCourseName("C S  314H DATA STRUCTURES: HONORS") => ["DATA STRUCTURES: HONORS", "C S", "314H"]
      * ```
-     * @param courseFullName - the full name of the course (e.g. "CS 314H - Honors Discrete Structures")
-     * @returns an array of the course name , department, and number
+     * @param courseFullName - the full name of the course (e.g. "C S  314H DATA STRUCTURES: HONORS")
+     * @returns an array of the course name, department, and number
      */
-    separateCourseName(courseFullName: string): [courseName: string, department: string, number: string] {
-        let courseNumberIndex = courseFullName.search(/\d/);
-        let department = courseFullName.substring(0, courseNumberIndex).trim();
-        let number = courseFullName.substring(courseNumberIndex, courseFullName.indexOf(' ', courseNumberIndex)).trim();
-        let courseName = courseFullName.substring(courseFullName.indexOf(' ', courseNumberIndex)).trim();
+    static separateCourseName(courseFullName: string): [courseName: string, department: string, number: string] {
+        // C S  314H DATA STRUCTURES: HONORS
+        //      ^ Here for normal courses
+        // B A n284S 1-MANAGERIAL MICROECON-I-DAL  (Nine week term)
+        //     ^ Also works for summer courses ([f]irst term, [s]econd term, [n]ine week term, [w]hole term)
+        const courseNumberIndex = courseFullName.search(/\w?\d/);
+
+        if (courseNumberIndex === -1) {
+            throw new Error("Course name doesn't have a course number");
+        }
+
+        // Everything before the course number
+        const department = courseFullName.substring(0, courseNumberIndex).trim();
+
+        const number = courseFullName
+            .substring(courseNumberIndex, courseFullName.indexOf(' ', courseNumberIndex))
+            .trim();
+
+        // Everything after the course number
+        const courseName = courseFullName.substring(courseFullName.indexOf(' ', courseNumberIndex)).trim();
 
         return [courseName, department, number];
     }
