@@ -215,7 +215,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     options={{
                         ...chartOptions,
                         title: {
-                            text: `There is currently no grade distribution data for ${course.department} ${course.number}`,
+                            text: `There is currently no grade distribution data for ${course.department} ${course.getNumberWithoutTerm()}`,
                         },
                         tooltip: { enabled: false },
                     }}
@@ -228,7 +228,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                         <Text variant='small' className='text-ut-black'>
                             Grade Distribution for{' '}
                             <Text variant='small' className='font-extrabold!' as='strong'>
-                                {course.department} {course.number}
+                                {course.department} {course.getNumberWithoutTerm()}
                             </Text>
                         </Text>
                         <select
@@ -267,7 +267,8 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                         <div className='mt-3 flex flex-wrap content-center items-center self-stretch justify-center gap-3 text-center'>
                             <Text variant='small' className='text-theme-red'>
                                 We couldn&apos;t find {semester !== 'Aggregate' && ` ${semester}`} grades for this
-                                instructor, so here are the grades for all {course.department} {course.number} sections.
+                                instructor, so here are the grades for all {course.department}{' '}
+                                {course.getNumberWithoutTerm()} sections.
                             </Text>
                         </div>
                     )}
