@@ -27,12 +27,10 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
     const tagColor = pickFontColor(previewColor.slice(1) as `#${string}`);
 
     const [localHexCode, setLocalHexCode] = React.useState(hexCode);
-    const debouncedSetHexCode = useDebounce((value: string) => setHexCode(value), 500);
+    const debouncedSetHexCode = useDebounce(setHexCode, 500);
 
     React.useEffect(() => {
-        if (hexCode !== localHexCode) {
-            setLocalHexCode(hexCode);
-        }
+        setLocalHexCode(hexCode);
     }, [hexCode]);
 
     React.useEffect(() => {
