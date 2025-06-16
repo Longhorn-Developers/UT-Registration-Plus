@@ -107,7 +107,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                         variant='minimal'
                                         icon={File}
                                     >
-                                        Save as .JSON
+                                        Save as .json
                                     </Button>
                                 </MenuItem>
                                 {/* <MenuItem>
