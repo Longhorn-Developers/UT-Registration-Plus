@@ -32,13 +32,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import IconoirGitFork from '~icons/iconoir/git-fork';
 
+import { handleExportJson } from '../calendar/utils';
 // import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';;
 import FileUpload from '../common/FileUpload';
 import { useMigrationDialog } from '../common/MigrationDialog';
 // import RefreshIcon from '~icons/material-symbols/refresh';
 import DevMode from './DevMode';
 import Preview from './Preview';
-import { handleExportJson } from '../calendar/utils';
 
 const manifest = chrome.runtime.getManifest();
 
