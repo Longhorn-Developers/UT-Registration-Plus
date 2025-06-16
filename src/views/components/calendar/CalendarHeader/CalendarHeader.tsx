@@ -1,5 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { CalendarDots, Export, File, FileCode, FilePng, Sidebar } from '@phosphor-icons/react';
+import { CalendarDots, Export, FileCode, FilePng, Sidebar } from '@phosphor-icons/react';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
