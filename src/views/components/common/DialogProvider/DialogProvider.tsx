@@ -5,6 +5,8 @@ import React, { useCallback, useRef, useState } from 'react';
 
 import Dialog from '../Dialog';
 import Text from '../Text/Text';
+import { useEffect } from 'react';
+import { OptionsStore } from 'src/shared/storage/OptionsStore';
 
 type DialogElement = (show: boolean) => ReactNode;
 
