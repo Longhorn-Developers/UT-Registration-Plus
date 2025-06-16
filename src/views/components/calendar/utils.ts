@@ -266,7 +266,7 @@ export const saveAsCal = async () => {
  * Saves current schedule to JSON that can be imported on other devices.
  * @param id - Provided schedule ID to download
  */
-export const handleExportClick = async (id: string) => {
+export const handleExportJson = async (id: string) => {
     const jsonString = await exportSchedule(id);
     if (jsonString) {
         const schedules = await UserScheduleStore.get('schedules');

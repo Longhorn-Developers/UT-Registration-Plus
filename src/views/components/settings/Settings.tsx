@@ -38,6 +38,7 @@ import { useMigrationDialog } from '../common/MigrationDialog';
 // import RefreshIcon from '~icons/material-symbols/refresh';
 import DevMode from './DevMode';
 import Preview from './Preview';
+import { handleExportJson } from '../calendar/utils';
 
 const manifest = chrome.runtime.getManifest();
 
@@ -232,18 +233,6 @@ export default function Settings(): JSX.Element {
         });
     };
 
-    const handleExportClick = async (id: string) => {
-        const jsonString = await exportSchedule(id);
-        if (jsonString) {
-            const schedules = await UserScheduleStore.get('schedules');
-            const schedule = schedules.find(s => s.id === id);
-            const fileName = `${schedule?.name ?? `schedule_${id}`}_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
-            await downloadBlob(jsonString, 'JSON', fileName);
-        } else {
-            console.error('Error exporting schedule: jsonString is undefined');
-        }
-    };
-
     const handleImportClick = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -400,7 +389,7 @@ export default function Settings(): JSX.Element {
                                     <Button
                                         variant='outline'
                                         color='ut-burntorange'
-                                        onClick={() => handleExportClick(activeSchedule.id)}
+                                        onClick={() => handleExportJson(activeSchedule.id)}
                                     >
                                         Export
                                     </Button>
