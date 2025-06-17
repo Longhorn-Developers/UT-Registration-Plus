@@ -1,4 +1,5 @@
 import { tz, TZDate } from '@date-fns/tz';
+import exportSchedule from '@pages/background/lib/exportSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Course } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
@@ -259,6 +260,22 @@ export const saveAsCal = async () => {
     const icsString = scheduleToIcsString(schedule);
 
     downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
+};
+
+/**
+ * Saves current schedule to JSON that can be imported on other devices.
+ * @param id - Provided schedule ID to download
+ */
+export const handleExportJson = async (id: string) => {
+    const jsonString = await exportSchedule(id);
+    if (jsonString) {
+        const schedules = await UserScheduleStore.get('schedules');
+        const schedule = schedules.find(s => s.id === id);
+        const fileName = `${schedule?.name ?? `schedule_${id}`}_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+        await downloadBlob(jsonString, 'JSON', fileName);
+    } else {
+        console.error('Error exporting schedule: jsonString is undefined');
+    }
 };
 
 /**
