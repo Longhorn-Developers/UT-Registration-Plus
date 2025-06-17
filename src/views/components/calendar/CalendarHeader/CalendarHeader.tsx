@@ -7,7 +7,7 @@ import Divider from '@views/components/common/Divider';
 import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { LargeLogo } from '@views/components/common/LogoIcon';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
-import useSchedules, { getActiveSchedule } from '@views/hooks/useSchedules';
+import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -101,7 +101,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                 <MenuItem>
                                     <Button
                                         className='w-full flex justify-start'
-                                        onClick={() => handleExportJson(getActiveSchedule().id)}
+                                        onClick={() => handleExportJson(activeSchedule.id)}
                                         color='ut-black'
                                         size='small'
                                         variant='minimal'
