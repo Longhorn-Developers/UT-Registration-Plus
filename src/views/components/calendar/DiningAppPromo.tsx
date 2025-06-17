@@ -1,5 +1,5 @@
 import { AppStoreLogo, ForkKnife, X as CloseIcon } from '@phosphor-icons/react';
-import { UT_DINING_APP_STORE_URL, UT_DINING_GOOGLE_PLAY_URL } from '@shared/util/appUrls';
+import { UT_DINING_APP_STORE_URL } from '@shared/util/appUrls';
 import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
 import React from 'react';
