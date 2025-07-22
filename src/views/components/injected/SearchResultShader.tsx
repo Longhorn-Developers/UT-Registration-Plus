@@ -6,5 +6,18 @@ import React, { useEffect } from 'react';
  *
  */
 export default function ShadedResults(): null {
+    useEffect(() => {
+        const table = document.getElementById('kw_results_table');
+        if (!table) {
+            console.error('Results table not found');
+            return;
+        }
+
+        const tbody = table.querySelector('tbody');
+        if (!tbody) {
+            console.error('Table tbody not found');
+            return;
+        }
+    });
     return null;
 }
