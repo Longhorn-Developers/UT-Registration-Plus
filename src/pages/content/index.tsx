@@ -30,3 +30,7 @@ if (support === SiteSupport.MY_UT) {
 if (support === SiteSupport.COURSE_CATALOG_SEARCH) {
     renderComponent(DaysCheckbox);
 }
+
+if (support === SiteSupport.COURSE_CATALOG_KWS) {
+    renderComponent(DaysCheckbox);
+}
