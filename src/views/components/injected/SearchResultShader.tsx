@@ -18,6 +18,17 @@ export default function ShadedResults(): null {
             console.error('Table tbody not found');
             return;
         }
+
+        const rows = tbody.querySelectorAll('tr');
+
+        rows.forEach((row, index) => {
+            if (index % 2 == 1) {
+                row.style.backgroundColor = '#f5f5f5';
+            } else {
+                row.style.backgroundColor = '';
+            }
+        });
     });
+
     return null;
 }
