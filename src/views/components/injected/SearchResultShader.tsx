@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 // @TODO Get a better name for this class
 
 /**
@@ -24,7 +24,7 @@ export default function ShadedResults(): null {
         const rows = tbody.querySelectorAll('tr');
 
         rows.forEach((row, index) => {
-            if (index % 2 == 1) {
+            if (index % 2 === 1) {
                 row.style.setProperty('background-color', '#f5f5f5', 'important');
             } else {
                 row.style.setProperty('background-color', 'transparent', 'important');
