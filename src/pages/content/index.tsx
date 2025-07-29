@@ -4,6 +4,7 @@ import DaysCheckbox from '@views/components/injected/DaysCheckbox';
 import getSiteSupport, { SiteSupport } from '@views/lib/getSiteSupport';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import ShadedResults from 'src/views/components/injected/SearchResultShader';
 
 const support = getSiteSupport(window.location.href);
 
@@ -32,5 +33,5 @@ if (support === SiteSupport.COURSE_CATALOG_SEARCH) {
 }
 
 if (support === SiteSupport.COURSE_CATALOG_KWS) {
-    renderComponent(DaysCheckbox);
+    renderComponent(ShadedResults);
 }

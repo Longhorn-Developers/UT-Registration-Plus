@@ -6,6 +6,8 @@ import React, { useEffect } from 'react';
  *
  */
 export default function ShadedResults(): null {
+    console.log('TEMP');
+
     useEffect(() => {
         const table = document.getElementById('kw_results_table');
         if (!table) {
