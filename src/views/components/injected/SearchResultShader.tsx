@@ -25,11 +25,22 @@ export default function ShadedResults(): null {
 
         rows.forEach((row, index) => {
             if (index % 2 == 1) {
-                row.style.backgroundColor = '#f5f5f5';
+                row.style.setProperty('background-color', '#f5f5f5', 'important');
             } else {
-                row.style.backgroundColor = '';
+                row.style.setProperty('background-color', 'transparent', 'important');
             }
         });
+
+        const style = document.createElement('style');
+        style.textContent = `
+            #kw_results_table tbody tr:nth-child(even) {
+                background-color: #f0f0f0 !important;
+            }
+            #kw_results_table tbody tr:nth-child(even) td {
+                background-color: #f0f0f0 !important;
+            }
+        `;
+        document.head.appendChild(style);
     });
 
     return null;
