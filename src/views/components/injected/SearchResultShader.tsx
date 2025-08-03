@@ -41,7 +41,11 @@ export default function ShadedResults(): null {
             }
         `;
         document.head.appendChild(style);
-    });
+
+        return () => {
+            style.remove();
+        };
+    }, []);
 
     return null;
 }
