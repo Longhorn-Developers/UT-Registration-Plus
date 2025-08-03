@@ -42,7 +42,6 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
     }
     if (url.includes('utdirect.utexas.edu/apps/registrar/course_schedule')) {
         if (url.includes('kws_results')) {
-            console.log('TEMP');
             return SiteSupport.COURSE_CATALOG_KWS;
         }
         if (url.includes('results')) {
