@@ -6,8 +6,6 @@ import { useEffect } from 'react';
  *
  */
 export default function ShadedResults(): null {
-    console.log('TEMP');
-
     useEffect(() => {
         const table = document.getElementById('kw_results_table');
         if (!table) {
@@ -20,16 +18,6 @@ export default function ShadedResults(): null {
             console.error('Table tbody not found');
             return;
         }
-
-        const rows = tbody.querySelectorAll('tr');
-
-        rows.forEach((row, index) => {
-            if (index % 2 === 1) {
-                row.style.setProperty('background-color', '#f5f5f5', 'important');
-            } else {
-                row.style.setProperty('background-color', 'transparent', 'important');
-            }
-        });
 
         const style = document.createElement('style');
         style.textContent = `
