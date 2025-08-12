@@ -16,9 +16,8 @@
 
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
-            nodejs_20 # v20.19.0
-            pnpm_10 # v10.8.1
-            just
+            nodejs_20 # v20.19.4
+            pnpm_10 # v10.14.0
           ];
 
           shellHook = ''
