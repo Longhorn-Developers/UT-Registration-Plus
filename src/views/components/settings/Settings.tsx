@@ -1,16 +1,13 @@
 // import addCourse from '@pages/background/lib/addCourse';
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
-import exportSchedule from '@pages/background/lib/exportSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
 import { CalendarDots, Trash } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { DevStore } from '@shared/storage/DevStore';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
-import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import MIMEType from '@shared/types/MIMEType';
-import { downloadBlob } from '@shared/util/downloadBlob';
 // import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
 // import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
