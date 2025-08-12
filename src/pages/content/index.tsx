@@ -1,6 +1,7 @@
 import CourseCatalogMain from '@views/components/CourseCatalogMain';
 import InjectedButton from '@views/components/injected/AddAllButton';
 import DaysCheckbox from '@views/components/injected/DaysCheckbox';
+import ShadedResults from '@views/components/injected/SearchResultShader';
 import getSiteSupport, { SiteSupport } from '@views/lib/getSiteSupport';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
@@ -29,4 +30,8 @@ if (support === SiteSupport.MY_UT) {
 
 if (support === SiteSupport.COURSE_CATALOG_SEARCH) {
     renderComponent(DaysCheckbox);
+}
+
+if (support === SiteSupport.COURSE_CATALOG_KWS) {
+    renderComponent(ShadedResults);
 }

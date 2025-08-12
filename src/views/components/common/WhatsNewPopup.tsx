@@ -15,7 +15,7 @@ import React, { useEffect, useState } from 'react';
  */
 const WHATSNEW_POPUP_VERSION = 2;
 
-const WHATSNEW_VIDEO_URL = 'https://cdn.longhorns.dev/whats-new-v2.1.2.mp4';
+// const WHATSNEW_VIDEO_URL = 'https://cdn.longhorns.dev/whats-new-v2.1.2.mp4';
 
 type Feature = {
     id: string;
@@ -60,7 +60,7 @@ const NEW_FEATURES = [
  * @returns A JSX of WhatsNewPopupContent component.
  */
 export default function WhatsNewPopupContent(): JSX.Element {
-    const [videoError, setVideoError] = useState(false);
+    const [videoError, _setVideoError] = useState(false);
 
     return (
         <div className='w-full flex flex-row justify-between'>

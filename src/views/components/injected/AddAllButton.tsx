@@ -1,6 +1,5 @@
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { background } from '@shared/messages';
-import { validateLoginStatus } from '@shared/util/checkLoginStatus';
 import { Button } from '@views/components/common/Button';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import useSchedules from '@views/hooks/useSchedules';
@@ -43,6 +42,8 @@ export default function InjectedButton(): JSX.Element | null {
                 await addCourseByURL(activeSchedule, a);
             }
         } else {
+            // We'll allow the alert for this WIP feature
+            // eslint-disable-next-line no-alert
             window.alert('Logged into UT Registrar.');
         }
     };
