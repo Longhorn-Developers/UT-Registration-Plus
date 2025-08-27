@@ -66,7 +66,7 @@
         "@commitlint/cli": "^19.7.1",
         "@commitlint/config-conventional": "^19.7.1",
         "@commitlint/types": "^19.5.0",
-        "@crxjs/vite-plugin": "2.0.0-beta.21",
+        "@crxjs/vite-plugin": "2.0.3",
         "@iconify-json/bi": "^1.2.2",
         "@iconify-json/ic": "^1.2.2",
         "@iconify-json/iconoir": "^1.2.7",
@@ -154,7 +154,6 @@
     },
     "pnpm": {
         "patchedDependencies": {
-            "@crxjs/vite-plugin@2.0.0-beta.21": "patches/@crxjs__vite-plugin@2.0.0-beta.21.patch",
             "@unocss/vite": "patches/@unocss__vite.patch"
         },
         "overrides": {
