@@ -1,4 +1,4 @@
-import presetUno from '@unocss/preset-uno';
+import presetWind4 from '@unocss/preset-wind4';
 import presetWebFonts from '@unocss/preset-web-fonts';
 import transformerDirectives from '@unocss/transformer-directives';
 import transformerVariantGroup from '@unocss/transformer-variant-group';
@@ -50,7 +50,8 @@ export default defineConfig({
         },
     ],
     presets: [
-        presetUno(),
+        presetWind4(),
+        // todo: for some reason, breaking eslint ._.
         presetWebFonts({
             provider: 'none',
             fonts: {

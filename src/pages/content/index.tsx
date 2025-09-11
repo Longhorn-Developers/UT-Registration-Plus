@@ -10,9 +10,8 @@ const support = getSiteSupport(window.location.href);
 
 const renderComponent = (Component: React.ComponentType) => {
     const container = document.createElement('div');
-    container.id = 'extension-root';
-    document.body.appendChild(container);
 
+    // all components are portaled away, not actually rendered to screen
     createRoot(container).render(
         <React.StrictMode>
             <Component />

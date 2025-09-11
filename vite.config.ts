@@ -207,6 +207,9 @@ export default defineConfig({
         hmr: {
             clientPort: 5173,
         },
+        cors: {
+            origin: [/chrome-extension:\/\//],
+        },
         proxy: {
             '/debug.html': {
                 target: 'http://localhost:5173',
@@ -256,16 +259,16 @@ export default defineConfig({
             },
         },
     },
-    test: {
-        coverage: {
-            provider: 'v8',
-        },
-    },
-    css: {
-        preprocessorOptions: {
-            scss: {
-                api: 'modern-compiler',
-            },
-        },
-    },
+    // test: {
+    // 	coverage: {
+    // 		provider: "v8",
+    // 	},
+    // },
+    // css: {
+    // 	preprocessorOptions: {
+    // 		scss: {
+    // 			api: "modern-compiler",
+    // 		},
+    // 	},
+    // },
 });

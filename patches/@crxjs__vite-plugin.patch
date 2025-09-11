@@ -1,0 +1,1615 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 631c303d3583fa599dbbebb6afb4caaeea0f0cc8..2fec3a6672c67376dc2398d969fd9a4ee418e605 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -1,300 +1,388 @@
+-import { ConfigEnv, Plugin, PluginOption } from 'vite';
+-import { Options } from 'fast-glob';
+-import { PluginContext, OutputBundle } from 'rollup';
++import type { Options } from "fast-glob";
++import type { OutputBundle, PluginContext } from "rollup";
++import type { ConfigEnv, Plugin, PluginOption } from "vite";
+ 
+ interface DeclarativeNetRequestResource {
+-    id: string;
+-    enabled: boolean;
+-    path: string;
++	id: string;
++	enabled: boolean;
++	path: string;
+ }
+ interface WebAccessibleResourceByMatch {
+-    matches: string[];
+-    resources: string[];
+-    use_dynamic_url?: boolean;
++	matches: string[];
++	resources: string[];
++	use_dynamic_url?: boolean;
+ }
+ interface WebAccessibleResourceById {
+-    extension_ids: string[];
+-    resources: string[];
+-    use_dynamic_url?: boolean;
++	extension_ids: string[];
++	resources: string[];
++	use_dynamic_url?: boolean;
+ }
+ interface ChromeManifestBackground {
+-    service_worker: string;
+-    type?: 'module' | (string & {});
++	service_worker: string;
++	type?: "module" | (string & {});
+ }
+ interface FirefoxManifestBackground {
+-    scripts: string[];
+-    persistent?: false;
++	scripts: string[];
++	persistent?: false;
+ }
+ interface ManifestV3 {
+-    manifest_version: number;
+-    name: string;
+-    version: string;
+-    default_locale?: string | undefined;
+-    description?: string | undefined;
+-    icons?: chrome.runtime.ManifestIcons | undefined;
+-    action?: chrome.runtime.ManifestAction | undefined;
+-    /**
+-     * @see https://developer.chrome.com/docs/extensions/reference/manifest/author
+-     */
+-    author?: {
+-        email: string;
+-    } | undefined;
+-    background?: ChromeManifestBackground | FirefoxManifestBackground | undefined;
+-    chrome_settings_overrides?: {
+-        homepage?: string | undefined;
+-        search_provider?: chrome.runtime.SearchProvider | undefined;
+-        startup_pages?: string[] | undefined;
+-    } | undefined;
+-    chrome_ui_overrides?: {
+-        bookmarks_ui?: {
+-            remove_bookmark_shortcut?: boolean | undefined;
+-            remove_button?: boolean | undefined;
+-        } | undefined;
+-    } | undefined;
+-    chrome_url_overrides?: {
+-        bookmarks?: string | undefined;
+-        history?: string | undefined;
+-        newtab?: string | undefined;
+-    } | undefined;
+-    commands?: {
+-        [name: string]: {
+-            suggested_key?: {
+-                default?: string | undefined;
+-                windows?: string | undefined;
+-                mac?: string | undefined;
+-                chromeos?: string | undefined;
+-                linux?: string | undefined;
+-            } | undefined;
+-            description?: string | undefined;
+-            global?: boolean | undefined;
+-        };
+-    } | undefined;
+-    content_capabilities?: {
+-        matches?: string[] | undefined;
+-        permissions?: string[] | undefined;
+-    } | undefined;
+-    content_scripts?: {
+-        matches?: string[] | undefined;
+-        exclude_matches?: string[] | undefined;
+-        css?: string[] | undefined;
+-        js?: string[] | undefined;
+-        run_at?: string | undefined;
+-        all_frames?: boolean | undefined;
+-        match_about_blank?: boolean | undefined;
+-        include_globs?: string[] | undefined;
+-        exclude_globs?: string[] | undefined;
+-    }[] | undefined;
+-    content_security_policy?: {
+-        extension_pages?: string;
+-        sandbox?: string;
+-    };
+-    converted_from_user_script?: boolean | undefined;
+-    current_locale?: string | undefined;
+-    declarative_net_request?: {
+-        rule_resources: DeclarativeNetRequestResource[];
+-    };
+-    devtools_page?: string | undefined;
+-    event_rules?: {
+-        event?: string | undefined;
+-        actions?: {
+-            type: string;
+-        }[] | undefined;
+-        conditions?: chrome.declarativeContent.PageStateMatcherProperties[] | undefined;
+-    }[] | undefined;
+-    externally_connectable?: {
+-        ids?: string[] | undefined;
+-        matches?: string[] | undefined;
+-        accepts_tls_channel_id?: boolean | undefined;
+-    } | undefined;
+-    file_browser_handlers?: {
+-        id?: string | undefined;
+-        default_title?: string | undefined;
+-        file_filters?: string[] | undefined;
+-    }[] | undefined;
+-    file_system_provider_capabilities?: {
+-        configurable?: boolean | undefined;
+-        watchable?: boolean | undefined;
+-        multiple_mounts?: boolean | undefined;
+-        source?: string | undefined;
+-    } | undefined;
+-    homepage_url?: string | undefined;
+-    host_permissions?: string[] | undefined;
+-    import?: {
+-        id: string;
+-        minimum_version?: string | undefined;
+-    }[] | undefined;
+-    export?: {
+-        whitelist?: string[] | undefined;
+-    } | undefined;
+-    incognito?: string | undefined;
+-    input_components?: {
+-        name: string;
+-        id?: string | undefined;
+-        language?: string | string[] | undefined;
+-        layouts?: string | string[] | undefined;
+-        input_view?: string | undefined;
+-        options_page?: string | undefined;
+-    }[] | undefined;
+-    key?: string | undefined;
+-    minimum_chrome_version?: string | undefined;
+-    nacl_modules?: {
+-        path: string;
+-        mime_type: string;
+-    }[] | undefined;
+-    oauth2?: {
+-        client_id: string;
+-        scopes?: string[] | undefined;
+-    } | undefined;
+-    offline_enabled?: boolean | undefined;
+-    omnibox?: {
+-        keyword: string;
+-    } | undefined;
+-    optional_host_permissions?: string[] | undefined;
+-    optional_permissions?: chrome.runtime.ManifestPermissions[] | string[] | undefined;
+-    options_page?: string | undefined;
+-    options_ui?: {
+-        page?: string | undefined;
+-        chrome_style?: boolean | undefined;
+-        open_in_tab?: boolean | undefined;
+-    } | undefined;
+-    permissions?: chrome.runtime.ManifestPermissions[] | string[] | undefined;
+-    platforms?: {
+-        nacl_arch?: string | undefined;
+-        sub_package_path: string;
+-    }[] | undefined;
+-    plugins?: {
+-        path: string;
+-    }[] | undefined;
+-    requirements?: {
+-        '3D'?: {
+-            features?: string[] | undefined;
+-        } | undefined;
+-        plugins?: {
+-            npapi?: boolean | undefined;
+-        } | undefined;
+-    } | undefined;
+-    sandbox?: {
+-        pages: string[];
+-        content_security_policy?: string | undefined;
+-    } | undefined;
+-    side_panel?: {
+-        default_path?: string | undefined;
+-    } | undefined;
+-    short_name?: string | undefined;
+-    spellcheck?: {
+-        dictionary_language?: string | undefined;
+-        dictionary_locale?: string | undefined;
+-        dictionary_format?: string | undefined;
+-        dictionary_path?: string | undefined;
+-    } | undefined;
+-    storage?: {
+-        managed_schema: string;
+-    } | undefined;
+-    tts_engine?: {
+-        voices: {
+-            voice_name: string;
+-            lang?: string | undefined;
+-            gender?: string | undefined;
+-            event_types?: string[] | undefined;
+-        }[];
+-    } | undefined;
+-    update_url?: string | undefined;
+-    version_name?: string | undefined;
+-    web_accessible_resources?: (WebAccessibleResourceById | WebAccessibleResourceByMatch)[] | undefined;
++	manifest_version: number;
++	name: string;
++	version: string;
++	default_locale?: string | undefined;
++	description?: string | undefined;
++	icons?: chrome.runtime.ManifestIcons | undefined;
++	action?: chrome.runtime.ManifestAction | undefined;
++	/**
++	 * @see https://developer.chrome.com/docs/extensions/reference/manifest/author
++	 */
++	author?:
++		| {
++				email: string;
++		  }
++		| undefined;
++	background?: ChromeManifestBackground | FirefoxManifestBackground | undefined;
++	chrome_settings_overrides?:
++		| {
++				homepage?: string | undefined;
++				search_provider?: chrome.runtime.SearchProvider | undefined;
++				startup_pages?: string[] | undefined;
++		  }
++		| undefined;
++	chrome_ui_overrides?:
++		| {
++				bookmarks_ui?:
++					| {
++							remove_bookmark_shortcut?: boolean | undefined;
++							remove_button?: boolean | undefined;
++					  }
++					| undefined;
++		  }
++		| undefined;
++	chrome_url_overrides?:
++		| {
++				bookmarks?: string | undefined;
++				history?: string | undefined;
++				newtab?: string | undefined;
++		  }
++		| undefined;
++	commands?:
++		| {
++				[name: string]: {
++					suggested_key?:
++						| {
++								default?: string | undefined;
++								windows?: string | undefined;
++								mac?: string | undefined;
++								chromeos?: string | undefined;
++								linux?: string | undefined;
++						  }
++						| undefined;
++					description?: string | undefined;
++					global?: boolean | undefined;
++				};
++		  }
++		| undefined;
++	content_capabilities?:
++		| {
++				matches?: string[] | undefined;
++				permissions?: string[] | undefined;
++		  }
++		| undefined;
++	content_scripts?:
++		| {
++				matches?: string[] | undefined;
++				exclude_matches?: string[] | undefined;
++				css?: string[] | undefined;
++				js?: string[] | undefined;
++				run_at?: string | undefined;
++				all_frames?: boolean | undefined;
++				match_about_blank?: boolean | undefined;
++				include_globs?: string[] | undefined;
++				exclude_globs?: string[] | undefined;
++		  }[]
++		| undefined;
++	content_security_policy?: {
++		extension_pages?: string;
++		sandbox?: string;
++	};
++	converted_from_user_script?: boolean | undefined;
++	current_locale?: string | undefined;
++	declarative_net_request?: {
++		rule_resources: DeclarativeNetRequestResource[];
++	};
++	devtools_page?: string | undefined;
++	event_rules?:
++		| {
++				event?: string | undefined;
++				actions?:
++					| {
++							type: string;
++					  }[]
++					| undefined;
++				conditions?:
++					| chrome.declarativeContent.PageStateMatcherProperties[]
++					| undefined;
++		  }[]
++		| undefined;
++	externally_connectable?:
++		| {
++				ids?: string[] | undefined;
++				matches?: string[] | undefined;
++				accepts_tls_channel_id?: boolean | undefined;
++		  }
++		| undefined;
++	file_browser_handlers?:
++		| {
++				id?: string | undefined;
++				default_title?: string | undefined;
++				file_filters?: string[] | undefined;
++		  }[]
++		| undefined;
++	file_system_provider_capabilities?:
++		| {
++				configurable?: boolean | undefined;
++				watchable?: boolean | undefined;
++				multiple_mounts?: boolean | undefined;
++				source?: string | undefined;
++		  }
++		| undefined;
++	homepage_url?: string | undefined;
++	host_permissions?: string[] | undefined;
++	import?:
++		| {
++				id: string;
++				minimum_version?: string | undefined;
++		  }[]
++		| undefined;
++	export?:
++		| {
++				whitelist?: string[] | undefined;
++		  }
++		| undefined;
++	incognito?: string | undefined;
++	input_components?:
++		| {
++				name: string;
++				id?: string | undefined;
++				language?: string | string[] | undefined;
++				layouts?: string | string[] | undefined;
++				input_view?: string | undefined;
++				options_page?: string | undefined;
++		  }[]
++		| undefined;
++	key?: string | undefined;
++	minimum_chrome_version?: string | undefined;
++	nacl_modules?:
++		| {
++				path: string;
++				mime_type: string;
++		  }[]
++		| undefined;
++	oauth2?:
++		| {
++				client_id: string;
++				scopes?: string[] | undefined;
++		  }
++		| undefined;
++	offline_enabled?: boolean | undefined;
++	omnibox?:
++		| {
++				keyword: string;
++		  }
++		| undefined;
++	optional_host_permissions?: string[] | undefined;
++	optional_permissions?:
++		| chrome.runtime.ManifestPermissions[]
++		| string[]
++		| undefined;
++	options_page?: string | undefined;
++	options_ui?:
++		| {
++				page?: string | undefined;
++				chrome_style?: boolean | undefined;
++				open_in_tab?: boolean | undefined;
++		  }
++		| undefined;
++	permissions?: chrome.runtime.ManifestPermissions[] | string[] | undefined;
++	platforms?:
++		| {
++				nacl_arch?: string | undefined;
++				sub_package_path: string;
++		  }[]
++		| undefined;
++	plugins?:
++		| {
++				path: string;
++		  }[]
++		| undefined;
++	requirements?:
++		| {
++				"3D"?:
++					| {
++							features?: string[] | undefined;
++					  }
++					| undefined;
++				plugins?:
++					| {
++							npapi?: boolean | undefined;
++					  }
++					| undefined;
++		  }
++		| undefined;
++	sandbox?:
++		| {
++				pages: string[];
++				content_security_policy?: string | undefined;
++		  }
++		| undefined;
++	side_panel?:
++		| {
++				default_path?: string | undefined;
++		  }
++		| undefined;
++	short_name?: string | undefined;
++	spellcheck?:
++		| {
++				dictionary_language?: string | undefined;
++				dictionary_locale?: string | undefined;
++				dictionary_format?: string | undefined;
++				dictionary_path?: string | undefined;
++		  }
++		| undefined;
++	storage?:
++		| {
++				managed_schema: string;
++		  }
++		| undefined;
++	tts_engine?:
++		| {
++				voices: {
++					voice_name: string;
++					lang?: string | undefined;
++					gender?: string | undefined;
++					event_types?: string[] | undefined;
++				}[];
++		  }
++		| undefined;
++	update_url?: string | undefined;
++	version_name?: string | undefined;
++	web_accessible_resources?:
++		| (WebAccessibleResourceById | WebAccessibleResourceByMatch)[]
++		| undefined;
+ }
+ 
+ type ManifestV3Fn = (env: ConfigEnv) => ManifestV3 | Promise<ManifestV3>;
+ type ManifestV3Export = ManifestV3 | Promise<ManifestV3> | ManifestV3Fn;
+-type Code = '.' | '/' | '\\';
+-type ManifestFilePath<T extends string> = T extends `${Code}${string}` ? never : T extends `${string}.${infer Ext}` ? Ext extends '' ? never : T : never;
++type Code = "." | "/" | "\\";
++type ManifestFilePath<T extends string> = T extends `${Code}${string}`
++	? never
++	: T extends `${string}.${infer Ext}`
++		? Ext extends ""
++			? never
++			: T
++		: never;
+ interface ManifestIcons<T extends string> {
+-    [size: number]: ManifestFilePath<T>;
++	[size: number]: ManifestFilePath<T>;
+ }
+ type FilePathFields<T extends string> = {
+-    icons?: ManifestIcons<T>;
+-    action?: {
+-        /**
+-         * - Relative to Vite project root (where vite.config.js is)
+-         * - Format: "subdir/icon.png" (no leading ./ or /)
+-         *
+-         * @example "assets/icon.png"
+-         */
+-        default_icon?: ManifestIcons<T>;
+-        default_title?: string;
+-        /**
+-         * - Relative to Vite project root (where vite.config.js is)
+-         * - Format: "subdir/index.html" (no leading ./ or /)
+-         *
+-         * @example "src/popup.html"
+-         */
+-        default_popup?: ManifestFilePath<T>;
+-    };
+-    background?: {
+-        /**
+-         * - Relative to Vite project root (where vite.config.js is)
+-         * - Format: "subdir/index.js" (no leading ./ or /)
+-         *
+-         * @example "src/background.js"
+-         */
+-        service_worker: ManifestFilePath<T>;
+-        type?: 'module' | (string & {});
+-    } | FirefoxManifestBackground;
+-    content_scripts?: {
+-        matches?: string[];
+-        exclude_matches?: string[];
+-        /**
+-         * - Relative to Vite project root (where vite.config.js is)
+-         * - Format: "subdir/content.css" (no leading ./ or /)
+-         *
+-         * @example "src/content.css"
+-         */
+-        css?: ManifestFilePath<T>[];
+-        /**
+-         * - Relative to Vite project root (where vite.config.js is)
+-         * - Format: "subdir/content.js" (no leading ./ or /)
+-         *
+-         * @example "src/content.js"
+-         */
+-        js?: ManifestFilePath<T>[];
+-        run_at?: string;
+-        all_frames?: boolean;
+-        match_about_blank?: boolean;
+-        include_globs?: string[];
+-        exclude_globs?: string[];
+-    }[];
+-    input_components?: {
+-        name: string;
+-        id?: string;
+-        language?: string | string[];
+-        layouts?: string | string[];
+-        input_view?: string;
+-        /**
+-         * - Relative to Vite project root (where vite.config.js is)
+-         * - Format: "subdir/options.html" (no leading ./ or /)
+-         *
+-         * @example "src/options.html"
+-         */
+-        options_page?: ManifestFilePath<T>;
+-    }[];
+-    /**
+-     * - Relative to Vite project root (where vite.config.js is)
+-     * - Format: "subdir/options.html" (no leading ./ or /)
+-     *
+-     * @example "src/options.html"
+-     */
+-    options_page?: ManifestFilePath<T>;
+-    /**
+-     * - Relative to Vite project root (where vite.config.js is)
+-     * - Format: "subdir/devtools.html" (no leading ./ or /)
+-     *
+-     * @example "src/devtools.html"
+-     */
+-    devtools_page?: ManifestFilePath<T>;
++	icons?: ManifestIcons<T>;
++	action?: {
++		/**
++		 * - Relative to Vite project root (where vite.config.js is)
++		 * - Format: "subdir/icon.png" (no leading ./ or /)
++		 *
++		 * @example "assets/icon.png"
++		 */
++		default_icon?: ManifestIcons<T>;
++		default_title?: string;
++		/**
++		 * - Relative to Vite project root (where vite.config.js is)
++		 * - Format: "subdir/index.html" (no leading ./ or /)
++		 *
++		 * @example "src/popup.html"
++		 */
++		default_popup?: ManifestFilePath<T>;
++	};
++	background?:
++		| {
++				/**
++				 * - Relative to Vite project root (where vite.config.js is)
++				 * - Format: "subdir/index.js" (no leading ./ or /)
++				 *
++				 * @example "src/background.js"
++				 */
++				service_worker: ManifestFilePath<T>;
++				type?: "module" | (string & {});
++		  }
++		| FirefoxManifestBackground;
++	content_scripts?: {
++		matches?: string[];
++		exclude_matches?: string[];
++		/**
++		 * - Relative to Vite project root (where vite.config.js is)
++		 * - Format: "subdir/content.css" (no leading ./ or /)
++		 *
++		 * @example "src/content.css"
++		 */
++		css?: ManifestFilePath<T>[];
++		/**
++		 * - Relative to Vite project root (where vite.config.js is)
++		 * - Format: "subdir/content.js" (no leading ./ or /)
++		 *
++		 * @example "src/content.js"
++		 */
++		js?: ManifestFilePath<T>[];
++		run_at?: string;
++		all_frames?: boolean;
++		match_about_blank?: boolean;
++		include_globs?: string[];
++		exclude_globs?: string[];
++	}[];
++	input_components?: {
++		name: string;
++		id?: string;
++		language?: string | string[];
++		layouts?: string | string[];
++		input_view?: string;
++		/**
++		 * - Relative to Vite project root (where vite.config.js is)
++		 * - Format: "subdir/options.html" (no leading ./ or /)
++		 *
++		 * @example "src/options.html"
++		 */
++		options_page?: ManifestFilePath<T>;
++	}[];
++	/**
++	 * - Relative to Vite project root (where vite.config.js is)
++	 * - Format: "subdir/options.html" (no leading ./ or /)
++	 *
++	 * @example "src/options.html"
++	 */
++	options_page?: ManifestFilePath<T>;
++	/**
++	 * - Relative to Vite project root (where vite.config.js is)
++	 * - Format: "subdir/devtools.html" (no leading ./ or /)
++	 *
++	 * @example "src/devtools.html"
++	 */
++	devtools_page?: ManifestFilePath<T>;
+ };
+-type ManifestOptions<T extends string> = Omit<ManifestV3, keyof FilePathFields<string>> & FilePathFields<T>;
+-type ManifestV3Options<T extends string = string> = ManifestOptions<T> | Promise<ManifestOptions<T>> | ManifestV3Define<T>;
+-type ManifestV3Define<T extends string> = (env: ConfigEnv) => ManifestOptions<T> | Promise<ManifestOptions<T>>;
+-declare const defineManifest: <T extends string>(manifest: ManifestV3Options<T>) => ManifestV3Export;
++type ManifestOptions<T extends string> = Omit<
++	ManifestV3,
++	keyof FilePathFields<string>
++> &
++	FilePathFields<T>;
++type ManifestV3Options<T extends string = string> =
++	| ManifestOptions<T>
++	| Promise<ManifestOptions<T>>
++	| ManifestV3Define<T>;
++type ManifestV3Define<T extends string> = (
++	env: ConfigEnv,
++) => ManifestOptions<T> | Promise<ManifestOptions<T>>;
++declare const defineManifest: <T extends string>(
++	manifest: ManifestV3Options<T>,
++) => ManifestV3Export;
+ /**
+  * Content script resources like CSS and image files must be declared in the
+  * manifest under `web_accessible_resources`. Manifest V3 uses a match pattern
+@@ -320,64 +408,92 @@ declare const defineManifest: <T extends string>(manifest: ManifestV3Options<T>)
+  * })
+  * ```
+  */
+-declare const defineDynamicResource: ({ matches, use_dynamic_url, }: Omit<WebAccessibleResourceByMatch, 'resources'>) => WebAccessibleResourceByMatch;
++declare const defineDynamicResource: ({
++	matches,
++	use_dynamic_url,
++}: Omit<
++	WebAccessibleResourceByMatch,
++	"resources"
++>) => WebAccessibleResourceByMatch;
+ 
+ type CrxDevAssetId = {
+-    id: string;
+-    type: 'asset';
+-    source?: string | Uint8Array;
++	id: string;
++	type: "asset";
++	source?: string | Uint8Array;
+ };
+ type CrxDevScriptId = {
+-    id: string;
+-    type: 'module' | 'iife';
++	id: string;
++	type: "module" | "iife";
+ };
+ interface CrxPlugin extends Plugin {
+-    /**
+-     * Runs during the transform hook for the manifest. Filenames use input
+-     * filenames.
+-     */
+-    transformCrxManifest?: (this: PluginContext, manifest: ManifestV3) => Promise<ManifestV3 | null | undefined> | ManifestV3 | null | undefined;
+-    /**
+-     * Runs during generateBundle, before manifest output. Filenames use output
+-     * filenames.
+-     */
+-    renderCrxManifest?: (this: PluginContext, manifest: ManifestV3, bundle: OutputBundle) => Promise<ManifestV3 | null | undefined> | ManifestV3 | null | undefined;
+-    /**
+-     * Runs in the file writer on content scripts during development. `script.id`
+-     * is Vite URL format.
+-     */
+-    renderCrxDevScript?: (code: string, script: CrxDevScriptId) => Promise<string | null | undefined> | string | null | undefined;
++	/**
++	 * Runs during the transform hook for the manifest. Filenames use input
++	 * filenames.
++	 */
++	transformCrxManifest?: (
++		this: PluginContext,
++		manifest: ManifestV3,
++	) => Promise<ManifestV3 | null | undefined> | ManifestV3 | null | undefined;
++	/**
++	 * Runs during generateBundle, before manifest output. Filenames use output
++	 * filenames.
++	 */
++	renderCrxManifest?: (
++		this: PluginContext,
++		manifest: ManifestV3,
++		bundle: OutputBundle,
++	) => Promise<ManifestV3 | null | undefined> | ManifestV3 | null | undefined;
++	/**
++	 * Runs in the file writer on content scripts during development. `script.id`
++	 * is Vite URL format.
++	 */
++	renderCrxDevScript?: (
++		code: string,
++		script: CrxDevScriptId,
++	) => Promise<string | null | undefined> | string | null | undefined;
+ }
+ interface CrxOptions {
+-    contentScripts?: {
+-        preambleCode?: string | false;
+-        hmrTimeout?: number;
+-        injectCss?: boolean;
+-    };
+-    fastGlobOptions?: Options;
+-    /**
+-     * The browser that this extension is targeting, can be "firefox" or "chrome".
+-     * Default is "chrome".
+-     */
+-    browser?: Browser;
++	contentScripts?: {
++		preambleCode?: string | false;
++		hmrTimeout?: number;
++		injectCss?: boolean;
++	};
++	fastGlobOptions?: Options;
++	/**
++	 * The browser that this extension is targeting, can be "firefox" or "chrome".
++	 * Default is "chrome".
++	 */
++	browser?: Browser;
+ }
+-type Browser = 'firefox' | 'chrome';
++type Browser = "firefox" | "chrome";
+ 
+ /** Resolves when all existing files in scriptFiles are written. */
+ declare function allFilesReady(): Promise<void>;
+ 
+ type FileWriterId = {
+-    type: CrxDevAssetId['type'] | CrxDevScriptId['type'] | 'loader';
+-    id: string;
++	type: CrxDevAssetId["type"] | CrxDevScriptId["type"] | "loader";
++	id: string;
+ };
+ /** Resolves when file and dependencies are written. */
+ declare function fileReady(script: FileWriterId): Promise<void>;
+ 
+-declare const crx: (options: {
+-    manifest: ManifestV3Export;
+-} & CrxOptions) => PluginOption[];
+-declare const chromeExtension: (options: {
+-    manifest: ManifestV3Export;
+-} & CrxOptions) => PluginOption[];
++declare const crx: (
++	options: {
++		manifest: ManifestV3Export;
++	} & CrxOptions,
++) => PluginOption[];
++declare const chromeExtension: (
++	options: {
++		manifest: ManifestV3Export;
++	} & CrxOptions,
++) => PluginOption[];
+ 
+-export { CrxPlugin, ManifestV3Export, allFilesReady, chromeExtension, crx, defineDynamicResource, defineManifest, fileReady as filesReady };
++export {
++	allFilesReady,
++	chromeExtension,
++	crx,
++	defineDynamicResource,
++	defineManifest,
++	fileReady as filesReady,
++};
++export type { CrxPlugin, ManifestV3Export };
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 1afb8dbe42c7ec156ba6ec5901612055d71a3ea5..dbc927c31e7946df11b2cbf0c847272455859d49 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -11,7 +11,7 @@ import { readFile as readFile$1 } from 'fs/promises';
+ import MagicString from 'magic-string';
+ import convertSourceMap from 'convert-source-map';
+ import { createLogger, version } from 'vite';
+-import { readFileSync, existsSync, promises } from 'fs';
++import { readFileSync, promises, existsSync } from 'fs';
+ import { createRequire } from 'module';
+ import fg from 'fast-glob';
+ import pc from 'picocolors';
+@@ -44,8 +44,7 @@ const getOptions = async ({
+       if (p.name === pluginName$1) {
+         const plugin = p;
+         options = plugin.api.crx.options;
+-        if (options)
+-          break;
++        if (options) break;
+       }
+     }
+   }
+@@ -58,7 +57,7 @@ function isCrxPlugin(p) {
+   return !!p && typeof p === "object" && !(p instanceof Promise) && !Array.isArray(p) && p.name.startsWith("crx:");
+ }
+ 
+-var workerHmrClient = "const ownOrigin = `chrome-extension://${chrome.runtime.id}`;\nself.addEventListener(\"fetch\", (fetchEvent) => {\n  const url = new URL(fetchEvent.request.url);\n  if (url.origin === ownOrigin) {\n    fetchEvent.respondWith(sendToServer(fetchEvent.request));\n  }\n});\nasync function sendToServer(req) {\n  const url = new URL(req.url);\n  const requestHeaders = new Headers(req.headers);\n  url.protocol = \"http:\";\n  url.host = \"localhost\";\n  url.port = __SERVER_PORT__;\n  url.searchParams.set(\"t\", Date.now().toString());\n  const response = await fetch(url.href.replace(/=$|=(?=&)/g, \"\"), {\n    headers: requestHeaders\n  });\n  const responseHeaders = new Headers(response.headers);\n  responseHeaders.set(\"Content-Type\", responseHeaders.get(\"Content-Type\") ?? \"text/javascript\");\n  responseHeaders.set(\"Cache-Control\", responseHeaders.get(\"Cache-Control\") ?? \"\");\n  return new Response(response.body, {\n    headers: responseHeaders\n  });\n}\nconst ports = /* @__PURE__ */ new Set();\nchrome.runtime.onConnect.addListener((port) => {\n  if (port.name === \"@crx/client\") {\n    ports.add(port);\n    port.onDisconnect.addListener((port2) => {\n      if (chrome.runtime.lastError) {\n        console.error(chrome.runtime.lastError);\n      }\n      ports.delete(port2);\n    });\n    port.onMessage.addListener((message) => {\n    });\n    port.postMessage({ data: JSON.stringify({ type: \"connected\" }) });\n  }\n});\nfunction notifyContentScripts(payload) {\n  const data = JSON.stringify(payload);\n  for (const port of ports)\n    port.postMessage({ data });\n}\nconsole.log(\"[vite] connecting...\");\nconst socketProtocol = __HMR_PROTOCOL__ || (location.protocol === \"https:\" ? \"wss\" : \"ws\");\nconst socketToken = __HMR_TOKEN__;\nconst socketHost = `${__HMR_HOSTNAME__ || location.hostname}:${__HMR_PORT__}`;\nconst socket = new WebSocket(`${socketProtocol}://${socketHost}?token=${socketToken}`, \"vite-hmr\");\nconst base = __BASE__ || \"/\";\nsocket.addEventListener(\"message\", async ({ data }) => {\n  handleSocketMessage(JSON.parse(data));\n});\nfunction isCrxHmrPayload(x) {\n  return x.type === \"custom\" && x.event.startsWith(\"crx:\");\n}\nfunction handleSocketMessage(payload) {\n  if (isCrxHmrPayload(payload)) {\n    handleCrxHmrPayload(payload);\n  } else if (payload.type === \"connected\") {\n    console.log(`[vite] connected.`);\n    const interval = setInterval(() => socket.send(\"ping\"), __HMR_TIMEOUT__);\n    socket.addEventListener(\"close\", () => clearInterval(interval));\n  }\n}\nfunction handleCrxHmrPayload(payload) {\n  notifyContentScripts(payload);\n  switch (payload.event) {\n    case \"crx:runtime-reload\":\n      console.log(\"[crx] runtime reload\");\n      chrome.runtime.reload();\n      break;\n  }\n}\nasync function waitForSuccessfulPing(ms = 1e3) {\n  while (true) {\n    try {\n      await fetch(`${base}__vite_ping`);\n      break;\n    } catch (e) {\n      await new Promise((resolve) => setTimeout(resolve, ms));\n    }\n  }\n}\nsocket.addEventListener(\"close\", async ({ wasClean }) => {\n  if (wasClean)\n    return;\n  console.log(`[vite] server connection lost. polling for restart...`);\n  await waitForSuccessfulPing();\n  handleCrxHmrPayload({\n    type: \"custom\",\n    event: \"crx:runtime-reload\"\n  });\n});\n";
++var workerHmrClient = "const ownOrigin = `chrome-extension://${chrome.runtime.id}`;\nself.addEventListener(\"fetch\", (fetchEvent) => {\n  const url = new URL(fetchEvent.request.url);\n  if (url.origin === ownOrigin) {\n    fetchEvent.respondWith(sendToServer(fetchEvent.request));\n  }\n});\nasync function sendToServer(req) {\n  const url = new URL(req.url);\n  const requestHeaders = new Headers(req.headers);\n  url.protocol = \"http:\";\n  url.host = \"localhost\";\n  url.port = __SERVER_PORT__;\n  url.searchParams.set(\"t\", Date.now().toString());\n  const response = await fetch(url.href.replace(/=$|=(?=&)/g, \"\"), {\n    headers: requestHeaders\n  });\n  const responseHeaders = new Headers(response.headers);\n  responseHeaders.set(\"Content-Type\", responseHeaders.get(\"Content-Type\") ?? \"text/javascript\");\n  responseHeaders.set(\"Cache-Control\", responseHeaders.get(\"Cache-Control\") ?? \"\");\n  return new Response(response.body, {\n    headers: responseHeaders\n  });\n}\nconst ports = /* @__PURE__ */ new Set();\nchrome.runtime.onConnect.addListener((port) => {\n  if (port.name === \"@crx/client\") {\n    ports.add(port);\n    port.onDisconnect.addListener((port2) => {\n      if (chrome.runtime.lastError) {\n        console.error(chrome.runtime.lastError);\n      }\n      ports.delete(port2);\n    });\n    port.onMessage.addListener((message) => {\n    });\n    port.postMessage({ data: JSON.stringify({ type: \"connected\" }) });\n  }\n});\nfunction notifyContentScripts(payload) {\n  const data = JSON.stringify(payload);\n  for (const port of ports) port.postMessage({ data });\n}\nconsole.log(\"[vite] connecting...\");\nconst socketProtocol = __HMR_PROTOCOL__ || (location.protocol === \"https:\" ? \"wss\" : \"ws\");\nconst socketToken = __HMR_TOKEN__;\nconst socketHost = `${__HMR_HOSTNAME__ || location.hostname}:${__HMR_PORT__}`;\nconst socket = new WebSocket(`${socketProtocol}://${socketHost}?token=${socketToken}`, \"vite-hmr\");\nconst base = __BASE__ || \"/\";\nsocket.addEventListener(\"message\", async ({ data }) => {\n  handleSocketMessage(JSON.parse(data));\n});\nfunction isCrxHmrPayload(x) {\n  return x.type === \"custom\" && x.event.startsWith(\"crx:\");\n}\nfunction handleSocketMessage(payload) {\n  if (isCrxHmrPayload(payload)) {\n    handleCrxHmrPayload(payload);\n  } else if (payload.type === \"connected\") {\n    console.log(`[vite] connected.`);\n    const interval = setInterval(() => socket.send(\"ping\"), __HMR_TIMEOUT__);\n    socket.addEventListener(\"close\", () => clearInterval(interval));\n  }\n}\nfunction handleCrxHmrPayload(payload) {\n  notifyContentScripts(payload);\n  switch (payload.event) {\n    case \"crx:runtime-reload\":\n      console.log(\"[crx] runtime reload\");\n      chrome.runtime.reload();\n      break;\n  }\n}\nasync function waitForSuccessfulPing(ms = 1e3) {\n  while (true) {\n    try {\n      await fetch(`${base}__vite_ping`);\n      break;\n    } catch (e) {\n      await new Promise((resolve) => setTimeout(resolve, ms));\n    }\n  }\n}\nsocket.addEventListener(\"close\", async ({ wasClean }) => {\n  if (wasClean) return;\n  console.log(`[vite] server connection lost. polling for restart...`);\n  await waitForSuccessfulPing();\n  handleCrxHmrPayload({\n    type: \"custom\",\n    event: \"crx:runtime-reload\"\n  });\n});\n";
+ 
+ const _debug = (id) => debug$3("crx").extend(id);
+ const hash = (data, length = 5) => createHash("sha1").update(data).digest("base64").replace(/[^A-Za-z0-9]/g, "").slice(0, length);
+@@ -80,13 +79,10 @@ function decodeManifest(code) {
+     }
+   });
+   let manifestJson = literal?.value;
+-  if (!manifestJson)
+-    manifestJson = templateElement?.value?.cooked;
+-  if (!manifestJson)
+-    throw new Error("unable to parse manifest code");
++  if (!manifestJson) manifestJson = templateElement?.value?.cooked;
++  if (!manifestJson) throw new Error("unable to parse manifest code");
+   let result = JSON.parse(manifestJson);
+-  if (typeof result === "string")
+-    result = JSON.parse(result);
++  if (typeof result === "string") result = JSON.parse(result);
+   return result;
+ }
+ function encodeManifest(manifest) {
+@@ -104,8 +100,7 @@ function parseJsonAsset(bundle, key) {
+   return JSON.parse(asset.source);
+ }
+ const getMatchPatternOrigin = (pattern) => {
+-  if (pattern.startsWith("<"))
+-    return pattern;
++  if (pattern.startsWith("<")) return pattern;
+   const [schema, rest] = pattern.split("://");
+   const slashIndex = rest.indexOf("/");
+   const isSlashAfterOriginPresent = slashIndex !== -1;
+@@ -185,10 +180,8 @@ function strip(prefix2, text) {
+ }
+ function formatFileData(script) {
+   script.id = prefix$1("/", script.id);
+-  if (script.fileName)
+-    script.fileName = strip("/", script.fileName);
+-  if (script.loaderName)
+-    script.loaderName = strip("/", script.loaderName);
++  if (script.fileName) script.fileName = strip("/", script.fileName);
++  if (script.loaderName) script.loaderName = strip("/", script.loaderName);
+   return script;
+ }
+ function getFileName({ type, id }) {
+@@ -244,8 +237,7 @@ function getViteUrl({ type, id }) {
+ async function fileReady(script) {
+   const fileName = getFileName(script);
+   const file = outputFiles.get(fileName);
+-  if (!file)
+-    throw new Error("unknown script type and id");
++  if (!file) throw new Error("unknown script type and id");
+   const { deps } = await file.file;
+   await Promise.all(deps.map(fileReady));
+ }
+@@ -266,12 +258,11 @@ const pluginBackground = () => {
+       name: "crx:background-client",
+       apply: "serve",
+       resolveId(source) {
+-        if (source === `/${workerClientId}`)
+-          return workerClientId;
++        if (source === `/${workerClientId}`) return workerClientId;
+       },
+       load(id) {
+         if (id === workerClientId) {
+-          const base = `http://localhost:${config.server.port}/`;
++          const base = `${config.server.https ? "https" : "http"}://localhost:${config.server.port}/`;
+           return defineClientValues(
+             workerHmrClient.replace("__BASE__", JSON.stringify(base)),
+             config
+@@ -294,24 +285,25 @@ const pluginBackground = () => {
+         const worker = browser === "firefox" ? manifest.background?.scripts[0] : manifest.background?.service_worker;
+         let loader;
+         if (config.command === "serve") {
++          const proto = config.server.https ? "https" : "http";
+           const port = config.server.port?.toString();
+           if (typeof port === "undefined")
+             throw new Error("server port is undefined in watch mode");
+           if (browser === "firefox") {
+-            loader = `import('http://localhost:${port}/@vite/env');
++            loader = `import('${proto}://localhost:${port}/@vite/env');
+ `;
+-            loader += `import('http://localhost:${port}${workerClientId}');
++            loader += `import('${proto}://localhost:${port}${workerClientId}');
+ `;
+             if (worker)
+-              loader += `import('http://localhost:${port}/${worker}');
++              loader += `import('${proto}://localhost:${port}/${worker}');
+ `;
+           } else {
+-            loader = `import 'http://localhost:${port}/@vite/env';
++            loader = `import '${proto}://localhost:${port}/@vite/env';
+ `;
+-            loader += `import 'http://localhost:${port}${workerClientId}';
++            loader += `import '${proto}://localhost:${port}${workerClientId}';
+ `;
+             if (worker)
+-              loader += `import 'http://localhost:${port}/${worker}';
++              loader += `import '${proto}://localhost:${port}/${worker}';
+ `;
+           }
+         } else if (worker) {
+@@ -343,7 +335,7 @@ const pluginBackground = () => {
+   ];
+ };
+ 
+-var contentHmrPort = "function isCrxHMRPayload(x) {\n  return x.type === \"custom\" && x.event.startsWith(\"crx:\");\n}\nclass HMRPort {\n  port;\n  callbacks = /* @__PURE__ */ new Map();\n  constructor() {\n    setInterval(() => {\n      try {\n        this.port?.postMessage({ data: \"ping\" });\n      } catch (error) {\n        if (error instanceof Error && error.message.includes(\"Extension context invalidated.\")) {\n          location.reload();\n        } else\n          throw error;\n      }\n    }, __CRX_HMR_TIMEOUT__);\n    setInterval(this.initPort, 5 * 60 * 1e3);\n    this.initPort();\n  }\n  initPort = () => {\n    this.port?.disconnect();\n    this.port = chrome.runtime.connect({ name: \"@crx/client\" });\n    this.port.onDisconnect.addListener(this.handleDisconnect.bind(this));\n    this.port.onMessage.addListener(this.handleMessage.bind(this));\n    this.port.postMessage({ type: \"connected\" });\n  };\n  handleDisconnect = () => {\n    if (this.callbacks.has(\"close\"))\n      for (const cb of this.callbacks.get(\"close\")) {\n        cb({ wasClean: true });\n      }\n  };\n  handleMessage = (message) => {\n    const forward = (data) => {\n      if (this.callbacks.has(\"message\"))\n        for (const cb of this.callbacks.get(\"message\")) {\n          cb({ data });\n        }\n    };\n    const payload = JSON.parse(message.data);\n    if (isCrxHMRPayload(payload)) {\n      if (payload.event === \"crx:runtime-reload\") {\n        console.log(\"[crx] runtime reload\");\n        setTimeout(() => location.reload(), 500);\n      } else {\n        forward(JSON.stringify(payload.data));\n      }\n    } else {\n      forward(message.data);\n    }\n  };\n  addEventListener = (event, callback) => {\n    const cbs = this.callbacks.get(event) ?? /* @__PURE__ */ new Set();\n    cbs.add(callback);\n    this.callbacks.set(event, cbs);\n  };\n  send = (data) => {\n    if (this.port)\n      this.port.postMessage({ data });\n    else\n      throw new Error(\"HMRPort is not initialized\");\n  };\n}\n\nexport { HMRPort };\n";
++var contentHmrPort = "function isCrxHMRPayload(x) {\n  return x.type === \"custom\" && x.event.startsWith(\"crx:\");\n}\nclass HMRPort {\n  port;\n  callbacks = /* @__PURE__ */ new Map();\n  constructor() {\n    setInterval(() => {\n      try {\n        this.port?.postMessage({ data: \"ping\" });\n      } catch (error) {\n        if (error instanceof Error && error.message.includes(\"Extension context invalidated.\")) {\n          location.reload();\n        } else throw error;\n      }\n    }, __CRX_HMR_TIMEOUT__);\n    setInterval(this.initPort, 5 * 60 * 1e3);\n    this.initPort();\n  }\n  initPort = () => {\n    this.port?.disconnect();\n    this.port = chrome.runtime.connect({ name: \"@crx/client\" });\n    this.port.onDisconnect.addListener(this.handleDisconnect.bind(this));\n    this.port.onMessage.addListener(this.handleMessage.bind(this));\n    this.port.postMessage({ type: \"connected\" });\n  };\n  handleDisconnect = () => {\n    if (this.callbacks.has(\"close\"))\n      for (const cb of this.callbacks.get(\"close\")) {\n        cb({ wasClean: true });\n      }\n  };\n  handleMessage = (message) => {\n    const forward = (data) => {\n      if (this.callbacks.has(\"message\"))\n        for (const cb of this.callbacks.get(\"message\")) {\n          cb({ data });\n        }\n    };\n    const payload = JSON.parse(message.data);\n    if (isCrxHMRPayload(payload)) {\n      if (payload.event === \"crx:runtime-reload\") {\n        console.log(\"[crx] runtime reload\");\n        setTimeout(() => location.reload(), 500);\n      } else {\n        forward(JSON.stringify(payload.data));\n      }\n    } else {\n      forward(message.data);\n    }\n  };\n  addEventListener = (event, callback) => {\n    const cbs = this.callbacks.get(event) ?? /* @__PURE__ */ new Set();\n    cbs.add(callback);\n    this.callbacks.set(event, cbs);\n  };\n  send = (data) => {\n    if (this.port) this.port.postMessage({ data });\n    else throw new Error(\"HMRPort is not initialized\");\n  };\n}\n\nexport { HMRPort };\n";
+ 
+ var contentDevLoader = "(function () {\n  'use strict';\n\n  const injectTime = performance.now();\n  (async () => {\n    if (__PREAMBLE__)\n      await import(\n        /* @vite-ignore */\n        chrome.runtime.getURL(__PREAMBLE__)\n      );\n    await import(\n      /* @vite-ignore */\n      chrome.runtime.getURL(__CLIENT__)\n    );\n    const { onExecute } = await import(\n      /* @vite-ignore */\n      chrome.runtime.getURL(__SCRIPT__)\n    );\n    onExecute?.({ perf: { injectTime, loadTime: performance.now() - injectTime } });\n  })().catch(console.error);\n\n})();\n";
+ 
+@@ -477,23 +469,48 @@ ${sourceMap}
+       let { code, deps } = rest;
+       for (const plugin of plugins) {
+         const r = await plugin.renderCrxDevScript?.(code, script);
+-        if (typeof r === "string")
+-          code = r;
++        if (typeof r === "string") code = r;
+       }
+       return { target, code, deps };
+     }),
+     mergeMap(async ({ target, code, deps }) => {
+       await lexer.init;
+-      const [imports] = lexer.parse(code, fileName);
++      const [imports, exports] = lexer.parse(code, fileName);
+       const depSet = new Set(deps);
+       const magic = new MagicString(code);
+-      for (const i of imports)
++      for (const i of imports) {
+         if (i.n) {
+           depSet.add(i.n);
+           const fileName2 = getFileName({ type: "module", id: i.n });
+           const fullImport = code.substring(i.s, i.e);
+-          magic.overwrite(i.s, i.e, fullImport.replace(i.n, `/${fileName2}`));
++          const hmrTimestamp = fullImport.match(/\bt=\d{13}&?\b/);
++          magic.overwrite(
++            i.s,
++            i.e,
++            fullImport.replace(
++              i.n,
++              `/${fileName2}${hmrTimestamp ? `?${hmrTimestamp[0]}` : ""}`
++            )
++          );
+         }
++      }
++      for (const e of exports) {
++        if (e.n === "default") {
++          const regex = /\s+['"](.*)['"]/y;
++          regex.lastIndex = e.e;
++          const fullExport = regex.exec(code)?.[1];
++          if (!fullExport) continue;
++          const start = regex.lastIndex - fullExport.length - 1;
++          const end = regex.lastIndex - 1;
++          if (fullExport.startsWith("/node_modules")) {
++            magic.overwrite(
++              start,
++              end,
++              getFileName({ type: "module", id: fullExport })
++            );
++          }
++        }
++      }
+       return { target, source: magic.toString(), deps: [...depSet] };
+     })
+   );
+@@ -577,10 +594,8 @@ async function write(fileId) {
+           }
+           return r;
+         }).flat();
+-        if (source instanceof Uint8Array)
+-          await outputFile(target, source);
+-        else
+-          await outputFile(target, source, { encoding: "utf8" });
++        if (source instanceof Uint8Array) await outputFile(target, source);
++        else await outputFile(target, source, { encoding: "utf8" });
+         return files;
+       }),
+       // abort write operation on close event
+@@ -647,10 +662,8 @@ const pluginContentScripts = () => {
+         );
+       },
+       resolveId(source) {
+-        if (source === preambleId)
+-          return preambleId;
+-        if (source === contentHmrPortId)
+-          return contentHmrPortId;
++        if (source === preambleId) return preambleId;
++        if (source === contentHmrPortId) return contentHmrPortId;
+       },
+       load(id) {
+         if (id === preambleId && typeof preambleCode === "string") {
+@@ -739,8 +752,7 @@ const pluginContentScriptsCss = () => {
+               for (const fileName of script.js)
+                 if (contentScripts.has(fileName)) {
+                   const { css } = contentScripts.get(fileName);
+-                  if (css?.length)
+-                    script.css = [script.css ?? [], css].flat();
++                  if (css?.length) script.css = [script.css ?? [], css].flat();
+                 } else {
+                   throw new Error(
+                     `Content script is undefined by fileName: ${fileName}`
+@@ -1010,10 +1022,8 @@ async function manifestFiles(manifest, options = {}) {
+   if (manifest.web_accessible_resources) {
+     const resources = await Promise.all(
+       manifest.web_accessible_resources.flatMap(({ resources: resources2 }) => resources2).map(async (r) => {
+-        if (["*", "**/*"].includes(r))
+-          return void 0;
+-        if (fg.isDynamicPattern(r))
+-          return fg(r, options);
++        if (["*", "**/*"].includes(r)) return void 0;
++        if (fg.isDynamicPattern(r)) return fg(r, options);
+         return r;
+       })
+     );
+@@ -1084,8 +1094,7 @@ const crxHMRPayload$ = hmrPayload$.pipe(
+       } else {
+         payloads.push(p);
+       }
+-    if (fullReload)
+-      payloads.push(fullReload);
++    if (fullReload) payloads.push(fullReload);
+     return payloads;
+   }),
+   map((p) => {
+@@ -1121,6 +1130,7 @@ const crxHMRPayload$ = hmrPayload$.pipe(
+   }),
+   filter((p) => {
+     switch (p.type) {
++      // TODO: why not reload when path is defined?
+       case "full-reload":
+         return typeof p.path === "undefined";
+       case "prune":
+@@ -1145,12 +1155,10 @@ function isImporter(file) {
+   const seen = /* @__PURE__ */ new Set();
+   const pred = (changedNode) => {
+     seen.add(changedNode);
+-    if (changedNode.file === file)
+-      return true;
++    if (changedNode.file === file) return true;
+     for (const parentNode of changedNode.importers) {
+       const unseen = !seen.has(parentNode);
+-      if (unseen && pred(parentNode))
+-        return true;
++      if (unseen && pred(parentNode)) return true;
+     }
+     return false;
+   };
+@@ -1174,10 +1182,8 @@ const pluginHMR = () => {
+       enforce: "pre",
+       // server hmr host should be localhost
+       async config({ server = {}, ...config2 }) {
+-        if (server.hmr === false)
+-          return;
+-        if (server.hmr === true)
+-          server.hmr = {};
++        if (server.hmr === false) return;
++        if (server.hmr === true) server.hmr = {};
+         server.hmr = server.hmr ?? {};
+         server.hmr.host = "localhost";
+         return { server, ...config2 };
+@@ -1189,8 +1195,7 @@ const pluginHMR = () => {
+         config.server.watch = watch;
+         watch.ignored = watch.ignored ? [...new Set([watch.ignored].flat())] : [];
+         const outDir = isAbsolute(config.build.outDir) ? config.build.outDir : join(config.root, config.build.outDir, "**/*");
+-        if (!watch.ignored.includes(outDir))
+-          watch.ignored.push(outDir);
++        if (!watch.ignored.includes(outDir)) watch.ignored.push(outDir);
+       },
+       configureServer(server) {
+         if (server.ws.send !== decoratedSend) {
+@@ -1225,6 +1230,9 @@ const pluginHMR = () => {
+         const { root } = server.config;
+         const relFiles = /* @__PURE__ */ new Set();
+         const fsFiles = /* @__PURE__ */ new Set();
++        function getRelFile(file) {
++          return file.startsWith(root) ? file.slice(server.config.root.length) : file;
++        }
+         for (const m of modules) {
+           if (m.id?.startsWith(root)) {
+             relFiles.add(m.id.slice(server.config.root.length));
+@@ -1243,7 +1251,15 @@ const pluginHMR = () => {
+         for (const [key, script] of contentScripts)
+           if (key === script.id) {
+             if (relFiles.has(script.id) || modules.some(isImporter(join(server.config.root, script.id)))) {
+-              relFiles.forEach((relFile) => update(relFile));
++              modules.filter((mod) => mod.id?.startsWith(root)).forEach((mod) => {
++                update(getRelFile(mod.id));
++                if (mod.file?.endsWith(".scss")) {
++                  mod.importers.forEach((imp) => {
++                    console.log("updated imported file", getRelFile(imp.id));
++                    update(getRelFile(imp.id));
++                  });
++                }
++              });
+             }
+           }
+       }
+@@ -1323,8 +1339,7 @@ const pluginHtmlInlineScripts = () => {
+     }
+     async function auditor(_html, ctx) {
+       const result = await transform(_html, ctx);
+-      if (!result || typeof result === "string")
+-        return result;
++      if (!result || typeof result === "string") return result;
+       let html;
+       let tags;
+       if (Array.isArray(result)) {
+@@ -1396,8 +1411,7 @@ const pluginHtmlInlineScripts = () => {
+     configResolved(config) {
+       base = config.base;
+       const plugins = config.plugins;
+-      for (const p of plugins)
+-        auditTransformIndexHtml(p);
++      for (const p of plugins) auditTransformIndexHtml(p);
+       plugins.unshift(prePlugin);
+       plugins.push(postPlugin);
+     },
+@@ -1412,8 +1426,7 @@ const pluginHtmlInlineScripts = () => {
+     },
+     resolveId(source) {
+       const i = source.indexOf(prefix);
+-      if (i > -1)
+-        return source.slice(i);
++      if (i > -1) return source.slice(i);
+     },
+     load(id) {
+       if (id.startsWith(prefix)) {
+@@ -1434,7 +1447,7 @@ const pluginHtmlInlineScripts = () => {
+   };
+ };
+ 
+-var loadingPageScript = "const VITE_URL = \"http://localhost:%PORT%\";\ndocument.body.innerHTML = `\n<div\n      id=\"app\"\n      style=\"\n        border: 1px solid #ddd;\n        padding: 20px;\n        border-radius: 5px;\n        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n      \"\n    >\n      <h1 style=\"color: #333\">Vite Dev Mode</h1>\n      <p style=\"color: #666\">\n        Cannot connect to the Vite Dev Server on <a href=\"${VITE_URL}\">${VITE_URL}</a>\n      </p>\n      <p style=\"color: #666\">\n        Double-check that Vite is working and reload the extension.\n      </p>\n      <p style=\"color: #666\">\n        This page will close when the extension reloads.\n      </p>\n      <button\n        style=\"\n          padding: 10px 20px;\n          border: none;\n          background-color: #007bff;\n          color: #fff;\n          border-radius: 5px;\n          cursor: pointer;\n        \"\n      >\n        Reload Extension\n      </button>\n    </div>`;\ndocument.body.querySelector(\"button\")?.addEventListener(\"click\", () => {\n  chrome.runtime.reload();\n});\nlet tries = 0;\nlet ready = false;\ndo {\n  try {\n    await fetch(VITE_URL);\n    ready = true;\n  } catch {\n    const timeout = Math.min(100 * Math.pow(2, ++tries), 5e3);\n    console.log(`[CRXJS] Vite Dev Server is not available on ${VITE_URL}`);\n    console.log(`[CRXJS] Retrying in ${timeout}ms...`);\n    await new Promise((resolve) => setTimeout(resolve, timeout));\n  }\n} while (!ready);\nlocation.reload();\n";
++var loadingPageScript = "const VITE_URL = \"%PROTO%://localhost:%PORT%\";\ndocument.body.innerHTML = `\n<div\n      id=\"app\"\n      style=\"\n        border: 1px solid #ddd;\n        padding: 20px;\n        border-radius: 5px;\n        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n      \"\n    >\n      <h1 style=\"color: #333\">Vite Dev Mode</h1>\n      <p style=\"color: #666\">\n        Cannot connect to the Vite Dev Server on <a href=\"${VITE_URL}\">${VITE_URL}</a>\n      </p>\n      <p style=\"color: #666\">\n        Double-check that Vite is working and reload the extension.\n      </p>\n      <p style=\"color: #666\">\n        This page will close when the extension reloads.\n      </p>\n      <button\n        style=\"\n          padding: 10px 20px;\n          border: none;\n          background-color: #007bff;\n          color: #fff;\n          border-radius: 5px;\n          cursor: pointer;\n        \"\n      >\n        Reload Extension\n      </button>\n    </div>`;\ndocument.body.querySelector(\"button\")?.addEventListener(\"click\", () => {\n  chrome.runtime.reload();\n});\nlet tries = 0;\nlet ready = false;\ndo {\n  try {\n    await fetch(VITE_URL);\n    ready = true;\n  } catch {\n    const timeout = Math.min(100 * Math.pow(2, ++tries), 5e3);\n    console.log(`[CRXJS] Vite Dev Server is not available on ${VITE_URL}`);\n    console.log(`[CRXJS] Retrying in ${timeout}ms...`);\n    await new Promise((resolve) => setTimeout(resolve, timeout));\n  }\n} while (!ready);\nlocation.reload();\n";
+ 
+ var loadingPageHtml = "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <title>Vite Dev Mode</title>\n    <script src=\"%SCRIPT%\" type=\"module\"></script>\n  </head>\n  <body\n    style=\"font-family: Arial, sans-serif; padding: 20px; text-align: center\"\n  >\n    <h1>Vite Dev Mode</h1>\n  </body>\n</html>\n";
+ 
+@@ -1463,10 +1476,8 @@ const pluginManifest = () => {
+           } = await manifestFiles(manifest, { cwd: config2.root });
+           const { entries = [] } = config2.optimizeDeps ?? {};
+           let { input = [] } = config2.build?.rollupOptions ?? {};
+-          if (typeof input === "string")
+-            input = [input];
+-          else
+-            input = Object.values(input);
++          if (typeof input === "string") input = [input];
++          else input = Object.values(input);
+           input = input.map((f) => {
+             let result = f;
+             if (isAbsolute(f)) {
+@@ -1475,8 +1486,7 @@ const pluginManifest = () => {
+             return result;
+           });
+           const set = new Set([entries, input].flat());
+-          for (const x of [js, sw, html].flat())
+-            set.add(x);
++          for (const x of [js, sw, html].flat()) set.add(x);
+           return {
+             ...config2,
+             optimizeDeps: {
+@@ -1487,8 +1497,7 @@ const pluginManifest = () => {
+         }
+       },
+       buildStart(options) {
+-        if (options.plugins)
+-          plugins = options.plugins;
++        if (options.plugins) plugins = options.plugins;
+       }
+     },
+     {
+@@ -1505,13 +1514,11 @@ const pluginManifest = () => {
+         }
+       },
+       resolveId(source) {
+-        if (source === manifestId)
+-          return manifestId;
++        if (source === manifestId) return manifestId;
+         return null;
+       },
+       load(id) {
+-        if (id === manifestId)
+-          return encodeManifest(manifest);
++        if (id === manifestId) return encodeManifest(manifest);
+         return null;
+       }
+     },
+@@ -1528,20 +1535,17 @@ const pluginManifest = () => {
+             finalInput = input.filter((x) => !x.endsWith(".html"));
+           } else if (typeof input === "object") {
+             for (const [key, value] of Object.entries(input))
+-              if (value.endsWith(".html"))
+-                delete input[key];
++              if (value.endsWith(".html")) delete input[key];
+           }
+         }
+         return { input: finalInput, ...options };
+       },
+       resolveId(source) {
+-        if (source === stubId)
+-          return stubId;
++        if (source === stubId) return stubId;
+         return null;
+       },
+       load(id) {
+-        if (id === stubId)
+-          return `console.log('stub')`;
++        if (id === stubId) return `console.log('stub')`;
+         return null;
+       },
+       generateBundle(options, bundle) {
+@@ -1566,8 +1570,7 @@ const pluginManifest = () => {
+         plugins2.push(plugin);
+       },
+       async transform(code, id) {
+-        if (id !== manifestId)
+-          return;
++        if (id !== manifestId) return;
+         let manifest2 = decodeManifest.call(this, code);
+         for (const plugin of plugins) {
+           try {
+@@ -1716,8 +1719,7 @@ const pluginManifest = () => {
+           assetTypes.map((k) => files[k]).flat().map(async (f) => {
+             if (typeof bundle[f] === "undefined") {
+               let filename = join(config.root, f);
+-              if (!existsSync(filename))
+-                filename = join(config.publicDir, f);
++              if (!existsSync(filename)) filename = join(config.publicDir, f);
+               if (!existsSync(filename)) {
+                 const viteMajorVersion = parseInt(version.split(".")[0]);
+                 if (viteMajorVersion < 4 && filename.endsWith(".map") && config.build.sourcemap === true) {
+@@ -1743,10 +1745,7 @@ Public dir: "${config.publicDir}"`
+           const refId2 = this.emitFile({
+             type: "asset",
+             name: "loading-page.js",
+-            source: loadingPageScript.replace(
+-              "%PORT%",
+-              `${config.server.port ?? 0}`
+-            )
++            source: loadingPageScript.replace("%PROTO%", config.server.https ? "https" : "http").replace("%PORT%", `${config.server.port ?? 0}`)
+           });
+           const loadingPageScriptName = this.getFileName(refId2);
+           files.html.map(
+@@ -1792,10 +1791,8 @@ function compileFileResources(fileName, {
+   const chunk = chunks.get(fileName);
+   if (chunk) {
+     const { modules, facadeModuleId, imports, dynamicImports } = chunk;
+-    for (const x of imports)
+-      resources.imports.add(x);
+-    for (const x of dynamicImports)
+-      resources.imports.add(x);
++    for (const x of imports) resources.imports.add(x);
++    for (const x of dynamicImports) resources.imports.add(x);
+     for (const x of [...imports, ...dynamicImports])
+       compileFileResources(x, { chunks, files, config }, resources, processedFiles);
+     for (const m of Object.keys(modules))
+@@ -1819,10 +1816,8 @@ function compileFileResources(fileName, {
+   const file = files.get(fileName);
+   if (file) {
+     const { assets = [], css = [] } = file;
+-    for (const x of assets)
+-      resources.assets.add(x);
+-    for (const x of css)
+-      resources.css.add(x);
++    for (const x of assets) resources.assets.add(x);
++    for (const x of css) resources.css.add(x);
+   }
+   return resources;
+ }
+@@ -1897,12 +1892,10 @@ const pluginWebAccessibleResources = () => {
+           if (i > -1 && isResourceByMatch(r)) {
+             r.resources = [...r.resources];
+             r.resources.splice(i, 1);
+-            for (const p of r.matches)
+-              dynamicScriptMatches.add(p);
++            for (const p of r.matches) dynamicScriptMatches.add(p);
+             dynamicScriptDynamicUrl = r.use_dynamic_url ?? false;
+           }
+-          if (r.resources.length > 0)
+-            web_accessible_resources.push(r);
++          if (r.resources.length > 0) web_accessible_resources.push(r);
+         }
+         if (dynamicScriptMatches.size === 0) {
+           dynamicScriptMatches.add("http://*/*");
+@@ -1918,12 +1911,10 @@ const pluginWebAccessibleResources = () => {
+           const viteFiles = /* @__PURE__ */ new Map();
+           for (const [, file] of Object.entries(viteManifest))
+             viteFiles.set(file.file, file);
+-          if (viteFiles.size === 0)
+-            return null;
++          if (viteFiles.size === 0) return null;
+           const bundleChunks = /* @__PURE__ */ new Map();
+           for (const chunk of Object.values(bundle))
+-            if (chunk.type === "chunk")
+-              bundleChunks.set(chunk.fileName, chunk);
++            if (chunk.type === "chunk") bundleChunks.set(chunk.fileName, chunk);
+           const moduleScriptResources = /* @__PURE__ */ new Map();
+           for (const [
+             key,
+@@ -1964,8 +1955,7 @@ const pluginWebAccessibleResources = () => {
+             }
+           for (const r of web_accessible_resources)
+             if (isResourceByMatch(r))
+-              for (const res of r.resources)
+-                moduleScriptResources.delete(res);
++              for (const res of r.resources) moduleScriptResources.delete(res);
+           web_accessible_resources.push(...moduleScriptResources.values());
+         }
+         const hashedResources = /* @__PURE__ */ new Map();
+@@ -1975,8 +1965,7 @@ const pluginWebAccessibleResources = () => {
+             const { matches, resources, use_dynamic_url = false } = r;
+             const key = JSON.stringify([use_dynamic_url, matches.sort()]);
+             const combined = hashedResources.get(key) ?? /* @__PURE__ */ new Set();
+-            for (const res of resources)
+-              combined.add(res);
++            for (const res of resources) combined.add(res);
+             hashedResources.set(key, combined);
+           } else {
+             combinedResources.push(r);
+@@ -2014,8 +2003,7 @@ const pluginWebAccessibleResources = () => {
+         }
+         if (combinedResources.length === 0)
+           delete manifest.web_accessible_resources;
+-        else
+-          manifest.web_accessible_resources = combinedResources;
++        else manifest.web_accessible_resources = combinedResources;
+         return manifest;
+       }
+     }
+diff --git a/package.json b/package.json
+index 4166a6c87a59b2d11228ed0b91ae0f30777d5104..6ad0e69eb82e70bd650104f2b9f920ee8f0ce399 100644
+--- a/package.json
++++ b/package.json
+@@ -1,126 +1,127 @@
+ {
+-  "name": "@crxjs/vite-plugin",
+-  "version": "2.2.0",
+-  "description": "Build Chrome Extensions with this Vite plugin.",
+-  "keywords": [
+-    "rollup-plugin",
+-    "vite-plugin",
+-    "chrome",
+-    "chrome-extension",
+-    "extension",
+-    "webext",
+-    "webextension",
+-    "browser",
+-    "browser-extension"
+-  ],
+-  "homepage": "https://crxjs.dev/vite-plugin",
+-  "bugs": {
+-    "url": "https://github.com/crxjs/chrome-extension-tools/issues"
+-  },
+-  "repository": {
+-    "type": "git",
+-    "url": "git+https://github.com/crxjs/chrome-extension-tools",
+-    "directory": "packages/vite-plugin"
+-  },
+-  "license": "MIT",
+-  "author": "Jack and Amy Steam <jacksteamdev@gmail.com>",
+-  "type": "module",
+-  "exports": {
+-    ".": {
+-      "require": "./index.cjs",
+-      "import": "./dist/index.mjs",
+-      "types": "./dist/index.d.ts"
+-    },
+-    "./*": "./*",
+-    "./client": {
+-      "types": "./client.d.ts"
+-    }
+-  },
+-  "main": "index.cjs",
+-  "module": "dist/index.mjs",
+-  "types": "dist/index.d.ts",
+-  "files": [
+-    "dist",
+-    "types",
+-    "manifest.schema.json",
+-    "index.cjs",
+-    "client.d.ts"
+-  ],
+-  "dependencies": {
+-    "@rollup/pluginutils": "^4.1.2",
+-    "@webcomponents/custom-elements": "^1.5.0",
+-    "acorn-walk": "^8.2.0",
+-    "cheerio": "^1.0.0-rc.10",
+-    "convert-source-map": "^1.7.0",
+-    "debug": "^4.3.3",
+-    "es-module-lexer": "^0.10.0",
+-    "fast-glob": "^3.2.11",
+-    "fs-extra": "^10.0.1",
+-    "jsesc": "^3.0.2",
+-    "magic-string": "^0.30.12",
+-    "pathe": "^2.0.1",
+-    "picocolors": "^1.1.1",
+-    "react-refresh": "^0.13.0",
+-    "rollup": "2.79.2",
+-    "rxjs": "7.5.7"
+-  },
+-  "devDependencies": {
+-    "@extend-chrome/messages": "1.2.2",
+-    "@extend-chrome/storage": "1.5.0",
+-    "@rollup/plugin-alias": "4.0.4",
+-    "@rollup/plugin-commonjs": "21.1.0",
+-    "@rollup/plugin-json": "^5.0.0",
+-    "@rollup/plugin-node-resolve": "13.2.0",
+-    "@sveltejs/vite-plugin-svelte": "1.4.0",
+-    "@types/acorn": "4.0.6",
+-    "@types/chrome": "0.0.237",
+-    "@types/convert-source-map": "^2.0.0",
+-    "@types/debug": "4.1.7",
+-    "@types/fs-extra": "9.0.13",
+-    "@types/jest-image-snapshot": "^5.1.0",
+-    "@types/jsesc": "3.0.1",
+-    "@types/node": "17.0.18",
+-    "@types/react": "17.0.52",
+-    "@types/react-dom": "17.0.18",
+-    "@typescript-eslint/eslint-plugin": "5.41.0",
+-    "@typescript-eslint/parser": "5.41.0",
+-    "@vitejs/plugin-react": "^2.2.0",
+-    "@vitejs/plugin-vue": "3.2.0",
+-    "chokidar": "^3.5.3",
+-    "esbuild": "0.17.14",
+-    "esbuild-runner": "2.2.2",
+-    "eslint": "8.43.0",
+-    "eslint-plugin-react": "^7.29.4",
+-    "jest-image-snapshot": "^5.2.0",
+-    "npm-run-all": "^4.1.5",
+-    "playwright-chromium": "1.52.0",
+-    "react": "17.0.2",
+-    "react-dom": "17.0.2",
+-    "rimraf": "3.0.2",
+-    "rollup-plugin-dts": "^4.2.0",
+-    "rollup-plugin-esbuild": "4.10.3",
+-    "svelte": "^3.48.0",
+-    "typescript": "^4.6.4",
+-    "vite": "^3.2.11",
+-    "vite-plugin-inspect": "0.7.25",
+-    "vitest": "0.28.5",
+-    "vue": "3.2.47"
+-  },
+-  "scripts": {
+-    "format": "prettier -w -c ../../.prettierrc.yaml",
+-    "build": "run-s build:clean build:js",
+-    "build:clean": "rimraf dist",
+-    "build:js": "rollup -c rollup.config.ts --configPlugin esbuild",
+-    "dev:js": "npm run build:js -- -w",
+-    "dev:lint": "tsc --noEmit --watch",
+-    "lint": "run-s lint:eslint lint:types",
+-    "lint:eslint": "eslint \"{src,test}/**/*.ts\"",
+-    "lint:types": "tsc --noEmit",
+-    "test": "vitest --mode unit",
+-    "test:e2e": "vitest --mode e2e",
+-    "test:run": "run-s test:run:*",
+-    "test:run:out": "vitest --run --mode out",
+-    "test:run:e2e": "vitest --run --mode e2e",
+-    "test:update": "run-s \"test:run:out --update\" \"test:run:e2e --update\""
+-  }
++	"name": "@crxjs/vite-plugin",
++	"version": "2.2.0",
++	"description": "Build Chrome Extensions with this Vite plugin.",
++	"keywords": [
++		"rollup-plugin",
++		"vite-plugin",
++		"chrome",
++		"chrome-extension",
++		"extension",
++		"webext",
++		"webextension",
++		"browser",
++		"browser-extension"
++	],
++	"homepage": "https://crxjs.dev/vite-plugin",
++	"bugs": {
++		"url": "https://github.com/crxjs/chrome-extension-tools/issues"
++	},
++	"repository": {
++		"type": "git",
++		"url": "git+https://github.com/crxjs/chrome-extension-tools",
++		"directory": "packages/vite-plugin"
++	},
++	"license": "MIT",
++	"author": "Jack and Amy Steam <jacksteamdev@gmail.com>",
++	"type": "module",
++	"exports": {
++		".": {
++			"require": "./index.cjs",
++			"import": "./dist/index.mjs",
++			"types": "./dist/index.d.ts"
++		},
++		"./*": "./*",
++		"./client": {
++			"types": "./client.d.ts"
++		}
++	},
++	"main": "index.cjs",
++	"module": "dist/index.mjs",
++	"types": "dist/index.d.ts",
++	"files": [
++		"dist",
++		"types",
++		"manifest.schema.json",
++		"index.cjs",
++		"client.d.ts"
++	],
++	"scripts": {
++		"format": "prettier -w -c ../../.prettierrc.yaml",
++		"build": "run-s build:clean build:js",
++		"build:clean": "rimraf dist",
++		"build:js": "rollup -c rollup.config.ts --configPlugin esbuild",
++		"dev:js": "npm run build:js -- -w",
++		"dev:lint": "tsc --noEmit --watch",
++		"lint": "run-s lint:eslint lint:types",
++		"lint:eslint": "eslint \"{src,test}/**/*.ts\"",
++		"lint:types": "tsc --noEmit",
++		"test": "vitest --mode unit",
++		"test:e2e": "vitest --mode e2e",
++		"test:run": "run-s test:run:*",
++		"test:run:out": "vitest --run --mode out",
++		"test:run:e2e": "vitest --run --mode e2e",
++		"test:update": "run-s \"test:run:out --update\" \"test:run:e2e --update\""
++	},
++	"dependencies": {
++		"@rollup/pluginutils": "^5.3.0",
++		"@webcomponents/custom-elements": "^1.6.0",
++		"acorn-walk": "^8.3.4",
++		"cheerio": "^1.1.2",
++		"convert-source-map": "^2.0.0",
++		"debug": "^4.4.1",
++		"es-module-lexer": "^1.7.0",
++		"fast-glob": "^3.3.3",
++		"fs-extra": "^11.3.1",
++		"jsesc": "^3.1.0",
++		"magic-string": "^0.30.19",
++		"pathe": "^2.0.3",
++		"picocolors": "^1.1.1",
++		"react-refresh": "^0.17.0",
++		"rollup": "4.50.1",
++		"rxjs": "7.8.2"
++	},
++	"devDependencies": {
++		"@extend-chrome/messages": "1.2.2",
++		"@extend-chrome/storage": "1.5.0",
++		"@rollup/plugin-alias": "5.1.1",
++		"@rollup/plugin-commonjs": "28.0.6",
++		"@rollup/plugin-json": "^6.1.0",
++		"@rollup/plugin-node-resolve": "16.0.1",
++		"@sveltejs/vite-plugin-svelte": "6.2.0",
++		"@types/acorn": "6.0.4",
++		"@types/chrome": "0.1.11",
++		"@types/convert-source-map": "^2.0.3",
++		"@types/debug": "4.1.12",
++		"@types/fs-extra": "11.0.4",
++		"@types/jest-image-snapshot": "^6.4.0",
++		"@types/jsesc": "3.0.3",
++		"@types/node": "24.3.3",
++		"@types/react": "19.1.13",
++		"@types/react-dom": "19.1.9",
++		"@typescript-eslint/eslint-plugin": "8.43.0",
++		"@typescript-eslint/parser": "8.43.0",
++		"@vitejs/plugin-react": "^5.0.2",
++		"@vitejs/plugin-vue": "6.0.1",
++		"acorn": "^8.15.0",
++		"chokidar": "^4.0.3",
++		"esbuild": "0.25.9",
++		"esbuild-runner": "2.2.2",
++		"eslint": "8.43.0",
++		"eslint-plugin-react": "^7.37.5",
++		"jest-image-snapshot": "^6.5.1",
++		"npm-run-all": "^4.1.5",
++		"playwright-chromium": "1.55.0",
++		"react": "19.1.1",
++		"react-dom": "19.1.1",
++		"rimraf": "6.0.1",
++		"rollup-plugin-dts": "^6.2.3",
++		"rollup-plugin-esbuild": "6.2.1",
++		"svelte": "^5.38.10",
++		"typescript": "^5.9.2",
++		"vite-plugin-inspect": "11.3.3",
++		"vite": "^7.1.5",
++		"vitest": "3.2.4",
++		"vue": "3.5.21"
++	}
+ }
