@@ -15,6 +15,7 @@ export const SiteSupport = {
     MY_UT: 'MY_UT',
     COURSE_CATALOG_SEARCH: 'COURSE_CATALOG_SEARCH',
     CLASSLIST: 'CLASSLIST',
+    COURSE_CATALOG_KWS: 'COURSE_CATALOG_KWS',
 } as const;
 
 /**
@@ -40,6 +41,9 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
         return SiteSupport.UT_PLANNER;
     }
     if (url.includes('utdirect.utexas.edu/apps/registrar/course_schedule')) {
+        if (url.includes('kws_results')) {
+            return SiteSupport.COURSE_CATALOG_KWS;
+        }
         if (url.includes('results')) {
             return SiteSupport.COURSE_CATALOG_LIST;
         }

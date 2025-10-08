@@ -1,6 +1,7 @@
 import type { IconProps } from '@phosphor-icons/react';
-import { CloudX, Copy, Exam, MapPinArea, Palette } from '@phosphor-icons/react';
+import { CloudX, Coffee, ForkKnife, MapTrifold, Storefront } from '@phosphor-icons/react';
 import { ExtensionStore } from '@shared/storage/ExtensionStore';
+import { UT_DINING_PROMO_IMAGE_URL } from '@shared/util/appUrls';
 import Text from '@views/components/common/Text/Text';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import React, { useEffect, useState } from 'react';
@@ -12,9 +13,9 @@ import React, { useEffect, useState } from 'react';
  *
  * It should be incremented every time the "What's New" popup is updated.
  */
-const WHATSNEW_POPUP_VERSION = 1;
+const WHATSNEW_POPUP_VERSION = 2;
 
-const WHATSNEW_VIDEO_URL = 'https://cdn.longhorns.dev/whats-new-v2.1.2.mp4';
+// const WHATSNEW_VIDEO_URL = 'https://cdn.longhorns.dev/whats-new-v2.1.2.mp4';
 
 type Feature = {
     id: string;
@@ -25,35 +26,28 @@ type Feature = {
 
 const NEW_FEATURES = [
     {
-        id: 'custom-course-colors',
-        icon: Palette,
-        title: 'Custom Course Colors',
-        description: 'Paint your schedule in your favorite color theme',
+        id: 'dining-halls-info',
+        icon: ForkKnife,
+        title: 'Dining Halls Info',
+        description: 'See daily menus and nutritional deets for J2, JCL, and Kins',
     },
     {
-        id: 'quick-copy',
-        icon: Copy,
-        title: 'Quick Copy',
-        description: 'Quickly copy a course unique number to your clipboard',
+        id: 'coffee-shops',
+        icon: Coffee,
+        title: 'Coffee Shops',
+        description: 'Need a Coffee Fix? Check operating times for your favorite campus cafes.',
     },
     {
-        id: 'updated-grades',
-        icon: Exam,
-        title: 'Updated Grades',
-        description: 'Fall 2024 grades are now available in the grade distribution',
+        id: 'convenience-stores',
+        icon: Storefront,
+        title: 'Convenience Stores',
+        description: 'Find hours for quick snacks and essentials on campus.',
     },
     {
-        id: 'ut-map',
-        icon: MapPinArea,
-        title: (
-            <div className='flex flex-row items-center'>
-                UTRP Map
-                <span className='mx-2 border border-ut-burntorange rounded px-2 py-0.5 text-xs text-ut-burntorange font-medium'>
-                    BETA
-                </span>
-            </div>
-        ),
-        description: 'Find directions to your classes with our beta map feature in the settings page',
+        id: 'microwave-map',
+        icon: MapTrifold,
+        title: 'Microwave Map',
+        description: 'Need to heat up your lunch? Find microwaves across campus!',
     },
 ] as const satisfies readonly Feature[];
 
@@ -66,7 +60,7 @@ const NEW_FEATURES = [
  * @returns A JSX of WhatsNewPopupContent component.
  */
 export default function WhatsNewPopupContent(): JSX.Element {
-    const [videoError, setVideoError] = useState(false);
+    const [videoError, _setVideoError] = useState(false);
 
     return (
         <div className='w-full flex flex-row justify-between'>
@@ -97,14 +91,11 @@ export default function WhatsNewPopupContent(): JSX.Element {
                             </div>
                         </div>
                     ) : (
-                        <video
-                            className='h-fit w-full flex items-center justify-center border border-ut-offwhite/50 rounded object-cover'
-                            autoPlay
-                            loop
-                            muted
-                        >
-                            <source src={WHATSNEW_VIDEO_URL} type='video/mp4' onError={() => setVideoError(true)} />
-                        </video>
+                        <img
+                            className='h-full w-full border border-ut-offwhite/50 rounded object-cover'
+                            src={UT_DINING_PROMO_IMAGE_URL}
+                            alt='UT Dining Promo'
+                        />
                     )}
                 </div>
             </div>
