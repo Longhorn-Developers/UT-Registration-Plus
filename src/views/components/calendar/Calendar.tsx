@@ -87,7 +87,7 @@ export default function Calendar(): ReactNode {
     return (
         <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
-                <div className='h-screen flex overflow-auto screenshot:calendar-target'>
+                <div className='screenshot:calendar-target h-screen flex overflow-auto'>
                     <div
                         className={clsx(
                             'py-spacing-6 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
