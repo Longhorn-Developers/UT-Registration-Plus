@@ -1,7 +1,7 @@
 {
     "name": "ut-registration-plus",
     "displayName": "UT Registration Plus",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "description": "UT Registration Plus is a Chrome extension that allows students to easily register for classes.",
     "private": true,
     "homepage": "https://github.com/Longhorn-Developers/UT-Registration-Plus",
@@ -9,8 +9,10 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
+        "build:dev": "tsc && NODE_ENV='development' vite build --mode development",
         "build:watch": "NODE_ENV='development' vite build --mode development -w",
-        "zip": "PROD=true pnpm build && pnpm gulp zipProdBuild",
+        "zip": "pnpm build && pnpm gulp zipProdBuild",
+        "zip:to-publish": "SENTRY_ENV='production' pnpm zip",
         "prettier": "prettier src --check",
         "prettier:fix": "prettier src --write",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
@@ -160,7 +162,7 @@
         }
     },
     "volta": {
-        "node": "20.9.0",
-        "pnpm": "10.6.5"
+        "node": "20.19.4",
+        "pnpm": "10.14.0"
     }
 }

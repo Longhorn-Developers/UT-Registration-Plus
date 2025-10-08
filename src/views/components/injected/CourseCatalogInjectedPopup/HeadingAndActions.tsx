@@ -1,3 +1,5 @@
+import createSchedule from '@pages/background/lib/createSchedule';
+import switchSchedule from '@pages/background/lib/switchSchedule';
 import {
     ArrowUpRight,
     CalendarDots,
@@ -14,8 +16,10 @@ import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { englishStringifyList } from '@shared/util/string';
 import { Button } from '@views/components/common/Button';
 import { Chip, coreMap, flagMap } from '@views/components/common/Chip';
+import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import Divider from '@views/components/common/Divider';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
@@ -60,7 +64,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
-
+    const showDialog = usePrompt();
     const getInstructorFullName = (instructor: Instructor) => instructor.toString({ format: 'first_last' });
 
     const handleCopy = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -112,10 +116,78 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
         }
     };
 
+    const handleAddToNewSchedule = async (close: () => void) => {
+        const newScheduleId = await createSchedule(`${course.semester.season} ${course.semester.year}`);
+        switchSchedule(newScheduleId);
+        addCourse({ course, scheduleId: newScheduleId });
+        close();
+    };
+
     const handleAddOrRemoveCourse = async () => {
+        const uniqueSemesterCodes = [
+            ...new Set(
+                activeSchedule.courses
+                    .map(course => course.semester.code)
+                    .filter((code): code is string => code !== undefined)
+            ),
+        ];
+        uniqueSemesterCodes.sort();
+        const codeToReadableMap: Record<string, string> = {};
+        activeSchedule.courses.forEach(course => {
+            const { code } = course.semester;
+            if (code) {
+                const readable = `${course.semester.season} ${course.semester.year}`;
+                codeToReadableMap[code] = readable;
+            }
+        });
+        const sortedSemesters = uniqueSemesterCodes
+            .map(code => codeToReadableMap[code])
+            .filter((value): value is string => value !== undefined);
+        const activeSemesters = englishStringifyList(sortedSemesters);
+
         if (!activeSchedule) return;
         if (!courseAdded) {
-            addCourse({ course, scheduleId: activeSchedule.id });
+            const currentSemesterCode = course.semester.code;
+            // Show warning if this course is for a different semester than the selected schedule
+            if (
+                activeSchedule.courses.length > 0 &&
+                activeSchedule.courses.every(otherCourse => otherCourse.semester.code !== currentSemesterCode)
+            ) {
+                const dialogButtons = (close: () => void) => (
+                    <>
+                        <Button variant='minimal' color='ut-black' onClick={close}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant='filled'
+                            color='ut-burntorange'
+                            onClick={() => {
+                                handleAddToNewSchedule(close);
+                            }}
+                        >
+                            Start a new schedule
+                        </Button>
+                    </>
+                );
+
+                showDialog({
+                    title: 'This course section is from a different semester!',
+                    description: (
+                        <>
+                            The section you&apos;re adding is for{' '}
+                            <span className='text-ut-burntorange whitespace-nowrap'>
+                                {course.semester.season} {course.semester.year}
+                            </span>
+                            , but your current schedule contains sections in{' '}
+                            <span className='text-ut-burntorange whitespace-nowrap'>{activeSemesters}</span>. Mixing
+                            semesters in one schedule may cause confusion.
+                        </>
+                    ),
+                    buttons: dialogButtons,
+                });
+            } else {
+                addCourse({ course, scheduleId: activeSchedule.id });
+            }
         } else {
             removeCourse({ course, scheduleId: activeSchedule.id });
         }
