@@ -437,13 +437,7 @@ export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
     // Sort by start time, increasing
     // This is necessary for the correctness of the column assignment
     const cells = dayCells
-        .filter(
-            cell =>
-                !cell.async &&
-                cell.calendarGridPoint &&
-                typeof cell.calendarGridPoint.startIndex === 'number' &&
-                cell.calendarGridPoint.startIndex >= 0
-        )
+        .filter(cell => !cell.async && cell.calendarGridPoint && typeof cell.calendarGridPoint.startIndex === 'number')
         .toSorted((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
 
     // Initialize metadata
