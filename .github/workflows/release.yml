@@ -1,25 +1,19 @@
-name: Create Release
-on:
-    push:
-        branches:
-            - production
-            - preview
-jobs:
-    build:
-        name: build extension & create release
-        runs-on: ubuntu-latest
-        concurrency:
-            group: ${{ github.ref }}
-            cancel-in-progress: true
-        steps:
-            - uses: actions/checkout@master
-            - name: Get file permission
-              run: chmod -R 777 .
+name: Release
 
-            - name: Install dependencies
-              run: npm ci
-            - name: Release with semantic-release
-              id: semantic-release
-              run: npx --no-install semantic-release
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  nix-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - uses: cachix/install-nix-action@v31
+      with:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+    - run: nix flake check
