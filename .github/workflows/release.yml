@@ -11,12 +11,16 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 jobs:
   nix-check:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: "write"
+      contents: "read"
     steps:
-    - uses: actions/checkout@v5
-    - uses: cachix/install-nix-action@v31
-      with:
-        github_access_token: ${{ secrets.GITHUB_TOKEN }}
-    - run: nix flake check
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: DeterminateSystems/flake-checker-action@main
+      - name: Run `nix flake check`
+        run: nix flake check
 
   release:
     name: Release
@@ -38,7 +42,7 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Dependencies
-        run: nix develop .#full --command pnpm install
+        run: nix develop .#full --command pnpm install --frozen-lockfile
 
       - name: Create Release Pull Request or Publish
         id: changesets
