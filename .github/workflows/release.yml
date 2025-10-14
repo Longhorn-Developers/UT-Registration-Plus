@@ -18,6 +18,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
+        with:
+          use-flakehub: false
       - uses: DeterminateSystems/flake-checker-action@main
       - name: Run `nix flake check`
         run: nix flake check
