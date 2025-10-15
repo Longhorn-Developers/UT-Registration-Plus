@@ -15,7 +15,7 @@
         "zip:to-publish": "SENTRY_ENV='production' pnpm zip",
         "changeset": "changeset",
         "version": "changeset version && pnpm run generate-changelog",
-        "release": "pnpm run zip-to-publish && changeset tag",
+        "release": "pnpm run zip:to-publish && changeset tag",
         "prettier": "prettier src --check",
         "prettier:fix": "prettier src --write",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
