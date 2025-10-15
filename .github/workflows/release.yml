@@ -50,6 +50,9 @@ jobs:
                   title: 'feat(release): version UTRP'
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  SENTRY_ORG: longhorn-developers
+                  SENTRY_PROJECT: ut-registration-plus
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
             - name: Get UTRP Version and Tag
               if: steps.changesets.outputs.hasChangesets == 'false'
