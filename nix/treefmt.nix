@@ -16,6 +16,7 @@
         programs.yamlfmt.enable = true;
         programs.dockerfmt.enable = true;
 
+        settings.formatter.prettier.excludes = [ "pnpm-lock.yaml" ];
         settings.formatter.shellcheck.excludes = [ ".envrc" ];
         settings.formatter.yamlfmt.excludes = [ "pnpm-lock.yaml" ];
       };
