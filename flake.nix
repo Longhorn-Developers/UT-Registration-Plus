@@ -1,43 +1,49 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
+    systems.url = "github:nix-systems/default";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-compat.url = "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      flake-utils,
-    }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = (import nixpkgs { inherit system; });
+    inputs@{ flake-parts, systems, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = import systems;
+      imports = [
+        inputs.treefmt-nix.flakeModule
+      ];
 
-        commonPackages = with pkgs; [
-          nodejs_20 # v20.19.5
-          pnpm_10 # v10.18.0
-        ];
+      perSystem =
+        { pkgs, ... }:
+        let
+          commonPackages = with pkgs; [
+            nodejs_20 # v20.19.5
+            pnpm_10 # v10.18.0
+          ];
 
-        additionalPackages = with pkgs; [
-          bun
-          nodePackages.conventional-changelog-cli
-          sentry-cli
-        ];
-      in
-      {
-        formatter = pkgs.nixfmt-rfc-style;
+          additionalPackages = with pkgs; [
+            bun
+            nodePackages.conventional-changelog-cli
+            sentry-cli
+          ];
+        in
+        {
+          devShells.default = pkgs.mkShell {
+            name = "utrp-dev";
+            packages = commonPackages;
+          };
 
-        devShells.default = pkgs.mkShell {
-          name = "utrp-dev";
-          buildInputs = commonPackages;
+          devShells.full = pkgs.mkShell {
+            name = "utrp-dev-full";
+            packages = commonPackages ++ additionalPackages;
+          };
+
+          treefmt = {
+            programs.nixfmt.enable = pkgs.lib.meta.availableOn pkgs.stdenv.buildPlatform pkgs.nixfmt-rfc-style.compiler;
+            programs.nixfmt.package = pkgs.nixfmt-rfc-style;
+          };
         };
-
-        devShells.full = pkgs.mkShell {
-          name = "utrp-dev-full";
-          buildInputs = commonPackages ++ additionalPackages;
-        };
-      }
-    );
+    };
 }
