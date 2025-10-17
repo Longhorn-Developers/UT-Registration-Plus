@@ -10,3 +10,6 @@ indent_style = space
 
 [*.nix]
 indent_size = 2
+
+[*.{yaml,yml}]
+indent_size = 2
