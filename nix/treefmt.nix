@@ -13,6 +13,10 @@
         programs.nixfmt.package = pkgs.nixfmt-rfc-style;
         programs.shellcheck.enable = true;
         programs.yamlfmt.enable = true;
+        programs.dockerfmt.enable = true;
+
+        settings.formatter.shellcheck.excludes = [ ".envrc" ];
+        settings.formatter.yamlfmt.excludes = [ "pnpm-lock.yaml" ];
       };
     };
 }
