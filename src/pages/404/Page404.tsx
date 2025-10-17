@@ -271,12 +271,12 @@ export default function Page404(): JSX.Element {
         }
         function _0x5629d1() {
             let _0x13c635 = _0xdd3699;
-            _0x5b7f43(),
+            (_0x5b7f43(),
                 _0x16f39e[_0x13c635(0x81)](
                     _0x228047,
                     0x9c + -0x1 * 0x23ab + 0x230f * 0x1,
                     -0x1c26 + 0x7bf + -0x6cd * -0x3
-                );
+                ));
         }
         let _0x93f360 = 0x64 * 0x49 + 0x1e1e + -0x3aa2;
         function _0x5b7f43() {
@@ -373,12 +373,12 @@ export default function Page404(): JSX.Element {
                                         (-0x2469 + 0x156a * -0x1 + 0x39e2)) +
                                     (-0x1 * 0x13f8 + 0x6df + -0x1 * -0xd29);
                                 if (_0x3e178a == 0x1 * -0x1a87 + 0x1fdd + -0x555 * 0x1) {
-                                    (_0x546fb5 =
+                                    ((_0x546fb5 =
                                         (_0x227002 * (-0x10d7 + 0x1 * 0x15ad + -0x2 * 0x263)) &
                                         (-0x25ca * 0x1 + 0x8 * 0x278 + -0x1 * -0x1219)),
                                         (_0x1667c5 =
                                             (_0x32116b * (0x4d3 + 0x1c09 * -0x1 + 0x3 * 0x7c2)) &
-                                            (-0xf06 * 0x2 + -0x144f * -0x1 + -0x344 * -0x3));
+                                            (-0xf06 * 0x2 + -0x144f * -0x1 + -0x344 * -0x3)));
                                     if (_0x5b3085 < -0xa * 0xed + -0xd19 + 0x1 * 0x165b)
                                         _0x1667c5 += -0xd48 + 0xf6c + 0xc * -0x2b;
                                 }
@@ -410,10 +410,10 @@ export default function Page404(): JSX.Element {
                                         (-0x2709 + -0x6 * -0x312 + -0x39a * -0x6)),
                                     (_0x267dd3 = _0x38c463));
                             }
-                            (_0x227002 += _0x4b089b),
+                            ((_0x227002 += _0x4b089b),
                                 (_0x2aec99 += _0x5b3085),
                                 (_0x32116b += _0x1eaaad),
-                                (_0x38c463 += _0x57383c);
+                                (_0x38c463 += _0x57383c));
                         }
                     }
                     let _0x5cba48 =
@@ -430,7 +430,7 @@ export default function Page404(): JSX.Element {
                     let _0xdf8389 =
                         ((_0x13f1b0 & (-0x247a + -0x4 * -0x9c2 + -0x39 * 0x7)) * _0x2062a9 * _0x5c387a) /
                         ((0x1d5 * 0xa + -0x250a + -0x31 * -0x67) * (-0x7 * 0x25f + -0xae7 + 0x1c7f * 0x1));
-                    (_0x228047[_0x4626de(0x8e)][
+                    ((_0x228047[_0x4626de(0x8e)][
                         (_0x132623 + _0x1a573d * _0x124180) * (0x29 * -0xa9 + -0x94 * -0x2b + -0x239 * -0x1) +
                             (0x55d * 0x2 + 0xeed * 0x1 + -0xc7 * 0x21)
                     ] = _0x5cba48),
@@ -441,7 +441,7 @@ export default function Page404(): JSX.Element {
                         (_0x228047[_0x4626de(0x8e)][
                             (_0x132623 + _0x1a573d * _0x124180) * (0x1e2a + -0x21df + -0x1 * -0x3b9) +
                                 (0x1e79 + 0x860 * -0x2 + 0x1 * -0xdb7)
-                        ] = _0xdf8389);
+                        ] = _0xdf8389));
                 }
             }
         }

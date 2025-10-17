@@ -26,7 +26,7 @@
         "navigation": "Routes",
         "logging": "log",
         "popup": "Layout",
-        "storage": "Database",
+        "storage": "Database"
     },
     "material-icon-theme.files.associations": {
         "tsconfig.extension.json": "tsconfig",
@@ -36,5 +36,5 @@
     "[html]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.tsdk": "node_modules/typescript/lib"
 }
