@@ -4,7 +4,7 @@
     let
       commonPackages = with pkgs; [
         nodejs_20 # v20.19.5
-        pnpm_10 # v10.18.0
+        pnpm_10 # v10.18.2
       ];
 
       additionalPackages = with pkgs; [
