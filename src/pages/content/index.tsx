@@ -5,7 +5,6 @@ import ShadedResults from '@views/components/injected/SearchResultShader';
 import getSiteSupport, { SiteSupport } from '@views/lib/getSiteSupport';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-//pr change
 
 const support = getSiteSupport(window.location.href);
 
