@@ -14,22 +14,29 @@
       system:
       let
         pkgs = (import nixpkgs { inherit system; });
+
+        commonPackages = with pkgs; [
+          nodejs_20 # v20.19.5
+          pnpm_10 # v10.18.0
+        ];
+
+        additionalPackages = with pkgs; [
+          bun
+          nodePackages.conventional-changelog-cli
+          sentry-cli
+        ];
       in
       {
         formatter = pkgs.nixfmt-rfc-style;
 
         devShells.default = pkgs.mkShell {
           name = "utrp-dev";
-          buildInputs = with pkgs; [
-            nodejs_20 # v20.19.4
-            pnpm_10 # v10.14.0
-          ];
+          buildInputs = commonPackages;
+        };
 
-          shellHook = ''
-            echo "UTRP Nix Flake Environment Loaded"
-            echo "Node: $(node --version)"
-            echo "pnpm: $(pnpm --version)"
-          '';
+        devShells.full = pkgs.mkShell {
+          name = "utrp-dev-full";
+          buildInputs = commonPackages ++ additionalPackages;
         };
       }
     );
