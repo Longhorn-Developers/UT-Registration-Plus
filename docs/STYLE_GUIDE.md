@@ -1,64 +1,42 @@
-# UT Registration Plus TypeScript/React Style Guide
+# TypeScript/React Style Guide
 
 ## Table of Contents
 
-1. [File Organization](#file-organization)
-2. [TypeScript Conventions](#typescript-conventions)
-3. [React Components](#react-components)
-4. [Styling](#styling)
-5. [Imports](#imports)
-6. [Naming Conventions](#naming-conventions)
-7. [Functions](#functions)
-8. [Type Definitions](#type-definitions)
-9. [Comments and Documentation](#comments-and-documentation)
-10. [Chrome Extension Patterns](#chrome-extension-patterns)
+1. [File Naming](#file-naming)
+2. [TypeScript](#typescript)
+3. [Naming Conventions](#naming-conventions)
+4. [Imports](#imports)
+5. [Types](#types)
+6. [Functions](#functions)
+7. [React](#react)
+8. [Comments and Documentation](#comments-and-documentation)
+9. [Styling](#styling)
 
-## File Organization
+## File Naming
 
-### Directory Structure
-
-```
-src/
-├── pages/           # Chrome extension pages (popup, options, background)
-├── views/           # Shared UI components and hooks
-│   ├── components/  # React components
-│   ├── hooks/       # Custom React hooks
-│   ├── lib/         # Utility libraries
-│   ├── styles/      # SCSS modules
-│   └── contexts/    # React contexts
-├── shared/          # Shared utilities, types, and storage
-│   ├── types/       # TypeScript type definitions
-│   ├── storage/     # Chrome storage wrappers
-│   ├── messages/    # Message passing definitions
-│   └── util/        # Utility functions
-└── assets/          # Static assets
-```
-
-### File Naming
-
-- React components: `PascalCase.tsx`
-- TypeScript modules: `camelCase.ts`
-- SCSS modules: `PascalCase.module.scss`
-- Type definitions: `PascalCase.ts`
-- Utilities: `camelCase.ts`
+Use `PascalCase` for React component files and `camelCase` for all other TypeScript files:
 
 ```typescript
 // Good
-src / views / components / common / Button.tsx;
-src / views / hooks / useSchedules.ts;
-src / shared / types / Course.ts;
-src / views / lib / getSiteSupport.ts;
+components / Button.tsx;
+hooks / useSchedules.ts;
+types / Course.ts;
+lib / getSiteSupport.ts;
+utils / formatDate.ts;
 
 // Bad
-src / views / components / common / button.tsx;
-src / views / hooks / UseSchedules.ts;
+components / button.tsx;
+hooks / UseSchedules.ts;
+types / course.ts;
 ```
 
 ## TypeScript Conventions
 
+## TypeScript
+
 ### Strict Mode
 
-Use strict TypeScript configuration:
+Enable strict TypeScript checking:
 
 ```json
 {
@@ -68,6 +46,636 @@ Use strict TypeScript configuration:
         "noFallthroughCasesInSwitch": true
     }
 }
+```
+
+### Type Annotations
+
+Prefer explicit return types for exported functions:
+
+```typescript
+// Good
+export function getCourseById(id: number): Course | undefined {
+    return courses.find(c => c.id === id);
+}
+
+// Acceptable for simple cases
+export function getCourseById(id: number) {
+    return courses.find(c => c.id === id);
+}
+```
+
+### Type Imports
+
+Use `type` keyword for type-only imports:
+
+```typescript
+// Good
+import type { Course } from './types/Course';
+import type { UserSchedule } from './types/UserSchedule';
+
+// Bad
+import { Course } from './types/Course';
+```
+
+### No `any`
+
+Never use `any`. Use `unknown` for truly unknown types:
+
+```typescript
+// Good
+function parseData(data: unknown): Course {
+    if (typeof data === 'object' && data !== null) {
+        return data as Course;
+    }
+    throw new Error('Invalid data');
+}
+
+// Bad
+function parseData(data: any): Course {
+    return data;
+}
+```
+
+### Enums
+
+Avoid enums. Use const objects with `as const`:
+
+```typescript
+// Good
+export const Status = {
+    OPEN: 'OPEN',
+    CLOSED: 'CLOSED',
+    WAITLISTED: 'WAITLISTED',
+} as const;
+
+export type StatusType = (typeof Status)[keyof typeof Status];
+
+// Bad
+enum Status {
+    OPEN = 'OPEN',
+    CLOSED = 'CLOSED',
+}
+```
+
+### `null` vs `undefined`
+
+Prefer `undefined` for optional values. Use `null` for explicit absence:
+
+```typescript
+// Good
+function findCourse(id: number): Course | undefined {
+    return courses.find(c => c.id === id);
+}
+
+interface Props {
+    description?: string; // undefined if not provided
+}
+
+// Use null for explicit "no value" state
+let selectedCourse: Course | null = null;
+```
+
+## Naming Conventions
+
+### General Rules
+
+- `camelCase` for variables, functions, methods, parameters
+- `PascalCase` for classes, interfaces, types, React components
+- `UPPER_SNAKE_CASE` for global constants
+- Avoid abbreviations unless widely understood
+
+### Variables and Functions
+
+```typescript
+// Good
+const courseList = [];
+const activeSchedule = schedules[0];
+function getCourseById(id: number) {}
+async function fetchCourses() {}
+
+// Bad
+const CourseList = [];
+const active_schedule = schedules[0];
+function GetCourseById(id: number) {}
+```
+
+### Constants
+
+```typescript
+// Good
+const MAX_COURSES = 10;
+const API_URL = 'https://api.example.com';
+const CACHE_TTL = 3600;
+
+// Bad
+const maxCourses = 10;
+const apiUrl = 'https://api.example.com';
+```
+
+### Types and Interfaces
+
+```typescript
+// Good
+interface UserSchedule {}
+type StatusType = 'OPEN' | 'CLOSED';
+class Course {}
+
+// Bad
+interface userSchedule {}
+type status_type = 'OPEN' | 'CLOSED';
+class course {}
+```
+
+### Private Fields
+
+Prefix private fields with `#` or use TypeScript's `private`:
+
+```typescript
+// Good
+class Course {
+    #internalId: string;
+    private metadata: object;
+
+    public get id(): string {
+        return this.#internalId;
+    }
+}
+```
+
+## Imports
+
+### Import Order
+
+Organize imports in this order:
+
+1. External libraries
+2. Internal absolute imports
+3. Relative imports
+
+```typescript
+// Good
+import { useState, useEffect } from 'react';
+import clsx from 'clsx';
+
+import { Course } from '@shared/types/Course';
+import { Button } from '@views/components/Button';
+
+import styles from './Component.module.scss';
+import { helper } from './helper';
+
+// Bad - mixed order
+import styles from './Component.module.scss';
+import { useState } from 'react';
+import { Course } from '@shared/types/Course';
+```
+
+### Module vs Destructured Imports
+
+Use destructured imports for specific exports:
+
+```typescript
+// Good
+import { useState, useEffect } from 'react';
+import { getCourseById, formatCourseName } from './utils';
+
+// Use default imports when appropriate
+import React from 'react';
+import clsx from 'clsx';
+
+// Avoid
+import * as React from 'react';
+```
+
+### Side-Effect Imports
+
+Place side-effect imports at the top:
+
+```typescript
+// Good
+import 'uno.css';
+import './global.scss';
+
+import React from 'react';
+import { Button } from './components/Button';
+```
+
+## Types
+
+### Type vs Interface
+
+Use `interface` for object shapes that may be extended. Use `type` for unions, intersections, and utility types:
+
+```typescript
+// Good - Interface for object shapes
+interface Course {
+    id: number;
+    name: string;
+}
+
+interface AdvancedCourse extends Course {
+    prerequisites: string[];
+}
+
+// Good - Type for unions and utilities
+type Status = 'OPEN' | 'CLOSED' | 'WAITLISTED';
+type CourseOrSchedule = Course | Schedule;
+type PartialCourse = Partial<Course>;
+```
+
+### Optional vs `undefined`
+
+Use optional properties instead of explicit `undefined`:
+
+```typescript
+// Good
+interface Props {
+    name: string;
+    description?: string;
+}
+
+// Bad
+interface Props {
+    name: string;
+    description: string | undefined;
+}
+```
+
+### Array Types
+
+Use `T[]` for simple arrays, `Array<T>` for complex types:
+
+```typescript
+// Good
+const numbers: number[] = [1, 2, 3];
+const courses: Course[] = [];
+
+// Use Array<T> for readability with complex types
+const callbacks: Array<(data: unknown) => void> = [];
+const tuples: Array<[string, number]> = [];
+```
+
+### Type Assertions
+
+Avoid type assertions. Use type guards instead:
+
+```typescript
+// Good
+function isCourse(obj: unknown): obj is Course {
+    return typeof obj === 'object' && obj !== null && 'id' in obj && 'name' in obj;
+}
+
+if (isCourse(data)) {
+    console.log(data.name);
+}
+
+// Bad
+const course = data as Course;
+console.log(course.name);
+```
+
+### Generic Types
+
+Use descriptive names for generic type parameters:
+
+```typescript
+// Good
+function useState<TState>(initial: TState): [TState, (value: TState) => void] {}
+function map<TInput, TOutput>(items: TInput[], fn: (item: TInput) => TOutput): TOutput[] {}
+
+// Acceptable for simple cases
+function identity<T>(value: T): T {}
+
+// Bad
+function map<A, B>(items: A[], fn: (item: A) => B): B[] {}
+```
+
+## Functions
+
+### Function Declarations
+
+Use function declarations for top-level functions:
+
+```typescript
+// Good
+export function getCourseById(id: number): Course | undefined {
+    return courses.find(c => c.id === id);
+}
+
+// Bad
+export const getCourseById = (id: number): Course | undefined => {
+    return courses.find(c => c.id === id);
+};
+```
+
+### Arrow Functions
+
+Use arrow functions for callbacks and short functions:
+
+```typescript
+// Good
+const doubled = numbers.map(n => n * 2);
+const filtered = courses.filter(c => c.status === 'OPEN');
+
+const handleClick = useCallback((event: MouseEvent) => {
+    console.log('Clicked');
+}, []);
+
+// Use function declarations for named functions
+function processData(data: string) {
+    return data.trim();
+}
+```
+
+### Async/Await
+
+Prefer async/await over promise chains:
+
+```typescript
+// Good
+async function fetchCourse(id: number): Promise<Course> {
+    const response = await fetch(`/api/courses/${id}`);
+    const data = await response.json();
+    return data;
+}
+
+// Bad
+function fetchCourse(id: number): Promise<Course> {
+    return fetch(`/api/courses/${id}`)
+        .then(response => response.json())
+        .then(data => data);
+}
+```
+
+### Default Parameters
+
+Use default parameters instead of checking for undefined:
+
+```typescript
+// Good
+function greet(name: string, greeting: string = 'Hello'): string {
+    return `${greeting}, ${name}!`;
+}
+
+// Bad
+function greet(name: string, greeting?: string): string {
+    const finalGreeting = greeting || 'Hello';
+    return `${finalGreeting}, ${name}!`;
+}
+```
+
+### Rest Parameters
+
+Place rest parameters last:
+
+```typescript
+// Good
+function sum(initial: number, ...numbers: number[]): number {
+    return initial + numbers.reduce((a, b) => a + b, 0);
+}
+
+// Bad
+function sum(...numbers: number[], initial: number): number {
+    return initial + numbers.reduce((a, b) => a + b, 0);
+}
+```
+
+## React
+
+### Function Components
+
+Always use function components:
+
+```typescript
+// Good
+export default function Button({
+    variant = 'filled',
+    children
+}: Props): JSX.Element {
+    return <button className={variant}>{children}</button>;
+}
+
+// Bad
+const Button: React.FC<Props> = ({ variant, children }) => {
+    return <button className={variant}>{children}</button>;
+};
+```
+
+### Props
+
+Define props with interfaces:
+
+```typescript
+// Good
+interface ButtonProps {
+    variant?: 'filled' | 'outline';
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+    disabled?: boolean;
+}
+
+export function Button({
+    variant = 'filled',
+    onClick,
+    disabled,
+    children
+}: React.PropsWithChildren<ButtonProps>): JSX.Element {
+    return <button onClick={onClick} disabled={disabled}>{children}</button>;
+}
+```
+
+### Hooks
+
+Custom hooks must start with `use`:
+
+```typescript
+// Good
+export function useWindowSize() {
+    const [size, setSize] = useState({ width: 0, height: 0 });
+
+    useEffect(() => {
+        const handleResize = () => {
+            setSize({ width: window.innerWidth, height: window.innerHeight });
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return size;
+}
+```
+
+### Event Handlers
+
+Prefix event handlers with `handle`:
+
+```typescript
+// Good
+const handleClick = () => {};
+const handleSubmit = (event: FormEvent) => {};
+const handleChange = (value: string) => {};
+
+// Bad
+const onClick = () => {};
+const submit = () => {};
+const changed = () => {};
+```
+
+### JSX
+
+Use self-closing tags when there are no children:
+
+```typescript
+// Good
+<Button variant="filled" />
+<Input type="text" value={name} />
+
+// Bad
+<Button variant="filled"></Button>
+```
+
+Use fragments instead of div wrappers when possible:
+
+```typescript
+// Good
+<>
+    <Header />
+    <Main />
+</>
+
+// Bad
+<div>
+    <Header />
+    <Main />
+</div>
+```
+
+## Comments and Documentation
+
+### JSDoc
+
+Document all exported functions, classes, and complex types:
+
+```typescript
+/**
+ * Calculates the total credit hours for a schedule.
+ *
+ * @param courses - The list of courses in the schedule
+ * @returns The total number of credit hours
+ */
+export function calculateTotalHours(courses: Course[]): number {
+    return courses.reduce((total, course) => total + course.creditHours, 0);
+}
+```
+
+```typescript
+/**
+ * Represents a university course.
+ */
+export interface Course {
+    /** Unique identifier for the course */
+    id: number;
+    /** Full course name including department */
+    name: string;
+    /** Number of credit hours */
+    creditHours: number;
+}
+```
+
+### Inline Comments
+
+Use inline comments sparingly for complex logic:
+
+```typescript
+// Good - Explains non-obvious behavior
+// Remove duplicate courses based on unique ID
+const uniqueCourses = courses.filter((course, index, arr) => arr.findIndex(c => c.id === course.id) === index);
+
+// Bad - Obvious comment
+// Add 1 to count
+count = count + 1;
+```
+
+### TODO/FIXME
+
+Format action comments consistently:
+
+```typescript
+// TODO: Implement pagination
+// FIXME: Handle edge case when array is empty
+// NOTE: This workaround is needed for Safari compatibility
+```
+
+## Styling
+
+### CSS Modules
+
+Use CSS/SCSS modules for component styles:
+
+```typescript
+// Component.tsx
+import styles from './Component.module.scss';
+
+export function Component() {
+    return <div className={styles.container}>Content</div>;
+}
+```
+
+```scss
+// Component.module.scss
+.container {
+    padding: 1rem;
+    background: white;
+}
+```
+
+### Modern SCSS
+
+Use `@use` instead of `@import`:
+
+```scss
+// Good
+@use 'colors.module.scss';
+
+.text {
+    color: colors.$primary;
+}
+
+// Bad
+@import 'colors.module.scss';
+```
+
+### Conditional Classes
+
+Use `clsx` for conditional classes:
+
+```typescript
+import clsx from 'clsx';
+
+<button
+    className={clsx(
+        'btn',
+        {
+            'btn-primary': variant === 'filled',
+            'btn-secondary': variant === 'outline',
+            'btn-disabled': disabled,
+        },
+        className
+    )}
+>
+```
+
+### Inline Styles
+
+Avoid inline styles unless dynamic values are needed:
+
+```typescript
+// Good - Dynamic color
+<div style={{ backgroundColor: color }} />
+
+// Bad - Static styles
+<div style={{ padding: '1rem', margin: '0.5rem' }} />
+
+// Use CSS classes instead
+<div className={styles.container} />
 ```
 
 ### Type Imports
