@@ -1,9 +1,27 @@
+## [2.2.2](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.2.1...v2.2.2) (2025-10-13)
+
+### Features
+
+* add nix flake ([#593](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/593)) ([7b401ad](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/7b401add1565ff401bad99745ff9e53b9a7f899f))
+* automatically select new or duplicated schedules ([#583](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/583)) ([#589](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/589)) ([2a50f55](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/2a50f5580d3dbeb0d66546c23cf29bbb37d80da2))
+* **env:** add SENTRY env vars ([8f7e1bc](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/8f7e1bc0af6336549068e02b80df21d4e8f4ef9c))
+* export schedule button add to calendar ([#594](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/594)) ([5994ded](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/5994ded8be876cb55174d27d3fdb0832b21a0ff9))
+* search result shading ([#617](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/617)) ([be861b8](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/be861b823cb2cb7f6f4a1f266351eec3fc1c2f99))
+* show warning for courses of different semesters ([#570](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/570)) ([2e7dac1](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/2e7dac1e3eba757231ac07ac966231c08c703a16))
+* support summer grades, fix summer course parser ([#596](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/596)) ([2d92dd4](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/2d92dd47f00a44b7d48e92a8ffba94480e4e73f9))
+
+### Bug Fixes
+
+* fix or ignore various eslint warning ([#609](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/609)) ([95de8df](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/95de8df37243b6d59625df515a60442f11b7a9d3))
+* limit height of schedule list dropdown in the extension popup ([#543](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/543)) ([eb8141e](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/eb8141ee8c3d32bce901457178d50781b78f86dd))
+* whitespace wrapping in semester warning ([#629](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/629)) ([46fe591](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/46fe591fa72ef017eea7cfb8aa37d12d8f223926))
 ## [2.2.1](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.2.0...v2.2.1) (2025-06-04)
 
 ### Features
 
 * add dining app promo ([#598](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/598)) ([be1dccf](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/be1dccfcb9d052c6b291b50cc53418d6bb645beb))
 * inside jokes005 ([#590](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/590)) ([37471ef](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/37471efb740c7a5828cf3b54bac70954694359d7))
+* **release:** v2.2.1 ([234f3d6](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/234f3d627d603adf8555b4d0e93106d198918169))
 
 ### Bug Fixes
 
