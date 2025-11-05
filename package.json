@@ -159,7 +159,12 @@
         },
         "overrides": {
             "es-module-lexer": "^1.5.4"
-        }
+        },
+        "ignoredBuiltDependencies": [
+            "@parcel/watcher",
+            "@swc/core",
+            "esbuild"
+        ]
     },
     "volta": {
         "node": "20.19.4",

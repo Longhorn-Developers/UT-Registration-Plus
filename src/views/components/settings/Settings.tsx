@@ -92,6 +92,8 @@ export default function Settings(): JSX.Element {
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
     const [calendarNewTab, setCalendarNewTab] = useState<boolean>(false);
+    // const [increaseScheduleLimit, setCalendarNewTab] = useState<boolean>(false); vincent****
+
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -448,6 +450,25 @@ export default function Settings(): JSX.Element {
                                         onChange={() => {
                                             setLoadAllCourses(!loadAllCourses);
                                             OptionsStore.set('enableScrollToLoad', !loadAllCourses);
+                                        }}
+                                    />
+                                </div>
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Increase limit of planned schedules
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>
+                                            Not recommended to go over 10 schedules for regisration.
+                                            This setting is for advisors that may want to display schedules
+                                            for multiple students.
+                                        </p>
+                                    </div>
+                                    <SwitchButton
+                                        isChecked={loadAllCourses/*increaseScheduleLimit*/}
+                                        onChange={() => {
+                                            OptionsStore.set('enableScrollToLoad'/*increasePlannedSchedules*/, !loadAllCourses/*increaseScheduleLimit*/);
                                         }}
                                     />
                                 </div>

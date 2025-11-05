@@ -38,6 +38,11 @@ export function useEnforceScheduleLimit(): () => boolean {
                 ),
             });
 
+
+            // pop up link to directly allow user to change setting to increse limit
+            // also notify user that this may impact performance/"dont get carried away"
+            // probably just a simple button that says "i understand" to close the dialog
+
             return false;
         }
         return true;
