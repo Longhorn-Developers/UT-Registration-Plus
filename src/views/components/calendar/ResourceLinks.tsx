@@ -15,10 +15,6 @@ interface LinkItem {
 
 const links: LinkItem[] = [
     // {
-    //     text: "Spring '26 Course Schedule",
-    //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20262/',
-    // },
-    // {
     //     text: "Fall '25 Course Schedule",
     //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20259/',
     // },
@@ -27,7 +23,11 @@ const links: LinkItem[] = [
     //     url: 'https://registrar.utexas.edu/schedules/archive',
     // },
     {
-        text: 'Course Schedules',
+        text: "Spring '26 Course Schedule",
+        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20262/',
+    },
+    {
+        text: 'Other Course Schedules',
         url: 'https://registrar.utexas.edu/schedules',
     },
     {
