@@ -24,6 +24,12 @@ export interface IOptionsStore {
 
     /** whether the promo should be shown */
     showUTDiningPromo: boolean;
+
+    /** whether the user's email address should be remembered by the extension  */
+    rememberMyEmail: boolean;
+
+    /** the user's email address, if set and chosen to be remembered  */
+    emailAddress: string;
 }
 
 export const OptionsStore = createSyncStore<IOptionsStore>({
@@ -34,6 +40,8 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
     alwaysOpenCalendarInNewTab: false,
     showCalendarSidebar: true,
     showUTDiningPromo: true,
+    rememberMyEmail: false,
+    emailAddress: '',
 });
 
 /**
@@ -50,6 +58,8 @@ export const initSettings = async () =>
         alwaysOpenCalendarInNewTab: await OptionsStore.get('alwaysOpenCalendarInNewTab'),
         showCalendarSidebar: await OptionsStore.get('showCalendarSidebar'),
         showUTDiningPromo: await OptionsStore.get('showUTDiningPromo'),
+        rememberMyEmail: await OptionsStore.get('rememberMyEmail'),
+        emailAddress: await OptionsStore.get('emailAddress'),
     }) satisfies IOptionsStore;
 
 // Clothing retailer right
