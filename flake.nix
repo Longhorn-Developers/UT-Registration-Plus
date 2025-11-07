@@ -23,7 +23,7 @@
             inherit system;
             overlays = [
               (final: prev: {
-                nodejs = prev.nodejs_20;
+                nodejs = prev.nodejs_20; # v20.19.5
               })
             ];
             config = { };
