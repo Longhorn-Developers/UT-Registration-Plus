@@ -1,43 +1,33 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
+    systems.url = "github:nix-systems/default";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-compat.url = "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      flake-utils,
-    }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = (import nixpkgs { inherit system; });
+    inputs@{ flake-parts, systems, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = import systems;
+      imports = [
+        ./nix/devShells.nix
+        ./nix/treefmt.nix
+      ];
 
-        commonPackages = with pkgs; [
-          nodejs_20 # v20.19.5
-          pnpm_10 # v10.18.0
-        ];
-
-        additionalPackages = with pkgs; [
-          bun
-          nodePackages.conventional-changelog-cli
-          sentry-cli
-        ];
-      in
-      {
-        formatter = pkgs.nixfmt-rfc-style;
-
-        devShells.default = pkgs.mkShell {
-          name = "utrp-dev";
-          buildInputs = commonPackages;
+      perSystem =
+        { system, ... }:
+        {
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = [
+              (final: prev: {
+                nodejs = prev.nodejs_20; # v20.19.5
+              })
+            ];
+            config = { };
+          };
         };
-
-        devShells.full = pkgs.mkShell {
-          name = "utrp-dev-full";
-          buildInputs = commonPackages ++ additionalPackages;
-        };
-      }
-    );
+    };
 }
