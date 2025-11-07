@@ -15,5 +15,19 @@
         ./nix/devShells.nix
         ./nix/treefmt.nix
       ];
+
+      perSystem =
+        { system, ... }:
+        {
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = [
+              (final: prev: {
+                nodejs = prev.nodejs_20;
+              })
+            ];
+            config = { };
+          };
+        };
     };
 }

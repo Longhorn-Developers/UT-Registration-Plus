@@ -1,9 +1,12 @@
 {
   perSystem =
-    { pkgs, ... }:
+    {
+      pkgs,
+      ...
+    }:
     let
       commonPackages = with pkgs; [
-        nodejs_20 # v20.19.5
+        nodejs # Defined in overlay
         pnpm_10 # v10.18.2
       ];
 
