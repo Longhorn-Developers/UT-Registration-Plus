@@ -92,6 +92,7 @@ export default function Settings(): JSX.Element {
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
     const [calendarNewTab, setCalendarNewTab] = useState<boolean>(false);
+    const [reducedMotion, setReducedMotion] = useState<boolean>(false);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -187,6 +188,10 @@ export default function Settings(): JSX.Element {
             // console.log('alwaysOpenCalendarInNewTab', newValue);
         });
 
+        const l6 = OptionsStore.listen('enableReducedMotion', async ({ newValue }) => {
+            setReducedMotion(newValue);
+        });
+
         // Remove listeners when the component is unmounted
         return () => {
             OptionsStore.removeListener(l1);
@@ -194,6 +199,7 @@ export default function Settings(): JSX.Element {
             OptionsStore.removeListener(l3);
             OptionsStore.removeListener(l4);
             OptionsStore.removeListener(l5);
+            OptionsStore.removeListener(l6);
 
             DevStore.removeListener(ds_l1);
 
@@ -466,6 +472,24 @@ export default function Settings(): JSX.Element {
                                         onChange={() => {
                                             setCalendarNewTab(!calendarNewTab);
                                             OptionsStore.set('alwaysOpenCalendarInNewTab', !calendarNewTab);
+                                        }}
+                                    />
+                                </div>
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Reduced Motion
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>
+                                            Disable animations and transitions for users who prefer reduced motion.
+                                        </p>
+                                    </div>
+                                    <SwitchButton
+                                        isChecked={reducedMotion}
+                                        onChange={() => {
+                                            setReducedMotion(!reducedMotion);
+                                            OptionsStore.set('enableReducedMotion', !reducedMotion);
                                         }}
                                     />
                                 </div>
