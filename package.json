@@ -10,7 +10,7 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "build:dev": "tsc && NODE_ENV='development' vite build --mode development",
-        "build:watch": "cross-env NODE_ENV=development vite build --mode development -w",
+        "build:watch": "NODE_ENV='development' vite build --mode development -w",
         "zip": "pnpm build && pnpm gulp zipProdBuild",
         "zip:to-publish": "SENTRY_ENV='production' pnpm zip",
         "prettier": "prettier src --check",
@@ -110,7 +110,6 @@
         "@vitest/ui": "^2.1.9",
         "chalk": "^5.4.1",
         "chromatic": "^11.26.0",
-        "cross-env": "^10.1.0",
         "cssnano": "^7.0.6",
         "cssnano-preset-advanced": "^7.0.6",
         "dotenv": "^16.4.7",
@@ -160,12 +159,7 @@
         },
         "overrides": {
             "es-module-lexer": "^1.5.4"
-        },
-        "ignoredBuiltDependencies": [
-            "@parcel/watcher",
-            "@swc/core",
-            "esbuild"
-        ]
+        }
     },
     "volta": {
         "node": "20.19.4",
