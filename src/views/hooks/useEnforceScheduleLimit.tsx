@@ -29,7 +29,7 @@ export function useEnforceScheduleLimit(): () => boolean {
                 const val = await OptionsStore.get('allowMoreSchedules');
                 if (mounted) setAllowMoreSchedules(val ?? false);
             } catch (err) {
-                    console.error('Failed to read allowMoreSchedules from OptionsStore:', err);
+                console.error('Failed to read allowMoreSchedules from OptionsStore:', err);
             }
         })();
 

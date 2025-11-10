@@ -94,7 +94,6 @@ export default function Settings(): JSX.Element {
     const [calendarNewTab, setCalendarNewTab] = useState<boolean>(false);
     const [increaseScheduleLimit, setIncreaseScheduleLimit] = useState<boolean>(false);
 
-
     const showMigrationDialog = useMigrationDialog();
 
     // Toggle GitHub stats when the user presses the 'S' key
