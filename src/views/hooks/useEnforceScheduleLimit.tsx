@@ -55,7 +55,7 @@ export function useEnforceScheduleLimit(): () => boolean {
                     <>
                         To encourage organization,{' '}
                         <span className='text-ut-burntorange'>please consider deleting any unused schedules</span> you
-                        may have.
+                        may have. You can increase the limit in the settings if it’s really necessary.
                     </>
                 ),
 
