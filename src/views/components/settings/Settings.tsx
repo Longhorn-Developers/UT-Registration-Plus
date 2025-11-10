@@ -247,21 +247,18 @@ export default function Settings(): JSX.Element {
 
     const handleImportClick = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = async e => {
-                try {
-                    const result = e.target?.result as string;
-                    const jsonObject = JSON.parse(result);
-                    await importSchedule(jsonObject);
-                } catch (error) {
-                    console.error('Invalid import file!');
-                }
-            };
-            reader.readAsText(file);
+        if (!file) return;
+
+        try {
+            const text = await file.text();
+            const data = JSON.parse(text);
+            await importSchedule(data);
+            alert('Schedule imported successfully.');
+        } catch (error) {
+            console.error('Error importing schedule:', error);
+            alert('Failed to import schedule. Make sure the file is a valid .json format.');
         }
     };
-
     // const handleAddCourseByLink = async () => {
     //     // todo: Use a proper modal instead of a prompt
     //     const link: string | null = prompt('Enter course link');
