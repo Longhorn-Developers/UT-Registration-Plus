@@ -1,8 +1,11 @@
 import useSchedules from '@views/hooks/useSchedules';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '../components/common/Button';
 import { usePrompt } from '../components/common/DialogProvider/DialogProvider';
+import { OptionsStore } from '@shared/storage/OptionsStore';
+import { background } from '@shared/messages';
+import { CRX_PAGES } from '@shared/types/CRXPages';
 
 const SCHEDULE_LIMIT = 10;
 
@@ -17,8 +20,34 @@ const SCHEDULE_LIMIT = 10;
 export function useEnforceScheduleLimit(): () => boolean {
     const [, schedules] = useSchedules();
     const showDialog = usePrompt();
+    const [allowMoreSchedules, setAllowMoreSchedules] = useState<boolean>(false);
+
+    useEffect(() => {
+        // initialize value
+        let mounted = true;
+        (async () => {
+            try {
+                const val = await OptionsStore.get('allowMoreSchedules');
+                if (mounted) setAllowMoreSchedules(val ?? false);
+            } catch (err) {
+                // ignore
+            }
+        })();
+
+        const listener = OptionsStore.listen('allowMoreSchedules', async ({ newValue }) => {
+            setAllowMoreSchedules(newValue);
+        });
+
+        return () => {
+            mounted = false;
+            OptionsStore.removeListener(listener);
+        };
+    }, []);
 
     return useCallback(() => {
+        // If user has enabled bypass, allow creating more schedules
+        if (allowMoreSchedules) return true;
+
         if (schedules.length >= SCHEDULE_LIMIT) {
             showDialog({
                 title: `You have too many schedules!`,
@@ -32,19 +61,28 @@ export function useEnforceScheduleLimit(): () => boolean {
                 ),
 
                 buttons: close => (
-                    <Button variant='filled' color='ut-burntorange' onClick={close}>
-                        I understand
-                    </Button>
+                    <>
+                        <Button
+                            variant='outline'
+                            color='ut-black'
+                            onClick={() => {
+                                close();
+                                // open options/settings page so user can enable bypass if they are advising staff
+                                const url = chrome.runtime.getURL(CRX_PAGES.OPTIONS);
+                                background.openNewTab({ url });
+                            }}
+                        >
+                            Open Settings
+                        </Button>
+                        <Button variant='filled' color='ut-burntorange' onClick={close}>
+                            I understand
+                        </Button>
+                    </>
                 ),
             });
-
-
-            // pop up link to directly allow user to change setting to increse limit
-            // also notify user that this may impact performance/"dont get carried away"
-            // probably just a simple button that says "i understand" to close the dialog
 
             return false;
         }
         return true;
-    }, [schedules, showDialog]);
+    }, [schedules, showDialog, allowMoreSchedules]);
 }

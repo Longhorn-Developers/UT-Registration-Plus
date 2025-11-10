@@ -92,7 +92,7 @@ export default function Settings(): JSX.Element {
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
     const [calendarNewTab, setCalendarNewTab] = useState<boolean>(false);
-    // const [increaseScheduleLimit, setCalendarNewTab] = useState<boolean>(false); vincent****
+    const [increaseScheduleLimit, setIncreaseScheduleLimit] = useState<boolean>(false);
 
 
     const showMigrationDialog = useMigrationDialog();
@@ -128,6 +128,7 @@ export default function Settings(): JSX.Element {
                 enableScrollToLoad,
                 enableDataRefreshing,
                 alwaysOpenCalendarInNewTab,
+                allowMoreSchedules,
             } = await initSettings();
             setEnableCourseStatusChips(enableCourseStatusChips);
             // setShowTimeLocation(enableTimeAndLocationInPopup);
@@ -135,6 +136,7 @@ export default function Settings(): JSX.Element {
             setLoadAllCourses(enableScrollToLoad);
             setEnableDataRefreshing(enableDataRefreshing);
             setCalendarNewTab(alwaysOpenCalendarInNewTab);
+            setIncreaseScheduleLimit(allowMoreSchedules);
         };
 
         const initDS = async () => {
@@ -189,6 +191,15 @@ export default function Settings(): JSX.Element {
             // console.log('alwaysOpenCalendarInNewTab', newValue);
         });
 
+        const l6 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
+            setCalendarNewTab(newValue);
+            // console.log('alwaysOpenCalendarInNewTab', newValue);
+        });
+
+        const l7 = OptionsStore.listen('allowMoreSchedules', async ({ newValue }) => {
+            setIncreaseScheduleLimit(newValue);
+        });
+
         // Remove listeners when the component is unmounted
         return () => {
             OptionsStore.removeListener(l1);
@@ -196,6 +207,8 @@ export default function Settings(): JSX.Element {
             OptionsStore.removeListener(l3);
             OptionsStore.removeListener(l4);
             OptionsStore.removeListener(l5);
+            OptionsStore.removeListener(l6);
+            OptionsStore.removeListener(l7);
 
             DevStore.removeListener(ds_l1);
 
@@ -457,18 +470,19 @@ export default function Settings(): JSX.Element {
                                 <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
                                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                                            Increase limit of planned schedules
+                                            Allow more than 10 schedules
                                         </Text>
                                         <p className='text-sm text-gray-600'>
-                                            Not recommended to go over 10 schedules for regisration.
-                                            This setting is for advisors that may want to display schedules
-                                            for multiple students.
+                                            Allow bypassing the 10-schedule limit. Intended for advisors or staff who
+                                            need to create many schedules on behalf of students. Use with caution;
+                                            large numbers of schedules may impact performance.
                                         </p>
                                     </div>
                                     <SwitchButton
-                                        isChecked={loadAllCourses/*increaseScheduleLimit*/}
+                                        isChecked={increaseScheduleLimit}
                                         onChange={() => {
-                                            OptionsStore.set('enableScrollToLoad'/*increasePlannedSchedules*/, !loadAllCourses/*increaseScheduleLimit*/);
+                                            setIncreaseScheduleLimit(!increaseScheduleLimit);
+                                            OptionsStore.set('allowMoreSchedules', !increaseScheduleLimit);
                                         }}
                                     />
                                 </div>
