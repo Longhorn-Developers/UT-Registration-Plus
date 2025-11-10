@@ -474,8 +474,7 @@ export default function Settings(): JSX.Element {
                                         </Text>
                                         <p className='text-sm text-gray-600'>
                                             Allow bypassing the 10-schedule limit. Intended for advisors or staff who
-                                            need to create many schedules on behalf of students. Use with caution;
-                                            large numbers of schedules may impact performance.
+                                            need to create many schedules on behalf of students.
                                         </p>
                                     </div>
                                     <SwitchButton

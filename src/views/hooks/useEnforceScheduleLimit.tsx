@@ -1,11 +1,11 @@
+import { background } from '@shared/messages';
+import { OptionsStore } from '@shared/storage/OptionsStore';
+import { CRX_PAGES } from '@shared/types/CRXPages';
 import useSchedules from '@views/hooks/useSchedules';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '../components/common/Button';
 import { usePrompt } from '../components/common/DialogProvider/DialogProvider';
-import { OptionsStore } from '@shared/storage/OptionsStore';
-import { background } from '@shared/messages';
-import { CRX_PAGES } from '@shared/types/CRXPages';
 
 const SCHEDULE_LIMIT = 10;
 
@@ -23,14 +23,13 @@ export function useEnforceScheduleLimit(): () => boolean {
     const [allowMoreSchedules, setAllowMoreSchedules] = useState<boolean>(false);
 
     useEffect(() => {
-        // initialize value
         let mounted = true;
         (async () => {
             try {
                 const val = await OptionsStore.get('allowMoreSchedules');
                 if (mounted) setAllowMoreSchedules(val ?? false);
             } catch (err) {
-                // ignore
+                    console.error('Failed to read allowMoreSchedules from OptionsStore:', err);
             }
         })();
 
