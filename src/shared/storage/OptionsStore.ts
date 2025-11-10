@@ -24,6 +24,8 @@ export interface IOptionsStore {
 
     /** whether the promo should be shown */
     showUTDiningPromo: boolean;
+    /** whether users are allowed to bypass the 10 schedule limit */
+    allowMoreSchedules: boolean;
 }
 
 export const OptionsStore = createSyncStore<IOptionsStore>({
@@ -34,6 +36,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
     alwaysOpenCalendarInNewTab: false,
     showCalendarSidebar: true,
     showUTDiningPromo: true,
+    allowMoreSchedules: false,
 });
 
 /**
@@ -50,6 +53,7 @@ export const initSettings = async () =>
         alwaysOpenCalendarInNewTab: await OptionsStore.get('alwaysOpenCalendarInNewTab'),
         showCalendarSidebar: await OptionsStore.get('showCalendarSidebar'),
         showUTDiningPromo: await OptionsStore.get('showUTDiningPromo'),
+        allowMoreSchedules: await OptionsStore.get('allowMoreSchedules'),
     }) satisfies IOptionsStore;
 
 // Clothing retailer right
