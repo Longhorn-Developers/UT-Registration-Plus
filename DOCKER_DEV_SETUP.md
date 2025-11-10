@@ -2,8 +2,8 @@
 
 ## Prerequisites
 
--   Docker installed on your machine
--   Git (to clone the repository)
+- Docker installed on your machine
+- Git (to clone the repository)
 
 ## Getting Started
 
@@ -70,9 +70,9 @@ docker run -it --rm -v $(pwd)/dist:/extension/dist -p 5173:5173 -e BUILD_MODE=de
 
 ## Accessing the Built Extension
 
--   For build mode, the extension files will be in the `dist` directory on your host machine.
--   For zip mode, the zipped extension will be in the `package` directory on your host machine.
--   For dev mode, the extension will be continuously built in the `dist` directory, and you can load it as an unpacked extension in Chrome.
+- For build mode, the extension files will be in the `dist` directory on your host machine.
+- For zip mode, the zipped extension will be in the `package` directory on your host machine.
+- For dev mode, the extension will be continuously built in the `dist` directory, and you can load it as an unpacked extension in Chrome.
 
 ## Docker Development Workflow
 
@@ -85,5 +85,5 @@ When working on the extension:
 
 ## Troubleshooting
 
--   If you encounter permission issues with the output directories, ensure that the directories exist on your host machine and have the correct permissions.
--   For any other issues, please check the Docker logs or open an issue in the GitHub repository.
+- If you encounter permission issues with the output directories, ensure that the directories exist on your host machine and have the correct permissions.
+- For any other issues, please check the Docker logs or open an issue in the GitHub repository.
