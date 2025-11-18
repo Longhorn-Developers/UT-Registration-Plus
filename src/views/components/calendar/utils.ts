@@ -1,3 +1,4 @@
+import 'src/polyfills';
 import { tz, TZDate } from '@date-fns/tz';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
