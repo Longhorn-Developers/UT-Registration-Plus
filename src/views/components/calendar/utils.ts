@@ -1,5 +1,3 @@
-import 'src/polyfills';
-
 import { tz, TZDate } from '@date-fns/tz';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
@@ -446,7 +444,8 @@ export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
                 typeof cell.calendarGridPoint.startIndex === 'number' &&
                 cell.calendarGridPoint.startIndex >= 0
         )
-        .toSorted((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
+        .slice()
+        .sort((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
 
     // Initialize metadata
     for (const cell of cells) {
