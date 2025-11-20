@@ -1,16 +1,13 @@
 // import addCourse from '@pages/background/lib/addCourse';
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
-import exportSchedule from '@pages/background/lib/exportSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
 import { CalendarDots, Trash } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { DevStore } from '@shared/storage/DevStore';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
-import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import MIMEType from '@shared/types/MIMEType';
-import { downloadBlob } from '@shared/util/downloadBlob';
 // import { addCourseByUrl } from '@shared/util/courseUtils';
 // import { getCourseColors } from '@shared/util/colors';
 // import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
@@ -95,6 +92,7 @@ export default function Settings(): JSX.Element {
     const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
     const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
     const [calendarNewTab, setCalendarNewTab] = useState<boolean>(false);
+    const [increaseScheduleLimit, setIncreaseScheduleLimit] = useState<boolean>(false);
 
     const showMigrationDialog = useMigrationDialog();
 
@@ -129,6 +127,7 @@ export default function Settings(): JSX.Element {
                 enableScrollToLoad,
                 enableDataRefreshing,
                 alwaysOpenCalendarInNewTab,
+                allowMoreSchedules,
             } = await initSettings();
             setEnableCourseStatusChips(enableCourseStatusChips);
             // setShowTimeLocation(enableTimeAndLocationInPopup);
@@ -136,6 +135,7 @@ export default function Settings(): JSX.Element {
             setLoadAllCourses(enableScrollToLoad);
             setEnableDataRefreshing(enableDataRefreshing);
             setCalendarNewTab(alwaysOpenCalendarInNewTab);
+            setIncreaseScheduleLimit(allowMoreSchedules);
         };
 
         const initDS = async () => {
@@ -190,6 +190,15 @@ export default function Settings(): JSX.Element {
             // console.log('alwaysOpenCalendarInNewTab', newValue);
         });
 
+        const l6 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
+            setCalendarNewTab(newValue);
+            // console.log('alwaysOpenCalendarInNewTab', newValue);
+        });
+
+        const l7 = OptionsStore.listen('allowMoreSchedules', async ({ newValue }) => {
+            setIncreaseScheduleLimit(newValue);
+        });
+
         // Remove listeners when the component is unmounted
         return () => {
             OptionsStore.removeListener(l1);
@@ -197,6 +206,8 @@ export default function Settings(): JSX.Element {
             OptionsStore.removeListener(l3);
             OptionsStore.removeListener(l4);
             OptionsStore.removeListener(l5);
+            OptionsStore.removeListener(l6);
+            OptionsStore.removeListener(l7);
 
             DevStore.removeListener(ds_l1);
 
@@ -235,21 +246,18 @@ export default function Settings(): JSX.Element {
 
     const handleImportClick = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = async e => {
-                try {
-                    const result = e.target?.result as string;
-                    const jsonObject = JSON.parse(result);
-                    await importSchedule(jsonObject);
-                } catch (error) {
-                    console.error('Invalid import file!');
-                }
-            };
-            reader.readAsText(file);
+        if (!file) return;
+
+        try {
+            const text = await file.text();
+            const data = JSON.parse(text);
+            await importSchedule(data);
+            alert('Schedule imported successfully.');
+        } catch (error) {
+            console.error('Error importing schedule:', error);
+            alert('Failed to import schedule. Make sure the file is a valid .json format.');
         }
     };
-
     // const handleAddCourseByLink = async () => {
     //     // todo: Use a proper modal instead of a prompt
     //     const link: string | null = prompt('Enter course link');
@@ -451,6 +459,25 @@ export default function Settings(): JSX.Element {
                                         onChange={() => {
                                             setLoadAllCourses(!loadAllCourses);
                                             OptionsStore.set('enableScrollToLoad', !loadAllCourses);
+                                        }}
+                                    />
+                                </div>
+
+                                <div className='flex items-center justify-between'>
+                                    <div className='max-w-xs'>
+                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                            Allow more than 10 schedules
+                                        </Text>
+                                        <p className='text-sm text-gray-600'>
+                                            Allow bypassing the 10-schedule limit. Intended for advisors or staff who
+                                            need to create many schedules on behalf of students.
+                                        </p>
+                                    </div>
+                                    <SwitchButton
+                                        isChecked={increaseScheduleLimit}
+                                        onChange={() => {
+                                            setIncreaseScheduleLimit(!increaseScheduleLimit);
+                                            OptionsStore.set('allowMoreSchedules', !increaseScheduleLimit);
                                         }}
                                     />
                                 </div>

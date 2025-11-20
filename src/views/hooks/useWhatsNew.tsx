@@ -5,8 +5,7 @@ import WhatsNewPopupContent from '@views/components/common/WhatsNewPopup';
 import { useDialog } from '@views/contexts/DialogContext';
 import React from 'react';
 
-import { LogoIcon } from '../components/common/LogoIcon';
-import useChangelog from './useChangelog';
+// import useChangelog from './useChangelog';
 
 const LDIconURL = new URL('/src/assets/LD-icon-new.png', import.meta.url).href;
 
@@ -17,8 +16,8 @@ const LDIconURL = new URL('/src/assets/LD-icon-new.png', import.meta.url).href;
  */
 export default function useWhatsNewPopUp(): () => void {
     const showDialog = useDialog();
-    const showChangeLog = useChangelog();
-    const { version } = chrome.runtime.getManifest();
+    // const showChangeLog = useChangelog();
+    // const { version } = chrome.runtime.getManifest();
 
     const showPopUp = () => {
         showDialog(close => ({

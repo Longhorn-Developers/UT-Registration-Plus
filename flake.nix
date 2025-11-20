@@ -1,31 +1,42 @@
 {
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs =
-    inputs:
-    inputs.flake-utils.lib.eachDefaultSystem (
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = (import (inputs.nixpkgs) { inherit system; });
+        pkgs = (import nixpkgs { inherit system; });
+
+        commonPackages = with pkgs; [
+          nodejs_20 # v20.19.5
+          pnpm_10 # v10.18.0
+        ];
+
+        additionalPackages = with pkgs; [
+          bun
+          nodePackages.conventional-changelog-cli
+          sentry-cli
+        ];
       in
       {
         formatter = pkgs.nixfmt-rfc-style;
 
-        devShell = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            nodejs_20 # v20.19.0
-            pnpm_10 # v10.8.1
-            just
-          ];
+        devShells.default = pkgs.mkShell {
+          name = "utrp-dev";
+          buildInputs = commonPackages;
+        };
 
-          shellHook = ''
-            echo "UTRP Nix Flake Environment Loaded"
-            echo "Node: $(node --version)"
-            echo "pnpm: $(pnpm --version)"
-          '';
+        devShells.full = pkgs.mkShell {
+          name = "utrp-dev-full";
+          buildInputs = commonPackages ++ additionalPackages;
         };
       }
     );
