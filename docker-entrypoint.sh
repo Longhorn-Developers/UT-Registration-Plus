@@ -24,7 +24,7 @@ else
 fi
 
 # Validate the mode
-if [[ ! " ${SUPPORTED_MODES[*]} " =~ " ${mode} " ]]; then
+if [[ ! " ${SUPPORTED_MODES[*]} " =~  ${mode}  ]]; then
     echo "Error: Invalid mode '${mode}'" >&2
     usage
 fi
