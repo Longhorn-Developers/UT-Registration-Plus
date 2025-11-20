@@ -11,24 +11,17 @@ assignees: ''
 
 <!-- Please check all applicable boxes before submitting your feature request -->
 
--   [ ] I have searched existing issues to ensure this feature hasn't been requested
--   [ ] I have searched closed issues to check if this was previously rejected/implemented
--   [ ] I have checked the project roadmap (if available) for planned similar features
--   [ ] I have reviewed the documentation to confirm this feature doesn't exist
+-   [ ] I confirmed this feature isn’t already requested, implemented, or planned (search open issues, pull requests etc)
 -   [ ] I have completed all sections below with detailed information
 
-**Feature Description**
+**Your Idea**
 
-<!-- A clear and concise description of the feature you'd like to see -->
-
-**Proposed Solution**
-
-<!-- A clear and concise description of what you want to happen -->
+<!-- A clear and concise description of the feature you'd like to see, and how it would work -->
 
 **UI/UX Considerations**
 
-<!-- If this feature involves UI changes, please describe the visual aspects -->
+<!-- If this feature involves UI changes (aka how it looks), please describe the visual aspects -->
 
-**Technical Implementation Details**
+**Other**
 
-<!-- If you have specific technical suggestions, list them here -->
+<!-- Any other comments you have can go here! -->
