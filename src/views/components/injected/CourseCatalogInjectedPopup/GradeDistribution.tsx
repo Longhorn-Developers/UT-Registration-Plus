@@ -221,7 +221,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     }}
                 />
             )}
-            {status === DataStatus.ERROR && <Text variant='p'>Error fetching grade distribution data</Text>}
+            {status === DataStatus.ERROR && <Text variant='p' className='pb-3'>Error fetching grade distribution data</Text>}
             {status === DataStatus.FOUND && (
                 <>
                     <div className='flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
