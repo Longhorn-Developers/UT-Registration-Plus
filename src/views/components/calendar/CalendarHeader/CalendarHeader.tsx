@@ -11,7 +11,7 @@ import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React from 'react';
 
-import { handleExportJson, saveAsCal, saveCalAsPng } from '../utils';
+import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
 
 interface CalendarHeaderProps {
     sidebarOpen?: boolean;
@@ -114,7 +114,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                 <MenuItem>
                                     <Button
                                         className='w-full flex justify-start'
-                                        onClick={saveAsCal}
+                                        onClick={saveAsText}
                                         color='ut-black'
                                         size='small'
                                         variant='minimal'
