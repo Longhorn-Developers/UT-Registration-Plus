@@ -245,6 +245,10 @@ export const scheduleToIcsString = (schedule: Serialized<UserSchedule>) => {
     return icsString;
 };
 
+export const scheduleToText = (schedule: Serialized<UserSchedule>) => {
+    return '';
+};
+
 /**
  * Saves the current schedule as a calendar file in the iCalendar format (ICS).
  * Fetches the current active schedule and converts it into an ICS string.
@@ -260,6 +264,17 @@ export const saveAsCal = async () => {
     const icsString = scheduleToIcsString(schedule);
 
     downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
+};
+
+export const saveAsText = async () => {
+    const schedule = await getSchedule();
+
+    if (!schedule) {
+        throw new Error('No schedule found');
+    }
+
+    const scheduleText = scheduleToText(schedule);
+    downloadBlob(scheduleText, 'TEXT', 'schedule.txt');
 };
 
 /**
