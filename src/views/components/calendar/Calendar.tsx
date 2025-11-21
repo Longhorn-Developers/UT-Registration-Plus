@@ -5,6 +5,7 @@ import type { Course } from '@shared/types/Course';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import { openReportWindow } from '@shared/util/openReportWindow';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import importSchedule from '@pages/background/lib/importSchedule';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
@@ -43,6 +44,8 @@ export default function Calendar(): ReactNode {
     const showWhatsNewDialog = useWhatsNewPopUp();
 
     const [showUTDiningPromo, setShowUTDiningPromo] = useState<boolean>(false);
+    const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
+    const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
 
     const queryClient = useQueryClient();
     const { data: showSidebar, isPending: isSidebarStatePending } = useQuery({
@@ -92,12 +95,113 @@ export default function Calendar(): ReactNode {
         });
     }, []);
 
+    // --- Reset drag state when dragging leaves the window ---
+    useEffect(() => {
+        const handleGlobalDragLeave = (e: DragEvent) => {
+            // Reset drag state when leaving the window entirely
+            if (e.clientX === 0 && e.clientY === 0) {
+                setIsDraggingFile(false);
+                setIsValidFileType(false);
+            }
+        };
+
+        document.addEventListener('dragleave', handleGlobalDragLeave);
+        return () => {
+            document.removeEventListener('dragleave', handleGlobalDragLeave);
+        };
+    }, []);
+
+    // --- Drag and drop handlers for calendar page ---
+    const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const items = event.dataTransfer.items;
+        if (items && items.length > 0) {
+            const item = items[0];
+            if (item) {
+                // Check if it's a file and either has a JSON MIME type or no MIME type (we'll validate extension on drop)
+                const isValid =
+                    item.kind === 'file' &&
+                    (item.type === 'application/json' || item.type === 'text/json' || item.type === '');
+                setIsValidFileType(isValid);
+                setIsDraggingFile(true);
+            }
+        }
+    };
+
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
+    const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        // Only reset if we're actually leaving the calendar area
+        const relatedTarget = event.relatedTarget as HTMLElement;
+        if (!relatedTarget || !event.currentTarget.contains(relatedTarget)) {
+            setIsDraggingFile(false);
+            setIsValidFileType(false);
+        }
+    };
+
+    const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setIsDraggingFile(false);
+        setIsValidFileType(false);
+
+        const file = event.dataTransfer.files?.[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.name.endsWith('.json') && file.type !== 'application/json' && file.type !== 'text/json') {
+            alert('Please drop a valid JSON schedule file.');
+            return;
+        }
+
+        try {
+            const text = await file.text();
+            const data = JSON.parse(text);
+            await importSchedule(data);
+            alert('Schedule imported successfully.');
+        } catch (error) {
+            console.error('Error importing schedule:', error);
+            alert('Failed to import schedule. Make sure the file is a valid .json format.');
+        }
+    };
+    // --------------------------------------------------
+
     if (isSidebarStatePending) return null;
 
     return (
         <CalendarContext.Provider value>
-            <div className='h-full w-full flex flex-col'>
-                <div className='screenshot:calendar-target h-screen flex overflow-auto'>
+            <div className='h-full w-full flex flex-col relative'>
+                {/* Orange drag overlay indicator */}
+                {isDraggingFile && isValidFileType && (
+                    <div
+                        className='absolute inset-0 z-50 flex items-center justify-center bg-ut-burntorange/20 border-4 border-ut-burntorange border-dashed pointer-events-none'
+                        style={{
+                            backgroundColor: 'rgba(191, 87, 0, 0.1)',
+                        }}
+                    >
+                        <div className='bg-white/90 px-8 py-4 rounded-lg shadow-lg border-2 border-ut-burntorange'>
+                            <Text variant='h2' className='text-ut-burntorange font-semibold text-center'>
+                                Drop schedule file here
+                            </Text>
+                        </div>
+                    </div>
+                )}
+
+                <div
+                    className='screenshot:calendar-target h-screen flex overflow-auto'
+                    onDragEnter={handleDragEnter}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                >
                     <div
                         className={clsx(
                             'py-spacing-6 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
