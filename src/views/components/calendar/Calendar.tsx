@@ -1,3 +1,4 @@
+import importSchedule from '@pages/background/lib/importSchedule';
 import { Sidebar } from '@phosphor-icons/react';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
@@ -5,7 +6,6 @@ import type { Course } from '@shared/types/Course';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import { openReportWindow } from '@shared/util/openReportWindow';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import importSchedule from '@pages/background/lib/importSchedule';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
@@ -115,8 +115,7 @@ export default function Calendar(): ReactNode {
     const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
-
-        const items = event.dataTransfer.items;
+        const { items } = event.dataTransfer;
         if (items && items.length > 0) {
             const item = items[0];
             if (item) {
@@ -178,17 +177,17 @@ export default function Calendar(): ReactNode {
 
     return (
         <CalendarContext.Provider value>
-            <div className='h-full w-full flex flex-col relative'>
+            <div className='relative h-full w-full flex flex-col'>
                 {/* Orange drag overlay indicator */}
                 {isDraggingFile && isValidFileType && (
                     <div
-                        className='absolute inset-0 z-50 flex items-center justify-center bg-ut-burntorange/20 border-4 border-ut-burntorange border-dashed pointer-events-none'
+                        className='pointer-events-none absolute inset-0 z-50 flex items-center justify-center border-4 border-ut-burntorange border-dashed bg-ut-burntorange/20'
                         style={{
                             backgroundColor: 'rgba(191, 87, 0, 0.1)',
                         }}
                     >
-                        <div className='bg-white/90 px-8 py-4 rounded-lg shadow-lg border-2 border-ut-burntorange'>
-                            <Text variant='h2' className='text-ut-burntorange font-semibold text-center'>
+                        <div className='border-2 border-ut-burntorange rounded-lg bg-white/90 px-8 py-4 shadow-lg'>
+                            <Text variant='h2' className='text-center text-ut-burntorange font-semibold'>
                                 Drop schedule file here
                             </Text>
                         </div>
