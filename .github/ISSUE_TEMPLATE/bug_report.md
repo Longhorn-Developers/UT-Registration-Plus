@@ -11,11 +11,8 @@ assignees: ''
 
 <!-- Please check all applicable boxes before submitting your issue -->
 
--   [ ] I have searched existing issues to make sure this is not a duplicate
--   [ ] I have cleared my browser cache and confirmed the issue persists
--   [ ] I have checked this issue affects the latest version of the extension
--   [ ] I have disabled other extensions to ensure this isn't a conflict issue
--   [ ] I have included all the information requested below
+-   [ ] I confirmed this feature isn’t already requested, implemented, or planned (search open issues, pull requests etc)
+-   [ ] I have completed all sections below with detailed information
 
 **Bug Description**
 
@@ -30,11 +27,11 @@ assignees: ''
 
 **Expected Behavior**
 
-<!-- A clear and concise description of what you expected to happen -->
+<!-- What you expected to happen -->
 
 **Current Behavior**
 
-<!-- A clear and concise description of what actually happened -->
+<!-- What actually happened -->
 
 **Screenshots**
 
