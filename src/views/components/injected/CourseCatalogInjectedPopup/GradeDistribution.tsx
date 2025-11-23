@@ -130,8 +130,11 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     fontStyle: 'normal',
                 },
                 useHTML: true,
-                formatter: function () {
-                    return `${this.value}` === 'Other'
+                formatter() {
+                    // eslint-disable-next-line react/no-this-in-sfc
+                    const val = `${this.value}`;
+
+                    return val === 'Other'
                         ? renderToStaticMarkup(
                               <Tooltip
                                   content={TOOLTIP_CONTENT}
@@ -143,7 +146,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                                   Other
                               </Tooltip>
                           )
-                        : `${this.value}`;
+                        : val;
                 },
             },
             title: {
