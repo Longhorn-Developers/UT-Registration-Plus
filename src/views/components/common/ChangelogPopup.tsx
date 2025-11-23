@@ -6,7 +6,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
 
-const changelog = new URL('/CHANGELOG.md', import.meta.url).href;
+const changelog = new URL('/CHANGELOG-local.md', import.meta.url).href;
 
 /**
  * Renders a popup component for displaying the changelog.

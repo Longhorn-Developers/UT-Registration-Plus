@@ -13,6 +13,9 @@
         "build:watch": "NODE_ENV='development' vite build --mode development -w",
         "zip": "pnpm build && pnpm gulp zipProdBuild",
         "zip:to-publish": "SENTRY_ENV='production' pnpm zip",
+        "changeset": "changeset",
+        "version": "changeset version && pnpm run generate-changelog",
+        "release": "pnpm run zip:to-publish && changeset tag",
         "prettier": "prettier src --check",
         "prettier:fix": "prettier src --write",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
@@ -62,6 +65,7 @@
         "sql.js": "1.11.0"
     },
     "devDependencies": {
+        "@changesets/cli": "^2.29.7",
         "@chromatic-com/storybook": "^2.0.2",
         "@commitlint/cli": "^19.7.1",
         "@commitlint/config-conventional": "^19.7.1",
