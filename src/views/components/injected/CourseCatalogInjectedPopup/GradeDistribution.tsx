@@ -3,6 +3,7 @@ import type { Distribution, LetterGrade } from '@shared/types/Distribution';
 import { extendedColors } from '@shared/types/ThemeColors';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
+import Tooltip from '@views/components/common/Tooltip';
 import {
     NoDataError,
     queryAggregateDistribution,
@@ -12,10 +13,12 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import type { ChangeEvent } from 'react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import Skeleton from 'react-loading-skeleton';
 
 const UT_GRADE_DISTRIBUTION_URL = 'https://reports.utexas.edu/spotlight-data/ut-course-grade-distributions';
-
+const TOOLTIP_CONTENT =
+    "The 'Other' grade category includes all non-standard letter grades, including: In Progress, Incomplete, Permanent Incomplete, Oblit, Q-Drop, Withdrawn, Credit, No Credit, Satisfactory, Unsatisfactory, and Registered on CR/F or CR/NC basis.";
 interface GradeDistributionProps {
     course: Course;
 }
@@ -126,6 +129,22 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     lineHeight: 'normal',
                     fontStyle: 'normal',
                 },
+                useHTML: true,
+                formatter: function () {
+                    return `${this.value}` === 'Other'
+                        ? renderToStaticMarkup(
+                              <Tooltip
+                                  content={TOOLTIP_CONTENT}
+                                  className='underline'
+                                  offsetX={-425}
+                                  offsetY={-175}
+                                  maxWidth={500}
+                              >
+                                  Other
+                              </Tooltip>
+                          )
+                        : `${this.value}`;
+                },
             },
             title: {
                 text: 'Grades',
@@ -135,6 +154,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     fontWeight: '400',
                 },
             },
+
             categories: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F', 'Other'],
             tickInterval: 1,
             tickWidth: 1,
