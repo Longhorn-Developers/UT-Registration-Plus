@@ -266,6 +266,14 @@ export const saveAsCal = async () => {
     downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
 };
 
+/**
+ * Save current schedule as a plain text file consisting of
+ * Course Name - Course ID
+ * Course Time
+ * Unique Number
+ * Line Break
+ * Repeat
+ */
 export const saveAsText = async () => {
     const schedule = await getSchedule();
 
