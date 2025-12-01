@@ -1,7 +1,7 @@
 import { tz, TZDate } from '@date-fns/tz';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import type { Course } from '@shared/types/Course';
+import { Course } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -246,7 +246,20 @@ export const scheduleToIcsString = (schedule: Serialized<UserSchedule>) => {
 };
 
 export const scheduleToText = (schedule: Serialized<UserSchedule>) => {
-    return '';
+    const lines: string[] = [];
+
+    lines.push('Schedule: ' + schedule.name);
+    lines.push('');
+
+    for (const c of schedule.courses) {
+        lines.push(c.fullName);
+        // lines.push(c.schedule);
+        lines.push(`${c.creditHours} Credit Hours`);
+        lines.push(`${c.uniqueId}`);
+        lines.push('');
+    }
+
+    return lines.join('\n');
 };
 
 /**
