@@ -4,6 +4,7 @@ import { generateRandomId } from '../util/random';
 import { Course } from './Course';
 export interface Wallpaper {
     type: string;
+    /** Image url will be here */
     data?: string;
 }
 
