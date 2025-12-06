@@ -1,0 +1,50 @@
+{
+    "manifest_version": 3,
+    "name": "UT Registration Plus",
+    "version": "2.2.2",
+    "description": "UT Registration Plus is a Firefox extension that allows students to easily register for classes.",
+    "homepage_url": "https://github.com/Longhorn-Developers/UT-Registration-Plus",
+    "icons": {
+        "16": "icons/icon_production_16.png",
+        "32": "icons/icon_production_32.png",
+        "48": "icons/icon_production_48.png",
+        "128": "icons/icon_production_128.png"
+    },
+    "permissions": [
+        "storage",
+        "unlimitedStorage",
+        "*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*",
+        "*://*.utdirect.utexas.edu/registration/classlist/*",
+        "*://*.utexas.collegescheduler.com/*",
+        "*://*.catalog.utexas.edu/ribbit/",
+        "*://*.registrar.utexas.edu/schedules/*",
+        "*://*.login.utexas.edu/login/*",
+        "https://utexas.bluera.com/*",
+        "*://my.utexas.edu/student/student/*"
+    ],
+    "browser_action": {
+        "default_popup": "src/pages/popup/index.html",
+        "default_icon": "icons/icon_production_32.png"
+    },
+    "background": {
+        "scripts": ["src/pages/background/background.ts"]
+    },
+    "options_page": "src/pages/options/index.html",
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*",
+                "*://*.utdirect.utexas.edu/registration/classlist/*",
+                "*://*.utexas.collegescheduler.com/*",
+                "*://*.catalog.utexas.edu/ribbit/",
+                "*://*.registrar.utexas.edu/schedules/*",
+                "*://*.login.utexas.edu/login/*",
+                "https://utexas.bluera.com/*",
+                "*://my.utexas.edu/student/student/*"
+            ],
+            "js": ["src/pages/content/index.tsx"]
+        }
+    ],
+    "web_accessible_resources": ["assets/js/*", "assets/css/*", "assets/img/*"],
+    "content_security_policy": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+}
