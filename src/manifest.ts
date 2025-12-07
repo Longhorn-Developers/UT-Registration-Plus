@@ -28,47 +28,6 @@ const HOST_PERMISSIONS: string[] = [
 ];
 
 const manifest = defineManifest(async () => {
-    // Firefox uses Manifest V2 (and expects background.scripts rather than a service worker).
-    if (process.env.BROWSER_TARGET === 'firefox') {
-        return {
-            manifest_version: 3,
-            name: `${packageJson.displayName ?? packageJson.name}${nameSuffix}`,
-            version: `${major}.${minor}.${patch}.${label}`,
-            description: packageJson.description,
-            options_page: 'src/pages/options/index.html',
-            // Use background.scripts for Firefox (MV2)
-            background: { scripts: ['src/pages/background/background.ts'] },
-            permissions: ['storage', 'unlimitedStorage'],
-            // Host permissions are included in permissions for MV3
-            // During development include <all_urls> to simplify local testing
-            content_scripts: [
-                {
-                    matches:
-                        process.env.MODE === 'development' ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
-                    js: ['src/pages/content/index.tsx'],
-                },
-            ],
-            browser_action: {
-                default_popup: 'src/pages/popup/index.html',
-                default_icon: `icons/icon_${mode}_32.png`,
-            },
-            icons: {
-                '16': `icons/icon_${mode}_16.png`,
-                '32': `icons/icon_${mode}_32.png`,
-                '48': `icons/icon_${mode}_48.png`,
-                '128': `icons/icon_${mode}_128.png`,
-            },
-            web_accessible_resources: [
-                {
-                    resources: ['assets/*.js', 'assets/*.css', 'assets/*'],
-                    matches: ['*://*/*'],
-                },
-            ],
-            content_security_policy: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
-        } as any;
-    }
-
-    // Default: Manifest V3 for Chromium targets
     return {
         manifest_version: 3,
         name: `${packageJson.displayName ?? packageJson.name}${nameSuffix}`,
