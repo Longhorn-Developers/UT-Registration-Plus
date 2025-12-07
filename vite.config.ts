@@ -177,6 +177,7 @@ export default defineConfig({
             },
         },
         renameFile('src/pages/debug/index.html', 'debug.html'),
+        renameFile('src/pages/popup/index.html', 'popup.html'),
         renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
         renameFile('src/pages/report/index.html', 'report.html'),
@@ -261,26 +262,42 @@ export default defineConfig({
                                   },
                                   permissions: ['storage', 'unlimitedStorage', ...HOST_PERMISSIONS],
                                   browser_action: {
-                                      default_popup: 'src/pages/popup/index.html',
+                                      default_popup: 'popup.html',
                                       default_icon: `icons/icon_production_32.png`,
                                   },
-                                  options_page: 'src/pages/options/index.html',
-                                  web_accessible_resources: ['assets/js/*.js', 'assets/css/*.css', 'assets/img/*'],
+                                  options_page: 'options.html',
+                                  web_accessible_resources: ['assets/*.js', 'assets/*.css', 'assets/*'],
                                   content_security_policy: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
                               };
 
+                              // For Firefox MV2 background/content scripts must be classic
+                              // scripts (no top-level `import` declarations). The Vite build
+                              // emits ESM chunks which can contain `import` statements, so
+                              // create small loader scripts that dynamically import the
+                              // ESM chunk via `chrome.runtime.getURL(...)` and reference
+                              // the loader in the manifest instead.
                               if (backgroundFile) {
-                                  manifestForFirefox.background = { scripts: [backgroundFile] };
+                                  const loaderName = 'background-loader.js';
+                                  const loaderSource = `(async()=>{try{await import(chrome.runtime.getURL('${backgroundFile}'));}catch(e){console.error('Failed to load background module',e);}})();`;
+                                  this.emitFile({ type: 'asset', fileName: loaderName, source: loaderSource });
+                                  manifestForFirefox.background = { scripts: [loaderName] };
                               } else {
                                   // best-effort fallback
                                   manifestForFirefox.background = { scripts: ['src/pages/background/background.js'] };
                               }
 
                               if (contentFile) {
+                                  const contentLoaderName = 'content-loader.js';
+                                  const contentLoaderSource = `(async()=>{try{await import(chrome.runtime.getURL('${contentFile}'));}catch(e){console.error('Failed to load content module',e);}})();`;
+                                  this.emitFile({
+                                      type: 'asset',
+                                      fileName: contentLoaderName,
+                                      source: contentLoaderSource,
+                                  });
                                   manifestForFirefox.content_scripts = [
                                       {
                                           matches: HOST_PERMISSIONS,
-                                          js: [contentFile],
+                                          js: [contentLoaderName],
                                       },
                                   ];
                               }
@@ -347,11 +364,15 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 debug: 'src/pages/debug/index.html',
+                popup: 'src/pages/popup/index.html',
                 calendar: 'src/pages/calendar/index.html',
                 options: 'src/pages/options/index.html',
                 report: 'src/pages/report/index.html',
                 map: 'src/pages/map/index.html',
                 404: 'src/pages/404/index.html',
+                // ensure background and content are emitted as separate chunks
+                background: 'src/pages/background/background.ts',
+                content: 'src/pages/content/index.tsx',
             },
             output: {
                 chunkFileNames: `assets/[name]-[hash].js`,

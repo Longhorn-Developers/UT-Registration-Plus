@@ -31,12 +31,12 @@ const manifest = defineManifest(async () => {
     // Firefox uses Manifest V2 (and expects background.scripts rather than a service worker).
     if (process.env.BROWSER_TARGET === 'firefox') {
         return {
-            manifest_version: 2,
+            manifest_version: 3,
             name: `${packageJson.displayName ?? packageJson.name}${nameSuffix}`,
             version: `${major}.${minor}.${patch}.${label}`,
             description: packageJson.description,
             options_page: 'src/pages/options/index.html',
-            // Use background.scripts for Firefox (MV3)
+            // Use background.scripts for Firefox (MV2)
             background: { scripts: ['src/pages/background/background.ts'] },
             permissions: ['storage', 'unlimitedStorage'],
             // Host permissions are included in permissions for MV3
@@ -60,7 +60,7 @@ const manifest = defineManifest(async () => {
             },
             web_accessible_resources: [
                 {
-                    resources: ['assets/js/*.js', 'assets/css/*.css', 'assets/img/*'],
+                    resources: ['assets/*.js', 'assets/*.css', 'assets/*'],
                     matches: ['*://*/*'],
                 },
             ],
@@ -79,7 +79,7 @@ const manifest = defineManifest(async () => {
         permissions: ['storage', 'unlimitedStorage', 'background', 'scripting'],
         host_permissions: process.env.MODE === 'development' ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
         action: {
-            default_popup: 'src/pages/popup/index.html',
+            default_popup: 'popup.html',
             default_icon: `icons/icon_${mode}_32.png`,
         },
         icons: {

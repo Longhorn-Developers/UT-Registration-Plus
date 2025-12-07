@@ -1,3 +1,5 @@
+import 'webextension-polyfill';
+
 import { colors } from '../types/ThemeColors';
 import { MILLISECOND } from './time';
 

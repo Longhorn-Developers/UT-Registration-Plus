@@ -1,3 +1,5 @@
+import 'webextension-polyfill';
+
 import type { BACKGROUND_MESSAGES } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import updateBadgeText from '@shared/util/updateBadgeText';
@@ -58,12 +60,13 @@ messageListener.listen();
 
 UserScheduleStore.listen('schedules', async schedules => {
     const index = await UserScheduleStore.get('activeIndex');
-    const numCourses = schedules.newValue[index]?.courses?.length;
-    updateBadgeText(numCourses || 0);
+    const schedulesArray = schedules.newValue ?? [];
+    const numCourses = schedulesArray[index]?.courses?.length ?? 0;
+    updateBadgeText(numCourses);
 });
 
 UserScheduleStore.listen('activeIndex', async ({ newValue }) => {
-    const schedules = await UserScheduleStore.get('schedules');
-    const numCourses = schedules[newValue]?.courses?.length;
-    updateBadgeText(numCourses || 0);
+    const schedules = (await UserScheduleStore.get('schedules')) ?? [];
+    const numCourses = schedules[newValue]?.courses?.length ?? 0;
+    updateBadgeText(numCourses);
 });

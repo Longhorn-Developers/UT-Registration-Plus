@@ -1,3 +1,5 @@
+import 'webextension-polyfill';
+
 import { createSyncStore, debugStore } from 'chrome-extension-toolkit';
 
 /**

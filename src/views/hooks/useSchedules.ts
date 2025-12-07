@@ -24,8 +24,40 @@ async function fetchData() {
         UserScheduleStore.get('schedules'),
         UserScheduleStore.get('activeIndex'),
     ]);
-    schedulesCache = storedSchedules.map(s => new UserSchedule(s));
-    activeIndexCache = storedActiveIndex >= 0 ? storedActiveIndex : 0;
+    // Normalize schedules to an array — treat missing/non-array as empty
+    const rawSchedules = Array.isArray(storedSchedules) ? storedSchedules : [];
+
+    // Map safely: construct UserSchedule objects and skip invalid items
+    const parsedSchedules: UserSchedule[] = [];
+    for (const item of rawSchedules) {
+        try {
+            const s = new UserSchedule(item);
+            // Optionally validate `s` here (e.g., required props) before pushing
+            parsedSchedules.push(s);
+        } catch (err) {
+            // Silently skip invalid entries; optionally log for debugging:
+            // console.warn('Skipping invalid schedule from storage', err, item);
+        }
+    }
+
+    schedulesCache = parsedSchedules;
+
+    // Determine a safe active index
+    const hasSchedules = schedulesCache.length > 0;
+
+    // Only accept storedActiveIndex if it's a safe integer within range
+    const isValidStoredIndex =
+        Number.isInteger(storedActiveIndex) && storedActiveIndex >= 0 && storedActiveIndex < schedulesCache.length;
+
+    if (isValidStoredIndex) {
+        activeIndexCache = storedActiveIndex;
+    } else if (hasSchedules) {
+        // If there are schedules but the stored index was invalid/missing, default to 0
+        activeIndexCache = 0;
+    } else {
+        // No schedules -> mark as no active schedule (use -1 to indicate none)
+        activeIndexCache = -1;
+    }
 }
 
 /**

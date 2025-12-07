@@ -59,7 +59,8 @@
         "remark-gfm": "^4.0.1",
         "sass": "^1.85.1",
         "simple-git": "^3.27.0",
-        "sql.js": "1.11.0"
+        "sql.js": "1.11.0",
+        "webextension-polyfill": "^0.12.0"
     },
     "devDependencies": {
         "@chromatic-com/storybook": "^2.0.2",

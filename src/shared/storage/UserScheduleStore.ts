@@ -1,10 +1,13 @@
-import { UserSchedule } from '@shared/types/UserSchedule';
+import 'webextension-polyfill';
+
+import type { Serialized } from 'chrome-extension-toolkit';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
+import { UserSchedule } from '@shared/types/UserSchedule';
 import { generateRandomId } from '../util/random';
 
 interface IUserScheduleStore {
-    schedules: UserSchedule[];
+    schedules: Serialized<UserSchedule>[];
     activeIndex: number;
 }
 
@@ -13,13 +16,13 @@ interface IUserScheduleStore {
  */
 export const UserScheduleStore = createLocalStore<IUserScheduleStore>({
     schedules: [
-        new UserSchedule({
+        {
             courses: [],
             id: generateRandomId(),
             name: 'Schedule 1',
             hours: 0,
             updatedAt: Date.now(),
-        }),
+        },
     ],
     activeIndex: 0,
 });
