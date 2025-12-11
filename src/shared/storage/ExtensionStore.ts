@@ -1,5 +1,3 @@
-import 'webextension-polyfill';
-
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 /**

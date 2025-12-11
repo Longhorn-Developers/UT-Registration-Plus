@@ -1,5 +1,3 @@
-import 'webextension-polyfill';
-
 import type { Serialized } from 'chrome-extension-toolkit';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 

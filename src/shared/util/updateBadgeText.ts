@@ -1,5 +1,3 @@
-import 'webextension-polyfill';
-
 import { colors } from '../types/ThemeColors';
 import { MILLISECOND } from './time';
 
@@ -23,7 +21,7 @@ export default function updateBadgeText(value: number): void {
             badgeText = `${value}`;
         }
     }
-    chrome.action.setBadgeText({ text: badgeText });
+    chrome.browserAction.setBadgeText({ text: badgeText });
     flashBadgeColor();
 }
 
@@ -31,6 +29,6 @@ export default function updateBadgeText(value: number): void {
  * Flashes the badge color by setting the badge background color to a color and then resetting it after a short delay.
  */
 function flashBadgeColor() {
-    chrome.action.setBadgeBackgroundColor({ color: colors.ut.burntorange });
-    setTimeout(() => chrome.action.setBadgeBackgroundColor({ color: colors.ut.orange }), POPUP_FLASH_TIME);
+    chrome.browserAction.setBadgeBackgroundColor({ color: colors.ut.burntorange });
+    setTimeout(() => chrome.browserAction.setBadgeBackgroundColor({ color: colors.ut.orange }), POPUP_FLASH_TIME);
 }

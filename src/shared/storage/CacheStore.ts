@@ -1,5 +1,3 @@
-import 'webextension-polyfill';
-
 import type { CachedData } from '@shared/types/CachedData';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 

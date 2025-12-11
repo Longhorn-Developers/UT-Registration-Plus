@@ -145,8 +145,11 @@ export function MigrationDialog(): JSX.Element {
     useEffect(() => {
         const checkMigration = async () => {
             // check if migration was already attempted
-            if ((await chrome.storage.local.get('finishedMigration')).finishedMigration) return;
+            // in Firefox, get call could return undefined if migration was never attempted
+            const result = await chrome.storage.local.get('finishedMigration');
+            if (result?.finishedMigration) return;
 
+            // same for saved courses
             if ((await getUTRPv1Courses()).length > 0) showMigrationDialog();
         };
 

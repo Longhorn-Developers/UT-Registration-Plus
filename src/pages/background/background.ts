@@ -1,5 +1,3 @@
-import 'webextension-polyfill';
-
 import type { BACKGROUND_MESSAGES } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import updateBadgeText from '@shared/util/updateBadgeText';

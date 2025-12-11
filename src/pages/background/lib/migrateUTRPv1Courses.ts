@@ -12,12 +12,11 @@ import switchSchedule from './switchSchedule';
  * @returns A promise that resolves to an array of course links.
  */
 export async function getUTRPv1Courses(): Promise<string[]> {
-    const { savedCourses } = await chrome.storage.sync.get('savedCourses');
+    // in Firefox, get call could return undefined
+    const result = (await chrome.storage.sync.get('savedCourses')) || {};
 
-    // Check if the savedCourses array is empty
-    if (!savedCourses || savedCourses.length === 0) {
-        return [];
-    }
+    // Use empty array if savedCourses is missing or not an array
+    const savedCourses: { link: string }[] = Array.isArray(result.savedCourses) ? result.savedCourses : [];
 
     // Extract the link property from each course object and return it as an array
     return savedCourses.map((course: { link: string }) => course.link);

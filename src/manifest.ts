@@ -38,7 +38,7 @@ const manifest = defineManifest(async () => {
         permissions: ['storage', 'unlimitedStorage', 'background', 'scripting'],
         host_permissions: process.env.MODE === 'development' ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
         action: {
-            default_popup: 'popup.html',
+            default_popup: 'src/pages/popup/index.html',
             default_icon: `icons/icon_${mode}_32.png`,
         },
         icons: {
