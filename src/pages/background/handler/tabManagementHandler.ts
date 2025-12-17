@@ -4,12 +4,10 @@ import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const tabManagementHandler: MessageHandler<TabManagementMessages> = {
     getTabId({ sendResponse, sender }) {
-        // for firefox, must return to indicate async response
         sendResponse(sender.tab?.id ?? -1);
     },
     openNewTab({ data, sender, sendResponse }) {
         const { url } = data;
-        console.log('Opening new tab with URL:', url);
         const nextIndex = sender.tab?.index ? sender.tab.index + 1 : undefined;
         openNewTab(url, nextIndex).then(sendResponse);
     },

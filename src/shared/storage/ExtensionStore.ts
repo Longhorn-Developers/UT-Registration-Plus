@@ -1,4 +1,4 @@
-import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
+import { createLocalStore } from 'chrome-extension-toolkit';
 
 /**
  * A store that is used for storing user options
@@ -25,10 +25,8 @@ const getManifestVersion = () => {
     return manifest?.version ?? '0.0.0';
 };
 
-export const ExtensionStore = createLocalStore<IExtensionStore>({
+export const ExtensionStore = createLocalStore<IExtensionStore>('extensionStore', {
     version: getManifestVersion(),
     lastUpdate: Date.now(),
     lastWhatsNewPopupVersion: 0,
 });
-
-debugStore({ ExtensionStore });

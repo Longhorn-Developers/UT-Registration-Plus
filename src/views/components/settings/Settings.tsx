@@ -143,7 +143,7 @@ export default function Settings(): JSX.Element {
             setIsDeveloper(isDev);
         };
 
-        const ds_l1 = DevStore.listen('isDeveloper', async ({ newValue }) => {
+        const ds_l1 = DevStore.subscribe('isDeveloper', async ({ newValue }) => {
             setIsDeveloper(newValue);
         });
 
@@ -160,56 +160,56 @@ export default function Settings(): JSX.Element {
         window.addEventListener('keydown', handleKeyPress);
 
         // Listen for changes in the settings
-        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+        const l1 = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
             // console.log('enableCourseStatusChips', newValue);
         });
 
-        // const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
+        // const l2 = OptionsStore.subscribe('enableTimeAndLocationInPopup', async ({ newValue }) => {
         //     setShowTimeLocation(newValue);
         //     // console.log('enableTimeAndLocationInPopup', newValue);
         // });
 
-        const l2 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
+        const l2 = OptionsStore.subscribe('enableHighlightConflicts', async ({ newValue }) => {
             setHighlightConflicts(newValue);
             // console.log('enableHighlightConflicts', newValue);
         });
 
-        const l3 = OptionsStore.listen('enableScrollToLoad', async ({ newValue }) => {
+        const l3 = OptionsStore.subscribe('enableScrollToLoad', async ({ newValue }) => {
             setLoadAllCourses(newValue);
             // console.log('enableScrollToLoad', newValue);
         });
 
-        const l4 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
+        const l4 = OptionsStore.subscribe('enableDataRefreshing', async ({ newValue }) => {
             setEnableDataRefreshing(newValue);
             // console.log('enableDataRefreshing', newValue);
         });
 
-        const l5 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
+        const l5 = OptionsStore.subscribe('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
             setCalendarNewTab(newValue);
             // console.log('alwaysOpenCalendarInNewTab', newValue);
         });
 
-        const l6 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
+        const l6 = OptionsStore.subscribe('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
             setCalendarNewTab(newValue);
             // console.log('alwaysOpenCalendarInNewTab', newValue);
         });
 
-        const l7 = OptionsStore.listen('allowMoreSchedules', async ({ newValue }) => {
+        const l7 = OptionsStore.subscribe('allowMoreSchedules', async ({ newValue }) => {
             setIncreaseScheduleLimit(newValue);
         });
 
         // Remove listeners when the component is unmounted
         return () => {
-            OptionsStore.removeListener(l1);
-            OptionsStore.removeListener(l2);
-            OptionsStore.removeListener(l3);
-            OptionsStore.removeListener(l4);
-            OptionsStore.removeListener(l5);
-            OptionsStore.removeListener(l6);
-            OptionsStore.removeListener(l7);
+            OptionsStore.unsubscribe(l1);
+            OptionsStore.unsubscribe(l2);
+            OptionsStore.unsubscribe(l3);
+            OptionsStore.unsubscribe(l4);
+            OptionsStore.unsubscribe(l5);
+            OptionsStore.unsubscribe(l6);
+            OptionsStore.unsubscribe(l7);
 
-            DevStore.removeListener(ds_l1);
+            DevStore.unsubscribe(ds_l1);
 
             window.removeEventListener('keydown', handleKeyPress);
         };

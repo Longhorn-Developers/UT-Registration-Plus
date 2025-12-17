@@ -37,7 +37,7 @@ export default function PopupMain(): JSX.Element {
 
         initAllSettings();
 
-        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+        const l1 = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
             // console.log('enableCourseStatusChips', newValue);
         });
@@ -48,7 +48,7 @@ export default function PopupMain(): JSX.Element {
         // });
 
         return () => {
-            OptionsStore.removeListener(l1);
+            OptionsStore.unsubscribe(l1);
             // OptionsStore.removeListener(l2);
         };
     }, []);

@@ -80,19 +80,19 @@ export default function useSchedules(): [active: UserSchedule, schedules: UserSc
     }
 
     useEffect(() => {
-        const l1 = UserScheduleStore.listen('schedules', ({ newValue }) => {
+        const l1 = UserScheduleStore.subscribe('schedules', ({ newValue }) => {
             schedulesCache = newValue.map(s => new UserSchedule(s));
             setSchedules(schedulesCache);
         });
 
-        const l2 = UserScheduleStore.listen('activeIndex', ({ newValue }) => {
+        const l2 = UserScheduleStore.subscribe('activeIndex', ({ newValue }) => {
             activeIndexCache = newValue;
             setActiveIndex(newValue);
         });
 
         return () => {
-            UserScheduleStore.removeListener(l1);
-            UserScheduleStore.removeListener(l2);
+            UserScheduleStore.unsubscribe(l1);
+            UserScheduleStore.unsubscribe(l2);
         };
     }, []);
 
