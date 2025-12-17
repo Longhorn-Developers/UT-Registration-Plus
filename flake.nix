@@ -12,6 +12,7 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import systems;
       imports = [
+        ./nix/packages.nix
         ./nix/devShells.nix
         ./nix/treefmt.nix
       ];
