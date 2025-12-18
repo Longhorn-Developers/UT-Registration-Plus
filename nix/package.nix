@@ -1,5 +1,6 @@
 {
   stdenv,
+  lib,
   nodejs,
   pnpm_10,
   git,
@@ -39,4 +40,12 @@ stdenv.mkDerivation (finalAttrs: {
     mkdir -p $out
     cp -r dist/* $out/
   '';
+
+  meta = {
+    description = "UT Registration Plus";
+    homepage = "https://github.com/Longhorn-Developers/UT-Registration-Plus";
+    license = lib.licenses.mit;
+    maintainers = [ "doprz" ];
+    platforms = lib.platforms.unix;
+  };
 })
