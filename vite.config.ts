@@ -260,7 +260,7 @@ export default defineConfig({
                                       '48': `icons/icon_production_48.png`,
                                       '128': `icons/icon_production_128.png`,
                                   },
-                                  permissions: ['storage', 'unlimitedStorage', ...HOST_PERMISSIONS],
+                                  permissions: ['storage', 'unlimitedStorage', 'tabs', ...HOST_PERMISSIONS],
                                   browser_action: {
                                       default_popup: 'popup.html',
                                       default_icon: `icons/icon_production_32.png`,

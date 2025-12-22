@@ -7,25 +7,25 @@ interface IDevStore {
     /** whether the user is a developer */
     isDeveloper: boolean;
     /** the tabId for the debug tab */
-    debugTabId?: number;
+    debugTabId: number;
     /** whether the debug tab is visible */
-    wasDebugTabVisible?: boolean;
+    wasDebugTabVisible: boolean;
     /** whether we should enable extension reloading */
-    isExtensionReloading?: boolean;
+    isExtensionReloading: boolean;
     /** whether we should enable tab reloading */
-    isTabReloading?: boolean;
+    isTabReloading: boolean;
     /** The id of the tab that we want to reload (after the extension reloads itself ) */
-    reloadTabId?: number;
+    reloadTabId: number;
 }
 
 const defaults: IDevStore = {
     isDeveloper: false,
-    debugTabId: undefined,
+    debugTabId: 0,
     isTabReloading: true,
     wasDebugTabVisible: false,
     isExtensionReloading: true,
-    reloadTabId: undefined,
-};
+    reloadTabId: 0,
+} as const satisfies IDevStore;
 
 /**
  * A store that is used to store data that is only relevant during development.
