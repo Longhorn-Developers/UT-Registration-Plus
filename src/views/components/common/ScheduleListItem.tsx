@@ -108,6 +108,10 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
     };
 
     const handleDelete = () => {
+        if (schedule.courses.length <= 0) {
+            deleteSchedule(schedule.id);
+            return;
+        }
         showDialog({
             title: 'Delete schedule?',
             description: (
