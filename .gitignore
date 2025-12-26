@@ -212,4 +212,9 @@ package-lock.json
 storybook-static/
 package/
 
-.direnv/
+# Nix
+result
+result-*
+
+# direnv
+.direnv
