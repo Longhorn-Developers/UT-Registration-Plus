@@ -45,7 +45,7 @@ stdenv.mkDerivation (finalAttrs: {
     description = "UT Registration Plus";
     homepage = "https://github.com/Longhorn-Developers/UT-Registration-Plus";
     license = lib.licenses.mit;
-    maintainers = [ "doprz" ];
+    maintainers = lib.maintainers.doprz;
     platforms = lib.platforms.unix;
   };
 })
