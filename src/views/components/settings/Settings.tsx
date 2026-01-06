@@ -1,38 +1,35 @@
-import clsx from 'clsx';
-import React, { useCallback, useEffect, useState } from 'react';
-
 // Pages
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
-
+import { CalendarDots, Trash } from '@phosphor-icons/react';
 // Shared
 import { background } from '@shared/messages';
 import { DevStore } from '@shared/storage/DevStore';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import MIMEType from '@shared/types/MIMEType';
-
-// Views
-import Divider from '@views/components/common/Divider';
-import SwitchButton from '@views/components/common/SwitchButton';
-import Text from '@views/components/common/Text/Text';
+import { handleExportJson } from '@views/components/calendar/utils';
 import { Button } from '@views/components/common/Button';
 import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
+// Views
+import Divider from '@views/components/common/Divider';
 import { LargeLogo } from '@views/components/common/LogoIcon';
-import { handleExportJson } from '@views/components/calendar/utils';
-import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
+import SwitchButton from '@views/components/common/SwitchButton';
+import Text from '@views/components/common/Text/Text';
 // Hooks
 import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
+import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
+// Misc
+import clsx from 'clsx';
+import React, { useCallback, useEffect, useState } from 'react';
 
 // Icons
 import IconoirGitFork from '~icons/iconoir/git-fork';
-import { CalendarDots, Trash } from '@phosphor-icons/react';
 
-import { useMigrationDialog } from '../common/MigrationDialog';
 import FileUpload from '../common/FileUpload';
-
+import { useMigrationDialog } from '../common/MigrationDialog';
 import DevMode from './DevMode';
 import Preview from './Preview';
 
