@@ -7,4 +7,4 @@
     inherit sha256;
     url = "https://github.com/NixOS/flake-compat/archive/${rev}.tar.gz";
   }
-) { src = ./.; }).shellNix
+) { src = ./.; }).defaultNix
