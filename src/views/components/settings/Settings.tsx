@@ -1,39 +1,38 @@
-// import addCourse from '@pages/background/lib/addCourse';
+import clsx from 'clsx';
+import React, { useCallback, useEffect, useState } from 'react';
+
+// Pages
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
-import { CalendarDots, Trash } from '@phosphor-icons/react';
+
+// Shared
 import { background } from '@shared/messages';
 import { DevStore } from '@shared/storage/DevStore';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import MIMEType from '@shared/types/MIMEType';
-// import { addCourseByUrl } from '@shared/util/courseUtils';
-// import { getCourseColors } from '@shared/util/colors';
-// import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
-import { Button } from '@views/components/common/Button';
-import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
+
+// Views
 import Divider from '@views/components/common/Divider';
-import { LargeLogo } from '@views/components/common/LogoIcon';
-// import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
+import { Button } from '@views/components/common/Button';
+import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
+import { LargeLogo } from '@views/components/common/LogoIcon';
+import { handleExportJson } from '@views/components/calendar/utils';
+import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
+// Hooks
 import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
-// import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-// import getCourseTableRows from '@views/lib/getCourseTableRows';
-import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
-// import { SiteSupport } from '@views/lib/getSiteSupport';
-import clsx from 'clsx';
-import React, { useCallback, useEffect, useState } from 'react';
 
+// Icons
 import IconoirGitFork from '~icons/iconoir/git-fork';
+import { CalendarDots, Trash } from '@phosphor-icons/react';
 
-import { handleExportJson } from '../calendar/utils';
-// import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';;
-import FileUpload from '../common/FileUpload';
 import { useMigrationDialog } from '../common/MigrationDialog';
-// import RefreshIcon from '~icons/material-symbols/refresh';
+import FileUpload from '../common/FileUpload';
+
 import DevMode from './DevMode';
 import Preview from './Preview';
 
@@ -85,7 +84,7 @@ const useDevMode = (targetCount: number): [boolean, () => void] => {
  *
  * @returns The Settings component.
  */
-export default function Settings(): JSX.Element {
+export default function Settings(): JSX.Element | undefined {
     const [_enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
     // const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
@@ -165,9 +164,10 @@ export default function Settings(): JSX.Element {
             // console.log('enableCourseStatusChips', newValue);
         });
 
-        // const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
-        //     setShowTimeLocation(newValue);
-        //     // console.log('enableTimeAndLocationInPopup', newValue);
+        // const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async
+        // ({ newValue }) => {
+        // setShowTimeLocation(newValue);
+        // // console.log('enableTimeAndLocationInPopup', newValue);
         // });
 
         const l2 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
@@ -259,18 +259,19 @@ export default function Settings(): JSX.Element {
         }
     };
     // const handleAddCourseByLink = async () => {
-    //     // todo: Use a proper modal instead of a prompt
-    //     const link: string | null = prompt('Enter course link');
-    //     // Exit if the user cancels the prompt
-    //     if (link === null) return;
-    //     await addCourseByUrl(link, activeSchedule);
+    // // todo: Use a proper modal instead of a prompt
+    // const link: string | null = prompt('Enter course link');
+    // // Exit if the user cancels the prompt
+    // if (link === null) return;
+    // await addCourseByUrl(link, activeSchedule);
     // };
 
     const [devMode, toggleDevMode] = useDevMode(10);
 
     if (devMode) {
         DevStore.set('isDeveloper', true);
-        return <DevMode />;
+        return;
+        <DevMode />;
     }
 
     return (
@@ -302,88 +303,110 @@ export default function Settings(): JSX.Element {
             <div className='p-6 lg:flex'>
                 <div className='mr-4 lg:w-1/2 xl:w-xl'>
                     {/* <section className='mb-8'>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>CUSTOMIZATION OPTIONS</h2>
-                        <div className='flex space-x-4'>
-                            <div className='w-1/2 space-y-4'>
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>Show Course Status</h3>
-                                        <p className='text-sm text-gray-600'>
-                                            Shows an indicator for waitlisted, cancelled, and closed courses.
-                                        </p>
-                                    </div>
-                                    <SwitchButton
-                                        isChecked={enableCourseStatusChips}
-                                        onChange={() => {
-                                            setEnableCourseStatusChips(!enableCourseStatusChips);
-                                            OptionsStore.set('enableCourseStatusChips', !enableCourseStatusChips);
-                                        }}
-                                    />
-                                </div>
+                                                                    <h2
+                                                                        className='mb-4 text-xl text-ut-black font-semibold'>
+                                                                        CUSTOMIZATION OPTIONS</h2>
+                                                                    <div className='flex space-x-4'>
+                                                                        <div className='w-1/2 space-y-4'>
+                                                                            <div
+                                                                                className='flex items-center justify-between'>
+                                                                                <div className='max-w-xs'>
+                                                                                    <h3
+                                                                                        className='text-ut-burntorange font-semibold'>
+                                                                                        Show Course Status</h3>
+                                                                                    <p
+                                                                                        className='text-sm text-gray-600'>
+                                                                                        Shows an indicator for
+                                                                                        waitlisted, cancelled, and
+                                                                                        closed courses.
+                                                                                    </p>
+                                                                                </div>
+                                                                                <SwitchButton
+                                                                                    isChecked={enableCourseStatusChips}
+                                                                                    onChange={()=> {
+                                                                                    setEnableCourseStatusChips(!enableCourseStatusChips);
+                                                                                    OptionsStore.set('enableCourseStatusChips',
+                                                                                    !enableCourseStatusChips);
+                                                                                    }}
+                                                                                    />
+                                                                            </div>
 
-                                <Divider size='auto' orientation='horizontal' />
+                                                                            <Divider size='auto'
+                                                                                orientation='horizontal' />
 
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>
-                                            Show Time & Location in Popup
-                                        </h3>
-                                        <p className='text-sm text-gray-600'>
-                                            Shows the course&apos;s time and location in the extension&apos;s popup.
-                                        </p>
-                                    </div>
-                                    <SwitchButton
-                                        isChecked={showTimeLocation}
-                                        onChange={() => {
-                                            setShowTimeLocation(!showTimeLocation);
-                                            OptionsStore.set('enableTimeAndLocationInPopup', !showTimeLocation);
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                            {DISPLAY_PREVIEWS && (
-                                <Preview>
-                                    <CalendarCourseCell
-                                        colors={getCourseColors('orange')}
-                                        courseDeptAndInstr={ExampleCourse.department}
-                                        className={ExampleCourse.number}
-                                        status={ExampleCourse.status}
-                                        timeAndLocation={ExampleCourse.schedule.meetings[0]!.getTimeString({
-                                            separator: '-',
-                                        })}
-                                    />
-                                    <PopupCourseBlock colors={getCourseColors('orange')} course={ExampleCourse} />
-                                </Preview>
-                            )}
-                        </div>
-                    </section>
+                                                                            <div
+                                                                                className='flex items-center justify-between'>
+                                                                                <div className='max-w-xs'>
+                                                                                    <h3
+                                                                                        className='text-ut-burntorange font-semibold'>
+                                                                                        Show Time & Location in Popup
+                                                                                    </h3>
+                                                                                    <p
+                                                                                        className='text-sm text-gray-600'>
+                                                                                        Shows the course&apos;s time and
+                                                                                        location in the extension&apos;s
+                                                                                        popup.
+                                                                                    </p>
+                                                                                </div>
+                                                                                <SwitchButton
+                                                                                    isChecked={showTimeLocation}
+                                                                                    onChange={()=> {
+                                                                                    setShowTimeLocation(!showTimeLocation);
+                                                                                    OptionsStore.set('enableTimeAndLocationInPopup',
+                                                                                    !showTimeLocation);
+                                                                                    }}
+                                                                                    />
+                                                                            </div>
+                                                                        </div>
+                                                                        {DISPLAY_PREVIEWS && (
+                                                                        <Preview>
+                                                                            <CalendarCourseCell
+                                                                                colors={getCourseColors('orange')}
+                                                                                courseDeptAndInstr={ExampleCourse.department}
+                                                                                className={ExampleCourse.number}
+                                                                                status={ExampleCourse.status}
+                                                                                timeAndLocation={ExampleCourse.schedule.meetings[0]!.getTimeString({
+                                                                                separator: '-' , })} />
+                                                                            <PopupCourseBlock
+                                                                                colors={getCourseColors('orange')}
+                                                                                course={ExampleCourse} />
+                                                                        </Preview>
+                                                                        )}
+                                                                    </div>
+                                                                </section>
 
-                    <Divider size='auto' orientation='horizontal' /> */}
+                                                                <Divider size='auto' orientation='horizontal' /> */}
 
                     <section className='mb-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>ADVANCED SETTINGS</h2>
                         <div className='flex space-x-4'>
                             <div className={PREVIEW_SECTION_DIV_CLASSNAME}>
-                                {/* <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>Refresh Data</h3>
-                                        <p className='text-sm text-gray-600'>
-                                            Refreshes waitlist, course status, and other info with the latest data from
-                                            UT&apos;s site.
-                                        </p>
-                                    </div>
-                                    <Button
-                                        variant='outline'
-                                        color='ut-black'
-                                        icon={RefreshIcon}
-                                        onClick={() => console.log('Refresh clicked')}
-                                        disabled={!enableDataRefreshing}
-                                    >
-                                        Refresh
-                                    </Button>
-                                </div>
+                                {/* <div
+                                                                                className='flex items-center justify-between'>
+                                                                                <div className='max-w-xs'>
+                                                                                    <h3
+                                                                                        className='text-ut-burntorange font-semibold'>
+                                                                                        Refresh Data</h3>
+                                                                                    <p
+                                                                                        className='text-sm text-gray-600'>
+                                                                                        Refreshes waitlist, course
+                                                                                        status, and other info with the
+                                                                                        latest data from
+                                                                                        UT&apos;s site.
+                                                                                    </p>
+                                                                                </div>
+                                                                                <Button variant='outline'
+                                                                                    color='ut-black' icon={RefreshIcon}
+                                                                                    onClick={()=> console.log('Refresh
+                                                                                    clicked')}
+                                                                                    disabled={!enableDataRefreshing}
+                                                                                    >
+                                                                                    Refresh
+                                                                                </Button>
+                                                                            </div>
 
-                                <Divider size='auto' orientation='horizontal' /> */}
+                                                                            <Divider size='auto'
+                                                                                orientation='horizontal' /> */}
 
                                 <div className='flex items-center justify-between'>
                                     <div className='max-w-xs'>
@@ -523,7 +546,7 @@ export default function Settings(): JSX.Element {
                                 <Preview>
                                     <Text
                                         variant='h2-course'
-                                        className={clsx('text-center text-theme-red !font-normal', {
+                                        className={clsx('text-center text - theme - red!font - normal', {
                                             'line-through': highlightConflicts,
                                         })}
                                     >
@@ -587,7 +610,9 @@ export default function Settings(): JSX.Element {
                                         color='ut-burntorange'
                                         onClick={() => {
                                             const debugPageUrl = chrome.runtime.getURL(CRX_PAGES.DEBUG);
-                                            background.openNewTab({ url: debugPageUrl });
+                                            background.openNewTab({
+                                                url: debugPageUrl,
+                                            });
                                         }}
                                     >
                                         Open Debug Page
@@ -644,13 +669,16 @@ export default function Settings(): JSX.Element {
                                                 </p>
                                             )}
                                             <p className='text-xs'>
-                                                Commits: {githubStats.adminGitHubStats[admin.githubUsername]?.commits}
+                                                Commits:
+                                                {githubStats.adminGitHubStats[admin.githubUsername]?.commits}
                                             </p>
                                             <p className='text-xs text-ut-green'>
-                                                {githubStats.adminGitHubStats[admin.githubUsername]?.linesAdded} ++
+                                                {githubStats.adminGitHubStats[admin.githubUsername]?.linesAdded}
+                                                ++
                                             </p>
                                             <p className='text-xs text-theme-red'>
-                                                {githubStats.adminGitHubStats[admin.githubUsername]?.linesDeleted} --
+                                                {githubStats.adminGitHubStats[admin.githubUsername]?.linesDeleted}
+                                                --
                                             </p>
                                         </div>
                                     )}
@@ -694,13 +722,16 @@ export default function Settings(): JSX.Element {
                                                 </p>
                                             )}
                                             <p className='text-xs'>
-                                                Commits: {githubStats.userGitHubStats[swe.githubUsername]?.commits}
+                                                Commits:
+                                                {githubStats.userGitHubStats[swe.githubUsername]?.commits}
                                             </p>
                                             <p className='text-xs text-ut-green'>
-                                                {githubStats.userGitHubStats[swe.githubUsername]?.linesAdded} ++
+                                                {githubStats.userGitHubStats[swe.githubUsername]?.linesAdded}
+                                                ++
                                             </p>
                                             <p className='text-xs text-theme-red'>
-                                                {githubStats.userGitHubStats[swe.githubUsername]?.linesDeleted} --
+                                                {githubStats.userGitHubStats[swe.githubUsername]?.linesDeleted}
+                                                --
                                             </p>
                                         </div>
                                     )}
@@ -742,13 +773,16 @@ export default function Settings(): JSX.Element {
                                                         </p>
                                                     )}
                                                     <p className='text-xs'>
-                                                        Commits: {githubStats.userGitHubStats[username]?.commits}
+                                                        Commits:
+                                                        {githubStats.userGitHubStats[username]?.commits}
                                                     </p>
                                                     <p className='text-xs text-ut-green'>
-                                                        {githubStats.userGitHubStats[username]?.linesAdded} ++
+                                                        {githubStats.userGitHubStats[username]?.linesAdded}
+                                                        ++
                                                     </p>
                                                     <p className='text-xs text-theme-red'>
-                                                        {githubStats.userGitHubStats[username]?.linesDeleted} --
+                                                        {githubStats.userGitHubStats[username]?.linesDeleted}
+                                                        --
                                                     </p>
                                                 </div>
                                             )}
