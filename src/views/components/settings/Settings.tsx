@@ -222,7 +222,7 @@ export default function Settings(): JSX.Element {
                     {isBirthday && (
                         <span
                             onClick={triggerCelebration}
-                            className='px-4 cursor-pointer text-sm text-ut-burntorange transition-transform hover:scale-110'
+                            className='cursor-pointer px-4 text-sm text-ut-burntorange transition-transform hover:scale-110'
                             title='Click to celebrate!'
                         >
                             🎉 Happy Birthday LHD! 🎉
