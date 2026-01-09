@@ -88,6 +88,31 @@ const fixManifestOptionsPage = (): Plugin => ({
     },
 });
 
+function getGitInfo() {
+    // Try environment variables first (for Nix builds)
+    if (process.env.VITE_GIT_BRANCH && process.env.VITE_GIT_COMMIT) {
+        return {
+            gitBranch: process.env.VITE_GIT_BRANCH,
+            gitCommit: process.env.VITE_GIT_COMMIT,
+        };
+    }
+
+    // Fall back to git commands (for local development)
+    try {
+        return {
+            gitBranch: execSync('git rev-parse --abbrev-ref HEAD').toString().trim(),
+            gitCommit: execSync('git rev-parse --short HEAD').toString().trim(),
+        };
+    } catch {
+        return {
+            gitBranch: 'unknown',
+            gitCommit: 'unknown',
+        };
+    }
+}
+
+const gitInfo = getGitInfo();
+
 let config: ResolvedConfig;
 let server: ViteDevServer;
 
@@ -180,12 +205,14 @@ export default defineConfig({
                 'PROD',
                 'VITE_SENTRY_ENVIRONMENT',
                 'VITE_BETA_BUILD',
+                'VITE_GIT_BRANCH',
+                'VITE_GIT_COMMIT',
             ],
             includeTimestamp: true,
             includeBuildTime: true,
             customMetadata: {
-                gitBranch: () => execSync('git rev-parse --abbrev-ref HEAD').toString().trim(),
-                gitCommit: () => execSync('git rev-parse --short HEAD').toString().trim(),
+                gitBranch: () => gitInfo.gitBranch,
+                gitCommit: () => gitInfo.gitCommit,
                 nodeVersion: () => process.version,
             },
         }),
