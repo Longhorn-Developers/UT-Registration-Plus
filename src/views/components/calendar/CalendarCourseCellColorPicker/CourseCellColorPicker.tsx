@@ -124,17 +124,15 @@ export default function CourseCellColorPicker({ defaultColor }: CourseCellColorP
                 <>
                     <Divider orientation='horizontal' size='100%' className='my-1' />
                     <div className='grid grid-cols-6 gap-1'>
-                        {colorPatchColors
-                            .get(selectedBaseColor)
-                            ?.map(shadeColor => (
-                                <ColorPatch
-                                    key={shadeColor}
-                                    color={shadeColor}
-                                    isSelected={shadeColor === hexCodeWithHash}
-                                    handleSelectColorPatch={handleSelectColorPatch}
-                                    defaultColor={defaultColor}
-                                />
-                            ))}
+                        {colorPatchColors.get(selectedBaseColor)?.map(shadeColor => (
+                            <ColorPatch
+                                key={shadeColor}
+                                color={shadeColor}
+                                isSelected={shadeColor === hexCodeWithHash}
+                                handleSelectColorPatch={handleSelectColorPatch}
+                                defaultColor={defaultColor}
+                            />
+                        ))}
                     </div>
                 </>
             )}
