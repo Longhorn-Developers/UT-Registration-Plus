@@ -1,7 +1,7 @@
 import { tz, TZDate } from '@date-fns/tz';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import type { Course } from '@shared/types/Course';
+import { Course } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -245,6 +245,23 @@ export const scheduleToIcsString = (schedule: Serialized<UserSchedule>) => {
     return icsString;
 };
 
+export const scheduleToText = (schedule: Serialized<UserSchedule>) => {
+    const lines: string[] = [];
+
+    lines.push('Schedule: ' + schedule.name);
+    lines.push('');
+
+    for (const c of schedule.courses) {
+        lines.push(c.fullName);
+        // lines.push(c.schedule);
+        lines.push(`${c.creditHours} Credit Hours`);
+        lines.push(`${c.uniqueId}`);
+        lines.push('');
+    }
+
+    return lines.join('\n');
+};
+
 /**
  * Saves the current schedule as a calendar file in the iCalendar format (ICS).
  * Fetches the current active schedule and converts it into an ICS string.
@@ -260,6 +277,25 @@ export const saveAsCal = async () => {
     const icsString = scheduleToIcsString(schedule);
 
     downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
+};
+
+/**
+ * Save current schedule as a plain text file consisting of
+ * Course Name - Course ID
+ * Course Time
+ * Unique Number
+ * Line Break
+ * Repeat
+ */
+export const saveAsText = async () => {
+    const schedule = await getSchedule();
+
+    if (!schedule) {
+        throw new Error('No schedule found');
+    }
+
+    const scheduleText = scheduleToText(schedule);
+    downloadBlob(scheduleText, 'TEXT', 'schedule.txt');
 };
 
 /**
