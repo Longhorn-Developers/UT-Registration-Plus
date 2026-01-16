@@ -31,7 +31,7 @@ const defaults: IDevStore = {
  * A store that is used to store data that is only relevant during development.
  * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
  */
-export const DevStore = createLocalStore<IDevStore>('devStore', defaults);
+export const DevStore = createLocalStore<IDevStore>(defaults);
 
 let initPromise: Promise<void> | null = null;
 

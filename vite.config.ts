@@ -390,7 +390,6 @@ export default defineConfig({
                 report: 'src/pages/report/index.html',
                 map: 'src/pages/map/index.html',
                 404: 'src/pages/404/index.html',
-                // ensure background and content are emitted as separate chunks
                 background: 'src/pages/background/background.ts',
                 content: 'src/pages/content/index.tsx',
             },

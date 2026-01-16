@@ -4,12 +4,12 @@ import { createLocalStore } from 'chrome-extension-toolkit';
 
 import { generateRandomId } from '../util/random';
 
-// --- POLYFILL START: Fix Firefox MV2 Storage to return Promises like Chrome MV3 ---
+// fix Firefox MV2 Storage to return Promises like Chrome MV3
 if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
     const promisify = (fn: any, context: any) => {
         return (...args: any[]) => {
             return new Promise((resolve, reject) => {
-                // We intentionally use the callback approach which works in BOTH Chrome and Firefox
+                // use the callback approach which works in both Chrome and Firefox
                 fn.call(context, ...args, (result: any) => {
                     if (chrome.runtime.lastError) {
                         reject(chrome.runtime.lastError);
@@ -21,9 +21,6 @@ if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
         };
     };
 
-    // Only patch if it doesn't look like it returns a promise (simple heuristic)
-    // Or we just force patch it to be safe, as the callback method is universal.
-    // We patch 'get', 'set', and 'remove' to ensure the toolkit works fully.
     const originalGet = chrome.storage.local.get;
     // @ts-ignore
     chrome.storage.local.get = promisify(originalGet, chrome.storage.local);
@@ -36,7 +33,6 @@ if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
     // @ts-ignore
     chrome.storage.local.remove = promisify(originalRemove, chrome.storage.local);
 }
-// --- POLYFILL END ---
 
 interface IUserScheduleStore {
     schedules: Serialized<UserSchedule>[];
@@ -60,7 +56,7 @@ const defaults: IUserScheduleStore = {
  * A store that is used for storing user schedules (and the active schedule).
  * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
  */
-export const UserScheduleStore = createLocalStore<IUserScheduleStore>('userScheduleStore', defaults);
+export const UserScheduleStore = createLocalStore<IUserScheduleStore>(defaults);
 
 let initPromise: Promise<void> | null = null;
 
@@ -70,13 +66,13 @@ async function ensureInitialized() {
         try {
             await UserScheduleStore.initialize?.();
         } catch {
-            // storage not ready — that's ok, we'll use in-memory fallback
+            // storage not ready
         }
     })();
     return initPromise;
 }
 
-// Wrap get/set to ensure init is called first and provide fallback
+// wrap get/set to ensure init is called first and provide fallback
 const originalGet = UserScheduleStore.get.bind(UserScheduleStore);
 const originalSet = UserScheduleStore.set.bind(UserScheduleStore);
 
@@ -100,6 +96,6 @@ UserScheduleStore.set = async function <K extends keyof IUserScheduleStore>(
         }
         return await originalSet(key);
     } catch {
-        // storage failed silently — in-memory only
+        // storage failed silently
     }
 } as typeof UserScheduleStore.set;

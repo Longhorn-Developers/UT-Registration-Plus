@@ -44,7 +44,7 @@
         "@tsparticles/slim": "^3.9.1",
         "@unocss/vite": "^0.63.6",
         "@vitejs/plugin-react": "^4.3.4",
-        "chrome-extension-toolkit": "^0.0.96",
+        "chrome-extension-toolkit": "^0.0.54",
         "clsx": "^2.1.1",
         "conventional-changelog": "^6.0.0",
         "date-fns": "^4.1.0",
@@ -160,7 +160,8 @@
     "pnpm": {
         "patchedDependencies": {
             "@crxjs/vite-plugin@2.0.0-beta.21": "patches/@crxjs__vite-plugin@2.0.0-beta.21.patch",
-            "@unocss/vite": "patches/@unocss__vite.patch"
+            "@unocss/vite": "patches/@unocss__vite.patch",
+            "chrome-extension-toolkit": "patches/chrome-extension-toolkit.patch"
         },
         "overrides": {
             "es-module-lexer": "^1.5.4"

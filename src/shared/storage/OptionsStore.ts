@@ -43,7 +43,7 @@ const defaults: IOptionsStore = {
  * A store that is used for storing user options.
  * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
  */
-export const OptionsStore = createSyncStore<IOptionsStore>('optionsStore', defaults);
+export const OptionsStore = createSyncStore<IOptionsStore>(defaults);
 
 let initPromise: Promise<void> | null = null;
 

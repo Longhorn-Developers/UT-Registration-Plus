@@ -9,12 +9,12 @@ export default function useVersion(): string {
     const [version, setVersion] = useState<string>('');
 
     useEffect(() => {
-        const listener = ExtensionStore.subscribe('version', ({ newValue }) => {
+        const listener = ExtensionStore.listen('version', ({ newValue }) => {
             setVersion(newValue);
         });
 
         return () => {
-            ExtensionStore.unsubscribe(listener);
+            ExtensionStore.removeListener(listener);
         };
     }, []);
 

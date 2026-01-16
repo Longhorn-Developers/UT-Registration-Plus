@@ -35,7 +35,7 @@ const defaults: IExtensionStore = {
  * A store that is used for storing user options.
  * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
  */
-export const ExtensionStore = createLocalStore<IExtensionStore>('extensionStore', defaults);
+export const ExtensionStore = createLocalStore<IExtensionStore>(defaults);
 
 let initPromise: Promise<void> | null = null;
 

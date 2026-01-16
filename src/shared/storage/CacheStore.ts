@@ -13,7 +13,7 @@ const defaults: ICacheStore = {
  * A store that is used for storing cached data such as GitHub contributors.
  * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
  */
-export const CacheStore = createLocalStore<ICacheStore>('cacheStore', defaults);
+export const CacheStore = createLocalStore<ICacheStore>(defaults);
 
 let initPromise: Promise<void> | null = null;
 
@@ -23,13 +23,13 @@ async function ensureInitialized() {
         try {
             await CacheStore.initialize?.();
         } catch {
-            // storage not ready — that's ok, we'll use in-memory fallback
+            // storage not ready
         }
     })();
     return initPromise;
 }
 
-// Wrap get/set to ensure init is called first and provide fallback
+// ensure init is called first and provide fallback
 const originalGet = CacheStore.get.bind(CacheStore);
 const originalSet = CacheStore.set.bind(CacheStore);
 
@@ -50,6 +50,6 @@ CacheStore.set = async function <K extends keyof ICacheStore>(key: K | Partial<I
         }
         return await originalSet(key);
     } catch {
-        // storage failed silently — in-memory only
+        // storage failed silently
     }
 } as typeof CacheStore.set;

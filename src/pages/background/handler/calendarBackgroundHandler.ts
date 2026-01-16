@@ -11,7 +11,7 @@ const getAllTabInfos = async () => {
     const openTabs = (await browser.tabs.query({})).filter(
         (tab): tab is browser.Tabs.Tab & { id: number } => tab.id !== undefined
     );
-    const results = await Promise.allSettled(openTabs.map(tab => tabs.getTabInfo(undefined, { tabId: tab.id })));
+    const results = await Promise.allSettled(openTabs.map(tab => tabs.getTabInfo(undefined, tab.id)));
 
     type TabInfo = PromiseFulfilledResult<Awaited<ReturnType<typeof tabs.getTabInfo>>>;
     return results
@@ -39,7 +39,7 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
 
             await chrome.tabs.update(tabid, { active: true });
             await chrome.windows.update(openCalendarTabInfo.tab.windowId!, { focused: true, drawAttention: true });
-            if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, { tabId: tabid });
+            if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, tabid);
 
             sendResponse({
                 ...openCalendarTabInfo.tab,

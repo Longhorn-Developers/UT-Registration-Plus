@@ -14,6 +14,9 @@ patchedDependencies:
   '@unocss/vite':
     hash: 9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95
     path: patches/@unocss__vite.patch
+  chrome-extension-toolkit:
+    hash: c87f47a953fac039ad7ecc7f0887080d0bc397be17375e1c59afe8a3a1a106cd
+    path: patches/chrome-extension-toolkit.patch
 
 importers:
 
@@ -65,8 +68,8 @@ importers:
         specifier: ^4.3.4
         version: 4.3.4(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.44.1))
       chrome-extension-toolkit:
-        specifier: ^0.0.96
-        version: 0.0.96
+        specifier: ^0.0.54
+        version: 0.0.54(patch_hash=c87f47a953fac039ad7ecc7f0887080d0bc397be17375e1c59afe8a3a1a106cd)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -178,7 +181,7 @@ importers:
         version: 8.6.0(@storybook/test@8.6.0(storybook@8.6.0(prettier@3.6.2)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.0(prettier@3.6.2))(typescript@5.7.3)
       '@storybook/react-vite':
         specifier: ^8.6.0
-        version: 8.6.0(@storybook/test@8.6.0(storybook@8.6.0(prettier@3.6.2)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.52.4)(storybook@8.6.0(prettier@3.6.2))(typescript@5.7.3)(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.44.0))
+        version: 8.6.0(@storybook/test@8.6.0(storybook@8.6.0(prettier@3.6.2)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.52.4)(storybook@8.6.0(prettier@3.6.2))(typescript@5.7.3)(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.44.1))
       '@storybook/test':
         specifier: ^8.6.0
         version: 8.6.0(storybook@8.6.0(prettier@3.6.2))
@@ -3170,8 +3173,8 @@ packages:
       '@chromatic-com/playwright':
         optional: true
 
-  chrome-extension-toolkit@0.0.96:
-    resolution: {integrity: sha512-SgWWxMa/AntUToRPPpuV/ORSQZWkdwvv7FZwn82ECPu1sfgCUw3IUfNVi+JF+uXOCNtbPoFEgIps3BGf45gvGw==}
+  chrome-extension-toolkit@0.0.54:
+    resolution: {integrity: sha512-ux8v/PfWQIvO+EBbF+kDYq2z8Rnp5YZ7GwJxYX7R2a9owIEHJxiCUSJ82tOsiMQINF/31+t6QLG9equKNZUOlA==}
 
   chrome-trace-event@1.0.4:
     resolution: {integrity: sha512-rNjApaLzuwaOTjCiT8lSDdGN1APCiqkChLMJxJPWLunPAt5fy8xgU9/jNOchV84wfIxrA0lRQB7oCT8jrn/wrQ==}
@@ -8666,7 +8669,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@storybook/builder-vite@8.6.0(storybook@8.6.0(prettier@3.6.2))(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.44.0))':
+  '@storybook/builder-vite@8.6.0(storybook@8.6.0(prettier@3.6.2))(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.44.1))':
     dependencies:
       '@storybook/csf-plugin': 8.6.0(storybook@8.6.0(prettier@3.6.2))
       browser-assert: 1.2.1
@@ -8735,11 +8738,11 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       storybook: 8.6.0(prettier@3.6.2)
 
-  '@storybook/react-vite@8.6.0(@storybook/test@8.6.0(storybook@8.6.0(prettier@3.6.2)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.52.4)(storybook@8.6.0(prettier@3.6.2))(typescript@5.7.3)(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.44.0))':
+  '@storybook/react-vite@8.6.0(@storybook/test@8.6.0(storybook@8.6.0(prettier@3.6.2)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.52.4)(storybook@8.6.0(prettier@3.6.2))(typescript@5.7.3)(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.44.1))':
     dependencies:
       '@joshwooding/vite-plugin-react-docgen-typescript': 0.5.0(typescript@5.7.3)(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.44.1))
       '@rollup/pluginutils': 5.1.4(rollup@4.52.4)
-      '@storybook/builder-vite': 8.6.0(storybook@8.6.0(prettier@3.6.2))(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.44.0))
+      '@storybook/builder-vite': 8.6.0(storybook@8.6.0(prettier@3.6.2))(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.44.1))
       '@storybook/react': 8.6.0(@storybook/test@8.6.0(storybook@8.6.0(prettier@3.6.2)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.0(prettier@3.6.2))(typescript@5.7.3)
       find-up: 5.0.0
       magic-string: 0.30.17
@@ -10388,7 +10391,7 @@ snapshots:
 
   chromatic@11.26.0: {}
 
-  chrome-extension-toolkit@0.0.96:
+  chrome-extension-toolkit@0.0.54(patch_hash=c87f47a953fac039ad7ecc7f0887080d0bc397be17375e1c59afe8a3a1a106cd):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)

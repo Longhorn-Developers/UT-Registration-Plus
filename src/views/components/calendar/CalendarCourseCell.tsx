@@ -61,13 +61,13 @@ export default function CalendarCourseCell({
     useEffect(() => {
         initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
 
-        const l1 = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
+        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
             // console.log('enableCourseStatusChips', newValue);
         });
 
         return () => {
-            OptionsStore.unsubscribe(l1);
+            OptionsStore.removeListener(l1);
         };
     }, []);
 
