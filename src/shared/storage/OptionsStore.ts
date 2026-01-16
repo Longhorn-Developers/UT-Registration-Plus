@@ -1,4 +1,4 @@
-import { createSyncStore } from 'chrome-extension-toolkit';
+import { createSyncStore, debugStore } from 'chrome-extension-toolkit';
 
 /**
  * A store that is used for storing user options
@@ -100,3 +100,5 @@ export const initSettings = async () =>
         showUTDiningPromo: await OptionsStore.get('showUTDiningPromo'),
         allowMoreSchedules: await OptionsStore.get('allowMoreSchedules'),
     }) satisfies IOptionsStore;
+
+debugStore({ OptionsStore });

@@ -1,4 +1,4 @@
-import { createLocalStore } from 'chrome-extension-toolkit';
+import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 /**
  * A store that is used for storing user options
@@ -75,3 +75,5 @@ ExtensionStore.set = async function <K extends keyof IExtensionStore>(key: K | P
         // storage failed silently — in-memory only
     }
 } as typeof ExtensionStore.set;
+
+debugStore({ ExtensionStore });

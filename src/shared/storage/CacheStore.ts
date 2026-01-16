@@ -1,5 +1,5 @@
 import type { CachedData } from '@shared/types/CachedData';
-import { createLocalStore } from 'chrome-extension-toolkit';
+import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 interface ICacheStore {
     github: Record<string, CachedData<unknown>>;
@@ -53,3 +53,5 @@ CacheStore.set = async function <K extends keyof ICacheStore>(key: K | Partial<I
         // storage failed silently
     }
 } as typeof CacheStore.set;
+
+debugStore({ cacheStore: CacheStore });

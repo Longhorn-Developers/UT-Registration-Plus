@@ -1,6 +1,6 @@
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import type { Serialized } from 'chrome-extension-toolkit';
-import { createLocalStore } from 'chrome-extension-toolkit';
+import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 import { generateRandomId } from '../util/random';
 
@@ -99,3 +99,5 @@ UserScheduleStore.set = async function <K extends keyof IUserScheduleStore>(
         // storage failed silently
     }
 } as typeof UserScheduleStore.set;
+
+debugStore({ userScheduleStore: UserScheduleStore });
