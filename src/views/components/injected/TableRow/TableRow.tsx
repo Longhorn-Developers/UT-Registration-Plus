@@ -34,14 +34,14 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             setHighlightConflicts(enableHighlightConflicts);
         });
 
-        const l1 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
+        const l1 = OptionsStore.subscribe('enableHighlightConflicts', async ({ newValue }) => {
             setHighlightConflicts(newValue);
             // console.log('enableHighlightConflicts', newValue);
         });
 
         // Remove listeners when the component is unmounted
         return () => {
-            OptionsStore.removeListener(l1);
+            OptionsStore.unsubscribe(l1);
         };
     }, []);
 

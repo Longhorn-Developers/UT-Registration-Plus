@@ -24,6 +24,17 @@ const pagesDir = resolve(root, 'pages');
 const assetsDir = resolve(root, 'assets');
 const publicDir = resolve(__dirname, 'public');
 
+const HOST_PERMISSIONS: string[] = [
+    '*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*',
+    '*://*.utdirect.utexas.edu/registration/classlist/*',
+    '*://*.utexas.collegescheduler.com/*',
+    '*://*.catalog.utexas.edu/ribbit/',
+    '*://*.registrar.utexas.edu/schedules/*',
+    '*://*.login.utexas.edu/login/*',
+    'https://utexas.bluera.com/*',
+    '*://my.utexas.edu/student/student/*',
+];
+
 const isBeta = !!process.env.BETA;
 if (isBeta) {
     process.env.VITE_BETA_BUILD = 'true';
@@ -122,7 +133,10 @@ export default defineConfig({
         react(),
         UnoCSS(),
         Icons({ compiler: 'jsx', jsx: 'react' }),
-        crx({ manifest }),
+        // Only use CRX plugin for Chromium targets. For Firefox we generate a
+        // Firefox-compatible manifest post-build because @crxjs/vite-plugin
+        // does not support Manifest V2.
+        ...(BROWSER_TARGET === 'firefox' ? [] : [crx({ manifest })]),
         fixManifestOptionsPage(),
         inspect(),
         {
@@ -188,6 +202,7 @@ export default defineConfig({
             },
         },
         renameFile('src/pages/debug/index.html', 'debug.html'),
+        renameFile('src/pages/popup/index.html', 'popup.html'),
         renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
         renameFile('src/pages/report/index.html', 'report.html'),
@@ -216,6 +231,111 @@ export default defineConfig({
                 nodeVersion: () => process.version,
             },
         }),
+        // Firefox manifest generator: writes a Manifest V2 file into the
+        // build output using the bundle filenames produced by Vite/Rollup.
+        ...(BROWSER_TARGET === 'firefox'
+            ? [
+                  (function firefoxManifestGenerator(): Plugin {
+                      return {
+                          name: 'firefox-manifest-generator',
+                          apply: 'build',
+                          async generateBundle(_options, bundle) {
+                              // find built chunks for background and content scripts
+                              let backgroundFile: string | undefined;
+                              let contentFile: string | undefined;
+                              for (const [fileName, chunk] of Object.entries(bundle)) {
+                                  // only care about chunks
+                                  // @ts-ignore - rollup types at runtime
+                                  if (chunk && (chunk as any).type === 'chunk') {
+                                      const facade = (chunk as any).facadeModuleId || '';
+                                      if (facade && facade.endsWith('src/pages/background/background.ts')) {
+                                          backgroundFile = fileName;
+                                      }
+                                      if (facade && facade.endsWith('src/pages/content/index.tsx')) {
+                                          contentFile = fileName;
+                                      }
+                                  }
+                              }
+
+                              // fallback heuristics
+                              if (!backgroundFile) {
+                                  for (const fileName of Object.keys(bundle)) {
+                                      if (fileName.includes('background')) {
+                                          backgroundFile = fileName;
+                                          break;
+                                      }
+                                  }
+                              }
+                              if (!contentFile) {
+                                  for (const fileName of Object.keys(bundle)) {
+                                      if (fileName.includes('content')) {
+                                          contentFile = fileName;
+                                          break;
+                                      }
+                                  }
+                              }
+
+                              const manifestForFirefox: any = {
+                                  manifest_version: 2,
+                                  name: `${packageJson.displayName ?? packageJson.name}`,
+                                  version: packageJson.version,
+                                  description: packageJson.description,
+                                  homepage_url: packageJson.homepage,
+                                  icons: {
+                                      '16': `icons/icon_production_16.png`,
+                                      '32': `icons/icon_production_32.png`,
+                                      '48': `icons/icon_production_48.png`,
+                                      '128': `icons/icon_production_128.png`,
+                                  },
+                                  permissions: ['storage', 'unlimitedStorage', 'tabs', ...HOST_PERMISSIONS],
+                                  browser_action: {
+                                      default_popup: 'popup.html',
+                                      default_icon: `icons/icon_production_32.png`,
+                                  },
+                                  options_page: 'options.html',
+                                  web_accessible_resources: ['assets/*.js', 'assets/*.css', 'assets/*'],
+                                  content_security_policy: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
+                              };
+
+                              // For Firefox MV2 background/content scripts must be classic
+                              // scripts (no top-level `import` declarations). The Vite build
+                              // emits ESM chunks which can contain `import` statements, so
+                              // create small loader scripts that dynamically import the
+                              // ESM chunk via `chrome.runtime.getURL(...)` and reference
+                              // the loader in the manifest instead.
+                              if (backgroundFile) {
+                                  const loaderName = 'background-loader.js';
+                                  const loaderSource = `(async()=>{try{await import(chrome.runtime.getURL('${backgroundFile}'));}catch(e){console.error('Failed to load background module',e);}})();`;
+                                  this.emitFile({ type: 'asset', fileName: loaderName, source: loaderSource });
+                                  manifestForFirefox.background = { scripts: [loaderName] };
+                              } else {
+                                  // best-effort fallback
+                                  manifestForFirefox.background = { scripts: ['src/pages/background/background.js'] };
+                              }
+
+                              if (contentFile) {
+                                  const contentLoaderName = 'content-loader.js';
+                                  const contentLoaderSource = `(async()=>{try{await import(chrome.runtime.getURL('${contentFile}'));}catch(e){console.error('Failed to load content module',e);}})();`;
+                                  this.emitFile({
+                                      type: 'asset',
+                                      fileName: contentLoaderName,
+                                      source: contentLoaderSource,
+                                  });
+                                  manifestForFirefox.content_scripts = [
+                                      {
+                                          matches: HOST_PERMISSIONS,
+                                          js: [contentLoaderName],
+                                      },
+                                  ];
+                              }
+
+                              const out = JSON.stringify(manifestForFirefox, null, 2);
+                              this.emitFile({ type: 'asset', fileName: 'manifest.json', source: out });
+                          },
+                      };
+                  })(),
+              ]
+            : []),
     ],
     resolve: {
         alias: {
@@ -271,11 +391,15 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 debug: 'src/pages/debug/index.html',
+                popup: 'src/pages/popup/index.html',
                 calendar: 'src/pages/calendar/index.html',
                 options: 'src/pages/options/index.html',
                 report: 'src/pages/report/index.html',
                 map: 'src/pages/map/index.html',
                 404: 'src/pages/404/index.html',
+                // ensure background and content are emitted as separate chunks
+                background: 'src/pages/background/background.ts',
+                content: 'src/pages/content/index.tsx',
             },
             output: {
                 chunkFileNames: `assets/[name]-[hash].js`,

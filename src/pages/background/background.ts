@@ -56,14 +56,15 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
 
 messageListener.listen();
 
-UserScheduleStore.listen('schedules', async schedules => {
+UserScheduleStore.subscribe('schedules', async schedules => {
     const index = await UserScheduleStore.get('activeIndex');
-    const numCourses = schedules.newValue[index]?.courses?.length;
-    updateBadgeText(numCourses || 0);
+    const schedulesArray = schedules.newValue ?? [];
+    const numCourses = schedulesArray[index]?.courses?.length ?? 0;
+    updateBadgeText(numCourses);
 });
 
-UserScheduleStore.listen('activeIndex', async ({ newValue }) => {
-    const schedules = await UserScheduleStore.get('schedules');
-    const numCourses = schedules[newValue]?.courses?.length;
-    updateBadgeText(numCourses || 0);
+UserScheduleStore.subscribe('activeIndex', async ({ newValue }) => {
+    const schedules = (await UserScheduleStore.get('schedules')) ?? [];
+    const numCourses = schedules[newValue]?.courses?.length ?? 0;
+    updateBadgeText(numCourses);
 });

@@ -1,4 +1,4 @@
-import { createSyncStore, debugStore } from 'chrome-extension-toolkit';
+import { createSyncStore } from 'chrome-extension-toolkit';
 
 /**
  * A store that is used for storing user options
@@ -28,7 +28,7 @@ export interface IOptionsStore {
     allowMoreSchedules: boolean;
 }
 
-export const OptionsStore = createSyncStore<IOptionsStore>({
+const defaults: IOptionsStore = {
     enableCourseStatusChips: false,
     enableHighlightConflicts: true,
     enableScrollToLoad: true,
@@ -37,7 +37,52 @@ export const OptionsStore = createSyncStore<IOptionsStore>({
     showCalendarSidebar: true,
     showUTDiningPromo: true,
     allowMoreSchedules: false,
-});
+};
+
+/**
+ * A store that is used for storing user options.
+ * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
+ */
+export const OptionsStore = createSyncStore<IOptionsStore>('optionsStore', defaults);
+
+let initPromise: Promise<void> | null = null;
+
+async function ensureInitialized() {
+    if (initPromise) return initPromise;
+    initPromise = (async () => {
+        try {
+            await OptionsStore.initialize?.();
+        } catch {
+            // storage not ready — that's ok, we'll use in-memory fallback
+        }
+    })();
+    return initPromise;
+}
+
+// Wrap get/set to ensure init is called first and provide fallback
+const originalGet = OptionsStore.get.bind(OptionsStore);
+const originalSet = OptionsStore.set.bind(OptionsStore);
+
+OptionsStore.get = async function <K extends keyof IOptionsStore>(key: K) {
+    await ensureInitialized();
+    try {
+        return await originalGet(key);
+    } catch {
+        return defaults[key];
+    }
+} as typeof OptionsStore.get;
+
+OptionsStore.set = async function <K extends keyof IOptionsStore>(key: K | Partial<IOptionsStore>, value?: any) {
+    await ensureInitialized();
+    try {
+        if (typeof key === 'string') {
+            return await originalSet(key, value);
+        }
+        return await originalSet(key);
+    } catch {
+        // storage failed silently — in-memory only
+    }
+} as typeof OptionsStore.set;
 
 /**
  * Initializes the settings by retrieving the values from the OptionsStore.
@@ -55,7 +100,3 @@ export const initSettings = async () =>
         showUTDiningPromo: await OptionsStore.get('showUTDiningPromo'),
         allowMoreSchedules: await OptionsStore.get('allowMoreSchedules'),
     }) satisfies IOptionsStore;
-
-// Clothing retailer right
-
-debugStore({ OptionsStore });
