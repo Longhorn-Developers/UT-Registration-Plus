@@ -1,4 +1,3 @@
-import type { TabWithId } from '@background/util/openNewTab';
 import openNewTab from '@background/util/openNewTab';
 import { tabs } from '@shared/messages';
 import type { CalendarBackgroundMessages } from '@shared/messages/CalendarMessages';
