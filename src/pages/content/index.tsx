@@ -1,3 +1,14 @@
+if (typeof window !== 'undefined') {
+    const raf = window.requestAnimationFrame;
+    if (raf) {
+        window.requestAnimationFrame = raf.bind(window);
+    }
+    const caf = window.cancelAnimationFrame;
+    if (caf) {
+        window.cancelAnimationFrame = caf.bind(window);
+    }
+}
+
 import CourseCatalogMain from '@views/components/CourseCatalogMain';
 import InjectedButton from '@views/components/injected/AddAllButton';
 import DaysCheckbox from '@views/components/injected/DaysCheckbox';

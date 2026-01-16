@@ -4,6 +4,40 @@ import { createLocalStore } from 'chrome-extension-toolkit';
 
 import { generateRandomId } from '../util/random';
 
+// --- POLYFILL START: Fix Firefox MV2 Storage to return Promises like Chrome MV3 ---
+if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+    const promisify = (fn: any, context: any) => {
+        return (...args: any[]) => {
+            return new Promise((resolve, reject) => {
+                // We intentionally use the callback approach which works in BOTH Chrome and Firefox
+                fn.call(context, ...args, (result: any) => {
+                    if (chrome.runtime.lastError) {
+                        reject(chrome.runtime.lastError);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
+        };
+    };
+
+    // Only patch if it doesn't look like it returns a promise (simple heuristic)
+    // Or we just force patch it to be safe, as the callback method is universal.
+    // We patch 'get', 'set', and 'remove' to ensure the toolkit works fully.
+    const originalGet = chrome.storage.local.get;
+    // @ts-ignore
+    chrome.storage.local.get = promisify(originalGet, chrome.storage.local);
+
+    const originalSet = chrome.storage.local.set;
+    // @ts-ignore
+    chrome.storage.local.set = promisify(originalSet, chrome.storage.local);
+
+    const originalRemove = chrome.storage.local.remove;
+    // @ts-ignore
+    chrome.storage.local.remove = promisify(originalRemove, chrome.storage.local);
+}
+// --- POLYFILL END ---
+
 interface IUserScheduleStore {
     schedules: Serialized<UserSchedule>[];
     activeIndex: number;
