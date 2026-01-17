@@ -1,3 +1,4 @@
+import type { Serializable } from 'chrome-extension-toolkit';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 /**
@@ -51,7 +52,7 @@ async function ensureInitialized() {
 const originalGet = DevStore.get.bind(DevStore);
 const originalSet = DevStore.set.bind(DevStore);
 
-DevStore.get = async function <K extends keyof IDevStore>(key: K) {
+DevStore.get = async function get<K extends keyof IDevStore>(key: K) {
     await ensureInitialized();
     try {
         return await originalGet(key);
@@ -60,11 +61,14 @@ DevStore.get = async function <K extends keyof IDevStore>(key: K) {
     }
 } as typeof DevStore.get;
 
-DevStore.set = async function <K extends keyof IDevStore>(key: K | Partial<IDevStore>, value?: any) {
+DevStore.set = async function set<K extends keyof IDevStore>(
+    key: K | Partial<IDevStore>,
+    value?: Serializable<IDevStore[K]>
+) {
     await ensureInitialized();
     try {
         if (typeof key === 'string') {
-            return await originalSet(key, value);
+            return await originalSet(key, value as Serializable<IDevStore[K]>);
         }
         return await originalSet(key);
     } catch {

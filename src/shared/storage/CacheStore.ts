@@ -1,4 +1,5 @@
 import type { CachedData } from '@shared/types/CachedData';
+import type { Serializable } from 'chrome-extension-toolkit';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 interface ICacheStore {
@@ -33,7 +34,7 @@ async function ensureInitialized() {
 const originalGet = CacheStore.get.bind(CacheStore);
 const originalSet = CacheStore.set.bind(CacheStore);
 
-CacheStore.get = async function <K extends keyof ICacheStore>(key: K) {
+CacheStore.get = async function get<K extends keyof ICacheStore>(key: K) {
     await ensureInitialized();
     try {
         return await originalGet(key);
@@ -42,11 +43,14 @@ CacheStore.get = async function <K extends keyof ICacheStore>(key: K) {
     }
 } as typeof CacheStore.get;
 
-CacheStore.set = async function <K extends keyof ICacheStore>(key: K | Partial<ICacheStore>, value?: any) {
+CacheStore.set = async function set<K extends keyof ICacheStore>(
+    key: K | Partial<ICacheStore>,
+    value?: Serializable<ICacheStore[K]>
+) {
     await ensureInitialized();
     try {
         if (typeof key === 'string') {
-            return await originalSet(key, value);
+            return await originalSet(key, value as Serializable<ICacheStore[K]>);
         }
         return await originalSet(key);
     } catch {

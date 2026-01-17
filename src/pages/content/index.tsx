@@ -1,3 +1,11 @@
+import CourseCatalogMain from '@views/components/CourseCatalogMain';
+import InjectedButton from '@views/components/injected/AddAllButton';
+import DaysCheckbox from '@views/components/injected/DaysCheckbox';
+import ShadedResults from '@views/components/injected/SearchResultShader';
+import getSiteSupport, { SiteSupport } from '@views/lib/getSiteSupport';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+
 if (typeof window !== 'undefined') {
     const raf = window.requestAnimationFrame;
     if (raf) {
@@ -8,14 +16,6 @@ if (typeof window !== 'undefined') {
         window.cancelAnimationFrame = caf.bind(window);
     }
 }
-
-import CourseCatalogMain from '@views/components/CourseCatalogMain';
-import InjectedButton from '@views/components/injected/AddAllButton';
-import DaysCheckbox from '@views/components/injected/DaysCheckbox';
-import ShadedResults from '@views/components/injected/SearchResultShader';
-import getSiteSupport, { SiteSupport } from '@views/lib/getSiteSupport';
-import React from 'react';
-import { createRoot } from 'react-dom/client';
 
 const support = getSiteSupport(window.location.href);
 

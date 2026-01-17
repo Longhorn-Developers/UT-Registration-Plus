@@ -1,3 +1,4 @@
+import type { Serializable } from 'chrome-extension-toolkit';
 import { createSyncStore, debugStore } from 'chrome-extension-toolkit';
 
 /**
@@ -63,7 +64,7 @@ async function ensureInitialized() {
 const originalGet = OptionsStore.get.bind(OptionsStore);
 const originalSet = OptionsStore.set.bind(OptionsStore);
 
-OptionsStore.get = async function <K extends keyof IOptionsStore>(key: K) {
+OptionsStore.get = async function get<K extends keyof IOptionsStore>(key: K) {
     await ensureInitialized();
     try {
         return await originalGet(key);
@@ -72,11 +73,14 @@ OptionsStore.get = async function <K extends keyof IOptionsStore>(key: K) {
     }
 } as typeof OptionsStore.get;
 
-OptionsStore.set = async function <K extends keyof IOptionsStore>(key: K | Partial<IOptionsStore>, value?: any) {
+OptionsStore.set = async function set<K extends keyof IOptionsStore>(
+    key: K | Partial<IOptionsStore>,
+    value?: Serializable<IOptionsStore[K]>
+) {
     await ensureInitialized();
     try {
         if (typeof key === 'string') {
-            return await originalSet(key, value);
+            return await originalSet(key, value as Serializable<IOptionsStore[K]>);
         }
         return await originalSet(key);
     } catch {

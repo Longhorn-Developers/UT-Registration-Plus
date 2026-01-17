@@ -1,39 +1,13 @@
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import type { Serialized } from 'chrome-extension-toolkit';
+import type { Serializable,Serialized } from 'chrome-extension-toolkit';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
+import browser from 'webextension-polyfill';
 
 import { generateRandomId } from '../util/random';
 
-// fix Firefox MV2 Storage to return Promises like Chrome MV3
-if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-    const promisify = (fn: any, context: any) => {
-        return (...args: any[]) => {
-            return new Promise((resolve, reject) => {
-                // use the callback approach which works in both Chrome and Firefox
-                fn.call(context, ...args, (result: any) => {
-                    if (chrome.runtime.lastError) {
-                        reject(chrome.runtime.lastError);
-                    } else {
-                        resolve(result);
-                    }
-                });
-            });
-        };
-    };
-
-    const originalGet = chrome.storage.local.get;
-    // @ts-ignore
-    chrome.storage.local.get = promisify(originalGet, chrome.storage.local);
-
-    const originalSet = chrome.storage.local.set;
-    // @ts-ignore
-    chrome.storage.local.set = promisify(originalSet, chrome.storage.local);
-
-    const originalRemove = chrome.storage.local.remove;
-    // @ts-ignore
-    chrome.storage.local.remove = promisify(originalRemove, chrome.storage.local);
-}
-
+/**
+ * Interface for the Schedule Store
+ */
 interface IUserScheduleStore {
     schedules: Serialized<UserSchedule>[];
     activeIndex: number;
@@ -54,7 +28,6 @@ const defaults: IUserScheduleStore = {
 
 /**
  * A store that is used for storing user schedules (and the active schedule).
- * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
  */
 export const UserScheduleStore = createLocalStore<IUserScheduleStore>(defaults);
 
@@ -62,7 +35,7 @@ let initPromise: Promise<void> | null = null;
 
 async function ensureInitialized() {
     if (initPromise) return initPromise;
-    initPromise = (async () => {
+    initPromise = (async function init() {
         try {
             await UserScheduleStore.initialize?.();
         } catch {
@@ -76,7 +49,7 @@ async function ensureInitialized() {
 const originalGet = UserScheduleStore.get.bind(UserScheduleStore);
 const originalSet = UserScheduleStore.set.bind(UserScheduleStore);
 
-UserScheduleStore.get = async function <K extends keyof IUserScheduleStore>(key: K) {
+UserScheduleStore.get = async function get<K extends keyof IUserScheduleStore>(key: K) {
     await ensureInitialized();
     try {
         return await originalGet(key);
@@ -85,19 +58,24 @@ UserScheduleStore.get = async function <K extends keyof IUserScheduleStore>(key:
     }
 } as typeof UserScheduleStore.get;
 
-UserScheduleStore.set = async function <K extends keyof IUserScheduleStore>(
-    key: K | Partial<Serialized<IUserScheduleStore>>,
-    value?: any
+UserScheduleStore.set = async function set<K extends keyof IUserScheduleStore>(
+    key: K | Partial<IUserScheduleStore>,
+    value?: Serializable<IUserScheduleStore[K]>
 ) {
     await ensureInitialized();
     try {
         if (typeof key === 'string') {
-            return await originalSet(key, value);
+            return await originalSet(key, value as Serializable<IUserScheduleStore[K]>);
         }
-        return await originalSet(key);
+        return await originalSet(key as Partial<IUserScheduleStore>);
     } catch {
         // storage failed silently
     }
 } as typeof UserScheduleStore.set;
+
+// ensure that the toolkit uses the Promise-based API provided by the polyfill if we are in a callback-based environment
+if (typeof chrome !== 'undefined' && !((chrome.storage.local.get as unknown) instanceof Promise)) {
+    (chrome.storage.local as unknown as typeof browser.storage.local) = browser.storage.local;
+}
 
 debugStore({ userScheduleStore: UserScheduleStore });

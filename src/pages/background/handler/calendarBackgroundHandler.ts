@@ -29,9 +29,7 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
 
         const allTabs = await getAllTabInfos();
 
-        const openCalendarTabInfo = allTabs.find(tab => {
-            return tab.tab.url?.startsWith(calendarUrl);
-        });
+        const openCalendarTabInfo = allTabs.find(tab => tab.tab.url?.startsWith(calendarUrl));
 
         if (openCalendarTabInfo !== undefined && !(await OptionsStore.get('alwaysOpenCalendarInNewTab'))) {
             const tabid = openCalendarTabInfo.tab.id;
