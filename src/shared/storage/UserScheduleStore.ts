@@ -1,5 +1,5 @@
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import type { Serializable,Serialized } from 'chrome-extension-toolkit';
+import type { Serializable, Serialized } from 'chrome-extension-toolkit';
 import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 import browser from 'webextension-polyfill';
 
