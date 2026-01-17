@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 
 // Minimal shim for webextension-polyfill used in tests.
-// Provide the pieces the codebase expects: runtime.getURL, storage, tabs, and messages.
+// Provide the pieces for runtime.getURL, storage, tabs, and messages.
 
 const browserStub: any = {
     runtime: {
@@ -35,8 +35,5 @@ const browserStub: any = {
 };
 
 vi.mock('webextension-polyfill', () => ({ default: browserStub }));
-
-// Also mock named import if code imports as `import * as browser from 'webextension-polyfill'`
-vi.mocked = vi.mocked ?? ((_: any) => _);
 
 export {};
