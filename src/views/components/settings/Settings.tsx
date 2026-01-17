@@ -62,6 +62,21 @@ export default function Settings(): JSX.Element {
     const [devMode, toggleDevMode] = useDevMode(DEV_MODE_CLICK_TARGET);
     const { showParticles, particlesInit, particlesOptions, triggerCelebration, isBirthday } = useBirthdayCelebration();
 
+    const [visibleCount, setVisibleCount] = useState(10);
+
+    // Trickle Render Effect
+    useEffect(() => {
+        if (githubStats) {
+            const total = sortedContributors.length + additionalContributors.length;
+            if (visibleCount < total) {
+                const timeout = setTimeout(() => {
+                    setVisibleCount(prev => Math.min(prev + 10, total));
+                }, 50); // Add 10 more every 50ms
+                return () => clearTimeout(timeout);
+            }
+        }
+    }, [githubStats, visibleCount]);
+
     // Initialize settings and listeners
     useEffect(() => {
         const fetchGitHubStats = async () => {
@@ -196,6 +211,15 @@ export default function Settings(): JSX.Element {
                     (githubStats.userGitHubStats[b]?.commits ?? 0) - (githubStats.userGitHubStats[a]?.commits ?? 0)
             );
     }, [githubStats]);
+
+    // Combine both contributor lists and limit by visibleCount for trickle rendering
+    const allContributors = useMemo(() => {
+        const combined = [
+            ...sortedContributors.map(swe => ({ ...swe, type: 'swe' as const })),
+            ...additionalContributors.map(username => ({ username, type: 'additional' as const })),
+        ];
+        return combined.slice(0, visibleCount);
+    }, [sortedContributors, additionalContributors, visibleCount]);
 
     if (devMode) {
         DevStore.set('isDeveloper', true);
@@ -361,32 +385,35 @@ export default function Settings(): JSX.Element {
                             ))}
                         </div>
                     </section>
-
                     <section className='my-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTORS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
-                            {sortedContributors.map(swe => (
-                                <ContributorCard
-                                    key={swe.githubUsername}
-                                    name={swe.name}
-                                    githubUsername={swe.githubUsername}
-                                    roles={swe.role}
-                                    stats={githubStats?.userGitHubStats[swe.githubUsername]}
-                                    showStats={showGitHubStats}
-                                    includeMergedPRs={INCLUDE_MERGED_PRS}
-                                />
-                            ))}
-                            {additionalContributors.map(username => (
-                                <ContributorCard
-                                    key={username}
-                                    name={githubStats!.names[username] || username}
-                                    githubUsername={username}
-                                    roles={['Contributor']}
-                                    stats={githubStats!.userGitHubStats[username]}
-                                    showStats={showGitHubStats}
-                                    includeMergedPRs={INCLUDE_MERGED_PRS}
-                                />
-                            ))}
+                            {allContributors.map(item => {
+                                if (item.type === 'swe') {
+                                    return (
+                                        <ContributorCard
+                                            key={item.githubUsername}
+                                            name={item.name}
+                                            githubUsername={item.githubUsername}
+                                            roles={item.role}
+                                            stats={githubStats?.userGitHubStats[item.githubUsername]}
+                                            showStats={showGitHubStats}
+                                            includeMergedPRs={INCLUDE_MERGED_PRS}
+                                        />
+                                    );
+                                }
+                                return (
+                                    <ContributorCard
+                                        key={item.username}
+                                        name={githubStats!.names[item.username] || item.username}
+                                        githubUsername={item.username}
+                                        roles={['Contributor']}
+                                        stats={githubStats!.userGitHubStats[item.username]}
+                                        showStats={showGitHubStats}
+                                        includeMergedPRs={INCLUDE_MERGED_PRS}
+                                    />
+                                );
+                            })}
                         </div>
                     </section>
                 </section>

@@ -114,7 +114,8 @@ export class GitHubStatsService {
         return null;
     }
 
-    private async setCachedData<T>(key: string, data: T): Promise<void> {
+    private async setCachedData<T>(key: string, data: T, persist = true): Promise<void> {
+        // Ensure cache is loaded before modifying
         if (Object.keys(this.cache).length === 0) {
             const githubCache = await CacheStore.get('github');
             if (githubCache && typeof githubCache === 'object') {
@@ -123,7 +124,11 @@ export class GitHubStatsService {
         }
 
         this.cache[key] = { data, dataFetched: Date.now() };
-        await CacheStore.set('github', this.cache);
+
+        // Only write to the physical storage API if persist is true
+        if (persist) {
+            await CacheStore.set('github', this.cache);
+        }
     }
 
     private async fetchWithRetry<T>(fetchFn: () => Promise<T>, retries: number = 3, delay: number = 5000): Promise<T> {
@@ -182,6 +187,7 @@ export class GitHubStatsService {
 
     private async fetchContributorNames(contributors: string[]): Promise<Record<string, string>> {
         const names: Record<string, string> = {};
+
         await Promise.all(
             contributors.map(async contributor => {
                 const cacheKey = `contributor_name_${contributor}`;
@@ -198,18 +204,17 @@ export class GitHubStatsService {
                         if (data.name) {
                             name = data.name;
                         }
-                        await this.setCachedData(cacheKey, name);
+                        // Pass 'false' to avoid writing to disk for every single name
+                        await this.setCachedData(cacheKey, name, false);
                     } catch (e) {
                         console.error(e);
                     }
                 }
-
                 names[contributor] = name;
             })
         );
         return names;
     }
-
     private async fetchMergedPRsCount(username: string): Promise<FetchResult<number>> {
         const cacheKey = `merged_prs_${username}`;
         const cachedCount = await this.getCachedData<number>(cacheKey);
@@ -233,7 +238,7 @@ export class GitHubStatsService {
             lastUpdated: new Date(),
             isCached: false,
         };
-        await this.setCachedData(cacheKey, fetchResult.data);
+        await this.setCachedData(cacheKey, fetchResult.data, false);
         return fetchResult;
     }
 
@@ -299,6 +304,8 @@ export class GitHubStatsService {
             );
 
             const names = await this.fetchContributorNames(contributors);
+
+            await CacheStore.set('github', this.cache);
 
             return {
                 adminGitHubStats,
