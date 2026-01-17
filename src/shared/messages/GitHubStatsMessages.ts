@@ -1,8 +1,6 @@
-import type { GitHubStatsService } from '@views/lib/getGitHubStats';
+import type { GitHubStatsResult } from '@shared/types/GitHubStats';
 
 /* eslint-disable jsdoc/require-jsdoc */
-
-export type GitHubStatsResult = Awaited<ReturnType<GitHubStatsService['fetchGitHubStats']>>;
 
 export default interface GitHubStatsMessages {
     /**

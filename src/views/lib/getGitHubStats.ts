@@ -1,37 +1,13 @@
 import { Octokit } from '@octokit/rest';
 import { CacheStore } from '@shared/storage/CacheStore';
 import type { CachedData } from '@shared/types/CachedData';
-
-// Types
-type TeamMember = {
-    name: string;
-    role: string[];
-    githubUsername: string;
-};
-
-type GitHubStats = {
-    commits: number;
-    linesAdded: number;
-    linesDeleted: number;
-    mergedPRs?: number;
-};
-
-type ContributorStats = {
-    total: number;
-    weeks: { w: number; a: number; d: number; c: number }[];
-    author: { login: string };
-};
-
-type ContributorUser = {
-    name: string | undefined;
-};
-
-type FetchResult<T> = {
-    data: T;
-    dataFetched: Date;
-    lastUpdated: Date;
-    isCached: boolean;
-};
+import type {
+    ContributorStats,
+    ContributorUser,
+    FetchResult,
+    GitHubStats,
+    TeamMember,
+} from '@shared/types/GitHubStats';
 
 // Constants
 const CACHE_TTL = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
