@@ -37,6 +37,15 @@ async function ensureInitialized() {
     if (initPromise) return initPromise;
     initPromise = (async function init() {
         try {
+            // ensure that the toolkit uses the Promise-based API provided by the polyfill if we are in a callback-based environment
+            if (
+                typeof chrome !== 'undefined' &&
+                chrome.storage?.local &&
+                !((chrome.storage.local.get as unknown) instanceof Promise)
+            ) {
+                (chrome.storage.local as unknown as typeof browser.storage.local) = browser.storage.local;
+            }
+
             await UserScheduleStore.initialize?.();
         } catch {
             // storage not ready
@@ -72,10 +81,5 @@ UserScheduleStore.set = async function set<K extends keyof IUserScheduleStore>(
         // storage failed silently
     }
 } as typeof UserScheduleStore.set;
-
-// ensure that the toolkit uses the Promise-based API provided by the polyfill if we are in a callback-based environment
-if (typeof chrome !== 'undefined' && !((chrome.storage.local.get as unknown) instanceof Promise)) {
-    (chrome.storage.local as unknown as typeof browser.storage.local) = browser.storage.local;
-}
 
 debugStore({ userScheduleStore: UserScheduleStore });
