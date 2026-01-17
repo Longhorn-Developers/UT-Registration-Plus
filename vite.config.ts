@@ -403,6 +403,7 @@ export default defineConfig({
         coverage: {
             provider: 'v8',
         },
+        setupFiles: ['./test/setupTests.ts'],
     },
     css: {
         preprocessorOptions: {
