@@ -91,6 +91,8 @@ export default function PopupMain(): JSX.Element {
         window.close();
     };
 
+    const isFirefox = typeof navigator !== 'undefined' && /Firefox/.test(navigator.userAgent);
+
     return (
         <div className='h-screen max-h-full flex flex-col bg-white'>
             <div className='px-spacing-6 py-spacing-5'>
@@ -149,8 +151,12 @@ export default function PopupMain(): JSX.Element {
                 </div>
             )}
             <div
-                style={{ scrollbarGutter: 'stable' }}
-                className='flex-1 self-stretch overflow-y-scroll pl-spacing-6 pr-[6px]'
+                style={{
+                    scrollbarGutter: 'stable',
+                    paddingLeft: '1.25rem',
+                    paddingRight: isFirefox ? '1.25rem' : '6px',
+                }}
+                className='flex-1 self-stretch overflow-y-scroll'
             >
                 {activeSchedule?.courses?.length > 0 && (
                     <SortableList
