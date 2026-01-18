@@ -20,7 +20,7 @@ import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 // Misc
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // Icons
 import IconoirGitFork from '~icons/iconoir/git-fork';
@@ -65,18 +65,19 @@ export default function Settings(): JSX.Element {
 
     const [visibleCount, setVisibleCount] = useState(10);
 
-    // Trickle Render Effect
+    // Stable skeleton ids to avoid using array index as keys
+    const skeletonIdsRef = useRef<string[]>([]);
+    const skeletonIdCounter = useRef(0);
+
     useEffect(() => {
-        if (githubStats) {
-            const total = sortedContributors.length + additionalContributors.length;
-            if (visibleCount < total) {
-                const timeout = setTimeout(() => {
-                    setVisibleCount(prev => Math.min(prev + 10, total));
-                }, 50); // Add 10 more every 50ms
-                return () => clearTimeout(timeout);
-            }
+        const needed = Math.max(visibleCount, 8);
+        while (skeletonIdsRef.current.length < needed) {
+            skeletonIdsRef.current.push(`skeleton-${skeletonIdCounter.current++}`);
         }
-    }, [githubStats, visibleCount]);
+        if (skeletonIdsRef.current.length > needed) {
+            skeletonIdsRef.current.length = needed;
+        }
+    }, [visibleCount]);
 
     // Initialize settings and listeners
     useEffect(() => {
@@ -221,6 +222,19 @@ export default function Settings(): JSX.Element {
         ];
         return combined.slice(0, visibleCount);
     }, [sortedContributors, additionalContributors, visibleCount]);
+
+    // Trickle Render Effect
+    useEffect(() => {
+        if (githubStats) {
+            const total = sortedContributors.length + additionalContributors.length;
+            if (visibleCount < total) {
+                const timeout = setTimeout(() => {
+                    setVisibleCount(prev => Math.min(prev + 10, total));
+                }, 50); // Add 10 more every 50ms
+                return () => clearTimeout(timeout);
+            }
+        }
+    }, [githubStats, visibleCount, sortedContributors.length, additionalContributors.length]);
 
     if (devMode) {
         DevStore.set('isDeveloper', true);
@@ -390,10 +404,10 @@ export default function Settings(): JSX.Element {
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTORS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
                             {githubStats === null
-                                ? // Show skeleton placeholders while GitHub stats load
-                                  Array.from({ length: Math.max(visibleCount, 8) }).map((_, i) => (
-                                      <ContributorCardSkeleton key={`skeleton-${i}`} />
-                                  ))
+                                ? // Show skeleton placeholders while GitHub stats load using stable ids
+                                  skeletonIdsRef.current
+                                      .slice(0, Math.max(visibleCount, 8))
+                                      .map(id => <ContributorCardSkeleton key={id} />)
                                 : allContributors.map(item => {
                                       if (item.type === 'swe') {
                                           return (
