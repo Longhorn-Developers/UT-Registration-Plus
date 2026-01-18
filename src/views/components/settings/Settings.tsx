@@ -20,7 +20,7 @@ import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 // Misc
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // Icons
 import IconoirGitFork from '~icons/iconoir/git-fork';
@@ -29,6 +29,7 @@ import { useMigrationDialog } from '../common/MigrationDialog';
 import { AdvancedSettings } from './AdvancedSettings';
 import { DEV_MODE_CLICK_TARGET, INCLUDE_MERGED_PRS, STATS_TOGGLE_KEY } from './constants';
 import { ContributorCard } from './ContributorCard';
+import { ContributorCardSkeleton } from './ContributorCardSkeleton';
 import DevMode from './DevMode';
 import { useBirthdayCelebration } from './useBirthdayCelebration';
 import { useDevMode } from './useDevMode';
@@ -61,6 +62,22 @@ export default function Settings(): JSX.Element {
 
     const [devMode, toggleDevMode] = useDevMode(DEV_MODE_CLICK_TARGET);
     const { showParticles, particlesInit, particlesOptions, triggerCelebration, isBirthday } = useBirthdayCelebration();
+
+    const [visibleCount, setVisibleCount] = useState(10);
+
+    // Stable skeleton ids to avoid using array index as keys
+    const skeletonIdsRef = useRef<string[]>([]);
+    const skeletonIdCounter = useRef(0);
+
+    useEffect(() => {
+        const needed = Math.max(visibleCount, 8);
+        while (skeletonIdsRef.current.length < needed) {
+            skeletonIdsRef.current.push(`skeleton-${skeletonIdCounter.current++}`);
+        }
+        if (skeletonIdsRef.current.length > needed) {
+            skeletonIdsRef.current.length = needed;
+        }
+    }, [visibleCount]);
 
     // Initialize settings and listeners
     useEffect(() => {
@@ -196,6 +213,28 @@ export default function Settings(): JSX.Element {
                     (githubStats.userGitHubStats[b]?.commits ?? 0) - (githubStats.userGitHubStats[a]?.commits ?? 0)
             );
     }, [githubStats]);
+
+    // Combine both contributor lists and limit by visibleCount for trickle rendering
+    const allContributors = useMemo(() => {
+        const combined = [
+            ...sortedContributors.map(swe => ({ ...swe, type: 'swe' as const })),
+            ...additionalContributors.map(username => ({ username, type: 'additional' as const })),
+        ];
+        return combined.slice(0, visibleCount);
+    }, [sortedContributors, additionalContributors, visibleCount]);
+
+    // Trickle Render Effect
+    useEffect(() => {
+        if (githubStats) {
+            const total = sortedContributors.length + additionalContributors.length;
+            if (visibleCount < total) {
+                const timeout = setTimeout(() => {
+                    setVisibleCount(prev => Math.min(prev + 10, total));
+                }, 50); // Add 10 more every 50ms
+                return () => clearTimeout(timeout);
+            }
+        }
+    }, [githubStats, visibleCount, sortedContributors.length, additionalContributors.length]);
 
     if (devMode) {
         DevStore.set('isDeveloper', true);
@@ -361,32 +400,40 @@ export default function Settings(): JSX.Element {
                             ))}
                         </div>
                     </section>
-
                     <section className='my-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTORS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
-                            {sortedContributors.map(swe => (
-                                <ContributorCard
-                                    key={swe.githubUsername}
-                                    name={swe.name}
-                                    githubUsername={swe.githubUsername}
-                                    roles={swe.role}
-                                    stats={githubStats?.userGitHubStats[swe.githubUsername]}
-                                    showStats={showGitHubStats}
-                                    includeMergedPRs={INCLUDE_MERGED_PRS}
-                                />
-                            ))}
-                            {additionalContributors.map(username => (
-                                <ContributorCard
-                                    key={username}
-                                    name={githubStats!.names[username] || username}
-                                    githubUsername={username}
-                                    roles={['Contributor']}
-                                    stats={githubStats!.userGitHubStats[username]}
-                                    showStats={showGitHubStats}
-                                    includeMergedPRs={INCLUDE_MERGED_PRS}
-                                />
-                            ))}
+                            {githubStats === null
+                                ? // Show skeleton placeholders while GitHub stats load using stable ids
+                                  skeletonIdsRef.current
+                                      .slice(0, Math.max(visibleCount, 8))
+                                      .map(id => <ContributorCardSkeleton key={id} />)
+                                : allContributors.map(item => {
+                                      if (item.type === 'swe') {
+                                          return (
+                                              <ContributorCard
+                                                  key={item.githubUsername}
+                                                  name={item.name}
+                                                  githubUsername={item.githubUsername}
+                                                  roles={item.role}
+                                                  stats={githubStats?.userGitHubStats[item.githubUsername]}
+                                                  showStats={showGitHubStats}
+                                                  includeMergedPRs={INCLUDE_MERGED_PRS}
+                                              />
+                                          );
+                                      }
+                                      return (
+                                          <ContributorCard
+                                              key={item.username}
+                                              name={githubStats!.names[item.username] || item.username}
+                                              githubUsername={item.username}
+                                              roles={['Contributor']}
+                                              stats={githubStats!.userGitHubStats[item.username]}
+                                              showStats={showGitHubStats}
+                                              includeMergedPRs={INCLUDE_MERGED_PRS}
+                                          />
+                                      );
+                                  })}
                         </div>
                     </section>
                 </section>
