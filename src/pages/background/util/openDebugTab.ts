@@ -20,6 +20,6 @@ export async function openDebugTab() {
             index: 0,
         });
 
-        await DevStore.set('debugTabId', tab.id);
+        await DevStore.set('debugTabId', tab.id!);
     }
 }
