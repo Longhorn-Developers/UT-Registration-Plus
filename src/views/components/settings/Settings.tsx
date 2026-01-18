@@ -29,6 +29,7 @@ import { useMigrationDialog } from '../common/MigrationDialog';
 import { AdvancedSettings } from './AdvancedSettings';
 import { DEV_MODE_CLICK_TARGET, INCLUDE_MERGED_PRS, STATS_TOGGLE_KEY } from './constants';
 import { ContributorCard } from './ContributorCard';
+import { ContributorCardSkeleton } from './ContributorCardSkeleton';
 import DevMode from './DevMode';
 import { useBirthdayCelebration } from './useBirthdayCelebration';
 import { useDevMode } from './useDevMode';
@@ -388,32 +389,37 @@ export default function Settings(): JSX.Element {
                     <section className='my-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTORS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
-                            {allContributors.map(item => {
-                                if (item.type === 'swe') {
-                                    return (
-                                        <ContributorCard
-                                            key={item.githubUsername}
-                                            name={item.name}
-                                            githubUsername={item.githubUsername}
-                                            roles={item.role}
-                                            stats={githubStats?.userGitHubStats[item.githubUsername]}
-                                            showStats={showGitHubStats}
-                                            includeMergedPRs={INCLUDE_MERGED_PRS}
-                                        />
-                                    );
-                                }
-                                return (
-                                    <ContributorCard
-                                        key={item.username}
-                                        name={githubStats!.names[item.username] || item.username}
-                                        githubUsername={item.username}
-                                        roles={['Contributor']}
-                                        stats={githubStats!.userGitHubStats[item.username]}
-                                        showStats={showGitHubStats}
-                                        includeMergedPRs={INCLUDE_MERGED_PRS}
-                                    />
-                                );
-                            })}
+                            {githubStats === null
+                                ? // Show skeleton placeholders while GitHub stats load
+                                  Array.from({ length: Math.max(visibleCount, 8) }).map((_, i) => (
+                                      <ContributorCardSkeleton key={`skeleton-${i}`} />
+                                  ))
+                                : allContributors.map(item => {
+                                      if (item.type === 'swe') {
+                                          return (
+                                              <ContributorCard
+                                                  key={item.githubUsername}
+                                                  name={item.name}
+                                                  githubUsername={item.githubUsername}
+                                                  roles={item.role}
+                                                  stats={githubStats?.userGitHubStats[item.githubUsername]}
+                                                  showStats={showGitHubStats}
+                                                  includeMergedPRs={INCLUDE_MERGED_PRS}
+                                              />
+                                          );
+                                      }
+                                      return (
+                                          <ContributorCard
+                                              key={item.username}
+                                              name={githubStats!.names[item.username] || item.username}
+                                              githubUsername={item.username}
+                                              roles={['Contributor']}
+                                              stats={githubStats!.userGitHubStats[item.username]}
+                                              showStats={showGitHubStats}
+                                              includeMergedPRs={INCLUDE_MERGED_PRS}
+                                          />
+                                      );
+                                  })}
                         </div>
                     </section>
                 </section>
