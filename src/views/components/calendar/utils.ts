@@ -245,10 +245,15 @@ export const scheduleToIcsString = (schedule: Serialized<UserSchedule>) => {
     return icsString;
 };
 
+/**
+ * Returns the provided schedule in a human readable/copyable text format
+ * @param schedule - The schedule object
+ * @returns
+ */
 export const scheduleToText = (schedule: Serialized<UserSchedule>) => {
     const lines: string[] = [];
 
-    lines.push(`Schedule: ${  schedule.name}`);
+    lines.push(`Schedule: ${schedule.name}`);
     lines.push('');
 
     for (const c of schedule.courses) {
