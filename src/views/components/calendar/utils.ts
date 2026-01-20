@@ -258,7 +258,6 @@ export const scheduleToText = (schedule: Serialized<UserSchedule>) => {
 
     for (const c of schedule.courses) {
         lines.push(c.fullName);
-        // lines.push(c.schedule);
         lines.push(`${c.creditHours} Credit Hours`);
         lines.push(`${c.uniqueId}`);
         lines.push('');
