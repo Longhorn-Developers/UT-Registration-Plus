@@ -139,7 +139,7 @@ export default function Calendar(): ReactNode {
     if (isSidebarStatePending) return null;
 
     return (
-        <CalendarContext.Provider value>
+     <CalendarContext.Provider value={true}>
             <div className='h-full w-full flex flex-col'>
                 <div className='screenshot:calendar-target h-screen flex overflow-auto'>
                     <div
