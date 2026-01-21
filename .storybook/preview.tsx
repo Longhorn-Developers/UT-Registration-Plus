@@ -2,6 +2,8 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Preview } from '@storybook/react';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React from 'react';
+import { UndoProvider } from '@views/contexts/UndoContext';
+
 
 const preview: Preview = {
     parameters: {
@@ -12,15 +14,18 @@ const preview: Preview = {
             },
         },
     },
-    decorators: [
-        Story => (
-            <React.StrictMode>
+   decorators: [
+    Story => (
+        <React.StrictMode>
+            <UndoProvider>
                 <ExtensionRoot>
                     <Story />
                 </ExtensionRoot>
-            </React.StrictMode>
-        ),
-    ],
+            </UndoProvider>
+        </React.StrictMode>
+    ),
+],
+
 };
 
 let localData = {};
