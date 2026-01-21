@@ -1,6 +1,7 @@
 import importSchedule from '@pages/background/lib/importSchedule';
 import { Sidebar } from '@phosphor-icons/react';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
+import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import { CRX_PAGES } from '@shared/types/CRXPages';
@@ -14,6 +15,7 @@ import ResourceLinks from '@views/components/calendar/ResourceLinks';
 import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
+import { useUndo } from '@views/contexts/UndoContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
@@ -46,6 +48,8 @@ export default function Calendar(): ReactNode {
     const [showUTDiningPromo, setShowUTDiningPromo] = useState<boolean>(false);
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
     const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
+
+    const { removedCourses, clearRemovedCourses, popLastRemovedCourse } = useUndo();
 
     const queryClient = useQueryClient();
     const { data: showSidebar, isPending: isSidebarStatePending } = useQuery({
@@ -88,12 +92,53 @@ export default function Calendar(): ReactNode {
         if (course) setShowPopup(true);
     }, [course]);
 
+    // --- Clear undo state when schedule changes ---
+    useEffect(() => {
+        clearRemovedCourses();
+    }, [activeSchedule.id, clearRemovedCourses]);
+
     useEffect(() => {
         // Load the user's preference for the promo
         OptionsStore.get('showUTDiningPromo').then(show => {
             setShowUTDiningPromo(show);
         });
     }, []);
+
+    // --- Undo functionality: listen for Cmd+Z / Ctrl+Z ---
+    useEffect(() => {
+        const handleUndo = async (event: KeyboardEvent) => {
+            // Check for Cmd+Z (Mac) or Ctrl+Z (Windows/Linux)
+            if ((event.metaKey || event.ctrlKey) && event.key === 'z' && !event.shiftKey) {
+                // Prevent default browser undo behavior
+                event.preventDefault();
+                event.stopPropagation();
+
+                // Only restore if we have removed courses and we're not in an input field
+                if (
+                    removedCourses.length > 0 &&
+                    event.target instanceof HTMLElement &&
+                    event.target.tagName !== 'INPUT' &&
+                    event.target.tagName !== 'TEXTAREA'
+                ) {
+                    // Get the most recently removed course from the stack
+                    const lastRemovedCourse = popLastRemovedCourse();
+                    if (lastRemovedCourse) {
+                        // Restore the course
+                        background.addCourse({
+                            course: lastRemovedCourse.course,
+                            scheduleId: lastRemovedCourse.scheduleId,
+                            hasColor: true, // Preserve original colors
+                        });
+                    }
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleUndo);
+        return () => {
+            document.removeEventListener('keydown', handleUndo);
+        };
+    }, [removedCourses.length, popLastRemovedCourse]);
 
     // --- Reset drag state when dragging leaves the window ---
     useEffect(() => {

@@ -51,7 +51,10 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         const portalContainer = document.createElement('td');
         // portalContainer.style.textAlign = 'right';
         const lastTableCell = element.querySelector('td:last-child');
-        lastTableCell!.after(portalContainer);
+        if (!lastTableCell) {
+            return;
+        }
+        lastTableCell.after(portalContainer);
         setContainer(portalContainer);
 
         return () => {

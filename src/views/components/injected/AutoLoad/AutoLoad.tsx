@@ -32,8 +32,11 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
 
     useEffect(() => {
         const portalContainer = document.createElement('div');
-        const lastTableCell = document.querySelector('table')!;
-        lastTableCell!.after(portalContainer);
+        const lastTableCell = document.querySelector('table');
+        if (!lastTableCell) {
+            return;
+        }
+        lastTableCell.after(portalContainer);
         setContainer(portalContainer);
     }, []);
 

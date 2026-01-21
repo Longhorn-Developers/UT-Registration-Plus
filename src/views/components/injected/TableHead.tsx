@@ -14,7 +14,10 @@ export default function TableHead({ children }: PropsWithChildren): JSX.Element 
         container.setAttribute('scope', 'col');
         container.setAttribute('id', 'ut-registration-plus-table-head');
         const lastTableHeadCell = document.querySelector('table thead th:last-child');
-        lastTableHeadCell!.after(container);
+        if (!lastTableHeadCell) {
+            return;
+        }
+        lastTableHeadCell.after(container);
         setContainer(container);
         return () => {
             container.remove();

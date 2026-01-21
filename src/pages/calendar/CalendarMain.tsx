@@ -5,6 +5,7 @@ import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot'
 import { MigrationDialog } from '@views/components/common/MigrationDialog';
 import { WhatsNewDialog } from '@views/components/common/WhatsNewPopup';
 import SentryProvider from '@views/contexts/SentryContext';
+import { UndoProvider } from '@views/contexts/UndoContext';
 import { MessageListener } from 'chrome-extension-toolkit';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect } from 'react';
@@ -33,11 +34,13 @@ export default function CalendarMain() {
     return (
         <SentryProvider fullInit>
             <ExtensionRoot className='h-full w-full'>
-                <DialogProvider>
-                    <MigrationDialog />
-                    <WhatsNewDialog />
-                    <Calendar />
-                </DialogProvider>
+                <UndoProvider>
+                    <DialogProvider>
+                        <MigrationDialog />
+                        <WhatsNewDialog />
+                        <Calendar />
+                    </DialogProvider>
+                </UndoProvider>
             </ExtensionRoot>
         </SentryProvider>
     );
