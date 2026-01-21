@@ -1,5 +1,13 @@
 import type { Course } from '@shared/types/Course';
-import React, { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import React from 'react';
+import {
+    createContext,
+    type ReactNode,
+    useCallback,
+    useContext,
+    useMemo,
+    useState,
+} from 'react';
 
 interface UndoContextType {
     lastRemovedCourse: { course: Course; scheduleId: string } | null;
@@ -27,17 +35,17 @@ export function UndoProvider({ children }: { children: ReactNode }): JSX.Element
         setLastRemovedCourseState(null);
     }, []);
 
-    return (
-        <UndoContext.Provider
-            value={{
-                lastRemovedCourse,
-                setLastRemovedCourse,
-                clearLastRemovedCourse,
-            }}
-        >
-            {children}
-        </UndoContext.Provider>
+    // ✅ memoized context value (fixes eslint error)
+    const value = useMemo(
+        () => ({
+            lastRemovedCourse,
+            setLastRemovedCourse,
+            clearLastRemovedCourse,
+        }),
+        [lastRemovedCourse, setLastRemovedCourse, clearLastRemovedCourse]
     );
+
+    return <UndoContext.Provider value={value}>{children}</UndoContext.Provider>;
 }
 
 /**
