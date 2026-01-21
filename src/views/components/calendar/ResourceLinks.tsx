@@ -14,17 +14,21 @@ interface LinkItem {
 }
 
 const links: LinkItem[] = [
+    // {
+    //     text: "Fall '25 Course Schedule",
+    //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20259/',
+    // },
+    // {
+    //     text: 'Course Schedule Archives',
+    //     url: 'https://registrar.utexas.edu/schedules/archive',
+    // },
     {
         text: "Spring '26 Course Schedule",
         url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20262/',
     },
     {
-        text: "Fall '25 Course Schedule",
-        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20259/',
-    },
-    {
-        text: 'Course Schedule Archives',
-        url: 'https://registrar.utexas.edu/schedules/archive',
+        text: 'Other Course Schedules',
+        url: 'https://registrar.utexas.edu/schedules',
     },
     {
         text: 'My Degree Audit (IDA)',
