@@ -1,13 +1,6 @@
 import type { Course } from '@shared/types/Course';
 import React from 'react';
-import {
-    createContext,
-    type ReactNode,
-    useCallback,
-    useContext,
-    useMemo,
-    useState,
-} from 'react';
+import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 
 interface UndoContextType {
     lastRemovedCourse: { course: Course; scheduleId: string } | null;
