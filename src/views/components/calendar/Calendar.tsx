@@ -1,6 +1,6 @@
 import { Sidebar } from '@phosphor-icons/react';
-import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { background } from '@shared/messages';
+import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import { CRX_PAGES } from '@shared/types/CRXPages';
@@ -139,7 +139,7 @@ export default function Calendar(): ReactNode {
     if (isSidebarStatePending) return null;
 
     return (
-        <CalendarContext.Provider value={true}>
+        <CalendarContext.Provider value>
             <div className='h-full w-full flex flex-col'>
                 <div className='screenshot:calendar-target h-screen flex overflow-auto'>
                     <div

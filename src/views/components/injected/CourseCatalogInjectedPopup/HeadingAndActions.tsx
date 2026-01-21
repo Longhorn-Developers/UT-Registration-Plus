@@ -177,11 +177,11 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     description: (
                         <>
                             The section you&apos;re adding is for{' '}
-                            <span className='text-ut-burntorange whitespace-nowrap'>
+                            <span className='whitespace-nowrap text-ut-burntorange'>
                                 {course.semester.season} {course.semester.year}
                             </span>
                             , but your current schedule contains sections in{' '}
-                            <span className='text-ut-burntorange whitespace-nowrap'>{activeSemesters}</span>. Mixing
+                            <span className='whitespace-nowrap text-ut-burntorange'>{activeSemesters}</span>. Mixing
                             semesters in one schedule may cause confusion.
                         </>
                     ),
