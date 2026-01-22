@@ -24,6 +24,7 @@ import Divider from '@views/components/common/Divider';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import { useCalendar } from '@views/contexts/CalendarContext';
+import { useUndo } from '@views/contexts/UndoContext';
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
 
@@ -65,6 +66,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
     const showDialog = usePrompt();
+    const { setLastRemovedCourse } = useUndo();
     const getInstructorFullName = (instructor: Instructor) => instructor.toString({ format: 'first_last' });
 
     const handleCopy = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -189,6 +191,8 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 addCourse({ course, scheduleId: activeSchedule.id });
             }
         } else {
+            // Store course in undo context before removing
+            setLastRemovedCourse(course, activeSchedule.id);
             removeCourse({ course, scheduleId: activeSchedule.id });
         }
     };
