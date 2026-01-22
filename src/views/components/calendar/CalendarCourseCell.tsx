@@ -49,6 +49,7 @@ export default function CalendarCourseCell({
 
     const { colors, uniqueId: courseID } = blockData.course;
     const { dayIndex, startIndex } = blockData.calendarGridPoint;
+    const [courseDepartment, courseInstructor] = courseDeptAndInstr.split('–').map(part => part.trim());
 
     let selectedCourse = false;
     let selectedBlock = false;
@@ -131,7 +132,7 @@ export default function CalendarCourseCell({
                         'text-wrap': !timeAndLocation,
                     })}
                 >
-                    {courseDeptAndInstr}
+                    {courseDepartment}, {courseID} – {courseInstructor}
                 </Text>
                 {timeAndLocation && (
                     <Text variant='h3-course' as='p' className='whitespace-pre-line'>
