@@ -67,6 +67,8 @@ export class GitHubStatsService {
     private octokit: Octokit;
     private cache: Record<string, CachedData<unknown>>;
 
+    private storageLock: Promise<void> = Promise.resolve();
+
     constructor(githubToken?: string) {
         this.octokit = githubToken ? new Octokit({ auth: githubToken }) : new Octokit();
         this.cache = {} as Record<string, CachedData<unknown>>;
@@ -91,20 +93,32 @@ export class GitHubStatsService {
     }
 
     private async setCachedData<T>(key: string, data: T, persist = true): Promise<void> {
-        // Ensure cache is loaded before modifying
-        if (Object.keys(this.cache).length === 0) {
-            const githubCache = await CacheStore.get('github');
-            if (githubCache && typeof githubCache === 'object') {
-                this.cache = githubCache as Record<string, CachedData<unknown>>;
+        // get the current lock
+        const existingLock = this.storageLock;
+
+        // update the lock with a new promise
+        this.storageLock = (async () => {
+            // wait for current lock to finish
+            await existingLock;
+
+            // ensure cache is loaded before modifying
+            if (Object.keys(this.cache).length === 0) {
+                const githubCache = await CacheStore.get('github');
+                if (githubCache && typeof githubCache === 'object') {
+                    this.cache = githubCache as Record<string, CachedData<unknown>>;
+                }
             }
-        }
 
-        this.cache[key] = { data, dataFetched: Date.now() };
+            // update local memory
+            this.cache[key] = { data, dataFetched: Date.now() };
 
-        // Only write to the physical storage API if persist is true
-        if (persist) {
-            await CacheStore.set('github', this.cache);
-        }
+            // only write to the physical storage API if persist is true
+            if (persist) {
+                await CacheStore.set('github', this.cache);
+            }
+        })();
+
+        return this.storageLock;
     }
 
     private async fetchWithRetry<T>(fetchFn: () => Promise<T>, retries: number = 3, delay: number = 5000): Promise<T> {
