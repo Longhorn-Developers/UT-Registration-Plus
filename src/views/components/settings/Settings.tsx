@@ -20,7 +20,7 @@ import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 // Misc
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // Icons
 import IconoirGitFork from '~icons/iconoir/git-fork';
@@ -29,6 +29,7 @@ import { useMigrationDialog } from '../common/MigrationDialog';
 import { AdvancedSettings } from './AdvancedSettings';
 import { DEV_MODE_CLICK_TARGET, INCLUDE_MERGED_PRS, STATS_TOGGLE_KEY } from './constants';
 import { ContributorCard } from './ContributorCard';
+import { ContributorCardSkeleton } from './ContributorCardSkeleton';
 import DevMode from './DevMode';
 import { useBirthdayCelebration } from './useBirthdayCelebration';
 import { useDevMode } from './useDevMode';
@@ -61,6 +62,9 @@ export default function Settings(): JSX.Element {
 
     const [devMode, toggleDevMode] = useDevMode(DEV_MODE_CLICK_TARGET);
     const { showParticles, particlesInit, particlesOptions, triggerCelebration, isBirthday } = useBirthdayCelebration();
+
+    // Stable skeleton ids to avoid using array index as keys
+    const skeletonIdsRef = useRef<string[]>(Array.from({ length: 8 }, (_, i) => `skeleton-${i}`));
 
     // Initialize settings and listeners
     useEffect(() => {
@@ -361,7 +365,6 @@ export default function Settings(): JSX.Element {
                             ))}
                         </div>
                     </section>
-
                     <section className='my-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTORS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
@@ -376,17 +379,19 @@ export default function Settings(): JSX.Element {
                                     includeMergedPRs={INCLUDE_MERGED_PRS}
                                 />
                             ))}
-                            {additionalContributors.map(username => (
-                                <ContributorCard
-                                    key={username}
-                                    name={githubStats!.names[username] || username}
-                                    githubUsername={username}
-                                    roles={['Contributor']}
-                                    stats={githubStats!.userGitHubStats[username]}
-                                    showStats={showGitHubStats}
-                                    includeMergedPRs={INCLUDE_MERGED_PRS}
-                                />
-                            ))}
+                            {githubStats === null
+                                ? skeletonIdsRef.current.slice(0, 8).map(id => <ContributorCardSkeleton key={id} />)
+                                : additionalContributors.map(username => (
+                                      <ContributorCard
+                                          key={username}
+                                          name={githubStats!.names[username] || username}
+                                          githubUsername={username}
+                                          roles={['Contributor']}
+                                          stats={githubStats!.userGitHubStats[username]}
+                                          showStats={showGitHubStats}
+                                          includeMergedPRs={INCLUDE_MERGED_PRS}
+                                      />
+                                  ))}
                         </div>
                     </section>
                 </section>
