@@ -1,0 +1,22 @@
+diff --git a/dist/index.js b/dist/index.js
+index 5d426ee2ec60b4faf30bfe18142c65ec1e1eb224..a35a70a1de0fccecab99e257ac347a16e56dd752 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -85,9 +85,14 @@ function getScriptType() {
+   if (globalThis.window === void 0) {
+     return "background_script" /* BACKGROUND_SCRIPT */;
+   }
+-  if (window.location.href.startsWith(`chrome-extension://${chrome.runtime.id}`)) {
+-    if (manifest.action?.default_popup && window.location.href.includes(manifest.action.default_popup)) {
+-      return "extension_popup" /* EXTENSION_POPUP */;
++  const runtimeBase = chrome.runtime.getURL('');
++  if (window.location.href.startsWith(runtimeBase)) {
++    if (window.location.href.includes('_generated_background_page.html')) {
++      return "background_script";
++    }
++    const defaultPopup = manifest.action?.default_popup || manifest.browser_action?.default_popup;
++    if (defaultPopup && window.location.href.includes(defaultPopup)) {
++      return "extension_popup";
+     }
+     return "extension_page" /* EXTENSION_PAGE */;
+   }
