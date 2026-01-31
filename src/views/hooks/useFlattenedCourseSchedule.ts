@@ -1,5 +1,5 @@
 import type { Course, StatusType } from '@shared/types/Course';
-import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
+import { type CourseMeeting, type Day } from '@shared/types/CourseMeeting';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 
@@ -73,10 +73,10 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
             }
 
             return meetings.flatMap(meeting => {
-                if (meeting.days.includes(DAY_MAP.S) || meeting.startTime < 480) {
+                // Keep Sunday classes out of the grid (treated as async/other)
+                if (meeting.days.includes('Sunday' as Day)) {
                     return processAsyncCourses({ courseDeptAndInstr, status, course });
                 }
-
                 return processInPersonMeetings(meeting, courseDeptAndInstr, status, course);
             });
         })
