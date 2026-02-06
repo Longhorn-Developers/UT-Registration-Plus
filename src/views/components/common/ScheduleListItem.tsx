@@ -54,6 +54,19 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
         }
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Delete' && !isEditing) {
+            // Check if any popups/dialogs are open by looking for open menu elements
+            const openMenus = document.querySelectorAll('[data-headlessui-state="open"]');
+            const openDialogs = document.querySelectorAll('[role="dialog"]');
+
+            if (openMenus.length === 0 && openDialogs.length === 0) {
+                e.preventDefault();
+                handleDelete();
+            }
+        }
+    };
+
     const editorRef = React.useRef<HTMLInputElement>(null);
     useEffect(() => {
         const editor = editorRef.current;
@@ -146,7 +159,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
     };
 
     return (
-        <div className='h-7.5 rounded bg-white'>
+        <div className='h-7.5 rounded bg-white' tabIndex={0} onKeyDown={handleKeyDown}>
             <div className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
                 {IS_STORYBOOK ? (
                     <DotsSixVertical
@@ -185,6 +198,9 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                                     if (e.key === 'Enter') handleBlur();
                                     if (e.key === 'Escape') {
                                         setIsEditing(false);
+                                    }
+                                    if (e.key === 'Delete') {
+                                        e.stopPropagation();
                                     }
                                 }}
                                 onBlur={handleBlur}
