@@ -1,32 +1,33 @@
 {
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   outputs =
-    inputs:
-    inputs.flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = (import (inputs.nixpkgs) { inherit system; });
-      in
-      {
-        formatter = pkgs.nixfmt-rfc-style;
+    inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = inputs.nixpkgs.lib.systems.flakeExposed;
 
-        devShell = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            nodejs_20 # v20.19.0
-            pnpm_10 # v10.8.1
-            just
-          ];
+      imports = [
+        ./nix/packages.nix
+        ./nix/devShells.nix
+        ./nix/treefmt.nix
+      ];
 
-          shellHook = ''
-            echo "UTRP Nix Flake Environment Loaded"
-            echo "Node: $(node --version)"
-            echo "pnpm: $(pnpm --version)"
-          '';
+      perSystem =
+        { system, ... }:
+        {
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = [
+              (final: prev: {
+                nodejs = prev.nodejs_20; # v20.19.5
+              })
+            ];
+            config = { };
+          };
         };
-      }
-    );
+    };
 }

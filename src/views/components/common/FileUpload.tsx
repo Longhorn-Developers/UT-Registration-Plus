@@ -4,7 +4,7 @@ import type { ThemeColor } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/themeColors';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface Props {
     className?: string;
@@ -21,9 +21,8 @@ interface Props {
 }
 
 /**
- * A reusable input button component that follows the Button.tsx consistency
- *
- * @returns
+ * A reusable input button component that follows Button.tsx consistency.
+ * Now supports drag-and-drop file uploads (issue #446).
  */
 export default function FileUpload({
     className,
@@ -43,22 +42,74 @@ export default function FileUpload({
     const isIconOnly = !children && !!icon;
     const colorHex = getThemeColorHexByName(color);
     const colorRgb = getThemeColorRgbByName(color)?.join(' ');
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [isDragging, setIsDragging] = useState(false);
 
-    // Convert accept to a comma-separated string if it's an array
+    // Convert accept array to comma-separated list
     const acceptValue = Array.isArray(accept) ? accept.join(',') : accept;
+
+    // --- Prevent Chrome from opening the file on drop anywhere else ---
+    useEffect(() => {
+        const preventDefault = (e: DragEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+        };
+
+        window.addEventListener('dragover', preventDefault);
+        window.addEventListener('drop', preventDefault);
+
+        return () => {
+            window.removeEventListener('dragover', preventDefault);
+            window.removeEventListener('drop', preventDefault);
+        };
+    }, []);
+    // ------------------------------------------------------------------
+
+    // --- Local drag and drop handlers for this button only -------------
+    const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setIsDragging(false);
+        if (disabled) return;
+
+        const file = event.dataTransfer.files?.[0];
+        if (file && inputRef.current && onChange) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            inputRef.current.files = dataTransfer.files;
+
+            // Trigger change event manually
+            onChange({ target: inputRef.current } as React.ChangeEvent<HTMLInputElement>);
+        }
+    };
+
+    const handleDragOver = (event: React.DragEvent<HTMLLabelElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!disabled) setIsDragging(true);
+    };
+
+    const handleDragLeave = (event: React.DragEvent<HTMLLabelElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setIsDragging(false);
+    };
+    // ------------------------------------------------------------------
 
     return (
         <label
-            style={
-                {
-                    ...style,
-                    color: disabled ? 'ut-gray' : colorHex,
-                    backgroundColor: `rgb(${colorRgb} / var(--un-bg-opacity)`,
-                } satisfies React.CSSProperties
-            }
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            style={{
+                ...style,
+                color: disabled ? 'ut-gray' : colorHex,
+                backgroundColor: `rgb(${colorRgb} / var(--un-bg-opacity))`,
+            }}
             className={clsx(
-                'btn',
+                'btn transition-colors select-none',
                 {
+                    'ring-2 ring-offset-2 ring-blue-400': isDragging && !disabled,
                     'text-white! bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20':
                         variant === 'filled',
                     'bg-opacity-0 border-current hover:enabled:bg-opacity-8 border stroke-width-[1px]':
@@ -70,6 +121,7 @@ export default function FileUpload({
                     'h-[35px] w-[35px] p-spacing-2': size === 'small' && isIconOnly,
                     'h-6 p-spacing-2': size === 'mini' && !isIconOnly,
                     'h-6 w-6 p-0': size === 'mini' && isIconOnly,
+                    'opacity-60 cursor-not-allowed': disabled,
                 },
                 className
             )}
@@ -85,6 +137,7 @@ export default function FileUpload({
                 </Text>
             )}
             <input
+                ref={inputRef}
                 type='file'
                 {...(accept ? { accept: acceptValue } : {})}
                 className='hidden'
