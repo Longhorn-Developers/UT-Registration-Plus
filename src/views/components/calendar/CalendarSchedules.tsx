@@ -19,9 +19,9 @@ export function CalendarSchedules() {
     const [, schedules] = useSchedules();
 
     const enforceScheduleLimit = useEnforceScheduleLimit();
-    const handleAddSchedule = () => {
+    const handleAddSchedule = async () => {
         if (enforceScheduleLimit()) {
-            createSchedule('New Schedule');
+            await createSchedule('New Schedule');
         }
     };
 

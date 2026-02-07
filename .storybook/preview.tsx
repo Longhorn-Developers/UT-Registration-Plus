@@ -163,6 +163,15 @@ globalThis.chrome = {
              */
             removeListener<T extends Function>(callback: T) {},
         },
+        getURL(path: string) {
+            try {
+                if (typeof path !== 'string') return String(path);
+                if (/^https?:\/\//.test(path)) return path;
+                return path;
+            } catch {
+                return '';
+            }
+        },
     },
 } as typeof chrome;
 

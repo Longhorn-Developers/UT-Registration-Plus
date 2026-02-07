@@ -99,6 +99,7 @@
         "@types/semantic-release": "^20.0.6",
         "@types/semver": "^7.5.8",
         "@types/sql.js": "^1.4.9",
+        "@types/webextension-polyfill": "^0.12.4",
         "@typescript-eslint/eslint-plugin": "^7.18.0",
         "@typescript-eslint/parser": "^7.18.0",
         "@unocss/eslint-config": "^0.63.6",
@@ -149,7 +150,8 @@
         "unplugin-icons": "^0.19.3",
         "vite": "^5.4.20",
         "vite-plugin-inspect": "^0.8.9",
-        "vitest": "^2.1.9"
+        "vitest": "^2.1.9",
+        "webextension-polyfill": "^0.12.0"
     },
     "engineStrict": true,
     "engines": {
@@ -158,7 +160,8 @@
     "pnpm": {
         "patchedDependencies": {
             "@crxjs/vite-plugin@2.0.0-beta.21": "patches/@crxjs__vite-plugin@2.0.0-beta.21.patch",
-            "@unocss/vite": "patches/@unocss__vite.patch"
+            "@unocss/vite": "patches/@unocss__vite.patch",
+            "chrome-extension-toolkit": "patches/chrome-extension-toolkit.patch"
         },
         "overrides": {
             "es-module-lexer": "^1.5.4"
