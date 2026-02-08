@@ -33,13 +33,13 @@ export function useEnforceScheduleLimit(): () => boolean {
             }
         })();
 
-        const listener = OptionsStore.listen('allowMoreSchedules', async ({ newValue }) => {
+        const listener = OptionsStore.subscribe('allowMoreSchedules', async ({ newValue }) => {
             setAllowMoreSchedules(newValue);
         });
 
         return () => {
             mounted = false;
-            OptionsStore.removeListener(listener);
+            OptionsStore.unsubscribe(listener);
         };
     }, []);
 
