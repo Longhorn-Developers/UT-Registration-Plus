@@ -1,3 +1,4 @@
+import type { MessageHandler } from '@chrome-extension-toolkit';
 import addCourse from '@pages/background/lib/addCourse';
 import clearCourses from '@pages/background/lib/clearCourses';
 import createSchedule from '@pages/background/lib/createSchedule';
@@ -9,7 +10,6 @@ import switchSchedule from '@pages/background/lib/switchSchedule';
 import type { UserScheduleMessages } from '@shared/messages/UserScheduleMessages';
 import { Course } from '@shared/types/Course';
 import { validateLoginStatus } from '@shared/util/checkLoginStatus';
-import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
     addCourse({ data, sendResponse }) {

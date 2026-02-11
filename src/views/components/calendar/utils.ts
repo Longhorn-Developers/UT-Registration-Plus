@@ -1,3 +1,4 @@
+import type { Serialized } from '@chrome-extension-toolkit';
 import { tz, TZDate } from '@date-fns/tz';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
@@ -8,7 +9,6 @@ import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import { englishStringifyList } from '@shared/util/string';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import type { Serialized } from 'chrome-extension-toolkit';
 import type { DateArg, Day } from 'date-fns';
 import {
     addDays,
@@ -444,7 +444,8 @@ export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
                 typeof cell.calendarGridPoint.startIndex === 'number' &&
                 cell.calendarGridPoint.startIndex >= 0
         )
-        .toSorted((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
+        .slice()
+        .sort((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
 
     // Initialize metadata
     for (const cell of cells) {

@@ -1,3 +1,18 @@
+## [2.3.0](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.2.2...v2.3.0) (2026-01-07)
+
+### Features
+
+* add drag-and-drop import for schedules ([#661](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/661)) ([549c52a](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/549c52a39fee718f2bb07cfce33a294835a2246b)), closes [#446](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/446)
+* allow bypassing the 10-schedule limit ([#675](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/675)) ([6a67a32](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/6a67a32e4f50a5bdd20aa43789f199b822483e2d))
+* condense resourceLinks course schedule ([#676](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/676)) ([cee5f02](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/cee5f0284f09f39ca5ae64559d0b697646c77e74))
+* LHD birthday ([#717](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/717)) ([2d18553](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/2d18553f98c5146fa18699ae20462e7dcbc9d35c))
+* **nix:** add prettier-version-match check ([#713](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/713)) ([8ccf7fb](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/8ccf7fb37e769ba445f39c140ca9c1c4245cc1c1))
+* **nix:** build UTRP ([#714](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/714)) ([38bb29b](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/38bb29b20b97ed3cf8fd6511df16553fed1d58bb))
+
+### Bug Fixes
+
+* .editorconfig syntax for nix files ([b406d4d](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/b406d4dd244a25688c2b9621cf5d441228bd8913))
+* toSorted outdated chrome bug  ([#694](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/694)) ([4f5d8c6](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/4f5d8c6d20e3cfeb7b62520ba1819e297d2cc60f))
 ## [2.2.2](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.2.1...v2.2.2) (2025-10-13)
 
 ### Features
@@ -6,6 +21,7 @@
 * automatically select new or duplicated schedules ([#583](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/583)) ([#589](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/589)) ([2a50f55](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/2a50f5580d3dbeb0d66546c23cf29bbb37d80da2))
 * **env:** add SENTRY env vars ([8f7e1bc](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/8f7e1bc0af6336549068e02b80df21d4e8f4ef9c))
 * export schedule button add to calendar ([#594](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/594)) ([5994ded](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/5994ded8be876cb55174d27d3fdb0832b21a0ff9))
+* **release:** v2.2.2 ([c21cbd7](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/c21cbd77f0764c03a711589ff4f957cb8c936eec))
 * search result shading ([#617](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/617)) ([be861b8](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/be861b823cb2cb7f6f4a1f266351eec3fc1c2f99))
 * show warning for courses of different semesters ([#570](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/570)) ([2e7dac1](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/2e7dac1e3eba757231ac07ac966231c08c703a16))
 * support summer grades, fix summer course parser ([#596](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/596)) ([2d92dd4](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/2d92dd47f00a44b7d48e92a8ffba94480e4e73f9))
