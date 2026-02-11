@@ -25,8 +25,9 @@
             "@public/*": ["public/*"],
             "@shared/*": ["src/shared/*"],
             "@background/*": ["src/pages/background/*"],
-            "@views/*": ["src/views/*"]
-        }
+            "@views/*": ["src/views/*"],
+            "@chrome-extension-toolkit": ["src/lib/chrome-extension-toolkit"],
+        },
     },
     "include": [
         "src",
@@ -42,6 +43,6 @@
         ".storybook",
         "unocss.config.ts",
         "gulpfile.js",
-        "@types"
-    ]
+        "@types",
+    ],
 }

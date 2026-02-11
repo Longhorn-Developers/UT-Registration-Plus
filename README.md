@@ -6,7 +6,7 @@
 ![Downloads](https://img.shields.io/chrome-web-store/d/hboadpjkoaieogjimneceaahlppnipaa)
 ![License](https://img.shields.io/github/license/Longhorn-Developers/UT-Registration-Plus)
 
-**UT Registration Plus (UTRP)** streamlines the process of registering for classes at UT Austin by reducing the chaos of juggling multiple tabs like Rate My Professor, Google Sheets, and the UT Course Schedule. With UTRP, you can simplify class selection and schedule management. We've all been there. 20 tabs of Rate My Professor, Google Spreadsheet, and the UT Course Schedule open and you still don't know what classes to take. 
+**UT Registration Plus (UTRP)** streamlines the process of registering for classes at UT Austin by reducing the chaos of juggling multiple tabs like Rate My Professor, Google Sheets, and the UT Course Schedule. With UTRP, you can simplify class selection and schedule management. We've all been there. 20 tabs of Rate My Professor, Google Spreadsheet, and the UT Course Schedule open and you still don't know what classes to take.
 
 ## Demo
 
@@ -14,37 +14,37 @@
 
 ## Features
 
--   **Quick Access to Class Info**: For each class in the UT Course Schedule, UTRP provides a "breakdown" popup with direct links to RateMyProfessor, Course Evaluation Surveys (CES), and past syllabi.
--   **Prerequisite & Restriction Highlights**: Displays course descriptions with highlighted details on prerequisites, restrictions, and other important info.
--   **Grade Distribution Graphs**: View an aggregate and semester-specific graph of grade distributions for each course.
--   **Saved Courses List**: Easily add courses to a list and view them in the extension popup. Copy unique numbers with a single click.
--   **Conflict Detection**: Automatically highlights and strikes out courses that conflict with your saved courses in the UT Course Catalog.
--   **Weekly Schedule View**: Displays your saved courses in a weekly schedule format for easier planning.
--   **Multiple Schedule Support**: Create multiple schedules to plan for different registration scenarios.
--   **And much more!**
+- **Quick Access to Class Info**: For each class in the UT Course Schedule, UTRP provides a "breakdown" popup with direct links to RateMyProfessor, Course Evaluation Surveys (CES), and past syllabi.
+- **Prerequisite & Restriction Highlights**: Displays course descriptions with highlighted details on prerequisites, restrictions, and other important info.
+- **Grade Distribution Graphs**: View an aggregate and semester-specific graph of grade distributions for each course.
+- **Saved Courses List**: Easily add courses to a list and view them in the extension popup. Copy unique numbers with a single click.
+- **Conflict Detection**: Automatically highlights and strikes out courses that conflict with your saved courses in the UT Course Catalog.
+- **Weekly Schedule View**: Displays your saved courses in a weekly schedule format for easier planning.
+- **Multiple Schedule Support**: Create multiple schedules to plan for different registration scenarios.
+- **And much more!**
 
 ## Toolchain
 
--   React v20.9.0 (LTS)
--   TypeScript v5.x
--   Vite v5.x
--   pnpm v10.x
--   UnoCSS
--   ESLint
--   Prettier
--   Storybook
--   Figma
--   Semantic-Release
--   Custom Messaging & Storage Wrappers
+- React v20.9.0 (LTS)
+- TypeScript v5.x
+- Vite v5.x
+- pnpm v10.x
+- UnoCSS
+- ESLint
+- Prettier
+- Storybook
+- Figma
+- Semantic-Release
+- Custom Messaging & Storage Wrappers
 
 ## VSCode Extensions
 
 We recommend using the following VSCode extensions to improve your development experience:
 
--   **[ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)**: For identifying and fixing linting issues.
--   **[Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)**: For automatic code formatting.
--   **[Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)**: For Tailwind CSS class autocomplete and IntelliSense.
--   **[UnoCSS](https://marketplace.visualstudio.com/items?itemName=antfu.unocss)**: For better support with UnoCSS utilities.
+- **[ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)**: For identifying and fixing linting issues.
+- **[Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)**: For automatic code formatting.
+- **[Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)**: For Tailwind CSS class autocomplete and IntelliSense.
+- **[UnoCSS](https://marketplace.visualstudio.com/items?itemName=antfu.unocss)**: For better support with UnoCSS utilities.
 
 ## Contributing
 
@@ -79,7 +79,7 @@ Once set up, the extension can be built to the `dist/` directory using the follo
 
 ### Development Builds
 
--   Run the development server:
+- Run the development server:
     ```bash
     pnpm dev
     ```
@@ -92,7 +92,7 @@ Once set up, the extension can be built to the `dist/` directory using the follo
 
 ### Production Builds
 
--   To generate production builds:
+- To generate production builds:
     ```bash
     pnpm build
     ```
@@ -121,10 +121,10 @@ To load the extension manually in Chrome:
 
 If you encounter bugs or issues, please report them in the [Issues](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues) section, including:
 
--   A clear, descriptive title
--   Steps to reproduce the issue
--   Expected behavior
--   Screenshots or logs (if applicable)
+- A clear, descriptive title
+- Steps to reproduce the issue
+- Expected behavior
+- Screenshots or logs (if applicable)
 
 We aim to address issues promptly.
 
@@ -142,14 +142,14 @@ Follow this structure for commit messages:
 
 Where:
 
--   **type**: One of the following:
-    -   `feat`: A new feature
-    -   `fix`: A bug fix
-    -   `docs`: Documentation updates
-    -   `style`: Code formatting changes (whitespace, semicolons, etc.)
-    -   `refactor`: Code restructuring (without adding features or fixing bugs)
-    -   `test`: Adding or modifying tests
-    -   `chore`: Maintenance tasks or build process changes
+- **type**: One of the following:
+    - `feat`: A new feature
+    - `fix`: A bug fix
+    - `docs`: Documentation updates
+    - `style`: Code formatting changes (whitespace, semicolons, etc.)
+    - `refactor`: Code restructuring (without adding features or fixing bugs)
+    - `test`: Adding or modifying tests
+    - `chore`: Maintenance tasks or build process changes
 
 Example:
 
@@ -168,9 +168,9 @@ Branch names should follow the format:
 
 Examples:
 
--   `feat/user-login`
--   `fix/navbar-layout`
--   `docs/update-readme`
+- `feat/user-login`
+- `fix/navbar-layout`
+- `docs/update-readme`
 
 ## License
 
@@ -184,28 +184,28 @@ We maintain a strict code of conduct. By contributing, you agree to adhere to th
 
 Special thanks to the developers and contributors behind these amazing tools and libraries:
 
--   React v20.9.0 (LTS)
--   TypeScript v5.x
--   Vite v5.x
--   pnpm v10.x
--   UnoCSS
--   ESLint
--   Prettier
--   Storybook
--   Figma
--   Semantic-Release
--   [chrome-extension-toolkit](https://github.com/sghsri/chrome-extension-toolkit)
--   [UT_Grade_Parser](https://github.com/doprz/UT_Grade_Parser)
--   [eslint-plugin-import-essentials](https://github.com/doprz/eslint-plugin-import-essentials)
--   [UT Registration Plus v1.2.2.7](https://github.com/Longhorn-Developers/UT-Registration-Plus/tree/legacy) by @sghsri
--   [UT Registration Planner](https://github.com/doprz/UT-Registration-Planner) by @doprz
--   [Figma Designs](https://www.figma.com/design/8tsCay2FRqctrdcZ3r9Ahw/UTRP) by @IsaDavRod
--   [Longhorn Developers](https://github.com/Longhorn-Developers) - established in 2024
--   The UTRP devs, beta testers, and all supporters of the project!
+- React v20.9.0 (LTS)
+- TypeScript v5.x
+- Vite v5.x
+- pnpm v10.x
+- UnoCSS
+- ESLint
+- Prettier
+- Storybook
+- Figma
+- Semantic-Release
+- [chrome-extension-toolkit](https://github.com/sghsri/chrome-extension-toolkit)
+- [UT_Grade_Parser](https://github.com/doprz/UT_Grade_Parser)
+- [eslint-plugin-import-essentials](https://github.com/doprz/eslint-plugin-import-essentials)
+- [UT Registration Plus v1.2.2.7](https://github.com/Longhorn-Developers/UT-Registration-Plus/tree/legacy) by @sghsri
+- [UT Registration Planner](https://github.com/doprz/UT-Registration-Planner) by @doprz
+- [Figma Designs](https://www.figma.com/design/8tsCay2FRqctrdcZ3r9Ahw/UTRP) by @IsaDavRod
+- [Longhorn Developers](https://github.com/Longhorn-Developers) - established in 2024
+- The UTRP devs, beta testers, and all supporters of the project!
 
 ## Activity
 
-![UT-Registration-Plus Activity](https://repobeats.axiom.co/api/embed/47930fa3916ac1b475cd63a05948c449eb5ad502.svg "UT-Registration-Plus Repobeats analytics image")
+![UT-Registration-Plus Activity](https://repobeats.axiom.co/api/embed/47930fa3916ac1b475cd63a05948c449eb5ad502.svg 'UT-Registration-Plus Repobeats analytics image')
 
 ## Star History
 
