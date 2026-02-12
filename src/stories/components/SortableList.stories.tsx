@@ -4,7 +4,7 @@ import Instructor from '@shared/types/Instructor';
 import { tailwindColorways } from '@shared/util/storybook';
 import type { Meta, StoryObj } from '@storybook/react';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
-import type { BaseItem, SortableListProps } from '@views/components/common/SortableList';
+import type { BaseItem } from '@views/components/common/SortableList';
 import { SortableList } from '@views/components/common/SortableList';
 import React from 'react';
 
@@ -77,7 +77,7 @@ type CourseWithId = { course: Course } & BaseItem;
 
 const meta = {
     title: 'Components/Common/SortableList',
-    component: SortableList,
+    component: SortableList<CourseWithId>,
     parameters: {
         layout: 'centered',
     },
@@ -85,7 +85,7 @@ const meta = {
 } satisfies Meta<typeof SortableList<CourseWithId>>;
 export default meta;
 
-type Story = StoryObj<Meta<typeof SortableList<CourseWithId>>>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
@@ -100,7 +100,7 @@ export const Default: Story = {
     },
     render: args => (
         <div className='h-3xl w-3xl transform-none'>
-            <SortableList {...(args as SortableListProps<CourseWithId>)} />
+            <SortableList {...args} />
         </div>
     ),
 };
