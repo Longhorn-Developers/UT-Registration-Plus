@@ -14,6 +14,7 @@ const GRID_START_HOUR = 7;
 const GRID_END_HOUR = 21;
 
 const hoursOfDay = Array.from({ length: GRID_END_HOUR - GRID_START_HOUR + 1 }, (_, index) => index + GRID_START_HOUR);
+const GRID_BORDER_KEYS = ['hour-spacer', 'time-border', 'mon-border', 'tue-border', 'wed-border', 'thu-border'];
 
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
 
@@ -91,14 +92,9 @@ export default function CalendarGrid({
             {/* time tick for the first hour */}
             <div className='h-4 w-4 self-end border-b border-r border-gray-300' />
             {hoursOfDay.map((_, i) => makeGridRow(i, 5))}
-            {Array(6)
-                .fill(1)
-                .map((_, i) => (
-                    <div
-                        key={`grid-border-${i}`}
-                        className='h-4 flex items-end justify-center border-r border-gray-300'
-                    />
-                ))}
+            {GRID_BORDER_KEYS.map(key => (
+                <div key={key} className='h-4 flex items-end justify-center border-r border-gray-300' />
+            ))}
 
             <ColorPickerProvider>
                 {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
