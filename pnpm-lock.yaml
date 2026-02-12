@@ -261,8 +261,8 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1
       chromatic:
-        specifier: ^11.26.0
-        version: 11.26.0
+        specifier: ^15.1.0
+        version: 15.1.0
       cssnano:
         specifier: ^7.0.6
         version: 7.0.6(postcss@8.5.3)
@@ -3212,6 +3212,18 @@ packages:
 
   chromatic@11.26.0:
     resolution: {integrity: sha512-3rRiPmdnt5sbYZTlr6Uqd11S/teafQA1Dr6mCddIz/FFKYPv/Yt26nJllixyFd9VUwrILMPTyuracUIgJ77VZA==}
+    hasBin: true
+    peerDependencies:
+      '@chromatic-com/cypress': ^0.*.* || ^1.0.0
+      '@chromatic-com/playwright': ^0.*.* || ^1.0.0
+    peerDependenciesMeta:
+      '@chromatic-com/cypress':
+        optional: true
+      '@chromatic-com/playwright':
+        optional: true
+
+  chromatic@15.1.0:
+    resolution: {integrity: sha512-XODNgiczeX5SpaWsCQLEwGpXrF2QVPb9bka7nHa8NQssyRRTt9EI8jVH8BRDUPcrQKqQqmXmxOy2Cq4IK1ydFQ==}
     hasBin: true
     peerDependencies:
       '@chromatic-com/cypress': ^0.*.* || ^1.0.0
@@ -10594,6 +10606,8 @@ snapshots:
       readdirp: 4.1.2
 
   chromatic@11.26.0: {}
+
+  chromatic@15.1.0: {}
 
   chrome-trace-event@1.0.4: {}
 
