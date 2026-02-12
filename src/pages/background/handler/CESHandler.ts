@@ -1,6 +1,6 @@
 import openNewTab from '@background/util/openNewTab';
+import type { MessageHandler } from '@chrome-extension-toolkit';
 import type CESMessage from '@shared/messages/CESMessage';
-import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const CESFall2023Url = 'https://utexas.bluera.com/utexas/rpvl.aspx?rid=d3db767b-049f-46c5-9a67-29c21c29c580&regl=en-US';
 

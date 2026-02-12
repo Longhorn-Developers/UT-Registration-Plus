@@ -1,3 +1,4 @@
+import { MessageListener } from '@chrome-extension-toolkit';
 import type TabInfoMessages from '@shared/messages/TabInfoMessages';
 import Calendar from '@views/components/calendar/Calendar';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';

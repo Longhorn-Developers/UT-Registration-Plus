@@ -1,5 +1,5 @@
+import type { Serialized } from '@chrome-extension-toolkit';
 import { getCourseColors } from '@shared/util/colors';
-import type { Serialized } from 'chrome-extension-toolkit';
 
 import type { CourseMeeting } from './CourseMeeting';
 import { CourseSchedule } from './CourseSchedule';

@@ -94,3 +94,5 @@ typings/
 config
 .eslintrc.js
 !.storybook
+
+src/lib/chrome-extension-toolkit
