@@ -1,5 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { CalendarDots, Export, FileCode, FilePng, Sidebar } from '@phosphor-icons/react';
+import { CalendarDots, Export, FileCode, FilePng, FileText, Sidebar } from '@phosphor-icons/react';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
@@ -12,7 +12,7 @@ import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React from 'react';
 
-import { handleExportJson, saveAsCal, saveCalAsPng } from '../utils';
+import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
 
 interface CalendarHeaderProps {
     sidebarOpen?: boolean;
@@ -111,6 +111,18 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                         icon={FileCode}
                                     >
                                         Save as .json
+                                    </Button>
+                                </MenuItem>
+                                <MenuItem>
+                                    <Button
+                                        className='w-full flex justify-start'
+                                        onClick={saveAsText}
+                                        color='ut-black'
+                                        size='small'
+                                        variant='minimal'
+                                        icon={FileText}
+                                    >
+                                        Save as .txt
                                     </Button>
                                 </MenuItem>
                                 {/* <MenuItem>

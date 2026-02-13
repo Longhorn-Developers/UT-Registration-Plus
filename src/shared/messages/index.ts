@@ -1,4 +1,4 @@
-import { createMessenger } from 'chrome-extension-toolkit';
+import { createMessenger } from '@chrome-extension-toolkit';
 
 import type BrowserActionMessages from './BrowserActionMessages';
 import type { CalendarBackgroundMessages, CalendarTabMessages } from './CalendarMessages';
