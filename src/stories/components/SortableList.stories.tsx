@@ -77,7 +77,7 @@ type CourseWithId = { course: Course } & BaseItem;
 
 const meta = {
     title: 'Components/Common/SortableList',
-    component: SortableList,
+    component: SortableList<CourseWithId>,
     parameters: {
         layout: 'centered',
     },
@@ -85,7 +85,7 @@ const meta = {
 } satisfies Meta<typeof SortableList<CourseWithId>>;
 export default meta;
 
-type Story = StoryObj<Meta<typeof SortableList<CourseWithId>>>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
@@ -94,7 +94,9 @@ export const Default: Story = {
             course,
         })),
         onChange: () => {},
-        renderItem: ({ id, course }) => <PopupCourseBlock key={id} course={course} colors={course.colors} />,
+        renderItem: (item: CourseWithId) => (
+            <PopupCourseBlock key={item.id} course={item.course} colors={item.course.colors} />
+        ),
     },
     render: args => (
         <div className='h-3xl w-3xl transform-none'>
