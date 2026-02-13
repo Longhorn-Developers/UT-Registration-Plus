@@ -1,6 +1,6 @@
+import type { MessageHandler } from '@chrome-extension-toolkit';
 import openNewTab from '@pages/background/util/openNewTab';
 import type TabManagementMessages from '@shared/messages/TabManagementMessages';
-import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const tabManagementHandler: MessageHandler<TabManagementMessages> = {
     getTabId({ sendResponse, sender }) {

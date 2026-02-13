@@ -1,5 +1,5 @@
+import type { Serialized } from '@chrome-extension-toolkit';
 import { capitalize } from '@shared/util/string';
-import type { Serialized } from 'chrome-extension-toolkit';
 
 /**
  * A type representing an instructor for a course (who teaches it)

@@ -1,6 +1,6 @@
+import type { Serialized } from '@chrome-extension-toolkit';
 import { Course } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import type { Serialized } from 'chrome-extension-toolkit';
 
 import addCourse from './addCourse';
 import createSchedule from './createSchedule';
