@@ -1,5 +1,6 @@
 import { MessageListener } from '@chrome-extension-toolkit';
 import { Sidebar } from '@phosphor-icons/react';
+import { background } from '@shared/messages';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
@@ -14,6 +15,7 @@ import ResourceLinks from '@views/components/calendar/ResourceLinks';
 import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
+import { useUndo } from '@views/contexts/UndoContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
@@ -43,6 +45,8 @@ export default function Calendar(): ReactNode {
     const showWhatsNewDialog = useWhatsNewPopUp();
 
     const [showUTDiningPromo, setShowUTDiningPromo] = useState<boolean>(false);
+
+    const { lastRemovedCourse, clearLastRemovedCourse } = useUndo();
 
     const queryClient = useQueryClient();
     const { data: showSidebar, isPending: isSidebarStatePending } = useQuery({
@@ -91,6 +95,46 @@ export default function Calendar(): ReactNode {
             setShowUTDiningPromo(show);
         });
     }, []);
+
+    // --- Undo functionality: listen for Cmd+Z / Ctrl+Z ---
+    useEffect(() => {
+        const handleUndo = (event: KeyboardEvent) => {
+            // Check for Cmd+Z (Mac) or Ctrl+Z (Windows/Linux)
+            if ((event.metaKey || event.ctrlKey) && event.key === 'z' && !event.shiftKey) {
+                // Prevent default browser undo behavior
+                event.preventDefault();
+                event.stopPropagation();
+
+                // Only restore if we have a last removed course and we're not in an input field
+                if (
+                    lastRemovedCourse &&
+                    event.target instanceof HTMLElement &&
+                    event.target.tagName !== 'INPUT' &&
+                    event.target.tagName !== 'TEXTAREA'
+                ) {
+                    // Restore the course
+                    background.addCourse({
+                        course: lastRemovedCourse.course,
+                        scheduleId: lastRemovedCourse.scheduleId,
+                        hasColor: true, // Preserve original colors
+                    });
+
+                    // Clear the undo state
+                    clearLastRemovedCourse();
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleUndo);
+        return () => {
+            document.removeEventListener('keydown', handleUndo);
+        };
+    }, [lastRemovedCourse, clearLastRemovedCourse]);
+
+    // --- Clear undo state when schedule changes ---
+    useEffect(() => {
+        clearLastRemovedCourse();
+    }, [activeSchedule.id, clearLastRemovedCourse]);
 
     if (isSidebarStatePending) return null;
 
