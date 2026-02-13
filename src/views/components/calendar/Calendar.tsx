@@ -28,6 +28,31 @@ import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
 import DiningAppPromo from './DiningAppPromo';
+import { Wallpaper } from 'src/shared/types/UserSchedule';
+
+function getWallpaper(wallpaper?: Wallpaper): React.CSSProperties {
+    if (!wallpaper || !wallpaper.data || wallpaper.type === 'none') {
+        return { backgroundColor: 'white' };
+    }
+
+    let imageUrl: string;
+    // get wallpaper image from storage, or just default to white
+
+    if (wallpaper.type === 'custom' && wallpaper.data) {
+        imageUrl = wallpaper.data;
+    } else {
+        // Fallback to white background
+        return { backgroundColor: 'white' };
+    }
+
+    return {
+        backgroundImage: `url(${imageUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundOrigin: 'border-box',
+    };
+}
 
 /**
  * Calendar page component
@@ -96,7 +121,7 @@ export default function Calendar(): ReactNode {
 
     return (
         <CalendarContext.Provider value>
-            <div className='h-full w-full flex flex-col'>
+            <div className='h-full w-full flex flex-col' style={getWallpaper(activeSchedule.wallpaper)}>
                 <div className='screenshot:calendar-target h-screen flex overflow-auto'>
                     <div
                         className={clsx(
