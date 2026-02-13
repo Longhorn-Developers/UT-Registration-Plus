@@ -363,8 +363,8 @@ importers:
         specifier: ^0.63.6
         version: 0.63.6(postcss@8.5.3)(rollup@4.52.4)(typescript@5.7.3)(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.44.0))
       unocss-preset-primitives:
-        specifier: 0.0.2-beta.1
-        version: 0.0.2-beta.1
+        specifier: 0.0.2-beta.2
+        version: 0.0.2-beta.2(@unocss/core@0.63.6)
       unplugin-icons:
         specifier: ^0.19.3
         version: 0.19.3(@svgr/core@8.1.0(typescript@5.7.3))(@vue/compiler-sfc@3.5.13)
@@ -2366,8 +2366,8 @@ packages:
   '@types/node@22.13.5':
     resolution: {integrity: sha512-+lTU0PxZXn0Dr1NBtC7Y8cR21AJr87dLLU953CWA6pMxxv/UDc7jYAY90upcrie1nRcD6XNG5HOYEDtgW5TxAg==}
 
-  '@types/node@22.18.10':
-    resolution: {integrity: sha512-anNG/V/Efn/YZY4pRzbACnKxNKoBng2VTFydVu8RRs5hQjikP8CQfaeAV59VFSCzKNp90mXiVXW2QzV56rwMrg==}
+  '@types/node@22.18.11':
+    resolution: {integrity: sha512-Gd33J2XIrXurb+eT2ktze3rJAfAp9ZNjlBdh4SVgyrKEOADwCbdUDaK7QgJno8Ue4kcajscsKqu6n8OBG3hhCQ==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -2575,9 +2575,6 @@ packages:
   '@unocss/config@0.63.6':
     resolution: {integrity: sha512-+4Lt5uTwRgu1z7vhOUzDf+mL+BQYdaa/Z8NMT2Fiqb37tcjEKvmwaUHdfE22Vif1luDgC6xqFsn6qqFtOxhoWQ==}
     engines: {node: '>=14'}
-
-  '@unocss/core@0.61.9':
-    resolution: {integrity: sha512-2W1YZQIWXcueGdbXU/ZCqn/8yQhWk8e8kAHFkVlbc9rictkd2UmPB9nIZ8Ii1tMwt6F0TT6vfHbLJEGCV08o2g==}
 
   '@unocss/core@0.63.6':
     resolution: {integrity: sha512-Q4QPgJ271Up89+vIqqOKgtdCKkFpHqvHN8W1LUlKPqtYnOvVYaOIVNAZowaIdEhPuc83yLc6Tg2+7riK18QKEw==}
@@ -7115,8 +7112,10 @@ packages:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
 
-  unocss-preset-primitives@0.0.2-beta.1:
-    resolution: {integrity: sha512-bGNUK8G1V720gPe0ToOKEeMQqgJsDIBz6IuSRDQNBVBvWVx/OzXtsn6hjkKlhw/TjROSawaxpwcULRoPAZ5Gvg==}
+  unocss-preset-primitives@0.0.2-beta.2:
+    resolution: {integrity: sha512-wFgm6lJX1r2chTgEeSMl8E/AJKSsOZaRI6AYU/7IItKgVplMfy7h/T5EMCJlw7RSLrWc4vtbkHPmIK8OzokzWw==}
+    peerDependencies:
+      '@unocss/core': '>=0.59.0 < 101'
 
   unocss@0.63.6:
     resolution: {integrity: sha512-OKJJKEFWVz+Lsf3JdOgRiRtL+QOUQRBov89taUcCPFPZtrhP6pPVFCZHD9qMvY4IChMX7dzalQax3ZXJ3hbtkQ==}
@@ -9483,7 +9482,7 @@ snapshots:
     dependencies:
       undici-types: 6.20.0
 
-  '@types/node@22.18.10':
+  '@types/node@22.18.11':
     dependencies:
       undici-types: 6.21.0
 
@@ -9769,8 +9768,6 @@ snapshots:
       unconfig: 0.5.5
     transitivePeerDependencies:
       - supports-color
-
-  '@unocss/core@0.61.9': {}
 
   '@unocss/core@0.63.6': {}
 
@@ -12708,7 +12705,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.18.10
+      '@types/node': 22.18.11
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -15124,9 +15121,9 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unocss-preset-primitives@0.0.2-beta.1:
+  unocss-preset-primitives@0.0.2-beta.2(@unocss/core@0.63.6):
     dependencies:
-      '@unocss/core': 0.61.9
+      '@unocss/core': 0.63.6
 
   unocss@0.63.6(postcss@8.5.3)(rollup@4.52.4)(typescript@5.7.3)(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.44.0)):
     dependencies:
