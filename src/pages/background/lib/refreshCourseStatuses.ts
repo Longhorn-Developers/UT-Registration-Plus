@@ -1,7 +1,6 @@
 import { StatusCheckerStore } from '@shared/storage/StatusCheckerStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { StatusType } from '@shared/types/Course';
-import { validateLoginStatus } from '@shared/util/checkLoginStatus';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { SiteSupport } from '@views/lib/getSiteSupport';
@@ -31,19 +30,17 @@ export default async function refreshCourseStatuses(): Promise<Record<number, St
         return {};
     }
 
-    // 3. Check login status using the first course's URL
-    const isLoggedIn = await validateLoginStatus(activeSchedule.courses[0]!.url);
-    if (!isLoggedIn) {
-        return {};
-    }
-
-    // 4. Merge-safe scrape: start from existing data so failed courses keep their old value
+    // 3. Merge-safe scrape: start from existing data so failed courses keep their old value
     const existing = await StatusCheckerStore.get('scrapeInfo');
     const merged: Record<number, StatusType> = { ...existing };
 
     for (const course of activeSchedule.courses) {
         try {
             const response = await fetch(course.url, { credentials: 'include' });
+            if (response.redirected || response.status === 401 || response.status === 403) {
+                chrome.tabs.create({ url: course.url });
+                return {};
+            }
             const htmlText = await response.text();
             const doc = new DOMParser().parseFromString(htmlText, 'text/html');
 
@@ -60,7 +57,7 @@ export default async function refreshCourseStatuses(): Promise<Record<number, St
         }
     }
 
-    // 5. Write merged results and timestamp
+    // 4. Write merged results and timestamp
     await StatusCheckerStore.set('scrapeInfo', merged);
     await StatusCheckerStore.set('lastCheckedAt', Date.now());
 
