@@ -60,7 +60,7 @@ importers:
         version: 3.9.1
       '@unocss/vite':
         specifier: ^0.63.6
-        version: 0.63.6(patch_hash=9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95)(rollup@4.52.4)(typescript@5.7.3)(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.46.0))
+         version: 0.63.6(patch_hash=9e2d2732a6e057a2ca90fba199730f252d8b4db8631b2c6ee0854fce7771bc95)(rollup@4.52.4)(typescript@5.7.3)(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.46.0))
       '@vitejs/plugin-react':
         specifier: ^4.3.4
         version: 4.3.4(vite@5.4.20(@types/node@22.13.5)(sass@1.85.1)(terser@5.46.0))
