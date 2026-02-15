@@ -193,6 +193,7 @@ export default defineConfig({
         renameFile('src/pages/report/index.html', 'report.html'),
         renameFile('src/pages/map/index.html', 'map.html'),
         renameFile('src/pages/404/index.html', '404.html'),
+        renameFile('src/pages/offscreen/index.html', 'offscreen.html'),
         vitePluginRunCommandOnDemand({
             // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
             closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',
@@ -277,6 +278,7 @@ export default defineConfig({
                 report: 'src/pages/report/index.html',
                 map: 'src/pages/map/index.html',
                 404: 'src/pages/404/index.html',
+                offscreen: 'src/pages/offscreen/index.html',
             },
             output: {
                 chunkFileNames: `assets/[name]-[hash].js`,

@@ -1,9 +1,8 @@
 import { StatusCheckerStore } from '@shared/storage/StatusCheckerStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { StatusType } from '@shared/types/Course';
-import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-import getCourseTableRows from '@views/lib/getCourseTableRows';
-import { SiteSupport } from '@views/lib/getSiteSupport';
+
+import ensureOffscreenDocument from './ensureOffscreenDocument';
 
 const COOLDOWN_MS = 3000;
 
@@ -11,6 +10,8 @@ const COOLDOWN_MS = 3000;
  * Refreshes the course statuses for the active schedule by scraping UT's course catalog.
  * Enforces a 3-second cooldown between refreshes.
  * Uses merge-safe writes so that a partial failure doesn't erase previously scraped statuses.
+ * 
+ * Parsing is delegated to an offscreen document since service workers don't have DOM access.
  *
  * @returns A record mapping course unique IDs to their current status
  */
@@ -30,7 +31,10 @@ export default async function refreshCourseStatuses(): Promise<Record<number, St
         return {};
     }
 
-    // 3. Merge-safe scrape: start from existing data so failed courses keep their old value
+    // 3. Ensure offscreen document exists for parsing
+    await ensureOffscreenDocument();
+
+    // 4. Merge-safe scrape: start from existing data so failed courses keep their old value
     const existing = await StatusCheckerStore.get('scrapeInfo');
     const merged: Record<number, StatusType> = { ...existing };
 
@@ -42,14 +46,20 @@ export default async function refreshCourseStatuses(): Promise<Record<number, St
                 return {};
             }
             const htmlText = await response.text();
-            const doc = new DOMParser().parseFromString(htmlText, 'text/html');
 
-            const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, course.url);
-            const tableRows = getCourseTableRows(doc);
-            const scrapedCourses = scraper.scrape(tableRows, false);
+            // Delegate HTML parsing to offscreen document (service workers can't use DOMParser)
+            const result = await chrome.runtime.sendMessage({
+                target: 'offscreen',
+                type: 'PARSE_COURSE_STATUS',
+                data: {
+                    html: htmlText,
+                    url: course.url,
+                    uniqueId: course.uniqueId,
+                },
+            });
 
-            if (scrapedCourses.length > 0 && scrapedCourses[0]?.course) {
-                merged[course.uniqueId] = scrapedCourses[0].course.status;
+            if (result?.status) {
+                merged[course.uniqueId] = result.status;
             }
         } catch (error) {
             console.error(`Failed to scrape status for course ${course.uniqueId}:`, error);
@@ -57,7 +67,7 @@ export default async function refreshCourseStatuses(): Promise<Record<number, St
         }
     }
 
-    // 4. Write merged results and timestamp
+    // 5. Write merged results and timestamp
     await StatusCheckerStore.set('scrapeInfo', merged);
     await StatusCheckerStore.set('lastCheckedAt', Date.now());
 
