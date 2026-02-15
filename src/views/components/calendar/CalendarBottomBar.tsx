@@ -39,8 +39,6 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
         };
     }, []);
 
-    if (!displayCourses) return null;
-
     return (
         <div className='w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4'>
             <div className='flex flex-grow items-center gap-1 text-nowrap'>
@@ -52,7 +50,7 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                 </Text>
                 <div className='inline-flex gap-2.5'>
                     <ColorPickerProvider>
-                        {asyncCourseCells.map(block => {
+                        {(asyncCourseCells ?? []).map(block => {
                             const { courseDeptAndInstr, status, className } = block.componentProps;
                             return (
                                 <CalendarCourseBlock

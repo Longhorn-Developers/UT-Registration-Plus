@@ -28,7 +28,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
     const [showPopup, setShowPopup] = useState(false);
-    const [enableScrollToLoad, setEnableScrollToLoad] = useState<boolean>(false);
+    const [enableScrollToLoad, setEnableScrollToLoad] = useState<boolean>(true);
     const prevCourseTitleRef = useRef<string | null>(null);
     const tbody = document.querySelector('table tbody')!;
 
