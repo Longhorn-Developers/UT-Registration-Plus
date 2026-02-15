@@ -1,7 +1,9 @@
 import type { Course, StatusType } from '@shared/types/Course';
 import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { StatusCheckerStore } from '@shared/storage/StatusCheckerStore';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
+import { useEffect, useState } from 'react';
 
 import useSchedules from './useSchedules';
 
@@ -63,21 +65,34 @@ export const convertMinutesToIndex = (minutes: number): number =>
  */
 export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const [activeSchedule] = useSchedules();
+    const [scrapeInfo, setScrapeInfo] = useState<Record<number, StatusType>>({});
+
+    useEffect(() => {
+        StatusCheckerStore.get('scrapeInfo').then(setScrapeInfo);
+        const unsubscribe = StatusCheckerStore.subscribe('scrapeInfo', ({ newValue }) => {
+            setScrapeInfo(newValue ?? {});
+        });
+
+        return () => {
+            StatusCheckerStore.unsubscribe(unsubscribe);
+        };
+    }, []);
 
     const processedCourses = activeSchedule.courses
         .flatMap(course => {
             const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
+            const overriddenStatus = scrapeInfo[course.uniqueId] ?? status;
 
             if (meetings.length === 0) {
-                return processAsyncCourses({ courseDeptAndInstr, status, course });
+                return processAsyncCourses({ courseDeptAndInstr, status: overriddenStatus, course });
             }
 
             return meetings.flatMap(meeting => {
                 if (meeting.days.includes(DAY_MAP.S) || meeting.startTime < 480) {
-                    return processAsyncCourses({ courseDeptAndInstr, status, course });
+                    return processAsyncCourses({ courseDeptAndInstr, status: overriddenStatus, course });
                 }
 
-                return processInPersonMeetings(meeting, courseDeptAndInstr, status, course);
+                return processInPersonMeetings(meeting, courseDeptAndInstr, overriddenStatus, course);
             });
         })
         .sort(sortCourses);
