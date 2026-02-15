@@ -31,7 +31,7 @@ export interface IOptionsStore {
 export const OptionsStore = createSyncStore<IOptionsStore>('OptionsStore', {
     enableCourseStatusChips: true,
     enableHighlightConflicts: true,
-    enableScrollToLoad: true,
+    enableScrollToLoad: false,
     enableDataRefreshing: false,
     alwaysOpenCalendarInNewTab: false,
     showCalendarSidebar: true,
