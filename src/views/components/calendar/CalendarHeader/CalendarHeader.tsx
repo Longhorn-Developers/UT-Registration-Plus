@@ -167,7 +167,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     </Button> */}
                 </div>
                 <Divider className='self-center' size='1.75rem' orientation='vertical' />
-                <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 items-center justify-end gap-3')}>
+                <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 items-center justify-end gap-3 self-start')}>
                     {lastCheckedAt && (
                         <Text variant='mini' className='text-ut-gray !font-normal whitespace-nowrap'>
                             Last checked: {getUpdatedAtDateTimeString(lastCheckedAt)}
