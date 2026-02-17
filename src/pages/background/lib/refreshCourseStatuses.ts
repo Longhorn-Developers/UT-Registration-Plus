@@ -10,7 +10,7 @@ const COOLDOWN_MS = 3000;
  * Refreshes the course statuses for the active schedule by scraping UT's course catalog.
  * Enforces a 3-second cooldown between refreshes.
  * Uses merge-safe writes so that a partial failure doesn't erase previously scraped statuses.
- * 
+ *
  * Parsing is delegated to an offscreen document since service workers don't have DOM access.
  *
  * @returns A record mapping course unique IDs to their current status

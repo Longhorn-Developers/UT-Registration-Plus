@@ -1,6 +1,6 @@
+import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
-import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import CourseStatus from '@views/components/common/CourseStatus';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';

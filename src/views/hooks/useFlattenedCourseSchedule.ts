@@ -1,7 +1,7 @@
+import { StatusCheckerStore } from '@shared/storage/StatusCheckerStore';
 import type { Course, StatusType } from '@shared/types/Course';
 import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import { StatusCheckerStore } from '@shared/storage/StatusCheckerStore';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 import { useEffect, useState } from 'react';
 

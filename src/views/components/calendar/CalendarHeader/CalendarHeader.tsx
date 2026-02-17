@@ -8,10 +8,10 @@ import DialogProvider from '@views/components/common/DialogProvider/DialogProvid
 import Divider from '@views/components/common/Divider';
 import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { LargeLogo } from '@views/components/common/LogoIcon';
-import Text from '@views/components/common/Text/Text';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
-import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
+import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
+import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
@@ -167,9 +167,14 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     </Button> */}
                 </div>
                 <Divider className='self-center' size='1.75rem' orientation='vertical' />
-                <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 items-center justify-end gap-3 self-start')}>
+                <div
+                    className={clsx(
+                        styles.secondaryActions,
+                        'min-w-fit flex flex-1 items-center justify-end gap-3 self-start'
+                    )}
+                >
                     {lastCheckedAt && (
-                        <Text variant='mini' className='text-ut-gray !font-normal whitespace-nowrap'>
+                        <Text variant='mini' className='whitespace-nowrap text-ut-gray !font-normal'>
                             Last checked: {getUpdatedAtDateTimeString(lastCheckedAt)}
                         </Text>
                     )}

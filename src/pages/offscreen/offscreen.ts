@@ -44,9 +44,8 @@ chrome.runtime.onMessage.addListener(
                     const scrapedCourses = scraper.scrape(tableRows, false);
 
                     // Extract the status from the first scraped course
-                    const status = scrapedCourses.length > 0 && scrapedCourses[0]?.course
-                        ? scrapedCourses[0].course.status
-                        : null;
+                    const status =
+                        scrapedCourses.length > 0 && scrapedCourses[0]?.course ? scrapedCourses[0].course.status : null;
 
                     sendResponse({ status });
                 } catch (error) {

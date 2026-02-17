@@ -9,10 +9,10 @@ const OFFSCREEN_DOCUMENT_PATH = 'offscreen.html';
 /**
  * Ensures an offscreen document exists for DOM parsing operations.
  * Uses Chrome's offscreen API to create a hidden document with full DOM access.
- * 
+ *
  * This is necessary because service workers don't have access to DOM APIs like DOMParser.
  * The offscreen document persists until explicitly closed or the extension is reloaded.
- * 
+ *
  * @returns Promise that resolves when the offscreen document is ready
  */
 export default async function ensureOffscreenDocument(): Promise<void> {
