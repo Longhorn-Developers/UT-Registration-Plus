@@ -34,7 +34,6 @@ import DiningAppPromo from './DiningAppPromo';
  */
 export default function Calendar(): ReactNode {
     const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
-    const asyncCourseCells = courseCells.filter(block => block.async);
     const displayBottomBar = true;
 
     const [course, setCourse] = useState<Course | null>(useCourseFromUrl());

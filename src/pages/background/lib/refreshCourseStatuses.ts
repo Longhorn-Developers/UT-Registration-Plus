@@ -38,12 +38,13 @@ export default async function refreshCourseStatuses(): Promise<Record<number, St
     const existing = await StatusCheckerStore.get('scrapeInfo');
     const merged: Record<number, StatusType> = { ...existing };
 
-    for (const course of activeSchedule.courses) {
+    type ScrapeResult = { needsLogin: true; url: string } | { uniqueId: number; status: StatusType };
+
+    const tasks = activeSchedule.courses.map(async (course): Promise<ScrapeResult | null> => {
         try {
             const response = await fetch(course.url, { credentials: 'include' });
             if (response.redirected || response.status === 401 || response.status === 403) {
-                chrome.tabs.create({ url: course.url });
-                return {};
+                return { needsLogin: true, url: course.url };
             }
             const htmlText = await response.text();
 
@@ -59,11 +60,26 @@ export default async function refreshCourseStatuses(): Promise<Record<number, St
             });
 
             if (result?.status) {
-                merged[course.uniqueId] = result.status;
+                return { uniqueId: course.uniqueId, status: result.status };
             }
+            return null;
         } catch (error) {
             console.error(`Failed to scrape status for course ${course.uniqueId}:`, error);
-            // Keep old value in merged (merge-safe)
+            return null; // Keep old value in merged (merge-safe)
+        }
+    });
+
+    const results = await Promise.all(tasks);
+
+    const loginRequired = results.find((r): r is { needsLogin: true; url: string } => r !== null && 'needsLogin' in r);
+    if (loginRequired) {
+        chrome.tabs.create({ url: loginRequired.url });
+        return {};
+    }
+
+    for (const result of results) {
+        if (result && 'uniqueId' in result) {
+            merged[result.uniqueId] = result.status;
         }
     }
 

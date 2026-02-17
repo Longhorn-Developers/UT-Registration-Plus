@@ -10,12 +10,12 @@ export interface StatusCheckerBackgroundMessages {
      *
      * @returns A record mapping course unique IDs to their current status
      */
-    refreshCourseStatuses: (data: {}) => Record<number, StatusType>;
+    refreshCourseStatuses: (data: Record<string, never>) => Record<number, StatusType>;
 
     /**
      * Gets the timestamp of the last status check
      *
      * @returns The unix timestamp of the last check, or null if never checked
      */
-    getLastCheckedAt: (data: {}) => number | null;
+    getLastCheckedAt: (data: Record<string, never>) => number | null;
 }

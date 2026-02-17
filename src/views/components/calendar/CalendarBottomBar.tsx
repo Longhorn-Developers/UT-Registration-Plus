@@ -24,7 +24,6 @@ type CalendarBottomBarProps = {
  */
 export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBottomBarProps): ReactNode {
     const asyncCourseCells = courseCells?.filter(block => block.async);
-    const displayCourses = asyncCourseCells && asyncCourseCells.length > 0;
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
 
     useEffect(() => {
