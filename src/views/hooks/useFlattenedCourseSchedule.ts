@@ -53,7 +53,6 @@ const GRID_START_MINUTES = 360; // 6:00 AM
  * Converts minutes since midnight to calendar grid index.
  * Baseline starts at 6 AM (360 minutes).
  */
-
 export const convertMinutesToIndex = (minutes: number): number =>
     Math.floor((minutes - GRID_START_MINUTES) / 30) + 2 + 1;
 
