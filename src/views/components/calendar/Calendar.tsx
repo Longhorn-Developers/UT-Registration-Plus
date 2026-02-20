@@ -1,3 +1,4 @@
+import { MessageListener } from '@chrome-extension-toolkit';
 import { Sidebar } from '@phosphor-icons/react';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
@@ -16,7 +17,6 @@ import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
-import { MessageListener } from 'chrome-extension-toolkit';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import React, { useEffect, useState } from 'react';

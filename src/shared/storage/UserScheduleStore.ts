@@ -1,6 +1,6 @@
+import type { Serializable, Serialized } from '@chrome-extension-toolkit';
+import { createLocalStore } from '@chrome-extension-toolkit';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import type { Serializable, Serialized } from 'chrome-extension-toolkit';
-import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 import browser from 'webextension-polyfill';
 
 import { generateRandomId } from '../util/random';
@@ -29,7 +29,7 @@ const defaults: IUserScheduleStore = {
 /**
  * A store that is used for storing user schedules (and the active schedule).
  */
-export const UserScheduleStore = createLocalStore<IUserScheduleStore>(defaults);
+export const UserScheduleStore = createLocalStore<IUserScheduleStore>('UserScheduleStore', defaults);
 
 let initPromise: Promise<void> | null = null;
 
@@ -82,4 +82,4 @@ UserScheduleStore.set = async function set<K extends keyof IUserScheduleStore>(
     }
 } as typeof UserScheduleStore.set;
 
-debugStore({ userScheduleStore: UserScheduleStore });
+// debugStore({ userScheduleStore: UserScheduleStore });

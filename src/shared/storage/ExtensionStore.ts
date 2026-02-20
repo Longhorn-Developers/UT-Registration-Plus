@@ -1,13 +1,16 @@
-import type { Serializable } from 'chrome-extension-toolkit';
-import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
+import type { Serializable } from '@chrome-extension-toolkit';
+import { createLocalStore } from '@chrome-extension-toolkit';
 import browser from 'webextension-polyfill';
 
 /**
  * A store that is used for storing user options
  */
 interface IExtensionStore {
+    /** These values are cached in storage, so that we can know the previous version that the extension was before the current update. Is only used for onUpdate */
     version: string;
+    /** When was the last update */
     lastUpdate: number;
+    /** The last version of the "What's New" popup that was shown to the user */
     lastWhatsNewPopupVersion: number;
 }
 
@@ -25,7 +28,7 @@ const defaults: IExtensionStore = {
 /**
  * A store that is used for storing user options.
  */
-export const ExtensionStore = createLocalStore<IExtensionStore>(defaults);
+export const ExtensionStore = createLocalStore<IExtensionStore>('ExtensionStore', defaults);
 
 let initPromise: Promise<void> | null = null;
 
@@ -69,4 +72,4 @@ ExtensionStore.set = async function set<K extends keyof IExtensionStore>(
     }
 } as typeof ExtensionStore.set;
 
-debugStore({ ExtensionStore });
+// debugStore({ ExtensionStore });

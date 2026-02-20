@@ -1,6 +1,6 @@
+import type { Serializable } from '@chrome-extension-toolkit';
+import { createLocalStore } from '@chrome-extension-toolkit';
 import type { CachedData } from '@shared/types/CachedData';
-import type { Serializable } from 'chrome-extension-toolkit';
-import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 interface ICacheStore {
     github: Record<string, CachedData<unknown>>;
@@ -14,7 +14,7 @@ const defaults: ICacheStore = {
  * A store that is used for storing cached data such as GitHub contributors.
  * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
  */
-export const CacheStore = createLocalStore<ICacheStore>(defaults);
+export const CacheStore = createLocalStore<ICacheStore>('CacheStore', defaults);
 
 let initPromise: Promise<void> | null = null;
 
@@ -58,4 +58,4 @@ CacheStore.set = async function set<K extends keyof ICacheStore>(
     }
 } as typeof CacheStore.set;
 
-debugStore({ cacheStore: CacheStore });
+// debugStore({ cacheStore: CacheStore });

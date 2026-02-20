@@ -1,5 +1,5 @@
-import type { Serializable } from 'chrome-extension-toolkit';
-import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
+import type { Serializable } from '@chrome-extension-toolkit';
+import { createLocalStore } from '@chrome-extension-toolkit';
 
 /**
  * A store that is used to store data that is only relevant during development
@@ -32,7 +32,7 @@ const defaults: IDevStore = {
  * A store that is used to store data that is only relevant during development.
  * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
  */
-export const DevStore = createLocalStore<IDevStore>(defaults);
+export const DevStore = createLocalStore<IDevStore>('DevStore', defaults);
 
 let initPromise: Promise<void> | null = null;
 
@@ -76,4 +76,4 @@ DevStore.set = async function set<K extends keyof IDevStore>(
     }
 } as typeof DevStore.set;
 
-debugStore({ devStore: DevStore });
+// debugStore({ devStore: DevStore });

@@ -1,7 +1,7 @@
+import type { Serialized } from '@chrome-extension-toolkit';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { generateRandomId } from '@shared/util/random';
-import type { Serialized } from 'chrome-extension-toolkit';
 
 /**
  * Creates a new schedule with the given name

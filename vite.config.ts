@@ -339,6 +339,7 @@ export default defineConfig({
             '@shared': resolve(root, 'shared'),
             '@background': resolve(pagesDir, 'background'),
             '@views': resolve(root, 'views'),
+            '@chrome-extension-toolkit': resolve(root, 'lib/chrome-extension-toolkit'),
         },
     },
     server: {
@@ -400,6 +401,7 @@ export default defineConfig({
         },
     },
     test: {
+        environment: 'happy-dom',
         coverage: {
             provider: 'v8',
         },

@@ -1,5 +1,5 @@
-import type { Serializable } from 'chrome-extension-toolkit';
-import { createSyncStore, debugStore } from 'chrome-extension-toolkit';
+import type { Serializable } from '@chrome-extension-toolkit';
+import { createSyncStore } from '@chrome-extension-toolkit';
 
 /**
  * A store that is used for storing user options
@@ -44,7 +44,7 @@ const defaults: IOptionsStore = {
  * A store that is used for storing user options.
  * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
  */
-export const OptionsStore = createSyncStore<IOptionsStore>(defaults);
+export const OptionsStore = createSyncStore<IOptionsStore>('OptionsStore', defaults);
 
 let initPromise: Promise<void> | null = null;
 
@@ -105,4 +105,6 @@ export const initSettings = async () =>
         allowMoreSchedules: await OptionsStore.get('allowMoreSchedules'),
     }) satisfies IOptionsStore;
 
-debugStore({ OptionsStore });
+// Clothing retailer right
+
+// debugStore({ OptionsStore });
