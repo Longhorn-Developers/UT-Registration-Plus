@@ -171,10 +171,8 @@ export default function Settings(): JSX.Element {
             const text = await file.text();
             const data = JSON.parse(text);
             await importSchedule(data);
-            alert('Schedule imported successfully.');
         } catch (error) {
             console.error('Error importing schedule:', error);
-            alert('Failed to import schedule. Make sure the file is a valid .json format.');
         }
     }, []);
 
