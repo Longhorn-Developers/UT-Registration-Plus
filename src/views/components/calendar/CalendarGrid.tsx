@@ -28,6 +28,11 @@ function CalendarHour({ hour }: { hour: number }) {
     );
 }
 
+/**
+ * Renders the weekly calendar grid with dynamic hour support.
+ * Automatically adjusts start hour based on earliest scheduled class.
+ */
+
 export default function CalendarGrid({
     courseCells,
     saturdayClass: _saturdayClass,
@@ -104,8 +109,8 @@ interface AccountForCourseConflictsProps {
 }
 
 function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
-    const [sentryScope] = IS_STORYBOOK ? [undefined] : useSentryScope();
-
+    const sentryScopeHook = useSentryScope();
+    const sentryScope = IS_STORYBOOK ? undefined : sentryScopeHook[0];
     const days = courseCells.reduce(
         (acc, cell: CalendarGridCourse) => {
             const { dayIndex } = cell.calendarGridPoint;
