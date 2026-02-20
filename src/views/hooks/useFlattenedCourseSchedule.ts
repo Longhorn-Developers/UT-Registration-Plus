@@ -47,15 +47,17 @@ export interface FlattenedCourseSchedule {
     activeSchedule: UserSchedule;
 }
 
+const GRID_START_MINUTES = 360; // 6:00 AM
+
 /**
  * Converts minutes to an index value.
  *
  * @param minutes - The number of minutes.
  * @returns The index value.
  */
+
 export const convertMinutesToIndex = (minutes: number): number =>
-    // 480 = 8 a.m., 30 = 30 minute slots, 2 header rows, and grid rows start at 1
-    Math.floor((minutes - 480) / 30) + 2 + 1;
+    Math.floor((minutes - GRID_START_MINUTES) / 30) + 2 + 1;
 
 /**
  * Get the active schedule, and convert it to be render-able into a calendar.
@@ -73,7 +75,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
             }
 
             return meetings.flatMap(meeting => {
-                if (meeting.days.includes(DAY_MAP.S) || meeting.startTime < 480) {
+                if (meeting.days.includes(DAY_MAP.S)) {
                     return processAsyncCourses({ courseDeptAndInstr, status, course });
                 }
 
