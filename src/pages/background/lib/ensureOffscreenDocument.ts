@@ -25,19 +25,19 @@ export default async function ensureOffscreenDocument(): Promise<void> {
     // Check if an offscreen document already exists
     const offscreenUrl = chrome.runtime.getURL(OFFSCREEN_DOCUMENT_PATH);
     const existingContexts = await chrome.runtime.getContexts({
-        contextTypes: ['OFFSCREEN_DOCUMENT'],
+        contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT],
         documentUrls: [offscreenUrl],
     });
 
     // Document already exists, no need to create
-    if (existingContexts.length > 0) {
+    if (existingContexts?.length > 0) {
         return;
     }
 
     // Create the offscreen document
     creatingOffscreen = chrome.offscreen.createDocument({
         url: OFFSCREEN_DOCUMENT_PATH,
-        reasons: ['DOM_PARSER'],
+        reasons: [chrome.offscreen.Reason.DOM_PARSER],
         justification: 'Parse course catalog HTML for status checker feature',
     });
 
