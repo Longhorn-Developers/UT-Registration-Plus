@@ -1,3 +1,4 @@
+import type { Serialized } from '@chrome-extension-toolkit';
 import { tz, TZDate } from '@date-fns/tz';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
@@ -8,7 +9,6 @@ import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import { englishStringifyList } from '@shared/util/string';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import type { Serialized } from 'chrome-extension-toolkit';
 import type { DateArg, Day } from 'date-fns';
 import {
     addDays,
@@ -246,6 +246,27 @@ export const scheduleToIcsString = (schedule: Serialized<UserSchedule>) => {
 };
 
 /**
+ * Returns the provided schedule in a human readable/copyable text format
+ * @param schedule - The schedule object
+ * @returns
+ */
+export const scheduleToText = (schedule: Serialized<UserSchedule>) => {
+    const lines: string[] = [];
+
+    lines.push(`Schedule: ${schedule.name}`);
+    lines.push('');
+
+    for (const c of schedule.courses) {
+        lines.push(c.fullName);
+        lines.push(`${c.creditHours} Credit Hours`);
+        lines.push(`${c.uniqueId}`);
+        lines.push('');
+    }
+
+    return lines.join('\n');
+};
+
+/**
  * Saves the current schedule as a calendar file in the iCalendar format (ICS).
  * Fetches the current active schedule and converts it into an ICS string.
  * Downloads the ICS file to the user's device.
@@ -260,6 +281,25 @@ export const saveAsCal = async () => {
     const icsString = scheduleToIcsString(schedule);
 
     downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
+};
+
+/**
+ * Save current schedule as a plain text file consisting of
+ * Course Name - Course ID
+ * Course Time
+ * Unique Number
+ * Line Break
+ * Repeat
+ */
+export const saveAsText = async () => {
+    const schedule = await getSchedule();
+
+    if (!schedule) {
+        throw new Error('No schedule found');
+    }
+
+    const scheduleText = scheduleToText(schedule);
+    downloadBlob(scheduleText, 'TEXT', 'schedule.txt');
 };
 
 /**

@@ -1,7 +1,7 @@
+import { MessageListener } from '@chrome-extension-toolkit';
 import type { BACKGROUND_MESSAGES } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import updateBadgeText from '@shared/util/updateBadgeText';
-import { MessageListener } from 'chrome-extension-toolkit';
 
 import onInstall from './events/onInstall';
 import onServiceWorkerAlive from './events/onServiceWorkerAlive';
@@ -9,6 +9,7 @@ import onUpdate from './events/onUpdate';
 import browserActionHandler from './handler/browserActionHandler';
 import calendarBackgroundHandler from './handler/calendarBackgroundHandler';
 import CESHandler from './handler/CESHandler';
+import gitHubStatsHandler from './handler/gitHubStatsHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
 import userScheduleHandler from './handler/userScheduleHandler';
 
@@ -52,17 +53,18 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...userScheduleHandler,
     ...CESHandler,
     ...calendarBackgroundHandler,
+    ...gitHubStatsHandler,
 });
 
 messageListener.listen();
 
-UserScheduleStore.listen('schedules', async schedules => {
+UserScheduleStore.subscribe('schedules', async schedules => {
     const index = await UserScheduleStore.get('activeIndex');
     const numCourses = schedules.newValue[index]?.courses?.length;
     updateBadgeText(numCourses || 0);
 });
 
-UserScheduleStore.listen('activeIndex', async ({ newValue }) => {
+UserScheduleStore.subscribe('activeIndex', async ({ newValue }) => {
     const schedules = await UserScheduleStore.get('schedules');
     const numCourses = schedules[newValue]?.courses?.length;
     updateBadgeText(numCourses || 0);
