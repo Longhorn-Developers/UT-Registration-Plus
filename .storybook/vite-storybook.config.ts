@@ -23,6 +23,8 @@ export default defineConfig({
             '@shared': resolve(root, 'shared'),
             '@background': resolve(pagesDir, 'background'),
             '@views': resolve(root, 'views'),
+            // redirect the real polyfill to a lightweight Storybook mock
+            'webextension-polyfill': resolve(__dirname, 'mocks/webextension-polyfill.ts'),
             '@chrome-extension-toolkit': resolve(root, 'lib/chrome-extension-toolkit'),
         },
     },

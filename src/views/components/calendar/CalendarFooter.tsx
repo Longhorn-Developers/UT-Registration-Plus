@@ -52,7 +52,7 @@ export default function CalendarFooter(): JSX.Element {
         <footer className='min-w-full w-0 flex items-center justify-between bg-white px-spacing-8 pt-spacing-4'>
             <div className='flex gap-spacing-5'>
                 {socialLinks.map(({ icon: Icon, url }) => (
-                    <Link className='linkanimate' href={url}>
+                    <Link className='linkanimate' href={url} key={url}>
                         <Icon className='h-6 w-6' />
                     </Link>
                 ))}

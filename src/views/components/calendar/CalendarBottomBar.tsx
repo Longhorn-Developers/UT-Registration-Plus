@@ -25,8 +25,11 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
 
     if (!displayCourses) return null;
 
+    const isFirefox = typeof navigator !== 'undefined' && /Firefox/.test(navigator.userAgent);
+    const paddingBottom = isFirefox ? '1.5rem' : '0.75rem';
+
     return (
-        <div className='w-full flex pl-spacing-7 pr-spacing-3 pt-spacing-4'>
+        <div style={{ paddingBottom }} className='w-full flex pl-spacing-7 pr-spacing-3 pt-spacing-4'>
             <div className='flex flex-grow items-center gap-1 text-nowrap'>
                 <Text variant='p' className='text-ut-black uppercase'>
                     Async / Other

@@ -1,3 +1,4 @@
+import type { Serializable } from '@chrome-extension-toolkit';
 import { createSyncStore } from '@chrome-extension-toolkit';
 
 /**
@@ -28,7 +29,7 @@ export interface IOptionsStore {
     allowMoreSchedules: boolean;
 }
 
-export const OptionsStore = createSyncStore<IOptionsStore>('OptionsStore', {
+const defaults: IOptionsStore = {
     enableCourseStatusChips: false,
     enableHighlightConflicts: true,
     enableScrollToLoad: true,
@@ -37,7 +38,55 @@ export const OptionsStore = createSyncStore<IOptionsStore>('OptionsStore', {
     showCalendarSidebar: true,
     showUTDiningPromo: true,
     allowMoreSchedules: false,
-});
+};
+
+/**
+ * A store that is used for storing user options.
+ * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
+ */
+export const OptionsStore = createSyncStore<IOptionsStore>('OptionsStore', defaults);
+
+let initPromise: Promise<void> | null = null;
+
+async function ensureInitialized() {
+    if (initPromise) return initPromise;
+    initPromise = (async () => {
+        try {
+            await OptionsStore.initialize?.();
+        } catch {
+            // storage not ready — that's ok, we'll use in-memory fallback
+        }
+    })();
+    return initPromise;
+}
+
+// Wrap get/set to ensure init is called first and provide fallback
+const originalGet = OptionsStore.get.bind(OptionsStore);
+const originalSet = OptionsStore.set.bind(OptionsStore);
+
+OptionsStore.get = async function get<K extends keyof IOptionsStore>(key: K) {
+    await ensureInitialized();
+    try {
+        return await originalGet(key);
+    } catch {
+        return defaults[key];
+    }
+} as typeof OptionsStore.get;
+
+OptionsStore.set = async function set<K extends keyof IOptionsStore>(
+    key: K | Partial<IOptionsStore>,
+    value?: Serializable<IOptionsStore[K]>
+) {
+    await ensureInitialized();
+    try {
+        if (typeof key === 'string') {
+            return await originalSet(key, value as Serializable<IOptionsStore[K]>);
+        }
+        return await originalSet(key);
+    } catch {
+        // storage failed silently — in-memory only
+    }
+} as typeof OptionsStore.set;
 
 /**
  * Initializes the settings by retrieving the values from the OptionsStore.
