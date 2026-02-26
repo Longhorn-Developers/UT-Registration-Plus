@@ -61,17 +61,17 @@ export function useQuickAddDropdowns() {
     }, []);
 
     useEffect(() => {
-        const dataListener = CourseDataStore.listen('semesterData', newCourseData => {
+        const dataListener = CourseDataStore.subscribe('semesterData', newCourseData => {
             setSemesterData(prev => ({
                 ...prev,
-                semesterData: newCourseData.newValue || {},
+                semesterData: newCourseData.newValue || [],
             }));
         });
 
         console.log('CourseDataStore listener added');
 
         return () => {
-            CourseDataStore.removeListener(dataListener);
+            CourseDataStore.unsubscribe(dataListener);
             console.log('CourseDataStore listener removed');
         };
     }, []);

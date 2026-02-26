@@ -1,5 +1,5 @@
+import { createLocalStore, } from '@chrome-extension-toolkit';
 import type { CourseItem, FieldOfStudyItem, SemesterItem } from '@shared/types/CourseData';
-import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
 
 /**
  * An interface that represents the course data store of the courses and
@@ -24,6 +24,6 @@ export interface ICourseDataStore {
 /**
  * A store that is used for caching course data.
  */
-export const CourseDataStore = createLocalStore<ICourseDataStore>({ semesterData: [] });
+export const CourseDataStore = createLocalStore<ICourseDataStore>('CourseDataStore', { semesterData: [] });
 
-debugStore({ userScheduleStore: CourseDataStore });
+// debugStore({ userScheduleStore: CourseDataStore });
