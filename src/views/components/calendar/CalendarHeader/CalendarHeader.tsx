@@ -1,5 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { CalendarDots, Export, FileCode, FilePng, FileText, Sidebar } from '@phosphor-icons/react';
+import { ArrowsClockwise, CalendarDots, Export, FileCode, FilePng, FileText, Sidebar } from '@phosphor-icons/react';
+import { background } from '@shared/messages';
+import { StatusCheckerStore } from '@shared/storage/StatusCheckerStore';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
@@ -7,9 +9,11 @@ import Divider from '@views/components/common/Divider';
 import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { LargeLogo } from '@views/components/common/LogoIcon';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
+import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
+import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
 
@@ -24,6 +28,30 @@ interface CalendarHeaderProps {
  */
 export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const [activeSchedule] = useSchedules();
+    const [lastCheckedAt, setLastCheckedAt] = useState<number | null>(null);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    useEffect(() => {
+        StatusCheckerStore.get('lastCheckedAt').then(setLastCheckedAt);
+        const unsubscribe = StatusCheckerStore.subscribe('lastCheckedAt', ({ newValue }) => {
+            setLastCheckedAt(newValue ?? null);
+        });
+
+        return () => {
+            StatusCheckerStore.unsubscribe(unsubscribe);
+        };
+    }, []);
+
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            await background.refreshCourseStatuses({});
+        } catch (error) {
+            console.error('Failed to refresh course statuses:', error);
+        } finally {
+            setTimeout(() => setIsRefreshing(false), 3000);
+        }
+    };
 
     return (
         <div
@@ -137,6 +165,34 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={SelectionPlus}>
                         Block
                     </Button> */}
+                </div>
+                <Divider className='self-center' size='1.75rem' orientation='vertical' />
+                <div
+                    className={clsx(
+                        styles.secondaryActions,
+                        'min-w-fit flex flex-1 items-center justify-end gap-3 self-start'
+                    )}
+                >
+                    {lastCheckedAt && (
+                        <Text variant='mini' className='whitespace-nowrap text-ut-gray !font-normal'>
+                            Last checked: {getUpdatedAtDateTimeString(lastCheckedAt)}
+                        </Text>
+                    )}
+                    <Button
+                        color='ut-black'
+                        size='small'
+                        variant='minimal'
+                        icon={ArrowsClockwise}
+                        iconProps={{
+                            className: clsx({
+                                'animate-spin animate-duration-800': isRefreshing,
+                            }),
+                        }}
+                        onClick={handleRefresh}
+                        disabled={isRefreshing}
+                    >
+                        Refresh
+                    </Button>
                 </div>
                 {/* <Divider className='self-center' size='1.75rem' orientation='vertical' />
                 <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 justify-end gap-5')}>
