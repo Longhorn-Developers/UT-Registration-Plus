@@ -98,9 +98,9 @@ export const Default: Story = {
             <PopupCourseBlock key={id} course={course} colors={course.colors} />
         ),
     },
-    render: (args: SortableListProps<CourseWithId>) => (
+    render: args => (
         <div className='h-3xl w-3xl transform-none'>
-            <SortableList {...args} />
+            <SortableList {...(args as SortableListProps<CourseWithId>)} />
         </div>
     ),
 };
