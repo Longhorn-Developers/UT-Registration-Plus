@@ -53,7 +53,11 @@ export class Security {
      * @param KeyUsage the key usage for the cipher key (encrypt or decrypt)
      * @returns the cipher key which can be used to encrypt or decrypt data
      */
-    private async deriveCipherKey(salt: Uint8Array, passKey: CryptoKey, KeyUsage: KeyUsage[]): Promise<CryptoKey> {
+    private async deriveCipherKey(
+        salt: Uint8Array<ArrayBuffer>,
+        passKey: CryptoKey,
+        KeyUsage: KeyUsage[]
+    ): Promise<CryptoKey> {
         return crypto.subtle.deriveKey(
             {
                 name: KEY_ALGO,
@@ -74,15 +78,19 @@ export class Security {
     /**
      * @returns a random salt buffer for use in encryption
      */
-    private deriveSalt(): Uint8Array {
-        return crypto.getRandomValues(new Uint8Array(BoxBuffer.SALT_SIZE));
+    private deriveSalt(): Uint8Array<ArrayBuffer> {
+        const salt = new Uint8Array(BoxBuffer.SALT_SIZE);
+        crypto.getRandomValues(salt);
+        return salt;
     }
 
     /**
      * @returns a random IV buffer for use in encryption
      */
-    private deriveIv(): Uint8Array {
-        return crypto.getRandomValues(new Uint8Array(BoxBuffer.IV_SIZE));
+    private deriveIv(): Uint8Array<ArrayBuffer> {
+        const iv = new Uint8Array(BoxBuffer.IV_SIZE);
+        crypto.getRandomValues(iv);
+        return iv;
     }
 
     /**
@@ -163,7 +171,7 @@ export class Security {
  * [salt][iv][encrypted data]
  */
 class BoxBuffer {
-    private buffer: Uint8Array;
+    private buffer: Uint8Array<ArrayBuffer>;
     static SALT_SIZE = 16;
     static IV_SIZE = 32;
 
@@ -171,7 +179,7 @@ class BoxBuffer {
         return BoxBuffer.SALT_SIZE + BoxBuffer.IV_SIZE;
     }
 
-    constructor(buffer: Uint8Array) {
+    constructor(buffer: Uint8Array<ArrayBuffer>) {
         this.buffer = buffer;
     }
 
@@ -187,15 +195,15 @@ class BoxBuffer {
         this.buffer.set(encryptedData, BoxBuffer.PREFIX_SIZE);
     }
 
-    getSalt(): Uint8Array {
+    getSalt(): Uint8Array<ArrayBuffer> {
         return this.buffer.slice(0, BoxBuffer.SALT_SIZE);
     }
 
-    getIv(): Uint8Array {
+    getIv(): Uint8Array<ArrayBuffer> {
         return this.buffer.slice(BoxBuffer.SALT_SIZE, BoxBuffer.PREFIX_SIZE);
     }
 
-    getEncryptedData(): Uint8Array {
+    getEncryptedData(): Uint8Array<ArrayBuffer> {
         return this.buffer.slice(BoxBuffer.PREFIX_SIZE);
     }
 
