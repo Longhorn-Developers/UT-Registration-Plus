@@ -11,6 +11,33 @@ type GradeDistributionParams = {
     ':semester'?: string;
 };
 
+function processQueryResult(res: QueryExecResult): Required<CourseSQLRow> {
+    const row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
+    for (let i = 0; i < res.columns.length; i++) {
+        const col = res.columns[i] as keyof CourseSQLRow;
+        switch (col) {
+            case 'A':
+            case 'A_Minus':
+            case 'B_Plus':
+            case 'B':
+            case 'B_Minus':
+            case 'C_Plus':
+            case 'C':
+            case 'C_Minus':
+            case 'D_Plus':
+            case 'D':
+            case 'D_Minus':
+            case 'F':
+            case 'Other':
+                row[col] = res.values.reduce((acc, cur) => acc + (cur[i] as number), 0) as never;
+                break;
+            default:
+                row[col] = res.columns[i]![0]! as never;
+        }
+    }
+    return row;
+}
+
 /**
  * Fetches the aggregate distribution of grades for a given course from the course db, and the semesters that we have data for
  *
