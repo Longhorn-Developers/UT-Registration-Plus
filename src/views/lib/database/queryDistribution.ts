@@ -11,6 +11,12 @@ type GradeDistributionParams = {
     ':semester'?: string;
 };
 
+/**
+ * Processes SQL query results and aggregates grade distribution data
+ *
+ * @param res - The SQL query result containing grade distribution columns and values
+ * @returns A CourseSQLRow object with aggregated grade counts
+ */
 function processQueryResult(res: QueryExecResult): Required<CourseSQLRow> {
     const row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
     for (let i = 0; i < res.columns.length; i++) {
@@ -37,6 +43,28 @@ function processQueryResult(res: QueryExecResult): Required<CourseSQLRow> {
     }
     return row;
 }
+
+/**
+ * Convert CourseSQLRow to Distribution
+ * @param row - the processed sql raw data
+ */
+function rowToGradeDistribution(row: Required<CourseSQLRow>): Distribution {
+    const distribution: Distribution = {
+        A: row.A,
+        'A-': row.A_Minus,
+        'B+': row.B_Plus,
+        B: row.B,
+        'B-': row.B_Minus,
+        'C+': row.C_Plus,
+        C: row.C,
+        'C-': row.C_Minus,
+        'D+': row.D_Plus,
+        D: row.D,
+        'D-': row.D_Minus,
+        F: row.F,
+        Other: row.Other,
+    };
+    return distribution;
 
 /**
  * Fetches the aggregate distribution of grades for a given course from the course db, and the semesters that we have data for
