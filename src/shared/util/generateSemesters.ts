@@ -1,7 +1,7 @@
 import type { Semester } from '@shared/types/Course';
 import type { SemesterItem } from '@shared/types/CourseData';
 
-const TERM_TO_ID_MAP = {
+export const TERM_TO_ID_MAP = {
     Spring: 2,
     Summer: 6,
     Fall: 9,
