@@ -11,6 +11,7 @@ import { calculateCourseCellColumns } from './utils';
 
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
+const DEFAULT_START_HOUR = 8;
 
 interface Props {
     courseCells?: CalendarGridCourse[];
@@ -63,11 +64,25 @@ export default function CalendarGrid({
             return startMinutes < 480;
         }) ?? false;
 
-    const visualStartHour = hasEarlyClass ? 6 : 8;
+    let earliestClassHour = DEFAULT_START_HOUR;
+
+    courseCells?.forEach(c => {
+        if (c.async) {
+            return;
+        }
+
+        const startMinutes = (c.calendarGridPoint.startIndex - 3) * 30 + 360;
+        const startHour = Math.floor(startMinutes / 60);
+
+        if (startHour < earliestClassHour) {
+            earliestClassHour = startHour;
+        }
+    });
+
+    const visualStartHour = Math.max(0, Math.min(earliestClassHour, 8));
+
     const visualEndHour = 21;
-
     const hoursOfDay = Array.from({ length: visualEndHour - visualStartHour }, (_, i) => i + visualStartHour);
-
     const totalRows = (visualEndHour - visualStartHour) * 2;
 
     return (
