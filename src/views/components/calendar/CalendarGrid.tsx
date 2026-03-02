@@ -56,14 +56,6 @@ export default function CalendarGrid({
     saturdayClass: _saturdayClass,
     setCourse,
 }: React.PropsWithChildren<Props>): JSX.Element {
-    // Detect if any class starts before 8 AM (480 minutes)
-    const hasEarlyClass =
-        courseCells?.some(c => {
-            if (c.async) return false;
-            const startMinutes = (c.calendarGridPoint.startIndex - 3) * 30 + 360;
-            return startMinutes < 480;
-        }) ?? false;
-
     let earliestClassHour = DEFAULT_START_HOUR;
 
     courseCells?.forEach(c => {
