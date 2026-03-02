@@ -28,6 +28,20 @@ function CalendarHour({ hour }: { hour: number }) {
     );
 }
 
+function makeGridRow(row: number, cols: number, hoursOfDay: number[]): JSX.Element {
+    const hour = hoursOfDay[row]!;
+
+    return (
+        <Fragment key={row}>
+            <CalendarHour hour={hour} />
+            <div className='grid-row-span-2 w-4 border-b border-r border-gray-300' />
+            {[...Array(cols).keys()].map(col => (
+                <CalendarCell key={`${row}${col}`} row={row} col={col} />
+            ))}
+        </Fragment>
+    );
+}
+
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  *
@@ -55,20 +69,6 @@ export default function CalendarGrid({
     const hoursOfDay = Array.from({ length: visualEndHour - visualStartHour }, (_, i) => i + visualStartHour);
 
     const totalRows = (visualEndHour - visualStartHour) * 2;
-
-    function makeGridRow(row: number, cols: number): JSX.Element {
-        const hour = hoursOfDay[row]!;
-
-        return (
-            <Fragment key={row}>
-                <CalendarHour hour={hour} />
-                <div className='grid-row-span-2 w-4 border-b border-r border-gray-300' />
-                {[...Array(cols).keys()].map(col => (
-                    <CalendarCell key={`${row}${col}`} row={row} col={col} />
-                ))}
-            </Fragment>
-        );
-    }
 
     return (
         <div
@@ -98,7 +98,7 @@ export default function CalendarGrid({
             <div />
             <div className='h-4 w-4 self-end border-b border-r border-gray-300' />
 
-            {hoursOfDay.map((_, i) => makeGridRow(i, 5))}
+            {hoursOfDay.map((_, i) => makeGridRow(i, 5, hoursOfDay))}
 
             <ColorPickerProvider>
                 {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
