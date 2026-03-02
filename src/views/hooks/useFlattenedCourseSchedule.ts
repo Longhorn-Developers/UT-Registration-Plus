@@ -57,6 +57,7 @@ const GRID_START_MINUTES = 360; // 6:00 AM
  */
 export const convertMinutesToIndex = (minutes: number): number =>
     // 480 = 8 a.m., 30 = 30 minute slots, 2 header rows, and grid rows start at 1
+    // ok so originally we had a hardcoded start of 6 am but now  we want start to be dynamic, with a max of 8 AM, oterhwise depending on the start of earliest class
     Math.floor((minutes - GRID_START_MINUTES) / 30) + 2 + 1;
 
 /**

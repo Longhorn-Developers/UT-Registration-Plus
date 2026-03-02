@@ -71,6 +71,7 @@ export default function CalendarGrid({
         }
     });
 
+    // ensuring a positive result by clamping to 0 - derek
     const visualStartHour = Math.max(0, Math.min(earliestClassHour, 8));
 
     const visualEndHour = 21;
