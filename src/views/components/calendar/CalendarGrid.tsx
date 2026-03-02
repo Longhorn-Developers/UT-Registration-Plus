@@ -82,10 +82,13 @@ export default function CalendarGrid({
 
             {daysOfWeek.map(day => (
                 <div
+                    // Full height with background to prevent grid lines from showing behind
                     className='sticky top-[85px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end bg-white'
                     key={day}
                 >
+                    {/* Partial border height because that's what Isaiah wants */}
                     <div className='h-4 w-full flex items-end border-b border-r border-gray-300'>
+                        {/* Alignment for text */}
                         <div className='h-[calc(1.75rem_-_1px)] w-full flex items-center justify-center'>
                             <Text variant='small' className='text-center text-ut-burntorange' as='div'>
                                 {day}
@@ -96,6 +99,7 @@ export default function CalendarGrid({
             ))}
 
             <div />
+            {/* time tick for the first hour */}
             <div className='h-4 w-4 self-end border-b border-r border-gray-300' />
 
             {hoursOfDay.map((_, i) => makeGridRow(i, 5, hoursOfDay))}
@@ -113,8 +117,13 @@ interface AccountForCourseConflictsProps {
 }
 
 function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
-    const sentryScopeHook = useSentryScope();
-    const sentryScope = IS_STORYBOOK ? undefined : sentryScopeHook[0];
+    // Sentry is not defined in storybook.
+    // This is a valid use case for a condition hook, since IS_STORYBOOK is determined at build time,
+    // it doesn't change between renders.
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [sentryScope] = IS_STORYBOOK ? [undefined] : useSentryScope();
+
+    //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce(
         (acc, cell: CalendarGridCourse) => {
             const { dayIndex } = cell.calendarGridPoint;
