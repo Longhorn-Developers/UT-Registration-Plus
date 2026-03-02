@@ -1,13 +1,17 @@
 import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react';
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { background } from '@shared/messages';
-import type { Semester } from '@shared/types/Course';
+import type { Course, Semester } from '@shared/types/Course';
 import { HashStraight, Plus, PlusCircle } from '@phosphor-icons/react';
 import { TERM_TO_ID_MAP } from '@shared/util/generateSemesters';
+import Text from '@views/components/common/Text/Text';
+import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
+import getCourseTableRows from '@views/lib/getCourseTableRows';
+import { SiteSupport } from '@views/lib/getSiteSupport';
 import { useNumericInput } from '@views/hooks/useNumericInput';
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Button } from './Button';
 import DialogProvider from './DialogProvider/DialogProvider';
@@ -15,6 +19,8 @@ import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 import Input from './Input';
 
 const UNIQUE_ID_LENGTH = 5;
+
+type CourseValidation = { status: 'none' } | { status: 'valid'; course: Course } | { status: 'invalid' };
 
 /**
  * Finds the current semester code based on today's date
@@ -40,9 +46,51 @@ export default function QuickAddModal(): JSX.Element {
     const [activeSchedule] = useSchedules();
     const uniqueNumber = useNumericInput('', UNIQUE_ID_LENGTH);
     const semesterCode = useMemo(() => getCurrentSemesterCode(), []);
+    const [validation, setValidation] = useState<CourseValidation>({ status: 'none' });
+
+    useEffect(() => {
+        if (uniqueNumber.value.length !== UNIQUE_ID_LENGTH) {
+            setValidation({ status: 'none' });
+            return;
+        }
+
+        let cancelled = false;
+
+        (async () => {
+            try {
+                const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semesterCode}/${uniqueNumber.value}/`;
+                const htmlText = await background.addCourseByURL({
+                    url: courseUrl,
+                    method: 'GET',
+                    response: 'text',
+                });
+                if (cancelled) return;
+
+                const doc = new DOMParser().parseFromString(htmlText, 'text/html');
+                const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, courseUrl);
+                const tableRows = getCourseTableRows(doc);
+                const scrapedCourses = scraper.scrape(tableRows, false);
+
+                if (scrapedCourses.length !== 1 || !scrapedCourses[0]?.course) {
+                    if (!cancelled) setValidation({ status: 'invalid' });
+                    return;
+                }
+
+                if (!cancelled) setValidation({ status: 'valid', course: scrapedCourses[0].course });
+            } catch {
+                if (!cancelled) setValidation({ status: 'invalid' });
+            }
+        })();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [uniqueNumber.value, semesterCode]);
+
+    const isDisabled = uniqueNumber.value.length !== UNIQUE_ID_LENGTH || validation.status !== 'valid';
 
     const handleAddCourse = async () => {
-        if (uniqueNumber.value.length !== UNIQUE_ID_LENGTH) return;
+        if (isDisabled) return;
 
         const loggedInToUT = await background.validateLoginStatus({
             url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/',
@@ -83,6 +131,26 @@ export default function QuickAddModal(): JSX.Element {
                         placeholder='Enter Unique Number...'
                         icon={HashStraight}
                     />
+                    {validation.status === 'invalid' && (
+                        <Text variant='mini' className='text-ut-black'>
+                            There are no courses associated with this unique number.
+                        </Text>
+                    )}
+                    {validation.status === 'valid' && (
+                        <div className='flex flex-col gap-0.5 rounded border border-ut-offwhite/50 px-spacing-5 py-spacing-3 shadow-md'>
+                            <Text variant='h4' className='text-black font-bold!'>
+                                {validation.course.department} {validation.course.number}
+                                {' \u2013 '}
+                                {validation.course.courseName}
+                            </Text>
+                            {validation.course.schedule.meetings.map((m, i) => (
+                                <Text key={i} variant='small' className='text-ut-black'>
+                                    {m.getDaysString({ format: 'short' })} {m.getTimeString({ separator: '\u2013' })}
+                                    {m.location ? `, ${m.location.building} ${m.location.room}` : ''}
+                                </Text>
+                            ))}
+                        </div>
+                    )}
                     <PopoverGroup className='w-full flex flex-row justify-end gap-spacing-5'>
                         <PopoverPanel>
                             {({ close }) => (
@@ -105,7 +173,8 @@ export default function QuickAddModal(): JSX.Element {
                             variant='filled'
                             icon={Plus}
                             onClick={handleAddCourse}
-                            disabled={uniqueNumber.value.length !== UNIQUE_ID_LENGTH}
+                            disabled={isDisabled}
+                            className={isDisabled ? 'bg-[#9CADB7]!' : ''}
                         >
                             Add Course
                         </Button>
