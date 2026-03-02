@@ -29,8 +29,12 @@ function CalendarHour({ hour }: { hour: number }) {
 }
 
 /**
- * Renders the weekly calendar grid with dynamic hour support.
- * Automatically adjusts start hour based on earliest scheduled class.
+ * Grid of CalendarGridCell components forming the user's course schedule calendar view
+ *
+ * @param courseCells - The courses to display on the calendar
+ * @param saturdayClass - Whether the user has a Saturday class
+ * @param setCourse - Function to set the course to display in the course details panel
+ * @returns The CalendarGrid component
  */
 export default function CalendarGrid({
     courseCells,
@@ -73,6 +77,7 @@ export default function CalendarGrid({
                 gridTemplateRows: `auto auto repeat(${totalRows}, 1fr)`,
             }}
         >
+            {/* Cover top left corner of grid, so time gets cut off at the top of the partial border */}
             <div className='sticky top-[85px] z-10 col-span-2 h-3 bg-white' />
 
             {daysOfWeek.map(day => (
@@ -121,7 +126,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
         },
         {} as Record<number, CalendarGridCourse[]>
     );
-
+    // Check for overlaps within each day and adjust gridColumnIndex and totalColumns
     Object.values(days).forEach((dayCells: CalendarGridCourse[], idx) => {
         try {
             calculateCourseCellColumns(dayCells);

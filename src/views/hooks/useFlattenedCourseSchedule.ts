@@ -50,10 +50,13 @@ export interface FlattenedCourseSchedule {
 const GRID_START_MINUTES = 360; // 6:00 AM
 
 /**
- * Converts minutes since midnight to calendar grid index.
- * Baseline starts at 6 AM (360 minutes).
+ * Converts minutes to an index value.
+ *
+ * @param minutes - The number of minutes.
+ * @returns The index value.
  */
 export const convertMinutesToIndex = (minutes: number): number =>
+    // 480 = 8 a.m., 30 = 30 minute slots, 2 header rows, and grid rows start at 1
     Math.floor((minutes - GRID_START_MINUTES) / 30) + 2 + 1;
 
 /**
