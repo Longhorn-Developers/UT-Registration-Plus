@@ -144,6 +144,7 @@ export default function QuickAddModal(): JSX.Element {
                                 {validation.course.courseName}
                             </Text>
                             {validation.course.schedule.meetings.map((m, i) => (
+                                // eslint-disable-next-line react/no-array-index-key
                                 <Text key={i} variant='small' className='text-ut-black'>
                                     {m.getDaysString({ format: 'short' })} {m.getTimeString({ separator: '\u2013' })}
                                     {m.location ? `, ${m.location.building} ${m.location.room}` : ''}
