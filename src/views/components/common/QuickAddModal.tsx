@@ -1,15 +1,15 @@
 import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react';
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
+import { HashStraight, Plus, PlusCircle } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import type { Course, Semester } from '@shared/types/Course';
-import { HashStraight, Plus, PlusCircle } from '@phosphor-icons/react';
 import { TERM_TO_ID_MAP } from '@shared/util/generateSemesters';
 import Text from '@views/components/common/Text/Text';
+import { useNumericInput } from '@views/hooks/useNumericInput';
+import useSchedules from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { SiteSupport } from '@views/lib/getSiteSupport';
-import { useNumericInput } from '@views/hooks/useNumericInput';
-import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
 
@@ -137,7 +137,7 @@ export default function QuickAddModal(): JSX.Element {
                         </Text>
                     )}
                     {validation.status === 'valid' && (
-                        <div className='flex flex-col gap-0.5 rounded border border-ut-offwhite/50 px-spacing-5 py-spacing-3 shadow-md'>
+                        <div className='flex flex-col gap-0.5 border border-ut-offwhite/50 rounded px-spacing-5 py-spacing-3 shadow-md'>
                             <Text variant='h4' className='text-black font-bold!'>
                                 {validation.course.department} {validation.course.number}
                                 {' \u2013 '}
