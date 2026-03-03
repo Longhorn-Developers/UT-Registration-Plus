@@ -17,8 +17,7 @@ import { Button } from './Button';
 import DialogProvider from './DialogProvider/DialogProvider';
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 import Input from './Input';
-
-const UNIQUE_ID_LENGTH = 5;
+import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 
 type CourseValidation = { status: 'none' } | { status: 'valid'; course: Course } | { status: 'invalid' };
 

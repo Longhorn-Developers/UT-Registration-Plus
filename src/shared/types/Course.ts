@@ -177,3 +177,9 @@ export type ScrapedRow = {
     element: HTMLTableRowElement;
     course: Course | null;
 };
+
+/**
+ * Constant of length of a UT course unique ID
+ * Leading zeroes
+ */
+export const UNIQUE_ID_LENGTH = 5;
