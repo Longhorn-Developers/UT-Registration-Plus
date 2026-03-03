@@ -1,4 +1,4 @@
-import { createLocalStore, } from '@chrome-extension-toolkit';
+import { createLocalStore } from '@chrome-extension-toolkit';
 import type { CourseItem, FieldOfStudyItem, SemesterItem } from '@shared/types/CourseData';
 
 /**
