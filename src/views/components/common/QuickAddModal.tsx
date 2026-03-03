@@ -46,6 +46,7 @@ export default function QuickAddModal(): JSX.Element {
     const uniqueNumber = useNumericInput('', UNIQUE_ID_LENGTH);
     const semesterCode = useMemo(() => getCurrentSemesterCode(), []);
     const [validation, setValidation] = useState<CourseValidation>({ status: 'none' });
+    const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
     useEffect(() => {
         if (uniqueNumber.value.length !== UNIQUE_ID_LENGTH) {
@@ -97,6 +98,7 @@ export default function QuickAddModal(): JSX.Element {
 
         if (!loggedInToUT) return;
 
+        setLoggedIn(true);
         const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semesterCode}/${uniqueNumber.value}/`;
         await addCourseByURL(activeSchedule, courseUrl);
         uniqueNumber.reset();
@@ -133,6 +135,11 @@ export default function QuickAddModal(): JSX.Element {
                     {validation.status === 'invalid' && (
                         <Text variant='mini' className='text-ut-black'>
                             There are no courses associated with this unique number.
+                        </Text>
+                    )}
+                    {loggedIn && (
+                        <Text variant='mini' className='text-ut-black'>
+                            Need to login first.
                         </Text>
                     )}
                     {validation.status === 'valid' && (
