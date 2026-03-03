@@ -18,13 +18,19 @@ interface IDevStore {
     reloadTabId?: number;
 }
 
-export const DevStore = createLocalStore<IDevStore>('DevStore', {
-    isDeveloper: false,
-    debugTabId: undefined,
-    isTabReloading: true,
-    wasDebugTabVisible: false,
-    isExtensionReloading: true,
-    reloadTabId: undefined,
-});
+export const DevStore = createLocalStore<IDevStore>(
+    'DevStore',
+    {
+        isDeveloper: false,
+        debugTabId: undefined,
+        isTabReloading: true,
+        wasDebugTabVisible: false,
+        isExtensionReloading: true,
+        reloadTabId: undefined,
+    },
+    {
+        usePrefix: false,
+    }
+);
 
 // debugStore({ devStore: DevStore });
