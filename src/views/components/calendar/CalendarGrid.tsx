@@ -10,7 +10,11 @@ import CalendarCell from './CalendarGridCell';
 import { calculateCourseCellColumns } from './utils';
 
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
-const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
+const GRID_START_HOUR = 7;
+const GRID_END_HOUR = 21;
+
+const hoursOfDay = Array.from({ length: GRID_END_HOUR - GRID_START_HOUR + 1 }, (_, index) => index + GRID_START_HOUR);
+const GRID_BORDER_KEYS = ['hour-spacer', 'time-border', 'mon-border', 'tue-border', 'wed-border', 'thu-border'];
 
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
 
@@ -59,8 +63,10 @@ export default function CalendarGrid({
     saturdayClass: _saturdayClass, // TODO: implement/move away from props
     setCourse,
 }: React.PropsWithChildren<Props>): JSX.Element {
+    const gridTemplateRows = `auto auto repeat(${hoursOfDay.length * 2 - 1}, 1fr)`;
+
     return (
-        <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto_auto_repeat(27,1fr)] h-full'>
+        <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] h-full' style={{ gridTemplateRows }}>
             {/* Cover top left corner of grid, so time gets cut off at the top of the partial border */}
             <div className='sticky top-[85px] z-10 col-span-2 h-3 bg-white' />
             {/* Displaying day labels */}
@@ -85,16 +91,11 @@ export default function CalendarGrid({
             <div />
             {/* time tick for the first hour */}
             <div className='h-4 w-4 self-end border-b border-r border-gray-300' />
-            {[...Array(13).keys()].map(i => makeGridRow(i, 5))}
-            <CalendarHour hour={21} />
-            {Array(6)
-                .fill(1)
-                .map((_, i) => (
-                    // Key suppresses warning about duplicate keys,
-                    // and index is fine because it doesn't change between renders
-                    // eslint-disable-next-line react/no-array-index-key
-                    <div key={i} className='h-4 flex items-end justify-center border-r border-gray-300' />
-                ))}
+            {hoursOfDay.map((_, i) => makeGridRow(i, 5))}
+            {GRID_BORDER_KEYS.map(key => (
+                <div key={key} className='h-4 flex items-end justify-center border-r border-gray-300' />
+            ))}
+
             <ColorPickerProvider>
                 {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
             </ColorPickerProvider>

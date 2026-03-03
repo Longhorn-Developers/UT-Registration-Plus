@@ -1,0 +1,207 @@
+{
+  "id": "test-import-schedule",
+  "name": "Test Import Schedule",
+  "courses": [
+    {
+      "uniqueId": 50123,
+      "department": "C S",
+      "number": "314",
+      "fullName": "C S 314 DATA STRUCTURES",
+      "courseName": "DATA STRUCTURES",
+      "creditHours": 3,
+      "status": "OPEN",
+      "instructors": [
+        {
+          "fullName": "SCOTT, MICHAEL",
+          "firstName": "MICHAEL",
+          "lastName": "SCOTT",
+          "middleInitial": "D"
+        }
+      ],
+      "isReserved": false,
+      "description": [
+        "Second part of a two-part sequence in programming. Introduction to specifications, simple unit testing, and debugging; building and using canonical data structures; algorithm analysis and reasoning techniques such as assertions and invariants.",
+        "Computer Science 314 and 314H may not both be counted.",
+        "Prerequisite: Computer Science 312 or 312H with a grade of at least C-.",
+        "May be counted toward the Quantitative Reasoning flag requirement."
+      ],
+      "schedule": {
+        "meetings": [
+          {
+            "days": ["Tuesday", "Thursday"],
+            "startTime": 600,
+            "endTime": 690,
+            "location": {
+              "building": "GDC",
+              "room": "4.304"
+            }
+          }
+        ]
+      },
+      "url": "https://utdirect.utexas.edu/apps/registrar/course_schedule/20249/50123/",
+      "flags": ["Quantitative Reasoning"],
+      "instructionMode": "In Person",
+      "semester": {
+        "year": 2024,
+        "season": "Fall",
+        "code": "20249"
+      },
+      "scrapedAt": 1698000000000,
+      "colors": {
+        "primaryColor": "#3b82f6",
+        "secondaryColor": "#1e40af"
+      },
+      "core": []
+    },
+    {
+      "uniqueId": 50145,
+      "department": "C S",
+      "number": "331",
+      "fullName": "C S 331 ALGORITHMS & COMPLEXITY",
+      "courseName": "ALGORITHMS & COMPLEXITY",
+      "creditHours": 3,
+      "status": "OPEN",
+      "instructors": [
+        {
+          "fullName": "KNUTH, DONALD",
+          "firstName": "DONALD",
+          "lastName": "KNUTH"
+        }
+      ],
+      "isReserved": false,
+      "description": [
+        "Design and analysis of algorithms and data structures. Dynamic programming, graph algorithms, randomized algorithms, and approximation algorithms."
+      ],
+      "schedule": {
+        "meetings": [
+          {
+            "days": ["Monday", "Wednesday", "Friday"],
+            "startTime": 600,
+            "endTime": 660,
+            "location": {
+              "building": "UTC",
+              "room": "3.102"
+            }
+          }
+        ]
+      },
+      "url": "https://utdirect.utexas.edu/apps/registrar/course_schedule/20249/50145/",
+      "flags": [],
+      "instructionMode": "In Person",
+      "semester": {
+        "year": 2024,
+        "season": "Fall",
+        "code": "20249"
+      },
+      "scrapedAt": 1698000000000,
+      "colors": {
+        "primaryColor": "#10b981",
+        "secondaryColor": "#047857"
+      },
+      "core": []
+    },
+    {
+      "uniqueId": 50167,
+      "department": "M",
+      "number": "408D",
+      "fullName": "M 408D SEQUENCE, SERIES, AND MULTIVARIABLE CALCULUS",
+      "courseName": "SEQUENCE, SERIES, AND MULTIVARIABLE CALCULUS",
+      "creditHours": 4,
+      "status": "OPEN",
+      "instructors": [
+        {
+          "fullName": "EULER, LEONHARD",
+          "firstName": "LEONHARD",
+          "lastName": "EULER"
+        }
+      ],
+      "isReserved": false,
+      "description": [
+        "Sequences and series, vectors and vector-valued functions, functions of several variables, partial derivatives, gradients, optimization, multiple integrals."
+      ],
+      "schedule": {
+        "meetings": [
+          {
+            "days": ["Monday", "Wednesday", "Friday"],
+            "startTime": 840,
+            "endTime": 900,
+            "location": {
+              "building": "RLM",
+              "room": "4.102"
+            }
+          },
+          {
+            "days": ["Thursday"],
+            "startTime": 840,
+            "endTime": 960,
+            "location": {
+              "building": "RLM",
+              "room": "4.102"
+            }
+          }
+        ]
+      },
+      "url": "https://utdirect.utexas.edu/apps/registrar/course_schedule/20249/50167/",
+      "flags": ["Quantitative Reasoning"],
+      "instructionMode": "In Person",
+      "semester": {
+        "year": 2024,
+        "season": "Fall",
+        "code": "20249"
+      },
+      "scrapedAt": 1698000000000,
+      "colors": {
+        "primaryColor": "#f59e0b",
+        "secondaryColor": "#d97706"
+      },
+      "core": []
+    },
+    {
+      "uniqueId": 50189,
+      "department": "E",
+      "number": "316K",
+      "fullName": "E 316K MASTERPIECES OF LITERATURE",
+      "courseName": "MASTERPIECES OF LITERATURE",
+      "creditHours": 3,
+      "status": "OPEN",
+      "instructors": [
+        {
+          "fullName": "SHAKESPEARE, WILLIAM",
+          "firstName": "WILLIAM",
+          "lastName": "SHAKESPEARE"
+        }
+      ],
+      "isReserved": false,
+      "description": [
+        "Introduction to masterpieces of world literature in translation. May focus on literary works from the ancient world, the Middle Ages and Renaissance, the eighteenth and nineteenth centuries, or the twentieth century."
+      ],
+      "schedule": {
+        "meetings": [
+          {
+            "days": ["Tuesday", "Thursday"],
+            "startTime": 930,
+            "endTime": 1020,
+            "location": {
+              "building": "PAR",
+              "room": "301"
+            }
+          }
+        ]
+      },
+      "url": "https://utdirect.utexas.edu/apps/registrar/course_schedule/20249/50189/",
+      "flags": ["Global Cultures", "Writing"],
+      "instructionMode": "In Person",
+      "semester": {
+        "year": 2024,
+        "season": "Fall",
+        "code": "20249"
+      },
+      "scrapedAt": 1698000000000,
+      "colors": {
+        "primaryColor": "#8b5cf6",
+        "secondaryColor": "#6d28d9"
+      },
+      "core": ["Humanities"]
+    }
+  ]
+}
