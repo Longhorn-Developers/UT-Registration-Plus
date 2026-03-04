@@ -1,4 +1,4 @@
-import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
+import { createLocalStore } from '@chrome-extension-toolkit';
 
 /**
  * A store that is used for storing user options
@@ -12,10 +12,16 @@ interface IExtensionStore {
     lastWhatsNewPopupVersion: number;
 }
 
-export const ExtensionStore = createLocalStore<IExtensionStore>({
-    version: chrome.runtime.getManifest().version,
-    lastUpdate: Date.now(),
-    lastWhatsNewPopupVersion: 0,
-});
+export const ExtensionStore = createLocalStore<IExtensionStore>(
+    'ExtensionStore',
+    {
+        version: chrome.runtime.getManifest().version,
+        lastUpdate: Date.now(),
+        lastWhatsNewPopupVersion: 0,
+    },
+    {
+        usePrefix: false,
+    }
+);
 
-debugStore({ ExtensionStore });
+// debugStore({ ExtensionStore });

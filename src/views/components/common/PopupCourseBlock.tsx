@@ -61,7 +61,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
 
         initAllSettings();
 
-        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
+        const l1 = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
             setEnableCourseStatusChips(newValue);
         });
 
@@ -77,7 +77,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
         });
 
         return () => {
-            OptionsStore.removeListener(l1);
+            OptionsStore.unsubscribe(l1);
         };
     }, []);
 

@@ -1,6 +1,6 @@
+import type { MessageHandler } from '@chrome-extension-toolkit';
 import type GitHubStatsMessages from '@shared/messages/GitHubStatsMessages';
 import { GitHubStatsService } from '@views/lib/getGitHubStats';
-import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const gitHubStatsService = new GitHubStatsService();
 

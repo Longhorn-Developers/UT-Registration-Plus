@@ -205,7 +205,7 @@ module.exports = {
                     {
                         target: './src/shared',
                         from: './',
-                        except: ['./src/shared', './node_modules'],
+                        except: ['./src/shared', './node_modules', './src/lib/chrome-extension-toolkit'],
                         message: 'You cannot import into `shared` from an external directory.',
                     },
                 ],
@@ -227,6 +227,6 @@ module.exports = {
         'simple-import-sort/imports': 'error',
         'simple-import-sort/exports': 'error',
         'import-essentials/restrict-import-depth': 'error',
-        'import-essentials/check-path-alias': 'error',
+        // 'import-essentials/check-path-alias': 'error',
     },
 };

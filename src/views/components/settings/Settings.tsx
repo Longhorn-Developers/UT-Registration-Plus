@@ -98,23 +98,23 @@ export default function Settings(): JSX.Element {
         };
 
         // Listeners
-        const ds_l1 = DevStore.listen('isDeveloper', async ({ newValue }) => {
+        const ds_l1 = DevStore.subscribe('isDeveloper', async ({ newValue }) => {
             setIsDeveloper(newValue);
         });
 
-        const l1 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
+        const l1 = OptionsStore.subscribe('enableHighlightConflicts', async ({ newValue }) => {
             setHighlightConflicts(newValue);
         });
 
-        const l2 = OptionsStore.listen('enableScrollToLoad', async ({ newValue }) => {
+        const l2 = OptionsStore.subscribe('enableScrollToLoad', async ({ newValue }) => {
             setLoadAllCourses(newValue);
         });
 
-        const l3 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
+        const l3 = OptionsStore.subscribe('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
             setCalendarNewTab(newValue);
         });
 
-        const l4 = OptionsStore.listen('allowMoreSchedules', async ({ newValue }) => {
+        const l4 = OptionsStore.subscribe('allowMoreSchedules', async ({ newValue }) => {
             setIncreaseScheduleLimit(newValue);
         });
 
@@ -125,11 +125,11 @@ export default function Settings(): JSX.Element {
         initAndSetSettings();
 
         return () => {
-            OptionsStore.removeListener(l1);
-            OptionsStore.removeListener(l2);
-            OptionsStore.removeListener(l3);
-            OptionsStore.removeListener(l4);
-            DevStore.removeListener(ds_l1);
+            OptionsStore.unsubscribe(l1);
+            OptionsStore.unsubscribe(l2);
+            OptionsStore.unsubscribe(l3);
+            OptionsStore.unsubscribe(l4);
+            DevStore.unsubscribe(ds_l1);
             window.removeEventListener('keydown', handleKeyPress);
         };
     }, [gitHubStatsService]);

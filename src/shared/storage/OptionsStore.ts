@@ -1,4 +1,4 @@
-import { createSyncStore, debugStore } from 'chrome-extension-toolkit';
+import { createSyncStore } from '@chrome-extension-toolkit';
 
 /**
  * A store that is used for storing user options
@@ -28,16 +28,22 @@ export interface IOptionsStore {
     allowMoreSchedules: boolean;
 }
 
-export const OptionsStore = createSyncStore<IOptionsStore>({
-    enableCourseStatusChips: false,
-    enableHighlightConflicts: true,
-    enableScrollToLoad: true,
-    enableDataRefreshing: false,
-    alwaysOpenCalendarInNewTab: false,
-    showCalendarSidebar: true,
-    showUTDiningPromo: true,
-    allowMoreSchedules: false,
-});
+export const OptionsStore = createSyncStore<IOptionsStore>(
+    'OptionsStore',
+    {
+        enableCourseStatusChips: false,
+        enableHighlightConflicts: true,
+        enableScrollToLoad: true,
+        enableDataRefreshing: false,
+        alwaysOpenCalendarInNewTab: false,
+        showCalendarSidebar: true,
+        showUTDiningPromo: true,
+        allowMoreSchedules: false,
+    },
+    {
+        usePrefix: false,
+    }
+);
 
 /**
  * Initializes the settings by retrieving the values from the OptionsStore.
@@ -58,4 +64,4 @@ export const initSettings = async () =>
 
 // Clothing retailer right
 
-debugStore({ OptionsStore });
+// debugStore({ OptionsStore });

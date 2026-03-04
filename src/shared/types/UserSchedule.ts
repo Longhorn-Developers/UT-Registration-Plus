@@ -1,4 +1,4 @@
-import type { Serialized } from 'chrome-extension-toolkit';
+import type { Serialized } from '@chrome-extension-toolkit';
 
 import { generateRandomId } from '../util/random';
 import { Course } from './Course';

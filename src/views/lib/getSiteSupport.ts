@@ -1,4 +1,4 @@
-import { isExtensionPage, isExtensionPopup } from 'chrome-extension-toolkit';
+import { isExtensionPage, isExtensionPopup } from '@chrome-extension-toolkit';
 
 /**
  * An enum that represents the different types of pages that we support

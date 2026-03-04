@@ -1,8 +1,8 @@
+import type { Serialized } from '@chrome-extension-toolkit';
 import { tz } from '@date-fns/tz';
 import { Course } from '@shared/types/Course';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import type { Serialized } from 'chrome-extension-toolkit';
 import { format as formatDate, parseISO } from 'date-fns';
 import {
     chatterjeeCS429Course,

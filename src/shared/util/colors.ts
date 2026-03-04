@@ -1,4 +1,4 @@
-import type { Serialized } from 'chrome-extension-toolkit';
+import type { Serialized } from '@chrome-extension-toolkit';
 import { theme } from 'unocss/preset-mini';
 
 import type { HexColor, HSL, Lab, RGB, sRGB } from '../types/Color';
