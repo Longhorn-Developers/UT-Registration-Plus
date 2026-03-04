@@ -1,9 +1,11 @@
+import flagIcon from '@assets/flag.svg';
 import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
 import { CalendarDots, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { openReportWindow } from '@shared/util/openReportWindow';
 import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
@@ -95,17 +97,36 @@ export default function PopupMain(): JSX.Element {
             <div className='px-spacing-6 py-spacing-5'>
                 <div className='flex items-center justify-between bg-white'>
                     <SmallLogo />
-                    <div className='flex items-center gap-2.5'>
+                    <div className='flex items-center'>
                         <Button
                             variant='filled'
+                            size='small'
                             color='ut-burntorange'
                             onClick={handleCalendarOpenOnClick}
                             icon={CalendarDots}
                             iconProps={{ weight: 'fill' }}
+                            className='mr-0.5 h-9 px-4'
                         >
                             Calendar
                         </Button>
-                        <Button variant='minimal' color='ut-black' onClick={handleOpenOptions} icon={GearSix} />
+                        <div className='flex items-center gap-0.5'>
+                            <button
+                                type='button'
+                                className='btn h-[35px] w-[35px] border-none bg-ut-black/0 p-spacing-2 hover:bg-ut-black/8'
+                                title='Send feedback'
+                                aria-label='Send feedback'
+                                onClick={openReportWindow}
+                            >
+                                <img src={flagIcon} alt='' className='h-6 w-6' />
+                            </button>
+                            <Button
+                                variant='minimal'
+                                size='small'
+                                color='ut-black'
+                                onClick={handleOpenOptions}
+                                icon={GearSix}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
