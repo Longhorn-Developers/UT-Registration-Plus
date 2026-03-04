@@ -28,15 +28,17 @@ export interface IOptionsStore {
     allowMoreSchedules: boolean;
 }
 
-export const OptionsStore = createSyncStore<IOptionsStore>('OptionsStore', {
-    enableCourseStatusChips: true,
-    enableHighlightConflicts: true,
-    enableScrollToLoad: true,
-    enableDataRefreshing: false,
-    alwaysOpenCalendarInNewTab: false,
-    showCalendarSidebar: true,
-    showUTDiningPromo: true,
-    allowMoreSchedules: false,
+export const OptionsStore = createSyncStore<IOptionsStore>(
+    'OptionsStore',
+    {
+        enableCourseStatusChips: true,
+        enableHighlightConflicts: true,
+        enableScrollToLoad: true,
+        enableDataRefreshing: false,
+        alwaysOpenCalendarInNewTab: false,
+        showCalendarSidebar: true,
+        showUTDiningPromo: true,
+        allowMoreSchedules: false,
     },
     {
         usePrefix: false,
