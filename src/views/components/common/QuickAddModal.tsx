@@ -2,7 +2,7 @@ import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { HashStraight, Plus, PlusCircle } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
-import type { Course } from '@shared/types/Course';
+import type { Course, Semester } from '@shared/types/Course';
 import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import { useNumericInput } from '@views/hooks/useNumericInput';
@@ -21,9 +21,30 @@ import Input from './Input';
 type CourseValidation = { status: 'none' } | { status: 'valid'; course: Course } | { status: 'invalid' };
 
 /**
- * Fetches latest available semester from the registrar schedules page
+ * Converts a semester code (e.g. "20262") to a Semester object.
  */
-async function fetchLatestSemesterCode(): Promise<string> {
+function makeSemesterFromCode(code: string): Semester | undefined {
+    if (code.length !== 5) return undefined;
+    const ID_TO_SEASON = {
+        '2': 'Spring',
+        '6': 'Summer',
+        '9': 'Fall',
+    } as const;
+    const year = code.slice(0, 4);
+    const seasonId = code.slice(4);
+    const season = ID_TO_SEASON[seasonId as keyof typeof ID_TO_SEASON];
+    if (!season) return undefined;
+    return {
+        year: Number(year),
+        code,
+        season,
+    };
+}
+
+/**
+ * Fetches the available semester codes from UT's registrar schedules page.
+ */
+async function fetchAvailableSemesters(): Promise<Semester[]> {
     try {
         const htmlText = await background.addCourseByURL({
             url: 'https://registrar.utexas.edu/schedules',
@@ -34,22 +55,21 @@ async function fetchLatestSemesterCode(): Promise<string> {
         const doc = new DOMParser().parseFromString(htmlText, 'text/html');
         const links = doc.querySelectorAll('a[href*="/schedules/"]');
 
-        let latestCode = '';
+        const semesterCodes: string[] = [];
         links.forEach(link => {
             const match = link.getAttribute('href')?.match(/\/schedules\/(\d{3})$/);
             if (match?.[1]) {
                 const fullCode = `20${match[1]}`;
-                if (fullCode > latestCode) {
-                    latestCode = fullCode;
-                }
+                semesterCodes.push(fullCode);
             }
         });
 
-        if (latestCode) return latestCode;
+        const uniqueSemesterCodes = Array.from(new Set(semesterCodes));
+        return uniqueSemesterCodes.map(makeSemesterFromCode).filter(s => s !== undefined) as Semester[];
     } catch (e) {
         console.error('Failed to fetch latest semester code', e);
     }
-    return '';
+    return [];
 }
 
 /**
@@ -61,11 +81,15 @@ async function fetchLatestSemesterCode(): Promise<string> {
 export default function QuickAddModal(): JSX.Element {
     const [activeSchedule] = useSchedules();
     const uniqueNumber = useNumericInput('', UNIQUE_ID_LENGTH);
-    const [semesterCode, setSemesterCode] = useState<string>('');
+    const [currentSemester, setCurrentSemester] = useState<Semester | undefined>(undefined);
+    const [availableSemesters, setSemesters] = useState<Semester[]>([]);
     const [validation, setValidation] = useState<CourseValidation>({ status: 'none' });
 
     useEffect(() => {
-        fetchLatestSemesterCode().then(setSemesterCode);
+        fetchAvailableSemesters().then(sem => {
+            setSemesters(sem);
+            setCurrentSemester(sem[0] ?? undefined);
+        });
     }, []);
 
     useEffect(() => {
@@ -78,7 +102,7 @@ export default function QuickAddModal(): JSX.Element {
 
         (async () => {
             try {
-                const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semesterCode}/${uniqueNumber.value}/`;
+                const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${currentSemester?.code}/${uniqueNumber.value}/`;
                 const htmlText = await background.addCourseByURL({
                     url: courseUrl,
                     method: 'GET',
@@ -105,7 +129,7 @@ export default function QuickAddModal(): JSX.Element {
         return () => {
             cancelled = true;
         };
-    }, [uniqueNumber.value, semesterCode]);
+    }, [uniqueNumber.value, currentSemester]);
 
     const isDisabled = uniqueNumber.value.length !== UNIQUE_ID_LENGTH || validation.status !== 'valid';
 
@@ -116,9 +140,9 @@ export default function QuickAddModal(): JSX.Element {
     };
 
     const handleAddCourse = async () => {
-        if (isDisabled) return;
+        if (isDisabled || !currentSemester) return;
 
-        const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semesterCode}/${uniqueNumber.value}/`;
+        const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${currentSemester.code}/${uniqueNumber.value}/`;
         await addCourseByURL(activeSchedule, courseUrl);
         uniqueNumber.reset();
     };
@@ -151,6 +175,26 @@ export default function QuickAddModal(): JSX.Element {
                         placeholder='Enter Unique Number...'
                         icon={HashStraight}
                     />
+                    <div className='w-full flex flex-row items-center justify-between gap-spacing-2 whitespace-nowrap px-spacing-2'>
+                        <Text variant='mini'>Choose from:</Text>
+                        <Text className='flex flex-row items-center gap-spacing-2' variant='mini'>
+                            {availableSemesters.map(sem => (
+                                <Button
+                                    key={sem.code}
+                                    size='mini'
+                                    variant={sem === currentSemester ? 'filled' : 'minimal'}
+                                    color='ut-burntorange'
+                                    onClick={() => setCurrentSemester(sem)}
+                                    className={clsx(
+                                        'whitespace-nowrap',
+                                        sem === currentSemester && 'pointer-events-none'
+                                    )}
+                                >
+                                    {`${sem.season} ${sem.year}`}
+                                </Button>
+                            ))}
+                        </Text>
+                    </div>
                     {validation.status === 'invalid' && (
                         <Text variant='mini' className='text-ut-black'>
                             There are no courses associated with this unique number.
