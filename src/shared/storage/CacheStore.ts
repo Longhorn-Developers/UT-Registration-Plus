@@ -8,8 +8,14 @@ interface ICacheStore {
 /**
  * A store that is used for storing cached data such as GitHub contributors
  */
-export const CacheStore = createLocalStore<ICacheStore>('CacheStore', {
-    github: {},
-});
+export const CacheStore = createLocalStore<ICacheStore>(
+    'CacheStore',
+    {
+        github: {},
+    },
+    {
+        usePrefix: false,
+    }
+);
 
 // debugStore({ cacheStore: CacheStore });

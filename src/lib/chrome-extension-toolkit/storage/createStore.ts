@@ -139,6 +139,10 @@ type StoreOptions = {
      * Whether or not to encrypt the data before storing it, and decrypt it when retrieving it. Defaults to false.
      */
     isEncrypted?: boolean;
+    /**
+     * Whether to use a prefix based on the name of the store, such as "UserScheduleStore:myKey" instead of "myKey". Defaults to true.
+     */
+    usePrefix?: boolean;
 };
 
 const security = new Security();
@@ -156,8 +160,12 @@ function createStore<T>(
     area: 'sync' | 'local' | 'session' | 'managed',
     options?: StoreOptions
 ): Store<T> {
+    const prefix = (options?.usePrefix ?? true) ? `${storeId}:` : '';
+    const makeActualKey = (rawKey: string) => `${prefix}${rawKey}`;
+    const removePrefix = (prefixedKey: string) => prefixedKey.replace(prefix, '');
+
     const keys = Object.keys(defaults) as string[];
-    const actualKeys = keys.map(key => `${storeId}:${key}`);
+    const actualKeys = keys.map(makeActualKey);
 
     let isEncrypted = options?.isEncrypted || false;
 
@@ -181,7 +189,7 @@ function createStore<T>(
 
             for (const key of missingKeys) {
                 // @ts-expect-error
-                const value = defaults[key.replace(`${storeId}:`, '')];
+                const value = defaults[removePrefix(key)];
                 // @ts-expect-error
                 defaultsToSet[key] = isEncrypted ? await security.encrypt(value) : value;
             }
@@ -196,7 +204,7 @@ function createStore<T>(
             await store.initialize();
         }
 
-        const actualKey = `${storeId}:${key}`;
+        const actualKey = makeActualKey(key);
 
         const value = (await chrome.storage[area].get(actualKey))[actualKey];
         return isEncrypted ? await security.decrypt(value) : value;
@@ -213,7 +221,7 @@ function createStore<T>(
             const entriesToSet = {};
 
             for (const [k, v] of Object.entries(key)) {
-                const actualKey = `${storeId}:${k}`;
+                const actualKey = makeActualKey(k);
                 if (v === undefined) {
                     // Prepare to remove this key
                     entriesToRemove.push(actualKey);
@@ -237,7 +245,7 @@ function createStore<T>(
         }
         // now we know key is a string, so lets either set or remove it directly
 
-        const actualKey = `${storeId}:${key}`;
+        const actualKey = makeActualKey(key);
         if (value === undefined) {
             // Remove if value is explicitly undefined
             return await chrome.storage[area].remove(actualKey);
@@ -254,7 +262,7 @@ function createStore<T>(
             await store.initialize();
         }
 
-        const actualKey = `${storeId}:${key}`;
+        const actualKey = makeActualKey(key);
         await chrome.storage[area].remove(actualKey);
     };
 
@@ -266,14 +274,14 @@ function createStore<T>(
         if (isEncrypted) {
             await Promise.all(
                 keys.map(async key => {
-                    const actualKey = `${storeId}:${key}`;
+                    const actualKey = makeActualKey(key);
                     fullStore[key] = await security.decrypt(fullStore[actualKey]);
                 })
             );
         }
-        // now we need to remove the storeId from the keys
+        // now we need to remove the prefix from the keys
         Object.keys(fullStore).forEach(actualKey => {
-            const newKey = actualKey.replace(`${storeId}:`, '');
+            const newKey = removePrefix(actualKey);
             fullStore[newKey] = fullStore[actualKey];
             delete fullStore[actualKey];
         });
@@ -286,7 +294,7 @@ function createStore<T>(
         // @ts-expect-error
         const sub = async (changes, areaName) => {
             const keys = Array.isArray(key) ? key : [key];
-            const actualKeys = keys.map(k => `${storeId}:${k}`);
+            const actualKeys = keys.map(makeActualKey);
 
             if (areaName !== area) return;
 
@@ -295,7 +303,7 @@ function createStore<T>(
             if (!subKeys.length) return;
 
             subKeys.forEach(async actualKey => {
-                const key = actualKey.replace(`${storeId}:`, '');
+                const key = removePrefix(actualKey);
                 const [oldValue, newValue] = await Promise.all([
                     isEncrypted ? security.decrypt(changes[actualKey].oldValue) : changes[actualKey].oldValue,
                     isEncrypted ? security.decrypt(changes[actualKey].newValue) : changes[actualKey].newValue,
