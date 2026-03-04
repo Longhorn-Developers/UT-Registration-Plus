@@ -95,6 +95,7 @@ export default function Calendar(): ReactNode {
     }, []);
 
     // --- Reset drag state when dragging leaves the window ---
+    // TODO - Refactor this and FileUpload.tsx, they use similar things and it would be optimal later on to maybe extract this all somewhere
     useEffect(() => {
         const handleGlobalDragLeave = (e: DragEvent) => {
             // Reset drag state when leaving the window entirely
