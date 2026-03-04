@@ -12,10 +12,16 @@ interface IExtensionStore {
     lastWhatsNewPopupVersion: number;
 }
 
-export const ExtensionStore = createLocalStore<IExtensionStore>('ExtensionStore', {
-    version: chrome.runtime.getManifest().version,
-    lastUpdate: Date.now(),
-    lastWhatsNewPopupVersion: 0,
-});
+export const ExtensionStore = createLocalStore<IExtensionStore>(
+    'ExtensionStore',
+    {
+        version: chrome.runtime.getManifest().version,
+        lastUpdate: Date.now(),
+        lastWhatsNewPopupVersion: 0,
+    },
+    {
+        usePrefix: false,
+    }
+);
 
 // debugStore({ ExtensionStore });
