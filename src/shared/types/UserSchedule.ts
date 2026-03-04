@@ -2,6 +2,11 @@ import type { Serialized } from '@chrome-extension-toolkit';
 
 import { generateRandomId } from '../util/random';
 import { Course } from './Course';
+export interface Wallpaper {
+    type: string;
+    /** Image url will be here */
+    data?: string;
+}
 
 /**
  * Represents a user's schedule that is stored in the extension
@@ -13,6 +18,8 @@ export class UserSchedule {
     hours: number;
     /** Unix timestamp of when the schedule was last updated */
     updatedAt: number;
+    /** Wallpaper for this schedule */
+    wallpaper?: Wallpaper;
 
     constructor(schedule: Serialized<UserSchedule>) {
         this.courses = schedule.courses.map(c => new Course(c));
