@@ -11,17 +11,23 @@ interface IUserScheduleStore {
 /**
  * A store that is used for storing user schedules (and the active schedule)
  */
-export const UserScheduleStore = createLocalStore<IUserScheduleStore>('UserScheduleStore', {
-    schedules: [
-        new UserSchedule({
-            courses: [],
-            id: generateRandomId(),
-            name: 'Schedule 1',
-            hours: 0,
-            updatedAt: Date.now(),
-        }),
-    ],
-    activeIndex: 0,
-});
+export const UserScheduleStore = createLocalStore<IUserScheduleStore>(
+    'UserScheduleStore',
+    {
+        schedules: [
+            new UserSchedule({
+                courses: [],
+                id: generateRandomId(),
+                name: 'Schedule 1',
+                hours: 0,
+                updatedAt: Date.now(),
+            }),
+        ],
+        activeIndex: 0,
+    },
+    {
+        usePrefix: false,
+    }
+);
 
 // debugStore({ userScheduleStore: UserScheduleStore });
