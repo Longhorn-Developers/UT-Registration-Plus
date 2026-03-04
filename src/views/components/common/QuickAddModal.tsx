@@ -2,8 +2,8 @@ import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { HashStraight, Plus, PlusCircle } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
-import type { Course, Semester } from '@shared/types/Course';
-import { TERM_TO_ID_MAP } from '@shared/util/generateSemesters';
+import type { Course } from '@shared/types/Course';
+import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import { useNumericInput } from '@views/hooks/useNumericInput';
 import useSchedules from '@views/hooks/useSchedules';
@@ -11,28 +11,45 @@ import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { SiteSupport } from '@views/lib/getSiteSupport';
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Button } from './Button';
 import DialogProvider from './DialogProvider/DialogProvider';
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 import Input from './Input';
-import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 
 type CourseValidation = { status: 'none' } | { status: 'valid'; course: Course } | { status: 'invalid' };
 
 /**
- * Finds the current semester code based on today's date
+ * Fetches latest available semester from the registrar schedules page
  */
-function getCurrentSemesterCode(): string {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth(); // 0-indexed
-    let season: Semester['season'];
-    if (month <= 4) season = 'Spring';
-    else if (month <= 7) season = 'Summer';
-    else season = 'Fall';
-    return `${year}${TERM_TO_ID_MAP[season]}`;
+async function fetchLatestSemesterCode(): Promise<string> {
+    try {
+        const htmlText = await background.addCourseByURL({
+            url: 'https://registrar.utexas.edu/schedules',
+            method: 'GET',
+            response: 'text',
+        });
+
+        const doc = new DOMParser().parseFromString(htmlText, 'text/html');
+        const links = doc.querySelectorAll('a[href*="/schedules/"]');
+
+        let latestCode = '';
+        links.forEach(link => {
+            const match = link.getAttribute('href')?.match(/\/schedules\/(\d{3})$/);
+            if (match?.[1]) {
+                const fullCode = `20${match[1]}`;
+                if (fullCode > latestCode) {
+                    latestCode = fullCode;
+                }
+            }
+        });
+
+        if (latestCode) return latestCode;
+    } catch (e) {
+        console.error('Failed to fetch latest semester code', e);
+    }
+    return '';
 }
 
 /**
@@ -44,9 +61,12 @@ function getCurrentSemesterCode(): string {
 export default function QuickAddModal(): JSX.Element {
     const [activeSchedule] = useSchedules();
     const uniqueNumber = useNumericInput('', UNIQUE_ID_LENGTH);
-    const semesterCode = useMemo(() => getCurrentSemesterCode(), []);
+    const [semesterCode, setSemesterCode] = useState<string>('');
     const [validation, setValidation] = useState<CourseValidation>({ status: 'none' });
-    const [loggedIn, setLoggedIn] = useState<boolean>(false);
+
+    useEffect(() => {
+        fetchLatestSemesterCode().then(setSemesterCode);
+    }, []);
 
     useEffect(() => {
         if (uniqueNumber.value.length !== UNIQUE_ID_LENGTH) {
@@ -89,16 +109,15 @@ export default function QuickAddModal(): JSX.Element {
 
     const isDisabled = uniqueNumber.value.length !== UNIQUE_ID_LENGTH || validation.status !== 'valid';
 
+    const handleQuickAdd = () => {
+        background.validateLoginStatus({
+            url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/',
+        });
+    };
+
     const handleAddCourse = async () => {
         if (isDisabled) return;
 
-        const loggedInToUT = await background.validateLoginStatus({
-            url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/',
-        });
-
-        if (!loggedInToUT) return;
-
-        setLoggedIn(true);
         const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semesterCode}/${uniqueNumber.value}/`;
         await addCourseByURL(activeSchedule, courseUrl);
         uniqueNumber.reset();
@@ -108,7 +127,7 @@ export default function QuickAddModal(): JSX.Element {
         <DialogProvider>
             <Popover>
                 <PopoverButton className='bg-transparent' as='div'>
-                    <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
+                    <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle} onClick={handleQuickAdd}>
                         Quick Add
                     </Button>
                 </PopoverButton>
@@ -135,11 +154,6 @@ export default function QuickAddModal(): JSX.Element {
                     {validation.status === 'invalid' && (
                         <Text variant='mini' className='text-ut-black'>
                             There are no courses associated with this unique number.
-                        </Text>
-                    )}
-                    {loggedIn && (
-                        <Text variant='mini' className='text-ut-black'>
-                            Need to login first.
                         </Text>
                     )}
                     {validation.status === 'valid' && (

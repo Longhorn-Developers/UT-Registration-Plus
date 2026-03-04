@@ -2,7 +2,7 @@ import type { Serialized } from '@chrome-extension-toolkit';
 import { tz, TZDate } from '@date-fns/tz';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { UNIQUE_ID_LENGTH, type Course } from '@shared/types/Course';
+import { type Course, UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
