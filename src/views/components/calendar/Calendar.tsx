@@ -1,5 +1,5 @@
-import importSchedule from '@pages/background/lib/importSchedule';
 import { MessageListener } from '@chrome-extension-toolkit';
+import importSchedule from '@pages/background/lib/importSchedule';
 import { Sidebar } from '@phosphor-icons/react';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
@@ -29,7 +29,6 @@ import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
 import DiningAppPromo from './DiningAppPromo';
-
 /**
  * Calendar page component
  */
