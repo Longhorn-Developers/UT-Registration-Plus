@@ -5,10 +5,10 @@ import { CalendarDots, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { openReportWindow } from '@shared/util/openReportWindow';
 import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
+import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect, useState } from 'react';
@@ -59,6 +59,7 @@ export default function PopupMain(): JSX.Element {
 
     // const [isRefreshing, setIsRefreshing] = useState(false);
     const [funny, setFunny] = useState<string>('');
+    const showReportIssueDialog = useReportIssueDialog();
 
     const enforceScheduleLimit = useEnforceScheduleLimit();
     const handleAddSchedule = () => {
@@ -115,7 +116,7 @@ export default function PopupMain(): JSX.Element {
                                 className='btn h-[35px] w-[35px] border-none bg-ut-black/0 p-spacing-2 hover:bg-ut-black/8'
                                 title='Send feedback'
                                 aria-label='Send feedback'
-                                onClick={openReportWindow}
+                                onClick={showReportIssueDialog}
                             >
                                 <img src={flagIcon} alt='' className='h-6 w-6' />
                             </button>
