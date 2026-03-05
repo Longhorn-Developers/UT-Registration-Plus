@@ -28,16 +28,22 @@ export interface IOptionsStore {
     allowMoreSchedules: boolean;
 }
 
-export const OptionsStore = createSyncStore<IOptionsStore>('OptionsStore', {
-    enableCourseStatusChips: false,
-    enableHighlightConflicts: true,
-    enableScrollToLoad: true,
-    enableDataRefreshing: false,
-    alwaysOpenCalendarInNewTab: false,
-    showCalendarSidebar: true,
-    showUTDiningPromo: true,
-    allowMoreSchedules: false,
-});
+export const OptionsStore = createSyncStore<IOptionsStore>(
+    'OptionsStore',
+    {
+        enableCourseStatusChips: false,
+        enableHighlightConflicts: true,
+        enableScrollToLoad: true,
+        enableDataRefreshing: false,
+        alwaysOpenCalendarInNewTab: false,
+        showCalendarSidebar: true,
+        showUTDiningPromo: true,
+        allowMoreSchedules: false,
+    },
+    {
+        usePrefix: false,
+    }
+);
 
 /**
  * Initializes the settings by retrieving the values from the OptionsStore.
