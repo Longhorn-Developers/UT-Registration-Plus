@@ -8,6 +8,7 @@ import DialogProvider from '@views/components/common/DialogProvider/DialogProvid
 import Divider from '@views/components/common/Divider';
 import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { LargeLogo } from '@views/components/common/LogoIcon';
+import QuickAddModal from '@views/components/common/QuickAddModal';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
 import Text from '@views/components/common/Text/Text';
 import useSchedules from '@views/hooks/useSchedules';
@@ -83,6 +84,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
             {/* min-w-[310px] is the value with all the buttons */}
             <div className={clsx(styles.cqInline, 'flex flex-1 gap-5 min-w-[45x] screenshot:hidden')}>
                 <div className={clsx(styles.primaryActions, 'min-w-fit flex gap-5')}>
+                    <QuickAddModal />
                     <DialogProvider>
                         <Menu>
                             <MenuButton className='bg-transparent'>
@@ -159,10 +161,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             </MenuItems>
                         </Menu>
                     </DialogProvider>
-                    {/* <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
-                        Quick Add
-                    </Button>
-                    <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={SelectionPlus}>
+                    {/* <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={SelectionPlus}>
                         Block
                     </Button> */}
                 </div>
