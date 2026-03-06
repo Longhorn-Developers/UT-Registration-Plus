@@ -47,7 +47,7 @@ export default function Dropdown({
     return (
         <Listbox
             as='div'
-            value={selectedOption}
+            value={selectedOption ?? undefined}
             onChange={onOptionChange}
             className={clsx('h-9 flex flex-row items-center justify-between gap-spacing-5 z-30', className)}
         >
