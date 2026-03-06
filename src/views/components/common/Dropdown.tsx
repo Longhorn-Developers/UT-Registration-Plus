@@ -22,6 +22,7 @@ interface Props {
     options?: readonly DropdownOption[];
     selectedOption: DropdownOption | null;
     onOptionChange?: (newOption: DropdownOption) => void;
+    noOptionsText?: string;
     icon?: Icon;
     iconProps?: IconProps;
     disabled?: boolean;
@@ -37,6 +38,7 @@ export default function Dropdown({
     options,
     selectedOption,
     onOptionChange,
+    noOptionsText = 'No options available',
     icon,
     iconProps,
     disabled,
@@ -47,7 +49,7 @@ export default function Dropdown({
             as='div'
             value={selectedOption}
             onChange={onOptionChange}
-            className={clsx('h-9 w-full flex flex-row items-center justify-between gap-spacing-5 z-30', className)}
+            className={clsx('h-9 flex flex-row items-center justify-between gap-spacing-5 z-30', className)}
         >
             {Icon && (
                 <div className='h-7 w-7'>
@@ -75,7 +77,7 @@ export default function Dropdown({
                 anchor='bottom start'
                 className={clsx(
                     styleResetClass,
-                    'flex flex-col p-spacing-1 w-[306px] z-40',
+                    'flex flex-col p-spacing-1 w-[var(--button-width)] z-40',
                     'origin-top-right rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
                     'data-[closed]:(opacity-0 scale-95)',
                     'data-[enter]:(ease-out-expo duration-150)',
@@ -105,7 +107,7 @@ export default function Dropdown({
                         value={null}
                         className='z-40 select-none rounded p-spacing-3 text-center text-ut-black/50'
                     >
-                        <Text>No options available</Text>
+                        <Text>{noOptionsText}</Text>
                     </ListboxOption>
                 )}
             </ListboxOptions>

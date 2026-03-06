@@ -1,15 +1,12 @@
 import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react';
-import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
-import { HashStraight, Plus, PlusCircle } from '@phosphor-icons/react';
+import { Plus, PlusCircle } from '@phosphor-icons/react';
+import { getCourseByURL } from '@pages/background/lib/getCourseByURL';
 import { background } from '@shared/messages';
-import type { Course, Semester } from '@shared/types/Course';
+import { Course, Semester } from '@shared/types/Course';
 import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import { useNumericInput } from '@views/hooks/useNumericInput';
 import useSchedules from '@views/hooks/useSchedules';
-import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-import getCourseTableRows from '@views/lib/getCourseTableRows';
-import { SiteSupport } from '@views/lib/getSiteSupport';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
@@ -17,8 +14,13 @@ import { Button } from './Button';
 import DialogProvider from './DialogProvider/DialogProvider';
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 import Input from './Input';
+import Dropdown, { DropdownOption } from './Dropdown';
 
-type CourseValidation = { status: 'none' } | { status: 'valid'; course: Course } | { status: 'invalid' };
+type CourseValidation =
+    | { status: 'none' }
+    | { status: 'valid'; course: Course }
+    | { status: 'invalid' }
+    | { status: 'already_added' };
 
 /**
  * Converts a semester code (e.g. "20262") to a Semester object.
@@ -85,6 +87,8 @@ export default function QuickAddModal(): JSX.Element {
     const [availableSemesters, setSemesters] = useState<Semester[]>([]);
     const [validation, setValidation] = useState<CourseValidation>({ status: 'none' });
 
+    const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${currentSemester?.code}/${uniqueNumber.value}/`;
+
     useEffect(() => {
         fetchAvailableSemesters().then(sem => {
             setSemesters(sem);
@@ -101,29 +105,21 @@ export default function QuickAddModal(): JSX.Element {
         let cancelled = false;
 
         (async () => {
-            try {
-                const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${currentSemester?.code}/${uniqueNumber.value}/`;
-                const htmlText = await background.addCourseByURL({
-                    url: courseUrl,
-                    method: 'GET',
-                    response: 'text',
-                });
-                if (cancelled) return;
+            const course = await getCourseByURL(courseUrl);
+            if (cancelled) return;
 
-                const doc = new DOMParser().parseFromString(htmlText, 'text/html');
-                const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, courseUrl);
-                const tableRows = getCourseTableRows(doc);
-                const scrapedCourses = scraper.scrape(tableRows, false);
-
-                if (scrapedCourses.length !== 1 || !scrapedCourses[0]?.course) {
-                    if (!cancelled) setValidation({ status: 'invalid' });
-                    return;
-                }
-
-                if (!cancelled) setValidation({ status: 'valid', course: scrapedCourses[0].course });
-            } catch {
-                if (!cancelled) setValidation({ status: 'invalid' });
+            if (!course) {
+                setValidation({ status: 'invalid' });
+                return;
             }
+
+            if (activeSchedule.containsCourse(course)) {
+                setValidation({ status: 'already_added' });
+                return;
+            }
+
+            setValidation({ status: 'valid', course });
+            return;
         })();
 
         return () => {
@@ -142,8 +138,18 @@ export default function QuickAddModal(): JSX.Element {
     const handleAddCourse = async () => {
         if (isDisabled || !currentSemester) return;
 
-        const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${currentSemester.code}/${uniqueNumber.value}/`;
-        await addCourseByURL(activeSchedule, courseUrl);
+        const course = await getCourseByURL(courseUrl);
+        if (!course) {
+            setValidation({ status: 'invalid' });
+            return;
+        }
+
+        if (activeSchedule.containsCourse(course)) {
+            setValidation({ status: 'already_added' });
+            return;
+        }
+
+        await background.addCourse({ scheduleId: activeSchedule.id, course });
         uniqueNumber.reset();
     };
 
@@ -168,36 +174,52 @@ export default function QuickAddModal(): JSX.Element {
                     transition
                     anchor='bottom start'
                 >
-                    <Input
-                        value={uniqueNumber.value}
-                        onChange={uniqueNumber.handleChange}
-                        maxLength={UNIQUE_ID_LENGTH}
-                        placeholder='Enter Unique Number...'
-                        icon={HashStraight}
-                    />
-                    <div className='w-full flex flex-row items-center justify-between gap-spacing-2 whitespace-nowrap px-spacing-2'>
-                        <Text variant='mini'>Choose from:</Text>
-                        <Text className='flex flex-row items-center gap-spacing-2' variant='mini'>
-                            {availableSemesters.map(sem => (
-                                <Button
-                                    key={sem.code}
-                                    size='mini'
-                                    variant={sem === currentSemester ? 'filled' : 'minimal'}
-                                    color='ut-burntorange'
-                                    onClick={() => setCurrentSemester(sem)}
-                                    className={clsx(
-                                        'whitespace-nowrap',
-                                        sem === currentSemester && 'pointer-events-none'
-                                    )}
-                                >
-                                    {`${sem.season} ${sem.year}`}
-                                </Button>
-                            ))}
-                        </Text>
+                    <div className='flex flex-row gap-spacing-3'>
+                        <Input
+                            className='flex-1 min-w-0'
+                            value={uniqueNumber.value}
+                            onChange={uniqueNumber.handleChange}
+                            maxLength={UNIQUE_ID_LENGTH}
+                            placeholder='Enter unique number'
+                        />
+                        <Dropdown
+                            className='w-40 flex-shrink-0'
+                            selectedOption={
+                                currentSemester
+                                    ? ({
+                                          id: currentSemester.code,
+                                          label: `${currentSemester.season} ${currentSemester.year}`,
+                                      } as DropdownOption)
+                                    : null
+                            }
+                            placeholderText='Semester'
+                            noOptionsText='No semesters found'
+                            onOptionChange={opt => {
+                                const sem = availableSemesters.find(s => s.code === opt.id);
+                                if (sem) setCurrentSemester(sem);
+                            }}
+                            options={availableSemesters.map(
+                                sem =>
+                                    ({
+                                        id: sem.code,
+                                        label: `${sem.season} ${sem.year}`,
+                                    }) as DropdownOption
+                            )}
+                        />
                     </div>
+                    {validation.status === 'none' && (
+                        <Text variant='small' className='text-ut-black'>
+                            Enter the unique number of the course you want.
+                        </Text>
+                    )}
+                    {validation.status === 'already_added' && (
+                        <Text variant='small' className='text-ut-black'>
+                            This course is already in your schedule.
+                        </Text>
+                    )}
                     {validation.status === 'invalid' && (
-                        <Text variant='mini' className='text-ut-black'>
-                            There are no courses associated with this unique number.
+                        <Text variant='small' className='text-ut-black'>
+                            No courses found with this unique number.
                         </Text>
                     )}
                     {validation.status === 'valid' && (
@@ -220,7 +242,7 @@ export default function QuickAddModal(): JSX.Element {
                         <PopoverPanel>
                             {({ close }) => (
                                 <Button
-                                    color='ut-black'
+                                    color='ut-burntorange'
                                     size='regular'
                                     variant='minimal'
                                     onClick={() => {
@@ -233,13 +255,12 @@ export default function QuickAddModal(): JSX.Element {
                             )}
                         </PopoverPanel>
                         <Button
-                            color='ut-green'
+                            color={isDisabled ? 'ut-gray' : 'ut-green'}
                             size='regular'
                             variant='filled'
                             icon={Plus}
                             onClick={handleAddCourse}
                             disabled={isDisabled}
-                            className={isDisabled ? 'bg-[#9CADB7]!' : ''}
                         >
                             Add Course
                         </Button>

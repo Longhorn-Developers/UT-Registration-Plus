@@ -32,7 +32,7 @@ export default function Input({
 }: React.PropsWithChildren<Props>): JSX.Element {
     const Icon = icon;
     return (
-        <div className={clsx('w-full h-9 flex flex-row items-center justify-between gap-spacing-5', className)}>
+        <div className={clsx('h-9 flex flex-row items-center justify-between gap-spacing-5', className)}>
             {Icon && (
                 <div className='h-7 w-7'>
                     {Icon && <Icon {...iconProps} className={clsx('h-7 w-7', iconProps?.className)} />}
