@@ -8,14 +8,13 @@ import { SiteSupport } from '@views/lib/getSiteSupport';
  * Fetches and scrapes course details from a provided URL.
  *
  * This function must be called from a content script context (not the background service worker),
- * as it relies on DOMParser for HTML parsing. It uses the addCourseByURL background message
- * as a fetch proxy to retrieve the HTML.
+ * as it relies on DOMParser for HTML parsing. It uses the background fetch proxy to retrieve the HTML.
  *
  * @param link - The URL from which to fetch the course details.
  * @returns The scraped course, or undefined if scraping fails or no course is found.
  */
 export async function getCourseByURL(link: string): Promise<Course | undefined> {
-    const htmlText = await background.addCourseByURL({
+    const htmlText = await background.fetchFromUrl({
         url: link,
         method: 'GET',
         response: 'text',

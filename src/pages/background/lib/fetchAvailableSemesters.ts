@@ -9,7 +9,7 @@ import { parseSemesterCode, type Semester } from '@shared/types/Course';
  */
 export async function fetchAvailableSemesters(): Promise<Semester[]> {
     try {
-        const htmlText = await background.addCourseByURL({
+        const htmlText = await background.fetchFromUrl({
             url: 'https://registrar.utexas.edu/schedules',
             method: 'GET',
             response: 'text',
