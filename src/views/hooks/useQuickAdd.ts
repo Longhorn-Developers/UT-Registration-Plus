@@ -55,17 +55,13 @@ export function useQuickAdd(): UseQuickAddReturn {
         items: availableSemesters,
         getKey: s => s.code!,
         getLabel: s => `${s.season} ${s.year}`,
+        defaultKey: availableSemesters[0]?.code,
     });
 
-    // Fetch available semesters on mount and default to the first one.
+    // Fetch available semesters on mount.
     useEffect(() => {
-        fetchAvailableSemesters().then(semesters => {
-            setAvailableSemesters(semesters);
-            if (semesters[0]) {
-                semester.setSelectedItem(semesters[0]);
-            }
-        });
-    }, [semester]);
+        fetchAvailableSemesters().then(setAvailableSemesters);
+    }, []);
 
     // Look up the course whenever the unique number or semester changes.
     useEffect(() => {
@@ -94,7 +90,7 @@ export function useQuickAdd(): UseQuickAddReturn {
         return () => {
             cancelled = true;
         };
-    }, [uniqueNumber.value, semester.selectedItem, activeSchedule]);
+    }, [uniqueNumber.value, semester.selectedItem?.code, activeSchedule]);
 
     return {
         semester,

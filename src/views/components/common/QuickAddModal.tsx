@@ -3,7 +3,7 @@ import { Plus, PlusCircle } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
-import { type CourseResult,useQuickAdd } from '@views/hooks/useQuickAdd';
+import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
 import React from 'react';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';

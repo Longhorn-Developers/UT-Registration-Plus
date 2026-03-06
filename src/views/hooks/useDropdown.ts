@@ -1,5 +1,5 @@
 import type { DropdownOption } from '@views/components/common/Dropdown';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 /**
  * Generic hook that bridges the given objects to the Dropdown component.
@@ -15,6 +15,11 @@ export interface UseDropdownOptions<T> {
     getKey: (item: T) => string;
     /** Extracts the display label from an item. */
     getLabel: (item: T) => string;
+    /**
+     * A default key to use when no explicit selection has been made.
+     * Once the user (or `setSelectedItem`) makes an explicit selection, this is ignored.
+     */
+    defaultKey?: string;
 }
 
 /**
@@ -31,8 +36,8 @@ export interface UseDropdownReturn<T> {
     selectedOption: DropdownOption | null;
     /** Handler to pass to the Dropdown component's `onOptionChange` prop. */
     onOptionChange: (option: DropdownOption) => void;
-    /** The currently selected underlying item, or undefined if nothing is selected. */
-    selectedItem: T | undefined;
+    /** The currently selected underlying item, or null if nothing is selected. */
+    selectedItem: T | null;
     /** Programmatically select an item (e.g. to set a default after async loading). */
     setSelectedItem: (item: T) => void;
 }
@@ -49,6 +54,7 @@ export interface UseDropdownReturn<T> {
  *     items: semesters,
  *     getKey: s => s.code,
  *     getLabel: s => `${s.season} ${s.year}`,
+ *     defaultKey: semesters[0]?.code,
  * });
  *
  * <Dropdown
@@ -58,11 +64,13 @@ export interface UseDropdownReturn<T> {
  * />
  *
  * // Access the actual given object:
- * semester.selectedItem // Semester | undefined
+ * semester.selectedItem // Semester | null
  * ```
  */
-export function useDropdown<T>({ items, getKey, getLabel }: UseDropdownOptions<T>): UseDropdownReturn<T> {
+export function useDropdown<T>({ items, getKey, getLabel, defaultKey }: UseDropdownOptions<T>): UseDropdownReturn<T> {
     const [selectedKey, setSelectedKey] = useState<string | null>(null);
+
+    const effectiveKey = selectedKey ?? defaultKey ?? null;
 
     const itemsByKey = useMemo(() => new Map(items.map(item => [getKey(item), item])), [items, getKey]);
 
@@ -71,20 +79,23 @@ export function useDropdown<T>({ items, getKey, getLabel }: UseDropdownOptions<T
         [items, getKey, getLabel]
     );
 
-    const selectedItem = selectedKey !== null ? itemsByKey.get(selectedKey) : undefined;
+    const selectedItem = effectiveKey !== null ? (itemsByKey.get(effectiveKey) ?? null) : null;
 
     const selectedOption = useMemo(
-        () => (selectedItem !== undefined ? { id: getKey(selectedItem), label: getLabel(selectedItem) } : null),
+        () => (selectedItem ? { id: getKey(selectedItem), label: getLabel(selectedItem) } : null),
         [selectedItem, getKey, getLabel]
     );
 
-    const onOptionChange = (option: DropdownOption) => {
+    const onOptionChange = useCallback((option: DropdownOption) => {
         setSelectedKey(option.id);
-    };
+    }, []);
 
-    const setSelectedItem = (item: T) => {
-        setSelectedKey(getKey(item));
-    };
+    const setSelectedItem = useCallback(
+        (item: T) => {
+            setSelectedKey(getKey(item));
+        },
+        [getKey]
+    );
 
     return {
         dropdownOptions,

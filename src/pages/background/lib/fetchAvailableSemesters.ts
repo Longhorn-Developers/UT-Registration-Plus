@@ -1,5 +1,5 @@
 import { background } from '@shared/messages';
-import { parseSemesterCode,type Semester } from '@shared/types/Course';
+import { parseSemesterCode, type Semester } from '@shared/types/Course';
 
 /**
  * Fetches the available semester codes from UT's registrar schedules page.

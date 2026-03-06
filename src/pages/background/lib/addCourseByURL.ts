@@ -38,6 +38,5 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
         // eslint-disable-next-line no-alert
         alert(`Failed to fetch url '${link}'`);
         console.error('Error scraping course:', error);
-        
     }
 }
