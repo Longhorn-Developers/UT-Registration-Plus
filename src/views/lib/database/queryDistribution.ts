@@ -12,6 +12,62 @@ type GradeDistributionParams = {
 };
 
 /**
+ * Processes SQL query results and aggregates grade distribution data
+ *
+ * @param res - The SQL query result containing grade distribution columns and values
+ * @returns A CourseSQLRow object with aggregated grade counts
+ */
+function processQueryResult(res: QueryExecResult): Required<CourseSQLRow> {
+    const row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
+    for (let i = 0; i < res.columns.length; i++) {
+        const col = res.columns[i] as keyof CourseSQLRow;
+        switch (col) {
+            case 'A':
+            case 'A_Minus':
+            case 'B_Plus':
+            case 'B':
+            case 'B_Minus':
+            case 'C_Plus':
+            case 'C':
+            case 'C_Minus':
+            case 'D_Plus':
+            case 'D':
+            case 'D_Minus':
+            case 'F':
+            case 'Other':
+                row[col] = res.values.reduce((acc, cur) => acc + (cur[i] as number), 0) as never;
+                break;
+            default:
+                row[col] = res.columns[i]![0]! as never;
+        }
+    }
+    return row;
+}
+
+/**
+ * Convert CourseSQLRow to Distribution
+ * @param row - the processed sql raw data
+ */
+function rowToGradeDistribution(row: Required<CourseSQLRow>): Distribution {
+    const distribution: Distribution = {
+        A: row.A,
+        'A-': row.A_Minus,
+        'B+': row.B_Plus,
+        B: row.B,
+        'B-': row.B_Minus,
+        'C+': row.C_Plus,
+        C: row.C,
+        'C-': row.C_Minus,
+        'D+': row.D_Plus,
+        D: row.D,
+        'D-': row.D_Minus,
+        F: row.F,
+        Other: row.Other,
+    };
+    return distribution;
+}
+
+/**
  * Fetches the aggregate distribution of grades for a given course from the course db, and the semesters that we have data for
  *
  * @param course - the course to fetch the distribution for
@@ -40,45 +96,8 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
         }
     }
 
-    const row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
-    for (let i = 0; i < res.columns.length; i++) {
-        const col = res.columns[i] as keyof CourseSQLRow;
-        switch (col) {
-            case 'A':
-            case 'A_Minus':
-            case 'B_Plus':
-            case 'B':
-            case 'B_Minus':
-            case 'C_Plus':
-            case 'C':
-            case 'C_Minus':
-            case 'D_Plus':
-            case 'D':
-            case 'D_Minus':
-            case 'F':
-            case 'Other':
-                row[col] = res.values.reduce((acc, cur) => acc + (cur[i] as number), 0) as never;
-                break;
-            default:
-                row[col] = res.columns[i]![0]! as never;
-        }
-    }
-
-    const distribution: Distribution = {
-        A: row.A,
-        'A-': row.A_Minus,
-        'B+': row.B_Plus,
-        B: row.B,
-        'B-': row.B_Minus,
-        'C+': row.C_Plus,
-        C: row.C,
-        'C-': row.C_Minus,
-        'D+': row.D_Plus,
-        D: row.D,
-        'D-': row.D_Minus,
-        F: row.F,
-        Other: row.Other,
-    };
+    const row = processQueryResult(res);
+    const distribution = rowToGradeDistribution(row);
 
     // get unique semesters from the data
     const rawSemesters = res.values.reduce((acc, cur) => acc.add(cur[0] as string), new Set<string>());
@@ -160,48 +179,9 @@ export async function querySemesterDistribution(course: Course, semester: Semest
         }
     }
 
-    const row: Required<CourseSQLRow> = {} as Required<CourseSQLRow>;
-    for (let i = 0; i < res.columns.length; i++) {
-        const col = res.columns[i] as keyof CourseSQLRow;
-        switch (col) {
-            case 'A':
-            case 'A_Minus':
-            case 'B_Plus':
-            case 'B':
-            case 'B_Minus':
-            case 'C_Plus':
-            case 'C':
-            case 'C_Minus':
-            case 'D_Plus':
-            case 'D':
-            case 'D_Minus':
-            case 'F':
-            case 'Other':
-                row[col] = res.values.reduce((acc, cur) => acc + (cur[i] as number), 0) as never;
-                break;
-            default:
-                row[col] = res.columns[i]![0]! as never;
-        }
-    }
+    const row = processQueryResult(res);
 
-    return [
-        {
-            A: row.A,
-            'A-': row.A_Minus,
-            'B+': row.B_Plus,
-            B: row.B,
-            'B-': row.B_Minus,
-            'C+': row.C_Plus,
-            C: row.C,
-            'C-': row.C_Minus,
-            'D+': row.D_Plus,
-            D: row.D,
-            'D-': row.D_Minus,
-            F: row.F,
-            Other: row.Other,
-        },
-        instructorIncluded,
-    ];
+    return [rowToGradeDistribution(row), instructorIncluded];
 }
 
 /**
