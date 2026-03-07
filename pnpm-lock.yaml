@@ -5,14 +5,14 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  es-module-lexer: ^1.5.4
+  es-module-lexer: ^1.7.0
 
 importers:
 
   .:
     dependencies:
       '@date-fns/tz':
-        specifier: ^1.2.0
+        specifier: ^1.4.1
         version: 1.4.1
       '@dnd-kit/core':
         specifier: ^6.3.1
@@ -27,19 +27,19 @@ importers:
         specifier: ^3.2.2
         version: 3.2.2(react@18.3.1)
       '@headlessui/react':
-        specifier: ^2.2.0
+        specifier: ^2.2.9
         version: 2.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@octokit/rest':
         specifier: ^22.0.1
         version: 22.0.1
       '@phosphor-icons/react':
-        specifier: ^2.1.7
+        specifier: ^2.1.10
         version: 2.1.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@sentry/react':
         specifier: ^10.42.0
         version: 10.47.0(react@18.3.1)
       '@tanstack/react-query':
-        specifier: ^5.69.0
+        specifier: ^5.90.21
         version: 5.90.21(react@18.3.1)
       '@tsparticles/engine':
         specifier: ^3.9.1
@@ -72,7 +72,7 @@ importers:
         specifier: ^12.5.0
         version: 12.5.0
       highcharts-react-official:
-        specifier: ^3.2.1
+        specifier: ^3.2.3
         version: 3.2.3(highcharts@12.5.0)(react@18.3.1)
       html-to-image:
         specifier: ^1.11.13
@@ -84,7 +84,7 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       nanoid:
-        specifier: ^5.1.2
+        specifier: ^5.1.6
         version: 5.1.6
       react:
         specifier: ^18.3.1
@@ -99,16 +99,16 @@ importers:
         specifier: ^9.1.0
         version: 9.1.0(@types/react@18.3.28)(react@18.3.1)
       react-syntax-highlighter:
-        specifier: ^15.6.1
+        specifier: ^15.6.6
         version: 15.6.6(react@18.3.1)
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
       sass:
-        specifier: ^1.85.1
+        specifier: ^1.97.3
         version: 1.97.3
       simple-git:
-        specifier: ^3.27.0
+        specifier: ^3.32.3
         version: 3.32.3
       sql.js:
         specifier: 1.14.1
@@ -133,13 +133,13 @@ importers:
         specifier: 2.3.0
         version: 2.3.0
       '@iconify-json/bi':
-        specifier: ^1.2.2
+        specifier: ^1.2.7
         version: 1.2.7
       '@iconify-json/ic':
-        specifier: ^1.2.2
+        specifier: ^1.2.4
         version: 1.2.4
       '@iconify-json/iconoir':
-        specifier: ^1.2.7
+        specifier: ^1.2.10
         version: 1.2.10
       '@iconify-json/material-symbols':
         specifier: ^1.2.60
@@ -148,10 +148,10 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2
       '@iconify-json/ri':
-        specifier: ^1.2.5
+        specifier: ^1.2.10
         version: 1.2.10
       '@iconify-json/streamline':
-        specifier: ^1.2.2
+        specifier: ^1.2.5
         version: 1.2.5
       '@semantic-release/exec':
         specifier: ^7.1.0
@@ -181,7 +181,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       '@types/gulp':
-        specifier: ^4.0.17
+        specifier: ^4.0.18
         version: 4.0.18
       '@types/gulp-zip':
         specifier: ^4.0.4
@@ -193,16 +193,16 @@ importers:
         specifier: ^2.4.9
         version: 2.4.9
       '@types/react':
-        specifier: ^18.3.18
+        specifier: ^18.3.28
         version: 18.3.28
       '@types/react-dom':
-        specifier: ^18.3.5
+        specifier: ^18.3.7
         version: 18.3.7(@types/react@18.3.28)
       '@types/react-syntax-highlighter':
         specifier: ^15.5.13
         version: 15.5.13
       '@types/semver':
-        specifier: ^7.5.8
+        specifier: ^7.7.1
         version: 7.7.1
       '@types/sql.js':
         specifier: ^1.4.9
@@ -235,7 +235,7 @@ importers:
         specifier: ^4.0.18
         version: 4.1.2(vitest@4.1.2)
       chalk:
-        specifier: ^5.4.1
+        specifier: ^5.6.2
         version: 5.6.2
       chromatic:
         specifier: ^15.2.0
@@ -250,10 +250,10 @@ importers:
         specifier: ^17.3.1
         version: 17.4.0
       es-module-lexer:
-        specifier: ^1.5.4
+        specifier: ^1.7.0
         version: 1.7.0
       gulp:
-        specifier: ^5.0.0
+        specifier: ^5.0.1
         version: 5.0.1
       gulp-execa:
         specifier: ^8.0.1
@@ -262,7 +262,7 @@ importers:
         specifier: ^6.1.0
         version: 6.1.0(gulp@5.0.1)
       jsdom:
-        specifier: ^28.0.0
+        specifier: ^28.1.0
         version: 28.1.0
       path:
         specifier: ^0.12.7
