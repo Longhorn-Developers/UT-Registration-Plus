@@ -1,6 +1,6 @@
 import { CalendarDots, ChatText, FileText, ImageSquare, Minus, Plus, Smiley } from '@phosphor-icons/react';
 import { colorsFlattened } from '@shared/util/themeColors';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@views/components/common/Button';
 import React from 'react';
 

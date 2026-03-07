@@ -16,7 +16,6 @@ module.exports = {
         'airbnb-base',
         'airbnb/rules/react',
         'airbnb-typescript',
-        '@unocss',
         'prettier',
     ],
     plugins: [
@@ -86,6 +85,13 @@ module.exports = {
         '@typescript-eslint/no-use-before-define': ['off'],
         'class-methods-use-this': 'off',
         'react-hooks/exhaustive-deps': 'warn',
+        'react-hooks/error-boundaries': 'off',
+        'react-hooks/globals': 'off',
+        'react-hooks/immutability': 'off',
+        'react-hooks/purity': 'off',
+        'react-hooks/refs': 'off',
+        'react-hooks/set-state-in-effect': 'off',
+        'react-hooks/use-memo': 'off',
         '@typescript-eslint/lines-between-class-members': 'off',
         'no-param-reassign': [
             'error',
@@ -131,12 +137,7 @@ module.exports = {
         ],
         'react/no-deprecated': 'warn',
         'react/prop-types': 'off',
-        'react-prefer-function-component/react-prefer-function-component': [
-            'warn',
-            {
-                allowComponentDidCatch: false,
-            },
-        ],
+        'react-prefer-function-component/react-prefer-function-component': 'warn',
         'react/function-component-definition': 'off',
         'react/button-has-type': 'off',
         'jsdoc/require-param-type': 'off',
