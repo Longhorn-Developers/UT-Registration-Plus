@@ -3,7 +3,7 @@ import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import { useSentryScope } from '@views/contexts/SentryContext';
-import { GRID_DEFAULT_START, SIX_AM_MINUTES, type CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
+import { GRID_DEFAULT_START, type CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React, { Fragment } from 'react';
 
 import CalendarCell from './CalendarGridCell';

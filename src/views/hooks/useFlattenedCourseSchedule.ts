@@ -51,10 +51,6 @@ export interface FlattenedCourseSchedule {
 }
 
 /**
- * idk what this is for tbh
- */
-export const SIX_AM_MINUTES = 360; // 6:00
-/**
  * 8:00 AM latest start time aka DEFAULT, in minutes
  */
 export const GRID_DEFAULT_START = 480;
