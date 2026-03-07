@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import { execSync } from 'node:child_process';
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
@@ -6,8 +5,8 @@ import { resolve } from 'path';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
 import type { Plugin, ResolvedConfig, Rollup, ViteDevServer } from 'vite';
-import { defineConfig } from 'vite';
 import inspect from 'vite-plugin-inspect';
+import { defineConfig } from 'vitest/config';
 
 import packageJson from './package.json';
 import manifest from './src/manifest';
@@ -235,6 +234,9 @@ export default defineConfig({
         hmr: {
             clientPort: 5173,
         },
+        cors: {
+            origin: [/chrome-extension:\/\//],
+        },
         proxy: {
             '/debug.html': {
                 target: 'http://localhost:5173',
@@ -290,11 +292,5 @@ export default defineConfig({
             provider: 'v8',
         },
     },
-    css: {
-        preprocessorOptions: {
-            scss: {
-                api: 'modern-compiler',
-            },
-        },
-    },
+    css: {},
 });
