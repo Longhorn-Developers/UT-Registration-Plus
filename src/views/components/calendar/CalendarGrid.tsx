@@ -58,7 +58,8 @@ export default function CalendarGrid({
     setCourse,
     startMinutes,
 }: React.PropsWithChildren<Props>): JSX.Element {
-    // ensuring a positive result by clamping to 0 - derek
+    // there was a huge mishap with 6 am start time calc here and now it is smoothly done
+    // let's try to keep our codebase organized and not so all over the place
     const visualStartHour = (startMinutes ?? GRID_DEFAULT_START) / 60;
 
     const visualEndHour = 21;
