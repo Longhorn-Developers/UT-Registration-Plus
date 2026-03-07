@@ -2,7 +2,7 @@ import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import { tailwindColorways } from '@shared/util/storybook';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import type { BaseItem, SortableListProps } from '@views/components/common/SortableList';
 import { SortableList } from '@views/components/common/SortableList';

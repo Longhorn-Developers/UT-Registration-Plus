@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import type { ElementType, JSXElementConstructor, ReactNode, Ref } from 'react';
 import React from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ReactTag = keyof React.JSX.IntrinsicElements | JSXElementConstructor<any>;
 type PropsOf<TTag extends ReactTag> = TTag extends React.ElementType ? Omit<React.ComponentProps<TTag>, 'ref'> : never;
 
