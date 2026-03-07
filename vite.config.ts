@@ -1,13 +1,12 @@
-/// <reference types="vitest" />
 import { crx } from '@crxjs/vite-plugin';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import { execSync } from 'child_process';
 import { resolve } from 'path';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
 import type { Plugin, ResolvedConfig, Rollup, ViteDevServer } from 'vite';
-import { defineConfig } from 'vite';
 import inspect from 'vite-plugin-inspect';
+import { defineConfig } from 'vitest/config';
 
 import packageJson from './package.json';
 import manifest from './src/manifest';
@@ -39,13 +38,13 @@ if (process.env.SENTRY_ENV === 'production') {
     process.env.VITE_SENTRY_ENVIRONMENT = 'development';
 }
 
-export const preambleCode = `
-import RefreshRuntime from "__BASE__@react-refresh"
-RefreshRuntime.injectIntoGlobalHook(window)
-window.$RefreshReg$ = () => {}
-window.$RefreshSig$ = () => (type) => type
-window.__vite_plugin_react_preamble_installed__ = true
-`;
+// export const preambleCode = `
+// import RefreshRuntime from "__BASE__@react-refresh"
+// RefreshRuntime.injectIntoGlobalHook(window)
+// window.$RefreshReg$ = () => {}
+// window.$RefreshSig$ = () => (type) => type
+// window.__vite_plugin_react_preamble_installed__ = true
+// `;
 
 const isOutputChunk = (input: Rollup.OutputAsset | Rollup.OutputChunk): input is Rollup.OutputChunk => 'code' in input;
 
@@ -119,7 +118,7 @@ let server: ViteDevServer;
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
-        react(),
+        // react(),
         UnoCSS(),
         Icons({ compiler: 'jsx', jsx: 'react' }),
         crx({ manifest }),
@@ -236,6 +235,11 @@ export default defineConfig({
         hmr: {
             clientPort: 5173,
         },
+        cors: {
+            origin: [
+                /chrome-extension:\/\//,
+            ],
+        },
         proxy: {
             '/debug.html': {
                 target: 'http://localhost:5173',
@@ -290,13 +294,6 @@ export default defineConfig({
         environment: 'jsdom',
         coverage: {
             provider: 'v8',
-        },
-    },
-    css: {
-        preprocessorOptions: {
-            scss: {
-                api: 'modern-compiler',
-            },
         },
     },
 });

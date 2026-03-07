@@ -1,5 +1,5 @@
 import { CalendarDots, ChatText, FileText, Plus, Smiley } from '@phosphor-icons/react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
 import React from 'react';

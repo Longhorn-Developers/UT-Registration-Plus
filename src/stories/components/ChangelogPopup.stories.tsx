@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@views/components/common/Button';
 import ChangelogPopup from '@views/components/common/ChangelogPopup';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
