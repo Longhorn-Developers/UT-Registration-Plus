@@ -119,13 +119,13 @@ export default function CalendarGrid({
     );
 }
 
-// TODO: Possibly refactor to be more concise
-// TODO: Deal with react strict mode (wacky movements)
 interface AccountForCourseConflictsProps {
     courseCells: CalendarGridCourse[];
     setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 }
 
+// TODO: Possibly refactor to be more concise
+// TODO: Deal with react strict mode (wacky movements)
 function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
     // Sentry is not defined in storybook.
     // This is a valid use case for a condition hook, since IS_STORYBOOK is determined at build time,
