@@ -47,7 +47,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
     }
 });
 
-// initialize the message listener that will listen for messages from the content script
+// initialize the message listener that listens for messages from the content script
 const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...browserActionHandler,
     ...tabManagementHandler,
