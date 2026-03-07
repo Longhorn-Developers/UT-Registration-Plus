@@ -15,6 +15,7 @@ const DEFAULT_START_HOUR = GRID_DEFAULT_START / 60; // 8 AM
 
 interface Props {
     courseCells?: CalendarGridCourse[];
+    startMinutes?: number;
     saturdayClass?: boolean;
     setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 }
@@ -55,24 +56,10 @@ export default function CalendarGrid({
     courseCells,
     saturdayClass: _saturdayClass,
     setCourse,
+    startMinutes,
 }: React.PropsWithChildren<Props>): JSX.Element {
-    let earliestClassHour = DEFAULT_START_HOUR;
-
-    courseCells?.forEach(c => {
-        if (c.async) {
-            return;
-        }
-
-        const startMinutes = (c.calendarGridPoint.startIndex - 3) * 30 + SIX_AM_MINUTES;
-        const startHour = Math.floor(startMinutes / 60);
-
-        if (startHour < earliestClassHour) {
-            earliestClassHour = startHour;
-        }
-    });
-
     // ensuring a positive result by clamping to 0 - derek
-    const visualStartHour = Math.max(0, Math.min(earliestClassHour, 8));
+    const visualStartHour = (startMinutes ?? GRID_DEFAULT_START) / 60;
 
     const visualEndHour = 21;
     const hoursOfDay = Array.from({ length: visualEndHour - visualStartHour }, (_, i) => i + visualStartHour);
