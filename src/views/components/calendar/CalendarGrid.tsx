@@ -119,6 +119,8 @@ export default function CalendarGrid({
     );
 }
 
+// TODO: Possibly refactor to be more concise
+// TODO: Deal with react strict mode (wacky movements)
 interface AccountForCourseConflictsProps {
     courseCells: CalendarGridCourse[];
     setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
