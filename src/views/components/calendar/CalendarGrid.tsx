@@ -3,7 +3,7 @@ import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import { useSentryScope } from '@views/contexts/SentryContext';
-import { DEFAULT_START_HOUR, type CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
+import { GRID_DEFAULT_START, SIX_AM_MINUTES, type CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React, { Fragment } from 'react';
 
 import CalendarCell from './CalendarGridCell';
@@ -11,6 +11,7 @@ import { calculateCourseCellColumns } from './utils';
 
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
+const DEFAULT_START_HOUR = GRID_DEFAULT_START / 60; // 8 AM
 
 interface Props {
     courseCells?: CalendarGridCourse[];
@@ -62,7 +63,7 @@ export default function CalendarGrid({
             return;
         }
 
-        const startMinutes = (c.calendarGridPoint.startIndex - 3) * 30 + 360;
+        const startMinutes = (c.calendarGridPoint.startIndex - 3) * 30 + SIX_AM_MINUTES;
         const startHour = Math.floor(startMinutes / 60);
 
         if (startHour < earliestClassHour) {
