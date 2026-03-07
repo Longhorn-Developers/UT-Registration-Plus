@@ -151,7 +151,9 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
             calculateCourseCellColumns(dayCells);
         } catch (error) {
             console.error(error);
-            if (sentryScope) sentryScope.captureException(error);
+            if (sentryScope) {
+                sentryScope.captureException(error);
+            }
         }
     });
 
