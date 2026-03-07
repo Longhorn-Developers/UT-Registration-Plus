@@ -1,8 +1,10 @@
-import type { PropsOf, ReactTag } from '@headlessui/react/dist/types';
 import styles from '@views/components/common/Text/Text.module.scss';
 import clsx from 'clsx';
-import type { ElementType, ReactNode, Ref } from 'react';
+import type { ElementType, JSXElementConstructor, ReactNode, Ref } from 'react';
 import React from 'react';
+
+type ReactTag = keyof React.JSX.IntrinsicElements | JSXElementConstructor<any>;
+type PropsOf<TTag extends ReactTag> = TTag extends React.ElementType ? Omit<React.ComponentProps<TTag>, 'ref'> : never;
 
 type PropsWeControl = 'as' | 'children';
 type CleanProps<TTag extends ReactTag, TOmitableProps extends PropertyKey = never> = Omit<

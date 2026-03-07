@@ -8,6 +8,7 @@ import { spacing } from './src/shared/types/Spacing';
 import { colors } from './src/shared/types/ThemeColors';
 
 export default defineConfig({
+    virtualModulePrefix: 'uno',
     rules: [
         [
             'btn-transition',
