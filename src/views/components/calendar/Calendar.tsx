@@ -1,11 +1,11 @@
+import exclamationMarkIcon from '@assets/exclamation-mark.svg';
+import flagIcon from '@assets/flag.svg';
 import { MessageListener } from '@chrome-extension-toolkit';
 import importSchedule from '@pages/background/lib/importSchedule';
 import { Sidebar } from '@phosphor-icons/react';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
-import { CRX_PAGES } from '@shared/types/CRXPages';
-import { openReportWindow } from '@shared/util/openReportWindow';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
@@ -17,12 +17,11 @@ import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalog
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
+import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import React, { useEffect, useState } from 'react';
-
-import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
 import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
@@ -40,6 +39,7 @@ export default function Calendar(): ReactNode {
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const showWhatsNewDialog = useWhatsNewPopUp();
+    const showReportIssueDialog = useReportIssueDialog();
 
     const [showUTDiningPromo, setShowUTDiningPromo] = useState<boolean>(false);
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
@@ -237,41 +237,44 @@ export default function Calendar(): ReactNode {
                             <ResourceLinks />
                             {/* <TeamLinks /> */}
                             <Divider orientation='horizontal' size='100%' />
-                            {showUTDiningPromo && (
-                                <DiningAppPromo
-                                    onClose={() => {
-                                        setShowUTDiningPromo(false);
-                                        OptionsStore.set('showUTDiningPromo', false);
-                                    }}
-                                />
-                            )}
                             <div className='flex flex-col gap-spacing-3'>
-                                <a
-                                    href={CRX_PAGES.REPORT}
-                                    className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    onClick={event => {
-                                        event.preventDefault();
-                                        openReportWindow();
-                                    }}
+                                {showUTDiningPromo && (
+                                    <DiningAppPromo
+                                        onClose={() => {
+                                            setShowUTDiningPromo(false);
+                                            OptionsStore.set('showUTDiningPromo', false);
+                                        }}
+                                    />
+                                )}
+                                <button
+                                    type='button'
+                                    className='min-w-[16.25rem] w-full flex items-center gap-spacing-3 border border-ut-offwhite/50 rounded bg-white p-spacing-4 text-left'
+                                    onClick={showReportIssueDialog}
                                 >
-                                    <Text variant='p'>Send us Feedback!</Text>
-                                    <OutwardArrowIcon className='h-4 w-4' />
-                                </a>
-                                <a
-                                    href=''
-                                    className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    onClick={event => {
-                                        event.preventDefault();
-                                        showWhatsNewDialog();
-                                    }}
+                                    <div className='w-6 flex items-center justify-center'>
+                                        <img src={flagIcon} alt='' aria-hidden='true' className='h-6 w-6 text-ut-black' />
+                                    </div>
+                                    <Text variant='small' className='text-ut-burntorange'>
+                                        Send us Feedback!
+                                    </Text>
+                                </button>
+                                <button
+                                    type='button'
+                                    className='min-w-[16.25rem] w-full flex items-center gap-spacing-3 border border-ut-offwhite/50 rounded bg-white p-spacing-4 text-left'
+                                    onClick={showWhatsNewDialog}
                                 >
-                                    <Text variant='p'>What&apos;s New!</Text>
-                                    <OutwardArrowIcon className='h-4 w-4' />
-                                </a>
+                                    <div className='w-6 flex items-center justify-center'>
+                                        <img
+                                            src={exclamationMarkIcon}
+                                            alt=''
+                                            aria-hidden='true'
+                                            className='h-6 w-6 text-ut-black'
+                                        />
+                                    </div>
+                                    <Text variant='small' className='text-ut-burntorange'>
+                                        What&apos;s New!
+                                    </Text>
+                                </button>
                             </div>
                         </div>
 
