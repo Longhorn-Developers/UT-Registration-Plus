@@ -91,7 +91,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
             }
 
             return meetings.flatMap(meeting => {
-                if (meeting.days.includes(DAY_MAP.S) || meeting.startTime < 480) {
+                if (meeting.days.includes(DAY_MAP.S)) {
                     return processAsyncCourses({ courseDeptAndInstr, status: overriddenStatus, course });
                 }
 
