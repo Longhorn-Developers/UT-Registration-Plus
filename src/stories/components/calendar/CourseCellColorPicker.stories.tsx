@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import CourseCellColorPicker from '@views/components/calendar/CalendarCourseCellColorPicker/CourseCellColorPicker';
 
 const meta = {

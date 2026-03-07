@@ -1,5 +1,5 @@
 import { ImageSquare } from '@phosphor-icons/react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import Dropdown from '@views/components/common/Dropdown';
 import React, { type ComponentProps, useState } from 'react';
 

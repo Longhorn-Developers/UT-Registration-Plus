@@ -1,5 +1,5 @@
 import { UserSchedule } from '@shared/types/UserSchedule';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
 import useSchedules from '@views/hooks/useSchedules';
 
