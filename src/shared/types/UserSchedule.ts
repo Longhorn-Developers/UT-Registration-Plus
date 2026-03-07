@@ -13,6 +13,8 @@ export class UserSchedule {
     hours: number;
     /** Unix timestamp of when the schedule was last updated */
     updatedAt: number;
+    /** Unix timestamp of when courses were last checked/refreshed */
+    lastCheckedAt?: number | null;
 
     constructor(schedule: Serialized<UserSchedule>) {
         this.courses = schedule.courses.map(c => new Course(c));
@@ -20,6 +22,7 @@ export class UserSchedule {
         this.name = schedule.name;
         this.hours = this.courses.reduce((acc, c) => acc + c.creditHours, 0);
         this.updatedAt = schedule.updatedAt ?? 0;
+        this.lastCheckedAt = schedule.lastCheckedAt ?? null;
     }
 
     containsCourse(course: Course): boolean {

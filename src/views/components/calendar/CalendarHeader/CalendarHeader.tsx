@@ -1,7 +1,6 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ArrowsClockwise, CalendarDots, Export, FileCode, FilePng, FileText, Sidebar } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
-import { StatusCheckerStore } from '@shared/storage/StatusCheckerStore';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
@@ -10,10 +9,10 @@ import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/
 import { LargeLogo } from '@views/components/common/LogoIcon';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
 import Text from '@views/components/common/Text/Text';
+import useRelativeTime from '@views/hooks/useRelativeTime';
 import useSchedules from '@views/hooks/useSchedules';
-import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
 
@@ -28,28 +27,32 @@ interface CalendarHeaderProps {
  */
 export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const [activeSchedule] = useSchedules();
-    const [lastCheckedAt, setLastCheckedAt] = useState<number | null>(null);
+    const lastCheckedText = useRelativeTime(activeSchedule.lastCheckedAt);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    // track per-schedule cooldowns so switching schedules allows immediate refresh
+    const [cooldownIds, setCooldownIds] = useState<Set<string>>(new Set());
 
-    useEffect(() => {
-        StatusCheckerStore.get('lastCheckedAt').then(setLastCheckedAt);
-        const unsubscribe = StatusCheckerStore.subscribe('lastCheckedAt', ({ newValue }) => {
-            setLastCheckedAt(newValue ?? null);
-        });
-
-        return () => {
-            StatusCheckerStore.unsubscribe(unsubscribe);
-        };
-    }, []);
+    const isCooldown = cooldownIds.has(activeSchedule.id);
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
+        // Ensure the spinner is visible long enough to provide visual feedback
+        const minSpin = new Promise(r => setTimeout(r, 400));
         try {
-            await background.refreshCourseStatuses({});
+            await Promise.all([background.refreshCourses({}), minSpin]);
         } catch (error) {
-            console.error('Failed to refresh course statuses:', error);
+            console.error('Failed to refresh courses:', error);
         } finally {
-            setTimeout(() => setIsRefreshing(false), 3000);
+            setIsRefreshing(false);
+            const scheduleId = activeSchedule.id;
+            setCooldownIds(prev => new Set(prev).add(scheduleId));
+            setTimeout(() => {
+                setCooldownIds(prev => {
+                    const next = new Set(prev);
+                    next.delete(scheduleId);
+                    return next;
+                });
+            }, 3000);
         }
     };
 
@@ -173,9 +176,9 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                         'min-w-fit flex flex-1 items-center justify-end gap-3 self-start'
                     )}
                 >
-                    {lastCheckedAt && (
+                    {lastCheckedText && (
                         <Text variant='mini' className='whitespace-nowrap text-ut-gray !font-normal'>
-                            Last checked: {getUpdatedAtDateTimeString(lastCheckedAt)}
+                            Last checked: {lastCheckedText}
                         </Text>
                     )}
                     <Button
@@ -189,7 +192,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             }),
                         }}
                         onClick={handleRefresh}
-                        disabled={isRefreshing}
+                        disabled={isRefreshing || isCooldown}
                     >
                         Refresh
                     </Button>
