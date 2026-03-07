@@ -49,7 +49,8 @@ export interface FlattenedCourseSchedule {
     activeSchedule: UserSchedule;
 }
 
-const GRID_START_MINUTES = 360; // 6:00 AM
+export const GRID_START_MINUTES = 360; // 6:00 AM
+export const DEFAULT_START_HOUR = 8;
 
 /**
  * Converts minutes to an index value.

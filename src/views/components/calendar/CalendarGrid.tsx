@@ -3,7 +3,7 @@ import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import { useSentryScope } from '@views/contexts/SentryContext';
-import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
+import { DEFAULT_START_HOUR, type CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React, { Fragment } from 'react';
 
 import CalendarCell from './CalendarGridCell';
@@ -11,7 +11,6 @@ import { calculateCourseCellColumns } from './utils';
 
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
-const DEFAULT_START_HOUR = 8;
 
 interface Props {
     courseCells?: CalendarGridCourse[];
