@@ -1,4 +1,4 @@
-import type { Serializable } from '@chrome-extension-toolkit';
+import type { Serializable, StoreDefaults } from '@chrome-extension-toolkit';
 import { createSyncStore } from '@chrome-extension-toolkit';
 
 /**
@@ -29,8 +29,8 @@ export interface IOptionsStore {
     allowMoreSchedules: boolean;
 }
 
-const defaults: IOptionsStore = {
-    enableCourseStatusChips: false,
+const defaults: StoreDefaults<IOptionsStore> = {
+    enableCourseStatusChips: true,
     enableHighlightConflicts: true,
     enableScrollToLoad: true,
     enableDataRefreshing: false,
@@ -44,7 +44,9 @@ const defaults: IOptionsStore = {
  * A store that is used for storing user options.
  * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
  */
-export const OptionsStore = createSyncStore<IOptionsStore>('OptionsStore', defaults);
+export const OptionsStore = createSyncStore<IOptionsStore>('OptionsStore', defaults, {
+    usePrefix: false,
+});
 
 let initPromise: Promise<void> | null = null;
 

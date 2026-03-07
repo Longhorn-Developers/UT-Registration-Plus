@@ -1,4 +1,4 @@
-import type { Serializable } from '@chrome-extension-toolkit';
+import type { Serializable, StoreDefaults } from '@chrome-extension-toolkit';
 import { createLocalStore } from '@chrome-extension-toolkit';
 import browser from 'webextension-polyfill';
 
@@ -19,7 +19,7 @@ const getManifestVersion = (): string => {
     return manifest?.version ?? '0.0.0';
 };
 
-const defaults: IExtensionStore = {
+const defaults: StoreDefaults<IExtensionStore> = {
     version: getManifestVersion(),
     lastUpdate: Date.now(),
     lastWhatsNewPopupVersion: 0,
@@ -28,7 +28,9 @@ const defaults: IExtensionStore = {
 /**
  * A store that is used for storing user options.
  */
-export const ExtensionStore = createLocalStore<IExtensionStore>('ExtensionStore', defaults);
+export const ExtensionStore = createLocalStore<IExtensionStore>('ExtensionStore', defaults, {
+    usePrefix: false,
+});
 
 let initPromise: Promise<void> | null = null;
 

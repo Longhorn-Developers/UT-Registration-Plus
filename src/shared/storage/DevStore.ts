@@ -1,4 +1,4 @@
-import type { Serializable } from '@chrome-extension-toolkit';
+import type { Serializable, StoreDefaults } from '@chrome-extension-toolkit';
 import { createLocalStore } from '@chrome-extension-toolkit';
 
 /**
@@ -8,31 +8,33 @@ interface IDevStore {
     /** whether the user is a developer */
     isDeveloper: boolean;
     /** the tabId for the debug tab */
-    debugTabId: number;
+    debugTabId?: number;
     /** whether the debug tab is visible */
-    wasDebugTabVisible: boolean;
+    wasDebugTabVisible?: boolean;
     /** whether we should enable extension reloading */
-    isExtensionReloading: boolean;
+    isExtensionReloading?: boolean;
     /** whether we should enable tab reloading */
-    isTabReloading: boolean;
+    isTabReloading?: boolean;
     /** The id of the tab that we want to reload (after the extension reloads itself ) */
-    reloadTabId: number;
+    reloadTabId?: number;
 }
 
-const defaults: IDevStore = {
+const defaults: StoreDefaults<IDevStore> = {
     isDeveloper: false,
-    debugTabId: 0,
+    debugTabId: undefined,
     isTabReloading: true,
     wasDebugTabVisible: false,
     isExtensionReloading: true,
-    reloadTabId: 0,
-} as const satisfies IDevStore;
+    reloadTabId: undefined,
+};
 
 /**
  * A store that is used to store data that is only relevant during development.
  * Wrapped with auto-initialization and fallback to defaults if storage APIs fail.
  */
-export const DevStore = createLocalStore<IDevStore>('DevStore', defaults);
+export const DevStore = createLocalStore<IDevStore>('DevStore', defaults, {
+    usePrefix: false,
+});
 
 let initPromise: Promise<void> | null = null;
 

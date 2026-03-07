@@ -1,4 +1,4 @@
-import type { Serializable, Serialized } from '@chrome-extension-toolkit';
+import type { Serializable, Serialized, StoreDefaults } from '@chrome-extension-toolkit';
 import { createLocalStore } from '@chrome-extension-toolkit';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import browser from 'webextension-polyfill';
@@ -13,7 +13,7 @@ interface IUserScheduleStore {
     activeIndex: number;
 }
 
-const defaults: IUserScheduleStore = {
+const defaults: StoreDefaults<IUserScheduleStore> = {
     schedules: [
         {
             courses: [],

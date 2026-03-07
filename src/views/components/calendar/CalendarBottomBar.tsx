@@ -1,10 +1,13 @@
+import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
+import { Status } from '@shared/types/Course';
+import CourseStatus from '@views/components/common/CourseStatus';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CalendarCourseBlock from './CalendarCourseCell';
 
@@ -21,15 +24,22 @@ type CalendarBottomBarProps = {
  */
 export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBottomBarProps): ReactNode {
     const asyncCourseCells = courseCells?.filter(block => block.async);
-    const displayCourses = asyncCourseCells && asyncCourseCells.length > 0;
+    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
 
-    if (!displayCourses) return null;
+    useEffect(() => {
+        initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
 
-    const isFirefox = typeof navigator !== 'undefined' && /Firefox/.test(navigator.userAgent);
-    const paddingBottom = isFirefox ? '1.5rem' : '0.75rem';
+        const unsubscribe = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
+            setEnableCourseStatusChips(newValue);
+        });
+
+        return () => {
+            OptionsStore.unsubscribe(unsubscribe);
+        };
+    }, []);
 
     return (
-        <div style={{ paddingBottom }} className='w-full flex pl-spacing-7 pr-spacing-3 pt-spacing-4'>
+        <div className='w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4'>
             <div className='flex flex-grow items-center gap-1 text-nowrap'>
                 <Text variant='p' className='text-ut-black uppercase'>
                     Async / Other
@@ -37,9 +47,9 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                 <Text variant='h4' className='text-theme-offwhite/50'>
                     —
                 </Text>
-                <div className='inline-flex gap-2.5'>
+                <div className='inline-flex gap-2.5 min-h-12.5'>
                     <ColorPickerProvider>
-                        {asyncCourseCells.map(block => {
+                        {(asyncCourseCells ?? []).map(block => {
                             const { courseDeptAndInstr, status, className } = block.componentProps;
                             return (
                                 <CalendarCourseBlock
@@ -55,6 +65,13 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                     </ColorPickerProvider>
                 </div>
             </div>
+            {enableCourseStatusChips && (
+                <div className='flex items-center gap-4 pr-spacing-3'>
+                    <CourseStatus status={Status.WAITLISTED} size='mini' />
+                    <CourseStatus status={Status.CLOSED} size='mini' />
+                    <CourseStatus status={Status.CANCELLED} size='mini' />
+                </div>
+            )}
         </div>
     );
 }

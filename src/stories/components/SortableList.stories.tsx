@@ -100,7 +100,7 @@ export const Default: Story = {
     },
     render: args => (
         <div className='h-3xl w-3xl transform-none'>
-            <SortableList {...(args as SortableListProps<BaseItem>)} />
+            <SortableList {...(args as SortableListProps<CourseWithId>)} />
         </div>
     ),
 };
