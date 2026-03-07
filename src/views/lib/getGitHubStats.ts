@@ -33,7 +33,7 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
     },
     {
         name: 'Derek Chen',
-        role: ['LHD Advisor', 'UTRP Co-Lead', 'UTRP Senior SWE'],
+        role: ['LHD Advisor', 'UTRP Senior SWE'],
         githubUsername: 'DereC4',
     },
     { name: 'Kabir Ramzan', role: ['Events Director'], githubUsername: 'CMEONE' },
