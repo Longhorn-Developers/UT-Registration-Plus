@@ -88,7 +88,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
 
     // go through every meeting we have and finds minimum start time with starting best so far being GRID_DEFAULT_START_MINUTES
     // this variable will go on a journey through time and space to finally be delivered to the viewable calendar grid as the start hour of the entire grid
-    const gridStartMinutes = allMeetings.reduce((earliest, current) => {
+    const rawGridStartMinutes = allMeetings.reduce((earliest, current) => {
         if (current.days.includes(DAY_MAP.S) || current.startTime >= 1440) {
             // keep accumulator value unchanged, go to next iteration
             return earliest;
@@ -97,6 +97,8 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
         const t = current.startTime >= 1440 ? current.startTime - 720 : current.startTime;
         return Math.min(earliest, t);
     }, GRID_DEFAULT_START);
+    // round down to closest hour (in minute units)
+    const gridStartMinutes = Math.floor(rawGridStartMinutes / 60) * 60;
 
     const processedCourses = activeSchedule.courses
         .flatMap(course => {
