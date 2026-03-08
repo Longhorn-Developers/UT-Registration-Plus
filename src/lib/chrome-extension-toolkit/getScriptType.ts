@@ -25,8 +25,13 @@ export default function getScriptType(): ScriptType | null {
         return ScriptType.BACKGROUND_SCRIPT;
     }
 
-    if (window.location.href.startsWith(`chrome-extension://${chrome.runtime.id}`)) {
-        if (manifest.action?.default_popup && window.location.href.includes(manifest.action.default_popup)) {
+    const runtimeBase = chrome.runtime.getURL('');
+    if (window.location.href.startsWith(runtimeBase)) {
+        if (window.location.href.includes('_generated_background_page.html')) {
+            return ScriptType.BACKGROUND_SCRIPT;
+        }
+        const defaultPopup = manifest.action?.default_popup || manifest.browser_action?.default_popup;
+        if (defaultPopup && window.location.href.includes(defaultPopup)) {
             return ScriptType.EXTENSION_POPUP;
         }
         return ScriptType.EXTENSION_PAGE;

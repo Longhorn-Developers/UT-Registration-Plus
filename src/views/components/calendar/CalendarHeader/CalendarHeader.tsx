@@ -85,7 +85,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 <div className={clsx(styles.primaryActions, 'min-w-fit flex gap-5')}>
                     <DialogProvider>
                         <Menu>
-                            <MenuButton className='bg-transparent'>
+                            <MenuButton as='div' className='bg-transparent'>
                                 <Button color='ut-black' size='small' variant='minimal' icon={Export}>
                                     Export
                                 </Button>
@@ -103,7 +103,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                 transition
                                 anchor='bottom start'
                             >
-                                <MenuItem>
+                                <MenuItem as='div'>
                                     <Button
                                         className='w-full flex justify-start'
                                         onClick={() => requestAnimationFrame(() => saveCalAsPng())}
@@ -115,7 +115,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                         Save as .png
                                     </Button>
                                 </MenuItem>
-                                <MenuItem>
+                                <MenuItem as='div'>
                                     <Button
                                         className='w-full flex justify-start'
                                         onClick={saveAsCal}
@@ -127,7 +127,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                         Save as .cal
                                     </Button>
                                 </MenuItem>
-                                <MenuItem>
+                                <MenuItem as='div'>
                                     <Button
                                         className='w-full flex justify-start'
                                         onClick={() => handleExportJson(activeSchedule.id)}
