@@ -47,7 +47,7 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                 <Text variant='h4' className='text-theme-offwhite/50'>
                     —
                 </Text>
-                <div className='inline-flex gap-2.5 min-h-12.5'>
+                <div className='min-h-12.5 inline-flex gap-2.5'>
                     <ColorPickerProvider>
                         {(asyncCourseCells ?? []).map(block => {
                             const { courseDeptAndInstr, status, className } = block.componentProps;
