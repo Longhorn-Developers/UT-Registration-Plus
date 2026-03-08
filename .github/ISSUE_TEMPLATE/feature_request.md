@@ -1,20 +1,18 @@
 ---
 name: Feature Request
 about: Suggest an idea for this project
-title: '[FEATURE] '
+title: "[FEATURE] "
 labels: feature
 assignees: ''
+
 ---
 
 **Pre-submission Checklist**
 
 <!-- Please check all applicable boxes before submitting your feature request -->
 
-- [ ] I have searched existing issues to ensure this feature hasn't been requested
-- [ ] I have searched closed issues to check if this was previously rejected/implemented
-- [ ] I have checked the project roadmap (if available) for planned similar features
-- [ ] I have reviewed the documentation to confirm this feature doesn't exist
-- [ ] I have completed all sections below with detailed information
+-   [ ] I confirmed this feature isn’t already requested, implemented, or planned (search open issues, pull requests etc)
+-   [ ] I have completed all sections below with detailed information
 
 **Your Idea**
 
