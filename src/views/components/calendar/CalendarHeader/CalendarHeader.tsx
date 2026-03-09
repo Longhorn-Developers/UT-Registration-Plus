@@ -1,17 +1,16 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ArrowsClockwise, CalendarDots, Export, FileCode, FilePng, FileText, Sidebar } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
-import { StatusCheckerStore } from '@shared/storage/StatusCheckerStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
-import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import Divider from '@views/components/common/Divider';
 import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { LargeLogo } from '@views/components/common/LogoIcon';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
 import Text from '@views/components/common/Text/Text';
+import useRelativeTime from '@views/hooks/useRelativeTime';
 import useSchedules from '@views/hooks/useSchedules';
-import { getUpdatedAtDateTimeString } from '@views/lib/getUpdatedAtDateTimeString';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
@@ -28,28 +27,41 @@ interface CalendarHeaderProps {
  */
 export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const [activeSchedule] = useSchedules();
-    const [lastCheckedAt, setLastCheckedAt] = useState<number | null>(null);
+    const lastCheckedText = useRelativeTime(activeSchedule.lastCheckedAt);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    // track per-schedule cooldowns so switching schedules allows immediate refresh
+    const [cooldownIds, setCooldownIds] = useState<Set<string>>(new Set());
+    const [enableDataRefreshing, setEnableDataRefreshing] = useState(false);
 
     useEffect(() => {
-        StatusCheckerStore.get('lastCheckedAt').then(setLastCheckedAt);
-        const unsubscribe = StatusCheckerStore.subscribe('lastCheckedAt', ({ newValue }) => {
-            setLastCheckedAt(newValue ?? null);
+        OptionsStore.get('enableDataRefreshing').then(setEnableDataRefreshing);
+        const unsubscribe = OptionsStore.subscribe('enableDataRefreshing', ({ newValue }) => {
+            setEnableDataRefreshing(newValue);
         });
-
-        return () => {
-            StatusCheckerStore.unsubscribe(unsubscribe);
-        };
+        return () => OptionsStore.unsubscribe(unsubscribe);
     }, []);
+
+    const isCooldown = cooldownIds.has(activeSchedule.id);
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
+        // Ensure the spinner is visible long enough to provide visual feedback
+        const minSpin = new Promise(r => setTimeout(r, 400));
         try {
-            await background.refreshCourseStatuses({});
+            await Promise.all([background.refreshCourses({}), minSpin]);
         } catch (error) {
-            console.error('Failed to refresh course statuses:', error);
+            console.error('Failed to refresh courses:', error);
         } finally {
-            setTimeout(() => setIsRefreshing(false), 3000);
+            setIsRefreshing(false);
+            const scheduleId = activeSchedule.id;
+            setCooldownIds(prev => new Set(prev).add(scheduleId));
+            setTimeout(() => {
+                setCooldownIds(prev => {
+                    const next = new Set(prev);
+                    next.delete(scheduleId);
+                    return next;
+                });
+            }, 3000);
         }
     };
 
@@ -83,82 +95,80 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
             {/* min-w-[310px] is the value with all the buttons */}
             <div className={clsx(styles.cqInline, 'flex flex-1 gap-5 min-w-[45x] screenshot:hidden')}>
                 <div className={clsx(styles.primaryActions, 'min-w-fit flex gap-5')}>
-                    <DialogProvider>
-                        <Menu>
-                            <MenuButton as='div' className='bg-transparent'>
-                                <Button color='ut-black' size='small' variant='minimal' icon={Export}>
-                                    Export
+                    <Menu>
+                        <MenuButton className='bg-transparent'>
+                            <Button color='ut-black' size='small' variant='minimal' icon={Export}>
+                                Export
+                            </Button>
+                        </MenuButton>
+                        <MenuItems
+                            as={ExtensionRootWrapper}
+                            className={clsx([
+                                styleResetClass,
+                                'mt-spacing-3',
+                                'min-w-max cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none z-20',
+                                'data-[closed]:(opacity-0 scale-95)',
+                                'data-[enter]:(ease-out-expo duration-150)',
+                                'data-[leave]:(ease-out duration-50)',
+                            ])}
+                            transition
+                            anchor='bottom start'
+                        >
+                            <MenuItem>
+                                <Button
+                                    className='w-full flex justify-start'
+                                    onClick={() => requestAnimationFrame(() => saveCalAsPng())}
+                                    color='ut-black'
+                                    size='small'
+                                    variant='minimal'
+                                    icon={FilePng}
+                                >
+                                    Save as .png
                                 </Button>
-                            </MenuButton>
-                            <MenuItems
-                                as={ExtensionRootWrapper}
-                                className={clsx([
-                                    styleResetClass,
-                                    'mt-spacing-3',
-                                    'min-w-max cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none z-20',
-                                    'data-[closed]:(opacity-0 scale-95)',
-                                    'data-[enter]:(ease-out-expo duration-150)',
-                                    'data-[leave]:(ease-out duration-50)',
-                                ])}
-                                transition
-                                anchor='bottom start'
-                            >
-                                <MenuItem as='div'>
-                                    <Button
-                                        className='w-full flex justify-start'
-                                        onClick={() => requestAnimationFrame(() => saveCalAsPng())}
-                                        color='ut-black'
-                                        size='small'
-                                        variant='minimal'
-                                        icon={FilePng}
-                                    >
-                                        Save as .png
-                                    </Button>
-                                </MenuItem>
-                                <MenuItem as='div'>
-                                    <Button
-                                        className='w-full flex justify-start'
-                                        onClick={saveAsCal}
-                                        color='ut-black'
-                                        size='small'
-                                        variant='minimal'
-                                        icon={CalendarDots}
-                                    >
-                                        Save as .cal
-                                    </Button>
-                                </MenuItem>
-                                <MenuItem as='div'>
-                                    <Button
-                                        className='w-full flex justify-start'
-                                        onClick={() => handleExportJson(activeSchedule.id)}
-                                        color='ut-black'
-                                        size='small'
-                                        variant='minimal'
-                                        icon={FileCode}
-                                    >
-                                        Save as .json
-                                    </Button>
-                                </MenuItem>
-                                <MenuItem>
-                                    <Button
-                                        className='w-full flex justify-start'
-                                        onClick={saveAsText}
-                                        color='ut-black'
-                                        size='small'
-                                        variant='minimal'
-                                        icon={FileText}
-                                    >
-                                        Save as .txt
-                                    </Button>
-                                </MenuItem>
-                                {/* <MenuItem>
-                                    <Button color='ut-black' size='small' variant='minimal' icon={FileTxt}>
-                                        Export Unique IDs
-                                    </Button>
-                                </MenuItem> */}
-                            </MenuItems>
-                        </Menu>
-                    </DialogProvider>
+                            </MenuItem>
+                            <MenuItem>
+                                <Button
+                                    className='w-full flex justify-start'
+                                    onClick={saveAsCal}
+                                    color='ut-black'
+                                    size='small'
+                                    variant='minimal'
+                                    icon={CalendarDots}
+                                >
+                                    Save as .cal
+                                </Button>
+                            </MenuItem>
+                            <MenuItem>
+                                <Button
+                                    className='w-full flex justify-start'
+                                    onClick={() => handleExportJson(activeSchedule.id)}
+                                    color='ut-black'
+                                    size='small'
+                                    variant='minimal'
+                                    icon={FileCode}
+                                >
+                                    Save as .json
+                                </Button>
+                            </MenuItem>
+                            <MenuItem>
+                                <Button
+                                    className='w-full flex justify-start'
+                                    onClick={saveAsText}
+                                    color='ut-black'
+                                    size='small'
+                                    variant='minimal'
+                                    icon={FileText}
+                                >
+                                    Save as .txt
+                                </Button>
+                            </MenuItem>
+                            {/* <MenuItem>
+                                <Button color='ut-black' size='small' variant='minimal' icon={FileTxt}>
+                                    Export Unique IDs
+                                </Button>
+                            </MenuItem> */}
+                        </MenuItems>
+                    </Menu>
                     {/* <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
                         Quick Add
                     </Button>
@@ -166,33 +176,34 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                         Block
                     </Button> */}
                 </div>
-                <Divider className='self-center' size='1.75rem' orientation='vertical' />
                 <div
                     className={clsx(
                         styles.secondaryActions,
                         'min-w-fit flex flex-1 items-center justify-end gap-3 self-start'
                     )}
                 >
-                    {lastCheckedAt && (
+                    {enableDataRefreshing && lastCheckedText && (
                         <Text variant='mini' className='whitespace-nowrap text-ut-gray !font-normal'>
-                            Last checked: {getUpdatedAtDateTimeString(lastCheckedAt)}
+                            Last checked: {lastCheckedText}
                         </Text>
                     )}
-                    <Button
-                        color='ut-black'
-                        size='small'
-                        variant='minimal'
-                        icon={ArrowsClockwise}
-                        iconProps={{
-                            className: clsx({
-                                'animate-spin animate-duration-800': isRefreshing,
-                            }),
-                        }}
-                        onClick={handleRefresh}
-                        disabled={isRefreshing}
-                    >
-                        Refresh
-                    </Button>
+                    {enableDataRefreshing && (
+                        <Button
+                            color='ut-black'
+                            size='small'
+                            variant='minimal'
+                            icon={ArrowsClockwise}
+                            iconProps={{
+                                className: clsx({
+                                    'animate-spin animate-duration-800': isRefreshing,
+                                }),
+                            }}
+                            onClick={handleRefresh}
+                            disabled={isRefreshing || isCooldown}
+                        >
+                            Refresh
+                        </Button>
+                    )}
                 </div>
                 {/* <Divider className='self-center' size='1.75rem' orientation='vertical' />
                 <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 justify-end gap-5')}>

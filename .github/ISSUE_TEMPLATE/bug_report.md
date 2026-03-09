@@ -1,20 +1,18 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: '[BUG] '
+title: "[BUG] "
 labels: ''
 assignees: ''
+
 ---
 
 **Pre-submission Checklist**
 
 <!-- Please check all applicable boxes before submitting your issue -->
 
-- [ ] I have searched existing issues to make sure this is not a duplicate
-- [ ] I have cleared my browser cache and confirmed the issue persists
-- [ ] I have checked this issue affects the latest version of the extension
-- [ ] I have disabled other extensions to ensure this isn't a conflict issue
-- [ ] I have included all the information requested below
+-   [ ] I confirmed this feature isn’t already requested, implemented, or planned (search open issues, pull requests etc)
+-   [ ] I have completed all sections below with detailed information
 
 **Bug Description**
 
@@ -41,9 +39,9 @@ assignees: ''
 
 **Debug Information**
 
-- UTRP Extension Version: [e.g. 1.2.0]
-- Browser Info: [e.g. Chrome 120.0.0]
-- OS: [e.g. Windows 11, macOS Sonoma]
+-   UTRP Extension Version: [e.g. 1.2.0]
+-   Browser Info: [e.g. Chrome 120.0.0]
+-   OS: [e.g. Windows 11, macOS Sonoma]
 
 **Console Logs**
 

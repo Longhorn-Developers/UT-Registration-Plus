@@ -49,6 +49,8 @@ export default function Settings(): JSX.Element {
     const [loadAllCourses, setLoadAllCourses] = useState(false);
     const [calendarNewTab, setCalendarNewTab] = useState(false);
     const [increaseScheduleLimit, setIncreaseScheduleLimit] = useState(false);
+    const [enableDataRefreshing, setEnableDataRefreshing] = useState(false);
+    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState(false);
     const [showGitHubStats, setShowGitHubStats] = useState(false);
     const [githubStats, setGitHubStats] = useState<Awaited<
         ReturnType<typeof gitHubStatsService.fetchGitHubStats>
@@ -78,12 +80,20 @@ export default function Settings(): JSX.Element {
         };
 
         const initAndSetSettings = async () => {
-            const { enableHighlightConflicts, enableScrollToLoad, alwaysOpenCalendarInNewTab, allowMoreSchedules } =
-                await initSettings();
+            const {
+                enableHighlightConflicts,
+                enableScrollToLoad,
+                alwaysOpenCalendarInNewTab,
+                allowMoreSchedules,
+                enableDataRefreshing: dataRefreshing,
+                enableCourseStatusChips: courseStatusChips,
+            } = await initSettings();
             setHighlightConflicts(enableHighlightConflicts);
             setLoadAllCourses(enableScrollToLoad);
             setCalendarNewTab(alwaysOpenCalendarInNewTab);
             setIncreaseScheduleLimit(allowMoreSchedules);
+            setEnableDataRefreshing(dataRefreshing);
+            setEnableCourseStatusChips(courseStatusChips);
         };
 
         const initDS = async () => {
@@ -118,6 +128,14 @@ export default function Settings(): JSX.Element {
             setIncreaseScheduleLimit(newValue);
         });
 
+        const l5 = OptionsStore.subscribe('enableDataRefreshing', async ({ newValue }) => {
+            setEnableDataRefreshing(newValue);
+        });
+
+        const l6 = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
+            setEnableCourseStatusChips(newValue);
+        });
+
         window.addEventListener('keydown', handleKeyPress);
 
         initDS();
@@ -129,6 +147,8 @@ export default function Settings(): JSX.Element {
             OptionsStore.unsubscribe(l2);
             OptionsStore.unsubscribe(l3);
             OptionsStore.unsubscribe(l4);
+            OptionsStore.unsubscribe(l5);
+            OptionsStore.unsubscribe(l6);
             DevStore.unsubscribe(ds_l1);
             window.removeEventListener('keydown', handleKeyPress);
         };
@@ -260,6 +280,10 @@ export default function Settings(): JSX.Element {
                         setIncreaseScheduleLimit={setIncreaseScheduleLimit}
                         calendarNewTab={calendarNewTab}
                         setCalendarNewTab={setCalendarNewTab}
+                        enableDataRefreshing={enableDataRefreshing}
+                        setEnableDataRefreshing={setEnableDataRefreshing}
+                        enableCourseStatusChips={enableCourseStatusChips}
+                        setEnableCourseStatusChips={setEnableCourseStatusChips}
                         activeSchedule={activeSchedule}
                         handleEraseAll={handleEraseAll}
                         handleImportClick={handleImportClick}

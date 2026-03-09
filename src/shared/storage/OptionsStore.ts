@@ -30,7 +30,7 @@ export interface IOptionsStore {
 }
 
 const defaults: StoreDefaults<IOptionsStore> = {
-    enableCourseStatusChips: true,
+    enableCourseStatusChips: false,
     enableHighlightConflicts: true,
     enableScrollToLoad: true,
     enableDataRefreshing: false,
