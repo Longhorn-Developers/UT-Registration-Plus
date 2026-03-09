@@ -23,6 +23,10 @@ interface AdvancedSettingsProps {
     setIncreaseScheduleLimit: (value: boolean) => void;
     calendarNewTab: boolean;
     setCalendarNewTab: (value: boolean) => void;
+    enableDataRefreshing: boolean;
+    setEnableDataRefreshing: (value: boolean) => void;
+    enableCourseStatusChips: boolean;
+    setEnableCourseStatusChips: (value: boolean) => void;
     activeSchedule: UserSchedule;
     handleEraseAll: () => void;
     handleImportClick: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
@@ -40,6 +44,10 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     setIncreaseScheduleLimit,
     calendarNewTab,
     setCalendarNewTab,
+    enableDataRefreshing,
+    setEnableDataRefreshing,
+    enableCourseStatusChips,
+    setEnableCourseStatusChips,
     activeSchedule,
     handleEraseAll,
     handleImportClick,
@@ -162,6 +170,46 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         onChange={() => {
                             setCalendarNewTab(!calendarNewTab);
                             OptionsStore.set('alwaysOpenCalendarInNewTab', !calendarNewTab);
+                        }}
+                    />
+                </div>
+
+                <Divider size='auto' orientation='horizontal' />
+
+                <div className='flex items-center justify-between'>
+                    <div className='max-w-xs'>
+                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                            Enable Course Refresh
+                        </Text>
+                        <p className='text-sm text-gray-600'>
+                            Show a refresh button in the calendar to re-scrape course data from UT&apos;s site.
+                        </p>
+                    </div>
+                    <SwitchButton
+                        isChecked={enableDataRefreshing}
+                        onChange={() => {
+                            setEnableDataRefreshing(!enableDataRefreshing);
+                            OptionsStore.set('enableDataRefreshing', !enableDataRefreshing);
+                        }}
+                    />
+                </div>
+
+                <Divider size='auto' orientation='horizontal' />
+
+                <div className='flex items-center justify-between'>
+                    <div className='max-w-xs'>
+                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                            Course Status Indicators
+                        </Text>
+                        <p className='text-sm text-gray-600'>
+                            Show waitlisted, cancelled, and closed status on courses.
+                        </p>
+                    </div>
+                    <SwitchButton
+                        isChecked={enableCourseStatusChips}
+                        onChange={() => {
+                            setEnableCourseStatusChips(!enableCourseStatusChips);
+                            OptionsStore.set('enableCourseStatusChips', !enableCourseStatusChips);
                         }}
                     />
                 </div>
