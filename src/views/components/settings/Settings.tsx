@@ -278,10 +278,10 @@ export default function Settings(): JSX.Element {
                                 setOptions(prev => prev && { ...prev, alwaysOpenCalendarInNewTab: v })
                             }
                             enableDataRefreshing={enableDataRefreshing}
-                        setEnableDataRefreshing={setEnableDataRefreshing}
-                        enableCourseStatusChips={enableCourseStatusChips}
-                        setEnableCourseStatusChips={setEnableCourseStatusChips}
-                        activeSchedule={activeSchedule}
+                            setEnableDataRefreshing={setEnableDataRefreshing}
+                            enableCourseStatusChips={enableCourseStatusChips}
+                            setEnableCourseStatusChips={setEnableCourseStatusChips}
+                            activeSchedule={activeSchedule}
                             handleEraseAll={handleEraseAll}
                             handleImportClick={handleImportClick}
                         />
