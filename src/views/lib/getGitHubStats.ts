@@ -14,38 +14,53 @@ const REPO_NAME = 'UT-Registration-Plus';
 const CONTRIBUTORS_API_ROUTE = `/repos/${REPO_OWNER}/${REPO_NAME}/stats/contributors`;
 
 export const LONGHORN_DEVELOPERS_ADMINS = [
-    { name: 'Sriram Hariharan', role: ['LHD Co-Founder', 'UTRP Founder'], githubUsername: 'sghsri' },
+    { name: 'Elie Soloveichik', role: ['LHD President', 'LHD Co-Founder'], githubUsername: 'Razboy20' },
     {
-        name: 'Elie Soloveichik',
-        role: ['LHD Co-Founder', 'LHD President', 'UTRP Senior SWE'],
-        githubUsername: 'Razboy20',
+        name: 'Brendan Early',
+        role: ['LHD Software Engineering Director'],
+        githubUsername: 'mymindstorm',
     },
+    {
+        name: 'Denise Xu',
+        role: ['LHD Product Director'],
+        githubUsername: 'denise308',
+    },
+    {
+        name: 'Carla Garcia Leija',
+        role: ['LHD UX Design Director'],
+        githubUsername: 'carlagarcialeija',
+    },
+    {
+        name: 'Kabir Ramzan',
+        role: ['LHD Events Director'],
+        githubUsername: 'CMEONE',
+    },
+    {
+        name: 'Derek Chen',
+        role: ['LHD Advisor', 'UTRP Tech Lead'],
+        githubUsername: 'DereC4',
+    },
+] as const satisfies TeamMember[];
+
+export const LONGHORN_DEVELOPERS_SWE = [
     {
         name: 'Diego Perez',
-        role: ['LHD Co-Founder', 'Software Engineering Director', 'UTRP Senior SWE'],
+        role: ['LHD Co-Founder', 'LHD Advisor', 'UTRP Senior SWE'],
         githubUsername: 'doprz',
     },
-    { name: 'Isaiah Rodriguez', role: ['LHD Co-Founder', 'LHD Advisor'], githubUsername: 'IsaDavRod' },
     {
         name: 'Samuel Gunter',
         role: ['LHD Advisor', 'UTRP Senior SWE'],
         githubUsername: 'Samathingamajig',
     },
-    {
-        name: 'Derek Chen',
-        role: ['LHD Advisor', 'UTRP Co-Lead', 'UTRP Senior SWE'],
-        githubUsername: 'DereC4',
-    },
-    { name: 'Kabir Ramzan', role: ['Events Director'], githubUsername: 'CMEONE' },
-] as const satisfies TeamMember[];
-
-export const LONGHORN_DEVELOPERS_SWE = [
+    { name: 'Isaiah Rodriguez', role: ['LHD Co-Founder', 'LHD Advisor'], githubUsername: 'IsaDavRod' },
+    { name: 'Sriram Hariharan', role: ['UTRP Founder', 'LHD Alumni'], githubUsername: 'sghsri' },
     { name: 'Preston Cook', role: ['LHD Alumni'], githubUsername: 'Preston-Cook' },
-    { name: 'Ethan Lanting', role: ['LHD Alumni'], githubUsername: 'EthanL06' },
     { name: 'Casey Charleston', role: ['LHD Alumni'], githubUsername: 'caseycharleston' },
     { name: 'Lukas Zenick', role: ['LHD Alumni'], githubUsername: 'Lukas-Zenick' },
     { name: 'Vinson', role: ['LHD Alumni'], githubUsername: 'vinsonzheng499' },
     { name: 'Vivek', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
+    { name: 'Ethan Lanting', role: ['LHD Alumni'], githubUsername: 'EthanL06' },
 ] as const satisfies TeamMember[];
 
 /**
