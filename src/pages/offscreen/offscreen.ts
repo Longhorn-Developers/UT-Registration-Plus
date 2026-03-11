@@ -1,9 +1,10 @@
-import type { StatusType } from '@shared/types/Course';
+import type { Serialized } from '@chrome-extension-toolkit';
+import type { Course } from '@shared/types/Course';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { SiteSupport } from '@views/lib/getSiteSupport';
 
-interface ParseCourseStatusMessage {
+interface ParseCourseMessage {
     target: string;
     type: string;
     data: {
@@ -13,8 +14,8 @@ interface ParseCourseStatusMessage {
     };
 }
 
-interface ParseCourseStatusResponse {
-    status: StatusType | null;
+interface ParseCourseResponse {
+    course: Serialized<Course> | null;
 }
 
 /**
@@ -23,38 +24,34 @@ interface ParseCourseStatusResponse {
  * which is unavailable in the service worker context.
  */
 chrome.runtime.onMessage.addListener(
-    (message: ParseCourseStatusMessage, _sender, sendResponse: (response: ParseCourseStatusResponse) => void) => {
-        // Only handle messages targeted to the offscreen document
+    (message: ParseCourseMessage, _sender, sendResponse: (response: ParseCourseResponse) => void) => {
         if (message.target !== 'offscreen') {
             return false;
         }
 
-        if (message.type === 'PARSE_COURSE_STATUS') {
-            // Process async, but indicate we'll respond later
+        if (message.type === 'PARSE_COURSE') {
             (async () => {
                 try {
                     const { html, url } = message.data;
 
-                    // Parse the HTML string into a Document
                     const doc = new DOMParser().parseFromString(html, 'text/html');
 
-                    // Use the same scraping logic as the original implementation
                     const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, url);
                     const tableRows = getCourseTableRows(doc);
                     const scrapedCourses = scraper.scrape(tableRows, false);
 
-                    // Extract the status from the first scraped course
-                    const status =
-                        scrapedCourses.length > 0 && scrapedCourses[0]?.course ? scrapedCourses[0].course.status : null;
+                    const course =
+                        scrapedCourses.length > 0 && scrapedCourses[0]?.course
+                            ? (scrapedCourses[0].course as unknown as Serialized<Course>)
+                            : null;
 
-                    sendResponse({ status });
+                    sendResponse({ course });
                 } catch (error) {
-                    console.error('Failed to parse course status in offscreen document:', error);
-                    sendResponse({ status: null });
+                    console.error('Failed to parse course in offscreen document:', error);
+                    sendResponse({ course: null });
                 }
             })();
 
-            // Return true to indicate we'll send an async response
             return true;
         }
 
@@ -62,4 +59,4 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
-console.log('Offscreen document loaded and ready to parse course status');
+console.log('Offscreen document loaded and ready to parse courses');

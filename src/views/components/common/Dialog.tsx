@@ -63,8 +63,8 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                                 className
                             )}
                         >
-                            {title && <DialogTitle as={Fragment}>{title}</DialogTitle>}
-                            {description && <Description as={Fragment}>{description}</Description>}
+                            {title && <DialogTitle>{title}</DialogTitle>}
+                            {description && <Description>{description}</Description>}
                             {children}
                         </DialogPanel>
                     </TransitionChild>

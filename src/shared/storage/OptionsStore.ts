@@ -31,7 +31,7 @@ export interface IOptionsStore {
 export const OptionsStore = createSyncStore<IOptionsStore>(
     'OptionsStore',
     {
-        enableCourseStatusChips: true,
+        enableCourseStatusChips: false,
         enableHighlightConflicts: true,
         enableScrollToLoad: true,
         enableDataRefreshing: false,
@@ -46,21 +46,9 @@ export const OptionsStore = createSyncStore<IOptionsStore>(
 );
 
 /**
- * Initializes the settings by retrieving the values from the OptionsStore.
- *
- * @returns A promise that resolves to an object satisfying the IOptionsStore interface.
+ * Fetches all settings from the OptionsStore in a single storage read.
  */
-export const initSettings = async () =>
-    ({
-        enableCourseStatusChips: await OptionsStore.get('enableCourseStatusChips'),
-        enableHighlightConflicts: await OptionsStore.get('enableHighlightConflicts'),
-        enableScrollToLoad: await OptionsStore.get('enableScrollToLoad'),
-        enableDataRefreshing: await OptionsStore.get('enableDataRefreshing'),
-        alwaysOpenCalendarInNewTab: await OptionsStore.get('alwaysOpenCalendarInNewTab'),
-        showCalendarSidebar: await OptionsStore.get('showCalendarSidebar'),
-        showUTDiningPromo: await OptionsStore.get('showUTDiningPromo'),
-        allowMoreSchedules: await OptionsStore.get('allowMoreSchedules'),
-    }) satisfies IOptionsStore;
+export const initSettings = () => OptionsStore.all();
 
 // Clothing retailer right
 

@@ -282,8 +282,10 @@ function createStore<T>(
         // now we need to remove the prefix from the keys
         Object.keys(fullStore).forEach(actualKey => {
             const newKey = removePrefix(actualKey);
-            fullStore[newKey] = fullStore[actualKey];
-            delete fullStore[actualKey];
+            if (newKey !== actualKey) {
+                fullStore[newKey] = fullStore[actualKey];
+                delete fullStore[actualKey];
+            }
         });
         return fullStore as Serializable<T>;
     };

@@ -1,9 +1,7 @@
-import { StatusCheckerStore } from '@shared/storage/StatusCheckerStore';
 import type { Course, StatusType } from '@shared/types/Course';
 import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
-import { useEffect, useState } from 'react';
 
 import useSchedules from './useSchedules';
 
@@ -78,19 +76,7 @@ export const convertMinutesToIndex = (minutes: number, gridStartMinutes = GRID_D
  */
 export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const [activeSchedule] = useSchedules();
-    const [scrapeInfo, setScrapeInfo] = useState<Record<number, StatusType>>({});
     const allMeetings = activeSchedule.courses.flatMap(c => c.schedule.meetings);
-
-    useEffect(() => {
-        StatusCheckerStore.get('scrapeInfo').then(setScrapeInfo);
-        const unsubscribe = StatusCheckerStore.subscribe('scrapeInfo', ({ newValue }) => {
-            setScrapeInfo(newValue ?? {});
-        });
-
-        return () => {
-            StatusCheckerStore.unsubscribe(unsubscribe);
-        };
-    }, []);
 
     // go through every meeting we have and finds minimum start time with starting best so far being GRID_DEFAULT_START_MINUTES
     // this variable will go on a journey through time and space to finally be delivered to the viewable calendar grid as the start hour of the entire grid
@@ -119,18 +105,17 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const processedCourses = activeSchedule.courses
         .flatMap(course => {
             const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
-            const overriddenStatus = scrapeInfo[course.uniqueId] ?? status;
 
             if (meetings.length === 0) {
-                return processAsyncCourses({ courseDeptAndInstr, status: overriddenStatus, course });
+                return processAsyncCourses({ courseDeptAndInstr, status, course });
             }
 
             return meetings.flatMap(meeting => {
                 if (meeting.days.includes(DAY_MAP.S)) {
-                    return processAsyncCourses({ courseDeptAndInstr, status: overriddenStatus, course });
+                    return processAsyncCourses({ courseDeptAndInstr, status, course });
                 }
 
-                return processInPersonMeetings(meeting, courseDeptAndInstr, overriddenStatus, course, gridStartMinutes);
+                return processInPersonMeetings(meeting, courseDeptAndInstr, status, course, gridStartMinutes);
             });
         })
         .sort(sortCourses);
