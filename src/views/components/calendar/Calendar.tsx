@@ -298,7 +298,12 @@ export default function Calendar(): ReactNode {
                                 'screenshot:flex-grow-0': displayBottomBar, // html-to-image seems to have a bug with flex-grow
                             })}
                         >
-                            <CalendarGrid courseCells={courseCells} setCourse={setCourse} startMinutes={startMinutes} endMinutes={endMinutes} />
+                            <CalendarGrid
+                                courseCells={courseCells}
+                                setCourse={setCourse}
+                                startMinutes={startMinutes}
+                                endMinutes={endMinutes}
+                            />
                         </div>
                         <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
                     </div>
