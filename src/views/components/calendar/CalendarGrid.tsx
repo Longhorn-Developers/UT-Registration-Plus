@@ -3,7 +3,7 @@ import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import { useSentryScope } from '@views/contexts/SentryContext';
-import { GRID_DEFAULT_START, type CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
+import { GRID_DEFAULT_END, GRID_DEFAULT_START, type CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import React, { Fragment } from 'react';
 
 import CalendarCell from './CalendarGridCell';
@@ -16,6 +16,7 @@ const DEFAULT_START_HOUR = GRID_DEFAULT_START / 60; // 8 AM
 interface Props {
     courseCells?: CalendarGridCourse[];
     startMinutes?: number;
+    endMinutes?: number;
     saturdayClass?: boolean;
     setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 }
@@ -57,12 +58,13 @@ export default function CalendarGrid({
     saturdayClass: _saturdayClass,
     setCourse,
     startMinutes,
+    endMinutes,
 }: React.PropsWithChildren<Props>): JSX.Element {
     // there was a huge mishap with 6 am start time calc here and now it is smoothly done
     // let's try to keep our codebase organized and not so all over the place
     const visualStartHour = Math.floor((startMinutes ?? GRID_DEFAULT_START) / 60);
 
-    const visualEndHour = 21;
+    const visualEndHour = Math.ceil((endMinutes ?? GRID_DEFAULT_END) / 60);
     const hoursOfDay = Array.from({ length: visualEndHour - visualStartHour }, (_, i) => i + visualStartHour);
     const totalRows = (visualEndHour - visualStartHour) * 2;
 

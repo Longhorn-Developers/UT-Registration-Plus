@@ -34,7 +34,7 @@ import DiningAppPromo from './DiningAppPromo';
  * Calendar page component
  */
 export default function Calendar(): ReactNode {
-    const { courseCells, activeSchedule, startMinutes } = useFlattenedCourseSchedule();
+    const { courseCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
     const displayBottomBar = true;
 
     const [course, setCourse] = useState<Course | null>(useCourseFromUrl());
@@ -298,7 +298,7 @@ export default function Calendar(): ReactNode {
                                 'screenshot:flex-grow-0': displayBottomBar, // html-to-image seems to have a bug with flex-grow
                             })}
                         >
-                            <CalendarGrid courseCells={courseCells} setCourse={setCourse} startMinutes={startMinutes} />
+                            <CalendarGrid courseCells={courseCells} setCourse={setCourse} startMinutes={startMinutes} endMinutes={endMinutes} />
                         </div>
                         <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
                     </div>

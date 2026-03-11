@@ -48,12 +48,18 @@ export interface FlattenedCourseSchedule {
     courseCells: CalendarGridCourse[];
     activeSchedule: UserSchedule;
     startMinutes: number;
+    endMinutes: number;
 }
 
 /**
  * 8:00 AM latest start time aka DEFAULT, in minutes
  */
 export const GRID_DEFAULT_START = 480;
+
+/**
+ * 9:00 PM earliest end time aka DEFAULT, in minutes
+ */
+export const GRID_DEFAULT_END = 1260;
 
 /**
  * Converts minutes to an index value.
@@ -100,6 +106,16 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     // round down to closest hour (in minute units)
     const gridStartMinutes = Math.floor(rawGridStartMinutes / 60) * 60;
 
+    const rawGridEndMinutes = allMeetings.reduce((latest, current) => {
+        if (current.days.includes(DAY_MAP.S) || current.endTime >= 1440) {
+            return latest;
+        }
+        const t = current.endTime >= 1440 ? current.endTime - 720 : current.endTime;
+        return Math.max(latest, t);
+    }, GRID_DEFAULT_END);
+    // round up to closest hour (in minute units)
+    const gridEndMinutes = Math.ceil(rawGridEndMinutes / 60) * 60;
+
     const processedCourses = activeSchedule.courses
         .flatMap(course => {
             const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
@@ -123,6 +139,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
         courseCells: processedCourses,
         activeSchedule,
         startMinutes: gridStartMinutes,
+        endMinutes: gridEndMinutes,
     };
 }
 
