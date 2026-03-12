@@ -50,7 +50,7 @@ function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPo
                             <Text variant='small' className='text-ut-burntorange'>
                                 Send us Feedback!
                             </Text>
-                            <ArrowUpRight className='h-4 w-4 text-ut-burntorange' />
+                                <ArrowUpRight className='h-4 w-4 text-ut-burntorange' />
                         </div>
                     </button>
                 </div>
