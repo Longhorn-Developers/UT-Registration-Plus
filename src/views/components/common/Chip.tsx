@@ -1,6 +1,6 @@
 import Text from "@views/components/common/Text/Text";
 import clsx from "clsx";
-import React from "react";
+import type React from "react";
 
 /**
  * A type that represents the flags that a course can have

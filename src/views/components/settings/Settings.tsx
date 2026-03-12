@@ -25,7 +25,8 @@ import {
     LONGHORN_DEVELOPERS_SWE,
 } from "@views/lib/getGitHubStats";
 // Misc
-import React, {
+import type React from "react";
+import {
     useCallback,
     useEffect,
     useMemo,

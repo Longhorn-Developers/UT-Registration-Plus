@@ -8,7 +8,8 @@ import { pickFontColor } from "@shared/util/colors";
 import { StatusIcon } from "@shared/util/icons";
 import Text from "@views/components/common/Text/Text";
 import clsx from "clsx";
-import React, { memo, useEffect, useMemo, useRef, useState } from "react";
+import type React from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "./Button";
 import { SortableListDragHandle } from "./SortableListDragHandle";

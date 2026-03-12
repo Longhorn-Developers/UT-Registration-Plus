@@ -34,7 +34,7 @@ export class CourseSchedule {
         locLine: string,
     ): CourseMeeting {
         try {
-            let days: Day[] = dayLine
+            const days: Day[] = dayLine
                 .split("")
                 .map((char, i) => {
                     const nextChar = dayLine.charAt(i + 1);

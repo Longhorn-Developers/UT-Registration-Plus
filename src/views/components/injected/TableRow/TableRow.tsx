@@ -94,7 +94,7 @@ export default function TableRow({
             return;
         }
 
-        let conflicts: Course[] = [];
+        const conflicts: Course[] = [];
 
         for (const c of activeSchedule.courses) {
             if (

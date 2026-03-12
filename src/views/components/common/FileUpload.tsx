@@ -7,7 +7,8 @@ import {
 } from "@shared/util/themeColors";
 import Text from "@views/components/common/Text/Text";
 import clsx from "clsx";
-import React, { useEffect, useRef, useState } from "react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
     className?: string;

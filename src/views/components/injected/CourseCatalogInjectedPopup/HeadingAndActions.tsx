@@ -25,7 +25,8 @@ import Link from "@views/components/common/Link";
 import Text from "@views/components/common/Text/Text";
 import { useCalendar } from "@views/contexts/CalendarContext";
 import clsx from "clsx";
-import React, { useRef, useState } from "react";
+import type React from "react";
+import { useRef, useState } from "react";
 
 import DisplayMeetingInfo from "./DisplayMeetingInfo";
 

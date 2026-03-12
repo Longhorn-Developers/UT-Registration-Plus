@@ -10,7 +10,8 @@ import { ExtensionStore } from "@shared/storage/ExtensionStore";
 import { UT_DINING_PROMO_IMAGE_URL } from "@shared/util/appUrls";
 import Text from "@views/components/common/Text/Text";
 import useWhatsNewPopUp from "@views/hooks/useWhatsNew";
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 
 /**
  * This is the version of the 'What's New' features popup.

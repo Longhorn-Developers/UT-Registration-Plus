@@ -159,7 +159,7 @@ export const meetingToIcsString = (
     }
 
     if (
-        !Object.prototype.hasOwnProperty.call(
+        !Object.hasOwn(
             academicCalendars,
             course.semester.code,
         )

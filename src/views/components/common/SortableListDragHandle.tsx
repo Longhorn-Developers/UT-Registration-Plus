@@ -1,6 +1,6 @@
 import { useSortableItemContext } from "@views/contexts/SortableItemContext";
 import type { CSSProperties } from "react";
-import React from "react";
+import type React from "react";
 
 interface SortableListDragHandleProps {
     className?: string;

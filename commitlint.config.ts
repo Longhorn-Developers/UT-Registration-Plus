@@ -1,7 +1,7 @@
 import {
-    RuleConfigCondition,
+    type RuleConfigCondition,
     RuleConfigSeverity,
-    TargetCaseType,
+    type TargetCaseType,
 } from "@commitlint/types";
 
 export default {

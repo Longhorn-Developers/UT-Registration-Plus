@@ -46,7 +46,7 @@ export const Default: Story = {
 };
 
 export const Small: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: "",
     },
@@ -107,7 +107,7 @@ export const Small: Story = {
 };
 
 export const Mini: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: "",
     },
@@ -175,7 +175,7 @@ export const Disabled: Story = {
     },
 };
 
-// @ts-ignore
+// @ts-expect-error
 export const Grid: Story = {
     render: (props) => (
         <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
@@ -212,7 +212,7 @@ export const Grid: Story = {
 };
 
 export const PrettyColors: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: "",
     },

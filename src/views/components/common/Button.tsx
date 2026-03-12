@@ -6,7 +6,7 @@ import {
 } from "@shared/util/themeColors";
 import Text from "@views/components/common/Text/Text";
 import clsx from "clsx";
-import React from "react";
+import type React from "react";
 
 interface Props {
     className?: string;

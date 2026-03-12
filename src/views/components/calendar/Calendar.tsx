@@ -20,7 +20,8 @@ import { useFlattenedCourseSchedule } from "@views/hooks/useFlattenedCourseSched
 import useWhatsNewPopUp from "@views/hooks/useWhatsNew";
 import clsx from "clsx";
 import type { ReactNode } from "react";
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 
 import OutwardArrowIcon from "~icons/material-symbols/arrow-outward";
 

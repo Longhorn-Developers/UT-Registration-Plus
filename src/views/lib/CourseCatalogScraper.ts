@@ -298,8 +298,8 @@ export class CourseCatalogScraper {
             throw new Error("Semester not found in URL");
         }
 
-        let year = Number(code.substring(0, 4));
-        let seasonCode = Number(code.substring(4, 6));
+        const year = Number(code.substring(0, 4));
+        const seasonCode = Number(code.substring(4, 6));
 
         if (!year || !seasonCode) {
             throw new Error("Invalid semester found in URL");

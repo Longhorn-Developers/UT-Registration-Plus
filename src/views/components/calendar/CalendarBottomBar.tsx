@@ -7,7 +7,8 @@ import { ColorPickerProvider } from "@views/contexts/ColorPickerContext";
 import type { CalendarGridCourse } from "@views/hooks/useFlattenedCourseSchedule";
 import clsx from "clsx";
 import type { ReactNode } from "react";
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 
 import CalendarCourseBlock from "./CalendarCourseCell";
 

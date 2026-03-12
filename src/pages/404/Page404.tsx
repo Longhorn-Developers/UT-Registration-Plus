@@ -14,7 +14,7 @@ export default function Page404(): JSX.Element {
     useEffect(() => {
         // Credit: Notch
         function _0x58e5() {
-            let _0x33cb15 = [
+            const _0x33cb15 = [
                 "putImageData",
                 "sin",
                 "getContext",
@@ -37,18 +37,16 @@ export default function Page404(): JSX.Element {
                 "current",
                 "49758oxlYFR",
             ];
-            _0x58e5 = function () {
-                return _0x33cb15;
-            };
+            _0x58e5 = () => _0x33cb15;
             return _0x58e5();
         }
-        let _0xdd3699 = _0x9cb4;
-        (function (_0x5cc1ea, _0x44f991) {
-            let _0x3b1280 = _0x9cb4;
-            let _0x500290 = _0x5cc1ea();
+        const _0xdd3699 = _0x9cb4;
+        ((_0x5cc1ea, _0x44f991) => {
+            const _0x3b1280 = _0x9cb4;
+            const _0x500290 = _0x5cc1ea();
             while ([]) {
                 try {
-                    let _0xea56e3 =
+                    const _0xea56e3 =
                         (-parseInt(_0x3b1280(0x8b)) /
                             (0x2344 + 0x63 * 0x59 + -0x45ae)) *
                             (parseInt(_0x3b1280(0x87)) /
@@ -83,19 +81,19 @@ export default function Page404(): JSX.Element {
         let _0x228047;
         const _0x124180 = 0x2 * -0x7f7 + -0x70 * 0x1 + -0x602 * -0x3;
         const _0x591e4f = 0xba7 * 0x1 + 0x1ebc + -0x2973;
-        let _0x39dbea = new Array(
+        const _0x39dbea = new Array(
             (0x94f + -0x215 * -0x1 + -0xb24) *
                 (-0x1 * -0x1dda + -0x23e + -0x1b5c) *
                 (0xb9c + 0x1 * 0x1c57 + -0x27b3 * 0x1),
         );
-        let _0x391e96 = new Array(
+        const _0x391e96 = new Array(
             (-0x1e8f + -0x1 * -0x20f9 + -0x25a) *
                 (-0xce6 + 0x2a * 0x86 + -0x906) *
                 (0x1d57 * -0x1 + -0x1170 + 0x2eca) *
                 (0x1c2 + -0x11a9 + 0x1 * 0xff7),
         );
         function _0x3ebd0f() {
-            let _0x53ab34 = _0xdd3699;
+            const _0x53ab34 = _0xdd3699;
             for (
                 var _0x599786 = 0x1e5b + 0x7a * -0x3a + -0x2b6;
                 _0x599786 < -0x1 * 0x593 + 0x9 * -0x15 + 0x660;
@@ -279,7 +277,7 @@ export default function Page404(): JSX.Element {
                                 ((_0x36dcfc =
                                     0x2589 + -0xd * 0x27f + 0x3e * -0x15),
                                 (_0xba7812 = 0x10ef + -0x68a + -0x966)));
-                        let _0x1206cd =
+                        const _0x1206cd =
                             (((((_0x36dcfc >>
                                 (0x2 * 0xfb3 + -0x118a + -0xdcc)) &
                                 (-0x8fc + -0x1a19 + 0x1 * 0x2414)) *
@@ -332,7 +330,7 @@ export default function Page404(): JSX.Element {
                             (_0xebe028 -
                                 (0xec6 + 0x6 * 0x199 + -0xbc * 0x21 + 0.5)) *
                             (0x1fca + 0x7 * 0xf9 + 0x2699 * -0x1 + 0.4);
-                        let _0x198036 =
+                        const _0x198036 =
                             (_0x2eee05 -
                                 (0x1 * 0xecb + -0x24b8 + 0x160d + 0.5)) *
                             (0xc * 0xda + -0x825 + -0x213 + 0.4);
@@ -373,7 +371,7 @@ export default function Page404(): JSX.Element {
             );
         }
         function _0x5629d1() {
-            let _0x13c635 = _0xdd3699;
+            const _0x13c635 = _0xdd3699;
             _0x5b7f43(),
                 _0x16f39e[_0x13c635(0x81)](
                     _0x228047,
@@ -383,8 +381,8 @@ export default function Page404(): JSX.Element {
         }
         let _0x93f360 = 0x64 * 0x49 + 0x1e1e + -0x3aa2;
         function _0x5b7f43() {
-            let _0x4626de = _0xdd3699;
-            let _0x400eca =
+            const _0x4626de = _0xdd3699;
+            const _0x400eca =
                 Math[_0x4626de(0x82)](
                     ((Date.now() %
                         (-0x1f15 * -0x1 + 0x1 * -0x44b9 + -0x265a * -0x2)) /
@@ -394,7 +392,7 @@ export default function Page404(): JSX.Element {
                 ) *
                     (-0x106 * -0x1d + -0x3e * -0xa0 + -0x446e + 0.4) +
                 Math.PI / (0x1b21 + -0x1 * -0xa9 + 0x379 * -0x8);
-            let _0xaac757 =
+            const _0xaac757 =
                 Math[_0x4626de(0x90)](
                     ((Date[_0x4626de(0x8d)]() %
                         (0xd * -0x351 + -0x3994 + 0x13f7 * 0x7)) /
@@ -403,11 +401,11 @@ export default function Page404(): JSX.Element {
                         (0x1420 + 0x12b1 + -0x26cf),
                 ) *
                 (-0x1 * -0x211a + -0x18ff + -0x81b * 0x1 + 0.4);
-            let _0x159021 = Math[_0x4626de(0x90)](_0xaac757);
-            let _0x11f9a2 = Math[_0x4626de(0x82)](_0xaac757);
-            let _0x1ac9ca = Math[_0x4626de(0x90)](_0x400eca);
-            let _0x49fc16 = Math[_0x4626de(0x82)](_0x400eca);
-            let _0x116a45 =
+            const _0x159021 = Math[_0x4626de(0x90)](_0xaac757);
+            const _0x11f9a2 = Math[_0x4626de(0x82)](_0xaac757);
+            const _0x1ac9ca = Math[_0x4626de(0x90)](_0x400eca);
+            const _0x49fc16 = Math[_0x4626de(0x82)](_0x400eca);
+            const _0x116a45 =
                 0x1b4f +
                 -0x1167 +
                 -0x9c8 +
@@ -416,15 +414,15 @@ export default function Page404(): JSX.Element {
                     (-0x1 * -0xfaa + 0x169 * 0x1f + -0x7 * 0x2e7)) /
                     (-0x2831 + 0x1 * 0x171 + 0x4dd0)) *
                     (-0x911 + -0x26e2 + -0x1b * -0x1c9);
-            let _0x46282c = 0x1 * 0x238 + 0x252d + -0x2745 + 0.5;
-            let _0x1680c5 = -0x14ad + -0x187 * 0x15 + -0x30 * -0x11a + 0.5;
+            const _0x46282c = 0x1 * 0x238 + 0x252d + -0x2745 + 0.5;
+            const _0x1680c5 = -0x14ad + -0x187 * 0x15 + -0x30 * -0x11a + 0.5;
             _0x93f360++;
             for (
                 let _0x132623 = -0x174b + 0x19 * -0xb7 + 0x292a;
                 _0x132623 < _0x124180;
                 _0x132623++
             ) {
-                let _0x1859c2 =
+                const _0x1859c2 =
                     (_0x132623 -
                         _0x124180 / (-0x3e5 * 0x8 + -0x1e7b + -0x3da5 * -0x1)) /
                     _0x591e4f;
@@ -433,18 +431,18 @@ export default function Page404(): JSX.Element {
                     _0x1a573d < _0x591e4f;
                     _0x1a573d++
                 ) {
-                    let _0x58642d =
+                    const _0x58642d =
                         (_0x1a573d -
                             _0x591e4f / (0x14f4 + 0x24b * 0x11 + -0x3bed)) /
                         _0x591e4f;
-                    let _0x3109fa = -0x7ca + 0x5 * -0x503 + 0x349 * 0xa;
-                    let _0x1df399 =
+                    const _0x3109fa = -0x7ca + 0x5 * -0x503 + 0x349 * 0xa;
+                    const _0x1df399 =
                         _0x3109fa * _0x159021 + _0x58642d * _0x11f9a2;
-                    let _0x8e77ec =
+                    const _0x8e77ec =
                         _0x58642d * _0x159021 - _0x3109fa * _0x11f9a2;
-                    let _0x5d0446 =
+                    const _0x5d0446 =
                         _0x1859c2 * _0x1ac9ca + _0x1df399 * _0x49fc16;
-                    let _0x14ed58 =
+                    const _0x14ed58 =
                         _0x1df399 * _0x1ac9ca - _0x1859c2 * _0x49fc16;
                     let _0x13f1b0 = 0x1af9 + -0x3 * 0xc1b + 0x34 * 0x2e;
                     let _0x2062a9 = -0x6c * -0x21 + -0x13bb * 0x1 + 0x43 * 0x1a;
@@ -463,14 +461,14 @@ export default function Page404(): JSX.Element {
                             _0x828a0c = _0x8e77ec;
                         if (_0x3e178a == -0x1e6d + -0xdb1 * -0x1 + 0x85f * 0x2)
                             _0x828a0c = _0x14ed58;
-                        let _0x57383c =
+                        const _0x57383c =
                             (0x18ab + 0x183f + -0x1 * 0x30e9) /
                             (_0x828a0c < 0x25 * -0xe3 + -0x2424 + 0x44f3
                                 ? -_0x828a0c
                                 : _0x828a0c);
-                        let _0x4b089b = _0x5d0446 * _0x57383c;
-                        let _0x5b3085 = _0x8e77ec * _0x57383c;
-                        let _0x1eaaad = _0x14ed58 * _0x57383c;
+                        const _0x4b089b = _0x5d0446 * _0x57383c;
+                        const _0x5b3085 = _0x8e77ec * _0x57383c;
+                        const _0x1eaaad = _0x14ed58 * _0x57383c;
                         let _0x2a568a =
                             _0x116a45 -
                             (_0x116a45 | (-0xcdb + 0x1447 + -0x13 * 0x64));
@@ -511,7 +509,7 @@ export default function Page404(): JSX.Element {
                                 _0x32116b--;
                         }
                         while (_0x38c463 < _0x267dd3) {
-                            let _0x3db6a4 =
+                            const _0x3db6a4 =
                                 _0x39dbea[
                                     ((_0x32116b &
                                         (-0x3 * 0x1f3 +
@@ -565,7 +563,7 @@ export default function Page404(): JSX.Element {
                                         _0x1667c5 +=
                                             -0xd48 + 0xf6c + 0xc * -0x2b;
                                 }
-                                let _0x5206c3 =
+                                const _0x5206c3 =
                                     _0x391e96[
                                         _0x546fb5 +
                                             _0x1667c5 *
@@ -623,21 +621,21 @@ export default function Page404(): JSX.Element {
                                 (_0x38c463 += _0x57383c);
                         }
                     }
-                    let _0x5cba48 =
+                    const _0x5cba48 =
                         (((_0x13f1b0 >> (0x8bb + 0x407 * -0x2 + -0x9d * 0x1)) &
                             (-0xc6 + 0xb43 + -0x97e)) *
                             _0x2062a9 *
                             _0x5c387a) /
                         ((-0x1df7 * -0x1 + -0x48b * 0x1 + -0x186d) *
                             (-0x5 * -0x585 + -0x1497 + -0x603));
-                    let _0x48b547 =
+                    const _0x48b547 =
                         (((_0x13f1b0 >> (-0xa42 + -0x760 * 0x2 + 0x5 * 0x502)) &
                             (0xb31 + 0x1 * -0x538 + 0x31 * -0x1a)) *
                             _0x2062a9 *
                             _0x5c387a) /
                         ((-0x1cff * -0x1 + -0xecd + -0xd33) *
                             (-0x1 * 0x4d5 + 0x2440 + -0x2c * 0xb1));
-                    let _0xdf8389 =
+                    const _0xdf8389 =
                         ((_0x13f1b0 & (-0x247a + -0x4 * -0x9c2 + -0x39 * 0x7)) *
                             _0x2062a9 *
                             _0x5c387a) /
@@ -662,11 +660,11 @@ export default function Page404(): JSX.Element {
             }
         }
         function _0x9cb4(_0x473675, _0x42315f) {
-            let _0x1c3f44 = _0x58e5();
+            const _0x1c3f44 = _0x58e5();
             return (
-                (_0x9cb4 = function (_0x2f27e0, _0x487e61) {
+                (_0x9cb4 = (_0x2f27e0, _0x487e61) => {
                     _0x2f27e0 -= -0x6c7 * -0x2 + 0x1 * -0x1b75 + -0x4 * -0x39a;
-                    let _0x44ff4c = _0x1c3f44[_0x2f27e0];
+                    const _0x44ff4c = _0x1c3f44[_0x2f27e0];
                     return _0x44ff4c;
                 }),
                 _0x9cb4(_0x473675, _0x42315f)

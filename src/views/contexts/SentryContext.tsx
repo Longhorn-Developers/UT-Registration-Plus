@@ -9,7 +9,8 @@ import {
     Scope,
 } from "@sentry/react";
 import type { Client, ClientOptions } from "@sentry/types";
-import React, { createContext, useContext, useMemo } from "react";
+import type React from "react";
+import { createContext, useContext, useMemo } from "react";
 
 /**
  * Context for the sentry provider.

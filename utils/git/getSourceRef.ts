@@ -13,7 +13,7 @@ export async function getSourceRef(destinationBranch: string): Promise<string> {
     switch (destinationBranch) {
         case "preview":
             return "develop";
-        case "production":
+        case "production": {
             // Get the latest tag from the repository
             const tags = await git.tags();
             const latestTag = tags.latest;
@@ -21,6 +21,7 @@ export async function getSourceRef(destinationBranch: string): Promise<string> {
                 throw new Error("No tags found in the repository");
             }
             return latestTag;
+        }
         default:
             throw new Error(`Invalid destination branch: ${destinationBranch}`);
     }

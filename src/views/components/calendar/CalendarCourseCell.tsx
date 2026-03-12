@@ -7,7 +7,8 @@ import Text from "@views/components/common/Text/Text";
 import { useColorPickerContext } from "@views/contexts/ColorPickerContext";
 import type { CalendarGridCourse } from "@views/hooks/useFlattenedCourseSchedule";
 import clsx from "clsx";
-import React, { useEffect, useRef, useState } from "react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "../common/Button";
 import CourseCellColorPicker from "./CalendarCourseCellColorPicker/CourseCellColorPicker";

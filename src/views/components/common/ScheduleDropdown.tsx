@@ -7,7 +7,7 @@ import {
 import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import Text from "@views/components/common/Text/Text";
 import useSchedules from "@views/hooks/useSchedules";
-import React from "react";
+import type React from "react";
 
 /**
  * Props for the Dropdown component.

@@ -4,7 +4,8 @@ import Text from "@views/components/common/Text/Text";
 import { ColorPickerProvider } from "@views/contexts/ColorPickerContext";
 import { useSentryScope } from "@views/contexts/SentryContext";
 import type { CalendarGridCourse } from "@views/hooks/useFlattenedCourseSchedule";
-import React, { Fragment } from "react";
+import type React from "react";
+import { Fragment } from "react";
 
 import CalendarCell from "./CalendarGridCell";
 import { calculateCourseCellColumns } from "./utils";

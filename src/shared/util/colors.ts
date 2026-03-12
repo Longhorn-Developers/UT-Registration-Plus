@@ -16,13 +16,13 @@ import type { UserSchedule } from "../types/UserSchedule";
  */
 export function hexToRGB(hex: HexColor): RGB | undefined {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-    let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     const parsedHex = hex.replace(
         shorthandRegex,
         (m, r, g, b) => r + r + g + g + b + b,
     );
 
-    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(parsedHex);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(parsedHex);
 
     if (!result || !(result.length > 3)) return undefined;
 
@@ -73,7 +73,7 @@ export function pickFontColor(
     if (!rgb) throw new Error("bgColor: Invalid hex.");
 
     // coefficients and rgb are both 3 elements long, so this is safe
-    let Ys = rgb.reduce(
+    const Ys = rgb.reduce(
         (acc, c, i) => acc + (c / 255.0) ** trc * coefficients[i]!,
         0,
     );
@@ -387,7 +387,7 @@ export function getUnusedColor(
     );
 
     if (availableColorways.size > 0) {
-        let sameDepartment = scheduleCourses.filter(
+        const sameDepartment = scheduleCourses.filter(
             (c) => c.department === course.department,
         );
 
@@ -474,13 +474,13 @@ function rgbToSrgb(rgb: RGB): sRGB {
  * @returns The color in the OKLab color space
  */
 function srgbToOKlab([r, g, b]: sRGB): Lab {
-    let l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
-    let m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
-    let s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
+    const l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
+    const m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
+    const s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
 
-    let lc = Math.cbrt(l);
-    let mc = Math.cbrt(m);
-    let sc = Math.cbrt(s);
+    const lc = Math.cbrt(l);
+    const mc = Math.cbrt(m);
+    const sc = Math.cbrt(s);
 
     return [
         0.2104542553 * lc + 0.793617785 * mc - 0.0040720468 * sc,

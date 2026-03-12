@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 /**
  * Lightweight skeleton placeholder for contributor cards while data loads

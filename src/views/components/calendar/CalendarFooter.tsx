@@ -1,6 +1,6 @@
 import { GearSix } from "@phosphor-icons/react";
 import { openTabFromContentScript } from "@views/lib/openNewTabFromContentScript";
-import React from "react";
+import type React from "react";
 
 import DiscordIcon from "~icons/bi/discord";
 import GithubIcon from "~icons/ri/github-fill";

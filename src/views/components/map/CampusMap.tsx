@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
-import React, {
+import type React from "react";
+import {
     useCallback,
     useEffect,
     useMemo,
