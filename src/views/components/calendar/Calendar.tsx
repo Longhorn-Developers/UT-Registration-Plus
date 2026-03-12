@@ -23,6 +23,7 @@ import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
+import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
 import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
@@ -257,9 +258,13 @@ export default function Calendar(): ReactNode {
                                     <div className='w-6 flex items-center justify-center'>
                                         <img src={flagIcon} alt='' aria-hidden='true' className='h-6 w-6 text-ut-black' />
                                     </div>
-                                    <Text variant='small' className='text-ut-burntorange'>
+                                    <Text
+                                        variant='small'
+                                        className='text-ut-burntorange underline underline-offset-2 decoration-ut-burntorange'
+                                    >
                                         Send us Feedback!
                                     </Text>
+                                    <OutwardArrowIcon className='h-4 w-4 text-ut-burntorange' />
                                 </button>
                                 <button
                                     type='button'
@@ -274,9 +279,13 @@ export default function Calendar(): ReactNode {
                                             className='h-6 w-6 text-ut-black'
                                         />
                                     </div>
-                                    <Text variant='small' className='text-ut-burntorange'>
+                                    <Text
+                                        variant='small'
+                                        className='text-ut-burntorange underline underline-offset-2 decoration-ut-burntorange'
+                                    >
                                         What&apos;s New!
                                     </Text>
+                                    <OutwardArrowIcon className='h-4 w-4 text-ut-burntorange' />
                                 </button>
                             </div>
                         </div>
