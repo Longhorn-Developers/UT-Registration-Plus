@@ -30,4 +30,4 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Run Prettier
-        run: pnpm run prettier
+        run: pnpm run format

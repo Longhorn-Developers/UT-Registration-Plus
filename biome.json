@@ -6,7 +6,12 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!!**/dist"]
+    "includes": [
+      "**",
+      "!!**/dist",
+      "!.storybook",
+      "!src/lib/chrome-extension-toolkit"
+    ]
   },
   "formatter": {
     "enabled": true,
