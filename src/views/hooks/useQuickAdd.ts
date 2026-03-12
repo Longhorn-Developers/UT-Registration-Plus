@@ -65,27 +65,33 @@ export function useQuickAdd(): UseQuickAddReturn {
 
     // Look up the course whenever the unique number or semester changes.
     useEffect(() => {
-        if (uniqueNumber.value.length !== UNIQUE_ID_LENGTH) {
+        if (uniqueNumber.value.length !== UNIQUE_ID_LENGTH || !semester.selectedItem?.code) {
             setCourseResult({ status: 'idle' });
             return;
         }
 
         let cancelled = false;
-        const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semester.selectedItem?.code}/${uniqueNumber.value}/`;
+        const courseUrl = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semester.selectedItem.code}/${uniqueNumber.value}/`;
 
         setCourseResult({ status: 'loading' });
 
-        getCourseByURL(courseUrl).then(course => {
-            if (cancelled) return;
+        getCourseByURL(courseUrl)
+            .then(course => {
+                if (cancelled) return;
 
-            if (!course) {
-                setCourseResult({ status: 'not_found' });
-            } else if (activeSchedule.containsCourse(course)) {
-                setCourseResult({ status: 'already_added' });
-            } else {
-                setCourseResult({ status: 'found', course });
-            }
-        });
+                if (!course) {
+                    setCourseResult({ status: 'not_found' });
+                } else if (activeSchedule.containsCourse(course)) {
+                    setCourseResult({ status: 'already_added' });
+                } else {
+                    setCourseResult({ status: 'found', course });
+                }
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    setCourseResult({ status: 'not_found' });
+                }
+            });
 
         return () => {
             cancelled = true;
