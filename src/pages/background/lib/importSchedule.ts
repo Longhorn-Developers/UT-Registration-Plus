@@ -24,7 +24,6 @@ export default async function importSchedule(scheduleData: unknown): Promise<voi
 
         for (const c of scheduleData.courses) {
             const course = new Course(c);
-            // eslint-disable-next-line no-await-in-loop
             await addCourse(newScheduleId, course, true);
         }
         console.log('Course schedule successfully parsed!');

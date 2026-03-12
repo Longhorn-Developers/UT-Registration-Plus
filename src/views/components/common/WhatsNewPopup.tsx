@@ -4,7 +4,8 @@ import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import { UT_DINING_PROMO_IMAGE_URL } from '@shared/util/appUrls';
 import Text from '@views/components/common/Text/Text';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * This is the version of the 'What's New' features popup.
@@ -120,6 +121,7 @@ export default function WhatsNewPopupContent(): JSX.Element {
 export function WhatsNewDialog(): null {
     const showPopUp = useWhatsNewPopUp();
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: This is on purpose
     useEffect(() => {
         const checkUpdate = async () => {
             const version = await ExtensionStore.get('lastWhatsNewPopupVersion');
@@ -132,7 +134,6 @@ export function WhatsNewDialog(): null {
         checkUpdate();
 
         // This is on purpose
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return null;

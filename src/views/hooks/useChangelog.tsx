@@ -2,7 +2,6 @@ import { X } from '@phosphor-icons/react';
 import ChangelogPopup from '@views/components/common/ChangelogPopup';
 import Text from '@views/components/common/Text/Text';
 import { useDialog } from '@views/contexts/DialogContext';
-import React from 'react';
 
 import { Button } from '../components/common/Button';
 

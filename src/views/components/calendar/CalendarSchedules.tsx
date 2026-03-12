@@ -7,7 +7,6 @@ import { SortableList } from '@views/components/common/SortableList';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import React from 'react';
 
 /**
  * Renders a component that displays a list of schedules.

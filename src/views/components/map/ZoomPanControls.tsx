@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Button } from '../common/Button';
 
 interface ZoomPanControlsProps {
@@ -28,6 +26,7 @@ export default function ZoomPanControls({
     return (
         <div className='flex gap-2 rounded-md bg-white/90 p-2 shadow-sm'>
             <Button onClick={zoomIn} color='ut-burntorange' variant='minimal' size='mini' className='px-3 py-1'>
+                {/** biome-ignore lint/a11y/noSvgWithoutTitle: TODO: */}
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='16'
@@ -46,6 +45,7 @@ export default function ZoomPanControls({
                 </svg>
             </Button>
             <Button onClick={zoomOut} color='ut-burntorange' variant='minimal' size='mini' className='px-3 py-1'>
+                {/** biome-ignore lint/a11y/noSvgWithoutTitle: TODO: */}
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='16'
@@ -63,6 +63,7 @@ export default function ZoomPanControls({
                 </svg>
             </Button>
             <Button onClick={resetZoomPan} color='ut-burntorange' variant='minimal' size='mini' className='px-3 py-1'>
+                {/** biome-ignore lint/a11y/noSvgWithoutTitle: TODO: */}
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='16'

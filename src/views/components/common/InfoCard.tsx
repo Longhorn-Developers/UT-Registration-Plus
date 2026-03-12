@@ -1,5 +1,5 @@
 import Text from '@views/components/common/Text/Text';
-import React from 'react';
+import type React from 'react';
 
 interface Props {
     titleText: string;

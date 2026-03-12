@@ -7,7 +7,7 @@ import { MigrationDialog } from '@views/components/common/MigrationDialog';
 import { WhatsNewDialog } from '@views/components/common/WhatsNewPopup';
 import SentryProvider from '@views/contexts/SentryContext';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 /**
  * Calendar page

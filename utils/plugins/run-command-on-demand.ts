@@ -1,7 +1,7 @@
 // https://github.com/pnd280/complexity/blob/alpha/vite-plugins/vite-plugin-run-command-on-demand.ts
 
+import { exec } from 'node:child_process';
 import chalk from 'chalk';
-import { exec } from 'child_process';
 import type { HmrContext, Plugin } from 'vite';
 
 const pluginName = 'vite-plugin-run-command-on-demand';

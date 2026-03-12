@@ -83,7 +83,9 @@ export function getNextButton(doc: Document) {
  */
 export function removePaginationButtons(doc: Document) {
     const nextButton = doc.querySelectorAll<HTMLAnchorElement>(NEXT_PAGE_BUTTON_SELECTOR);
+    // biome-ignore lint/suspicious/useIterableCallbackReturn: TODO:
     nextButton.forEach(button => button.remove());
     const prevButton = doc.querySelectorAll<HTMLAnchorElement>(PREV_PAGE_BUTTON_SELECTOR);
+    // biome-ignore lint/suspicious/useIterableCallbackReturn: TODO:
     prevButton.forEach(button => button.remove());
 }

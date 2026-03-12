@@ -1,6 +1,6 @@
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import type React from 'react';
 
 /**
  * A type that represents the flags that a course can have
@@ -47,7 +47,7 @@ type Props =
  * @returns
  */
 export function Chip({ variant, label }: React.PropsWithChildren<Props>): JSX.Element {
-    let labelMap;
+    let labelMap: Record<string, Core | Flag>;
     switch (variant) {
         case 'core':
             labelMap = coreMap;

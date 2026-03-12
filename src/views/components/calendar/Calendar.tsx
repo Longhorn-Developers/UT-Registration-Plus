@@ -19,8 +19,9 @@ import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import clsx from 'clsx';
+import type React from 'react';
 import type { ReactNode } from 'react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
@@ -194,6 +195,7 @@ export default function Calendar(): ReactNode {
                     </div>
                 )}
 
+                {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
                 <div
                     className='screenshot:calendar-target h-screen flex overflow-auto'
                     onDragEnter={handleDragEnter}
@@ -260,6 +262,7 @@ export default function Calendar(): ReactNode {
                                     <Text variant='p'>Send us Feedback!</Text>
                                     <OutwardArrowIcon className='h-4 w-4' />
                                 </a>
+                                {/** biome-ignore lint/a11y/useValidAnchor: TODO: */}
                                 <a
                                     href=''
                                     className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
@@ -312,7 +315,8 @@ export default function Calendar(): ReactNode {
                 <CourseCatalogInjectedPopup
                     // Ideally let's not use ! here, but it's fine since we know course is always defined when showPopup is true
                     // Let's try to refactor this
-                    course={course!} // always defined when showPopup is true
+                    // biome-ignore lint/style/noNonNullAssertion: course is always defined when showPopup is true
+                    course={course!}
                     onClose={() => setShowPopup(false)}
                     open={showPopup}
                     afterLeave={() => setCourse(null)}

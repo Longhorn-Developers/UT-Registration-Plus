@@ -3,7 +3,7 @@ import { isValidHexColor, pickFontColor } from '@shared/util/colors';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import { useDebounce } from '@views/hooks/useDebounce';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 /**
  * Props for the HexColorEditor component
@@ -29,15 +29,15 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
     const [localHexCode, setLocalHexCode] = React.useState(hexCode);
     const debouncedSetHexCode = useDebounce(setHexCode, 500);
 
-    React.useEffect(() => {
+    useEffect(() => {
         setLocalHexCode(hexCode);
     }, [hexCode]);
 
-    React.useEffect(() => {
+    // biome-ignore lint/correctness/useExhaustiveDependencies: This is on purpose
+    useEffect(() => {
         debouncedSetHexCode(localHexCode);
 
         // This is on purpose
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [localHexCode]);
 
     return (
