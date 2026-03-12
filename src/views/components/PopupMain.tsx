@@ -125,6 +125,7 @@ export default function PopupMain(): JSX.Element {
                                 variant='minimal'
                                 size='small'
                                 color='ut-black'
+                                style={{ color: '#0F1215' }}
                                 onClick={handleOpenOptions}
                                 icon={GearSix}
                             />
