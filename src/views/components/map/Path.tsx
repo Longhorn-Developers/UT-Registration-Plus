@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { PathFinder } from './PathFinder';
 import { type Graph, isValidNode, type NodeId } from './types';
 

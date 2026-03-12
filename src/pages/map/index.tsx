@@ -1,6 +1,5 @@
-import React from 'react';
 import { createRoot } from 'react-dom/client';
+import MapPage from './Map';
 
-import Map from './Map';
-
-createRoot(document.getElementById('root')!).render(<Map />);
+// biome-ignore lint/style/noNonNullAssertion: This exists
+createRoot(document.getElementById('root')!).render(<MapPage />);

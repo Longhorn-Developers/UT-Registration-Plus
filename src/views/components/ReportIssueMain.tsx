@@ -1,7 +1,7 @@
 import 'uno.css';
 
 import { captureFeedback } from '@sentry/react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Button } from './common/Button';
 import Text from './common/Text/Text';
@@ -21,7 +21,7 @@ export default function ReportIssueMain(): JSX.Element {
             throw new Error('Email and feedback are required');
         }
         // Here you would typically send the feedback to a server
-        await captureFeedback(
+        captureFeedback(
             {
                 message: feedback || 'No feedback provided',
                 email,
@@ -62,6 +62,7 @@ export default function ReportIssueMain(): JSX.Element {
                 <h2 className='mb-4 text-2xl text-orange font-bold'>{`Hook'em Horns!`}</h2>
                 <p className='mb-6 text-gray-600'>Your feedback is music to our ears. Thanks for helping us improve!</p>
                 <button
+                    type='button'
                     className='w-full rounded bg-orange-600 px-4 py-2 text-white font-bold transition duration-300 hover:bg-orange-700'
                     onClick={() => window.close()}
                 >

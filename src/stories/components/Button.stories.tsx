@@ -2,7 +2,6 @@ import { CalendarDots, ChatText, FileText, ImageSquare, Minus, Plus, Smiley } fr
 import { colorsFlattened } from '@shared/util/themeColors';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@views/components/common/Button';
-import React from 'react';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -36,7 +35,7 @@ export const Default: Story = {
 };
 
 export const Small: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: '',
     },
@@ -64,7 +63,7 @@ export const Small: Story = {
 };
 
 export const Mini: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: '',
     },
@@ -99,7 +98,7 @@ export const Disabled: Story = {
     },
 };
 
-// @ts-ignore
+// @ts-expect-error
 export const Grid: Story = {
     render: props => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -121,7 +120,7 @@ export const Grid: Story = {
 };
 
 export const PrettyColors: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: '',
     },
@@ -129,7 +128,13 @@ export const PrettyColors: Story = {
         const colorsNames = Object.keys(colorsFlattened) as (keyof typeof colorsFlattened)[];
 
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '15px',
+                }}
+            >
                 {colorsNames.map(color => (
                     <div style={{ display: 'flex', gap: '15px' }} key={color}>
                         <Button {...props} variant='filled' color={color}>
@@ -151,10 +156,17 @@ export const PrettyColors: Story = {
     },
 };
 
-// @ts-ignore
+// @ts-expect-error
 export const CourseButtons: Story = {
     render: props => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '15px',
+                alignItems: 'center',
+            }}
+        >
             <Button {...props} variant='filled' color='ut-green' icon={Plus}>
                 Add Course
             </Button>
@@ -172,7 +184,7 @@ export const CourseButtons: Story = {
 };
 
 export const CourseCatalogActionButtons: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: '',
     },

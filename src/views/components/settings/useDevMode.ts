@@ -26,6 +26,7 @@ export const useDevMode = (targetCount: number): [boolean, () => void] => {
         setLastClick(now);
     }, [lastClick, targetCount]);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: This is on purpose
     useEffect(() => {
         const timer = setTimeout(() => setCount(0), DEV_MODE_CLICK_TIMEOUT);
         return () => clearTimeout(timer);

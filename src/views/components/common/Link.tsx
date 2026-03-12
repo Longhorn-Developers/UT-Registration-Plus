@@ -3,7 +3,6 @@ import type { TextProps } from '@views/components/common/Text/Text';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import type { PropsWithChildren } from 'react';
-import React from 'react';
 
 type Props = TextProps<'a'> & {
     href?: string;

@@ -22,9 +22,7 @@ export const courseMigration = async (links: string[]) => {
 
     // Loop over the links
     for (const link of links) {
-        // eslint-disable-next-line no-await-in-loop
         const response = await fetch(link);
-        // eslint-disable-next-line no-await-in-loop
         const text = await response.text();
         const doc = new DOMParser().parseFromString(text, 'text/html');
 
@@ -36,7 +34,9 @@ export const courseMigration = async (links: string[]) => {
         // Check if the course was found
         if (courses.length === 1) {
             const description = scraper.getDescription(doc);
+            // biome-ignore lint/style/noNonNullAssertion: TODO:
             const row = courses[0]!;
+            // biome-ignore lint/style/noNonNullAssertion: TODO:
             const course = row.course!;
             course.description = description;
 

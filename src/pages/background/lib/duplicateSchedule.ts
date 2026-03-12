@@ -17,6 +17,7 @@ export default async function duplicateSchedule(scheduleId: string): Promise<str
         throw new Error(`Schedule ${scheduleId} does not exist`);
     }
 
+    // biome-ignore lint/style/noNonNullAssertion: We've already checked for edge cases
     const schedule = schedules[scheduleIndex]!;
 
     const copyOfName = `Copy of ${schedule.name}`;

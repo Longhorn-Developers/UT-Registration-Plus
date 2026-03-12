@@ -3,7 +3,7 @@ import { CRX_PAGES } from '@shared/types/CRXPages';
 import { openReportWindow } from '@shared/util/openReportWindow';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import type React from 'react';
 
 type Props = {
     className?: string;

@@ -8,7 +8,7 @@ import Divider from '@views/components/common/Divider';
 import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import type React from 'react';
 
 import FileUpload from '../common/FileUpload';
 import { DISPLAY_PREVIEWS, PREVIEW_SECTION_DIV_CLASSNAME } from './constants';

@@ -1,6 +1,5 @@
 import { Check } from '@phosphor-icons/react';
 import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
-import React from 'react';
 
 /**
  * Props for the ColorPatch component
@@ -38,6 +37,7 @@ export default function ColorPatch({
     };
     return (
         <button
+            type='button'
             className='size-6.5 p-0 transition-all duration-200 hover:scale-110 btn'
             style={{ backgroundColor: color }}
             onClick={handleClick}

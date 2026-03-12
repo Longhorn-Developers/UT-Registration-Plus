@@ -59,6 +59,7 @@ export default function Description({ course }: DescriptionProps): JSX.Element {
                 </Text>
             )}
             {status === LoadStatus.LOADING &&
+                // biome-ignore lint/correctness/useJsxKeyInIterable: TODO:
                 Array.from({ length: 5 }).map(() => <Skeleton style={{ marginBottom: 10 }} height={35} />)}
             {status === LoadStatus.DONE && (
                 <ul className='ml-6 mt-1.5 list-disc list-outside space-y-1.5'>

@@ -12,7 +12,7 @@ import Text from '@views/components/common/Text/Text';
 import useRelativeTime from '@views/hooks/useRelativeTime';
 import useSchedules from '@views/hooks/useSchedules';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
 

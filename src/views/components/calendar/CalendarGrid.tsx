@@ -4,14 +4,15 @@ import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import { useSentryScope } from '@views/contexts/SentryContext';
 import { type CalendarGridCourse, GRID_DEFAULT_END, GRID_DEFAULT_START } from '@views/hooks/useFlattenedCourseSchedule';
-import React, { Fragment } from 'react';
+import type React from 'react';
+import { Fragment } from 'react';
 
 import CalendarCell from './CalendarGridCell';
 import { calculateCourseCellColumns } from './utils';
 
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
-const DEFAULT_START_HOUR = GRID_DEFAULT_START / 60; // 8 AM
+const _DEFAULT_START_HOUR = GRID_DEFAULT_START / 60; // 8 AM
 
 interface Props {
     courseCells?: CalendarGridCourse[];
@@ -32,6 +33,7 @@ function CalendarHour({ hour }: { hour: number }) {
 }
 
 function makeGridRow(row: number, cols: number, hoursOfDay: number[]): JSX.Element {
+    // biome-ignore lint/style/noNonNullAssertion: TODO:
     const hour = hoursOfDay[row]!;
 
     return (
@@ -120,8 +122,8 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
     // Sentry is not defined in storybook.
     // This is a valid use case for a condition hook, since IS_STORYBOOK is determined at build time,
     // it doesn't change between renders.
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [sentryScope] = IS_STORYBOOK ? [undefined] : useSentryScope();
+    // biome-ignore lint/correctness/useHookAtTopLevel: See above
+    const [sentryScope] = IS_STORYBOOK ? [] : (useSentryScope() ?? []);
 
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce(
@@ -130,13 +132,13 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
             if (acc[dayIndex] === undefined) {
                 acc[dayIndex] = [];
             }
-            acc[dayIndex]!.push(cell);
+            acc[dayIndex]?.push(cell);
             return acc;
         },
         {} as Record<number, CalendarGridCourse[]>
     );
     // Check for overlaps within each day and adjust gridColumnIndex and totalColumns
-    Object.values(days).forEach((dayCells: CalendarGridCourse[], idx) => {
+    Object.values(days).forEach((dayCells: CalendarGridCourse[], _idx) => {
         try {
             calculateCourseCellColumns(dayCells);
         } catch (error) {

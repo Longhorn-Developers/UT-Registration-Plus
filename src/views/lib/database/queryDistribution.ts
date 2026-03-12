@@ -38,6 +38,7 @@ function processQueryResult(res: QueryExecResult): Required<CourseSQLRow> {
                 row[col] = res.values.reduce((acc, cur) => acc + (cur[i] as number), 0) as never;
                 break;
             default:
+                // biome-ignore lint/style/noNonNullAssertion: TODO:
                 row[col] = res.columns[i]![0]! as never;
         }
     }
@@ -109,7 +110,10 @@ export async function queryAggregateDistribution(course: Course): Promise<[Distr
         if (!season || !year) {
             throw new Error('Season is undefined');
         }
-        semesters.push({ year: parseInt(year, 10), season: season as Semester['season'] });
+        semesters.push({
+            year: parseInt(year, 10),
+            season: season as Semester['season'],
+        });
     });
 
     return [distribution, semesters, instructorIncluded];

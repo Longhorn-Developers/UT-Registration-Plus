@@ -41,7 +41,6 @@ export default function useSchedules(): [active: UserSchedule, schedules: UserSc
         initialLoad = false;
 
         // trigger suspense
-        // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw new Promise(res => {
             fetchData().then(res);
         });
@@ -149,7 +148,7 @@ export async function updateCourseColors(courseID: number, primaryColor: HexColo
         }
 
         secondaryColor = colorFromWay;
-    } catch (e) {
+    } catch (_e) {
         secondaryColor = getDarkerShade(primaryColor, 20);
 
         // if primaryColor is too dark, get lighter shade instead

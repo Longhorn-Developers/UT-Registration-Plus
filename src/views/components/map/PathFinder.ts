@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import {
     DIRECT_PATH_THRESHOLD,
     type DistanceMap,
@@ -104,8 +103,10 @@ export class PathFinder {
                 if (!isValidNode(currentNode) || !isValidNode(neighborNode)) return;
 
                 const distance = calculateDistance(currentNode, neighborNode);
+                // biome-ignore lint/style/noNonNullAssertion: TODO:
                 const totalDistance = distances[current]! + distance;
 
+                // biome-ignore lint/style/noNonNullAssertion: TODO:
                 if (totalDistance < distances[neighbor]!) {
                     distances[neighbor] = totalDistance;
                     previous[neighbor] = current;
@@ -128,7 +129,9 @@ export class PathFinder {
     private calculatePathDistance(path: NodeId[]): number {
         let totalDistance = 0;
         for (let i = 0; i < path.length - 1; i++) {
+            // biome-ignore lint/style/noNonNullAssertion: TODO:
             const currentNode = this.graph[path[i]!];
+            // biome-ignore lint/style/noNonNullAssertion: TODO:
             const nextNode = this.graph[path[i + 1]!];
             if (isValidNode(currentNode) && isValidNode(nextNode)) {
                 totalDistance += calculateDistance(currentNode, nextNode);

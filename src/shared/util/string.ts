@@ -62,6 +62,7 @@ export const ellipsify = (input: string, chars: number): string => {
  */
 export const englishStringifyList = (items: readonly string[]): string => {
     if (items.length === 0) return '';
+    // biome-ignore lint/style/noNonNullAssertion: we check in ./tests/string.test.ts
     if (items.length === 1) return items[0]!;
     if (items.length === 2) return `${items[0]} and ${items[1]}`;
 

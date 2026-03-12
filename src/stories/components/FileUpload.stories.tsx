@@ -2,7 +2,6 @@ import { ImageSquare } from '@phosphor-icons/react';
 import { colorsFlattened } from '@shared/util/themeColors';
 import type { Meta, StoryObj } from '@storybook/react';
 import FileUpload from '@views/components/common/FileUpload';
-import React from 'react';
 
 /**
  * Stole this straight from Button.stories.tsx to test the input
@@ -46,7 +45,7 @@ export const Default: Story = {
 };
 
 export const Small: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: '',
     },
@@ -74,7 +73,7 @@ export const Small: Story = {
 };
 
 export const Mini: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: '',
     },
@@ -109,7 +108,7 @@ export const Disabled: Story = {
     },
 };
 
-// @ts-ignore
+// @ts-expect-error
 export const Grid: Story = {
     render: props => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -131,7 +130,7 @@ export const Grid: Story = {
 };
 
 export const PrettyColors: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: '',
     },
@@ -139,7 +138,13 @@ export const PrettyColors: Story = {
         const colorsNames = Object.keys(colorsFlattened) as (keyof typeof colorsFlattened)[];
 
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '15px',
+                }}
+            >
                 {colorsNames.map(color => (
                     <div style={{ display: 'flex', gap: '15px' }} key={color}>
                         <FileUpload {...props} variant='filled' color={color}>

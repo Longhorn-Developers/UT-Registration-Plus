@@ -68,6 +68,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
     };
 
     const editorRef = React.useRef<HTMLInputElement>(null);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: This is on purpose
     useEffect(() => {
         const editor = editorRef.current;
         setEditorValue(schedule.name);
@@ -108,7 +109,6 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                             <Text> to contact {teamMember?.name as string}.</Text>
                         </>
                     ),
-                    // eslint-disable-next-line react/no-unstable-nested-components
                     buttons: close => (
                         <Button variant='minimal' color='ut-black' onClick={close}>
                             Go Back
@@ -136,7 +136,6 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                     <Text>.</Text>
                 </>
             ),
-            // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <>
                     <Button variant='minimal' color='ut-black' onClick={close}>
@@ -159,6 +158,8 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
     };
 
     return (
+        // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: TODO:
         <div className='h-7.5 rounded bg-white' tabIndex={0} onKeyDown={handleKeyDown}>
             <div className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
                 {IS_STORYBOOK ? (
@@ -175,6 +176,8 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                     </SortableListDragHandle>
                 )}
                 <div className='group relative flex flex-1 items-center overflow-x-hidden'>
+                    {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
+                    {/** biome-ignore lint/a11y/useKeyWithClickEvents: TODO: */}
                     <div
                         className='group/circle flex flex-grow items-center gap-spacing-3 overflow-x-hidden'
                         onClick={(...e) => !isEditing && onClick?.(...e)}

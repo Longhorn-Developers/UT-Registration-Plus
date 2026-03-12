@@ -9,12 +9,13 @@ import {
     Scope,
 } from '@sentry/react';
 import type { Client, ClientOptions } from '@sentry/types';
-import React, { createContext, useContext, useMemo } from 'react';
+import type React from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 /**
  * Context for the sentry provider.
  */
-export const SentryContext = createContext<[scope: Scope, client: Client]>(undefined!);
+export const SentryContext = createContext<[scope: Scope, client: Client] | undefined>(undefined);
 
 /**
  * @returns The dialog context for showing dialogs.
@@ -41,6 +42,7 @@ export default function SentryProvider({ children, transactionName, fullInit }: 
     // prevent accidentally initializing sentry twice
     const parent = useSentryScope();
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: This is on purpose to only run once
     const providerValue = useMemo((): [scope: Scope, client: Client] => {
         if (parent) {
             const [parentScope, parentClient] = parent;
@@ -71,7 +73,9 @@ export default function SentryProvider({ children, transactionName, fullInit }: 
         let scope: Scope;
 
         if (fullInit) {
-            client = init(options)!;
+            const initializedClient = init(options);
+            if (!initializedClient) throw new Error('Sentry failed to initialize');
+            client = initializedClient;
             scope = getCurrentScope();
         } else {
             client = new BrowserClient(options);
@@ -84,7 +88,6 @@ export default function SentryProvider({ children, transactionName, fullInit }: 
         return [scope, client];
 
         // This is on purpose to only run once
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

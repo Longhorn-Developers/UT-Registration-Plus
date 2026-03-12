@@ -41,7 +41,6 @@ function JSONEditor(props: JSONEditorProps) {
         } catch (e) {
             console.error(e);
 
-            // eslint-disable-next-line no-alert
             alert('Invalid JSON');
         }
     };
@@ -50,11 +49,18 @@ function JSONEditor(props: JSONEditorProps) {
         <div>
             {isEditing ? (
                 <div>
-                    <div style={{ flex: 1, marginBottom: 10, gap: 10, display: 'flex' }}>
-                        <button style={{ color: 'green' }} onClick={handleSave}>
+                    <div
+                        style={{
+                            flex: 1,
+                            marginBottom: 10,
+                            gap: 10,
+                            display: 'flex',
+                        }}
+                    >
+                        <button type='button' style={{ color: 'green' }} onClick={handleSave}>
                             Save
                         </button>
-                        <button style={{ color: 'red' }} onClick={() => setIsEditing(false)}>
+                        <button type='button' style={{ color: 'red' }} onClick={() => setIsEditing(false)}>
                             Cancel
                         </button>
                     </div>
@@ -62,6 +68,7 @@ function JSONEditor(props: JSONEditorProps) {
                 </div>
             ) : (
                 <div>
+                    {/** biome-ignore lint/a11y/useKeyWithClickEvents: TODO:  */}
                     <pre onClick={() => setIsEditing(true)}>{json}</pre>
                 </div>
             )}
@@ -156,4 +163,5 @@ function DevDashboard() {
     );
 }
 
+// biome-ignore lint/style/noNonNullAssertion: This exists
 createRoot(document.getElementById('root')!).render(<DevDashboard />);

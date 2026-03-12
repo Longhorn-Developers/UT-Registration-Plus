@@ -8,7 +8,7 @@ import ScheduleDropdown from '@views/components/common/ScheduleDropdown';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
 import { SortableList } from '@views/components/common/SortableList';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { exampleSchedule } from '../injected/mocked';
 

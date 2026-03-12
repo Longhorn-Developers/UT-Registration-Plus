@@ -25,7 +25,9 @@ export default async function refreshCourses(): Promise<void> {
 
     const tasks = activeSchedule.courses.map(async (course): Promise<ScrapeResult | null> => {
         try {
-            const response = await fetch(course.url, { credentials: 'include' });
+            const response = await fetch(course.url, {
+                credentials: 'include',
+            });
             if (response.redirected || response.status === 401 || response.status === 403) {
                 return { needsLogin: true, url: course.url };
             }

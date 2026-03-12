@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '../common/Button';
 
@@ -48,6 +49,7 @@ export default function FullscreenButton({ containerRef }: FullscreenButtonProps
                 size='mini'
                 className='flex items-center gap-1 px-3 py-1'
             >
+                {/** biome-ignore lint/a11y/noSvgWithoutTitle: TODO: */}
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='16'
