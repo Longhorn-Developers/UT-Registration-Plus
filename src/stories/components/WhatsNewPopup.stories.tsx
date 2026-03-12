@@ -3,7 +3,6 @@ import { Button } from '@views/components/common/Button';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import WhatsNewPopup from '@views/components/common/WhatsNewPopup';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
-import React from 'react';
 
 const meta = {
     title: 'Components/Common/WhatsNewPopup',

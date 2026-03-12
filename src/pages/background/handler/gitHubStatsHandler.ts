@@ -13,7 +13,11 @@ const gitHubStatsHandler: MessageHandler<GitHubStatsMessages> = {
             sendResponse(await gitHubStatsService.fetchGitHubStats());
         } catch (error) {
             console.error('Error fetching GitHub stats in background:', error);
-            sendResponse({ adminGitHubStats: {}, userGitHubStats: {}, names: {} });
+            sendResponse({
+                adminGitHubStats: {},
+                userGitHubStats: {},
+                names: {},
+            });
         }
     },
 };

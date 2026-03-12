@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: TODO: tests pass as expected but it would be good to fix this lint error */
 import type { Serialized } from '@chrome-extension-toolkit';
 import { tz } from '@date-fns/tz';
 import { Course } from '@shared/types/Course';

@@ -14,7 +14,11 @@ const REPO_NAME = 'UT-Registration-Plus';
 const CONTRIBUTORS_API_ROUTE = `/repos/${REPO_OWNER}/${REPO_NAME}/stats/contributors`;
 
 export const LONGHORN_DEVELOPERS_ADMINS = [
-    { name: 'Elie Soloveichik', role: ['LHD President', 'LHD Co-Founder'], githubUsername: 'Razboy20' },
+    {
+        name: 'Elie Soloveichik',
+        role: ['LHD President', 'LHD Co-Founder'],
+        githubUsername: 'Razboy20',
+    },
     {
         name: 'Brendan Early',
         role: ['LHD Software Engineering Director'],
@@ -53,11 +57,31 @@ export const LONGHORN_DEVELOPERS_SWE = [
         role: ['LHD Advisor', 'UTRP Senior SWE'],
         githubUsername: 'Samathingamajig',
     },
-    { name: 'Isaiah Rodriguez', role: ['LHD Co-Founder', 'LHD Advisor'], githubUsername: 'IsaDavRod' },
-    { name: 'Sriram Hariharan', role: ['UTRP Founder', 'LHD Alumni'], githubUsername: 'sghsri' },
-    { name: 'Preston Cook', role: ['LHD Alumni'], githubUsername: 'Preston-Cook' },
-    { name: 'Casey Charleston', role: ['LHD Alumni'], githubUsername: 'caseycharleston' },
-    { name: 'Lukas Zenick', role: ['LHD Alumni'], githubUsername: 'Lukas-Zenick' },
+    {
+        name: 'Isaiah Rodriguez',
+        role: ['LHD Co-Founder', 'LHD Advisor'],
+        githubUsername: 'IsaDavRod',
+    },
+    {
+        name: 'Sriram Hariharan',
+        role: ['UTRP Founder', 'LHD Alumni'],
+        githubUsername: 'sghsri',
+    },
+    {
+        name: 'Preston Cook',
+        role: ['LHD Alumni'],
+        githubUsername: 'Preston-Cook',
+    },
+    {
+        name: 'Casey Charleston',
+        role: ['LHD Alumni'],
+        githubUsername: 'caseycharleston',
+    },
+    {
+        name: 'Lukas Zenick',
+        role: ['LHD Alumni'],
+        githubUsername: 'Lukas-Zenick',
+    },
     { name: 'Vinson', role: ['LHD Alumni'], githubUsername: 'vinsonzheng499' },
     { name: 'Vivek', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
     { name: 'Ethan Lanting', role: ['LHD Alumni'], githubUsername: 'EthanL06' },
@@ -80,7 +104,7 @@ export class GitHubStatsService {
     private async fetchWithRetry<T>(fetchFn: () => Promise<T>, retries = 3, delay = 5000): Promise<T> {
         try {
             return await fetchFn();
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // biome-ignore lint/suspicious/noExplicitAny: TODO: type the error properly
         } catch (error: any) {
             if (retries > 0 && error.status === 202) {
                 await new Promise(resolve => setTimeout(resolve, delay));
@@ -120,7 +144,10 @@ export class GitHubStatsService {
             };
         }
 
-        await CacheStore.set('githubStats', { data: stats, dataFetched: Date.now() });
+        await CacheStore.set('githubStats', {
+            data: stats,
+            dataFetched: Date.now(),
+        });
         return stats;
     }
 
@@ -144,7 +171,10 @@ export class GitHubStatsService {
             })
         );
 
-        await CacheStore.set('githubNames', { data: names, dataFetched: Date.now() });
+        await CacheStore.set('githubNames', {
+            data: names,
+            dataFetched: Date.now(),
+        });
         return names;
     }
 

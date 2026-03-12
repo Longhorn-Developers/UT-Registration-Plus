@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 interface DevTogglesProps {
     dynamicRendering: boolean;
@@ -50,9 +50,11 @@ export default function DevToggles({
             <div className='flex items-center justify-between text-xs text-gray-700 font-semibold'>
                 <span>Dev Controls</span>
                 <button
+                    type='button'
                     onClick={() => setIsCollapsed(prev => !prev)}
                     className='ml-2 p-1 text-gray-500 hover:text-gray-800'
                 >
+                    {/** biome-ignore lint/a11y/noSvgWithoutTitle: TODO: */}
                     <svg
                         xmlns='http://www.w3.org/2000/svg'
                         width='14'

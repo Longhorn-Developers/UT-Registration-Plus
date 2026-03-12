@@ -3,8 +3,9 @@
         "rootDir": ".",
         "target": "esnext",
         "module": "esnext",
+        "moduleResolution": "bundler",
         "noEmit": true,
-        "jsx": "react",
+        "jsx": "react-jsx",
         "typeRoots": ["./node_modules/@types", "@types"],
         "skipLibCheck": true,
         "esModuleInterop": true,
@@ -24,8 +25,8 @@
             "@shared/*": ["./src/shared/*"],
             "@background/*": ["./src/pages/background/*"],
             "@views/*": ["./src/views/*"],
-            "@chrome-extension-toolkit": ["./src/lib/chrome-extension-toolkit"],
-        },
+            "@chrome-extension-toolkit": ["./src/lib/chrome-extension-toolkit"]
+        }
     },
     "include": [
         "src",
@@ -41,6 +42,6 @@
         ".storybook",
         "unocss.config.ts",
         "gulpfile.js",
-        "@types",
-    ],
+        "@types"
+    ]
 }

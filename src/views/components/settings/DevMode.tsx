@@ -1,6 +1,5 @@
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import Link from '@views/components/common/Link';
-import React from 'react';
 
 /**
  * Renders the DevMode component.

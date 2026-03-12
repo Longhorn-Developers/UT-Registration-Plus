@@ -2,7 +2,6 @@ import type { Course } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
-import React from 'react';
 
 /**
  * Props for the DisplayMeetingInfo component.
@@ -24,7 +23,10 @@ interface MeetingInfoTextProps {
  * @returns The JSX element for the meeting info.
  */
 function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProps): JSX.Element {
-    const daysString = meeting.getDaysString({ format: 'long', separator: 'long' });
+    const daysString = meeting.getDaysString({
+        format: 'long',
+        separator: 'long',
+    });
     const timeString = meeting.getTimeString({ separator: ' to ' });
 
     const getBuildingUrl = (building: string) =>

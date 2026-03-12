@@ -29,7 +29,9 @@ const PromptDialogWithButton = ({ children, ...args }: PromptDialogProps) => {
 
     const childrenWithHandleClose: React.ReactElement[] = (children ?? []).map(child => {
         if (child.type === Button) {
-            return React.cloneElement(child, { onClick: () => handleClose() } as React.HTMLAttributes<HTMLElement>);
+            return React.cloneElement(child, {
+                onClick: () => handleClose(),
+            } as React.HTMLAttributes<HTMLElement>);
         }
         return child;
     });

@@ -2,7 +2,6 @@ import { CalendarDots, ChatText, FileText, Plus, Smiley } from '@phosphor-icons/
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
-import React from 'react';
 
 const meta = {
     title: 'Components/Common/Divider',
@@ -41,6 +40,7 @@ export const IGotHorizontalIGotVerticalWhatYouWant: Story = {
     render: props => (
         <div className='grid grid-cols-7 grid-rows-3 items-center justify-items-center gap-3.75'>
             {Array.from({ length: 21 }).map((_, i) => (
+                // biome-ignore lint/correctness/useJsxKeyInIterable: TODO:
                 <Divider {...props} orientation={i % 2 === 0 ? 'horizontal' : 'vertical'} />
             ))}
         </div>

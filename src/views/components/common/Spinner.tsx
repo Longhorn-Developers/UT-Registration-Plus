@@ -1,5 +1,4 @@
 import type { SVGProps } from 'react';
-import React from 'react';
 
 /**
  * A simple spinner component that can be used to indicate loading.
@@ -10,6 +9,7 @@ export default function Spinner({ className, ...rest }: SVGProps<SVGSVGElement>)
             className={`will-change-transform animate-spin w-16 h-16 text-ut-orange ${className ?? ''}`}
             style={{ animationDuration: '225ms' }}
         >
+            {/** biome-ignore lint/a11y/noSvgWithoutTitle: TODO: */}
             <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' {...rest}>
                 <path
                     fill='currentColor'

@@ -102,8 +102,8 @@ const splashText: string[] = [
     'Remember the Alamo!',
     "Figure out next year's housing by October",
     'Technoblade never dies!',
-    // eslint-disable-next-line no-template-curly-in-string
-    'Why is my ${major} class in the ${unrelatedMajor} build?', // This is on purpose as a joke
+    // biome-ignore lint/suspicious/noTemplateCurlyInString: This is on purpose as a joke
+    'Why is my ${major} class in the ${unrelatedMajor} build?',
     '"Will that be cash, card, or id?"',
     'How much did PepsiCo pay UT to replace all the coke machines?',
     "Do it... take those 8am's",

@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
+import { execSync } from 'node:child_process';
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
-import { execSync } from 'child_process';
 import { resolve } from 'path';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
@@ -58,7 +58,7 @@ const renameFile = (source: string, destination: string): Plugin => {
         name: 'crx:rename-file',
         apply: 'build',
         enforce: 'post',
-        generateBundle(options, bundle) {
+        generateBundle(_options, bundle) {
             const file = bundle[source];
             if (!file) return;
             file.fileName = destination;
@@ -113,8 +113,8 @@ function getGitInfo() {
 
 const gitInfo = getGitInfo();
 
-let config: ResolvedConfig;
-let server: ViteDevServer;
+let _config: ResolvedConfig;
+let _server: ViteDevServer;
 
 // https://vitejs.dev/config/
 export default defineConfig({

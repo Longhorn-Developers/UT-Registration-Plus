@@ -4,7 +4,8 @@ import type { ThemeColor } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/themeColors';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React, { useEffect, useRef, useState } from 'react';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props {
     className?: string;
@@ -79,7 +80,9 @@ export default function FileUpload({
             inputRef.current.files = dataTransfer.files;
 
             // Trigger change event manually
-            onChange({ target: inputRef.current } as React.ChangeEvent<HTMLInputElement>);
+            onChange({
+                target: inputRef.current,
+            } as React.ChangeEvent<HTMLInputElement>);
         }
     };
 

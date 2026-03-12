@@ -1,6 +1,6 @@
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import styles from './RecruitmentBanner.module.scss';
@@ -63,7 +63,7 @@ export default function RecruitmentBanner(): JSX.Element | null {
         container.setAttribute('id', 'ut-registration-plus-table-head');
 
         const table = document.querySelector('table');
-        table!.before(container);
+        table?.before(container);
         setContainer(container);
     }, [recruitmentType]);
 

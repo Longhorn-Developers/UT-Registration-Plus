@@ -1,7 +1,7 @@
 import type { CloseWrapper, DialogInfo, DialogOptions, ShowDialogFn } from '@views/contexts/DialogContext';
 import { DialogContext, useDialog } from '@views/contexts/DialogContext';
 import type { ReactNode } from 'react';
-import React, { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import Dialog from '../Dialog';
 import Text from '../Text/Text';

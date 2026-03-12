@@ -2,7 +2,7 @@ import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import useSchedules from '@views/hooks/useSchedules';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '../components/common/Button';
 import { usePrompt } from '../components/common/DialogProvider/DialogProvider';

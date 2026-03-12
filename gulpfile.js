@@ -1,5 +1,5 @@
+import fs from 'node:fs';
 import chalk from 'chalk';
-import fs from 'fs';
 import { dest, series, src } from 'gulp';
 import { exec } from 'gulp-execa';
 import zip from 'gulp-zip';
@@ -17,7 +17,7 @@ const logWarn = message =>
         chalk.yellow(' [WARN]'),
         chalk.white(message)
     );
-const logError = message =>
+const _logError = message =>
     console.error(
         chalk.blue(`[${new Date().toTimeString().split(' ')[0]}]`),
         chalk.red(' [ERROR]'),

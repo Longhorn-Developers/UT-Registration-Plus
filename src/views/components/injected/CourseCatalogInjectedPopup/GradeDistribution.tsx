@@ -12,7 +12,7 @@ import {
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import type { ChangeEvent } from 'react';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import Skeleton from 'react-loading-skeleton';
 
@@ -63,7 +63,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
 
     const chartData = useMemo(() => {
         if (status === DataStatus.FOUND && distributions[semester]) {
-            return Object.entries(distributions[semester]!.data).map(([grade, count]) => ({
+            return Object.entries(distributions[semester]?.data).map(([grade, count]) => ({
                 y: count,
                 color: GRADE_COLORS[grade as LetterGrade],
             }));
@@ -77,7 +77,10 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                 const [aggregateDist, semesters, instructorIncludedAggregate] =
                     await queryAggregateDistribution(course);
                 const initialDistributions: Distributions = {
-                    Aggregate: { data: aggregateDist, instructorIncluded: instructorIncludedAggregate },
+                    Aggregate: {
+                        data: aggregateDist,
+                        instructorIncluded: instructorIncludedAggregate,
+                    },
                 };
                 const semesterPromises = semesters.map(semester => querySemesterDistribution(course, semester));
                 const semesterDistributions = await Promise.allSettled(semesterPromises);
@@ -131,7 +134,6 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                 },
                 useHTML: true,
                 formatter() {
-                    // eslint-disable-next-line react/no-this-in-sfc
                     const val = `${this.value}`;
 
                     return val === 'Other'
@@ -187,7 +189,10 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             },
         },
         chart: {
-            style: { fontFamily: 'Roboto Flex, Roboto Flex Local', fontWeight: '600' },
+            style: {
+                fontFamily: 'Roboto Flex, Roboto Flex Local',
+                fontWeight: '600',
+            },
             spacingBottom: 25,
             spacingTop: 25,
             spacingLeft: 1.5,
@@ -286,7 +291,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                             Data Source
                         </Link>
                     </div>
-                    {distributions[semester] && !distributions[semester]!.instructorIncluded && (
+                    {distributions[semester] && !distributions[semester]?.instructorIncluded && (
                         <div className='mt-3 flex flex-wrap content-center items-center self-stretch justify-center gap-3 text-center'>
                             <Text variant='small' className='text-theme-red'>
                                 We couldn&apos;t find {semester !== 'Aggregate' && ` ${semester}`} grades for this

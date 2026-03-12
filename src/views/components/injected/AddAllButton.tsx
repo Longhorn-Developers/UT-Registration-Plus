@@ -3,7 +3,7 @@ import { background } from '@shared/messages';
 import { Button } from '@views/components/common/Button';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import useSchedules from '@views/hooks/useSchedules';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 /**
@@ -38,12 +38,10 @@ export default function InjectedButton(): JSX.Element | null {
 
         if (loggedInToUT) {
             for (const a of uniqueAnchorTags) {
-                // eslint-disable-next-line no-await-in-loop
                 await addCourseByURL(activeSchedule, a);
             }
         } else {
             // We'll allow the alert for this WIP feature
-            // eslint-disable-next-line no-alert
             window.alert('Logged into UT Registrar.');
         }
     };
@@ -51,10 +49,7 @@ export default function InjectedButton(): JSX.Element | null {
     useEffect(() => {
         const targetElement = document.getElementById('kgoui_Rcontent_I3_Rsecondary');
 
-        if (
-            targetElement &&
-            targetElement.classList.contains('kgoui_container_responsive_asymmetric2_column_secondary')
-        ) {
+        if (targetElement?.classList.contains('kgoui_container_responsive_asymmetric2_column_secondary')) {
             const buttonContainer = document.createElement('div');
             targetElement.appendChild(buttonContainer);
             setContainer(buttonContainer);
