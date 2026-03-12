@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "baseUrl": ".",
         "rootDir": ".",
         "target": "esnext",
         "module": "esnext",
@@ -10,7 +9,6 @@
         "skipLibCheck": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
-        "moduleResolution": "node",
         "types": ["vite/client", "unplugin-icons/types/react", "node"],
         "noFallthroughCasesInSwitch": true,
         "allowSyntheticDefaultImports": true,
@@ -19,14 +17,14 @@
         "moduleDetection": "force",
         "isolatedModules": true,
         "paths": {
-            "src/*": ["src/*"],
-            "@assets/*": ["src/assets/*"],
-            "@pages/*": ["src/pages/*"],
-            "@public/*": ["public/*"],
-            "@shared/*": ["src/shared/*"],
-            "@background/*": ["src/pages/background/*"],
-            "@views/*": ["src/views/*"],
-            "@chrome-extension-toolkit": ["src/lib/chrome-extension-toolkit"],
+            "src/*": ["./src/*"],
+            "@assets/*": ["./src/assets/*"],
+            "@pages/*": ["./src/pages/*"],
+            "@public/*": ["./public/*"],
+            "@shared/*": ["./src/shared/*"],
+            "@background/*": ["./src/pages/background/*"],
+            "@views/*": ["./src/views/*"],
+            "@chrome-extension-toolkit": ["./src/lib/chrome-extension-toolkit"],
         },
     },
     "include": [
