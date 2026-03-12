@@ -1,4 +1,4 @@
-import { createSyncStore } from '@chrome-extension-toolkit';
+import { createSyncStore } from "@chrome-extension-toolkit";
 
 /**
  * A store that is used for storing user options
@@ -29,7 +29,7 @@ export interface IOptionsStore {
 }
 
 export const OptionsStore = createSyncStore<IOptionsStore>(
-    'OptionsStore',
+    "OptionsStore",
     {
         enableCourseStatusChips: false,
         enableHighlightConflicts: true,
@@ -42,7 +42,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>(
     },
     {
         usePrefix: false,
-    }
+    },
 );
 
 /**

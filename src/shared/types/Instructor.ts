@@ -1,5 +1,5 @@
-import type { Serialized } from '@chrome-extension-toolkit';
-import { capitalize } from '@shared/util/string';
+import type { Serialized } from "@chrome-extension-toolkit";
+import { capitalize } from "@shared/util/string";
 
 /**
  * A type representing an instructor for a course (who teaches it)
@@ -27,7 +27,7 @@ export default class Instructor {
         const { format } = options;
 
         switch (format) {
-            case 'first_last':
+            case "first_last":
                 if (firstName && lastName) {
                     return `${capitalize(firstName)} ${capitalize(lastName)}`;
                 }
@@ -40,8 +40,8 @@ export default class Instructor {
                     return fullName;
                 }
 
-                return '';
-            case 'last':
+                return "";
+            case "last":
                 if (lastName) {
                     return capitalize(lastName);
                 }
@@ -50,7 +50,7 @@ export default class Instructor {
                     return fullName;
                 }
 
-                return '';
+                return "";
             default:
                 throw new Error(`Invalid Instructor String format: ${format}`);
         }
@@ -62,5 +62,5 @@ export default class Instructor {
  */
 type InstructorFormatOptions = {
     /** How do you want the names of the professors formatted */
-    format: 'first_last' | 'last';
+    format: "first_last" | "last";
 };

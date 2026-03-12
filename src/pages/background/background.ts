@@ -1,18 +1,18 @@
-import { MessageListener } from '@chrome-extension-toolkit';
-import type { BACKGROUND_MESSAGES } from '@shared/messages';
-import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import updateBadgeText from '@shared/util/updateBadgeText';
+import { MessageListener } from "@chrome-extension-toolkit";
+import type { BACKGROUND_MESSAGES } from "@shared/messages";
+import { UserScheduleStore } from "@shared/storage/UserScheduleStore";
+import updateBadgeText from "@shared/util/updateBadgeText";
 
-import onInstall from './events/onInstall';
-import onServiceWorkerAlive from './events/onServiceWorkerAlive';
-import onUpdate from './events/onUpdate';
-import browserActionHandler from './handler/browserActionHandler';
-import calendarBackgroundHandler from './handler/calendarBackgroundHandler';
-import CESHandler from './handler/CESHandler';
-import gitHubStatsHandler from './handler/gitHubStatsHandler';
-import statusCheckerHandler from './handler/statusCheckerHandler';
-import tabManagementHandler from './handler/tabManagementHandler';
-import userScheduleHandler from './handler/userScheduleHandler';
+import onInstall from "./events/onInstall";
+import onServiceWorkerAlive from "./events/onServiceWorkerAlive";
+import onUpdate from "./events/onUpdate";
+import browserActionHandler from "./handler/browserActionHandler";
+import calendarBackgroundHandler from "./handler/calendarBackgroundHandler";
+import CESHandler from "./handler/CESHandler";
+import gitHubStatsHandler from "./handler/gitHubStatsHandler";
+import statusCheckerHandler from "./handler/statusCheckerHandler";
+import tabManagementHandler from "./handler/tabManagementHandler";
+import userScheduleHandler from "./handler/userScheduleHandler";
 
 onServiceWorkerAlive();
 
@@ -20,12 +20,12 @@ onServiceWorkerAlive();
  * will be triggered on either install or update
  * (will also be triggered on a user's sync'd browsers (on other devices)))
  */
-chrome.runtime.onInstalled.addListener(details => {
+chrome.runtime.onInstalled.addListener((details) => {
     switch (details.reason) {
-        case 'install':
+        case "install":
             onInstall();
             break;
-        case 'update':
+        case "update":
             onUpdate();
             break;
         default:
@@ -36,7 +36,10 @@ chrome.runtime.onInstalled.addListener(details => {
 // migration/login logic
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
     // console.log(changeInfo);
-    if (changeInfo.url === 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/') {
+    if (
+        changeInfo.url ===
+        "https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/"
+    ) {
         function openPopupAction() {
             chrome.tabs.onActivated.removeListener(openPopupAction);
             chrome.action.openPopup();
@@ -60,14 +63,14 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
 
 messageListener.listen();
 
-UserScheduleStore.subscribe('schedules', async schedules => {
-    const index = await UserScheduleStore.get('activeIndex');
+UserScheduleStore.subscribe("schedules", async (schedules) => {
+    const index = await UserScheduleStore.get("activeIndex");
     const numCourses = schedules.newValue[index]?.courses?.length;
     updateBadgeText(numCourses || 0);
 });
 
-UserScheduleStore.subscribe('activeIndex', async ({ newValue }) => {
-    const schedules = await UserScheduleStore.get('schedules');
+UserScheduleStore.subscribe("activeIndex", async ({ newValue }) => {
+    const schedules = await UserScheduleStore.get("schedules");
     const numCourses = schedules[newValue]?.courses?.length;
     updateBadgeText(numCourses || 0);
 });

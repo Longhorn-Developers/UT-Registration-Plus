@@ -1,6 +1,6 @@
-import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { UserScheduleStore } from "@shared/storage/UserScheduleStore";
 
-import handleDuplicate from './handleDuplicate';
+import handleDuplicate from "./handleDuplicate";
 
 /**
  * Renames a schedule with the specified name to a new name.
@@ -8,10 +8,15 @@ import handleDuplicate from './handleDuplicate';
  * @param newName - The new name for the schedule.
  * @returns A promise that resolves to the new name if successful, otherwise undefined.
  */
-export default async function renameSchedule(scheduleId: string, newName: string): Promise<string | undefined> {
-    const schedules = await UserScheduleStore.get('schedules');
+export default async function renameSchedule(
+    scheduleId: string,
+    newName: string,
+): Promise<string | undefined> {
+    const schedules = await UserScheduleStore.get("schedules");
 
-    const scheduleIndex = schedules.findIndex(schedule => schedule.id === scheduleId);
+    const scheduleIndex = schedules.findIndex(
+        (schedule) => schedule.id === scheduleId,
+    );
     if (scheduleIndex === -1) {
         return undefined;
     }
@@ -24,7 +29,7 @@ export default async function renameSchedule(scheduleId: string, newName: string
     const oldName = schedule.name;
     const regex = /^(.+?)(\(\d+\))?$/;
     const match = oldName?.match(regex);
-    const baseName = match?.[1] ?? '';
+    const baseName = match?.[1] ?? "";
     const baseNameOfNewName = newName.match(regex)?.[1];
 
     if (baseName === baseNameOfNewName) {
@@ -36,6 +41,6 @@ export default async function renameSchedule(scheduleId: string, newName: string
     schedule.name = updatedName;
     schedule.updatedAt = Date.now();
 
-    await UserScheduleStore.set('schedules', schedules);
+    await UserScheduleStore.set("schedules", schedules);
     return newName;
 }

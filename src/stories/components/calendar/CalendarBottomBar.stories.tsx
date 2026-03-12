@@ -1,84 +1,84 @@
-import { Course, Status } from '@shared/types/Course';
-import Instructor from '@shared/types/Instructor';
-import { getCourseColors } from '@shared/util/colors';
-import type { Meta, StoryObj } from '@storybook/react';
-import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
-import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import React from 'react';
+import { Course, Status } from "@shared/types/Course";
+import Instructor from "@shared/types/Instructor";
+import { getCourseColors } from "@shared/util/colors";
+import type { Meta, StoryObj } from "@storybook/react";
+import CalendarBottomBar from "@views/components/calendar/CalendarBottomBar";
+import type { CalendarGridCourse } from "@views/hooks/useFlattenedCourseSchedule";
+import React from "react";
 
 const exampleGovCourse: Course = new Course({
-    courseName: 'Nope',
+    courseName: "Nope",
     creditHours: 3,
-    department: 'GOV',
-    description: ['nah', 'aint typing this', 'corndog'],
-    flags: ['no flag for you >:)'],
-    core: ['American and Texas Government'],
-    fullName: 'GOV 312L Something something',
-    instructionMode: 'Online',
+    department: "GOV",
+    description: ["nah", "aint typing this", "corndog"],
+    flags: ["no flag for you >:)"],
+    core: ["American and Texas Government"],
+    fullName: "GOV 312L Something something",
+    instructionMode: "Online",
     instructors: [
         new Instructor({
-            firstName: 'Bevo',
-            lastName: 'Barrymore',
-            fullName: 'Bevo Barrymore',
+            firstName: "Bevo",
+            lastName: "Barrymore",
+            fullName: "Bevo Barrymore",
         }),
     ],
     isReserved: false,
-    number: '312L',
+    number: "312L",
     schedule: {
         meetings: [],
     },
     scrapedAt: Date.now(),
     semester: {
-        code: '12345',
-        season: 'Spring',
+        code: "12345",
+        season: "Spring",
         year: 2024,
     },
     status: Status.OPEN,
     uniqueId: 12345,
-    url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
-    colors: getCourseColors('red', 500),
+    url: "https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/",
+    colors: getCourseColors("red", 500),
 });
 
 const examplePsyCourse: Course = new Course({
-    courseName: 'Nope Again',
+    courseName: "Nope Again",
     creditHours: 3,
-    department: 'PSY',
-    description: ['nah', 'aint typing this', 'corndog'],
-    flags: ['no flag for you >:)'],
-    core: ['Social and Behavioral Sciences'],
-    fullName: 'PSY 317L Yada yada',
-    instructionMode: 'Online',
+    department: "PSY",
+    description: ["nah", "aint typing this", "corndog"],
+    flags: ["no flag for you >:)"],
+    core: ["Social and Behavioral Sciences"],
+    fullName: "PSY 317L Yada yada",
+    instructionMode: "Online",
     scrapedAt: Date.now(),
     instructors: [
         new Instructor({
-            firstName: 'Bevo',
-            lastName: 'Etz',
-            fullName: 'Bevo Etz',
+            firstName: "Bevo",
+            lastName: "Etz",
+            fullName: "Bevo Etz",
         }),
     ],
     isReserved: false,
-    number: '317L',
+    number: "317L",
     schedule: {
         meetings: [],
     },
     semester: {
-        code: '12346',
-        season: 'Spring',
+        code: "12346",
+        season: "Spring",
         year: 2024,
     },
     status: Status.CLOSED,
     uniqueId: 12346,
-    url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
-    colors: getCourseColors('blue', 500),
+    url: "https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/",
+    colors: getCourseColors("blue", 500),
 });
 
 const meta = {
-    title: 'Components/Calendar/CalendarBottomBar',
+    title: "Components/Calendar/CalendarBottomBar",
     component: CalendarBottomBar,
     parameters: {
-        layout: 'centered',
+        layout: "centered",
     },
-    tags: ['autodocs'],
+    tags: ["autodocs"],
     argTypes: {},
 } satisfies Meta<typeof CalendarBottomBar>;
 export default meta;
@@ -90,12 +90,20 @@ export const Default: Story = {
         courseCells: [
             {
                 async: true,
-                calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
+                calendarGridPoint: {
+                    dayIndex: -1,
+                    endIndex: -1,
+                    startIndex: -1,
+                },
                 componentProps: {
                     courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
                     status: exampleGovCourse.status,
                     blockData: {
-                        calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
+                        calendarGridPoint: {
+                            dayIndex: -1,
+                            endIndex: -1,
+                            startIndex: -1,
+                        },
                         componentProps: {
                             courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
                             status: exampleGovCourse.status,
@@ -109,12 +117,20 @@ export const Default: Story = {
             },
             {
                 async: true,
-                calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
+                calendarGridPoint: {
+                    dayIndex: -1,
+                    endIndex: -1,
+                    startIndex: -1,
+                },
                 componentProps: {
                     courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
                     status: examplePsyCourse.status,
                     blockData: {
-                        calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
+                        calendarGridPoint: {
+                            dayIndex: -1,
+                            endIndex: -1,
+                            startIndex: -1,
+                        },
                         componentProps: {
                             courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
                             status: examplePsyCourse.status,
@@ -129,8 +145,8 @@ export const Default: Story = {
         ],
         setCourse: () => {},
     },
-    render: props => (
-        <div className='outline-red outline w-292.5!'>
+    render: (props) => (
+        <div className="outline-red outline w-292.5!">
             <CalendarBottomBar {...props} />
         </div>
     ),
@@ -140,8 +156,8 @@ export const Empty: Story = {
         courseCells: [],
         setCourse: () => {},
     },
-    render: props => (
-        <div className='outline-red outline w-292.5!'>
+    render: (props) => (
+        <div className="outline-red outline w-292.5!">
             <CalendarBottomBar {...props} />
         </div>
     ),

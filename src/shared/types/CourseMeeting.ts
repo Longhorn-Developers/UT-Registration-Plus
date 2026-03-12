@@ -1,17 +1,17 @@
-import type { Serialized } from '@chrome-extension-toolkit';
+import type { Serialized } from "@chrome-extension-toolkit";
 
 /**
  * a map of the days of the week that a class is taught, and the corresponding abbreviation
  * Don't modify the keys
  */
 export const DAY_MAP = {
-    M: 'Monday',
-    T: 'Tuesday',
-    W: 'Wednesday',
-    TH: 'Thursday',
-    F: 'Friday',
-    S: 'Saturday',
-    SU: 'Sunday',
+    M: "Monday",
+    T: "Tuesday",
+    W: "Wednesday",
+    TH: "Thursday",
+    F: "Friday",
+    S: "Saturday",
+    SU: "Sunday",
 } as const;
 
 /** A day of the week that a class is taught */
@@ -53,11 +53,16 @@ export class CourseMeeting {
      * @param meeting - The meeting to check for conflicts with
      * @returns True if the given meeting conflicts with this meeting, false otherwise
      */
-    isConflicting({ days: otherDays, startTime: otherStartTime, endTime: otherEndTime }: CourseMeeting): boolean {
+    isConflicting({
+        days: otherDays,
+        startTime: otherStartTime,
+        endTime: otherEndTime,
+    }: CourseMeeting): boolean {
         const { days, startTime, endTime } = this;
 
-        const hasDayConflict = days.some(day => otherDays.includes(day));
-        const hasTimeConflict = startTime < otherEndTime && endTime > otherStartTime;
+        const hasDayConflict = days.some((day) => otherDays.includes(day));
+        const hasTimeConflict =
+            startTime < otherEndTime && endTime > otherStartTime;
 
         return hasDayConflict && hasTimeConflict;
     }
@@ -71,15 +76,17 @@ export class CourseMeeting {
     getDaysString({ format, separator }: DaysStringOptions): string {
         let { days } = this;
 
-        if (format === 'short') {
-            days = Object.keys(DAY_MAP).filter(day => days.includes(DAY_MAP[day as keyof typeof DAY_MAP])) as Day[];
+        if (format === "short") {
+            days = Object.keys(DAY_MAP).filter((day) =>
+                days.includes(DAY_MAP[day as keyof typeof DAY_MAP]),
+            ) as Day[];
         }
         if (!separator) {
-            return days.join('');
+            return days.join("");
         }
-        const listFormat = new Intl.ListFormat('en-US', {
+        const listFormat = new Intl.ListFormat("en-US", {
             style: separator,
-            type: 'conjunction',
+            type: "conjunction",
         });
         return listFormat.format(days);
     }
@@ -90,37 +97,37 @@ export class CourseMeeting {
      * @param options - Options for the string representation
      * @returns String representation of the time range for the course
      */
-    getTimeString({ separator = '-' }: TimeStringOptions): string {
+    getTimeString({ separator = "-" }: TimeStringOptions): string {
         const { startTime, endTime } = this;
         const startHour = Math.floor(startTime / 60);
         const startMinute = startTime % 60;
         const endHour = Math.floor(endTime / 60);
         const endMinute = endTime % 60;
 
-        let startTimeString = '';
-        let endTimeString = '';
+        let startTimeString = "";
+        let endTimeString = "";
 
         if (startHour === 0) {
-            startTimeString = '12';
+            startTimeString = "12";
         } else if (startHour > 12) {
             startTimeString = `${startHour - 12}`;
         } else {
             startTimeString = `${startHour}`;
         }
 
-        startTimeString += startMinute === 0 ? ':00' : `:${startMinute}`;
-        startTimeString += startHour >= 12 ? 'pm' : 'am';
+        startTimeString += startMinute === 0 ? ":00" : `:${startMinute}`;
+        startTimeString += startHour >= 12 ? "pm" : "am";
 
         if (endHour === 0) {
-            endTimeString = '12';
+            endTimeString = "12";
         } else if (endHour > 12) {
             endTimeString = `${endHour - 12}`;
         } else {
             endTimeString = `${endHour}`;
         }
 
-        endTimeString += endMinute === 0 ? ':00' : `:${endMinute}`;
-        endTimeString += endHour >= 12 ? 'pm' : 'am';
+        endTimeString += endMinute === 0 ? ":00" : `:${endMinute}`;
+        endTimeString += endHour >= 12 ? "pm" : "am";
 
         return `${startTimeString} ${separator} ${endTimeString}`;
     }
@@ -139,7 +146,7 @@ type TimeStringOptions = {
  */
 type DaysStringOptions = {
     /** The format of the days string, short = MWF, long = Monday, Wednesday, Friday */
-    format: 'short' | 'long';
+    format: "short" | "long";
     /**
      * The separator between the days
      *

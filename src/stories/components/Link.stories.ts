@@ -1,20 +1,20 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import Link from '@views/components/common/Link';
+import type { Meta, StoryObj } from "@storybook/react";
+import Link from "@views/components/common/Link";
 
 const meta = {
-    title: 'Components/Common/Link',
+    title: "Components/Common/Link",
     component: Link,
     parameters: {
-        layout: 'centered',
+        layout: "centered",
     },
-    tags: ['autodocs'],
+    tags: ["autodocs"],
     argTypes: {
         color: {
-            control: 'color',
+            control: "color",
         },
     },
     args: {
-        children: 'Link',
+        children: "Link",
     },
 } satisfies Meta<typeof Link>;
 

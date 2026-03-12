@@ -1,9 +1,9 @@
-import type { Course, StatusType } from '@shared/types/Course';
-import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
-import type { UserSchedule } from '@shared/types/UserSchedule';
-import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
+import type { Course, StatusType } from "@shared/types/Course";
+import { type CourseMeeting, DAY_MAP } from "@shared/types/CourseMeeting";
+import type { UserSchedule } from "@shared/types/UserSchedule";
+import type { CalendarCourseCellProps } from "@views/components/calendar/CalendarCourseCell";
 
-import useSchedules from './useSchedules';
+import useSchedules from "./useSchedules";
 
 const dayToNumber = {
     Monday: 0,
@@ -65,19 +65,36 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const [activeSchedule] = useSchedules();
 
     const processedCourses = activeSchedule.courses
-        .flatMap(course => {
-            const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
+        .flatMap((course) => {
+            const { status, courseDeptAndInstr, meetings } =
+                extractCourseInfo(course);
 
             if (meetings.length === 0) {
-                return processAsyncCourses({ courseDeptAndInstr, status, course });
+                return processAsyncCourses({
+                    courseDeptAndInstr,
+                    status,
+                    course,
+                });
             }
 
-            return meetings.flatMap(meeting => {
-                if (meeting.days.includes(DAY_MAP.S) || meeting.startTime < 480) {
-                    return processAsyncCourses({ courseDeptAndInstr, status, course });
+            return meetings.flatMap((meeting) => {
+                if (
+                    meeting.days.includes(DAY_MAP.S) ||
+                    meeting.startTime < 480
+                ) {
+                    return processAsyncCourses({
+                        courseDeptAndInstr,
+                        status,
+                        course,
+                    });
                 }
 
-                return processInPersonMeetings(meeting, courseDeptAndInstr, status, course);
+                return processInPersonMeetings(
+                    meeting,
+                    courseDeptAndInstr,
+                    status,
+                    course,
+                );
             });
         })
         .sort(sortCourses);
@@ -100,8 +117,10 @@ function extractCourseInfo(course: Course) {
     let courseDeptAndInstr = `${course.department} ${course.number}`;
 
     if (course.instructors.length > 0) {
-        courseDeptAndInstr += ' \u2013 ';
-        courseDeptAndInstr += course.instructors.map(instructor => instructor.toString({ format: 'last' })).join('; ');
+        courseDeptAndInstr += " \u2013 ";
+        courseDeptAndInstr += course.instructors
+            .map((instructor) => instructor.toString({ format: "last" }))
+            .join("; ");
     }
 
     return { status, courseDeptAndInstr, meetings, course };
@@ -130,8 +149,16 @@ function processAsyncCourses({
                 courseDeptAndInstr,
                 status,
                 blockData: {
-                    calendarGridPoint: { dayIndex: -1, startIndex: -1, endIndex: -1 },
-                    componentProps: { courseDeptAndInstr, status, blockData: {} as CalendarGridCourse },
+                    calendarGridPoint: {
+                        dayIndex: -1,
+                        startIndex: -1,
+                        endIndex: -1,
+                    },
+                    componentProps: {
+                        courseDeptAndInstr,
+                        status,
+                        blockData: {} as CalendarGridCourse,
+                    },
                     course,
                     async: true,
                 },
@@ -149,15 +176,19 @@ function processInPersonMeetings(
     meeting: CourseMeeting,
     courseDeptAndInstr: string,
     status: StatusType,
-    course: Course
+    course: Course,
 ): CalendarGridCourse[] {
     const { days, startTime, endTime, location } = meeting;
     const midnightIndex = 1440;
     const normalizingTimeFactor = 720;
     const oneHour = 60;
-    const time = meeting.getTimeString({ separator: '–' });
-    const normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
-    const normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
+    const time = meeting.getTimeString({ separator: "–" });
+    const normalizedStartTime =
+        startTime >= midnightIndex
+            ? startTime - normalizingTimeFactor
+            : startTime;
+    const normalizedEndTime =
+        endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
     const courseDuration = normalizedEndTime - normalizedStartTime;
     let timeAndLocation = `${time}`;
     if (location) {
@@ -168,7 +199,7 @@ function processInPersonMeetings(
         }
     }
 
-    return days.map(day => ({
+    return days.map((day) => ({
         calendarGridPoint: {
             dayIndex: dayToNumber[day],
             startIndex: convertMinutesToIndex(normalizedStartTime),
@@ -189,8 +220,16 @@ function processInPersonMeetings(
  * Utility function to sort courses for the calendar grid
  */
 function sortCourses(a: CalendarGridCourse, b: CalendarGridCourse): number {
-    const { dayIndex: dayIndexA, startIndex: startIndexA, endIndex: endIndexA } = a.calendarGridPoint;
-    const { dayIndex: dayIndexB, startIndex: startIndexB, endIndex: endIndexB } = b.calendarGridPoint;
+    const {
+        dayIndex: dayIndexA,
+        startIndex: startIndexA,
+        endIndex: endIndexA,
+    } = a.calendarGridPoint;
+    const {
+        dayIndex: dayIndexB,
+        startIndex: startIndexB,
+        endIndex: endIndexB,
+    } = b.calendarGridPoint;
 
     if (dayIndexA !== dayIndexB) {
         return dayIndexA - dayIndexB;

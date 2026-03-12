@@ -1,7 +1,7 @@
-import type { Serialized } from '@chrome-extension-toolkit';
-import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import type { UserSchedule } from '@shared/types/UserSchedule';
-import { generateRandomId } from '@shared/util/random';
+import type { Serialized } from "@chrome-extension-toolkit";
+import { UserScheduleStore } from "@shared/storage/UserScheduleStore";
+import type { UserSchedule } from "@shared/types/UserSchedule";
+import { generateRandomId } from "@shared/util/random";
 
 /**
  * Creates a new schedule with the given name
@@ -10,7 +10,7 @@ import { generateRandomId } from '@shared/util/random';
  * @returns Undefined if successful, otherwise an error message
  */
 export default async function createSchedule(scheduleName: string) {
-    const schedules = await UserScheduleStore.get('schedules');
+    const schedules = await UserScheduleStore.get("schedules");
     // get the number of schedules that either have the same name or have the same name with a number appended (e.g. "New Schedule (1)")
     // this way we can prevent duplicate schedule names and increment the number if necessary
 
@@ -18,7 +18,7 @@ export default async function createSchedule(scheduleName: string) {
     const regex = new RegExp(`^${scheduleName}( \\(\\d+\\))?$`);
 
     // Find how many schedules match the base name or follow the pattern with a number
-    const count = schedules.filter(s => regex.test(s.name)).length;
+    const count = schedules.filter((s) => regex.test(s.name)).length;
 
     // If any matches are found, append the next number to the schedule name
     let name = scheduleName;
@@ -35,14 +35,14 @@ export default async function createSchedule(scheduleName: string) {
     };
     schedules.push(newSchedule);
 
-    await UserScheduleStore.set('schedules', schedules);
+    await UserScheduleStore.set("schedules", schedules);
 
     // Automatically switch to the new schedule
-    await UserScheduleStore.set('activeIndex', schedules.length - 1);
+    await UserScheduleStore.set("activeIndex", schedules.length - 1);
 
     // If there is only one schedule, set the active index to the new schedule
     if (schedules.length <= 1) {
-        await UserScheduleStore.set('activeIndex', 0);
+        await UserScheduleStore.set("activeIndex", 0);
     }
 
     return newSchedule.id;

@@ -2,11 +2,11 @@
  * An object containing the paths to various pages used in the CRX application.
  */
 export const CRX_PAGES = {
-    DEBUG: '/debug.html',
-    CALENDAR: '/calendar.html',
-    OPTIONS: '/options.html',
-    MAP: '/map.html',
-    REPORT: '/report.html',
+    DEBUG: "/debug.html",
+    CALENDAR: "/calendar.html",
+    OPTIONS: "/options.html",
+    MAP: "/map.html",
+    REPORT: "/report.html",
 } as const;
 
 /**

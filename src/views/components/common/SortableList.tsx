@@ -1,21 +1,27 @@
-import type { Active, UniqueIdentifier } from '@dnd-kit/core';
-import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { restrictToParentElement } from '@dnd-kit/modifiers';
+import type { Active, UniqueIdentifier } from "@dnd-kit/core";
+import {
+    DndContext,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from "@dnd-kit/core";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
 import {
     arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
     useSortable,
     verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { SortableItemProvider } from '@views/contexts/SortableItemContext';
-import { useCursor } from '@views/hooks/useCursor';
-import clsx from 'clsx';
-import type { CSSProperties, PropsWithChildren, ReactNode } from 'react';
-import React, { useEffect, useMemo, useState } from 'react';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { SortableItemProvider } from "@views/contexts/SortableItemContext";
+import { useCursor } from "@views/hooks/useCursor";
+import clsx from "clsx";
+import type { CSSProperties, PropsWithChildren, ReactNode } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
-import { SortableItemOverlay } from './SortableItemOverlay';
+import { SortableItemOverlay } from "./SortableItemOverlay";
 
 /**
  * Extendable Prop for Sortable Item Id
@@ -49,8 +55,19 @@ export interface SortableListItemProps {
     id: UniqueIdentifier;
 }
 
-function SortableListItem({ children, id }: PropsWithChildren<SortableListItemProps>) {
-    const { attributes, isDragging, listeners, setNodeRef, setActivatorNodeRef, transform, transition } = useSortable({
+function SortableListItem({
+    children,
+    id,
+}: PropsWithChildren<SortableListItemProps>) {
+    const {
+        attributes,
+        isDragging,
+        listeners,
+        setNodeRef,
+        setActivatorNodeRef,
+        transform,
+        transition,
+    } = useSortable({
         id,
     });
     const context = useMemo(
@@ -59,12 +76,12 @@ function SortableListItem({ children, id }: PropsWithChildren<SortableListItemPr
             listeners,
             ref: setActivatorNodeRef,
         }),
-        [attributes, listeners, setActivatorNodeRef]
+        [attributes, listeners, setActivatorNodeRef],
     );
 
     const style = {
-        listStyle: 'none',
-        visibility: isDragging ? 'hidden' : 'visible',
+        listStyle: "none",
+        visibility: isDragging ? "hidden" : "visible",
         transform: CSS.Translate.toString(transform),
         transition,
     } satisfies CSSProperties;
@@ -95,18 +112,26 @@ export function SortableList<T extends BaseItem>({
         setItems(draggables);
     }, [draggables]);
 
-    const activeItem = useMemo(() => items.find(item => item.id === active?.id), [active, items]);
+    const activeItem = useMemo(
+        () => items.find((item) => item.id === active?.id),
+        [active, items],
+    );
 
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
             coordinateGetter: sortableKeyboardCoordinates,
-        })
+        }),
     );
 
     return (
-        <div className={clsx('h-full w-full')}>
-            <ul className={clsx('overflow-clip flex gap-spacing-3 flex-col', className)}>
+        <div className={clsx("h-full w-full")}>
+            <ul
+                className={clsx(
+                    "overflow-clip flex gap-spacing-3 flex-col",
+                    className,
+                )}
+            >
                 <DndContext
                     modifiers={[restrictToParentElement]}
                     sensors={sensors}
@@ -117,9 +142,17 @@ export function SortableList<T extends BaseItem>({
                     onDragEnd={({ active, over }) => {
                         setCursorGrabbing(false);
                         if (over && active.id !== over.id) {
-                            const activeIndex = items.findIndex(({ id }) => id === active.id);
-                            const overIndex = items.findIndex(({ id }) => id === over.id);
-                            const reorderedItems = arrayMove(items, activeIndex, overIndex);
+                            const activeIndex = items.findIndex(
+                                ({ id }) => id === active.id,
+                            );
+                            const overIndex = items.findIndex(
+                                ({ id }) => id === over.id,
+                            );
+                            const reorderedItems = arrayMove(
+                                items,
+                                activeIndex,
+                                overIndex,
+                            );
                             onChange(reorderedItems);
                             setItems(reorderedItems);
                         }
@@ -130,8 +163,11 @@ export function SortableList<T extends BaseItem>({
                         setActive(null);
                     }}
                 >
-                    <SortableContext items={items} strategy={verticalListSortingStrategy}>
-                        {items.map(item => (
+                    <SortableContext
+                        items={items}
+                        strategy={verticalListSortingStrategy}
+                    >
+                        {items.map((item) => (
                             <SortableListItem key={item.id} id={item.id}>
                                 {renderItem(item)}
                             </SortableListItem>
@@ -139,7 +175,9 @@ export function SortableList<T extends BaseItem>({
                     </SortableContext>
                     <SortableItemOverlay>
                         {activeItem ? (
-                            <SortableListItem id={activeItem.id}>{renderItem(activeItem)}</SortableListItem>
+                            <SortableListItem id={activeItem.id}>
+                                {renderItem(activeItem)}
+                            </SortableListItem>
                         ) : null}
                     </SortableItemOverlay>
                 </DndContext>

@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext } from "react";
 
 /**
  * Close wrapper
@@ -34,13 +34,16 @@ export interface DialogOptions {
 /**
  * Function to show a dialog.
  */
-export type ShowDialogFn = (info: DialogInfo | CloseWrapper<DialogInfo>, options?: DialogOptions) => void;
+export type ShowDialogFn = (
+    info: DialogInfo | CloseWrapper<DialogInfo>,
+    options?: DialogOptions,
+) => void;
 
 /**
  * Context for the dialog provider.
  */
 export const DialogContext = createContext<ShowDialogFn>(() => {
-    throw new Error('DialogContext not initialized.');
+    throw new Error("DialogContext not initialized.");
 });
 
 /**

@@ -1,21 +1,21 @@
-import { UserSchedule } from '@shared/types/UserSchedule';
-import type { Meta, StoryObj } from '@storybook/react';
-import ScheduleListItem from '@views/components/common/ScheduleListItem';
-import useSchedules from '@views/hooks/useSchedules';
-import React from 'react';
+import { UserSchedule } from "@shared/types/UserSchedule";
+import type { Meta, StoryObj } from "@storybook/react";
+import ScheduleListItem from "@views/components/common/ScheduleListItem";
+import useSchedules from "@views/hooks/useSchedules";
+import React from "react";
 
-import { exampleSchedule } from '../injected/mocked';
+import { exampleSchedule } from "../injected/mocked";
 
 const meta = {
-    title: 'Components/Common/ScheduleListItem',
+    title: "Components/Common/ScheduleListItem",
     component: ScheduleListItem,
     parameters: {
-        layout: 'centered',
+        layout: "centered",
     },
     args: {
         schedule: exampleSchedule,
     },
-    tags: ['autodocs'],
+    tags: ["autodocs"],
 } satisfies Meta<typeof ScheduleListItem>;
 export default meta;
 

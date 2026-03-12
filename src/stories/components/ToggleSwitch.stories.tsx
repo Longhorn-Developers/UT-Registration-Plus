@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import SwitchButton from '@views/components/common/SwitchButton';
+import type { Meta, StoryObj } from "@storybook/react";
+import SwitchButton from "@views/components/common/SwitchButton";
 
 const meta = {
-    title: 'Components/Common/SwitchButton',
+    title: "Components/Common/SwitchButton",
     component: SwitchButton,
-    tags: ['autodocs'],
+    tags: ["autodocs"],
     parameters: {
-        layout: 'centered',
+        layout: "centered",
     },
 } satisfies Meta<typeof SwitchButton>;
 

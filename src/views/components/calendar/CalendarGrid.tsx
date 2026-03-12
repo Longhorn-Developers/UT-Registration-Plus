@@ -1,15 +1,15 @@
-import type { Course } from '@shared/types/Course';
-import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
-import Text from '@views/components/common/Text/Text';
-import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
-import { useSentryScope } from '@views/contexts/SentryContext';
-import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import React, { Fragment } from 'react';
+import type { Course } from "@shared/types/Course";
+import CalendarCourseCell from "@views/components/calendar/CalendarCourseCell";
+import Text from "@views/components/common/Text/Text";
+import { ColorPickerProvider } from "@views/contexts/ColorPickerContext";
+import { useSentryScope } from "@views/contexts/SentryContext";
+import type { CalendarGridCourse } from "@views/hooks/useFlattenedCourseSchedule";
+import React, { Fragment } from "react";
 
-import CalendarCell from './CalendarGridCell';
-import { calculateCourseCellColumns } from './utils';
+import CalendarCell from "./CalendarGridCell";
+import { calculateCourseCellColumns } from "./utils";
 
-const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
+const daysOfWeek = ["MON", "TUE", "WED", "THU", "FRI"];
 const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
 
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
@@ -22,9 +22,13 @@ interface Props {
 
 function CalendarHour({ hour }: { hour: number }) {
     return (
-        <div className='grid-row-span-2 pr-2'>
-            <Text variant='small' className='inline-block w-full text-right -translate-y-2.25'>
-                {(hour % 12 === 0 ? 12 : hour % 12) + (hour < 12 ? ' AM' : ' PM')}
+        <div className="grid-row-span-2 pr-2">
+            <Text
+                variant="small"
+                className="inline-block w-full text-right -translate-y-2.25"
+            >
+                {(hour % 12 === 0 ? 12 : hour % 12) +
+                    (hour < 12 ? " AM" : " PM")}
             </Text>
         </div>
     );
@@ -36,8 +40,8 @@ function makeGridRow(row: number, cols: number): JSX.Element {
     return (
         <Fragment key={row}>
             <CalendarHour hour={hour} />
-            <div className='grid-row-span-2 w-4 border-b border-r border-gray-300' />
-            {[...Array(cols).keys()].map(col => (
+            <div className="grid-row-span-2 w-4 border-b border-r border-gray-300" />
+            {[...Array(cols).keys()].map((col) => (
                 <CalendarCell key={`${row}${col}`} row={row} col={col} />
             ))}
         </Fragment>
@@ -60,21 +64,25 @@ export default function CalendarGrid({
     setCourse,
 }: React.PropsWithChildren<Props>): JSX.Element {
     return (
-        <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto_auto_repeat(27,1fr)] h-full'>
+        <div className="grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto_auto_repeat(27,1fr)] h-full">
             {/* Cover top left corner of grid, so time gets cut off at the top of the partial border */}
-            <div className='sticky top-[85px] z-10 col-span-2 h-3 bg-white' />
+            <div className="sticky top-[85px] z-10 col-span-2 h-3 bg-white" />
             {/* Displaying day labels */}
-            {daysOfWeek.map(day => (
+            {daysOfWeek.map((day) => (
                 <div
                     // Full height with background to prevent grid lines from showing behind
-                    className='sticky top-[85px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end bg-white'
+                    className="sticky top-[85px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end bg-white"
                     key={day}
                 >
                     {/* Partial border height because that's what Isaiah wants */}
-                    <div className='h-4 w-full flex items-end border-b border-r border-gray-300'>
+                    <div className="h-4 w-full flex items-end border-b border-r border-gray-300">
                         {/* Alignment for text */}
-                        <div className='h-[calc(1.75rem_-_1px)] w-full flex items-center justify-center'>
-                            <Text variant='small' className='text-center text-ut-burntorange' as='div'>
+                        <div className="h-[calc(1.75rem_-_1px)] w-full flex items-center justify-center">
+                            <Text
+                                variant="small"
+                                className="text-center text-ut-burntorange"
+                                as="div"
+                            >
                                 {day}
                             </Text>
                         </div>
@@ -84,8 +92,8 @@ export default function CalendarGrid({
             {/* empty slot, for alignment */}
             <div />
             {/* time tick for the first hour */}
-            <div className='h-4 w-4 self-end border-b border-r border-gray-300' />
-            {[...Array(13).keys()].map(i => makeGridRow(i, 5))}
+            <div className="h-4 w-4 self-end border-b border-r border-gray-300" />
+            {[...Array(13).keys()].map((i) => makeGridRow(i, 5))}
             <CalendarHour hour={21} />
             {Array(6)
                 .fill(1)
@@ -93,10 +101,18 @@ export default function CalendarGrid({
                     // Key suppresses warning about duplicate keys,
                     // and index is fine because it doesn't change between renders
                     // eslint-disable-next-line react/no-array-index-key
-                    <div key={i} className='h-4 flex items-end justify-center border-r border-gray-300' />
+                    <div
+                        key={i}
+                        className="h-4 flex items-end justify-center border-r border-gray-300"
+                    />
                 ))}
             <ColorPickerProvider>
-                {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
+                {courseCells && (
+                    <AccountForCourseConflicts
+                        courseCells={courseCells}
+                        setCourse={setCourse}
+                    />
+                )}
             </ColorPickerProvider>
         </div>
     );
@@ -109,7 +125,10 @@ interface AccountForCourseConflictsProps {
 
 // TODO: Possibly refactor to be more concise
 // TODO: Deal with react strict mode (wacky movements)
-function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
+function AccountForCourseConflicts({
+    courseCells,
+    setCourse,
+}: AccountForCourseConflictsProps): JSX.Element[] {
     // Sentry is not defined in storybook.
     // This is a valid use case for a condition hook, since IS_STORYBOOK is determined at build time,
     // it doesn't change between renders.
@@ -126,7 +145,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
             acc[dayIndex]!.push(cell);
             return acc;
         },
-        {} as Record<number, CalendarGridCourse[]>
+        {} as Record<number, CalendarGridCourse[]>,
     );
 
     // Check for overlaps within each day and adjust gridColumnIndex and totalColumns
@@ -134,7 +153,10 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
         try {
             calculateCourseCellColumns(dayCells);
         } catch (error) {
-            console.error(`Error calculating course cell columns ${idx}`, error);
+            console.error(
+                `Error calculating course cell columns ${idx}`,
+                error,
+            );
             if (sentryScope) {
                 sentryScope.captureException(error);
             }
@@ -142,9 +164,10 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
     });
 
     return courseCells
-        .filter(block => !block.async)
-        .map(block => {
-            const { courseDeptAndInstr, timeAndLocation, status } = block.componentProps;
+        .filter((block) => !block.async)
+        .map((block) => {
+            const { courseDeptAndInstr, timeAndLocation, status } =
+                block.componentProps;
 
             return (
                 <div
@@ -155,7 +178,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                         width: `calc(100% / ${block.totalColumns ?? 1})`,
                         marginLeft: `calc(100% * ${((block.gridColumnStart ?? 0) - 1) / (block.totalColumns ?? 1)})`,
                     }}
-                    className='pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5'
+                    className="pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5"
                 >
                     <CalendarCourseCell
                         courseDeptAndInstr={courseDeptAndInstr}

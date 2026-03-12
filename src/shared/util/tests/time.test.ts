@@ -1,8 +1,8 @@
-import { sleep } from '@shared/util/time';
-import { describe, expect, it } from 'vitest';
+import { sleep } from "@shared/util/time";
+import { describe, expect, it } from "vitest";
 
-describe('sleep', () => {
-    it('should resolve after the specified number of milliseconds', async () => {
+describe("sleep", () => {
+    it("should resolve after the specified number of milliseconds", async () => {
         const start = performance.now();
         const milliseconds = 1000;
         await sleep(milliseconds);

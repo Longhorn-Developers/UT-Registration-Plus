@@ -4,12 +4,12 @@
  * @param input - The string to capitalize.
  */
 export function capitalize(input: string): string {
-    let capitalized = '';
+    let capitalized = "";
 
-    const words = input.split(' ');
+    const words = input.split(" ");
     for (const word of words) {
-        if (word.includes('-')) {
-            const hyphenatedWords = word.split('-');
+        if (word.includes("-")) {
+            const hyphenatedWords = word.split("-");
             for (const hyphenatedWord of hyphenatedWords) {
                 capitalized += `${capitalizeFirstLetter(hyphenatedWord)}-`;
             }
@@ -17,7 +17,7 @@ export function capitalize(input: string): string {
         } else {
             capitalized += capitalizeFirstLetter(word);
         }
-        capitalized += ' ';
+        capitalized += " ";
     }
     capitalized = capitalized.trim(); // Remove extra space
 
@@ -61,9 +61,9 @@ export const ellipsify = (input: string, chars: number): string => {
  * englishStringifyList(['Alice', 'Bob', 'Charlie']) // 'Alice, Bob, and Charlie'
  */
 export const englishStringifyList = (items: readonly string[]): string => {
-    if (items.length === 0) return '';
+    if (items.length === 0) return "";
     if (items.length === 1) return items[0]!;
     if (items.length === 2) return `${items[0]} and ${items[1]}`;
 
-    return `${items.slice(0, -1).join(', ')}, and ${items.at(-1)}`;
+    return `${items.slice(0, -1).join(", ")}, and ${items.at(-1)}`;
 };

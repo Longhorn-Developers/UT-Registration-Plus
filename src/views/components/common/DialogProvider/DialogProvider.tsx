@@ -1,25 +1,34 @@
-import type { CloseWrapper, DialogInfo, DialogOptions, ShowDialogFn } from '@views/contexts/DialogContext';
-import { DialogContext, useDialog } from '@views/contexts/DialogContext';
-import type { ReactNode } from 'react';
-import React, { useCallback, useRef, useState } from 'react';
+import type {
+    CloseWrapper,
+    DialogInfo,
+    DialogOptions,
+    ShowDialogFn,
+} from "@views/contexts/DialogContext";
+import { DialogContext, useDialog } from "@views/contexts/DialogContext";
+import type { ReactNode } from "react";
+import React, { useCallback, useRef, useState } from "react";
 
-import Dialog from '../Dialog';
-import Text from '../Text/Text';
+import Dialog from "../Dialog";
+import Text from "../Text/Text";
 
 type DialogElement = (show: boolean) => ReactNode;
 
 /**
  * Represents information for a prompt dialog
  */
-export interface PromptInfo extends Omit<DialogInfo, 'buttons' | 'className' | 'title' | 'description'> {
+export interface PromptInfo
+    extends Omit<
+        DialogInfo,
+        "buttons" | "className" | "title" | "description"
+    > {
     title: JSX.Element | string;
     description: JSX.Element | string;
     onClose?: () => void;
-    buttons: NonNullable<DialogInfo['buttons']>;
+    buttons: NonNullable<DialogInfo["buttons"]>;
 }
 
 function unwrapCloseWrapper<T>(obj: T | CloseWrapper<T>, close: () => void): T {
-    if (typeof obj === 'function') {
+    if (typeof obj === "function") {
         return (obj as CloseWrapper<T>)(close);
     }
 
@@ -29,7 +38,10 @@ function unwrapCloseWrapper<T>(obj: T | CloseWrapper<T>, close: () => void): T {
 /**
  * Hook to show prompt with default stylings.
  */
-export function usePrompt(): (info: PromptInfo, options?: DialogOptions) => void {
+export function usePrompt(): (
+    info: PromptInfo,
+    options?: DialogOptions,
+) => void {
     const showDialog = useDialog();
 
     return (info, options) => {
@@ -37,18 +49,19 @@ export function usePrompt(): (info: PromptInfo, options?: DialogOptions) => void
             {
                 ...info,
                 title: (
-                    <Text variant='h2' as='h1' className='text-theme-black'>
+                    <Text variant="h2" as="h1" className="text-theme-black">
                         {info.title}
                     </Text>
                 ),
                 description: (
-                    <Text variant='p' as='p' className='text-ut-black'>
+                    <Text variant="p" as="p" className="text-ut-black">
                         {info.description}
                     </Text>
                 ),
-                className: 'max-w-[415px] flex flex-col gap-2.5 p-6.25 border border-ut-offwhite/50',
+                className:
+                    "max-w-[415px] flex flex-col gap-2.5 p-6.25 border border-ut-offwhite/50",
             },
-            options
+            options,
         );
     };
 }
@@ -59,7 +72,9 @@ let nextId = 1;
 /**
  * Allows descendant to show dialogs via a function, handling animations and stacking.
  */
-export default function DialogProvider(props: { children: ReactNode }): JSX.Element {
+export default function DialogProvider(props: {
+    children: ReactNode;
+}): JSX.Element {
     const dialogQueue = useRef<DialogElement[]>([]);
     const [openDialog, setOpenDialog] = useState<DialogElement | undefined>();
     const openRef = useRef<typeof openDialog>();
@@ -92,7 +107,11 @@ export default function DialogProvider(props: { children: ReactNode }): JSX.Elem
         const dialogElement = (show: boolean) => (
             <Dialog
                 key={id}
-                onClose={(options?.closeOnClickOutside ?? true) ? handleClose : () => {}}
+                onClose={
+                    (options?.closeOnClickOutside ?? true)
+                        ? handleClose
+                        : () => {}
+                }
                 afterLeave={onLeave}
                 title=<>{infoUnwrapped.title}</>
                 description=<>{infoUnwrapped.description}</>
@@ -100,7 +119,9 @@ export default function DialogProvider(props: { children: ReactNode }): JSX.Elem
                 show={show}
                 className={infoUnwrapped.className}
             >
-                <div className='mt-0.75 w-full flex justify-end gap-2.5'>{buttons}</div>
+                <div className="mt-0.75 w-full flex justify-end gap-2.5">
+                    {buttons}
+                </div>
             </Dialog>
         );
 

@@ -4,7 +4,7 @@
  */
 let creatingOffscreen: Promise<void> | null = null;
 
-const OFFSCREEN_DOCUMENT_PATH = 'offscreen.html';
+const OFFSCREEN_DOCUMENT_PATH = "offscreen.html";
 
 /**
  * Ensures an offscreen document exists for DOM parsing operations.
@@ -38,7 +38,7 @@ export default async function ensureOffscreenDocument(): Promise<void> {
     creatingOffscreen = chrome.offscreen.createDocument({
         url: OFFSCREEN_DOCUMENT_PATH,
         reasons: [chrome.offscreen.Reason.DOM_PARSER],
-        justification: 'Parse course catalog HTML for status checker feature',
+        justification: "Parse course catalog HTML for status checker feature",
     });
 
     await creatingOffscreen;

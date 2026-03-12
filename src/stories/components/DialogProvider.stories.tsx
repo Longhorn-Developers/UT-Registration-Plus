@@ -1,17 +1,19 @@
-import { ArrowsVertical } from '@phosphor-icons/react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from '@views/components/common/Button';
-import DialogProvider, { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
-import Text from '@views/components/common/Text/Text';
-import React, { useState } from 'react';
+import { ArrowsVertical } from "@phosphor-icons/react";
+import type { Meta, StoryObj } from "@storybook/react";
+import { Button } from "@views/components/common/Button";
+import DialogProvider, {
+    usePrompt,
+} from "@views/components/common/DialogProvider/DialogProvider";
+import Text from "@views/components/common/Text/Text";
+import React, { useState } from "react";
 
 const meta = {
-    title: 'Components/Common/DialogProvider',
+    title: "Components/Common/DialogProvider",
     component: DialogProvider,
     parameters: {
-        layout: 'centered',
+        layout: "centered",
     },
-    tags: ['autodocs'],
+    tags: ["autodocs"],
     args: {},
     argTypes: {},
 } satisfies Meta<typeof DialogProvider>;
@@ -33,11 +35,11 @@ const InnerComponent = () => {
 
     const myShow = () => {
         showDialog({
-            title: 'Dialog Title',
-            description: 'Dialog Description',
+            title: "Dialog Title",
+            description: "Dialog Description",
             // eslint-disable-next-line react/no-unstable-nested-components
-            buttons: close => (
-                <Button variant='filled' color='ut-burntorange' onClick={close}>
+            buttons: (close) => (
+                <Button variant="filled" color="ut-burntorange" onClick={close}>
                     Close
                 </Button>
             ),
@@ -46,10 +48,10 @@ const InnerComponent = () => {
 
     return (
         <Button
-            variant='filled'
-            color='ut-burntorange'
+            variant="filled"
+            color="ut-burntorange"
             icon={ArrowsVertical}
-            iconProps={{ className: 'h-4 w-4' }}
+            iconProps={{ className: "h-4 w-4" }}
             onClick={myShow}
         >
             Open Dialog
@@ -61,7 +63,7 @@ export const FiveDialogs: Story = {
     args: { children: undefined },
     render: () => (
         <DialogProvider>
-            <Text variant='p'>They&apos;ll open with 100ms delay</Text>
+            <Text variant="p">They&apos;ll open with 100ms delay</Text>
             <FiveDialogsInnerComponent />
         </DialogProvider>
     ),
@@ -77,21 +79,30 @@ const FiveDialogsInnerComponent = () => {
                     showDialog({
                         title: `Dialog #${i}`,
                         description:
-                            'Deleting Main Schedule is permanent and will remove all added courses from that schedule.',
+                            "Deleting Main Schedule is permanent and will remove all added courses from that schedule.",
                         // eslint-disable-next-line react/no-unstable-nested-components
-                        buttons: close => (
-                            <Button variant='filled' color='ut-burntorange' onClick={close}>
+                        buttons: (close) => (
+                            <Button
+                                variant="filled"
+                                color="ut-burntorange"
+                                onClick={close}
+                            >
                                 Close
                             </Button>
                         ),
                     }),
-                100 * i
+                100 * i,
             );
         }
     };
 
     return (
-        <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
+        <Button
+            variant="filled"
+            color="ut-burntorange"
+            icon={ArrowsVertical}
+            onClick={myShow}
+        >
             Open Dialogs
         </Button>
     );
@@ -111,13 +122,17 @@ const NestedDialogsInnerComponent = () => {
 
     const myShow = () => {
         showDialog({
-            title: 'Dialog Title',
-            description: 'Dialog Description',
+            title: "Dialog Title",
+            description: "Dialog Description",
             // eslint-disable-next-line react/no-unstable-nested-components
-            buttons: close => (
+            buttons: (close) => (
                 <>
                     <NestedDialogsInnerComponent />
-                    <Button variant='filled' color='ut-burntorange' onClick={close}>
+                    <Button
+                        variant="filled"
+                        color="ut-burntorange"
+                        onClick={close}
+                    >
                         Close
                     </Button>
                 </>
@@ -126,7 +141,12 @@ const NestedDialogsInnerComponent = () => {
     };
 
     return (
-        <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
+        <Button
+            variant="filled"
+            color="ut-burntorange"
+            icon={ArrowsVertical}
+            onClick={myShow}
+        >
             Open Next Dialog
         </Button>
     );
@@ -147,16 +167,16 @@ const DialogWithOnCloseInnerComponent = () => {
 
     const myShow = () => {
         showDialog({
-            title: 'Dialog Title',
-            description: 'Dialog Description',
+            title: "Dialog Title",
+            description: "Dialog Description",
             // eslint-disable-next-line react/no-unstable-nested-components
-            buttons: close => (
-                <Button variant='filled' color='ut-burntorange' onClick={close}>
+            buttons: (close) => (
+                <Button variant="filled" color="ut-burntorange" onClick={close}>
                     Close
                 </Button>
             ),
             onClose: () => {
-                setTimesClosed(prev => prev + 1);
+                setTimesClosed((prev) => prev + 1);
             },
         });
     };
@@ -164,9 +184,15 @@ const DialogWithOnCloseInnerComponent = () => {
     return (
         <>
             <h1>
-                You closed the button below {timesClosed} {timesClosed === 1 ? 'time' : 'times'}
+                You closed the button below {timesClosed}{" "}
+                {timesClosed === 1 ? "time" : "times"}
             </h1>
-            <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
+            <Button
+                variant="filled"
+                color="ut-burntorange"
+                icon={ArrowsVertical}
+                onClick={myShow}
+            >
                 Open Dialog
             </Button>
         </>

@@ -1,7 +1,20 @@
 /**
  * Each of the possible letter grades that can be given in a course
  */
-export type LetterGrade = 'A' | 'A-' | 'B' | 'B+' | 'B-' | 'C' | 'C+' | 'C-' | 'D' | 'D+' | 'D-' | 'F' | 'Other';
+export type LetterGrade =
+    | "A"
+    | "A-"
+    | "B"
+    | "B+"
+    | "B-"
+    | "C"
+    | "C+"
+    | "C-"
+    | "D"
+    | "D+"
+    | "D-"
+    | "F"
+    | "Other";
 
 /**
  * A distribution of grades for a course,

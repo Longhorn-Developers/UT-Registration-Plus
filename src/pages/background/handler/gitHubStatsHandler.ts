@@ -1,6 +1,6 @@
-import type { MessageHandler } from '@chrome-extension-toolkit';
-import type GitHubStatsMessages from '@shared/messages/GitHubStatsMessages';
-import { GitHubStatsService } from '@views/lib/getGitHubStats';
+import type { MessageHandler } from "@chrome-extension-toolkit";
+import type GitHubStatsMessages from "@shared/messages/GitHubStatsMessages";
+import { GitHubStatsService } from "@views/lib/getGitHubStats";
 
 const gitHubStatsService = new GitHubStatsService();
 
@@ -12,8 +12,12 @@ const gitHubStatsHandler: MessageHandler<GitHubStatsMessages> = {
         try {
             sendResponse(await gitHubStatsService.fetchGitHubStats());
         } catch (error) {
-            console.error('Error fetching GitHub stats in background:', error);
-            sendResponse({ adminGitHubStats: {}, userGitHubStats: {}, names: {} });
+            console.error("Error fetching GitHub stats in background:", error);
+            sendResponse({
+                adminGitHubStats: {},
+                userGitHubStats: {},
+                names: {},
+            });
         }
     },
 };

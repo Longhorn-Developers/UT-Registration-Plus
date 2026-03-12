@@ -1,9 +1,13 @@
-import type { Engine, ISourceOptions } from '@tsparticles/engine';
-import { initParticlesEngine } from '@tsparticles/react';
-import { loadSlim } from '@tsparticles/slim';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { Engine, ISourceOptions } from "@tsparticles/engine";
+import { initParticlesEngine } from "@tsparticles/react";
+import { loadSlim } from "@tsparticles/slim";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { BIRTHDAY_CELEBRATION_DEBOUNCE, BIRTHDAY_CELEBRATION_DURATION, LHD_BIRTHDAY } from './constants';
+import {
+    BIRTHDAY_CELEBRATION_DEBOUNCE,
+    BIRTHDAY_CELEBRATION_DURATION,
+    LHD_BIRTHDAY,
+} from "./constants";
 
 /**
  * Custom hook for birthday celebration particles
@@ -15,7 +19,10 @@ export const useBirthdayCelebration = () => {
 
     const isBirthday = useMemo(() => {
         const today = new Date();
-        return today.getMonth() === LHD_BIRTHDAY.month && today.getDate() === LHD_BIRTHDAY.day;
+        return (
+            today.getMonth() === LHD_BIRTHDAY.month &&
+            today.getDate() === LHD_BIRTHDAY.day
+        );
     }, []);
 
     useEffect(() => {
@@ -35,19 +42,22 @@ export const useBirthdayCelebration = () => {
 
         setLastCelebration(now);
         setShowParticles(true);
-        setTimeout(() => setShowParticles(false), BIRTHDAY_CELEBRATION_DURATION);
+        setTimeout(
+            () => setShowParticles(false),
+            BIRTHDAY_CELEBRATION_DURATION,
+        );
     }, [isBirthday, lastCelebration]);
 
     const particlesOptions: ISourceOptions = useMemo(
         () => ({
             fullScreen: { enable: true, zIndex: 1 },
             particles: {
-                color: { value: ['#BF5700', '#333F48', '#FFFFFF'] }, // UT colors
+                color: { value: ["#BF5700", "#333F48", "#FFFFFF"] }, // UT colors
                 move: {
-                    direction: 'bottom',
+                    direction: "bottom",
                     enable: true,
                     outModes: {
-                        default: 'out',
+                        default: "out",
                     },
                     size: true,
                     speed: {
@@ -66,8 +76,8 @@ export const useBirthdayCelebration = () => {
                     value: 1,
                     animation: {
                         enable: false,
-                        startValue: 'max',
-                        destroy: 'min',
+                        startValue: "max",
+                        destroy: "min",
                         speed: 0.3,
                         sync: true,
                     },
@@ -77,7 +87,7 @@ export const useBirthdayCelebration = () => {
                         min: 0,
                         max: 360,
                     },
-                    direction: 'random',
+                    direction: "random",
                     move: true,
                     animation: {
                         enable: true,
@@ -85,7 +95,7 @@ export const useBirthdayCelebration = () => {
                     },
                 },
                 tilt: {
-                    direction: 'random',
+                    direction: "random",
                     enable: true,
                     move: true,
                     value: {
@@ -98,7 +108,7 @@ export const useBirthdayCelebration = () => {
                     },
                 },
                 shape: {
-                    type: ['circle', 'square'],
+                    type: ["circle", "square"],
                     options: {},
                 },
                 size: {
@@ -133,8 +143,14 @@ export const useBirthdayCelebration = () => {
                 },
             },
         }),
-        []
+        [],
     );
 
-    return { showParticles, particlesInit, particlesOptions, triggerCelebration, isBirthday };
+    return {
+        showParticles,
+        particlesInit,
+        particlesOptions,
+        triggerCelebration,
+        isBirthday,
+    };
 };

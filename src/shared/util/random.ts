@@ -1,4 +1,4 @@
-import { customAlphabet } from 'nanoid';
+import { customAlphabet } from "nanoid";
 
 /**
  * Generate secure URL-friendly unique ID.
@@ -6,4 +6,7 @@ import { customAlphabet } from 'nanoid';
  * @param size - Size of the ID. The default size is 12.
  * @returns A random string.
  */
-export const generateRandomId = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 12);
+export const generateRandomId = customAlphabet(
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    12,
+);

@@ -1,24 +1,24 @@
-import type { Course, StatusType } from '@shared/types/Course';
-import type { CourseMeeting } from '@shared/types/CourseMeeting';
-import { Button } from '@views/components/common/Button';
-import Divider from '@views/components/common/Divider';
-import { LargeLogo } from '@views/components/common/LogoIcon';
-import Text from '@views/components/common/Text/Text';
-import useChangelog from '@views/hooks/useChangelog';
-import useSchedules from '@views/hooks/useSchedules';
-import React, { useCallback, useEffect } from 'react';
+import type { Course, StatusType } from "@shared/types/Course";
+import type { CourseMeeting } from "@shared/types/CourseMeeting";
+import { Button } from "@views/components/common/Button";
+import Divider from "@views/components/common/Divider";
+import { LargeLogo } from "@views/components/common/LogoIcon";
+import Text from "@views/components/common/Text/Text";
+import useChangelog from "@views/hooks/useChangelog";
+import useSchedules from "@views/hooks/useSchedules";
+import React, { useCallback, useEffect } from "react";
 
-import IconoirGitFork from '~icons/iconoir/git-fork';
+import IconoirGitFork from "~icons/iconoir/git-fork";
 
-import CalendarFooter from '../calendar/CalendarFooter';
-import { CalendarSchedules } from '../calendar/CalendarSchedules';
-import ImportantLinks from '../calendar/ImportantLinks';
-import TeamLinks from '../calendar/TeamLinks';
-import CampusMap from './CampusMap';
-import { type DAY, DAYS } from './types';
+import CalendarFooter from "../calendar/CalendarFooter";
+import { CalendarSchedules } from "../calendar/CalendarSchedules";
+import ImportantLinks from "../calendar/ImportantLinks";
+import TeamLinks from "../calendar/TeamLinks";
+import CampusMap from "./CampusMap";
+import { type DAY, DAYS } from "./types";
 
 const manifest = chrome.runtime.getManifest();
-const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
+const LDIconURL = new URL("/src/assets/LD-icon.png", import.meta.url).href;
 
 const dayToNumber = {
     Monday: 0,
@@ -57,9 +57,9 @@ export type ProcessInPersonMeetings = {
     normalizedEndTime: number;
     startIndex: number;
     endIndex: number;
-    location: CourseMeeting['location'];
+    location: CourseMeeting["location"];
     status: StatusType;
-    colors: Course['colors'];
+    colors: Course["colors"];
     course: Course;
 };
 
@@ -68,7 +68,8 @@ export type ProcessInPersonMeetings = {
  * @param minutes - The number of minutes.
  * @returns The index value.
  */
-const convertMinutesToIndex = (minutes: number): number => Math.floor((minutes - 420) / 30);
+const convertMinutesToIndex = (minutes: number): number =>
+    Math.floor((minutes - 420) / 30);
 
 /**
  * Renders the map component for the UTRP (UT Registration Plus) extension.
@@ -90,7 +91,7 @@ export default function Map(): JSX.Element {
 
         const mainInstructor = course.instructors[0];
         if (mainInstructor) {
-            courseDeptAndInstr += ` – ${mainInstructor.toString({ format: 'first_last' })}`;
+            courseDeptAndInstr += ` – ${mainInstructor.toString({ format: "first_last" })}`;
         }
 
         return { status, courseDeptAndInstr, meetings, course };
@@ -133,18 +134,24 @@ export default function Map(): JSX.Element {
         meeting: CourseMeeting,
         courseDeptAndInstr: string,
         status: StatusType,
-        course: Course
+        course: Course,
     ) {
         const { days, location, startTime, endTime } = meeting;
-        const time = meeting.getTimeString({ separator: '-' });
-        const timeAndLocation = `${time}${location ? ` - ${location.building} ${location.room}` : ''}`;
+        const time = meeting.getTimeString({ separator: "-" });
+        const timeAndLocation = `${time}${location ? ` - ${location.building} ${location.room}` : ""}`;
 
         const midnightIndex = 1440;
         const normalizingTimeFactor = 720;
-        const normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
-        const normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
+        const normalizedStartTime =
+            startTime >= midnightIndex
+                ? startTime - normalizingTimeFactor
+                : startTime;
+        const normalizedEndTime =
+            endTime >= midnightIndex
+                ? endTime - normalizingTimeFactor
+                : endTime;
 
-        return days.map(day => ({
+        return days.map((day) => ({
             day,
             dayIndex: dayToNumber[day],
             // fullName: `${courseDeptAndInstr} - ${timeAndLocation}`,
@@ -162,26 +169,33 @@ export default function Map(): JSX.Element {
         }));
     }
 
-    const processedCourses: ProcessInPersonMeetings[] = activeSchedule.courses.flatMap(course => {
-        const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
+    const processedCourses: ProcessInPersonMeetings[] =
+        activeSchedule.courses.flatMap((course) => {
+            const { status, courseDeptAndInstr, meetings } =
+                extractCourseInfo(course);
 
-        // if (meetings.length === 0) {
-        //     return processAsyncCourses({ courseDeptAndInstr, status, course });
-        // }
-
-        return meetings.flatMap(meeting =>
-            // if (meeting.days.includes(DAY_MAP.S) || meeting.startTime < 480) {
+            // if (meetings.length === 0) {
             //     return processAsyncCourses({ courseDeptAndInstr, status, course });
             // }
 
-            processInPersonMeetings(meeting, courseDeptAndInstr, status, course)
-        );
-    });
+            return meetings.flatMap((meeting) =>
+                // if (meeting.days.includes(DAY_MAP.S) || meeting.startTime < 480) {
+                //     return processAsyncCourses({ courseDeptAndInstr, status, course });
+                // }
+
+                processInPersonMeetings(
+                    meeting,
+                    courseDeptAndInstr,
+                    status,
+                    course,
+                ),
+            );
+        });
 
     const generateWeekSchedule = useCallback((): Record<DAY, string[]> => {
         const weekSchedule: Record<string, string[]> = {};
 
-        processedCourses.forEach(course => {
+        processedCourses.forEach((course) => {
             const { day } = course;
 
             // Add the course to the day's schedule
@@ -203,7 +217,7 @@ export default function Map(): JSX.Element {
             Sunday: [],
         };
 
-        DAYS.forEach(day => {
+        DAYS.forEach((day) => {
             if (weekSchedule[day]) {
                 orderedWeekSchedule[day] = weekSchedule[day];
             }
@@ -211,75 +225,102 @@ export default function Map(): JSX.Element {
 
         // Sort each day based on the start time of the course
         Object.entries(orderedWeekSchedule).forEach(([day, courses]) => {
-            orderedWeekSchedule[day as DAY] = courses.sort((courseA, courseB) => {
-                const courseAStartTime = processedCourses.find(
-                    course => course.fullName === courseA
-                )?.normalizedStartTime;
-                const courseBStartTime = processedCourses.find(
-                    course => course.fullName === courseB
-                )?.normalizedStartTime;
+            orderedWeekSchedule[day as DAY] = courses.sort(
+                (courseA, courseB) => {
+                    const courseAStartTime = processedCourses.find(
+                        (course) => course.fullName === courseA,
+                    )?.normalizedStartTime;
+                    const courseBStartTime = processedCourses.find(
+                        (course) => course.fullName === courseB,
+                    )?.normalizedStartTime;
 
-                return (courseAStartTime ?? 0) - (courseBStartTime ?? 0);
-            });
+                    return (courseAStartTime ?? 0) - (courseBStartTime ?? 0);
+                },
+            );
         });
 
         return orderedWeekSchedule;
     }, [processedCourses]);
 
     useEffect(() => {
-        console.log('Active Schedule: ', activeSchedule);
-        console.log('processedCourses:', processedCourses);
-        console.log('generateWeekSchedule():', generateWeekSchedule());
+        console.log("Active Schedule: ", activeSchedule);
+        console.log("processedCourses:", processedCourses);
+        console.log("generateWeekSchedule():", generateWeekSchedule());
     }, [activeSchedule, processedCourses, generateWeekSchedule]);
 
     return (
         <div>
-            <header className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
+            <header className="flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden">
                 <LargeLogo />
-                <Divider className='mx-2 self-center md:mx-4' size='2.5rem' orientation='vertical' />
-                <Text variant='h1' className='flex-1 text-ut-burntorange'>
+                <Divider
+                    className="mx-2 self-center md:mx-4"
+                    size="2.5rem"
+                    orientation="vertical"
+                />
+                <Text variant="h1" className="flex-1 text-ut-burntorange">
                     UTRP Map
                 </Text>
-                <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
-                    <Button variant='minimal' color='theme-black' onClick={handleChangelogOnClick}>
-                        <IconoirGitFork className='h-6 w-6 text-ut-gray' />
-                        <Text variant='small' className='text-ut-gray font-normal'>
+                <div className="hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex">
+                    <Button
+                        variant="minimal"
+                        color="theme-black"
+                        onClick={handleChangelogOnClick}
+                    >
+                        <IconoirGitFork className="h-6 w-6 text-ut-gray" />
+                        <Text
+                            variant="small"
+                            className="text-ut-gray font-normal"
+                        >
                             v{manifest.version} - {process.env.NODE_ENV}
                         </Text>
                     </Button>
-                    <img src={LDIconURL} alt='LD Icon' className='h-10 w-10 rounded-lg' />
+                    <img
+                        src={LDIconURL}
+                        alt="LD Icon"
+                        className="h-10 w-10 rounded-lg"
+                    />
                 </div>
             </header>
-            <div className='h-full flex flex-row'>
-                <div className='h-full flex flex-none flex-col justify-between pb-5 screenshot:hidden'>
-                    <div className='mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pl-4.5 pr-4 pt-5'>
+            <div className="h-full flex flex-row">
+                <div className="h-full flex flex-none flex-col justify-between pb-5 screenshot:hidden">
+                    <div className="mb-3 h-full w-fit flex flex-col overflow-auto pb-2 pl-4.5 pr-4 pt-5">
                         <CalendarSchedules />
-                        <Divider orientation='horizontal' size='100%' className='my-5' />
+                        <Divider
+                            orientation="horizontal"
+                            size="100%"
+                            className="my-5"
+                        />
                         <ImportantLinks />
-                        <Divider orientation='horizontal' size='100%' className='my-5' />
+                        <Divider
+                            orientation="horizontal"
+                            size="100%"
+                            className="my-5"
+                        />
                         <TeamLinks />
                     </div>
                     <CalendarFooter />
                 </div>
-                <div className='flex p-12'>
+                <div className="flex p-12">
                     <CampusMap processedCourses={processedCourses} />
                 </div>
 
                 {/* Show week schedule */}
-                <div className='flex flex-col py-12'>
-                    <p className='text-lg font-medium'>Week Schedule:</p>
-                    {Object.entries(generateWeekSchedule()).map(([day, courses]) => (
-                        <div key={day} className='flex flex-col pb-4'>
-                            <p className='text-sm font-medium'>{day}</p>
-                            <ul>
-                                {courses.map(course => (
-                                    <li key={course} className='text-xs'>
-                                        {course}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    ))}
+                <div className="flex flex-col py-12">
+                    <p className="text-lg font-medium">Week Schedule:</p>
+                    {Object.entries(generateWeekSchedule()).map(
+                        ([day, courses]) => (
+                            <div key={day} className="flex flex-col pb-4">
+                                <p className="text-sm font-medium">{day}</p>
+                                <ul>
+                                    {courses.map((course) => (
+                                        <li key={course} className="text-xs">
+                                            {course}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ),
+                    )}
                 </div>
             </div>
         </div>

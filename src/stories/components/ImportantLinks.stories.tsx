@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import ImportantLinks from '@views/components/calendar/ImportantLinks';
+import type { Meta, StoryObj } from "@storybook/react";
+import ImportantLinks from "@views/components/calendar/ImportantLinks";
 
 const meta = {
-    title: 'Components/Common/ImportantLinks',
+    title: "Components/Common/ImportantLinks",
     component: ImportantLinks,
     parameters: {
-        layout: 'centered',
+        layout: "centered",
     },
-    tags: ['autodocs'],
+    tags: ["autodocs"],
     argTypes: {},
 } satisfies Meta<typeof ImportantLinks>;
 export default meta;

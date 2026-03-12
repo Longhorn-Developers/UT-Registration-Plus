@@ -1,6 +1,6 @@
-import clsx from 'clsx';
-import type { PropsWithChildren, ReactNode } from 'react';
-import React from 'react';
+import clsx from "clsx";
+import type { PropsWithChildren, ReactNode } from "react";
+import React from "react";
 
 interface TooltipProps {
     className?: string;
@@ -24,12 +24,12 @@ export default function Tooltip({
     children,
 }: PropsWithChildren<TooltipProps>): JSX.Element {
     return (
-        <span className={clsx('relative inline-flex group', className)}>
+        <span className={clsx("relative inline-flex group", className)}>
             {children}
             <span
                 className={clsx(
-                    'pointer-events-none absolute rounded-md bg-white px-3 py-2 text-xs invisible opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 whitespace-normal break-words',
-                    contentClassName
+                    "pointer-events-none absolute rounded-md bg-white px-3 py-2 text-xs invisible opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 whitespace-normal break-words",
+                    contentClassName,
                 )}
                 style={{
                     marginTop: offsetY,

@@ -1,13 +1,16 @@
-import createSchedule from '@pages/background/lib/createSchedule';
-import { Plus } from '@phosphor-icons/react';
-import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { Button } from '@views/components/common/Button';
-import ScheduleListItem from '@views/components/common/ScheduleListItem';
-import { SortableList } from '@views/components/common/SortableList';
-import Text from '@views/components/common/Text/Text';
-import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
-import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import React from 'react';
+import createSchedule from "@pages/background/lib/createSchedule";
+import { Plus } from "@phosphor-icons/react";
+import { UserScheduleStore } from "@shared/storage/UserScheduleStore";
+import { Button } from "@views/components/common/Button";
+import ScheduleListItem from "@views/components/common/ScheduleListItem";
+import { SortableList } from "@views/components/common/SortableList";
+import Text from "@views/components/common/Text/Text";
+import { useEnforceScheduleLimit } from "@views/hooks/useEnforceScheduleLimit";
+import useSchedules, {
+    getActiveSchedule,
+    switchSchedule,
+} from "@views/hooks/useSchedules";
+import React from "react";
 
 /**
  * Renders a component that displays a list of schedules.
@@ -21,39 +24,44 @@ export function CalendarSchedules() {
     const enforceScheduleLimit = useEnforceScheduleLimit();
     const handleAddSchedule = () => {
         if (enforceScheduleLimit()) {
-            createSchedule('New Schedule');
+            createSchedule("New Schedule");
         }
     };
 
     return (
-        <div className='min-w-full w-0 flex flex-col items-center gap-y-spacing-2'>
-            <div className='m0 w-full flex items-center justify-between'>
-                <Text variant='h3' className='text-nowrap text-theme-black'>
+        <div className="min-w-full w-0 flex flex-col items-center gap-y-spacing-2">
+            <div className="m0 w-full flex items-center justify-between">
+                <Text variant="h3" className="text-nowrap text-theme-black">
                     MY SCHEDULES
                 </Text>
                 <Button
-                    variant='minimal'
-                    size='small'
-                    color='theme-black'
-                    className='!p-0 btn'
+                    variant="minimal"
+                    size="small"
+                    color="theme-black"
+                    className="!p-0 btn"
                     onClick={handleAddSchedule}
                     icon={Plus}
                 />
             </div>
-            <div className='w-full flex flex-col'>
+            <div className="w-full flex flex-col">
                 <SortableList
-                    className='gap-spacing-3'
+                    className="gap-spacing-3"
                     draggables={schedules}
-                    onChange={reordered => {
+                    onChange={(reordered) => {
                         const activeSchedule = getActiveSchedule();
-                        const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
+                        const activeIndex = reordered.findIndex(
+                            (s) => s.id === activeSchedule.id,
+                        );
 
                         // don't care about the promise
-                        UserScheduleStore.set('schedules', reordered);
-                        UserScheduleStore.set('activeIndex', activeIndex);
+                        UserScheduleStore.set("schedules", reordered);
+                        UserScheduleStore.set("activeIndex", activeIndex);
                     }}
-                    renderItem={schedule => (
-                        <ScheduleListItem schedule={schedule} onClick={() => switchSchedule(schedule.id)} />
+                    renderItem={(schedule) => (
+                        <ScheduleListItem
+                            schedule={schedule}
+                            onClick={() => switchSchedule(schedule.id)}
+                        />
                     )}
                 />
             </div>

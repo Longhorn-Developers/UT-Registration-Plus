@@ -1,14 +1,14 @@
 // Calendar.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react';
-import CalendarCell from '@views/components/calendar/CalendarGridCell';
+import type { Meta, StoryObj } from "@storybook/react";
+import CalendarCell from "@views/components/calendar/CalendarGridCell";
 
 const meta = {
-    title: 'Components/Calendar/CalendarGridCell',
+    title: "Components/Calendar/CalendarGridCell",
     component: CalendarCell,
     parameters: {
         // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
-        layout: 'centered',
-        tags: ['autodocs'],
+        layout: "centered",
+        tags: ["autodocs"],
     },
     args: {
         row: 0,

@@ -1,7 +1,7 @@
-import { createLocalStore } from '@chrome-extension-toolkit';
-import { UserSchedule } from '@shared/types/UserSchedule';
+import { createLocalStore } from "@chrome-extension-toolkit";
+import { UserSchedule } from "@shared/types/UserSchedule";
 
-import { generateRandomId } from '../util/random';
+import { generateRandomId } from "../util/random";
 
 interface IUserScheduleStore {
     schedules: UserSchedule[];
@@ -12,13 +12,13 @@ interface IUserScheduleStore {
  * A store that is used for storing user schedules (and the active schedule)
  */
 export const UserScheduleStore = createLocalStore<IUserScheduleStore>(
-    'UserScheduleStore',
+    "UserScheduleStore",
     {
         schedules: [
             new UserSchedule({
                 courses: [],
                 id: generateRandomId(),
-                name: 'Schedule 1',
+                name: "Schedule 1",
                 hours: 0,
                 updatedAt: Date.now(),
             }),
@@ -27,7 +27,7 @@ export const UserScheduleStore = createLocalStore<IUserScheduleStore>(
     },
     {
         usePrefix: false,
-    }
+    },
 );
 
 // debugStore({ userScheduleStore: UserScheduleStore });

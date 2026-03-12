@@ -1,7 +1,9 @@
 export const DISPLAY_PREVIEWS = false;
-export const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS ? 'w-1/2 space-y-4' : 'flex-grow space-y-4';
+export const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS
+    ? "w-1/2 space-y-4"
+    : "flex-grow space-y-4";
 
-export const STATS_TOGGLE_KEY = 's';
+export const STATS_TOGGLE_KEY = "s";
 export const INCLUDE_MERGED_PRS = false;
 export const DEV_MODE_CLICK_TARGET = 5;
 export const DEV_MODE_CLICK_TIMEOUT = 5000;

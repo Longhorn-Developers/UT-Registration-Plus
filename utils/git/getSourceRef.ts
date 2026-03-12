@@ -1,5 +1,5 @@
-import type { SimpleGit } from 'simple-git';
-import { simpleGit } from 'simple-git';
+import type { SimpleGit } from "simple-git";
+import { simpleGit } from "simple-git";
 
 /**
  * Determines the source reference based on the destination branch.
@@ -11,14 +11,14 @@ export async function getSourceRef(destinationBranch: string): Promise<string> {
     const git: SimpleGit = simpleGit();
 
     switch (destinationBranch) {
-        case 'preview':
-            return 'develop';
-        case 'production':
+        case "preview":
+            return "develop";
+        case "production":
             // Get the latest tag from the repository
             const tags = await git.tags();
             const latestTag = tags.latest;
             if (!latestTag) {
-                throw new Error('No tags found in the repository');
+                throw new Error("No tags found in the repository");
             }
             return latestTag;
         default:

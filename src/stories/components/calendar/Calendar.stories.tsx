@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import Calendar from '@views/components/calendar/Calendar';
+import type { Meta, StoryObj } from "@storybook/react";
+import Calendar from "@views/components/calendar/Calendar";
 
 const meta = {
-    title: 'Components/Calendar/Calendar',
+    title: "Components/Calendar/Calendar",
     component: Calendar,
     parameters: {
-        layout: 'centered',
+        layout: "centered",
     },
-    tags: ['autodocs'],
+    tags: ["autodocs"],
     argTypes: {},
 } satisfies Meta<typeof Calendar>;
 export default meta;

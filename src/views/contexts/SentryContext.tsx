@@ -7,14 +7,16 @@ import {
     init,
     makeFetchTransport,
     Scope,
-} from '@sentry/react';
-import type { Client, ClientOptions } from '@sentry/types';
-import React, { createContext, useContext, useMemo } from 'react';
+} from "@sentry/react";
+import type { Client, ClientOptions } from "@sentry/types";
+import React, { createContext, useContext, useMemo } from "react";
 
 /**
  * Context for the sentry provider.
  */
-export const SentryContext = createContext<[scope: Scope, client: Client]>(undefined!);
+export const SentryContext = createContext<[scope: Scope, client: Client]>(
+    undefined!,
+);
 
 /**
  * @returns The dialog context for showing dialogs.
@@ -37,7 +39,11 @@ interface SentryProviderProps {
  *
  * @returns The Sentry context provider wrapping the children components.
  */
-export default function SentryProvider({ children, transactionName, fullInit }: SentryProviderProps): JSX.Element {
+export default function SentryProvider({
+    children,
+    transactionName,
+    fullInit,
+}: SentryProviderProps): JSX.Element {
     // prevent accidentally initializing sentry twice
     const parent = useSentryScope();
 
@@ -53,12 +59,14 @@ export default function SentryProvider({ children, transactionName, fullInit }: 
 
         // filter integrations that use the global variable
         const integrations = getDefaultIntegrations({}).filter(
-            defaultIntegration =>
-                !['BrowserApiErrors', 'Breadcrumbs', 'GlobalHandlers'].includes(defaultIntegration.name)
+            (defaultIntegration) =>
+                !["BrowserApiErrors", "Breadcrumbs", "GlobalHandlers"].includes(
+                    defaultIntegration.name,
+                ),
         );
 
         const options: ClientOptions = {
-            dsn: 'https://ed1a50d8626ff6be35b98d7b1ec86d9d@o4508033820852224.ingest.us.sentry.io/4508033822490624',
+            dsn: "https://ed1a50d8626ff6be35b98d7b1ec86d9d@o4508033820852224.ingest.us.sentry.io/4508033822490624",
             integrations,
             transport: makeFetchTransport,
             stackParser: defaultStackParser,
@@ -89,7 +97,9 @@ export default function SentryProvider({ children, transactionName, fullInit }: 
 
     return (
         <ErrorBoundary>
-            <SentryContext.Provider value={providerValue}>{children}</SentryContext.Provider>
+            <SentryContext.Provider value={providerValue}>
+                {children}
+            </SentryContext.Provider>
         </ErrorBoundary>
     );
 }

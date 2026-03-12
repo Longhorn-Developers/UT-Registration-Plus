@@ -9,7 +9,8 @@ export type HexColor = `#${string}`;
  * @param color - The color string to check.
  * @returns A boolean indicating if the color is a valid hexadecimal color value.
  */
-export const isHexColor = (color: string): color is HexColor => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+export const isHexColor = (color: string): color is HexColor =>
+    /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
 
 /**
  * Represents an RGB color value.

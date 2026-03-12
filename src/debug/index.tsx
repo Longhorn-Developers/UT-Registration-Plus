@@ -1,7 +1,7 @@
-import { DevStore } from '@shared/storage/DevStore';
-import useKC_DABR_WASM from 'kc-dabr-wasm';
-import React, { useEffect } from 'react';
-import { createRoot } from 'react-dom/client';
+import { DevStore } from "@shared/storage/DevStore";
+import useKC_DABR_WASM from "kc-dabr-wasm";
+import React, { useEffect } from "react";
+import { createRoot } from "react-dom/client";
 
 const manifest = chrome.runtime.getManifest();
 
@@ -11,9 +11,11 @@ const manifest = chrome.runtime.getManifest();
  * @param areaName - The name of the storage area.
  * @returns A function that accepts changes and sets them in the storage.
  */
-const handleEditStorage = (areaName: 'local' | 'sync' | 'session') => (changes: Record<string, unknown>) => {
-    chrome.storage[areaName].set(changes);
-};
+const handleEditStorage =
+    (areaName: "local" | "sync" | "session") =>
+    (changes: Record<string, unknown>) => {
+        chrome.storage[areaName].set(changes);
+    };
 
 interface JSONEditorProps {
     data: unknown;
@@ -42,7 +44,7 @@ function JSONEditor(props: JSONEditorProps) {
             console.error(e);
 
             // eslint-disable-next-line no-alert
-            alert('Invalid JSON');
+            alert("Invalid JSON");
         }
     };
 
@@ -50,15 +52,29 @@ function JSONEditor(props: JSONEditorProps) {
         <div>
             {isEditing ? (
                 <div>
-                    <div style={{ flex: 1, marginBottom: 10, gap: 10, display: 'flex' }}>
-                        <button style={{ color: 'green' }} onClick={handleSave}>
+                    <div
+                        style={{
+                            flex: 1,
+                            marginBottom: 10,
+                            gap: 10,
+                            display: "flex",
+                        }}
+                    >
+                        <button style={{ color: "green" }} onClick={handleSave}>
                             Save
                         </button>
-                        <button style={{ color: 'red' }} onClick={() => setIsEditing(false)}>
+                        <button
+                            style={{ color: "red" }}
+                            onClick={() => setIsEditing(false)}
+                        >
                             Cancel
                         </button>
                     </div>
-                    <textarea style={{ width: '100%', height: '300px' }} value={json} onChange={handleChange} />
+                    <textarea
+                        style={{ width: "100%", height: "300px" }}
+                        value={json}
+                        onChange={handleChange}
+                    />
                 </div>
             ) : (
                 <div>
@@ -75,45 +91,60 @@ function JSONEditor(props: JSONEditorProps) {
 // ));
 
 function DevDashboard() {
-    const [localStorage, setLocalStorage] = React.useState<Record<string, unknown>>({});
-    const [syncStorage, setSyncStorage] = React.useState<Record<string, unknown>>({});
-    const [sessionStorage, setSessionStorage] = React.useState<Record<string, unknown>>({});
+    const [localStorage, setLocalStorage] = React.useState<
+        Record<string, unknown>
+    >({});
+    const [syncStorage, setSyncStorage] = React.useState<
+        Record<string, unknown>
+    >({});
+    const [sessionStorage, setSessionStorage] = React.useState<
+        Record<string, unknown>
+    >({});
     useKC_DABR_WASM();
 
     useEffect(() => {
         const onVisibilityChange = () => {
-            DevStore.set('wasDebugTabVisible', document.visibilityState === 'visible');
+            DevStore.set(
+                "wasDebugTabVisible",
+                document.visibilityState === "visible",
+            );
         };
-        document.addEventListener('visibilitychange', onVisibilityChange);
+        document.addEventListener("visibilitychange", onVisibilityChange);
         return () => {
-            document.removeEventListener('visibilitychange', onVisibilityChange);
+            document.removeEventListener(
+                "visibilitychange",
+                onVisibilityChange,
+            );
         };
     }, []);
 
     useEffect(() => {
-        chrome.storage.local.get(null, result => {
+        chrome.storage.local.get(null, (result) => {
             setLocalStorage(result);
         });
 
-        chrome.storage.sync.get(null, result => {
+        chrome.storage.sync.get(null, (result) => {
             setSyncStorage(result);
         });
 
-        chrome.storage.session.get(null, result => {
+        chrome.storage.session.get(null, (result) => {
             setSessionStorage(result);
         });
     }, []);
 
     // listen for changes to the chrome storage to update the local storage state displayed in the dashboard
     useEffect(() => {
-        const onChanged = (changes: chrome.storage.StorageChange, areaName: chrome.storage.AreaName) => {
+        const onChanged = (
+            changes: chrome.storage.StorageChange,
+            areaName: chrome.storage.AreaName,
+        ) => {
             let copy: Record<string, unknown> = {};
 
-            if (areaName === 'local') {
+            if (areaName === "local") {
                 copy = { ...localStorage };
-            } else if (areaName === 'sync') {
+            } else if (areaName === "sync") {
                 copy = { ...syncStorage };
-            } else if (areaName === 'session') {
+            } else if (areaName === "session") {
                 copy = { ...sessionStorage };
             }
 
@@ -121,13 +152,13 @@ function DevDashboard() {
                 copy[key] = changes[key as keyof typeof changes].newValue;
             });
 
-            if (areaName === 'local') {
+            if (areaName === "local") {
                 setLocalStorage(copy);
             }
-            if (areaName === 'sync') {
+            if (areaName === "sync") {
                 setSyncStorage(copy);
             }
-            if (areaName === 'session') {
+            if (areaName === "session") {
                 setSessionStorage(copy);
             }
         };
@@ -144,16 +175,28 @@ function DevDashboard() {
             <h1>
                 {manifest.name} {manifest.version} - {process.env.NODE_ENV}
             </h1>
-            <p>This tab is used for hot reloading and debugging. We will update this tab further in the future.</p>
+            <p>
+                This tab is used for hot reloading and debugging. We will update
+                this tab further in the future.
+            </p>
             <h2>Local Storage</h2>
-            <JSONEditor data={localStorage} onChange={handleEditStorage('local')} />
+            <JSONEditor
+                data={localStorage}
+                onChange={handleEditStorage("local")}
+            />
             <h2>Sync Storage</h2>
-            <JSONEditor data={syncStorage} onChange={handleEditStorage('sync')} />
+            <JSONEditor
+                data={syncStorage}
+                onChange={handleEditStorage("sync")}
+            />
             <h2>Session Storage</h2>
-            <JSONEditor data={sessionStorage} onChange={handleEditStorage('session')} />
+            <JSONEditor
+                data={sessionStorage}
+                onChange={handleEditStorage("session")}
+            />
             <br />
         </div>
     );
 }
 
-createRoot(document.getElementById('root')!).render(<DevDashboard />);
+createRoot(document.getElementById("root")!).render(<DevDashboard />);

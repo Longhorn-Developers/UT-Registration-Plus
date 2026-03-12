@@ -1,10 +1,16 @@
-import type { IconProps } from '@phosphor-icons/react';
-import { CloudX, Coffee, ForkKnife, MapTrifold, Storefront } from '@phosphor-icons/react';
-import { ExtensionStore } from '@shared/storage/ExtensionStore';
-import { UT_DINING_PROMO_IMAGE_URL } from '@shared/util/appUrls';
-import Text from '@views/components/common/Text/Text';
-import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
-import React, { useEffect, useState } from 'react';
+import type { IconProps } from "@phosphor-icons/react";
+import {
+    CloudX,
+    Coffee,
+    ForkKnife,
+    MapTrifold,
+    Storefront,
+} from "@phosphor-icons/react";
+import { ExtensionStore } from "@shared/storage/ExtensionStore";
+import { UT_DINING_PROMO_IMAGE_URL } from "@shared/util/appUrls";
+import Text from "@views/components/common/Text/Text";
+import useWhatsNewPopUp from "@views/hooks/useWhatsNew";
+import React, { useEffect, useState } from "react";
 
 /**
  * This is the version of the 'What's New' features popup.
@@ -26,28 +32,31 @@ type Feature = {
 
 const NEW_FEATURES = [
     {
-        id: 'dining-halls-info',
+        id: "dining-halls-info",
         icon: ForkKnife,
-        title: 'Dining Halls Info',
-        description: 'See daily menus and nutritional deets for J2, JCL, and Kins',
+        title: "Dining Halls Info",
+        description:
+            "See daily menus and nutritional deets for J2, JCL, and Kins",
     },
     {
-        id: 'coffee-shops',
+        id: "coffee-shops",
         icon: Coffee,
-        title: 'Coffee Shops',
-        description: 'Need a Coffee Fix? Check operating times for your favorite campus cafes.',
+        title: "Coffee Shops",
+        description:
+            "Need a Coffee Fix? Check operating times for your favorite campus cafes.",
     },
     {
-        id: 'convenience-stores',
+        id: "convenience-stores",
         icon: Storefront,
-        title: 'Convenience Stores',
-        description: 'Find hours for quick snacks and essentials on campus.',
+        title: "Convenience Stores",
+        description: "Find hours for quick snacks and essentials on campus.",
     },
     {
-        id: 'microwave-map',
+        id: "microwave-map",
         icon: MapTrifold,
-        title: 'Microwave Map',
-        description: 'Need to heat up your lunch? Find microwaves across campus!',
+        title: "Microwave Map",
+        description:
+            "Need to heat up your lunch? Find microwaves across campus!",
     },
 ] as const satisfies readonly Feature[];
 
@@ -63,38 +72,57 @@ export default function WhatsNewPopupContent(): JSX.Element {
     const [videoError, _setVideoError] = useState(false);
 
     return (
-        <div className='w-full flex flex-row justify-between'>
-            <div className='w-full flex flex-col-reverse items-center justify-between gap-spacing-7 md:flex-row'>
-                <div className='grid grid-cols-1 w-fit items-center gap-spacing-6 sm:grid-cols-2 md:w-[277px] md:flex md:flex-col md:flex-nowrap'>
-                    {NEW_FEATURES.map(({ id, icon: Icon, title, description }) => (
-                        <div key={id} className='w-full flex items-center justify-between gap-spacing-5'>
-                            <Icon width='40' height='40' className='text-ut-burntorange' />
-                            <div className='w-full flex flex-col gap-spacing-1'>
-                                <Text variant='h4' className='text-ut-burntorange font-bold!'>
-                                    {title}
-                                </Text>
-                                <Text variant='p' className='text-ut-black'>
-                                    {description}
-                                </Text>
+        <div className="w-full flex flex-row justify-between">
+            <div className="w-full flex flex-col-reverse items-center justify-between gap-spacing-7 md:flex-row">
+                <div className="grid grid-cols-1 w-fit items-center gap-spacing-6 sm:grid-cols-2 md:w-[277px] md:flex md:flex-col md:flex-nowrap">
+                    {NEW_FEATURES.map(
+                        ({ id, icon: Icon, title, description }) => (
+                            <div
+                                key={id}
+                                className="w-full flex items-center justify-between gap-spacing-5"
+                            >
+                                <Icon
+                                    width="40"
+                                    height="40"
+                                    className="text-ut-burntorange"
+                                />
+                                <div className="w-full flex flex-col gap-spacing-1">
+                                    <Text
+                                        variant="h4"
+                                        className="text-ut-burntorange font-bold!"
+                                    >
+                                        {title}
+                                    </Text>
+                                    <Text variant="p" className="text-ut-black">
+                                        {description}
+                                    </Text>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ),
+                    )}
                 </div>
-                <div className='h-full max-w-[464px] w-full flex items-center justify-center'>
+                <div className="h-full max-w-[464px] w-full flex items-center justify-center">
                     {videoError ? (
-                        <div className='h-full w-full flex items-center justify-center border border-ut-offwhite/50 rounded'>
-                            <div className='flex flex-col items-center justify-center p-spacing-2'>
-                                <CloudX size={52} className='text-ut-black/50' />
-                                <Text variant='h4' className='text-center text-ut-black/50'>
-                                    Failed to load video. Please try again later.
+                        <div className="h-full w-full flex items-center justify-center border border-ut-offwhite/50 rounded">
+                            <div className="flex flex-col items-center justify-center p-spacing-2">
+                                <CloudX
+                                    size={52}
+                                    className="text-ut-black/50"
+                                />
+                                <Text
+                                    variant="h4"
+                                    className="text-center text-ut-black/50"
+                                >
+                                    Failed to load video. Please try again
+                                    later.
                                 </Text>
                             </div>
                         </div>
                     ) : (
                         <img
-                            className='h-full w-full border border-ut-offwhite/50 rounded object-cover'
+                            className="h-full w-full border border-ut-offwhite/50 rounded object-cover"
                             src={UT_DINING_PROMO_IMAGE_URL}
-                            alt='UT Dining Promo'
+                            alt="UT Dining Promo"
                         />
                     )}
                 </div>
@@ -122,9 +150,14 @@ export function WhatsNewDialog(): null {
 
     useEffect(() => {
         const checkUpdate = async () => {
-            const version = await ExtensionStore.get('lastWhatsNewPopupVersion');
+            const version = await ExtensionStore.get(
+                "lastWhatsNewPopupVersion",
+            );
             if (version !== WHATSNEW_POPUP_VERSION) {
-                await ExtensionStore.set('lastWhatsNewPopupVersion', WHATSNEW_POPUP_VERSION);
+                await ExtensionStore.set(
+                    "lastWhatsNewPopupVersion",
+                    WHATSNEW_POPUP_VERSION,
+                );
                 showPopUp();
             }
         };

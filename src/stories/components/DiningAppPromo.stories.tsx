@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import DiningAppPromo from '@views/components/calendar/DiningAppPromo';
+import type { Meta, StoryObj } from "@storybook/react";
+import DiningAppPromo from "@views/components/calendar/DiningAppPromo";
 
 export default {
-    title: 'Components/Calendar/DiningAppPromo',
+    title: "Components/Calendar/DiningAppPromo",
     component: DiningAppPromo,
     parameters: {
-        layout: 'centered',
+        layout: "centered",
     },
 } satisfies Meta<typeof DiningAppPromo>;
 

@@ -9,10 +9,14 @@
  */
 export async function validateLoginStatus(url: string) {
     try {
-        const response = await fetch(url, { credentials: 'include' });
+        const response = await fetch(url, { credentials: "include" });
 
         // Check if the response is redirecting to a login page or returning a 401/403
-        if (response.redirected || response.status === 401 || response.status === 403) {
+        if (
+            response.redirected ||
+            response.status === 401 ||
+            response.status === 403
+        ) {
             // User is not logged in
             chrome.tabs.create({ url });
             return false;
@@ -21,7 +25,7 @@ export async function validateLoginStatus(url: string) {
         // User is logged in
         return true;
     } catch (error) {
-        console.error('Error checking login status:', error);
+        console.error("Error checking login status:", error);
         return false;
     }
 }

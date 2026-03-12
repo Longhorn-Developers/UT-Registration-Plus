@@ -1,6 +1,9 @@
-import type { DraggableAttributes, DraggableSyntheticListeners } from '@dnd-kit/core';
-import type { ReactNode } from 'react';
-import React, { createContext } from 'react';
+import type {
+    DraggableAttributes,
+    DraggableSyntheticListeners,
+} from "@dnd-kit/core";
+import type { ReactNode } from "react";
+import React, { createContext } from "react";
 
 interface Context {
     attributes: DraggableAttributes;
@@ -18,8 +21,13 @@ interface SortableItemProviderProps {
 /**
  * Provides the sortable item context to its children
  */
-export const SortableItemProvider: React.FC<SortableItemProviderProps> = ({ value, children }) => (
-    <SortableItemContext.Provider value={value}>{children}</SortableItemContext.Provider>
+export const SortableItemProvider: React.FC<SortableItemProviderProps> = ({
+    value,
+    children,
+}) => (
+    <SortableItemContext.Provider value={value}>
+        {children}
+    </SortableItemContext.Provider>
 );
 
 /**
@@ -28,7 +36,9 @@ export const SortableItemProvider: React.FC<SortableItemProviderProps> = ({ valu
 export const useSortableItemContext = () => {
     const context = React.useContext(SortableItemContext);
     if (!context) {
-        throw new Error('useSortableItemContext must be used within a SortableItemContext.Provider');
+        throw new Error(
+            "useSortableItemContext must be used within a SortableItemContext.Provider",
+        );
     }
     return context;
 };

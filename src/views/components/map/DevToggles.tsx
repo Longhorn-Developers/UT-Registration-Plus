@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 interface DevTogglesProps {
     dynamicRendering: boolean;
@@ -46,52 +46,80 @@ export default function DevToggles({
     const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
     return (
-        <div className='flex flex-col gap-2 rounded-md bg-white/90 p-2 shadow-sm'>
-            <div className='flex items-center justify-between text-xs text-gray-700 font-semibold'>
+        <div className="flex flex-col gap-2 rounded-md bg-white/90 p-2 shadow-sm">
+            <div className="flex items-center justify-between text-xs text-gray-700 font-semibold">
                 <span>Dev Controls</span>
                 <button
-                    onClick={() => setIsCollapsed(prev => !prev)}
-                    className='ml-2 p-1 text-gray-500 hover:text-gray-800'
+                    onClick={() => setIsCollapsed((prev) => !prev)}
+                    className="ml-2 p-1 text-gray-500 hover:text-gray-800"
                 >
                     <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        width='14'
-                        height='14'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        stroke='currentColor'
-                        strokeWidth='2'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                     >
-                        {isCollapsed ? <polyline points='6 9 12 15 18 9' /> : <polyline points='18 15 12 9 6 15' />}
+                        {isCollapsed ? (
+                            <polyline points="6 9 12 15 18 9" />
+                        ) : (
+                            <polyline points="18 15 12 9 6 15" />
+                        )}
                     </svg>
                 </button>
             </div>
             {!isCollapsed && (
-                <div className='flex flex-col gap-1'>
-                    <label className='flex cursor-pointer items-center gap-2 text-xs'>
-                        <input type='checkbox' checked={dynamicRendering} onChange={onToggleDynamicRendering} />
+                <div className="flex flex-col gap-1">
+                    <label className="flex cursor-pointer items-center gap-2 text-xs">
+                        <input
+                            type="checkbox"
+                            checked={dynamicRendering}
+                            onChange={onToggleDynamicRendering}
+                        />
                         Dynamic Rendering
                     </label>
-                    <label className='flex cursor-pointer items-center gap-2 text-xs'>
-                        <input type='checkbox' checked={showBuildings} onChange={onToggleBuildings} />
+                    <label className="flex cursor-pointer items-center gap-2 text-xs">
+                        <input
+                            type="checkbox"
+                            checked={showBuildings}
+                            onChange={onToggleBuildings}
+                        />
                         Show Buildings
                     </label>
-                    <label className='flex cursor-pointer items-center gap-2 text-xs'>
-                        <input type='checkbox' checked={showBuildingText} onChange={onToggleBuildingText} />
+                    <label className="flex cursor-pointer items-center gap-2 text-xs">
+                        <input
+                            type="checkbox"
+                            checked={showBuildingText}
+                            onChange={onToggleBuildingText}
+                        />
                         Show Building Text
                     </label>
-                    <label className='flex cursor-pointer items-center gap-2 text-xs'>
-                        <input type='checkbox' checked={showPrioritizedOnly} onChange={onTogglePrioritizedOnly} />
+                    <label className="flex cursor-pointer items-center gap-2 text-xs">
+                        <input
+                            type="checkbox"
+                            checked={showPrioritizedOnly}
+                            onChange={onTogglePrioritizedOnly}
+                        />
                         Prioritized Buildings Only
                     </label>
-                    <label className='flex cursor-pointer items-center gap-2 text-xs'>
-                        <input type='checkbox' checked={showIntersections} onChange={onToggleIntersections} />
+                    <label className="flex cursor-pointer items-center gap-2 text-xs">
+                        <input
+                            type="checkbox"
+                            checked={showIntersections}
+                            onChange={onToggleIntersections}
+                        />
                         Show Intersections
                     </label>
-                    <label className='flex cursor-pointer items-center gap-2 text-xs'>
-                        <input type='checkbox' checked={showWalkways} onChange={onToggleWalkways} />
+                    <label className="flex cursor-pointer items-center gap-2 text-xs">
+                        <input
+                            type="checkbox"
+                            checked={showWalkways}
+                            onChange={onToggleWalkways}
+                        />
                         Show Walkways
                     </label>
                 </div>

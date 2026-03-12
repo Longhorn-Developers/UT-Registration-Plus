@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 // @TODO Get a better name for this class
 
 /**
@@ -7,19 +7,19 @@ import { useEffect } from 'react';
  */
 export default function ShadedResults(): null {
     useEffect(() => {
-        const table = document.getElementById('kw_results_table');
+        const table = document.getElementById("kw_results_table");
         if (!table) {
-            console.error('Results table not found');
+            console.error("Results table not found");
             return;
         }
 
-        const tbody = table.querySelector('tbody');
+        const tbody = table.querySelector("tbody");
         if (!tbody) {
-            console.error('Table tbody not found');
+            console.error("Table tbody not found");
             return;
         }
 
-        const style = document.createElement('style');
+        const style = document.createElement("style");
         style.textContent = `
             #kw_results_table tbody tr:nth-child(even) {
                 background-color: #f0f0f0 !important;

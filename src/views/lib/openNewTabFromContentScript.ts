@@ -1,10 +1,10 @@
-import { createMessenger } from '@chrome-extension-toolkit';
+import { createMessenger } from "@chrome-extension-toolkit";
 
 type MyMessages = {
     openNewTab: (data: { url: string }) => void;
 };
 
-const messenger = createMessenger<MyMessages>('background');
+const messenger = createMessenger<MyMessages>("background");
 
 /**
  *  Content scripts and background scripts are isolated environments.
@@ -17,9 +17,9 @@ export async function openTabFromContentScript(url: string) {
     messenger
         .openNewTab({ url }) // Fix: Pass the url as a property of an object
         .then(() => {
-            console.log('New tab opened with URL:', url);
+            console.log("New tab opened with URL:", url);
         })
-        .catch(error => {
-            console.error('Error opening new tab:', error);
+        .catch((error) => {
+            console.error("Error opening new tab:", error);
         });
 }

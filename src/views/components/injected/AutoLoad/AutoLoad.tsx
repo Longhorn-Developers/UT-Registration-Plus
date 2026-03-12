@@ -1,21 +1,21 @@
-import 'react-loading-skeleton/dist/skeleton.css';
+import "react-loading-skeleton/dist/skeleton.css";
 
-import type { ScrapedRow } from '@shared/types/Course';
-import useInfiniteScroll from '@views/hooks/useInfiniteScroll';
-import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-import { SiteSupport } from '@views/lib/getSiteSupport';
-import type { AutoLoadStatusType } from '@views/lib/loadNextCourseCatalogPage';
+import type { ScrapedRow } from "@shared/types/Course";
+import useInfiniteScroll from "@views/hooks/useInfiniteScroll";
+import { CourseCatalogScraper } from "@views/lib/CourseCatalogScraper";
+import { SiteSupport } from "@views/lib/getSiteSupport";
+import type { AutoLoadStatusType } from "@views/lib/loadNextCourseCatalogPage";
 import {
     AutoLoadStatus,
     getNextButton,
     loadNextCourseCatalogPage,
     removePaginationButtons,
-} from '@views/lib/loadNextCourseCatalogPage';
-import React, { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import Skeleton from 'react-loading-skeleton';
+} from "@views/lib/loadNextCourseCatalogPage";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import Skeleton from "react-loading-skeleton";
 
-import styles from './AutoLoad.module.scss';
+import styles from "./AutoLoad.module.scss";
 
 type Props = {
     addRows: (rows: ScrapedRow[]) => void;
@@ -27,13 +27,15 @@ type Props = {
  */
 export default function AutoLoad({ addRows }: Props): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
-    const [status, setStatus] = useState<AutoLoadStatusType>(AutoLoadStatus.IDLE);
+    const [status, setStatus] = useState<AutoLoadStatusType>(
+        AutoLoadStatus.IDLE,
+    );
     const [isSinglePage, setIsSinglePage] = useState(false);
 
     useEffect(() => {
-        const table = document.querySelector('table');
+        const table = document.querySelector("table");
         if (!table) return;
-        const portalContainer = document.createElement('div');
+        const portalContainer = document.createElement("div");
         table.after(portalContainer);
         setContainer(portalContainer);
     }, []);
@@ -72,7 +74,7 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
     return createPortal(
         <div>
             {status !== AutoLoadStatus.ERROR && (
-                <div className=''>
+                <div className="">
                     {Array.from({ length: 8 }).map(() => (
                         <Skeleton style={{ marginBottom: 30 }} height={40} />
                     ))}
@@ -82,10 +84,12 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
                 <div className={styles.error}>
                     <h2>Something went wrong</h2>
                     <p>Try refreshing the page</p>
-                    <button onClick={() => window.location.reload()}>Refresh</button>
+                    <button onClick={() => window.location.reload()}>
+                        Refresh
+                    </button>
                 </div>
             )}
         </div>,
-        container
+        container,
     );
 }

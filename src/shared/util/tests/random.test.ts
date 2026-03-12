@@ -1,8 +1,8 @@
-import { generateRandomId } from '@shared/util/random';
-import { describe, expect, it } from 'vitest';
+import { generateRandomId } from "@shared/util/random";
+import { describe, expect, it } from "vitest";
 
-describe('generateRandomId', () => {
-    it('should generate a random ID with the specified length', () => {
+describe("generateRandomId", () => {
+    it("should generate a random ID with the specified length", () => {
         // Test case 1: Length 5
         expect(generateRandomId(5)).toHaveLength(5);
 
@@ -13,7 +13,7 @@ describe('generateRandomId', () => {
         expect(generateRandomId(15)).toHaveLength(15);
     });
 
-    it('should generate a unique ID each time', () => {
+    it("should generate a unique ID each time", () => {
         // Generate 100 IDs and check if they are all unique
         const ids = new Set<string>();
         for (let i = 0; i < 100; i += 1) {

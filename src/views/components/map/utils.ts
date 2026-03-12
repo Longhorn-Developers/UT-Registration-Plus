@@ -1,6 +1,6 @@
-import { graphNodes } from './graphNodes';
-import type { Graph, MapNode, NodeCoordinates, NodeId } from './types';
-import { isValidNode, NEIGHBOR_DISTANCE_THRESHOLD } from './types';
+import { graphNodes } from "./graphNodes";
+import type { Graph, MapNode, NodeCoordinates, NodeId } from "./types";
+import { isValidNode, NEIGHBOR_DISTANCE_THRESHOLD } from "./types";
 
 /**
  * Calculates the Euclidean distance between two points.
@@ -9,8 +9,10 @@ import { isValidNode, NEIGHBOR_DISTANCE_THRESHOLD } from './types';
  * @param point2 - The coordinates of the second point.
  * @returns The distance between the two points.
  */
-export const calculateDistance = (point1: NodeCoordinates, point2: NodeCoordinates): number =>
-    Math.sqrt((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2);
+export const calculateDistance = (
+    point1: NodeCoordinates,
+    point2: NodeCoordinates,
+): number => Math.sqrt((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2);
 
 /**
  * Finds the nearest nodes to a given node in a graph.
@@ -37,22 +39,22 @@ const findNearestNodes = (nodeId: NodeId, graph: Graph): NodeId[] => {
         .map(([id, node]) => ({
             id,
             distance: calculateDistance(currentNode, node),
-            isIntersection: node.type === 'intersection',
+            isIntersection: node.type === "intersection",
         }))
         .sort((a, b) => a.distance - b.distance);
 
     // First try to connect to nearest intersections
     const nearestIntersections = distances
-        .filter(node => node.isIntersection)
+        .filter((node) => node.isIntersection)
         .slice(0, 2)
-        .map(node => node.id);
+        .map((node) => node.id);
 
     if (nearestIntersections.length > 0) {
         return nearestIntersections;
     }
 
     // If no intersections found, connect to nearest buildings
-    return distances.slice(0, 2).map(node => node.id);
+    return distances.slice(0, 2).map((node) => node.id);
 };
 
 /**

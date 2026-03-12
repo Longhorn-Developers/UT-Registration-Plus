@@ -1,10 +1,10 @@
-import { validateLoginStatus } from '@shared/util/checkLoginStatus';
-import { getActiveSchedule } from '@views/hooks/useSchedules';
-import { courseMigration } from '@views/lib/courseMigration';
+import { validateLoginStatus } from "@shared/util/checkLoginStatus";
+import { getActiveSchedule } from "@views/hooks/useSchedules";
+import { courseMigration } from "@views/lib/courseMigration";
 
-import addCourse from './addCourse';
-import createSchedule from './createSchedule';
-import switchSchedule from './switchSchedule';
+import addCourse from "./addCourse";
+import createSchedule from "./createSchedule";
+import switchSchedule from "./switchSchedule";
 
 /**
  * Retrieves the saved courses from the extension's chrome sync storage (old store) and returns an array of course links.
@@ -12,7 +12,7 @@ import switchSchedule from './switchSchedule';
  * @returns A promise that resolves to an array of course links.
  */
 export async function getUTRPv1Courses(): Promise<string[]> {
-    const { savedCourses } = await chrome.storage.sync.get('savedCourses');
+    const { savedCourses } = await chrome.storage.sync.get("savedCourses");
 
     // Check if the savedCourses array is empty
     if (!savedCourses || savedCourses.length === 0) {
@@ -36,11 +36,11 @@ export async function getUTRPv1Courses(): Promise<string[]> {
  */
 async function migrateUTRPv1Courses() {
     const loggedInToUT = await validateLoginStatus(
-        'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/'
+        "https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/",
     );
 
     if (!loggedInToUT) {
-        console.warn('Not logged in to UT Registrar.');
+        console.warn("Not logged in to UT Registrar.");
         return false;
     }
 
@@ -51,14 +51,18 @@ async function migrateUTRPv1Courses() {
 
     if (migratedCourses.length > 0) {
         console.log(oldCourses, migratedCourses);
-        const migrateSchedule = await createSchedule('Migrated Schedule');
+        const migrateSchedule = await createSchedule("Migrated Schedule");
         await switchSchedule(migrateSchedule);
 
         const activeSchedule = getActiveSchedule();
 
         for (const course of migratedCourses) {
             // Add the course if it doesn't already exist
-            if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
+            if (
+                activeSchedule.courses.every(
+                    (c) => c.uniqueId !== course.uniqueId,
+                )
+            ) {
                 // ignore eslint, as we *do* want to spend time on each iteration
                 // eslint-disable-next-line no-await-in-loop
                 await addCourse(activeSchedule.id, course);
@@ -66,10 +70,10 @@ async function migrateUTRPv1Courses() {
         }
 
         // Remove the old courses from storage :>
-        await chrome.storage.sync.remove('savedCourses');
-        console.log('Successfully migrated UTRP v1 courses');
+        await chrome.storage.sync.remove("savedCourses");
+        console.log("Successfully migrated UTRP v1 courses");
     } else {
-        console.warn('No courses successfully found to migrate');
+        console.warn("No courses successfully found to migrate");
     }
 
     return true;

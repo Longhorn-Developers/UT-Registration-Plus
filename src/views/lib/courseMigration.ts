@@ -1,6 +1,6 @@
-import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-import getCourseTableRows from '@views/lib/getCourseTableRows';
-import { SiteSupport } from '@views/lib/getSiteSupport';
+import { CourseCatalogScraper } from "@views/lib/CourseCatalogScraper";
+import getCourseTableRows from "@views/lib/getCourseTableRows";
+import { SiteSupport } from "@views/lib/getSiteSupport";
 
 /**
  * Migrates courses from UTRP v1 to a new schedule.
@@ -26,10 +26,14 @@ export const courseMigration = async (links: string[]) => {
         const response = await fetch(link);
         // eslint-disable-next-line no-await-in-loop
         const text = await response.text();
-        const doc = new DOMParser().parseFromString(text, 'text/html');
+        const doc = new DOMParser().parseFromString(text, "text/html");
 
         // Scrape the course
-        const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, link);
+        const scraper = new CourseCatalogScraper(
+            SiteSupport.COURSE_CATALOG_DETAILS,
+            doc,
+            link,
+        );
         const tableRows = getCourseTableRows(doc);
         const courses = scraper.scrape(tableRows, false);
 
@@ -43,7 +47,7 @@ export const courseMigration = async (links: string[]) => {
             // Add the course to the migrated courses
             migratedCourses.push(course);
         } else {
-            console.warn('Invalid course link:', link);
+            console.warn("Invalid course link:", link);
         }
     }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface TimeWarningLabelProps {
     x: number;
@@ -16,18 +16,29 @@ interface TimeWarningLabelProps {
  *
  * @returns A JSX element representing the warning label.
  */
-export default function TimeWarningLabel({ x, y, minutes }: TimeWarningLabelProps): JSX.Element {
+export default function TimeWarningLabel({
+    x,
+    y,
+    minutes,
+}: TimeWarningLabelProps): JSX.Element {
     return (
         <g>
-            <circle cx={x} cy={y} r={12} fill='white' stroke='#FF4444' strokeWidth={2} />
+            <circle
+                cx={x}
+                cy={y}
+                r={12}
+                fill="white"
+                stroke="#FF4444"
+                strokeWidth={2}
+            />
             <text
                 x={x}
                 y={y}
-                textAnchor='middle'
-                dominantBaseline='middle'
-                fill='#FF4444'
-                fontSize='10'
-                fontWeight='bold'
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fill="#FF4444"
+                fontSize="10"
+                fontWeight="bold"
             >
                 {minutes}&apos;
             </text>

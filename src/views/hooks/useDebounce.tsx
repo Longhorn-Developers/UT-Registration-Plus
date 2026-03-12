@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from "react";
 
 type Timer = ReturnType<typeof setTimeout>;
 type DebouncedCallback<T extends unknown[]> = (...args: T) => void;
@@ -12,7 +12,7 @@ type DebouncedCallback<T extends unknown[]> = (...args: T) => void;
  */
 export function useDebounce<T extends unknown[]>(
     func: DebouncedCallback<T>,
-    delay: number = 1000
+    delay: number = 1000,
 ): DebouncedCallback<T> {
     const timer = useRef<Timer>();
 
@@ -22,7 +22,7 @@ export function useDebounce<T extends unknown[]>(
                 clearTimeout(timer.current);
             }
         },
-        []
+        [],
     );
 
     const debouncedFunction = useCallback(
@@ -34,7 +34,7 @@ export function useDebounce<T extends unknown[]>(
                 func(...args);
             }, delay);
         },
-        [func, delay]
+        [func, delay],
     );
 
     return debouncedFunction;

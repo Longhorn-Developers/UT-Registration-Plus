@@ -1,19 +1,28 @@
-import type { TabWithId } from '@background/util/openNewTab';
-import openNewTab from '@background/util/openNewTab';
-import type { MessageHandler } from '@chrome-extension-toolkit';
-import { tabs } from '@shared/messages';
-import type { CalendarBackgroundMessages } from '@shared/messages/CalendarMessages';
-import { OptionsStore } from '@shared/storage/OptionsStore';
-import { CRX_PAGES } from '@shared/types/CRXPages';
+import type { TabWithId } from "@background/util/openNewTab";
+import openNewTab from "@background/util/openNewTab";
+import type { MessageHandler } from "@chrome-extension-toolkit";
+import { tabs } from "@shared/messages";
+import type { CalendarBackgroundMessages } from "@shared/messages/CalendarMessages";
+import { OptionsStore } from "@shared/storage/OptionsStore";
+import { CRX_PAGES } from "@shared/types/CRXPages";
 
 const getAllTabInfos = async () => {
-    const openTabs = (await chrome.tabs.query({})).filter((tab): tab is TabWithId => tab.id !== undefined);
-    const results = await Promise.allSettled(openTabs.map(tab => tabs.getTabInfo({ tabId: tab.id })));
+    const openTabs = (await chrome.tabs.query({})).filter(
+        (tab): tab is TabWithId => tab.id !== undefined,
+    );
+    const results = await Promise.allSettled(
+        openTabs.map((tab) => tabs.getTabInfo({ tabId: tab.id })),
+    );
 
-    type TabInfo = PromiseFulfilledResult<Awaited<ReturnType<typeof tabs.getTabInfo>>>;
+    type TabInfo = PromiseFulfilledResult<
+        Awaited<ReturnType<typeof tabs.getTabInfo>>
+    >;
     return results
         .map((result, index) => ({ result, index }))
-        .filter((el): el is { result: TabInfo; index: number } => el.result.status === 'fulfilled')
+        .filter(
+            (el): el is { result: TabInfo; index: number } =>
+                el.result.status === "fulfilled",
+        )
         .map(({ result, index }) => ({
             ...result.value,
             tab: openTabs[index]!,
@@ -27,20 +36,33 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
 
         const allTabs = await getAllTabInfos();
 
-        const openCalendarTabInfo = allTabs.find(tab => tab.url?.startsWith(calendarUrl));
+        const openCalendarTabInfo = allTabs.find((tab) =>
+            tab.url?.startsWith(calendarUrl),
+        );
 
-        if (openCalendarTabInfo !== undefined && !(await OptionsStore.get('alwaysOpenCalendarInNewTab'))) {
+        if (
+            openCalendarTabInfo !== undefined &&
+            !(await OptionsStore.get("alwaysOpenCalendarInNewTab"))
+        ) {
             const tabid = openCalendarTabInfo.tab.id;
 
             await chrome.tabs.update(tabid, { active: true });
-            await chrome.windows.update(openCalendarTabInfo.tab.windowId, { focused: true, drawAttention: true });
-            if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, { tabId: tabid });
+            await chrome.windows.update(openCalendarTabInfo.tab.windowId, {
+                focused: true,
+                drawAttention: true,
+            });
+            if (uniqueId !== undefined)
+                await tabs.openCoursePopup({ uniqueId }, { tabId: tabid });
 
             sendResponse(openCalendarTabInfo.tab);
         } else {
             const urlParams = new URLSearchParams();
-            if (uniqueId !== undefined) urlParams.set('uniqueId', uniqueId.toString());
-            const url = `${calendarUrl}?${urlParams.toString()}`.replace(/\?$/, '');
+            if (uniqueId !== undefined)
+                urlParams.set("uniqueId", uniqueId.toString());
+            const url = `${calendarUrl}?${urlParams.toString()}`.replace(
+                /\?$/,
+                "",
+            );
             const tab = await openNewTab(url);
 
             sendResponse(tab);

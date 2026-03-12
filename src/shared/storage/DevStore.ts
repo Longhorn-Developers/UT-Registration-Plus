@@ -1,4 +1,4 @@
-import { createLocalStore } from '@chrome-extension-toolkit';
+import { createLocalStore } from "@chrome-extension-toolkit";
 
 /**
  * A store that is used to store data that is only relevant during development
@@ -19,7 +19,7 @@ interface IDevStore {
 }
 
 export const DevStore = createLocalStore<IDevStore>(
-    'DevStore',
+    "DevStore",
     {
         isDeveloper: false,
         debugTabId: undefined,
@@ -30,7 +30,7 @@ export const DevStore = createLocalStore<IDevStore>(
     },
     {
         usePrefix: false,
-    }
+    },
 );
 
 // debugStore({ devStore: DevStore });

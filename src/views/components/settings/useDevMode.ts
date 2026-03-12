@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
-import { DEV_MODE_CLICK_INTERVAL, DEV_MODE_CLICK_TIMEOUT } from './constants';
+import { DEV_MODE_CLICK_INTERVAL, DEV_MODE_CLICK_TIMEOUT } from "./constants";
 
 /**
  * Custom hook for enabling developer mode via rapid clicking
@@ -13,7 +13,7 @@ export const useDevMode = (targetCount: number): [boolean, () => void] => {
     const incrementCount = useCallback(() => {
         const now = Date.now();
         if (now - lastClick < DEV_MODE_CLICK_INTERVAL) {
-            setCount(prevCount => {
+            setCount((prevCount) => {
                 const newCount = prevCount + 1;
                 if (newCount === targetCount) {
                     setActive(true);

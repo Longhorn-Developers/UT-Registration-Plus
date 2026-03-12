@@ -1,6 +1,6 @@
-import { useSortableItemContext } from '@views/contexts/SortableItemContext';
-import type { CSSProperties } from 'react';
-import React from 'react';
+import { useSortableItemContext } from "@views/contexts/SortableItemContext";
+import type { CSSProperties } from "react";
+import React from "react";
 
 interface SortableListDragHandleProps {
     className?: string;
@@ -11,11 +11,21 @@ interface SortableListDragHandleProps {
 /**
  * @returns A wrapper component around sortable list item drag handles
  */
-export function SortableListDragHandle({ className, style, children }: SortableListDragHandleProps) {
+export function SortableListDragHandle({
+    className,
+    style,
+    children,
+}: SortableListDragHandleProps) {
     const { attributes, listeners, ref } = useSortableItemContext();
 
     return (
-        <div className={className} {...attributes} {...listeners} ref={ref} style={style}>
+        <div
+            className={className}
+            {...attributes}
+            {...listeners}
+            ref={ref}
+            style={style}
+        >
             {children}
         </div>
     );

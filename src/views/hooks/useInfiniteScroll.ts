@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 /**
  * Hook to execute a callback when the user scrolls to the bottom of the page
@@ -15,7 +15,7 @@ import { useEffect } from 'react';
  */
 export default function useInfiniteScroll(
     callback: () => Promise<void> | void,
-    deps?: React.DependencyList | undefined
+    deps?: React.DependencyList | undefined,
 ) {
     useEffect(() => {
         const isScrolling = () => {
@@ -25,9 +25,9 @@ export default function useInfiniteScroll(
                 callback();
             }
         };
-        window.addEventListener('scroll', isScrolling, {
+        window.addEventListener("scroll", isScrolling, {
             passive: true,
         });
-        return () => window.removeEventListener('scroll', isScrolling);
+        return () => window.removeEventListener("scroll", isScrolling);
     }, [deps, callback]);
 }

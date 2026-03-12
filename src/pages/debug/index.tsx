@@ -1,1 +1,1 @@
-import 'src/debug';
+import "src/debug";

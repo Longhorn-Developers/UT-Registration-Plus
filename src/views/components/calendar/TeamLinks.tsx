@@ -1,9 +1,9 @@
-import { ArrowUpRight } from '@phosphor-icons/react';
-import { CRX_PAGES } from '@shared/types/CRXPages';
-import { openReportWindow } from '@shared/util/openReportWindow';
-import Text from '@views/components/common/Text/Text';
-import clsx from 'clsx';
-import React from 'react';
+import { ArrowUpRight } from "@phosphor-icons/react";
+import { CRX_PAGES } from "@shared/types/CRXPages";
+import { openReportWindow } from "@shared/util/openReportWindow";
+import Text from "@views/components/common/Text/Text";
+import clsx from "clsx";
+import React from "react";
 
 type Props = {
     className?: string;
@@ -16,24 +16,24 @@ interface LinkItem {
 
 const links = [
     {
-        text: 'Rate us on Chrome Web Store',
-        url: 'https://chromewebstore.google.com/detail/ut-registration-plus/hboadpjkoaieogjimneceaahlppnipaa',
+        text: "Rate us on Chrome Web Store",
+        url: "https://chromewebstore.google.com/detail/ut-registration-plus/hboadpjkoaieogjimneceaahlppnipaa",
     },
     {
-        text: 'Send us Feedback & Ideas',
+        text: "Send us Feedback & Ideas",
         url: CRX_PAGES.REPORT,
     },
     {
-        text: 'Become a Beta Tester',
-        url: 'https://forms.gle/Y9dmQAb1yzW5PRg48',
+        text: "Become a Beta Tester",
+        url: "https://forms.gle/Y9dmQAb1yzW5PRg48",
     },
     {
-        text: 'Credits – Meet the team',
+        text: "Credits – Meet the team",
         url: CRX_PAGES.OPTIONS,
     },
     {
-        text: 'Apply to Longhorn Developers',
-        url: 'https://forms.gle/cdkLKmFwPmvHmiBe9',
+        text: "Apply to Longhorn Developers",
+        url: "https://forms.gle/cdkLKmFwPmvHmiBe9",
     },
 ] as const satisfies LinkItem[];
 
@@ -50,19 +50,19 @@ export default function TeamLinks({ className }: Props): JSX.Element {
     };
 
     return (
-        <article className={clsx(className, 'flex flex-col gap-2')}>
-            <Text variant='h3'>From the Team</Text>
-            {links.map(link => (
+        <article className={clsx(className, "flex flex-col gap-2")}>
+            <Text variant="h3">From the Team</Text>
+            {links.map((link) => (
                 <a
                     key={link.text}
                     href={link.url}
-                    className='flex items-center gap-0.5 text-ut-burntorange underline-offset-2 hover:underline'
-                    target='_blank'
-                    rel='noreferrer'
-                    onClick={event => handleClick(link, event)}
+                    className="flex items-center gap-0.5 text-ut-burntorange underline-offset-2 hover:underline"
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(event) => handleClick(link, event)}
                 >
-                    <Text variant='p'>{link.text}</Text>
-                    <ArrowUpRight className='h-4 w-4' />
+                    <Text variant="p">{link.text}</Text>
+                    <ArrowUpRight className="h-4 w-4" />
                 </a>
             ))}
         </article>

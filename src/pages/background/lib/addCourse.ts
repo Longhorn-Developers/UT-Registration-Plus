@@ -1,6 +1,6 @@
-import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import type { Course } from '@shared/types/Course';
-import { getUnusedColor } from '@shared/util/colors';
+import { UserScheduleStore } from "@shared/storage/UserScheduleStore";
+import type { Course } from "@shared/types/Course";
+import { getUnusedColor } from "@shared/util/colors";
 
 /**
  * Adds a course to a user's schedule.
@@ -11,11 +11,15 @@ import { getUnusedColor } from '@shared/util/colors';
  * @returns A promise that resolves to void.
  * @throws An error if the schedule is not found.
  */
-export default async function addCourse(scheduleId: string, course: Course, hasColor = false): Promise<void> {
-    const schedules = await UserScheduleStore.get('schedules');
-    const activeSchedule = schedules.find(s => s.id === scheduleId);
+export default async function addCourse(
+    scheduleId: string,
+    course: Course,
+    hasColor = false,
+): Promise<void> {
+    const schedules = await UserScheduleStore.get("schedules");
+    const activeSchedule = schedules.find((s) => s.id === scheduleId);
     if (!activeSchedule) {
-        throw new Error('Schedule not found');
+        throw new Error("Schedule not found");
     }
 
     if (!hasColor) {
@@ -24,6 +28,6 @@ export default async function addCourse(scheduleId: string, course: Course, hasC
 
     activeSchedule.courses.push(course);
     activeSchedule.updatedAt = Date.now();
-    await UserScheduleStore.set('schedules', schedules);
+    await UserScheduleStore.set("schedules", schedules);
     console.log(`Course added: ${course.courseName} (ID: ${course.uniqueId})`);
 }

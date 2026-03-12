@@ -1,3 +1,5 @@
-import { getCourseColors, useableColorways } from '@shared/util/colors';
+import { getCourseColors, useableColorways } from "@shared/util/colors";
 
-export const tailwindColorways = useableColorways.map(color => getCourseColors(color));
+export const tailwindColorways = useableColorways.map((color) =>
+    getCourseColors(color),
+);

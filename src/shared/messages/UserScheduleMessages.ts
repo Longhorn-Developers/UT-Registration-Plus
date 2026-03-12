@@ -1,4 +1,4 @@
-import type { Course } from '@shared/types/Course';
+import type { Course } from "@shared/types/Course";
 
 /**
  * Represents a collection of user schedule messages.
@@ -9,7 +9,11 @@ export interface UserScheduleMessages {
      *
      * @param data - The schedule id and course to add
      */
-    addCourse: (data: { scheduleId: string; course: Course; hasColor?: boolean }) => void;
+    addCourse: (data: {
+        scheduleId: string;
+        course: Course;
+        hasColor?: boolean;
+    }) => void;
 
     /**
      * Adds a course by URL
@@ -17,7 +21,12 @@ export interface UserScheduleMessages {
      * @param data - The URL of the course to add
      * @returns Response of the requested course URL
      */
-    addCourseByURL: (data: { url: string; method: string; body?: string; response: 'json' | 'text' }) => string;
+    addCourseByURL: (data: {
+        url: string;
+        method: string;
+        body?: string;
+        response: "json" | "text";
+    }) => string;
 
     /**
      * Remove a course from a schedule
@@ -62,7 +71,10 @@ export interface UserScheduleMessages {
      * @param data - The id of the schedule to rename and the new name
      * @returns Undefined if successful, otherwise an error message
      */
-    renameSchedule: (data: { scheduleId: string; newName: string }) => string | undefined;
+    renameSchedule: (data: {
+        scheduleId: string;
+        newName: string;
+    }) => string | undefined;
 
     /**
      * Checks the login status by making a request to the provided URL.

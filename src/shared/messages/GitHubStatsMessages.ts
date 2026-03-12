@@ -1,4 +1,4 @@
-import type { GitHubStatsResult } from '@shared/types/GitHubStats';
+import type { GitHubStatsResult } from "@shared/types/GitHubStats";
 
 /* eslint-disable jsdoc/require-jsdoc */
 

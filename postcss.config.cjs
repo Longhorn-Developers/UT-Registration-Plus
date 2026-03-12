@@ -2,7 +2,7 @@
 /** @type {import('postcss-load-config').Config} */
 const config = {
     plugins: {
-        cssnano: process.env.NODE_ENV !== 'development' ? {} : false,
+        cssnano: process.env.NODE_ENV !== "development" ? {} : false,
         // '@unocss/postcss': {},
     },
 };

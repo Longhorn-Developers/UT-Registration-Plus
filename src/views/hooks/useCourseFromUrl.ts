@@ -1,6 +1,6 @@
-import type { Course } from '@shared/types/Course';
+import type { Course } from "@shared/types/Course";
 
-import { useFlattenedCourseSchedule } from './useFlattenedCourseSchedule';
+import { useFlattenedCourseSchedule } from "./useFlattenedCourseSchedule";
 
 /**
  * Custom hook that retrieves a course from the URL parameters.
@@ -17,16 +17,21 @@ export default function useCourseFromUrl(): Course | null {
 
     const getCourseFromUrl = (): Course | null => {
         const urlParams = new URLSearchParams(window.location.search);
-        const uniqueIdRaw = urlParams.get('uniqueId');
+        const uniqueIdRaw = urlParams.get("uniqueId");
         if (uniqueIdRaw === null) return null;
 
         const uniqueId = Number(uniqueIdRaw);
-        const course = activeSchedule.courses.find(course => course.uniqueId === uniqueId);
+        const course = activeSchedule.courses.find(
+            (course) => course.uniqueId === uniqueId,
+        );
         if (course === undefined) return null;
 
-        urlParams.delete('uniqueId');
-        const newUrl = `${window.location.pathname}?${urlParams}`.replace(/\?$/, '');
-        window.history.replaceState({}, '', newUrl);
+        urlParams.delete("uniqueId");
+        const newUrl = `${window.location.pathname}?${urlParams}`.replace(
+            /\?$/,
+            "",
+        );
+        window.history.replaceState({}, "", newUrl);
 
         return course;
     };

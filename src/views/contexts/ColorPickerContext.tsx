@@ -1,7 +1,10 @@
-import type { ReactNode } from 'react';
-import React, { createContext } from 'react';
+import type { ReactNode } from "react";
+import React, { createContext } from "react";
 
-import { type ColorPickerInterface, useColorPicker } from '../hooks/useColorPicker';
+import {
+    type ColorPickerInterface,
+    useColorPicker,
+} from "../hooks/useColorPicker";
 
 const defaultContext: ColorPickerInterface = {
     selectedColor: null,
@@ -28,7 +31,11 @@ interface ColorPickerProviderProps {
 export const ColorPickerProvider = ({ children }: ColorPickerProviderProps) => {
     const colorPicker = useColorPicker();
 
-    return <ColorPickerContext.Provider value={colorPicker}>{children}</ColorPickerContext.Provider>;
+    return (
+        <ColorPickerContext.Provider value={colorPicker}>
+            {children}
+        </ColorPickerContext.Provider>
+    );
 };
 
 /**
@@ -39,7 +46,9 @@ export const ColorPickerProvider = ({ children }: ColorPickerProviderProps) => {
 export const useColorPickerContext = () => {
     const context = React.useContext(ColorPickerContext);
     if (context === undefined) {
-        throw new Error('useColorPickerContext must be used within a ColorPickerProvider');
+        throw new Error(
+            "useColorPickerContext must be used within a ColorPickerProvider",
+        );
     }
     return context;
 };

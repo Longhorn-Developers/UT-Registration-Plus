@@ -1,8 +1,8 @@
-import type { Serialized } from '@chrome-extension-toolkit';
-import type { Course } from '@shared/types/Course';
-import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-import getCourseTableRows from '@views/lib/getCourseTableRows';
-import { SiteSupport } from '@views/lib/getSiteSupport';
+import type { Serialized } from "@chrome-extension-toolkit";
+import type { Course } from "@shared/types/Course";
+import { CourseCatalogScraper } from "@views/lib/CourseCatalogScraper";
+import getCourseTableRows from "@views/lib/getCourseTableRows";
+import { SiteSupport } from "@views/lib/getSiteSupport";
 
 interface ParseCourseMessage {
     target: string;
@@ -24,30 +24,45 @@ interface ParseCourseResponse {
  * which is unavailable in the service worker context.
  */
 chrome.runtime.onMessage.addListener(
-    (message: ParseCourseMessage, _sender, sendResponse: (response: ParseCourseResponse) => void) => {
-        if (message.target !== 'offscreen') {
+    (
+        message: ParseCourseMessage,
+        _sender,
+        sendResponse: (response: ParseCourseResponse) => void,
+    ) => {
+        if (message.target !== "offscreen") {
             return false;
         }
 
-        if (message.type === 'PARSE_COURSE') {
+        if (message.type === "PARSE_COURSE") {
             (async () => {
                 try {
                     const { html, url } = message.data;
 
-                    const doc = new DOMParser().parseFromString(html, 'text/html');
+                    const doc = new DOMParser().parseFromString(
+                        html,
+                        "text/html",
+                    );
 
-                    const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, url);
+                    const scraper = new CourseCatalogScraper(
+                        SiteSupport.COURSE_CATALOG_DETAILS,
+                        doc,
+                        url,
+                    );
                     const tableRows = getCourseTableRows(doc);
                     const scrapedCourses = scraper.scrape(tableRows, false);
 
                     const course =
                         scrapedCourses.length > 0 && scrapedCourses[0]?.course
-                            ? (scrapedCourses[0].course as unknown as Serialized<Course>)
+                            ? (scrapedCourses[0]
+                                  .course as unknown as Serialized<Course>)
                             : null;
 
                     sendResponse({ course });
                 } catch (error) {
-                    console.error('Failed to parse course in offscreen document:', error);
+                    console.error(
+                        "Failed to parse course in offscreen document:",
+                        error,
+                    );
                     sendResponse({ course: null });
                 }
             })();
@@ -56,7 +71,7 @@ chrome.runtime.onMessage.addListener(
         }
 
         return false;
-    }
+    },
 );
 
-console.log('Offscreen document loaded and ready to parse courses');
+console.log("Offscreen document loaded and ready to parse courses");

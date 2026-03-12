@@ -8,8 +8,8 @@ import {
     NEIGHBOR_DISTANCE_THRESHOLD,
     type NodeId,
     type PreviousMap,
-} from './types';
-import { calculateDistance, getNeighbors } from './utils';
+} from "./types";
+import { calculateDistance, getNeighbors } from "./utils";
 
 /**
  * Custom error class for handling pathfinding errors.
@@ -17,7 +17,7 @@ import { calculateDistance, getNeighbors } from './utils';
 export class PathFindingError extends Error {
     constructor(message: string) {
         super(message);
-        this.name = 'PathFindingError';
+        this.name = "PathFindingError";
     }
 }
 
@@ -38,14 +38,14 @@ export class PathFinder {
         const connections = new Map<NodeId, Set<NodeId>>();
 
         // Initialize connections for each node
-        Object.keys(this.graph).forEach(nodeId => {
+        Object.keys(this.graph).forEach((nodeId) => {
             connections.set(nodeId, new Set<NodeId>());
         });
 
         // Build bidirectional connections
-        Object.keys(this.graph).forEach(nodeId => {
+        Object.keys(this.graph).forEach((nodeId) => {
             const neighbors = getNeighbors(nodeId, this.graph);
-            neighbors.forEach(neighbor => {
+            neighbors.forEach((neighbor) => {
                 connections.get(nodeId)?.add(neighbor);
                 connections.get(neighbor)?.add(nodeId);
             });
@@ -72,15 +72,21 @@ export class PathFinder {
         }
 
         // Initialize Dijkstra's algorithm data structures
-        const distances = Object.keys(this.graph).reduce<DistanceMap>((acc, nodeId) => {
-            acc[nodeId] = nodeId === startId ? 0 : Infinity;
-            return acc;
-        }, {});
+        const distances = Object.keys(this.graph).reduce<DistanceMap>(
+            (acc, nodeId) => {
+                acc[nodeId] = nodeId === startId ? 0 : Infinity;
+                return acc;
+            },
+            {},
+        );
 
-        const previous = Object.keys(this.graph).reduce<PreviousMap>((acc, nodeId) => {
-            acc[nodeId] = null;
-            return acc;
-        }, {});
+        const previous = Object.keys(this.graph).reduce<PreviousMap>(
+            (acc, nodeId) => {
+                acc[nodeId] = null;
+                return acc;
+            },
+            {},
+        );
 
         const unvisited = new Set(Object.keys(this.graph));
 
@@ -94,14 +100,16 @@ export class PathFinder {
             unvisited.delete(current);
 
             // Use pre-computed connections
-            const neighbors = this.nodeConnections.get(current) ?? new Set<NodeId>();
-            neighbors.forEach(neighbor => {
+            const neighbors =
+                this.nodeConnections.get(current) ?? new Set<NodeId>();
+            neighbors.forEach((neighbor) => {
                 if (!unvisited.has(neighbor)) return;
 
                 const currentNode = this.graph[current];
                 const neighborNode = this.graph[neighbor];
 
-                if (!isValidNode(currentNode) || !isValidNode(neighborNode)) return;
+                if (!isValidNode(currentNode) || !isValidNode(neighborNode))
+                    return;
 
                 const distance = calculateDistance(currentNode, neighborNode);
                 const totalDistance = distances[current]! + distance;
@@ -119,7 +127,9 @@ export class PathFinder {
         // Verify path distance is reasonable
         const totalPathDistance = this.calculatePathDistance(path);
         if (totalPathDistance > NEIGHBOR_DISTANCE_THRESHOLD * path.length) {
-            console.warn(`Long path detected (${totalPathDistance.toFixed(2)} units) from ${startId} to ${endId}`);
+            console.warn(
+                `Long path detected (${totalPathDistance.toFixed(2)} units) from ${startId} to ${endId}`,
+            );
         }
 
         return path;
@@ -142,11 +152,14 @@ export class PathFinder {
         return distance <= DIRECT_PATH_THRESHOLD;
     }
 
-    private getMinDistanceNode(distances: DistanceMap, unvisited: Set<NodeId>): NodeId | null {
+    private getMinDistanceNode(
+        distances: DistanceMap,
+        unvisited: Set<NodeId>,
+    ): NodeId | null {
         let minDistance = Infinity;
         let minNode: NodeId | null = null;
 
-        unvisited.forEach(nodeId => {
+        unvisited.forEach((nodeId) => {
             const distance = distances[nodeId] ?? Infinity;
             if (distance < minDistance) {
                 minDistance = distance;
@@ -157,7 +170,11 @@ export class PathFinder {
         return minNode;
     }
 
-    private reconstructPath(previous: PreviousMap, startId: NodeId, endId: NodeId): NodeId[] {
+    private reconstructPath(
+        previous: PreviousMap,
+        startId: NodeId,
+        endId: NodeId,
+    ): NodeId[] {
         const path: NodeId[] = [];
         let currentNode: NodeId | null = endId;
 
@@ -167,7 +184,9 @@ export class PathFinder {
         while (currentNode !== null) {
             // Prevent infinite loops
             if (visited.has(currentNode)) {
-                throw new PathFindingError('Circular path detected during reconstruction');
+                throw new PathFindingError(
+                    "Circular path detected during reconstruction",
+                );
             }
             visited.add(currentNode);
 
@@ -177,7 +196,9 @@ export class PathFinder {
             // If we can't find the previous node and we haven't reached the start,
             // then the path is broken
             if (prevNode === undefined) {
-                throw new PathFindingError('Path reconstruction failed: broken path chain');
+                throw new PathFindingError(
+                    "Path reconstruction failed: broken path chain",
+                );
             }
 
             currentNode = prevNode;
@@ -185,7 +206,9 @@ export class PathFinder {
 
         // Verify that we actually found a path to the start
         if (path[0] !== startId) {
-            throw new PathFindingError('No valid path found between the specified nodes');
+            throw new PathFindingError(
+                "No valid path found between the specified nodes",
+            );
         }
 
         return path;

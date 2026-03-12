@@ -1,7 +1,7 @@
-import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { generateRandomId } from '@shared/util/random';
+import { UserScheduleStore } from "@shared/storage/UserScheduleStore";
+import { generateRandomId } from "@shared/util/random";
 
-import handleDuplicate from './handleDuplicate';
+import handleDuplicate from "./handleDuplicate";
 
 /**
  * Creates a new schedule with the given name
@@ -9,9 +9,13 @@ import handleDuplicate from './handleDuplicate';
  * @param scheduleName - The name of the schedule to create
  * @returns Undefined if successful, otherwise an error message
  */
-export default async function duplicateSchedule(scheduleId: string): Promise<string | undefined> {
-    const schedules = await UserScheduleStore.get('schedules');
-    const scheduleIndex = schedules.findIndex(schedule => schedule.id === scheduleId);
+export default async function duplicateSchedule(
+    scheduleId: string,
+): Promise<string | undefined> {
+    const schedules = await UserScheduleStore.get("schedules");
+    const scheduleIndex = schedules.findIndex(
+        (schedule) => schedule.id === scheduleId,
+    );
 
     if (scheduleIndex === -1) {
         throw new Error(`Schedule ${scheduleId} does not exist`);
@@ -30,10 +34,10 @@ export default async function duplicateSchedule(scheduleId: string): Promise<str
         updatedAt: Date.now(),
     } satisfies typeof schedule);
 
-    await UserScheduleStore.set('schedules', schedules);
+    await UserScheduleStore.set("schedules", schedules);
 
     // Automatically switch to the duplicated schedule
-    await UserScheduleStore.set('activeIndex', scheduleIndex + 1);
+    await UserScheduleStore.set("activeIndex", scheduleIndex + 1);
 
     return undefined;
 }

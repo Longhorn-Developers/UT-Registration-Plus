@@ -1,8 +1,8 @@
-import { ClockUser, LockKey, Prohibit } from '@phosphor-icons/react';
-import type { StatusType } from '@shared/types/Course';
-import { Status } from '@shared/types/Course';
-import type { SVGProps } from 'react';
-import React from 'react';
+import { ClockUser, LockKey, Prohibit } from "@phosphor-icons/react";
+import type { StatusType } from "@shared/types/Course";
+import { Status } from "@shared/types/Course";
+import type { SVGProps } from "react";
+import React from "react";
 
 interface StatusIconProps extends SVGProps<SVGSVGElement> {
     status: StatusType;
@@ -19,11 +19,11 @@ export function StatusIcon(props: StatusIconProps): JSX.Element | null {
 
     switch (status) {
         case Status.WAITLISTED:
-            return <ClockUser weight='fill' {...rest} />;
+            return <ClockUser weight="fill" {...rest} />;
         case Status.CLOSED:
-            return <LockKey weight='fill' {...rest} />;
+            return <LockKey weight="fill" {...rest} />;
         case Status.CANCELLED:
-            return <Prohibit weight='fill' {...rest} />;
+            return <Prohibit weight="fill" {...rest} />;
         default:
             return null;
     }

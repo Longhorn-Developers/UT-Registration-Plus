@@ -1,20 +1,20 @@
-import { exec } from 'child_process';
-import { resolve } from 'path';
-import { promisify } from 'util';
+import { exec } from "child_process";
+import { resolve } from "path";
+import { promisify } from "util";
 
 const execPromise = promisify(exec);
 
 interface Props {
     preset:
-        | 'angular'
-        | 'atom'
-        | 'codemirror'
-        | 'conventionalcommits'
-        | 'ember'
-        | 'eslint'
-        | 'express'
-        | 'jquery'
-        | 'jshint';
+        | "angular"
+        | "atom"
+        | "codemirror"
+        | "conventionalcommits"
+        | "ember"
+        | "eslint"
+        | "express"
+        | "jquery"
+        | "jshint";
 
     // The file to write the changelog to
     outFile?: string;
@@ -30,7 +30,11 @@ interface Props {
  * @returns A promise that resolves when the changelog is generated.
  * @throws If there is an error generating the changelog.
  */
-async function generateChangelog({ preset, outFile = 'CHANGELOG.md', releaseCount = 1 }: Props): Promise<void> {
+async function generateChangelog({
+    preset,
+    outFile = "CHANGELOG.md",
+    releaseCount = 1,
+}: Props): Promise<void> {
     try {
         // Run the conventional-changelog command to generate changelog
         const { stdout, stderr } = await execPromise(
@@ -38,7 +42,7 @@ async function generateChangelog({ preset, outFile = 'CHANGELOG.md', releaseCoun
             {
                 // Ensures it runs from the project root
                 cwd: resolve(process.cwd()),
-            }
+            },
         );
 
         // Log output and error if any
@@ -47,8 +51,8 @@ async function generateChangelog({ preset, outFile = 'CHANGELOG.md', releaseCoun
             console.error(stderr);
         }
     } catch (error) {
-        console.error('Error generating changelog:', error);
+        console.error("Error generating changelog:", error);
     }
 }
 
-generateChangelog({ preset: 'conventionalcommits', releaseCount: 0 });
+generateChangelog({ preset: "conventionalcommits", releaseCount: 0 });

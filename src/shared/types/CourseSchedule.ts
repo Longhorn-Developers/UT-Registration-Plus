@@ -1,7 +1,7 @@
-import type { Serialized } from '@chrome-extension-toolkit';
+import type { Serialized } from "@chrome-extension-toolkit";
 
-import type { Day } from './CourseMeeting';
-import { CourseMeeting, DAY_MAP } from './CourseMeeting';
+import type { Day } from "./CourseMeeting";
+import { CourseMeeting, DAY_MAP } from "./CourseMeeting";
 
 /**
  * This represents the schedule for a course, which includes all the meeting times for the course, as well as helper functions for parsing, serializing, and deserializing the schedule
@@ -15,7 +15,9 @@ export class CourseSchedule {
             return;
         }
 
-        this.meetings = courseSchedule.meetings.map(meeting => new CourseMeeting(meeting));
+        this.meetings = courseSchedule.meetings.map(
+            (meeting) => new CourseMeeting(meeting),
+        );
     }
 
     /**
@@ -26,17 +28,21 @@ export class CourseSchedule {
      * @param locLine - A string representation of the location that the course is taught in: JGB 2.302, etc.
      * @returns CourseMeeting object representing the meeting information
      */
-    static parse(dayLine: string, timeLine: string, locLine: string): CourseMeeting {
+    static parse(
+        dayLine: string,
+        timeLine: string,
+        locLine: string,
+    ): CourseMeeting {
         try {
             let days: Day[] = dayLine
-                .split('')
+                .split("")
                 .map((char, i) => {
                     const nextChar = dayLine.charAt(i + 1);
                     let day = char;
-                    if (char === 'T' && nextChar === 'H') {
+                    if (char === "T" && nextChar === "H") {
                         day += nextChar;
                     }
-                    if (char === 'S' && nextChar === 'U') {
+                    if (char === "S" && nextChar === "U") {
                         day += nextChar;
                     }
                     return DAY_MAP[day as keyof typeof DAY_MAP];
@@ -44,29 +50,31 @@ export class CourseSchedule {
                 .filter(Boolean) as Day[];
 
             const [startTime, endTime] = timeLine
-                .replaceAll('.', '')
-                .split('-')
-                .map(time => {
-                    const [rawHour, rest] = time.split(':');
-                    const [rawMinute, ampm] = rest?.split(' ') ?? ['', ''];
-                    const hour = (rawHour === '12' ? 0 : Number(rawHour)) + (ampm === 'pm' ? 12 : 0);
+                .replaceAll(".", "")
+                .split("-")
+                .map((time) => {
+                    const [rawHour, rest] = time.split(":");
+                    const [rawMinute, ampm] = rest?.split(" ") ?? ["", ""];
+                    const hour =
+                        (rawHour === "12" ? 0 : Number(rawHour)) +
+                        (ampm === "pm" ? 12 : 0);
                     const minute = Number(rawMinute);
 
                     return hour * 60 + minute;
                 });
 
-            const location = locLine.split(' ').filter(Boolean);
+            const location = locLine.split(" ").filter(Boolean);
 
             if (startTime === undefined || endTime === undefined) {
-                throw new Error('Failed to parse time');
+                throw new Error("Failed to parse time");
             }
 
             if (startTime >= endTime) {
-                throw new Error('Start time must be before end time');
+                throw new Error("Start time must be before end time");
             }
 
             if (location === undefined) {
-                throw new Error('Failed to parse location');
+                throw new Error("Failed to parse location");
             }
 
             return new CourseMeeting({
@@ -76,12 +84,14 @@ export class CourseSchedule {
                 location: location[0]
                     ? {
                           building: location[0],
-                          room: location[1] ?? '',
+                          room: location[1] ?? "",
                       }
                     : undefined,
             } satisfies Serialized<CourseMeeting>);
         } catch (e) {
-            throw new Error(`Failed to parse schedule: ${dayLine} ${timeLine} ${locLine}`);
+            throw new Error(
+                `Failed to parse schedule: ${dayLine} ${timeLine} ${locLine}`,
+            );
         }
     }
 }

@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import { PathFinder } from './PathFinder';
-import { type Graph, isValidNode, type NodeId } from './types';
+import { PathFinder } from "./PathFinder";
+import { type Graph, isValidNode, type NodeId } from "./types";
 
 type PathProps = {
     startId: NodeId;
@@ -22,7 +22,13 @@ type PathProps = {
  *
  * @returns The rendered path as a series of SVG lines, or null if an error occurs.
  */
-export const Path = ({ startId, endId, graph, color, className = '' }: PathProps): JSX.Element | null => {
+export const Path = ({
+    startId,
+    endId,
+    graph,
+    color,
+    className = "",
+}: PathProps): JSX.Element | null => {
     try {
         const pathFinder = new PathFinder(graph);
         const path = pathFinder.findPath(startId, endId);
@@ -45,7 +51,7 @@ export const Path = ({ startId, endId, graph, color, className = '' }: PathProps
                             y1={start.y}
                             x2={end.x}
                             y2={end.y}
-                            strokeLinecap='round'
+                            strokeLinecap="round"
                             stroke={color}
                             // TODO: use clsx
                             className={`stroke-8 ${className} opacity-50`}
@@ -55,7 +61,10 @@ export const Path = ({ startId, endId, graph, color, className = '' }: PathProps
             </>
         );
     } catch (error) {
-        console.error('Error rendering path:', error instanceof Error ? error.message : 'Unknown error');
+        console.error(
+            "Error rendering path:",
+            error instanceof Error ? error.message : "Unknown error",
+        );
         return null;
     }
 };

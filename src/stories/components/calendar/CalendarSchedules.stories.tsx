@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
+import type { Meta, StoryObj } from "@storybook/react";
+import { CalendarSchedules } from "@views/components/calendar/CalendarSchedules";
 
 const meta = {
-    title: 'Components/Calendar/CalendarSchedules',
+    title: "Components/Calendar/CalendarSchedules",
     component: CalendarSchedules,
     parameters: {
-        layout: 'centered',
-        tags: ['autodocs'],
+        layout: "centered",
+        tags: ["autodocs"],
     },
 } satisfies Meta<typeof CalendarSchedules>;
 

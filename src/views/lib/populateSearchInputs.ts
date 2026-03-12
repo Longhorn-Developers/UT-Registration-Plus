@@ -5,12 +5,12 @@
  */
 export function populateSearchInputs() {
     let params = new URL(window.location.href).searchParams;
-    let department = params.get('fos_fl');
-    let courseLevel = params.get('level');
+    let department = params.get("fos_fl");
+    let courseLevel = params.get("level");
     if (!department || !courseLevel) return;
 
-    const depInput = document.querySelector<HTMLInputElement>('#fos_fl');
-    const levelInput = document.querySelector<HTMLInputElement>('#level');
+    const depInput = document.querySelector<HTMLInputElement>("#fos_fl");
+    const levelInput = document.querySelector<HTMLInputElement>("#level");
 
     if (!depInput || !levelInput) return;
 

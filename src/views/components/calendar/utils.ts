@@ -1,15 +1,15 @@
-import type { Serialized } from '@chrome-extension-toolkit';
-import { tz, TZDate } from '@date-fns/tz';
-import exportSchedule from '@pages/background/lib/exportSchedule';
-import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import type { Course } from '@shared/types/Course';
-import type { CourseMeeting } from '@shared/types/CourseMeeting';
-import Instructor from '@shared/types/Instructor';
-import type { UserSchedule } from '@shared/types/UserSchedule';
-import { downloadBlob } from '@shared/util/downloadBlob';
-import { englishStringifyList } from '@shared/util/string';
-import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import type { DateArg, Day } from 'date-fns';
+import type { Serialized } from "@chrome-extension-toolkit";
+import { tz, TZDate } from "@date-fns/tz";
+import exportSchedule from "@pages/background/lib/exportSchedule";
+import { UserScheduleStore } from "@shared/storage/UserScheduleStore";
+import type { Course } from "@shared/types/Course";
+import type { CourseMeeting } from "@shared/types/CourseMeeting";
+import Instructor from "@shared/types/Instructor";
+import type { UserSchedule } from "@shared/types/UserSchedule";
+import { downloadBlob } from "@shared/util/downloadBlob";
+import { englishStringifyList } from "@shared/util/string";
+import type { CalendarGridCourse } from "@views/hooks/useFlattenedCourseSchedule";
+import type { DateArg, Day } from "date-fns";
 import {
     addDays,
     eachDayOfInterval,
@@ -19,13 +19,13 @@ import {
     nextDay,
     parseISO,
     set as setMultiple,
-} from 'date-fns';
-import { toBlob } from 'html-to-image';
+} from "date-fns";
+import { toBlob } from "html-to-image";
 
-import { academicCalendars } from './academic-calendars';
+import { academicCalendars } from "./academic-calendars";
 
 // Do all timezone calculations relative to UT's timezone
-const TIMEZONE_ID = 'America/Chicago';
+const TIMEZONE_ID = "America/Chicago";
 const TZ = tz(TIMEZONE_ID);
 
 // Datetime format used by iCal, not directly supported by date-fns
@@ -34,13 +34,13 @@ const ISO_BASIC_DATETIME_FORMAT = "yyyyMMdd'T'HHmmss";
 
 // iCal uses two-letter codes for days of the week
 export const CAL_MAP = {
-    Sunday: 'SU',
-    Monday: 'MO',
-    Tuesday: 'TU',
-    Wednesday: 'WE',
-    Thursday: 'TH',
-    Friday: 'FR',
-    Saturday: 'SA',
+    Sunday: "SU",
+    Monday: "MO",
+    Tuesday: "TU",
+    Wednesday: "WE",
+    Thursday: "TH",
+    Friday: "FR",
+    Saturday: "SA",
 } as const satisfies Record<string, string>;
 
 // Date objects' day field goes by index like this
@@ -59,8 +59,8 @@ const DAY_NAME_TO_NUMBER = {
  * @returns A promise that resolves to the retrieved schedule.
  */
 const getSchedule = async (): Promise<Serialized<UserSchedule> | undefined> => {
-    const schedules = await UserScheduleStore.get('schedules');
-    const activeIndex = await UserScheduleStore.get('activeIndex');
+    const schedules = await UserScheduleStore.get("schedules");
+    const activeIndex = await UserScheduleStore.get("activeIndex");
     const schedule = schedules[activeIndex];
 
     return schedule;
@@ -73,8 +73,8 @@ const getSchedule = async (): Promise<Serialized<UserSchedule> | undefined> => {
  * @returns A string representation of the given minutes in HHMMSS format.
  */
 export const formatToHHMMSS = (minutes: number) => {
-    const hours = String(Math.floor(minutes / 60)).padStart(2, '0');
-    const mins = String(minutes % 60).padStart(2, '0');
+    const hours = String(Math.floor(minutes / 60)).padStart(2, "0");
+    const mins = String(minutes % 60).padStart(2, "0");
     return `${hours}${mins}00`;
 };
 
@@ -120,8 +120,10 @@ export const nextDayInclusive = (date: Date, day: Day): TZDate => {
  *
  * @remarks Does not remove duplicate dates.
  */
-export const allDatesInRanges = (dateRanges: readonly (string | [string, string])[]): Date[] =>
-    dateRanges.flatMap(breakDate => {
+export const allDatesInRanges = (
+    dateRanges: readonly (string | [string, string])[],
+): Date[] =>
+    dateRanges.flatMap((breakDate) => {
         if (Array.isArray(breakDate)) {
             return eachDayOfInterval({
                 start: parseISO(breakDate[0], { in: TZ }),
@@ -139,10 +141,15 @@ export const allDatesInRanges = (dateRanges: readonly (string | [string, string]
  * @param meeting - The meeting object
  * @returns A string representation of the meeting in the iCalendar format (ICS)
  */
-export const meetingToIcsString = (course: Serialized<Course>, meeting: Serialized<CourseMeeting>): string | null => {
+export const meetingToIcsString = (
+    course: Serialized<Course>,
+    meeting: Serialized<CourseMeeting>,
+): string | null => {
     const { startTime, endTime, days, location } = meeting;
     if (!course.semester.code) {
-        console.error(`No semester found for course uniqueId: ${course.uniqueId}`);
+        console.error(
+            `No semester found for course uniqueId: ${course.uniqueId}`,
+        );
         return null;
     }
 
@@ -151,63 +158,98 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
         return null;
     }
 
-    if (!Object.prototype.hasOwnProperty.call(academicCalendars, course.semester.code)) {
+    if (
+        !Object.prototype.hasOwnProperty.call(
+            academicCalendars,
+            course.semester.code,
+        )
+    ) {
         console.error(
-            `No academic calendar found for semester code: ${course.semester.code}; course uniqueId: ${course.uniqueId}`
+            `No academic calendar found for semester code: ${course.semester.code}; course uniqueId: ${course.uniqueId}`,
         );
         return null;
     }
-    const academicCalendar = academicCalendars[course.semester.code as keyof typeof academicCalendars];
+    const academicCalendar =
+        academicCalendars[
+            course.semester.code as keyof typeof academicCalendars
+        ];
 
     const startDate = nextDayInclusive(
         parseISO(academicCalendar.firstClassDate, { in: TZ }),
-        DAY_NAME_TO_NUMBER[days[0]!]
+        DAY_NAME_TO_NUMBER[days[0]!],
     );
 
     const startTimeHours = Math.floor(startTime / 60);
     const startTimeMinutes = startTime % 60;
-    const startTimeDate = setMultiple(startDate, { hours: startTimeHours, minutes: startTimeMinutes }, { in: TZ });
+    const startTimeDate = setMultiple(
+        startDate,
+        { hours: startTimeHours, minutes: startTimeMinutes },
+        { in: TZ },
+    );
 
     const endTimeHours = Math.floor(endTime / 60);
     const endTimeMinutes = endTime % 60;
-    const endTimeDate = setMultiple(startDate, { hours: endTimeHours, minutes: endTimeMinutes }, { in: TZ });
+    const endTimeDate = setMultiple(
+        startDate,
+        { hours: endTimeHours, minutes: endTimeMinutes },
+        { in: TZ },
+    );
 
-    const untilDate = addDays(parseISO(academicCalendar.lastClassDate, { in: TZ }), 1);
+    const untilDate = addDays(
+        parseISO(academicCalendar.lastClassDate, { in: TZ }),
+        1,
+    );
 
-    const daysNumSet = new Set(days.map(d => DAY_NAME_TO_NUMBER[d]));
+    const daysNumSet = new Set(days.map((d) => DAY_NAME_TO_NUMBER[d]));
     const excludedDates = allDatesInRanges(academicCalendar.breakDates)
         // Don't need to exclude Tues/Thurs if it's a MWF class, etc.
-        .filter(date => daysNumSet.has(getDay(date, { in: TZ }) as Day))
-        .map(date => setMultiple(date, { hours: startTimeHours, minutes: startTimeMinutes }, { in: TZ }));
+        .filter((date) => daysNumSet.has(getDay(date, { in: TZ }) as Day))
+        .map((date) =>
+            setMultiple(
+                date,
+                { hours: startTimeHours, minutes: startTimeMinutes },
+                { in: TZ },
+            ),
+        );
 
     const startDateFormatted = iCalDateFormat(startTimeDate);
     const endDateFormatted = iCalDateFormat(endTimeDate);
     // Convert days to ICS compatible format, e.g. MO,WE,FR
-    const icsDays = days.map(day => CAL_MAP[day]).join(',');
+    const icsDays = days.map((day) => CAL_MAP[day]).join(",");
 
     // per spec, UNTIL must be in UTC
-    const untilDateFormatted = formatISO(untilDate, { format: 'basic', in: tz('utc') });
-    const excludedDatesFormatted = excludedDates.map(date => iCalDateFormat(date));
+    const untilDateFormatted = formatISO(untilDate, {
+        format: "basic",
+        in: tz("utc"),
+    });
+    const excludedDatesFormatted = excludedDates.map((date) =>
+        iCalDateFormat(date),
+    );
 
-    const uniqueNumberFormatted = course.uniqueId.toString().padStart(5, '0');
+    const uniqueNumberFormatted = course.uniqueId.toString().padStart(5, "0");
 
     // The list part of "Taught by Michael Scott and Siddhartha Chatterjee Beasley"
     const instructorsFormatted = englishStringifyList(
         course.instructors
-            .map(instructor => Instructor.prototype.toString.call(instructor, { format: 'first_last' }))
-            .filter(name => name !== '')
+            .map((instructor) =>
+                Instructor.prototype.toString.call(instructor, {
+                    format: "first_last",
+                }),
+            )
+            .filter((name) => name !== ""),
     );
 
     // Construct event string
-    let icsString = 'BEGIN:VEVENT\n';
+    let icsString = "BEGIN:VEVENT\n";
     icsString += `DTSTART;TZID=${TIMEZONE_ID}:${startDateFormatted}\n`;
     icsString += `DTEND;TZID=${TIMEZONE_ID}:${endDateFormatted}\n`;
     icsString += `RRULE:FREQ=WEEKLY;BYDAY=${icsDays};UNTIL=${untilDateFormatted}\n`;
-    icsString += `EXDATE;TZID=${TIMEZONE_ID}:${excludedDatesFormatted.join(',')}\n`;
+    icsString += `EXDATE;TZID=${TIMEZONE_ID}:${excludedDatesFormatted.join(",")}\n`;
     icsString += `SUMMARY:${course.department} ${course.number} \u2013 ${course.courseName}\n`;
 
     if (location?.building || location?.building) {
-        const locationFormatted = `${location?.building ?? ''} ${location?.room ?? ''}`.trim();
+        const locationFormatted =
+            `${location?.building ?? ""} ${location?.room ?? ""}`.trim();
         icsString += `LOCATION:${locationFormatted}\n`;
     }
 
@@ -216,9 +258,9 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
         // Newlines need to be double-escaped
         icsString += `\\nTaught by ${instructorsFormatted}`;
     }
-    icsString += '\n';
+    icsString += "\n";
 
-    icsString += 'END:VEVENT';
+    icsString += "END:VEVENT";
 
     return icsString;
 };
@@ -229,18 +271,23 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
  * @returns A string representation of the schedule in the iCalendar format (ICS)
  */
 export const scheduleToIcsString = (schedule: Serialized<UserSchedule>) => {
-    let icsString = 'BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nX-WR-CALNAME:My Schedule\n';
+    let icsString =
+        "BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nX-WR-CALNAME:My Schedule\n";
 
     const vevents = schedule.courses
-        .flatMap(course => course.schedule.meetings.map(meeting => meetingToIcsString(course, meeting)))
-        .filter(event => event !== null)
-        .join('\n');
+        .flatMap((course) =>
+            course.schedule.meetings.map((meeting) =>
+                meetingToIcsString(course, meeting),
+            ),
+        )
+        .filter((event) => event !== null)
+        .join("\n");
 
     if (vevents.length > 0) {
         icsString += `${vevents}\n`;
     }
 
-    icsString += 'END:VCALENDAR';
+    icsString += "END:VCALENDAR";
 
     return icsString;
 };
@@ -254,16 +301,16 @@ export const scheduleToText = (schedule: Serialized<UserSchedule>) => {
     const lines: string[] = [];
 
     lines.push(`Schedule: ${schedule.name}`);
-    lines.push('');
+    lines.push("");
 
     for (const c of schedule.courses) {
         lines.push(c.fullName);
         lines.push(`${c.creditHours} Credit Hours`);
         lines.push(`${c.uniqueId}`);
-        lines.push('');
+        lines.push("");
     }
 
-    return lines.join('\n');
+    return lines.join("\n");
 };
 
 /**
@@ -275,12 +322,12 @@ export const saveAsCal = async () => {
     const schedule = await getSchedule();
 
     if (!schedule) {
-        throw new Error('No schedule found');
+        throw new Error("No schedule found");
     }
 
     const icsString = scheduleToIcsString(schedule);
 
-    downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
+    downloadBlob(icsString, "CALENDAR", "schedule.ics");
 };
 
 /**
@@ -295,11 +342,11 @@ export const saveAsText = async () => {
     const schedule = await getSchedule();
 
     if (!schedule) {
-        throw new Error('No schedule found');
+        throw new Error("No schedule found");
     }
 
     const scheduleText = scheduleToText(schedule);
-    downloadBlob(scheduleText, 'TEXT', 'schedule.txt');
+    downloadBlob(scheduleText, "TEXT", "schedule.txt");
 };
 
 /**
@@ -309,12 +356,12 @@ export const saveAsText = async () => {
 export const handleExportJson = async (id: string) => {
     const jsonString = await exportSchedule(id);
     if (jsonString) {
-        const schedules = await UserScheduleStore.get('schedules');
-        const schedule = schedules.find(s => s.id === id);
-        const fileName = `${schedule?.name ?? `schedule_${id}`}_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
-        await downloadBlob(jsonString, 'JSON', fileName);
+        const schedules = await UserScheduleStore.get("schedules");
+        const schedule = schedules.find((s) => s.id === id);
+        const fileName = `${schedule?.name ?? `schedule_${id}`}_${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+        await downloadBlob(jsonString, "JSON", fileName);
     } else {
-        console.error('Error exporting schedule: jsonString is undefined');
+        console.error("Error exporting schedule: jsonString is undefined");
     }
 };
 
@@ -328,21 +375,27 @@ export const saveCalAsPng = () => {
     const HEIGHT_PX = 754;
     const SCALE = 2;
 
-    const rootNode = document.createElement('div');
-    rootNode.style.backgroundColor = 'white';
-    rootNode.style.position = 'fixed';
-    rootNode.style.zIndex = '1000';
-    rootNode.style.top = '-10000px';
-    rootNode.style.left = '-10000px';
+    const rootNode = document.createElement("div");
+    rootNode.style.backgroundColor = "white";
+    rootNode.style.position = "fixed";
+    rootNode.style.zIndex = "1000";
+    rootNode.style.top = "-10000px";
+    rootNode.style.left = "-10000px";
     rootNode.style.width = `${WIDTH_PX}px`;
     rootNode.style.height = `${HEIGHT_PX}px`;
     document.body.appendChild(rootNode);
 
-    const clonedNode = document.querySelector('#root')!.cloneNode(true) as HTMLDivElement;
-    clonedNode.style.backgroundColor = 'white';
-    (clonedNode.firstChild as HTMLDivElement).classList.add('screenshot-in-progress');
+    const clonedNode = document
+        .querySelector("#root")!
+        .cloneNode(true) as HTMLDivElement;
+    clonedNode.style.backgroundColor = "white";
+    (clonedNode.firstChild as HTMLDivElement).classList.add(
+        "screenshot-in-progress",
+    );
 
-    const calendarTarget = clonedNode.querySelector('.screenshot\\:calendar-target') as HTMLDivElement;
+    const calendarTarget = clonedNode.querySelector(
+        ".screenshot\\:calendar-target",
+    ) as HTMLDivElement;
     calendarTarget.style.width = `${WIDTH_PX}px`;
     calendarTarget.style.height = `${HEIGHT_PX}px`;
 
@@ -359,10 +412,10 @@ export const saveCalAsPng = () => {
                 });
 
                 if (!screenshotBlob) {
-                    throw new Error('Failed to create screenshot');
+                    throw new Error("Failed to create screenshot");
                 }
 
-                downloadBlob(screenshotBlob, 'IMAGE', 'my-calendar.png');
+                downloadBlob(screenshotBlob, "IMAGE", "my-calendar.png");
             } catch (e: unknown) {
                 console.error(e);
                 reject(e);
@@ -390,7 +443,9 @@ export const saveCalAsPng = () => {
  * @example [[8am, 9am), [8:30am, 10am), [9:30am, 11am)] // is all one connected component
  * @example [[8am, 9am), [8:30am, 10am), [10am, 11am)] // has two connected components, [[8am, 9am), [8:30am, 10am)] and [[10am, 11am)]]
  */
-const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCourse[][] => {
+const findConnectedComponents = (
+    cells: CalendarGridCourse[],
+): CalendarGridCourse[][] => {
     const connectedComponents: CalendarGridCourse[][] = [];
 
     for (let i = 0; i < cells.length; i++) {
@@ -406,7 +461,10 @@ const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCours
 
         for (let j = i + 1; j < cells.length; j++) {
             const otherCell = cells[j]!;
-            if (otherCell.calendarGridPoint.startIndex >= cell.calendarGridPoint.endIndex) {
+            if (
+                otherCell.calendarGridPoint.startIndex >=
+                cell.calendarGridPoint.endIndex
+            ) {
                 break;
             }
 
@@ -478,14 +536,17 @@ export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
     // This is necessary for the correctness of the column assignment
     const cells = dayCells
         .filter(
-            cell =>
+            (cell) =>
                 !cell.async &&
                 cell.calendarGridPoint &&
-                typeof cell.calendarGridPoint.startIndex === 'number' &&
-                cell.calendarGridPoint.startIndex >= 0
+                typeof cell.calendarGridPoint.startIndex === "number" &&
+                cell.calendarGridPoint.startIndex >= 0,
         )
         .slice()
-        .sort((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
+        .sort(
+            (a, b) =>
+                a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex,
+        );
 
     // Initialize metadata
     for (const cell of cells) {

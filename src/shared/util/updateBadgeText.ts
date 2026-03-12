@@ -1,5 +1,5 @@
-import { colors } from '../types/ThemeColors';
-import { MILLISECOND } from './time';
+import { colors } from "../types/ThemeColors";
+import { MILLISECOND } from "./time";
 
 /** How long should we flash the badge when it changes value */
 export const POPUP_FLASH_TIME = 200 * MILLISECOND;
@@ -13,7 +13,7 @@ export const BADGE_LIMIT = 10;
  * @param value - The value to be displayed in the badge.
  */
 export default function updateBadgeText(value: number): void {
-    let badgeText = '';
+    let badgeText = "";
     if (value >= 0) {
         if (value > BADGE_LIMIT) {
             badgeText = `${BADGE_LIMIT}+`;
@@ -30,5 +30,9 @@ export default function updateBadgeText(value: number): void {
  */
 function flashBadgeColor() {
     chrome.action.setBadgeBackgroundColor({ color: colors.ut.burntorange });
-    setTimeout(() => chrome.action.setBadgeBackgroundColor({ color: colors.ut.orange }), POPUP_FLASH_TIME);
+    setTimeout(
+        () =>
+            chrome.action.setBadgeBackgroundColor({ color: colors.ut.orange }),
+        POPUP_FLASH_TIME,
+    );
 }

@@ -1,24 +1,24 @@
-import type { Serialized } from '@chrome-extension-toolkit';
-import { getCourseColors } from '@shared/util/colors';
+import type { Serialized } from "@chrome-extension-toolkit";
+import { getCourseColors } from "@shared/util/colors";
 
-import type { CourseMeeting } from './CourseMeeting';
-import { CourseSchedule } from './CourseSchedule';
-import Instructor from './Instructor';
-import type { CourseColors } from './ThemeColors';
+import type { CourseMeeting } from "./CourseMeeting";
+import { CourseSchedule } from "./CourseSchedule";
+import Instructor from "./Instructor";
+import type { CourseColors } from "./ThemeColors";
 
 /**
  * Whether the class is taught online, in person, or a hybrid of the two
  */
-export type InstructionMode = 'Online' | 'In Person' | 'Hybrid';
+export type InstructionMode = "Online" | "In Person" | "Hybrid";
 
 /**
  * The status of a course (e.g. open, closed, waitlisted, cancelled)
  */
 export const Status = {
-    OPEN: 'OPEN',
-    CLOSED: 'CLOSED',
-    WAITLISTED: 'WAITLISTED',
-    CANCELLED: 'CANCELLED',
+    OPEN: "OPEN",
+    CLOSED: "CLOSED",
+    WAITLISTED: "WAITLISTED",
+    CANCELLED: "CANCELLED",
 } as const;
 
 /**
@@ -33,7 +33,7 @@ export type Semester = {
     /** The year that the semester is in */
     year: number;
     /** The season that the semester is in (Fall, Spring, Summer) */
-    season: 'Fall' | 'Spring' | 'Summer';
+    season: "Fall" | "Spring" | "Summer";
     /** UT's code for the semester */
     code?: string;
 };
@@ -90,16 +90,21 @@ export class Course {
     constructor(course: Serialized<Course>) {
         Object.assign(this, course);
         this.schedule = new CourseSchedule(course.schedule);
-        this.instructors = course.instructors.map(i => new Instructor(i));
+        this.instructors = course.instructors.map((i) => new Instructor(i));
         if (!course.scrapedAt) {
             this.scrapedAt = Date.now();
         }
-        this.colors = course.colors ? structuredClone(course.colors) : getCourseColors('emerald', 500);
+        this.colors = course.colors
+            ? structuredClone(course.colors)
+            : getCourseColors("emerald", 500);
         this.core = course.core ?? [];
-        if (course.semester.season === 'Summer') {
+        if (course.semester.season === "Summer") {
             // A bug from and old version put the summer term in the course,
             // so we need to handle that case
-            const { department, number } = Course.cleanSummerTerm(course.department, course.number);
+            const { department, number } = Course.cleanSummerTerm(
+                course.department,
+                course.number,
+            );
             this.department = department;
             this.number = number;
         }
@@ -123,7 +128,10 @@ export class Course {
      * cleanSummerTerm('P S n', '303') // { department: 'P S', number: 'n303' }
      * ```
      */
-    static cleanSummerTerm(department: string, number: string): { department: string; number: string } {
+    static cleanSummerTerm(
+        department: string,
+        number: string,
+    ): { department: string; number: string } {
         // UT prefixes summer courses with f, s, n, or w:
         // [f]irst term, [s]econd term, [n]ine week term, [w]hole term
         const summerTerm = department.match(/[fsnw]$/);
@@ -166,7 +174,7 @@ export class Course {
      * ```
      */
     getNumberWithoutTerm(): string {
-        return this.number.replace(/^\D/, ''); // Remove nondigit at start, if it exists
+        return this.number.replace(/^\D/, ""); // Remove nondigit at start, if it exists
     }
 }
 

@@ -12,7 +12,7 @@ export const NEIGHBOR_DISTANCE_THRESHOLD = 25; // Increased threshold for neighb
  * - 'intersection': A node representing an intersection.
  * - 'walkway': A node representing a walkway.
  */
-export type NodeType = 'building' | 'intersection' | 'walkway';
+export type NodeType = "building" | "intersection" | "walkway";
 
 /**
  * Represents the coordinates of a node on a map.
@@ -80,9 +80,11 @@ export type PreviousMap = Record<NodeId, NodeId | null>;
  */
 export const isValidNode = (node: MapNode | undefined): node is MapNode =>
     node !== undefined &&
-    typeof node.x === 'number' &&
-    typeof node.y === 'number' &&
-    (node.type === 'building' || node.type === 'intersection' || node.type === 'walkway');
+    typeof node.x === "number" &&
+    typeof node.y === "number" &&
+    (node.type === "building" ||
+        node.type === "intersection" ||
+        node.type === "walkway");
 
 /**
  * Represents the code for a day of the week.
@@ -93,13 +95,21 @@ export const isValidNode = (node: MapNode | undefined): node is MapNode =>
  * - 'TH' : Thursday
  * - 'F'   : Friday
  */
-export type DayCode = 'M' | 'T' | 'W' | 'TH' | 'F';
+export type DayCode = "M" | "T" | "W" | "TH" | "F";
 
 /**
  * An array of strings representing the days of the week.
  * The days are ordered starting from Monday to Sunday.
  */
-export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+export const DAYS = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+] as const;
 
 /**
  * Represents a day of the week.
@@ -116,9 +126,9 @@ type DayMapping = Record<DayCode, DAY>;
  * A constant object that maps single-letter day abbreviations to their full names.
  */
 export const DAY_MAPPING = {
-    M: 'Monday',
-    T: 'Tuesday',
-    W: 'Wednesday',
-    TH: 'Thursday',
-    F: 'Friday',
+    M: "Monday",
+    T: "Tuesday",
+    W: "Wednesday",
+    TH: "Thursday",
+    F: "Friday",
 } as const satisfies DayMapping;

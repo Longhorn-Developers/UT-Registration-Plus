@@ -1,5 +1,5 @@
-import clsx from 'clsx';
-import React from 'react';
+import clsx from "clsx";
+import React from "react";
 
 /**
  * Props for the Divider component
@@ -10,8 +10,8 @@ import React from 'react';
  * @param testId - Test id for the divider
  */
 export type DividerProps = {
-    orientation: 'horizontal' | 'vertical';
-    size: React.CSSProperties['width' | 'height'];
+    orientation: "horizontal" | "vertical";
+    size: React.CSSProperties["width" | "height"];
     className?: string;
     testId?: string;
 };
@@ -31,17 +31,25 @@ export type DividerProps = {
  * <Divider size="19px" orientation="horizontal" />
  * ```
  */
-export default function Divider({ className, testId, size, orientation }: DividerProps): JSX.Element {
+export default function Divider({
+    className,
+    testId,
+    size,
+    orientation,
+}: DividerProps): JSX.Element {
     const style: React.CSSProperties =
-        orientation === 'horizontal'
-            ? { width: size, borderBottomWidth: '1px' }
-            : { height: size, borderRightWidth: '1px' };
+        orientation === "horizontal"
+            ? { width: size, borderBottomWidth: "1px" }
+            : { height: size, borderRightWidth: "1px" };
 
     return (
         <div
             style={style}
             data-testid={testId}
-            className={clsx('border-solid border-ut-offwhite/50 w-0 h-0', className)}
+            className={clsx(
+                "border-solid border-ut-offwhite/50 w-0 h-0",
+                className,
+            )}
         />
     );
 }

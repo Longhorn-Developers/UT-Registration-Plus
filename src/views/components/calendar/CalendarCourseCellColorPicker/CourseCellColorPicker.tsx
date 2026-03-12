@@ -1,34 +1,34 @@
-import type { ThemeColor, TWIndex } from '@shared/types/ThemeColors';
-import { getThemeColorHexByName } from '@shared/util/themeColors';
-import Divider from '@views/components/common/Divider';
-import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
-import React from 'react';
-import { theme } from 'unocss/preset-mini';
+import type { ThemeColor, TWIndex } from "@shared/types/ThemeColors";
+import { getThemeColorHexByName } from "@shared/util/themeColors";
+import Divider from "@views/components/common/Divider";
+import { useColorPickerContext } from "@views/contexts/ColorPickerContext";
+import React from "react";
+import { theme } from "unocss/preset-mini";
 
-import ColorPatch from './ColorPatch';
-import HexColorEditor from './HexColorEditor';
+import ColorPatch from "./ColorPatch";
+import HexColorEditor from "./HexColorEditor";
 
 const baseColors = [
-    'slate',
-    'gray',
-    'stone',
-    'red',
-    'orange',
-    'amber',
-    'yellow',
-    'lime',
-    'green',
-    'emerald',
-    'teal',
-    'cyan',
-    'sky',
-    'blue',
-    'indigo',
-    'violet',
-    'purple',
-    'fuchsia',
-    'pink',
-    'rose',
+    "slate",
+    "gray",
+    "stone",
+    "red",
+    "orange",
+    "amber",
+    "yellow",
+    "lime",
+    "green",
+    "emerald",
+    "teal",
+    "cyan",
+    "sky",
+    "blue",
+    "indigo",
+    "violet",
+    "purple",
+    "fuchsia",
+    "pink",
+    "rose",
 ] as const;
 
 const BaseColorNum: TWIndex = 500;
@@ -36,17 +36,22 @@ const StartingShadeIndex: TWIndex = 200;
 const ShadeIncrement = 100;
 
 const colorPatchColors = new Map<string, string[]>(
-    baseColors.map(baseColor => [
+    baseColors.map((baseColor) => [
         theme.colors[baseColor][BaseColorNum],
         Array.from(
             { length: 6 },
-            (_, index) => theme.colors[baseColor][(StartingShadeIndex + ShadeIncrement * index) as TWIndex]
+            (_, index) =>
+                theme.colors[baseColor][
+                    (StartingShadeIndex + ShadeIncrement * index) as TWIndex
+                ],
         ),
-    ])
+    ]),
 );
 
 const hexCodeToBaseColor = new Map<string, string>(
-    Array.from(colorPatchColors.entries()).flatMap(([baseColor, shades]) => shades.map(shade => [shade, baseColor]))
+    Array.from(colorPatchColors.entries()).flatMap(([baseColor, shades]) =>
+        shades.map((shade) => [shade, baseColor]),
+    ),
 );
 
 /**
@@ -82,10 +87,13 @@ export interface CourseCellColorPickerProps {
  *
  * @returns The color picker component that displays a color palette with a list of color patches.
  */
-export default function CourseCellColorPicker({ defaultColor }: CourseCellColorPickerProps): JSX.Element {
+export default function CourseCellColorPicker({
+    defaultColor,
+}: CourseCellColorPickerProps): JSX.Element {
     // hexCode mirrors contents of HexColorEditor which has no hash prefix
     const [hexCode, setHexCode] = React.useState<string>(
-        defaultColor.slice(1).toLocaleLowerCase() || getThemeColorHexByName('ut-gray')
+        defaultColor.slice(1).toLocaleLowerCase() ||
+            getThemeColorHexByName("ut-gray"),
     );
 
     const { setSelectedColor } = useColorPickerContext();
@@ -96,7 +104,7 @@ export default function CourseCellColorPicker({ defaultColor }: CourseCellColorP
     const handleSelectColorPatch = (baseColor: string) => {
         let hexCode = baseColor.toLocaleLowerCase();
 
-        if (hexCode.startsWith('#')) {
+        if (hexCode.startsWith("#")) {
             hexCode = baseColor.slice(1);
         }
 
@@ -105,9 +113,9 @@ export default function CourseCellColorPicker({ defaultColor }: CourseCellColorP
     };
 
     return (
-        <div className='inline-flex flex-col border border-ut-offwhite rounded-1 bg-white p-1.25'>
-            <div className='grid grid-cols-6 gap-1'>
-                {Array.from(colorPatchColors.keys()).map(baseColor => (
+        <div className="inline-flex flex-col border border-ut-offwhite rounded-1 bg-white p-1.25">
+            <div className="grid grid-cols-6 gap-1">
+                {Array.from(colorPatchColors.keys()).map((baseColor) => (
                     <ColorPatch
                         key={baseColor}
                         color={baseColor}
@@ -116,23 +124,34 @@ export default function CourseCellColorPicker({ defaultColor }: CourseCellColorP
                         defaultColor={defaultColor}
                     />
                 ))}
-                <div className='col-span-3 flex items-center justify-center overflow-hidden'>
-                    <HexColorEditor hexCode={hexCode} setHexCode={handleSelectColorPatch} />
+                <div className="col-span-3 flex items-center justify-center overflow-hidden">
+                    <HexColorEditor
+                        hexCode={hexCode}
+                        setHexCode={handleSelectColorPatch}
+                    />
                 </div>
             </div>
             {selectedBaseColor && (
                 <>
-                    <Divider orientation='horizontal' size='100%' className='my-1' />
-                    <div className='grid grid-cols-6 gap-1'>
-                        {colorPatchColors.get(selectedBaseColor)?.map(shadeColor => (
-                            <ColorPatch
-                                key={shadeColor}
-                                color={shadeColor}
-                                isSelected={shadeColor === hexCodeWithHash}
-                                handleSelectColorPatch={handleSelectColorPatch}
-                                defaultColor={defaultColor}
-                            />
-                        ))}
+                    <Divider
+                        orientation="horizontal"
+                        size="100%"
+                        className="my-1"
+                    />
+                    <div className="grid grid-cols-6 gap-1">
+                        {colorPatchColors
+                            .get(selectedBaseColor)
+                            ?.map((shadeColor) => (
+                                <ColorPatch
+                                    key={shadeColor}
+                                    color={shadeColor}
+                                    isSelected={shadeColor === hexCodeWithHash}
+                                    handleSelectColorPatch={
+                                        handleSelectColorPatch
+                                    }
+                                    defaultColor={defaultColor}
+                                />
+                            ))}
                     </div>
                 </>
             )}

@@ -1,7 +1,7 @@
-import type { Course } from '@shared/types/Course';
-import Text from '@views/components/common/Text/Text';
-import clsx from 'clsx';
-import React from 'react';
+import type { Course } from "@shared/types/Course";
+import Text from "@views/components/common/Text/Text";
+import clsx from "clsx";
+import React from "react";
 
 /**
  * Props for ConflictWithWarningProps
@@ -19,21 +19,24 @@ export interface ConflictsWithWarningProps {
  * @param conflicts - The courses that conflict with the current course
  * @returns The ConflictsWithWarning component
  */
-export default function ConflictsWithWarning({ className, conflicts }: ConflictsWithWarningProps): JSX.Element {
+export default function ConflictsWithWarning({
+    className,
+    conflicts,
+}: ConflictsWithWarningProps): JSX.Element {
     return (
         <Text
-            variant='mini'
+            variant="mini"
             className={clsx(
                 className,
-                'min-w-21 w-21 flex flex-col items-start gap-2.5 rounded bg-theme-red p-2.5 text-white'
+                "min-w-21 w-21 flex flex-col items-start gap-2.5 rounded bg-theme-red p-2.5 text-white",
             )}
         >
             <div>Conflicts With:</div>
-            {conflicts.map(course => (
+            {conflicts.map((course) => (
                 <div>
-                    <Text as='strong' variant='mini' className='font-bold!'>
+                    <Text as="strong" variant="mini" className="font-bold!">
                         {course.department} {course.number}
-                    </Text>{' '}
+                    </Text>{" "}
                     ({course.uniqueId})
                 </div>
             ))}

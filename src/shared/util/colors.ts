@@ -1,12 +1,12 @@
-import type { Serialized } from '@chrome-extension-toolkit';
-import { theme } from 'unocss/preset-mini';
+import type { Serialized } from "@chrome-extension-toolkit";
+import { theme } from "unocss/preset-mini";
 
-import type { HexColor, HSL, Lab, RGB, sRGB } from '../types/Color';
-import { isHexColor } from '../types/Color';
-import type { Course } from '../types/Course';
-import type { CourseColors, TWColorway, TWIndex } from '../types/ThemeColors';
-import { colors, colorwayIndexes } from '../types/ThemeColors';
-import type { UserSchedule } from '../types/UserSchedule';
+import type { HexColor, HSL, Lab, RGB, sRGB } from "../types/Color";
+import { isHexColor } from "../types/Color";
+import type { Course } from "../types/Course";
+import type { CourseColors, TWColorway, TWIndex } from "../types/ThemeColors";
+import { colors, colorwayIndexes } from "../types/ThemeColors";
+import type { UserSchedule } from "../types/UserSchedule";
 
 /**
  * Converts a hexadecimal color value to RGB format. (adapted from https://stackoverflow.com/a/5624139/8022866)
@@ -17,13 +17,20 @@ import type { UserSchedule } from '../types/UserSchedule';
 export function hexToRGB(hex: HexColor): RGB | undefined {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
     let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    const parsedHex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    const parsedHex = hex.replace(
+        shorthandRegex,
+        (m, r, g, b) => r + r + g + g + b + b,
+    );
 
     let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(parsedHex);
 
     if (!result || !(result.length > 3)) return undefined;
 
-    return [parseInt(result[1]!, 16), parseInt(result[2]!, 16), parseInt(result[3]!, 16)];
+    return [
+        parseInt(result[1]!, 16),
+        parseInt(result[2]!, 16),
+        parseInt(result[3]!, 16),
+    ];
 }
 
 /**
@@ -41,7 +48,11 @@ export function isValidHexColor(hex: string): boolean {
 
 export const useableColorways = Object.keys(theme.colors)
     // check that the color is a colorway (is an object)
-    .filter(color => typeof theme.colors[color as keyof typeof theme.colors] === 'object')
+    .filter(
+        (color) =>
+            typeof theme.colors[color as keyof typeof theme.colors] ===
+            "object",
+    )
     .slice(0, 17) as TWColorway[];
 
 /**
@@ -50,30 +61,35 @@ export const useableColorways = Object.keys(theme.colors)
  * @param bgColor - The hex color of the background
  * @returns The Tailwind classname for the font color
  */
-export function pickFontColor(bgColor: HexColor): 'text-white' | 'text-black' | 'text-theme-black' {
+export function pickFontColor(
+    bgColor: HexColor,
+): "text-white" | "text-black" | "text-theme-black" {
     const coefficients = [0.2126729, 0.7151522, 0.072175] as const;
 
     const flipYs = 0.342; // based on APCA™ 0.98G middle contrast BG color
 
     const trc = 2.4; // 2.4 exponent for emulating actual monitor perception
     const rgb = hexToRGB(bgColor);
-    if (!rgb) throw new Error('bgColor: Invalid hex.');
+    if (!rgb) throw new Error("bgColor: Invalid hex.");
 
     // coefficients and rgb are both 3 elements long, so this is safe
-    let Ys = rgb.reduce((acc, c, i) => acc + (c / 255.0) ** trc * coefficients[i]!, 0);
+    let Ys = rgb.reduce(
+        (acc, c, i) => acc + (c / 255.0) ** trc * coefficients[i]!,
+        0,
+    );
 
     if (Ys < flipYs) {
-        return 'text-white';
+        return "text-white";
     }
 
-    return Ys < 0.365 ? 'text-black' : 'text-theme-black';
+    return Ys < 0.365 ? "text-black" : "text-theme-black";
 }
 
 // Mapping of Tailwind CSS class names to their corresponding hex values
 export const tailwindColorMap: Record<string, HexColor> = {
-    'text-white': '#FFFFFF',
-    'text-black': '#000000',
-    'text-theme-black': colors.theme.black,
+    "text-white": "#FFFFFF",
+    "text-black": "#000000",
+    "text-theme-black": colors.theme.black,
 };
 
 /**
@@ -84,15 +100,24 @@ export const tailwindColorMap: Record<string, HexColor> = {
  * @param offset - The offset to get the secondary color
  * @returns The primary and secondary colors
  */
-export function getCourseColors(colorway: TWColorway, index?: number, offset: number = 300): CourseColors {
+export function getCourseColors(
+    colorway: TWColorway,
+    index?: number,
+    offset: number = 300,
+): CourseColors {
     if (index === undefined) {
         // eslint-disable-next-line no-param-reassign
-        index = colorway in colorwayIndexes ? colorwayIndexes[colorway as keyof typeof colorwayIndexes] : 500;
+        index =
+            colorway in colorwayIndexes
+                ? colorwayIndexes[colorway as keyof typeof colorwayIndexes]
+                : 500;
     }
 
     return {
         primaryColor: theme.colors[colorway][index as TWIndex] as HexColor,
-        secondaryColor: theme.colors[colorway][(index + offset) as TWIndex] as HexColor,
+        secondaryColor: theme.colors[colorway][
+            (index + offset) as TWIndex
+        ] as HexColor,
     };
 }
 
@@ -110,16 +135,21 @@ export function getColorwayFromColor(color: HexColor): {
         const colorValues = Object.values(theme.colors[colorway]);
         const index = colorValues.indexOf(color);
         if (index !== -1) {
-            return { colorway: colorway as TWColorway, index: (index * 100) as TWIndex };
+            return {
+                colorway: colorway as TWColorway,
+                index: (index * 100) as TWIndex,
+            };
         }
     }
 
     // not a direct match, get the closest color
-    let closestColor = '';
+    let closestColor = "";
     let closestDistance = Infinity;
 
     for (const colorway of useableColorways) {
-        for (const [shade, shadeColor] of Object.entries(theme.colors[colorway])) {
+        for (const [shade, shadeColor] of Object.entries(
+            theme.colors[colorway],
+        )) {
             // type guard
             if (!isHexColor(shadeColor)) {
                 continue;
@@ -130,7 +160,10 @@ export function getColorwayFromColor(color: HexColor): {
                 continue;
             }
 
-            const distance = oklabDistance(rgbToOKlab(shadeColorRGB), rgbToOKlab(shadeColorRGB));
+            const distance = oklabDistance(
+                rgbToOKlab(shadeColorRGB),
+                rgbToOKlab(shadeColorRGB),
+            );
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestColor = shade;
@@ -157,7 +190,7 @@ export const hexToHSL = (hex: HexColor): HSL => {
     const rgb = hexToRGB(hex);
 
     if (!rgb) {
-        throw new Error('hexToRGB returned undefined');
+        throw new Error("hexToRGB returned undefined");
     }
 
     // Convert RGB to decimals
@@ -234,7 +267,11 @@ function hslToRGB([hue, saturation, lightness]: HSL): RGB {
     }
 
     // Convert to 0-255 range and round
-    return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+    return [
+        Math.round((r + m) * 255),
+        Math.round((g + m) * 255),
+        Math.round((b + m) * 255),
+    ];
 }
 
 /**
@@ -248,7 +285,7 @@ function hslToRGB([hue, saturation, lightness]: HSL): RGB {
 export function getDarkerShade(color: HexColor, offset: number = 20): HexColor {
     const rgb = hexToRGB(color);
     if (!rgb) {
-        throw new Error('color: Invalid hex.');
+        throw new Error("color: Invalid hex.");
     }
 
     // Convert to HSL
@@ -261,7 +298,7 @@ export function getDarkerShade(color: HexColor, offset: number = 20): HexColor {
     const newRGB = hslToRGB([h, s, newL]);
 
     // Convert to hex
-    return `#${newRGB.map(c => Math.round(c).toString(16).padStart(2, '0')).join('')}`;
+    return `#${newRGB.map((c) => Math.round(c).toString(16).padStart(2, "0")).join("")}`;
 }
 
 /**
@@ -272,10 +309,13 @@ export function getDarkerShade(color: HexColor, offset: number = 20): HexColor {
  * @returns The lighter shade of the given hex color.
  * @throws If the provided color is not a valid hex color.
  */
-export function getLighterShade(color: HexColor, offset: number = 20): HexColor {
+export function getLighterShade(
+    color: HexColor,
+    offset: number = 20,
+): HexColor {
     const rgb = hexToRGB(color);
     if (!rgb) {
-        throw new Error('color: Invalid hex.');
+        throw new Error("color: Invalid hex.");
     }
 
     // Convert to HSL
@@ -288,7 +328,7 @@ export function getLighterShade(color: HexColor, offset: number = 20): HexColor 
     const newRGB = hslToRGB([h, s, newL]);
 
     // Convert to hex
-    return `#${newRGB.map(c => Math.round(c).toString(16).padStart(2, '0')).join('')}`;
+    return `#${newRGB.map((c) => Math.round(c).toString(16).padStart(2, "0")).join("")}`;
 }
 
 /**
@@ -304,7 +344,7 @@ export function getUnusedColor(
     schedule: Serialized<UserSchedule>,
     course: Course,
     index?: number,
-    offset?: number
+    offset?: number,
 ): CourseColors {
     // strategy: First, check if any of the course's in schedule have the same department as the current course,
     // if so, use a colorway near the color of that course if possible.
@@ -313,15 +353,20 @@ export function getUnusedColor(
     // wrapping helper functions
     function getPreviousColorway(colorway: TWColorway): TWColorway {
         const colorwayIndex = useableColorways.indexOf(colorway);
-        return useableColorways[(colorwayIndex - 1 + useableColorways.length) % useableColorways.length] as TWColorway;
+        return useableColorways[
+            (colorwayIndex - 1 + useableColorways.length) %
+                useableColorways.length
+        ] as TWColorway;
     }
 
     function getNextColorway(colorway: TWColorway): TWColorway {
         const colorwayIndex = useableColorways.indexOf(colorway);
-        return useableColorways[(colorwayIndex + 1) % useableColorways.length] as TWColorway;
+        return useableColorways[
+            (colorwayIndex + 1) % useableColorways.length
+        ] as TWColorway;
     }
 
-    const scheduleCourses = schedule.courses.map(c => ({
+    const scheduleCourses = schedule.courses.map((c) => ({
         ...c,
         theme: (() => {
             try {
@@ -329,18 +374,22 @@ export function getUnusedColor(
             } catch (error) {
                 // Default to emerald colorway with index 500
                 return {
-                    colorway: 'emerald' as TWColorway,
+                    colorway: "emerald" as TWColorway,
                     index: 500 as TWIndex,
                 };
             }
         })(),
     }));
 
-    const usedColorways = new Set(scheduleCourses.map(c => c.theme.colorway));
-    const availableColorways = new Set(useableColorways.filter(c => !usedColorways.has(c)));
+    const usedColorways = new Set(scheduleCourses.map((c) => c.theme.colorway));
+    const availableColorways = new Set(
+        useableColorways.filter((c) => !usedColorways.has(c)),
+    );
 
     if (availableColorways.size > 0) {
-        let sameDepartment = scheduleCourses.filter(c => c.department === course.department);
+        let sameDepartment = scheduleCourses.filter(
+            (c) => c.department === course.department,
+        );
 
         sameDepartment.sort((a, b) => {
             const aIndex = useableColorways.indexOf(a.theme.colorway);
@@ -351,7 +400,10 @@ export function getUnusedColor(
 
         if (sameDepartment.length > 0) {
             // check to see if any adjacent colorways are available
-            const centerCourse = sameDepartment[Math.floor(Math.random() * sameDepartment.length)]!;
+            const centerCourse =
+                sameDepartment[
+                    Math.floor(Math.random() * sameDepartment.length)
+                ]!;
 
             let nextColorway = getNextColorway(centerCourse.theme.colorway);
             let prevColorway = getPreviousColorway(centerCourse.theme.colorway);
@@ -379,22 +431,27 @@ export function getUnusedColor(
 
         if (shortenedColorways.size > 0) {
             // TODO: make this go by 3's to leave future spaces open
-            const randomColorway = Array.from(shortenedColorways)[Math.floor(Math.random() * shortenedColorways.size)]!;
+            const randomColorway =
+                Array.from(shortenedColorways)[
+                    Math.floor(Math.random() * shortenedColorways.size)
+                ]!;
 
             return getCourseColors(randomColorway, index, offset);
         }
         // no colorways are at least 2 indexes away from any used colors, just get a random colorway
         const randomColorway: TWColorway | undefined =
-            Array.from(availableColorways)[Math.floor(Math.random() * availableColorways.size)];
+            Array.from(availableColorways)[
+                Math.floor(Math.random() * availableColorways.size)
+            ];
 
         if (!randomColorway) {
-            throw new Error('randomColorway is undefined');
+            throw new Error("randomColorway is undefined");
         }
 
         return getCourseColors(randomColorway, index, offset);
     }
     // TODO: get just a random color idk
-    return getCourseColors('emerald', index, offset);
+    return getCourseColors("emerald", index, offset);
 }
 
 // OKLab helper functions (https://github.com/bottosson/bottosson.github.io/blob/master/misc/colorpicker/colorconversion.js)
@@ -407,7 +464,7 @@ function srgbTransferFunctionInv(a: number): number {
 }
 
 function rgbToSrgb(rgb: RGB): sRGB {
-    return rgb.map(c => srgbTransferFunctionInv(c / 255)) as sRGB;
+    return rgb.map((c) => srgbTransferFunctionInv(c / 255)) as sRGB;
 }
 
 /**
