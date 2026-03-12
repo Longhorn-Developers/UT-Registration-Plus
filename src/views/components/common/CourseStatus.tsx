@@ -2,7 +2,6 @@ import type { StatusType } from '@shared/types/Course';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
 
 type SizeType = 'small' | 'mini';
 

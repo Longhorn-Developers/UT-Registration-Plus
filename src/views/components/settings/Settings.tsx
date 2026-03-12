@@ -21,16 +21,17 @@ import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 // Misc
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // Icons
 import IconoirGitFork from '~icons/iconoir/git-fork';
 
 import { useMigrationDialog } from '../common/MigrationDialog';
 import { AdvancedSettings } from './AdvancedSettings';
-import { DEV_MODE_CLICK_TARGET, INCLUDE_MERGED_PRS, STATS_TOGGLE_KEY } from './constants';
 import { ContributorCard } from './ContributorCard';
 import { ContributorCardSkeleton } from './ContributorCardSkeleton';
+import { DEV_MODE_CLICK_TARGET, INCLUDE_MERGED_PRS, STATS_TOGGLE_KEY } from './constants';
 import DevMode from './DevMode';
 import { useBirthdayCelebration } from './useBirthdayCelebration';
 import { useDevMode } from './useDevMode';
@@ -109,7 +110,13 @@ export default function Settings(): JSX.Element {
         });
 
         const l3 = OptionsStore.subscribe('alwaysOpenCalendarInNewTab', ({ newValue }) => {
-            setOptions(prev => prev && { ...prev, alwaysOpenCalendarInNewTab: newValue });
+            setOptions(
+                prev =>
+                    prev && {
+                        ...prev,
+                        alwaysOpenCalendarInNewTab: newValue,
+                    }
+            );
         });
 
         const l4 = OptionsStore.subscribe('allowMoreSchedules', ({ newValue }) => {
@@ -155,7 +162,6 @@ export default function Settings(): JSX.Element {
                     <p className='text-sm text-gray-600'>Note: This will not erase your settings and preferences.</p>
                 </>
             ),
-            // eslint-disable-next-line react/no-unstable-nested-components
             buttons: accept => (
                 <Button
                     variant='filled'
@@ -232,6 +238,8 @@ export default function Settings(): JSX.Element {
                         Settings and Credits
                     </Text>
                     {isBirthday && (
+                        // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
+                        // biome-ignore lint/a11y/useKeyWithClickEvents: TODO:
                         <span
                             onClick={triggerCelebration}
                             className='cursor-pointer px-4 text-sm text-ut-burntorange transition-transform hover:scale-110'
@@ -265,17 +273,43 @@ export default function Settings(): JSX.Element {
                         <AdvancedSettings
                             highlightConflicts={options.enableHighlightConflicts}
                             setHighlightConflicts={v =>
-                                setOptions(prev => prev && { ...prev, enableHighlightConflicts: v })
+                                setOptions(
+                                    prev =>
+                                        prev && {
+                                            ...prev,
+                                            enableHighlightConflicts: v,
+                                        }
+                                )
                             }
                             loadAllCourses={options.enableScrollToLoad}
-                            setLoadAllCourses={v => setOptions(prev => prev && { ...prev, enableScrollToLoad: v })}
+                            setLoadAllCourses={v =>
+                                setOptions(
+                                    prev =>
+                                        prev && {
+                                            ...prev,
+                                            enableScrollToLoad: v,
+                                        }
+                                )
+                            }
                             increaseScheduleLimit={options.allowMoreSchedules}
                             setIncreaseScheduleLimit={v =>
-                                setOptions(prev => prev && { ...prev, allowMoreSchedules: v })
+                                setOptions(
+                                    prev =>
+                                        prev && {
+                                            ...prev,
+                                            allowMoreSchedules: v,
+                                        }
+                                )
                             }
                             calendarNewTab={options.alwaysOpenCalendarInNewTab}
                             setCalendarNewTab={v =>
-                                setOptions(prev => prev && { ...prev, alwaysOpenCalendarInNewTab: v })
+                                setOptions(
+                                    prev =>
+                                        prev && {
+                                            ...prev,
+                                            alwaysOpenCalendarInNewTab: v,
+                                        }
+                                )
                             }
                             enableDataRefreshing={enableDataRefreshing}
                             setEnableDataRefreshing={setEnableDataRefreshing}
@@ -290,6 +324,7 @@ export default function Settings(): JSX.Element {
                     <Divider size='auto' orientation='horizontal' />
 
                     <section className='my-8 space-y-4'>
+                        {/** biome-ignore lint/a11y/useKeyWithClickEvents: TODO: */}
                         <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
                             Developer Mode
                         </h2>
@@ -340,7 +375,9 @@ export default function Settings(): JSX.Element {
                                         color='ut-burntorange'
                                         onClick={() => {
                                             const debugPageUrl = chrome.runtime.getURL(CRX_PAGES.DEBUG);
-                                            background.openNewTab({ url: debugPageUrl });
+                                            background.openNewTab({
+                                                url: debugPageUrl,
+                                            });
                                         }}
                                     >
                                         Open Debug Page
@@ -404,10 +441,10 @@ export default function Settings(): JSX.Element {
                                 : additionalContributors.map(username => (
                                       <ContributorCard
                                           key={username}
-                                          name={githubStats!.names[username] || username}
+                                          name={githubStats?.names[username] || username}
                                           githubUsername={username}
                                           roles={['Contributor']}
-                                          stats={githubStats!.userGitHubStats[username]}
+                                          stats={githubStats?.userGitHubStats[username]}
                                           showStats={showGitHubStats}
                                           includeMergedPRs={INCLUDE_MERGED_PRS}
                                       />

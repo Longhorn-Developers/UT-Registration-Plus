@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import type { SVGProps } from 'react';
-import React from 'react';
 
 interface LogoIconProps {
     className?: string;
@@ -14,6 +13,7 @@ interface LogoIconProps {
  */
 export function LogoIcon(props: SVGProps<SVGSVGElement>): JSX.Element {
     return (
+        // biome-ignore lint/a11y/noSvgWithoutTitle: TODO:
         <svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg' {...props}>
             <circle cx='20' cy='20' r='20' fill='#BF5700' />
             <circle cx='20' cy='20' r='15.5' stroke='white' strokeWidth='3' />

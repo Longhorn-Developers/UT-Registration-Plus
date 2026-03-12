@@ -7,7 +7,6 @@ import NewSearchLink from '@views/components/injected/NewSearchLink';
 import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from '@views/components/injected/TableHead';
 import TableRow from '@views/components/injected/TableRow/TableRow';
-// import TableSubheading from '@views/components/injected/TableSubheading/TableSubheading';
 import useSchedules from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
@@ -30,6 +29,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
     const [showPopup, setShowPopup] = useState(false);
     const [enableScrollToLoad, setEnableScrollToLoad] = useState<boolean>(false);
     const prevCourseTitleRef = useRef<string | null>(null);
+    // biome-ignore lint/style/noNonNullAssertion: TODO: add checks
     const tbody = document.querySelector('table tbody')!;
 
     useEffect(() => {
@@ -101,7 +101,8 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
                         )
                 )}
                 <CourseCatalogInjectedPopup
-                    course={selectedCourse!} // always defined when showPopup is true
+                    // biome-ignore lint/style/noNonNullAssertion: selectedCourse is always defined when showPopup is true
+                    course={selectedCourse!}
                     show={showPopup}
                     onClose={() => setShowPopup(false)}
                     afterLeave={() => setSelectedCourse(null)}

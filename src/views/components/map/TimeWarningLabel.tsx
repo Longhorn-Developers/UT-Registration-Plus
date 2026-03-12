@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface TimeWarningLabelProps {
     x: number;
     y: number;

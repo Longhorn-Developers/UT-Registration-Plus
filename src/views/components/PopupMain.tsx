@@ -9,7 +9,7 @@ import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
@@ -65,6 +65,7 @@ export default function PopupMain(): JSX.Element {
         }
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Generate a new splash text every time the active schedule changes
     useEffect(() => {
         setFunny(prevFunny => {
             // Ensure that the next splash text is not the same as the previous one

@@ -13,7 +13,7 @@ import { SortableItemProvider } from '@views/contexts/SortableItemContext';
 import { useCursor } from '@views/hooks/useCursor';
 import clsx from 'clsx';
 import type { CSSProperties, PropsWithChildren, ReactNode } from 'react';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { SortableItemOverlay } from './SortableItemOverlay';
 

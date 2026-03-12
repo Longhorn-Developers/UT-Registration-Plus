@@ -16,7 +16,6 @@ import type { UserSchedule } from '@shared/types/UserSchedule';
  */
 export async function addCourseByURL(activeSchedule: UserSchedule, link?: string): Promise<void> {
     // todo: Use a proper modal instead of a prompt
-    // eslint-disable-next-line no-param-reassign, no-alert
     if (!link) link = prompt('Enter course link') || undefined;
 
     // Exit if the user cancels the prompt
@@ -35,7 +34,6 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
         console.log('Adding course');
         await addCourse(activeSchedule.id, course);
     } catch (error) {
-        // eslint-disable-next-line no-alert
         alert(`Failed to fetch url '${link}'`);
         console.error('Error scraping course:', error);
     }

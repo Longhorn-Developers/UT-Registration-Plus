@@ -1,7 +1,7 @@
 import { Input as HInput } from '@headlessui/react';
 import type { Icon, IconProps } from '@phosphor-icons/react';
 import clsx from 'clsx';
-import React from 'react';
+import type React from 'react';
 
 interface Props {
     className?: string;

@@ -30,7 +30,9 @@ export async function getCourseByURL(link: string): Promise<Course | undefined> 
     if (scrapedCourses.length !== 1) return;
 
     const description = scraper.getDescription(doc);
+    // biome-ignore lint/style/noNonNullAssertion: TODO:
     const row = scrapedCourses[0]!;
+    // biome-ignore lint/style/noNonNullAssertion: TODO:
     const course = row.course!;
     course.description = description;
 
