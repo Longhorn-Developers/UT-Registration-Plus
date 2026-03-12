@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { GRID_DEFAULT_START, convertMinutesToIndex } from '../useFlattenedCourseSchedule';
+import { convertMinutesToIndex,GRID_DEFAULT_START } from '../useFlattenedCourseSchedule';
 
 describe('useFlattenedCourseSchedule', () => {
     describe('convertMinutesToIndex', () => {
