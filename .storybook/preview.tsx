@@ -1,5 +1,5 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import type { Preview } from '@storybook/react';
+import type { Preview } from '@storybook/react-vite';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React from 'react';
 

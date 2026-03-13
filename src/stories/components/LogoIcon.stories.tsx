@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LargeLogo, SmallLogo } from '@views/components/common/LogoIcon';
 import React from 'react';
 

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@views/components/common/Button';
 import type { PromptDialogProps } from '@views/components/common/Prompt';
 import PromptDialog from '@views/components/common/Prompt';

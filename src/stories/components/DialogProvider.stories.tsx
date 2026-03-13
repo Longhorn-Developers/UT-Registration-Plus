@@ -1,5 +1,5 @@
 import { ArrowsVertical } from '@phosphor-icons/react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@views/components/common/Button';
 import DialogProvider, { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import Text from '@views/components/common/Text/Text';
