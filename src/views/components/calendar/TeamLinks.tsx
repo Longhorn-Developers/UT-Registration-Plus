@@ -1,7 +1,7 @@
 import { ArrowUpRight } from '@phosphor-icons/react';
 import { CRX_PAGES } from '@shared/types/CRXPages';
-import { openReportWindow } from '@shared/util/openReportWindow';
 import Text from '@views/components/common/Text/Text';
+import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -42,10 +42,12 @@ const links = [
  * @returns
  */
 export default function TeamLinks({ className }: Props): JSX.Element {
+    const showReportIssueDialog = useReportIssueDialog();
+
     const handleClick = (link: LinkItem, event: React.MouseEvent) => {
         if (link.url === CRX_PAGES.REPORT) {
             event.preventDefault();
-            openReportWindow();
+            showReportIssueDialog();
         }
     };
 

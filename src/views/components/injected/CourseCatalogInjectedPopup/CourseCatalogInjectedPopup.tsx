@@ -1,6 +1,10 @@
+import flagIcon from '@assets/flag.svg';
+import { ArrowUpRight } from '@phosphor-icons/react';
 import type { Course } from '@shared/types/Course';
 import type { DialogProps } from '@views/components/common/Dialog';
 import Dialog from '@views/components/common/Dialog';
+import Text from '@views/components/common/Text/Text';
+import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useSchedules from '@views/hooks/useSchedules';
 import React from 'react';
 
@@ -26,6 +30,7 @@ export interface CourseCatalogInjectedPopupProps extends DialogProps {
 function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPopupProps): JSX.Element {
     const emptyRef = React.useRef<HTMLDivElement>(null);
     const [activeSchedule] = useSchedules();
+    const showReportIssueDialog = useReportIssueDialog();
 
     return (
         <Dialog className='max-w-[780px] overflow-y-hidden px-4' {...rest} initialFocus={emptyRef}>
@@ -34,6 +39,21 @@ function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPo
             <div className='overflow-y-auto px-2'>
                 <Description course={course} />
                 <GradeDistribution course={course} />
+                <div className='mb-2 mt-2 flex justify-end'>
+                    <button
+                        type='button'
+                        className='h-8 border-none bg-transparent p-0 text-ut-burntorange hover:bg-ut-burntorange/8 btn'
+                        onClick={showReportIssueDialog}
+                    >
+                        <div className='flex items-center gap-1.5'>
+                            <img src={flagIcon} alt='' aria-hidden='true' className='h-4 w-4' />
+                            <Text variant='small' className='text-ut-burntorange'>
+                                Send us Feedback!
+                            </Text>
+                            <ArrowUpRight className='h-4 w-4 text-ut-burntorange' />
+                        </div>
+                    </button>
+                </div>
             </div>
         </Dialog>
     );
