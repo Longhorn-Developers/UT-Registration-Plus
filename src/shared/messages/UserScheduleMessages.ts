@@ -12,12 +12,13 @@ export interface UserScheduleMessages {
     addCourse: (data: { scheduleId: string; course: Course; hasColor?: boolean }) => void;
 
     /**
-     * Adds a course by URL
+     * Proxies a fetch request through the background script, since content scripts
+     * cannot make cross-origin requests directly.
      *
-     * @param data - The URL of the course to add
-     * @returns Response of the requested course URL
+     * @param data - The URL to fetch, HTTP method, optional body, and desired response format.
+     * @returns The response body as a string.
      */
-    addCourseByURL: (data: { url: string; method: string; body?: string; response: 'json' | 'text' }) => string;
+    fetchFromUrl: (data: { url: string; method: string; body?: string; response: 'json' | 'text' }) => string;
 
     /**
      * Remove a course from a schedule
