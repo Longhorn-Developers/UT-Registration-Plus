@@ -2,7 +2,7 @@ import type { Serialized } from '@chrome-extension-toolkit';
 import { tz, TZDate } from '@date-fns/tz';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import type { Course } from '@shared/types/Course';
+import { type Course, UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -189,7 +189,7 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
     const untilDateFormatted = formatISO(untilDate, { format: 'basic', in: tz('utc') });
     const excludedDatesFormatted = excludedDates.map(date => iCalDateFormat(date));
 
-    const uniqueNumberFormatted = course.uniqueId.toString().padStart(5, '0');
+    const uniqueNumberFormatted = course.uniqueId.toString().padStart(UNIQUE_ID_LENGTH, '0');
 
     // The list part of "Taught by Michael Scott and Siddhartha Chatterjee Beasley"
     const instructorsFormatted = englishStringifyList(
