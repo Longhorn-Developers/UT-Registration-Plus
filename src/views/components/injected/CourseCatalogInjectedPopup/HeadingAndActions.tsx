@@ -123,7 +123,20 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
 
     const handleOpenReddit = async () => {
         const departmentNoSpace = department.replace(/\s+/g, '');
-        const searchQuery = `site:https://www.reddit.com/r/UTAustin ("${department} ${courseNumber}" OR "${departmentNoSpace}${courseNumber}")`;
+        const normalizedCourseName = courseName
+            .replace(/[^\w\s]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        const courseNameNoSpace = normalizedCourseName.replace(/\s+/g, '');
+        const queryTerms = [
+            `"${department} ${courseNumber}"`,
+            `"${departmentNoSpace}${courseNumber}"`,
+            normalizedCourseName ? `"${normalizedCourseName}"` : null,
+            normalizedCourseName ? `"${department} ${courseNumber} ${normalizedCourseName}"` : null,
+            normalizedCourseName ? `"${departmentNoSpace}${courseNumber} ${normalizedCourseName}"` : null,
+            courseNameNoSpace ? `"${courseNameNoSpace}"` : null,
+        ].filter((value): value is string => Boolean(value));
+        const searchQuery = `site:https://www.reddit.com/r/UTAustin (${queryTerms.join(' OR ')})`;
         const url = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
         await openNewTab({ url });
     };
