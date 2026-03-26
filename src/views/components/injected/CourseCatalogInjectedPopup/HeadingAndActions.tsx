@@ -9,6 +9,7 @@ import {
     FileText,
     Minus,
     Plus,
+    RedditLogo,
     Smiley,
     X,
 } from '@phosphor-icons/react';
@@ -118,6 +119,13 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
             const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=&unique=&instructor_first=&instructor_last=&course_type=In+Residence&search=Search`;
             openNewTab({ url });
         }
+    };
+
+    const handleOpenReddit = async () => {
+        const departmentNoSpace = department.replace(/\s+/g, '');
+        const searchQuery = `site:https://www.reddit.com/r/UTAustin ("${department} ${courseNumber}" OR "${departmentNoSpace}${courseNumber}")`;
+        const url = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+        await openNewTab({ url });
     };
 
     const handleAddToNewSchedule = async (close: () => void) => {
@@ -302,6 +310,9 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     disabled={instructors.length === 0}
                 >
                     CES
+                </Button>
+                <Button variant='outline' color='ut-orange' icon={RedditLogo} onClick={handleOpenReddit}>
+                    Reddit
                 </Button>
                 <Button variant='outline' color='ut-orange' icon={FileText} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
