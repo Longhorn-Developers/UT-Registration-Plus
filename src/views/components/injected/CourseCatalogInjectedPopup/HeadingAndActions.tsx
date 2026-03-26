@@ -122,25 +122,8 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
     };
 
     /**
-     * Function that generates a reddit search query on Google Search for the provided Course, and opens it in a new tab using the site:reddit.com/r/UTAustin operator
+     * Function that generates a reddit search query on Google Search for the provided Course, and opens it in a new tab using the `site:reddit.com/r/UTAustin` operator
      *
-     * How it works:
-     *
-     * **Step 1**: Cleans the department, course number, and course name by removing extra whitespace and converting to uppercase.
-     *
-     * **Step 2**: Creates a combo of possible search terms including:
-     * - Strict matches (e.g., "SDS 320E")
-     * - Slugs/Concatenations (e.g., "SDS320E")
-     * - Loose mentions (e.g., "SDS" AND "320E" appearing anywhere in the post)
-     * - Full course titles and nicknames (e.g., "Elements of Statistics")
-     *
-     * **Step 3**: Filters out null values and uses a Set to ensure only unique search terms are sent to the query, de-dupication.
-     *
-     * Terms wrapped in a neat `site:` search operator and a new tab is opened.
-     */
-    /**
-     * Generates a broad-match Google search query targeting r/UTAustin for a specific course.
-     * Uses a multi-tiered approach (strict, loose, and name-based terms) to maximize results.
      */
     const handleOpenReddit = async () => {
         // Step 1: Normalize inputs (standardize casing, remove extra whitespace/special chars)
@@ -380,4 +363,17 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 </Button>
                 <Button variant='outline' color='ut-orange' icon={FileText} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
-                </Bu
+                </Button>
+                <Button
+                    variant='filled'
+                    color={!courseAdded ? 'ut-green' : 'theme-red'}
+                    icon={!courseAdded ? Plus : Minus}
+                    onClick={handleAddOrRemoveCourse}
+                >
+                    {!courseAdded ? 'Add Course' : 'Remove Course'}
+                </Button>
+            </div>
+            <Divider orientation='horizontal' size='100%' />
+        </div>
+    );
+}
