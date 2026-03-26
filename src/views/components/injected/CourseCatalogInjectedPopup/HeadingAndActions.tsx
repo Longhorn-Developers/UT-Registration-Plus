@@ -121,22 +121,67 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
         }
     };
 
+    /**
+     * Function that generates a reddit search query on Google Search for the provided Course, and opens it in a new tab using the site:reddit.com/r/UTAustin operator
+     *
+     * How it works:
+     *
+     * **Step 1**: Cleans the department, course number, and course name by removing extra whitespace and converting to uppercase.
+     *
+     * **Step 2**: Creates a combo of possible search terms including:
+     * - Strict matches (e.g., "SDS 320E")
+     * - Slugs/Concatenations (e.g., "SDS320E")
+     * - Loose mentions (e.g., "SDS" AND "320E" appearing anywhere in the post)
+     * - Full course titles and nicknames (e.g., "Elements of Statistics")
+     *
+     * **Step 3**: Filters out null values and uses a Set to ensure only unique search terms are sent to the query, de-dupication.
+     *
+     * Terms wrapped in a neat `site:` search operator and a new tab is opened.
+     */
+    /**
+     * Generates a broad-match Google search query targeting r/UTAustin for a specific course.
+     * Uses a multi-tiered approach (strict, loose, and name-based terms) to maximize results.
+     */
     const handleOpenReddit = async () => {
-        const departmentNoSpace = department.replace(/\s+/g, '');
+        // Step 1: Normalize inputs (standardize casing, remove extra whitespace/special chars)
+        const normalizedDepartment = department.replace(/\s+/g, ' ').trim().toUpperCase();
+        const departmentNoSpace = normalizedDepartment.replace(/\s+/g, '');
+
+        const normalizedCourseNumber = courseNumber.replace(/\s+/g, '').toUpperCase();
+        const numericCourseNumber = normalizedCourseNumber.match(/\d+/)?.[0] ?? '';
+
         const normalizedCourseName = courseName
             .replace(/[^\w\s]/g, ' ')
             .replace(/\s+/g, ' ')
             .trim();
         const courseNameNoSpace = normalizedCourseName.replace(/\s+/g, '');
-        const queryTerms = [
-            `"${department} ${courseNumber}"`,
-            `"${departmentNoSpace}${courseNumber}"`,
+
+        // Step 2: Build a net of search variations (Strict, Loose, and Course Name)
+        const strictTerms = [
+            `"${normalizedDepartment} ${normalizedCourseNumber}"`,
+            `"${departmentNoSpace}${normalizedCourseNumber}"`,
+            normalizedCourseName ? `"${normalizedDepartment} ${normalizedCourseNumber} ${normalizedCourseName}"` : null,
+            normalizedCourseName ? `"${departmentNoSpace}${normalizedCourseNumber} ${normalizedCourseName}"` : null,
+        ];
+
+        // Captures split mentions like "ECE ... 460R"
+        const looseTerms = [
+            `("${normalizedDepartment}" AND "${normalizedCourseNumber}")`,
+            numericCourseNumber ? `("${normalizedDepartment}" AND "${numericCourseNumber}")` : null,
+            numericCourseNumber ? `("${departmentNoSpace}${numericCourseNumber}")` : null,
+        ];
+
+        const nameTerms = [
             normalizedCourseName ? `"${normalizedCourseName}"` : null,
-            normalizedCourseName ? `"${department} ${courseNumber} ${normalizedCourseName}"` : null,
-            normalizedCourseName ? `"${departmentNoSpace}${courseNumber} ${normalizedCourseName}"` : null,
             courseNameNoSpace ? `"${courseNameNoSpace}"` : null,
-        ].filter((value): value is string => Boolean(value));
-        const searchQuery = `site:https://www.reddit.com/r/UTAustin (${queryTerms.join(' OR ')})`;
+        ];
+
+        // Step 3: De-duplicate terms and execute the Google search with 'site:' operator
+        const queryTerms = [
+            ...new Set([...strictTerms, ...looseTerms, ...nameTerms].filter((v): v is string => Boolean(v))),
+        ];
+
+        const searchQuery = `site:reddit.com/r/UTAustin (${queryTerms.join(' OR ')})`;
         const url = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
         await openNewTab({ url });
     };
@@ -335,17 +380,4 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 </Button>
                 <Button variant='outline' color='ut-orange' icon={FileText} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
-                </Button>
-                <Button
-                    variant='filled'
-                    color={!courseAdded ? 'ut-green' : 'theme-red'}
-                    icon={!courseAdded ? Plus : Minus}
-                    onClick={handleAddOrRemoveCourse}
-                >
-                    {!courseAdded ? 'Add Course' : 'Remove Course'}
-                </Button>
-            </div>
-            <Divider orientation='horizontal' size='100%' />
-        </div>
-    );
-}
+                </Bu
