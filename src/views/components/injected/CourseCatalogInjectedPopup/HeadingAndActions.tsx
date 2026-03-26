@@ -10,6 +10,7 @@ import {
     Minus,
     Plus,
     RedditLogo,
+    RedditLogoIcon,
     Smiley,
     X,
 } from '@phosphor-icons/react';
@@ -311,7 +312,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 >
                     CES
                 </Button>
-                <Button variant='outline' color='ut-orange' icon={RedditLogo} onClick={handleOpenReddit}>
+                <Button variant='outline' color='ut-orange' icon={RedditLogoIcon} onClick={handleOpenReddit}>
                     Reddit
                 </Button>
                 <Button variant='outline' color='ut-orange' icon={FileText} onClick={handleOpenPastSyllabi}>
