@@ -9,7 +9,6 @@ import {
     FileText,
     Minus,
     Plus,
-    RedditLogo,
     RedditLogoIcon,
     Smiley,
     X,
@@ -312,8 +311,14 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 >
                     CES
                 </Button>
-                <Button variant='outline' color='ut-orange' icon={RedditLogoIcon} onClick={handleOpenReddit}>
-                    Reddit
+                <Button
+                    variant='outline'
+                    color='ut-orange'
+                    icon={RedditLogoIcon}
+                    onClick={handleOpenReddit}
+                    title='Search r/UTAustin posts about this course'
+                >
+                    r/UTAustin
                 </Button>
                 <Button variant='outline' color='ut-orange' icon={FileText} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
