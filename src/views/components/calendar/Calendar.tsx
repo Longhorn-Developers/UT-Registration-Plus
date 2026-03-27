@@ -22,7 +22,7 @@ import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
 import { Button } from '../common/Button';
@@ -235,6 +235,7 @@ export default function Calendar(): ReactNode {
                                 {showUTDiningPromo && (
                                     <DiningAppPromo
                                         onClose={() => {
+                                            hasDismissedUTDiningPromoRef.current = true;
                                             setShowUTDiningPromo(false);
                                             OptionsStore.set('showUTDiningPromo', false);
                                         }}
