@@ -22,7 +22,7 @@ import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
 import { Button } from '../common/Button';
@@ -45,6 +45,7 @@ export default function Calendar(): ReactNode {
     const showReportIssueDialog = useReportIssueDialog();
 
     const [showUTDiningPromo, setShowUTDiningPromo] = useState<boolean>(false);
+    const hasDismissedUTDiningPromoRef = useRef<boolean>(false);
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
     const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
 
@@ -90,10 +91,17 @@ export default function Calendar(): ReactNode {
     }, [course]);
 
     useEffect(() => {
+        let isMounted = true;
+
         // Load the user's preference for the promo
         OptionsStore.get('showUTDiningPromo').then(show => {
+            if (!isMounted || hasDismissedUTDiningPromoRef.current) return;
             setShowUTDiningPromo(show);
         });
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     // --- Reset drag state when dragging leaves the window ---
@@ -245,6 +253,7 @@ export default function Calendar(): ReactNode {
                                 {showUTDiningPromo && (
                                     <DiningAppPromo
                                         onClose={() => {
+                                            hasDismissedUTDiningPromoRef.current = true;
                                             setShowUTDiningPromo(false);
                                             OptionsStore.set('showUTDiningPromo', false);
                                         }}

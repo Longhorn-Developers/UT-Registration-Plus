@@ -113,7 +113,7 @@ export default function PopupMain(): JSX.Element {
                         </Button>
                         <button
                             type='button'
-                            className='btn h-[35px] w-[35px] border-none bg-ut-black/0 p-spacing-2 hover:bg-ut-black/8'
+                            className='btn mx-1 h-[35px] w-[35px] border-none bg-ut-black/0 p-spacing-2 hover:bg-ut-black/8'
                             title='Send feedback'
                             aria-label='Send feedback'
                             onClick={showReportIssueDialog}
