@@ -42,7 +42,7 @@ function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPo
                 <div className='mb-2 mt-2 flex justify-end'>
                     <button
                         type='button'
-                        className='h-8 border-none bg-transparent p-0 text-ut-burntorange hover:bg-ut-burntorange/8 btn'
+                        className='btn h-8 border-none bg-transparent px-spacing-3 text-ut-burntorange hover:bg-ut-burntorange/8'
                         onClick={showReportIssueDialog}
                     >
                         <div className='flex items-center gap-1.5'>
@@ -50,7 +50,7 @@ function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPo
                             <Text variant='small' className='text-ut-burntorange'>
                                 Send us Feedback!
                             </Text>
-                                <ArrowUpRight className='h-4 w-4 text-ut-burntorange' />
+                            <ArrowUpRight className='h-4 w-4 text-ut-burntorange' />
                         </div>
                     </button>
                 </div>
