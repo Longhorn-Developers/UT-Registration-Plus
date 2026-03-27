@@ -99,7 +99,7 @@ export default function PopupMain(): JSX.Element {
             <div className='px-spacing-6 py-spacing-5'>
                 <div className='flex items-center justify-between bg-white'>
                     <SmallLogo />
-                    <div className='flex items-center'>
+                    <div className='flex items-center gap-1.5'>
                         <Button
                             variant='filled'
                             size='small'
@@ -107,29 +107,27 @@ export default function PopupMain(): JSX.Element {
                             onClick={handleCalendarOpenOnClick}
                             icon={CalendarDots}
                             iconProps={{ weight: 'fill' }}
-                            className='mr-0.5 h-9 px-4'
+                            className='h-9'
                         >
                             Calendar
                         </Button>
-                        <div className='flex items-center gap-0.5'>
-                            <button
-                                type='button'
-                                className='btn h-[35px] w-[35px] border-none bg-ut-black/0 p-spacing-2 hover:bg-ut-black/8'
-                                title='Send feedback'
-                                aria-label='Send feedback'
-                                onClick={showReportIssueDialog}
-                            >
-                                <img src={flagIcon} alt='' className='h-6 w-6' />
-                            </button>
-                            <Button
-                                variant='minimal'
-                                size='small'
-                                color='ut-black'
-                                style={{ color: '#0F1215' }}
-                                onClick={handleOpenOptions}
-                                icon={GearSix}
-                            />
-                        </div>
+                        <button
+                            type='button'
+                            className='btn h-[35px] w-[35px] border-none bg-ut-black/0 p-spacing-2 hover:bg-ut-black/8'
+                            title='Send feedback'
+                            aria-label='Send feedback'
+                            onClick={showReportIssueDialog}
+                        >
+                            <img src={flagIcon} alt='' className='h-6 w-6' />
+                        </button>
+                        <Button
+                            variant='minimal'
+                            size='small'
+                            color='ut-black'
+                            style={{ color: '#0F1215' }}
+                            onClick={handleOpenOptions}
+                            icon={GearSix}
+                        />
                     </div>
                 </div>
             </div>
