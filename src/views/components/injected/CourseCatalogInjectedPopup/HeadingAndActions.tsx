@@ -362,7 +362,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     r/UTAustin
                 </Button>
                 <Button variant='outline' color='ut-orange' icon={FileText} onClick={handleOpenPastSyllabi}>
-                    Past Syllabi
+                    Syllabi
                 </Button>
                 <Button
                     variant='filled'
