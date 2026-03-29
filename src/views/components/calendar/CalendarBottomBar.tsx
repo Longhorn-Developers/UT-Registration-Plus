@@ -39,35 +39,43 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
         };
     }, []);
 
+    const hasAsyncCourses = !!asyncCourseCells?.length;
+
+    if (!enableCourseStatusChips && !hasAsyncCourses) {
+        return null;
+    }
+
     return (
         <div className='w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4'>
-            <div className='flex flex-grow items-center gap-1 text-nowrap'>
-                <Text variant='p' className='text-ut-black uppercase'>
-                    Async / Other
-                </Text>
-                <Text variant='h4' className='text-theme-offwhite/50'>
-                    —
-                </Text>
-                <div className='inline-flex gap-2.5'>
-                    <ColorPickerProvider>
-                        {(asyncCourseCells ?? []).map(block => {
-                            const { courseDeptAndInstr, status, className } = block.componentProps;
-                            return (
-                                <CalendarCourseBlock
-                                    key={block.course.uniqueId}
-                                    courseDeptAndInstr={courseDeptAndInstr}
-                                    status={status}
-                                    className={clsx(className, 'w-35! h-12.5! items-center')}
-                                    onClick={() => setCourse(block.course)}
-                                    blockData={block}
-                                />
-                            );
-                        })}
-                    </ColorPickerProvider>
+            {hasAsyncCourses && (
+                <div className='flex flex-grow items-center gap-1 text-nowrap'>
+                    <Text variant='p' className='text-ut-black uppercase'>
+                        Async / Other
+                    </Text>
+                    <Text variant='h4' className='text-theme-offwhite/50'>
+                        —
+                    </Text>
+                    <div className='inline-flex gap-2.5'>
+                        <ColorPickerProvider>
+                            {asyncCourseCells!.map(block => {
+                                const { courseDeptAndInstr, status, className } = block.componentProps;
+                                return (
+                                    <CalendarCourseBlock
+                                        key={block.course.uniqueId}
+                                        courseDeptAndInstr={courseDeptAndInstr}
+                                        status={status}
+                                        className={clsx(className, 'w-35! h-12.5! items-center')}
+                                        onClick={() => setCourse(block.course)}
+                                        blockData={block}
+                                    />
+                                );
+                            })}
+                        </ColorPickerProvider>
+                    </div>
                 </div>
-            </div>
+            )}
             {enableCourseStatusChips && (
-                <div className='flex items-center gap-4 pr-spacing-3'>
+                <div className={clsx('flex items-center gap-4 pr-spacing-3', { 'ml-auto': !hasAsyncCourses })}>
                     <CourseStatus status={Status.WAITLISTED} size='mini' />
                     <CourseStatus status={Status.CLOSED} size='mini' />
                     <CourseStatus status={Status.CANCELLED} size='mini' />
