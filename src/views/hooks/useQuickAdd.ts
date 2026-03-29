@@ -1,7 +1,7 @@
 import { fetchAvailableSemesters } from '@pages/background/lib/fetchAvailableSemesters';
 import { getCourseByURL } from '@pages/background/lib/getCourseByURL';
 import { type Course, type Semester, UNIQUE_ID_LENGTH } from '@shared/types/Course';
-import { useDropdown, type UseDropdownReturn } from '@views/hooks/useDropdown';
+import { type UseDropdownReturn, useDropdown } from '@views/hooks/useDropdown';
 import { useNumericInput } from '@views/hooks/useNumericInput';
 import useSchedules from '@views/hooks/useSchedules';
 import { useEffect, useState } from 'react';
@@ -53,6 +53,7 @@ export function useQuickAdd(): UseQuickAddReturn {
 
     const semester = useDropdown<Semester>({
         items: availableSemesters,
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         getKey: s => s.code!,
         getLabel: s => `${s.season} ${s.year}`,
         defaultKey: availableSemesters[0]?.code,

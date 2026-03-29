@@ -13,7 +13,6 @@ const isBeta = !!process.env.BETA;
 const mode = isBeta ? 'beta' : process.env.NODE_ENV;
 
 if (isBeta && process.env.NODE_ENV !== 'production') throw new Error('Cannot have beta non-production build');
-// eslint-disable-next-line no-nested-ternary
 const nameSuffix = isBeta ? ' (beta)' : mode === 'development' ? ' (dev)' : '';
 
 const HOST_PERMISSIONS: string[] = [

@@ -1,5 +1,4 @@
-/* eslint-disable react/no-unstable-nested-components */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Options as RMOptions } from 'react-markdown';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';

@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import QuickAddModal from '@views/components/common/QuickAddModal';
-import React from 'react';
 
 const meta = {
     title: 'Components/Common/QuickAddModal',

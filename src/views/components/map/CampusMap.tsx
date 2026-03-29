@@ -1,5 +1,5 @@
-/* eslint-disable no-nested-ternary */
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import DaySelector from './DaySelector';
 import DevToggles from './DevToggles';
@@ -78,9 +78,15 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
 
     // Zoom and pan state
     const [zoomLevel, setZoomLevel] = useState<number>(1);
-    const [panPosition, setPanPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+    const [panPosition, setPanPosition] = useState<{ x: number; y: number }>({
+        x: 0,
+        y: 0,
+    });
     const [isDragging, setIsDragging] = useState<boolean>(false);
-    const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+    const [dragStart, setDragStart] = useState<{ x: number; y: number }>({
+        x: 0,
+        y: 0,
+    });
 
     // Refs
     const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -581,6 +587,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
     return (
         <div className='relative h-full w-full overflow-hidden' ref={mapContainerRef}>
             {/* Map container with zoom and pan applied */}
+            {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
             <div
                 className={`relative h-full w-full ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                 style={{
@@ -598,6 +605,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                 <img src={UTMapURL} alt='UT Campus Map' className='h-full w-full object-contain' draggable={false} />
 
                 {/* SVG Overlay - ensuring it matches the image dimensions */}
+                {/** biome-ignore lint/a11y/noSvgWithoutTitle: TODO: */}
                 <svg
                     className='absolute left-0 top-0 h-full w-full'
                     viewBox='0 0 783 753'
@@ -608,6 +616,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                         ([id, node]) =>
                             shouldShowNode(node.type, id) && (
                                 <g key={id}>
+                                    {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
                                     <circle
                                         cx={node.x}
                                         cy={node.y}
@@ -651,8 +660,12 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                     {relevantPaths.map(
                         (path, index) =>
                             shouldShowPath(index) && (
-                                // eslint-disable-next-line react/no-array-index-key
-                                <g key={`${path.start}-${path.end}-${index}`}>
+                                <g
+                                    key={`${path.start}-${path.end}-${
+                                        // biome-ignore lint/suspicious/noArrayIndexKey: TODO:
+                                        index
+                                    }`}
+                                >
                                     <Path
                                         startId={path.start}
                                         endId={path.end}
@@ -736,8 +749,10 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                                 {relevantPaths.reduce(
                                     (total, path) =>
                                         total +
-                                        (calcDirectPathStats({ startId: path.start, endId: path.end })
-                                            ?.walkingTimeMinutes || 0),
+                                        (calcDirectPathStats({
+                                            startId: path.start,
+                                            endId: path.end,
+                                        })?.walkingTimeMinutes || 0),
                                     0
                                 )}{' '}
                                 min
@@ -747,8 +762,10 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                                 {relevantPaths.reduce(
                                     (total, path) =>
                                         total +
-                                        (calcDirectPathStats({ startId: path.start, endId: path.end })
-                                            ?.distanceInFeet || 0),
+                                        (calcDirectPathStats({
+                                            startId: path.start,
+                                            endId: path.end,
+                                        })?.distanceInFeet || 0),
                                     0
                                 )}{' '}
                                 ft
@@ -756,9 +773,13 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                         </div>
                         <div className='space-y-4'>
                             {relevantPaths.map((path, index) => (
+                                // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
+                                // biome-ignore lint/a11y/useKeyWithClickEvents: TODO:
                                 <div
-                                    // eslint-disable-next-line react/no-array-index-key
-                                    key={`path-info-${index}`}
+                                    key={`path-info-${
+                                        // biome-ignore lint/suspicious/noArrayIndexKey: TODO:
+                                        index
+                                    }`}
                                     className={`cursor-pointer space-y-1 text-xs transition-colors duration-200 ${
                                         toggledPathIndex === index ? 'bg-gray-100' : ''
                                     }`}
@@ -773,11 +794,18 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                                     <p className='ml-2'>
                                         (
                                         {
-                                            calcDirectPathStats({ startId: path.start, endId: path.end })
-                                                ?.walkingTimeMinutes
+                                            calcDirectPathStats({
+                                                startId: path.start,
+                                                endId: path.end,
+                                            })?.walkingTimeMinutes
                                         }{' '}
                                         min,{' '}
-                                        {calcDirectPathStats({ startId: path.start, endId: path.end })?.distanceInFeet}{' '}
+                                        {
+                                            calcDirectPathStats({
+                                                startId: path.start,
+                                                endId: path.end,
+                                            })?.distanceInFeet
+                                        }{' '}
                                         ft)
                                         {' - '}
                                         {path.timeBetweenClasses} min transition

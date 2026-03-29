@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import type { PropsWithChildren, ReactNode } from 'react';
-import React from 'react';
 
 interface TooltipProps {
     className?: string;

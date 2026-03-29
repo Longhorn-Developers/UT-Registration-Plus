@@ -60,7 +60,6 @@ async function migrateUTRPv1Courses() {
             // Add the course if it doesn't already exist
             if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
                 // ignore eslint, as we *do* want to spend time on each iteration
-                // eslint-disable-next-line no-await-in-loop
                 await addCourse(activeSchedule.id, course);
             }
         }

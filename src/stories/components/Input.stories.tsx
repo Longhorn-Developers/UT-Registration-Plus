@@ -1,7 +1,7 @@
 import { ImageSquare } from '@phosphor-icons/react';
 import type { Meta, StoryObj } from '@storybook/react';
 import Input from '@views/components/common/Input';
-import React, { type ChangeEvent, type ComponentProps, useState } from 'react';
+import { type ChangeEvent, type ComponentProps, useState } from 'react';
 
 const meta = {
     title: 'Components/Common/Input',

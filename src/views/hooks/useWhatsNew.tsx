@@ -3,7 +3,6 @@ import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
 import WhatsNewPopupContent from '@views/components/common/WhatsNewPopup';
 import { useDialog } from '@views/contexts/DialogContext';
-import React from 'react';
 
 // import useChangelog from './useChangelog';
 
