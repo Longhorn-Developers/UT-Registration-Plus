@@ -6,16 +6,49 @@
 
   perSystem =
     { pkgs, ... }:
+    let
+      ext.js = [
+        "*.js"
+        "*.ts"
+        "*.mjs"
+        "*.mts"
+        "*.cjs"
+        "*.cts"
+        "*.jsx"
+        "*.tsx"
+        "*.d.ts"
+        "*.d.cts"
+        "*.d.mts"
+      ];
+
+      ext.json = [
+        "*.json"
+        "*.jsonc"
+      ];
+
+      ext.css = [
+        "*.css"
+      ];
+    in
     {
       treefmt = {
         projectRootFile = "flake.nix";
         programs.nixfmt.enable = true;
 
-        # NOTE: Make sure the biome version in package.json and the one used by treefmt are the same
-        programs.biome.enable = true;
         programs.shellcheck.enable = true;
         programs.yamlfmt.enable = true;
         programs.dockerfmt.enable = true;
+
+        # NOTE: Make sure the biome version in package.json and the one used by treefmt are the same
+        settings.formatter.biome = {
+          command = "${pkgs.biome}/bin/biome";
+          options = [
+            "check"
+            "--write"
+            "--no-errors-on-unmatched"
+          ];
+          includes = ext.js ++ ext.json ++ ext.css;
+        };
 
         settings.formatter.shellcheck.excludes = [ ".envrc" ];
         settings.formatter.yamlfmt.excludes = [ "pnpm-lock.yaml" ];
