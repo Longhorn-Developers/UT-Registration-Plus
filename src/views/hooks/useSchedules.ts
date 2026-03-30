@@ -80,6 +80,19 @@ export function getActiveSchedule(): UserSchedule {
 }
 
 /**
+ * Returns the schedule with the specified id.
+ * @param id - The id of the schedule to retrieve.
+ * @returns The schedule with the specified id, or undefined if not found.
+ */
+export async function getScheduleById(id: string): Promise<UserSchedule | undefined> {
+    const schedules = await UserScheduleStore.get('schedules');
+    const found = schedules.find(s => s.id === id);
+    if (!found) return undefined;
+    // todo: this is jank
+    return new UserSchedule(found);
+}
+
+/**
  * Replaces the old schedule with the new schedule.
  * @param oldSchedule - The old schedule to be replaced.
  * @param newSchedule - The new schedule to replace the old schedule.

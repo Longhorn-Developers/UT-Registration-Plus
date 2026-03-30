@@ -57,7 +57,7 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                     </Text>
                     <div className='inline-flex gap-2.5'>
                         <ColorPickerProvider>
-                            {asyncCourseCells!.map(block => {
+                            {asyncCourseCells?.map(block => {
                                 const { courseDeptAndInstr, status, className } = block.componentProps;
                                 return (
                                     <CalendarCourseBlock
@@ -75,7 +75,11 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                 </div>
             )}
             {enableCourseStatusChips && (
-                <div className={clsx('flex items-center gap-4 pr-spacing-3', { 'ml-auto': !hasAsyncCourses })}>
+                <div
+                    className={clsx('flex items-center gap-4 pr-spacing-3', {
+                        'ml-auto': !hasAsyncCourses,
+                    })}
+                >
                     <CourseStatus status={Status.WAITLISTED} size='mini' />
                     <CourseStatus status={Status.CLOSED} size='mini' />
                     <CourseStatus status={Status.CANCELLED} size='mini' />
