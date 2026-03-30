@@ -90,9 +90,7 @@ export default function Calendar(): ReactNode {
         if (course) setShowPopup(true);
     }, [course]);
 
-    useEffect(() => {
-        OptionsStore.get("showUTDiningPromo").then(setShowUTDiningPromo);
-    }, []);
+    useEffect(() => {}, []);
 
     // --- Reset drag state when dragging leaves the window ---
     // TODO - Refactor this and FileUpload.tsx, they use similar things and it would be optimal later on to maybe extract this all somewhere
