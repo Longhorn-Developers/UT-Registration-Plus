@@ -31,6 +31,7 @@ export type SiteSupportType = (typeof SiteSupport)[keyof typeof SiteSupport];
  * @returns a list of page types that the current page is
  */
 export default function getSiteSupport(url: string): SiteSupportType | null {
+    console.debug("[UTRP] getSiteSupport entry", url);
     if (isExtensionPopup()) {
         return SiteSupport.EXTENSION_POPUP;
     }
@@ -60,6 +61,10 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
     }
     try {
         const parsed = new URL(url);
+        console.debug("[UTRP] getSiteSupport parsed", {
+            url,
+            pathname: parsed.pathname,
+        });
         if (
             parsed.hostname === "my.utexas.edu" &&
             (parsed.pathname === "/student" ||
