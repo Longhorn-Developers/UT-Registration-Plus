@@ -25,7 +25,7 @@ stdenv.mkDerivation (finalAttrs: {
   pnpmDeps = pnpm_10.fetchDeps {
     inherit (finalAttrs) pname version src;
     fetcherVersion = 2;
-    hash = lib.strings.trim (builtins.readFile ./vendor-hash);
+    hash = lib.strings.trim (builtins.readFile ./pnpm-hash);
   };
 
   # Pass git info to the build

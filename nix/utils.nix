@@ -11,10 +11,10 @@
         ];
 
         text = ''
-          HASH_FILE="nix/vendor-hash"
+          HASH_FILE="nix/pnpm-hash"
 
           if BUILD_OUTPUT=$(nix build .#default --no-link 2>&1); then
-            echo "vendor-hash is up to date"
+            echo "pnpm-hash is up to date"
             exit 0
           fi
 
