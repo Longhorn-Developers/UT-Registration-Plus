@@ -12,52 +12,46 @@
         programs.nixfmt.enable = pkgs.lib.meta.availableOn pkgs.stdenv.buildPlatform pkgs.nixfmt-rfc-style.compiler;
         programs.nixfmt.package = pkgs.nixfmt-rfc-style;
 
-        # NOTE: Make sure the prettier version in package.json and the one used by treefmt are the same for consistent results
-        programs.prettier.enable = true;
+        # NOTE: Make sure the biome version in package.json and the one used by treefmt are the same
+        programs.biome.enable = true;
         programs.shellcheck.enable = true;
         programs.yamlfmt.enable = true;
         programs.dockerfmt.enable = true;
 
-        settings.formatter.prettier.excludes = [ "pnpm-lock.yaml" ];
         settings.formatter.shellcheck.excludes = [ ".envrc" ];
         settings.formatter.yamlfmt.excludes = [ "pnpm-lock.yaml" ];
       };
 
       checks = {
-        prettier-version-match =
-          pkgs.runCommand "check-prettier-version"
-            {
-              buildInputs = [ pkgs.jq ];
-            }
-            ''
-              # Extract prettier version from package.json
-              packageJsonVersion=$(jq -r '.devDependencies.prettier // empty' ${../package.json})
+        biome-version-match = pkgs.runCommand "check-biome-version" { buildInputs = [ pkgs.jq ]; } ''
+          # Extract biome version from package.json
+          packageJsonVersion=$(jq -r '.devDependencies["@biomejs/biome"] // empty' ${../package.json})
 
-              if [ -z "$packageJsonVersion" ]; then
-                echo "Error: prettier not found in package.json devDependencies"
-                exit 1
-              fi
+          if [ -z "$packageJsonVersion" ]; then
+            echo "Error: @biomejs/biome not found in package.json devDependencies"
+            exit 1
+          fi
 
-              # Remove any semver prefix characters (^, ~, etc...)
-              packageJsonVersion=$(echo "$packageJsonVersion" | sed 's/^[\^~>=<]*//')
+          # Remove any semver prefix characters (^, ~, etc...)
+          packageJsonVersion=$(echo "$packageJsonVersion" | sed 's/^[\^~>=<]*//')
 
-              # Get prettier version from nixpkgs
-              nixVersion="${pkgs.nodePackages.prettier.version}"
+          # Get biome version from nixpkgs
+          nixVersion="${pkgs.biome.version}"
 
-              if [ "$packageJsonVersion" != "$nixVersion" ]; then
-                echo ""
-                echo "ERROR: Prettier version mismatch!"
-                echo "  package.json: $packageJsonVersion"
-                echo "  nixpkgs:      $nixVersion"
-                echo ""
-                echo "Please update one of the following:"
-                echo "  - Update prettier in package.json to match nixpkgs: $nixVersion"
-                echo "  - Override prettier in your flake to match package.json"
-                exit 1
-              fi
+          if [ "$packageJsonVersion" != "$nixVersion" ]; then
+            echo ""
+            echo "ERROR: Biome version mismatch!"
+            echo "  package.json: $packageJsonVersion"
+            echo "  nixpkgs:      $nixVersion"
+            echo ""
+            echo "Please update one of the following:"
+            echo "  - Update @biomejs/biome in package.json to match nixpkgs: $nixVersion"
+            echo "  - Override biome in your flake to match package.json"
+            exit 1
+          fi
 
-              touch $out
-            '';
+          touch $out
+        '';
       };
     };
 }
