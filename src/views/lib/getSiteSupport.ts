@@ -65,6 +65,8 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
             (parsed.pathname === "/student" ||
                 parsed.pathname.startsWith("/student/"))
         ) {
+            // Debug log for MY_UT detection
+            console.debug("[UTRP] Detected MY_UT site:", url);
             return SiteSupport.MY_UT;
         }
     } catch {
