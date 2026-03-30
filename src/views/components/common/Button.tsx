@@ -16,6 +16,7 @@ interface Props {
     iconProps?: IconProps;
     disabled?: boolean;
     title?: string;
+    type?: 'button' | 'submit' | 'reset';
     color: ThemeColor;
 }
 
@@ -34,6 +35,7 @@ export function Button({
     iconProps,
     disabled,
     title,
+    type = 'button',
     color,
     children,
 }: React.PropsWithChildren<Props>): JSX.Element {
@@ -44,7 +46,7 @@ export function Button({
 
     return (
         <button
-            type='button'
+            type={type}
             ref={ref}
             style={
                 {

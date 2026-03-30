@@ -1,7 +1,6 @@
-import flagIcon from '@assets/flag.svg';
 import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
-import { CalendarDots, GearSix, Plus } from '@phosphor-icons/react';
+import { CalendarDots, Flag, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
@@ -107,24 +106,21 @@ export default function PopupMain(): JSX.Element {
                             onClick={handleCalendarOpenOnClick}
                             icon={CalendarDots}
                             iconProps={{ weight: 'fill' }}
-                            className='h-9'
                         >
                             Calendar
                         </Button>
-                        <button
-                            type='button'
-                            className='btn mx-1 h-[35px] w-[35px] border-none bg-ut-black/0 p-spacing-2 hover:bg-ut-black/8'
-                            title='Send feedback'
-                            aria-label='Send feedback'
-                            onClick={showReportIssueDialog}
-                        >
-                            <img src={flagIcon} alt='' className='h-6 w-6' />
-                        </button>
                         <Button
                             variant='minimal'
                             size='small'
                             color='ut-black'
-                            style={{ color: '#0F1215' }}
+                            icon={Flag}
+                            title='Send feedback'
+                            onClick={showReportIssueDialog}
+                        />
+                        <Button
+                            variant='minimal'
+                            size='small'
+                            color='ut-black'
                             onClick={handleOpenOptions}
                             icon={GearSix}
                         />
