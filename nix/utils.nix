@@ -36,6 +36,7 @@
         update-hash = {
           type = "app";
           program = "${update-hash}/bin/update-hash";
+          meta.description = "Update the pnpm deps hash";
         };
       };
     };
