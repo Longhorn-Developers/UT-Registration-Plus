@@ -29,7 +29,6 @@ import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
-import DiningAppPromo from './DiningAppPromo';
 
 /**
  * Calendar page component
@@ -43,7 +42,6 @@ export default function Calendar(): ReactNode {
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
     const showWhatsNewDialog = useWhatsNewPopUp();
 
-    const [showUTDiningPromo, setShowUTDiningPromo] = useState<boolean>(false);
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
     const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
 
@@ -87,13 +85,6 @@ export default function Calendar(): ReactNode {
     useEffect(() => {
         if (course) setShowPopup(true);
     }, [course]);
-
-    useEffect(() => {
-        // Load the user's preference for the promo
-        OptionsStore.get('showUTDiningPromo').then(show => {
-            setShowUTDiningPromo(show);
-        });
-    }, []);
 
     // --- Reset drag state when dragging leaves the window ---
     // TODO - Refactor this and FileUpload.tsx, they use similar things and it would be optimal later on to maybe extract this all somewhere
@@ -239,15 +230,6 @@ export default function Calendar(): ReactNode {
                             <Divider orientation='horizontal' size='100%' />
                             <ResourceLinks />
                             {/* <TeamLinks /> */}
-                            <Divider orientation='horizontal' size='100%' />
-                            {showUTDiningPromo && (
-                                <DiningAppPromo
-                                    onClose={() => {
-                                        setShowUTDiningPromo(false);
-                                        OptionsStore.set('showUTDiningPromo', false);
-                                    }}
-                                />
-                            )}
                             <div className='flex flex-col gap-spacing-3'>
                                 <a
                                     href={CRX_PAGES.REPORT}

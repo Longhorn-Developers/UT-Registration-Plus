@@ -22,8 +22,6 @@ export interface IOptionsStore {
     /** whether the calendar sidebar should be shown when the calendar is opened */
     showCalendarSidebar: boolean;
 
-    /** whether the promo should be shown */
-    showUTDiningPromo: boolean;
     /** whether users are allowed to bypass the 10 schedule limit */
     allowMoreSchedules: boolean;
 }
@@ -37,7 +35,6 @@ export const OptionsStore = createSyncStore<IOptionsStore>(
         enableDataRefreshing: false,
         alwaysOpenCalendarInNewTab: false,
         showCalendarSidebar: true,
-        showUTDiningPromo: true,
         allowMoreSchedules: false,
     },
     {
