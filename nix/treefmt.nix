@@ -9,8 +9,7 @@
     {
       treefmt = {
         projectRootFile = "flake.nix";
-        programs.nixfmt.enable = pkgs.lib.meta.availableOn pkgs.stdenv.buildPlatform pkgs.nixfmt-rfc-style.compiler;
-        programs.nixfmt.package = pkgs.nixfmt-rfc-style;
+        programs.nixfmt.enable = true;
 
         # NOTE: Make sure the biome version in package.json and the one used by treefmt are the same
         programs.biome.enable = true;
