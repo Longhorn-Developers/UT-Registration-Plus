@@ -1,6 +1,5 @@
 import ReportIssueMain from '@views/components/ReportIssueMain';
 import { useDialog } from '@views/contexts/DialogContext';
-import React from 'react';
 
 /**
  * Opens the feedback form in a centered in-page dialog.

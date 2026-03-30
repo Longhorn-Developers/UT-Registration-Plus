@@ -14,7 +14,7 @@ export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
     return (
         <div className='relative min-w-[16.25rem] w-full flex items-center gap-spacing-3 border border-ut-offwhite/50 rounded p-spacing-4'>
             <div className='flex items-center justify-center'>
-                <ForkKnife className='h-6 w-6' style={{ color: '#0F1215' }} />
+                <ForkKnife className='h-6 w-6 text-ut-black' />
             </div>
             <div className='flex flex-col gap-spacing-1'>
                 <Text as='p' variant='small' className='whitespace-normal text-ut-black'>

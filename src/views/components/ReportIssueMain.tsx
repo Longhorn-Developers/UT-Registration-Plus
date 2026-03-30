@@ -5,6 +5,7 @@ import { captureFeedback } from '@sentry/react';
 import { useState } from 'react';
 
 import { Button } from './common/Button';
+import Input from './common/Input';
 import Text from './common/Text/Text';
 
 interface Props {
@@ -36,35 +37,34 @@ export default function ReportIssueMain({ onClose }: Props): JSX.Element {
         if (!email || !feedback) {
             throw new Error('Email and feedback are required');
         }
-        await captureFeedback(
+        captureFeedback(
             {
-                message: feedback || 'No feedback provided',
+                message: feedback,
                 email,
-                tags: {
-                    version: chrome.runtime.getManifest().version,
-                },
             },
             {
                 includeReplay: false,
             }
         );
 
-        setEmail('');
-        setFeedback('');
         setIsSubmitted(true);
     };
 
     if (isSubmitted) {
         return (
-            <div className='max-w-[calc(100vw-2rem)] w-[380px] flex flex-col bg-white p-4'>
-                <Text variant='h2' className='mb-3 text-ut-burntorange'>
-                    Thank you
-                </Text>
-                <Text variant='p' className='mb-6 text-ut-black'>
+            <div className='w-110 max-w-[95vw] bg-white rounded-md px-6 py-4 flex flex-col'>
+                <div className='flex items-center gap-3'>
+                    <span className='h-px -mt-2.5 flex-1 bg-gray' />
+                    <Text variant='h1' className='mb-3 text-ut-burntorange'>
+                        Thank you!
+                    </Text>
+                    <span className='h-px -mt-2.5 flex-1 bg-gray' />
+                </div>
+                <Text variant='p' className='text-ut-black'>
                     Your feedback has been submitted. You may close this window.
                 </Text>
-                <div className='flex justify-end'>
-                    <Button variant='filled' color='ut-burntorange' className='w-[165px]' onClick={handleClose}>
+                <div className='flex justify-end mt-1'>
+                    <Button variant='filled' color='ut-burntorange' onClick={handleClose}>
                         Done
                     </Button>
                 </div>
@@ -73,38 +73,28 @@ export default function ReportIssueMain({ onClose }: Props): JSX.Element {
     }
 
     return (
-        <div className='max-w-[calc(100vw-2rem)] w-[380px] bg-white p-4'>
-            <div className='mb-3 flex items-start justify-between gap-3'>
-                <div className='min-w-0 flex-1'>
-                    <Text as='h2' variant='h2' className='block text-ut-burntorange !font-bold'>
-                        Longhorn Feedback
-                    </Text>
-                    <Text as='p' variant='small' className='mt-1 block text-ut-black'>
-                        Help us make UT Registration plus even better!
-                    </Text>
-                </div>
-                <Button
-                    variant='minimal'
-                    size='small'
-                    color='ut-black'
-                    icon={X}
-                    onClick={handleClose}
-                    title='Close'
-                />
+        <div className='w-110 max-w-[95vw] bg-white rounded-md px-6 py-4'>
+            <div className='flex justify-between items-center'>
+                <Text as='h1' variant='h1' className='text-ut-burntorange'>
+                    Longhorn Feedback
+                </Text>
+                <Button variant='minimal' size='small' color='ut-black' icon={X} onClick={handleClose} title='Close' />
             </div>
+            <Text variant='p' as='p' className='text-ut-black mt-1.5'>
+                Help us make UT Registration Plus even better!
+            </Text>
 
-            <form onSubmit={submitFeedback} className='flex flex-col gap-3'>
+            <form onSubmit={submitFeedback} className='flex flex-col gap-3 mt-5'>
                 <div>
                     <label htmlFor='email' className='mb-2 flex items-center text-ut-black'>
-                        <Text variant='small'>Your @utexas.edu email</Text>
-                        <span className='ml-3 h-[1px] flex-1 bg-ut-offwhite' />
+                        <Text variant='small'>Your @utexas.edu Email</Text>
+                        <span className='ml-3 h-px flex-1 bg-ut-offwhite' />
                     </label>
-                    <input
+                    <Input
                         type='email'
                         id='email'
                         value={email}
                         onChange={e => setEmail(e.target.value)}
-                        className='h-10 w-full border border-ut-offwhite rounded px-3 text-sm text-ut-black focus:border-ut-burntorange placeholder:text-sm placeholder:text-ut-gray focus:outline-none'
                         placeholder='bevo@utexas.edu'
                         required
                     />
@@ -113,32 +103,23 @@ export default function ReportIssueMain({ onClose }: Props): JSX.Element {
                 <div>
                     <label htmlFor='feedback' className='mb-2 flex items-center text-ut-black'>
                         <Text variant='small'>Your Feedback</Text>
-                        <span className='ml-3 h-[1px] flex-1 bg-ut-offwhite' />
+                        <span className='ml-3 h-px flex-1 bg-ut-offwhite' />
                     </label>
                     <textarea
                         id='feedback'
                         value={feedback}
                         onChange={e => setFeedback(e.target.value)}
-                        className='h-[136px] w-full resize-none border border-ut-offwhite rounded px-3 py-2 text-sm text-ut-black focus:border-ut-burntorange placeholder:text-sm placeholder:text-ut-gray focus:outline-none'
+                        className='min-h-30 w-full resize-none border border-ut-offwhite/50 rounded px-spacing-4 py-spacing-3 text-[1rem] text-ut-black placeholder:text-gray focus:outline-none focus:ring-0'
                         placeholder='I wish UT Registration Plus could...'
                         required
                     />
                 </div>
 
                 <div className='mt-2 flex items-center justify-end gap-4'>
-                    <button
-                        type='button'
-                        className='h-8 border-none bg-transparent px-3 text-ut-burntorange hover:bg-ut-burntorange/8 btn'
-                        onClick={handleClose}
-                    >
-                        <Text variant='small'>Cancel</Text>
-                    </button>
-                    <Button
-                        variant='filled'
-                        size='small'
-                        color='ut-burntorange'
-                        className='h-8 w-[138px] px-3'
-                    >
+                    <Button variant='minimal' color='ut-burntorange' onClick={handleClose}>
+                        Cancel
+                    </Button>
+                    <Button variant='filled' color='ut-burntorange' type='submit'>
                         Send Feedback
                     </Button>
                 </div>
