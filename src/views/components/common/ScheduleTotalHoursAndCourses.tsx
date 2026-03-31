@@ -23,9 +23,9 @@ export default function ScheduleTotalHoursAndCourses({
     totalCourses,
 }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div className='w-full flex flex-col items-start'>
-            <div className='max-w-full overflow-hidden'>
-                <Text className='block w-full truncate text-ut-burntorange' variant='h1' as='span'>
+        <div className='w-full flex flex-col items-start min-w-0'>
+            <div className='w-full min-w-0 overflow-hidden'>
+                <Text className='block w-full min-w-0 truncate text-ellipsis whitespace-nowrap overflow-hidden text-ut-burntorange' variant='h1' as='span'>
                     {scheduleName}
                 </Text>
             </div>
