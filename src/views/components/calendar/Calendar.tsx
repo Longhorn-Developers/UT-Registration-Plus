@@ -230,15 +230,15 @@ export default function Calendar(): ReactNode {
                             <ResourceLinks />
                             {/* <TeamLinks /> */}
                             <Divider orientation='horizontal' size='100%' />
-                                <button
-                                    type='button'
-                                    onClick={showReportIssueDialog}
+                            <button
+                                type='button'
+                                onClick={showReportIssueDialog}
                                 className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
-                                >
+                            >
                                 <Text variant='p'>Send us Feedback!</Text>
                                 <OutwardArrowIcon className='h-4 w-4' />
-                                </button>
-                            </div>
+                            </button>
+                        </div>
 
                         <CalendarFooter />
                     </div>
