@@ -85,7 +85,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
             <LargeLogo className='hidden! screenshot:flex!' />
             <Divider className='self-center hidden! screenshot:block!' size='2.5rem' orientation='vertical' />
 
-            <div className='min-w-[11.5rem] screenshot:transform-origin-left screenshot:scale-120'>
+            <div className='min-w-[11.5rem] min-w-0 screenshot:transform-origin-left screenshot:scale-120'>
                 <ScheduleTotalHoursAndCourses
                     scheduleName={activeSchedule.name}
                     totalHours={activeSchedule.hours}
