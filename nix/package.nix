@@ -3,6 +3,8 @@
   lib,
   nodejs,
   pnpm_10,
+  pnpmConfigHook,
+  fetchPnpmDeps,
   git,
   version ? "dev",
   gitRev ? "unknown",
@@ -18,14 +20,15 @@ stdenv.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [
     nodejs
-    pnpm_10.configHook
+    pnpm_10
+    pnpmConfigHook
     git
   ];
 
-  pnpmDeps = pnpm_10.fetchDeps {
+  pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
     fetcherVersion = 2;
-    hash = "sha256-UqHymJWvlTV4glra/6DkxuCxbG5dpPkFcnvq3vuxsJ8=";
+    hash = lib.strings.trim (builtins.readFile ./pnpm-hash);
   };
 
   # Pass git info to the build
