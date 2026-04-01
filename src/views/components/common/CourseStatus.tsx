@@ -21,15 +21,10 @@ export interface CourseStatusProps {
  * @returns The CourseStatus component
  */
 export default function CourseStatus({ status, size }: CourseStatusProps): JSX.Element {
-    const statusIconSizeClass = clsx({
-        'h-5 w-5': size === 'small',
-        'h-4 w-4': size === 'mini',
-    });
-
     return (
-        <div className={`inline-flex items-center ${size === 'small' ? 'gap-2' : 'gap-1.5'}`}>
-            <div className='ml-1 flex items-center justify-center rounded bg-slate-700 p-1px text-white'>
-                <StatusIcon status={status} className={statusIconSizeClass} />
+        <div className={`inline-flex items-center gap-1.5`}>
+            <div className={clsx('flex items-center justify-center rounded')}>
+                <StatusIcon status={status} className={'size-5'} />
             </div>
             <Text variant={size}>{status}</Text>
         </div>

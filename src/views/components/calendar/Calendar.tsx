@@ -205,7 +205,7 @@ export default function Calendar(): ReactNode {
                         aria-hidden={!showSidebar}
                         {...{ inert: !showSidebar }}
                     >
-                        <div className='sticky top-0 z-50 w-full flex items-center justify-between gap-x-3xl bg-white px-spacing-8 pb-spacing-6'>
+                        <div className='sticky top-0 z-50 w-full flex items-center justify-between bg-white px-spacing-7 pb-spacing-6'>
                             <LargeLogo />
                             <Button
                                 variant='minimal'
@@ -223,7 +223,7 @@ export default function Calendar(): ReactNode {
                             style={{
                                 scrollbarGutter: 'stable',
                             }}
-                            className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-8 pr-4.5'
+                            className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-7 pr-2.75'
                         >
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' />

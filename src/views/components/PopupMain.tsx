@@ -165,10 +165,7 @@ export default function PopupMain(): JSX.Element {
                     </Text>
                 </div>
             )}
-            <div
-                style={{ scrollbarGutter: 'stable' }}
-                className='flex-1 self-stretch overflow-y-scroll pl-spacing-6 pr-[6px]'
-            >
+            <div style={{ scrollbarGutter: 'stable' }} className='flex-1 self-stretch overflow-y-scroll d-6 pr-[6px]'>
                 {activeSchedule?.courses?.length > 0 && (
                     <SortableList
                         draggables={activeSchedule.courses.map(course => ({
