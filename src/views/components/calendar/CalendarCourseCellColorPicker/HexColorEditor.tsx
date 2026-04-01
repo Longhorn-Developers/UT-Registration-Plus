@@ -1,9 +1,9 @@
-import { Hash } from '@phosphor-icons/react';
 import { isValidHexColor, pickFontColor } from '@shared/util/colors';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import { useDebounce } from '@views/hooks/useDebounce';
 import clsx from 'clsx';
 import React, { useEffect } from 'react';
+import HashIcon from '~icons/ph/hash';
 
 /**
  * Props for the HexColorEditor component
@@ -46,7 +46,7 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
                 style={{ backgroundColor: previewColor }}
                 className='h-6.5 w-6.5 flex items-center justify-center rounded-l-1'
             >
-                <Hash className={clsx('h-5 w-5 text-color-white', tagColor)} />
+                <HashIcon className={clsx('h-5 w-5 text-color-white', tagColor)} />
             </div>
             <div className='h-6.5 w-[53px] flex flex-1 items-center justify-center border-b border-r border-t rounded-br rounded-tr p-1.25'>
                 <input

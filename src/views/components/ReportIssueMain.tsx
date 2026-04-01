@@ -1,6 +1,6 @@
 import 'uno.css';
 
-import { X } from '@phosphor-icons/react';
+import XIcon from '~icons/ph/x';
 import { captureFeedback } from '@sentry/react';
 import { useState } from 'react';
 
@@ -78,7 +78,7 @@ export default function ReportIssueMain({ onClose }: Props): JSX.Element {
                 <Text as='h1' variant='h1' className='text-ut-burntorange'>
                     Longhorn Feedback
                 </Text>
-                <Button variant='minimal' size='small' color='ut-black' icon={X} onClick={handleClose} title='Close' />
+                <Button variant='minimal' size='small' color='ut-black' icon={XIcon} onClick={handleClose} title='Close' />
             </div>
             <Text variant='p' as='p' className='text-ut-black mt-1.5'>
                 Help us make UT Registration Plus even better!

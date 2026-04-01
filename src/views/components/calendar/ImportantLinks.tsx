@@ -1,6 +1,6 @@
-import { ArrowUpRight } from '@phosphor-icons/react';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
+import ArrowUpRightIcon from '~icons/ph/arrow-up-right';
 
 type Props = {
     className?: string;
@@ -59,7 +59,7 @@ export default function ImportantLinks({ className }: Props): JSX.Element {
                     rel='noreferrer'
                 >
                     <Text variant='p'>{link.text}</Text>
-                    <ArrowUpRight className='h-4 w-4' />
+                    <ArrowUpRightIcon className='h-4 w-4' />
                 </a>
             ))}
         </article>

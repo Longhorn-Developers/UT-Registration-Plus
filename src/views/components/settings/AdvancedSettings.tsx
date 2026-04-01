@@ -1,4 +1,3 @@
-import { Trash } from '@phosphor-icons/react';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import MIMEType from '@shared/types/MIMEType';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -9,6 +8,7 @@ import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import type React from 'react';
+import TrashIcon from '~icons/ph/trash';
 
 import FileUpload from '../common/FileUpload';
 import { DISPLAY_PREVIEWS, PREVIEW_SECTION_DIV_CLASSNAME } from './constants';
@@ -227,7 +227,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         </Text>
                         <p className='text-sm text-gray-600'>Erases all schedules and courses you have.</p>
                     </div>
-                    <Button variant='outline' color='theme-red' icon={Trash} onClick={handleEraseAll}>
+                    <Button variant='outline' color='theme-red' icon={TrashIcon} onClick={handleEraseAll}>
                         Erase All
                     </Button>
                 </div>

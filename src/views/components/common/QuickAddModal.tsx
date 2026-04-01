@@ -1,11 +1,12 @@
 import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react';
-import { Plus, PlusCircle } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
+import PlusIcon from '~icons/ph/plus';
+import PlusCircleIcon from '~icons/ph/plus-circle';
 
 import { Button } from './Button';
 import Dropdown from './Dropdown';
@@ -44,7 +45,13 @@ export default function QuickAddModal(): JSX.Element {
     return (
         <Popover>
             <PopoverButton className='bg-transparent' as='div'>
-                <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle} onClick={handleQuickAdd}>
+                <Button
+                        color='ut-black'
+                        size='small'
+                        variant='minimal'
+                        icon={PlusCircleIcon}
+                        onClick={handleQuickAdd}
+                    >
                     Quick Add
                 </Button>
             </PopoverButton>
@@ -121,7 +128,7 @@ export default function QuickAddModal(): JSX.Element {
                             color={courseResult.status === 'found' ? 'ut-green' : 'ut-gray'}
                             size='regular'
                             variant='filled'
-                            icon={Plus}
+                            icon={PlusIcon}
                             type='submit'
                             disabled={courseResult.status !== 'found'}
                         >

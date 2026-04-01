@@ -1,5 +1,5 @@
-import { Check } from '@phosphor-icons/react';
 import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
+import CheckIcon from '~icons/ph/check';
 
 /**
  * Props for the ColorPatch component
@@ -42,7 +42,7 @@ export default function ColorPatch({
             style={{ backgroundColor: color }}
             onClick={handleClick}
         >
-            {isSelected && <Check className='h-5 w-5 color-white' />}
+            {isSelected && <CheckIcon className='h-5 w-5 color-white' />}
         </button>
     );
 }

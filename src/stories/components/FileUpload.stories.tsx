@@ -1,7 +1,7 @@
-import { ImageSquare } from '@phosphor-icons/react';
 import { colorsFlattened } from '@shared/util/themeColors';
 import type { Meta, StoryObj } from '@storybook/react';
 import FileUpload from '@views/components/common/FileUpload';
+import ImageSquareIcon from '~icons/ph/image-square';
 
 /**
  * Stole this straight from Button.stories.tsx to test the input
@@ -15,7 +15,7 @@ const meta = {
     tags: ['autodocs'],
     args: {
         children: 'Upload File',
-        icon: ImageSquare,
+        icon: ImageSquareIcon,
     },
     argTypes: {
         children: { control: 'text' },
@@ -64,9 +64,9 @@ export const Small: Story = {
             </div>
             <hr />
             <div style={{ display: 'flex', gap: '15px' }}>
-                <FileUpload {...props} icon={ImageSquare} variant='filled' color='ut-black' size='small' />
-                <FileUpload {...props} icon={ImageSquare} variant='outline' color='ut-black' size='small' />
-                <FileUpload {...props} icon={ImageSquare} variant='minimal' color='ut-black' size='small' />
+                <FileUpload {...props} icon={ImageSquareIcon} variant='filled' color='ut-black' size='small' />
+                <FileUpload {...props} icon={ImageSquareIcon} variant='outline' color='ut-black' size='small' />
+                <FileUpload {...props} icon={ImageSquareIcon} variant='minimal' color='ut-black' size='small' />
             </div>
         </div>
     ),
@@ -92,9 +92,9 @@ export const Mini: Story = {
             </div>
             <hr />
             <div style={{ display: 'flex', gap: '15px' }}>
-                <FileUpload {...props} icon={ImageSquare} variant='filled' color='ut-black' size='mini' />
-                <FileUpload {...props} icon={ImageSquare} variant='outline' color='ut-black' size='mini' />
-                <FileUpload {...props} icon={ImageSquare} variant='minimal' color='ut-black' size='mini' />
+                <FileUpload {...props} icon={ImageSquareIcon} variant='filled' color='ut-black' size='mini' />
+                <FileUpload {...props} icon={ImageSquareIcon} variant='outline' color='ut-black' size='mini' />
+                <FileUpload {...props} icon={ImageSquareIcon} variant='minimal' color='ut-black' size='mini' />
             </div>
         </div>
     ),

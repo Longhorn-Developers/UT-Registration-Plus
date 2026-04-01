@@ -1,4 +1,3 @@
-import type { Icon, IconProps } from '@phosphor-icons/react';
 import type { ThemeColor } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/themeColors';
 import Text from '@views/components/common/Text/Text';
@@ -12,8 +11,8 @@ interface Props {
     variant?: 'filled' | 'outline' | 'minimal';
     size?: 'regular' | 'small' | 'mini';
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-    icon?: Icon;
-    iconProps?: IconProps;
+    icon?: React.FC<React.SVGProps<SVGSVGElement>>;
+    iconProps?: React.SVGProps<SVGSVGElement>;
     disabled?: boolean;
     title?: string;
     type?: 'button' | 'submit' | 'reset';

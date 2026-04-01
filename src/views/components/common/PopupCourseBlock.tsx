@@ -1,4 +1,3 @@
-import { Check, Copy, DotsSixVertical } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
@@ -10,6 +9,9 @@ import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import type React from 'react';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import CheckIcon from '~icons/ph/check';
+import CopyFillIcon from '~icons/ph/copy-fill';
+import DotsSixVerticalBoldIcon from '~icons/ph/dots-six-vertical-bold';
 
 import { Button } from './Button';
 import { SortableListDragHandle } from './SortableListDragHandle';
@@ -137,7 +139,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                     }}
                     className='flex cursor-move items-center self-stretch rounded rounded-r-0 px-spacing-2'
                 >
-                    <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
+                    <DotsSixVerticalBoldIcon className='h-6 w-6 cursor-move text-white' />
                 </div>
             ) : (
                 <SortableListDragHandle
@@ -146,7 +148,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                     }}
                     className='flex cursor-move items-center self-stretch rounded rounded-r-0 px-spacing-2'
                 >
-                    <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
+                    <DotsSixVerticalBoldIcon className='h-6 w-6 cursor-move text-white' />
                 </SortableListDragHandle>
             )}
             <div className='h-full flex flex-1 justify-center gap-spacing-3 p-spacing-3'>
@@ -184,14 +186,13 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                         }}
                     >
                         <div className='relative h-[21px] w-[21px]'>
-                            <Check
+                            <CheckIcon
                                 className={clsx(
                                     'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out',
                                     isCopied ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
                                 )}
                             />
-                            <Copy
-                                weight='fill'
+                            <CopyFillIcon
                                 className={clsx(
                                     'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out select-none',
                                     isCopied ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
