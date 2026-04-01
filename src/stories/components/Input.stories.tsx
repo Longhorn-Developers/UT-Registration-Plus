@@ -16,7 +16,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const InnerComponent = (args: ComponentProps<typeof Input>) => {
-    const [value, setValue] = useState<string>(args.value);
+    const [value, setValue] = useState(String(args.value ?? ''));
 
     return <Input {...args} value={value} onChange={(e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value)} />;
 };

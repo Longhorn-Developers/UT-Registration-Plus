@@ -4,8 +4,6 @@ import { Sidebar } from '@phosphor-icons/react';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
-import { CRX_PAGES } from '@shared/types/CRXPages';
-import { openReportWindow } from '@shared/util/openReportWindow';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
@@ -17,12 +15,12 @@ import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalog
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
+import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
 import { Button } from '../common/Button';
@@ -40,7 +38,8 @@ export default function Calendar(): ReactNode {
     const [course, setCourse] = useState<Course | null>(useCourseFromUrl());
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
-    const showWhatsNewDialog = useWhatsNewPopUp();
+    const _showWhatsNewDialog = useWhatsNewPopUp();
+    const showReportIssueDialog = useReportIssueDialog();
 
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
     const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
@@ -224,41 +223,21 @@ export default function Calendar(): ReactNode {
                             style={{
                                 scrollbarGutter: 'stable',
                             }}
-                            className='relative h-full w-full flex grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-8 pr-4.5'
+                            className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-8 pr-4.5'
                         >
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' />
                             <ResourceLinks />
                             {/* <TeamLinks /> */}
-                            <div className='flex flex-col gap-spacing-3'>
-                                <a
-                                    href={CRX_PAGES.REPORT}
-                                    className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    onClick={event => {
-                                        event.preventDefault();
-                                        openReportWindow();
-                                    }}
-                                >
-                                    <Text variant='p'>Send us Feedback!</Text>
-                                    <OutwardArrowIcon className='h-4 w-4' />
-                                </a>
-                                {/** biome-ignore lint/a11y/useValidAnchor: TODO: */}
-                                <a
-                                    href=''
-                                    className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    onClick={event => {
-                                        event.preventDefault();
-                                        showWhatsNewDialog();
-                                    }}
-                                >
-                                    <Text variant='p'>What&apos;s New!</Text>
-                                    <OutwardArrowIcon className='h-4 w-4' />
-                                </a>
-                            </div>
+                            <Divider orientation='horizontal' size='100%' />
+                            <button
+                                type='button'
+                                onClick={showReportIssueDialog}
+                                className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
+                            >
+                                <Text variant='p'>Send us Feedback!</Text>
+                                <OutwardArrowIcon className='h-4 w-4' />
+                            </button>
                         </div>
 
                         <CalendarFooter />

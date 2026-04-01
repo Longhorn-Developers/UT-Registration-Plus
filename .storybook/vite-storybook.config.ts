@@ -24,6 +24,7 @@ export default defineConfig({
             '@background': resolve(pagesDir, 'background'),
             '@views': resolve(root, 'views'),
             '@chrome-extension-toolkit': resolve(root, 'lib/chrome-extension-toolkit'),
+            '@sentry/react': resolve(__dirname, '__mocks__/sentry.ts'),
         },
     },
 });
