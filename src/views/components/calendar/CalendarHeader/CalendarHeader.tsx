@@ -43,6 +43,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     }, []);
 
     const isCooldown = cooldownIds.has(activeSchedule.id);
+    const hasRightHandSide = enableDataRefreshing;
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
@@ -69,7 +70,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     return (
         <div
             style={{ scrollbarGutter: 'stable' }}
-            className='sticky left-0 right-0 top-0 z-10 min-h-[85px] flex items-center gap-5 overflow-x-auto overflow-y-hidden bg-white pl-spacing-7 pt-spacing-5'
+            className='sticky left-0 right-0 top-0 z-10 min-h-[75px] flex items-center gap-5 overflow-x-auto overflow-y-hidden bg-white pl-spacing-7 pt-spacing-5 pb-1'
         >
             {!sidebarOpen && (
                 <Button
@@ -175,6 +176,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                         Block
                     </Button> */}
                 </div>
+                {hasRightHandSide && <Divider className='self-center' size='1.75rem' orientation='vertical' />}
                 <div
                     className={clsx(
                         styles.secondaryActions,
@@ -182,7 +184,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     )}
                 >
                     {enableDataRefreshing && lastCheckedText && (
-                        <Text variant='mini' className='whitespace-nowrap text-ut-gray !font-normal'>
+                        <Text variant='mini' className='whitespace-nowrap text-theme-black/50 !font-normal'>
                             Last checked: {lastCheckedText}
                         </Text>
                     )}
@@ -204,8 +206,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                         </Button>
                     )}
                 </div>
-                {/* <Divider className='self-center' size='1.75rem' orientation='vertical' />
-                <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 justify-end gap-5')}>
+                {/* <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 justify-end gap-5')}>
                     <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={BookmarkSimple}>
                         Bookmarks
                     </Button>

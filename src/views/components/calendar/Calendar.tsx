@@ -195,7 +195,7 @@ export default function Calendar(): ReactNode {
                 >
                     <div
                         className={clsx(
-                            'py-spacing-6 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
+                            'py-spacing-5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
                             {
                                 'max-w-[20.3125rem] ': showSidebar,
                                 'max-w-0 pointer-events-none': !showSidebar,
@@ -205,7 +205,7 @@ export default function Calendar(): ReactNode {
                         aria-hidden={!showSidebar}
                         {...{ inert: !showSidebar }}
                     >
-                        <div className='sticky top-0 z-50 w-full flex items-center justify-between gap-x-3xl bg-white px-spacing-8 pb-spacing-6'>
+                        <div className='sticky top-0 z-50 w-full flex items-center justify-between bg-white px-spacing-7 pb-spacing-6'>
                             <LargeLogo />
                             <Button
                                 variant='minimal'
@@ -223,7 +223,7 @@ export default function Calendar(): ReactNode {
                             style={{
                                 scrollbarGutter: 'stable',
                             }}
-                            className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-8 pr-4.5'
+                            className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-7 pr-2.75'
                         >
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' />
