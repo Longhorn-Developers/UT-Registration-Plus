@@ -76,13 +76,13 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
             )}
             {enableCourseStatusChips && (
                 <div
-                    className={clsx('flex items-center gap-4 pr-spacing-3', {
+                    className={clsx('flex items-center gap-4 py-2 mr-5', {
                         'ml-auto': !hasAsyncCourses,
                     })}
                 >
                     <CourseStatus status={Status.WAITLISTED} size='mini' />
-                    <CourseStatus status={Status.CLOSED} size='mini' />
                     <CourseStatus status={Status.CANCELLED} size='mini' />
+                    <CourseStatus status={Status.CLOSED} size='mini' />
                 </div>
             )}
         </div>

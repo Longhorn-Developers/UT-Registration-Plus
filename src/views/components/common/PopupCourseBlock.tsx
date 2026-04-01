@@ -169,9 +169,9 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                         style={{
                             backgroundColor: colors.secondaryColor,
                         }}
-                        className='ml-1 flex items-center justify-center justify-self-end rounded p-[3px] text-white'
+                        className='ml-1 self-center justify-self-end rounded p-[5px] text-white'
                     >
-                        <StatusIcon status={course.status} className='h-6 w-6' />
+                        <StatusIcon status={course.status} className='size-5' />
                     </div>
                 )}
                 <div className='flex flex-col justify-center'>
