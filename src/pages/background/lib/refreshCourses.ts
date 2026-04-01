@@ -4,6 +4,9 @@ import type { Course } from '@shared/types/Course';
 
 import ensureOffscreenDocument from './ensureOffscreenDocument';
 
+// TODO: do this better, hook into existing auth
+const UTRP_LOGIN_URL = 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/';
+
 /**
  * Refreshes all course data for the active schedule by scraping UT's course catalog.
  * Updates courses directly in UserScheduleStore, preserving user-set properties (colors).
@@ -57,7 +60,7 @@ export default async function refreshCourses(): Promise<void> {
 
     const loginRequired = results.find((r): r is { needsLogin: true; url: string } => r !== null && 'needsLogin' in r);
     if (loginRequired) {
-        chrome.tabs.create({ url: loginRequired.url });
+        chrome.tabs.create({ url: UTRP_LOGIN_URL });
         return;
     }
 
