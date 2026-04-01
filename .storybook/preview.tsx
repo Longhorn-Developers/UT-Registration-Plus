@@ -3,6 +3,8 @@ import type { Preview } from '@storybook/react';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React from 'react';
 
+import { version } from '../package.json';
+
 const preview: Preview = {
     parameters: {
         controls: {
@@ -147,7 +149,7 @@ globalThis.chrome = {
             return {
                 manifest_version: 3,
                 name: 'fake-name',
-                version: '0.0.0',
+                version,
             };
         },
         onMessage: {
