@@ -1,11 +1,10 @@
 import { Input as HInput, type InputProps } from '@headlessui/react';
-import type { Icon, IconProps } from '@phosphor-icons/react';
 import clsx from 'clsx';
 import type { Ref } from 'react';
 
 interface Props extends InputProps {
-    icon?: Icon;
-    iconProps?: IconProps;
+    icon?: React.FC<React.SVGProps<SVGSVGElement>>;
+    iconProps?: React.SVGProps<SVGSVGElement>;
     ref?: Ref<HTMLInputElement>;
 }
 

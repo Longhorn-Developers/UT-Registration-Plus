@@ -1,5 +1,4 @@
 import createSchedule from '@pages/background/lib/createSchedule';
-import { Plus } from '@phosphor-icons/react';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { Button } from '@views/components/common/Button';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
@@ -8,6 +7,7 @@ import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import { getActiveSchedule, switchSchedule, useAllSchedules } from '@views/hooks/useSchedules';
 import { memo } from 'react';
+import PlusIcon from '~icons/ph/plus';
 
 /**
  * Renders a component that displays a list of schedules.
@@ -37,7 +37,7 @@ export const CalendarSchedules = memo(function CalendarSchedules() {
                     color='theme-black'
                     className='!p-0 btn'
                     onClick={handleAddSchedule}
-                    icon={Plus}
+                    icon={PlusIcon}
                 />
             </div>
             <div className='w-full flex flex-col'>

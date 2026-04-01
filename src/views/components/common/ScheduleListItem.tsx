@@ -2,15 +2,6 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
-import {
-    Circle,
-    CopySimple,
-    DotsSixVertical,
-    DotsThree,
-    PencilSimpleLine,
-    RadioButton,
-    Trash,
-} from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
@@ -19,6 +10,13 @@ import { useIsActiveSchedule } from '@views/hooks/useSchedules';
 import { LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
+import CircleIcon from '~icons/ph/circle';
+import CopySimpleIcon from '~icons/ph/copy-simple';
+import DotsSixVerticalBoldIcon from '~icons/ph/dots-six-vertical-bold';
+import DotsThreeBoldIcon from '~icons/ph/dots-three-bold';
+import PencilSimpleLineIcon from '~icons/ph/pencil-simple-line';
+import RadioButtonFillIcon from '~icons/ph/radio-button-fill';
+import TrashIcon from '~icons/ph/trash';
 
 import { Button } from './Button';
 import { usePrompt } from './DialogProvider/DialogProvider';
@@ -146,7 +144,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                     <Button
                         variant='filled'
                         color='theme-red'
-                        icon={Trash}
+                        icon={TrashIcon}
                         onClick={() => {
                             close();
                             deleteSchedule(schedule.id);
@@ -164,16 +162,10 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
         <div className='h-7.5 rounded bg-white' tabIndex={-1} onKeyDown={handleKeyDown}>
             <div className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
                 {IS_STORYBOOK ? (
-                    <DotsSixVertical
-                        weight='bold'
-                        className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400'
-                    />
+                    <DotsSixVerticalBoldIcon className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
                 ) : (
                     <SortableListDragHandle className='flex cursor-move items-center justify-center rounded-md'>
-                        <DotsSixVertical
-                            weight='bold'
-                            className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400'
-                        />
+                        <DotsSixVerticalBoldIcon className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
                     </SortableListDragHandle>
                 )}
                 <div className='group flex flex-1 items-center min-w-0'>
@@ -185,12 +177,9 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         {isActive ? (
-                            <RadioButton
-                                className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95'
-                                weight='fill'
-                            />
+                            <RadioButtonFillIcon className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
                         ) : (
-                            <Circle className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
+                            <CircleIcon className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
                         )}
                         {isEditing && (
                             <Text
@@ -228,7 +217,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                             aria-label='Schedule options'
                             className='opacity-0 h-fit bg-transparent p-0 text-ut-gray btn-transition data-[open]:opacity-100 group-hover:opacity-100 focus:opacity-100 rounded-md'
                         >
-                            <DotsThree weight='bold' className='h-6 w-6' />
+                            <DotsThreeBoldIcon className='h-6 w-6' />
                         </MenuButton>
 
                         <MenuItems
@@ -250,7 +239,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                                 color='ut-black'
                                 size='small'
                                 variant='minimal'
-                                icon={PencilSimpleLine}
+                                icon={PencilSimpleLineIcon}
                             >
                                 Rename
                             </MenuItem>
@@ -261,7 +250,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                                 color='ut-black'
                                 size='small'
                                 variant='minimal'
-                                icon={CopySimple}
+                                icon={CopySimpleIcon}
                             >
                                 Duplicate
                             </MenuItem>
@@ -272,7 +261,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                                 color='theme-red'
                                 size='small'
                                 variant='minimal'
-                                icon={Trash}
+                                icon={TrashIcon}
                             >
                                 Delete Schedule
                             </MenuItem>
