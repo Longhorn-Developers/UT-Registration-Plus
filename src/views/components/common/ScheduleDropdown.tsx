@@ -1,8 +1,9 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from '@headlessui/react';
-import { CaretDown, CaretUp } from '@phosphor-icons/react';
 import Text from '@views/components/common/Text/Text';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
 import type React from 'react';
+import CaretDownFillIcon from '~icons/ph/caret-down-fill';
+import CaretUpFillIcon from '~icons/ph/caret-up-fill';
 
 /**
  * Props for the Dropdown component.
@@ -49,7 +50,7 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
                                 </Text>
                             </div>
                             <Text className='text-ut-burntorange text-2xl! font-normal!'>
-                                {open ? <CaretDown weight='fill' /> : <CaretUp weight='fill' />}
+                                {open ? <CaretDownFillIcon /> : <CaretUpFillIcon />}
                             </Text>
                         </DisclosureButton>
 

@@ -1,6 +1,5 @@
 import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
-import { CalendarDots, Flag, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
@@ -11,6 +10,10 @@ import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
+import CalendarDotsFillIcon from '~icons/ph/calendar-dots-fill';
+import FlagIcon from '~icons/ph/flag';
+import GearSixIcon from '~icons/ph/gear-six';
+import PlusIcon from '~icons/ph/plus';
 
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
@@ -78,8 +81,7 @@ export default function PopupMain(): JSX.Element {
                             size='small'
                             color='ut-burntorange'
                             onClick={handleCalendarOpenOnClick}
-                            icon={CalendarDots}
-                            iconProps={{ weight: 'fill' }}
+                            icon={CalendarDotsFillIcon}
                         >
                             Calendar
                         </Button>
@@ -87,7 +89,7 @@ export default function PopupMain(): JSX.Element {
                             variant='minimal'
                             size='small'
                             color='ut-black'
-                            icon={Flag}
+                            icon={FlagIcon}
                             title='Send feedback'
                             onClick={showReportIssueDialog}
                         />
@@ -96,7 +98,7 @@ export default function PopupMain(): JSX.Element {
                             size='small'
                             color='ut-black'
                             onClick={handleOpenOptions}
-                            icon={GearSix}
+                            icon={GearSixIcon}
                         />
                     </div>
                 </div>
@@ -122,7 +124,7 @@ export default function PopupMain(): JSX.Element {
                             size='mini'
                             color='ut-burntorange'
                             onClick={handleAddSchedule}
-                            icon={Plus}
+                            icon={PlusIcon}
                         />
                     </div>
                 </ScheduleDropdown>

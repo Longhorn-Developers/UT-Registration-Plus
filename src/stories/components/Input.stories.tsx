@@ -1,7 +1,7 @@
-import { ImageSquare } from '@phosphor-icons/react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import Input from '@views/components/common/Input';
 import { type ChangeEvent, type ComponentProps, useState } from 'react';
+import ImageSquareIcon from '~icons/ph/image-square';
 
 const meta = {
     title: 'Components/Common/Input',
@@ -25,7 +25,7 @@ export const Primary: Story = {
     render: (args: ComponentProps<typeof Input>) => <InnerComponent {...args} />,
     args: {
         placeholder: 'Write an input...',
-        icon: ImageSquare,
+        icon: ImageSquareIcon,
         value: '',
     },
 };
@@ -34,7 +34,7 @@ export const Disabled: Story = {
     render: (args: ComponentProps<typeof Input>) => <InnerComponent {...args} />,
     args: {
         placeholder: 'Write an input...',
-        icon: ImageSquare,
+        icon: ImageSquareIcon,
         value: '',
         disabled: true,
     },

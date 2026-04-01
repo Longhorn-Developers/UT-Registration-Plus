@@ -1,5 +1,4 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { ArrowsClockwise, CalendarDots, Export, FileCode, FilePng, FileText, Sidebar } from '@phosphor-icons/react';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
@@ -15,6 +14,13 @@ import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
 import type { JSX } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import ArrowsClockwiseIcon from '~icons/ph/arrows-clockwise';
+import CalendarDotsIcon from '~icons/ph/calendar-dots';
+import ExportIcon from '~icons/ph/export';
+import FileCodeIcon from '~icons/ph/file-code';
+import FilePngIcon from '~icons/ph/file-png';
+import FileTextIcon from '~icons/ph/file-text';
+import SidebarIcon from '~icons/ph/sidebar';
 
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
 
@@ -99,7 +105,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     color='theme-black'
                     onClick={onSidebarToggle}
                     className='screenshot:hidden'
-                    icon={Sidebar}
+                    icon={SidebarIcon}
                 />
             )}
 
@@ -124,7 +130,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             color='ut-black'
                             size='small'
                             variant='minimal'
-                            icon={Export}
+                            icon={ExportIcon}
                             className='bg-transparent'
                         >
                             Export
@@ -149,7 +155,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                 color='ut-black'
                                 size='small'
                                 variant='minimal'
-                                icon={FilePng}
+                                icon={FilePngIcon}
                             >
                                 Save as .png
                             </MenuItem>
@@ -160,7 +166,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                 color='ut-black'
                                 size='small'
                                 variant='minimal'
-                                icon={CalendarDots}
+                                icon={CalendarDotsIcon}
                             >
                                 Save as .cal
                             </MenuItem>
@@ -171,7 +177,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                 color='ut-black'
                                 size='small'
                                 variant='minimal'
-                                icon={FileCode}
+                                icon={FileCodeIcon}
                             >
                                 Save as .json
                             </MenuItem>
@@ -182,7 +188,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                 color='ut-black'
                                 size='small'
                                 variant='minimal'
-                                icon={FileText}
+                                icon={FileTextIcon}
                             >
                                 Save as .txt
                             </MenuItem>
@@ -209,7 +215,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             color='ut-black'
                             size='small'
                             variant='minimal'
-                            icon={ArrowsClockwise}
+                            icon={ArrowsClockwiseIcon}
                             iconProps={{
                                 className: clsx({
                                     'animate-spin animate-duration-800': isRefreshing,

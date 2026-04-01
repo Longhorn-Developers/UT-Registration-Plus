@@ -1,4 +1,3 @@
-import { ClockUser, LockKey, Palette, Prohibit } from '@phosphor-icons/react';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
@@ -9,6 +8,10 @@ import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule
 import clsx from 'clsx';
 import type React from 'react';
 import { useEffect, useRef } from 'react';
+import ClockUserFillIcon from '~icons/ph/clock-user-fill';
+import LockKeyFillIcon from '~icons/ph/lock-key-fill';
+import PaletteFillIcon from '~icons/ph/palette-fill';
+import ProhibitFillIcon from '~icons/ph/prohibit-fill';
 
 import { Button } from '../common/Button';
 import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellColorPicker';
@@ -82,11 +85,11 @@ export default function CalendarCourseCell({
     let rightIcon: React.ReactNode | null = null;
     if (enableCourseStatusChips) {
         if (status === Status.WAITLISTED) {
-            rightIcon = <ClockUser weight='fill' className='h-5 w-5' />;
+            rightIcon = <ClockUserFillIcon className='h-5 w-5' />;
         } else if (status === Status.CLOSED) {
-            rightIcon = <LockKey weight='fill' className='h-5 w-5' />;
+            rightIcon = <LockKeyFillIcon className='h-5 w-5' />;
         } else if (status === Status.CANCELLED) {
-            rightIcon = <Prohibit weight='fill' className='h-5 w-5' />;
+            rightIcon = <ProhibitFillIcon className='h-5 w-5' />;
         }
     }
 
@@ -165,10 +168,9 @@ export default function CalendarCourseCell({
                                 setSelectedCourse(courseID, dayIndex, startIndex);
                             }
                         }}
-                        icon={Palette}
+                        icon={PaletteFillIcon}
                         iconProps={{
                             fill: colors.secondaryColor,
-                            weight: 'fill',
                         }}
                         variant='outline'
                         className={clsx(

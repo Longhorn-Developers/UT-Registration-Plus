@@ -2,7 +2,6 @@
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
-import { CalendarDots } from '@phosphor-icons/react';
 // Shared
 import { background } from '@shared/messages';
 import { DevStore } from '@shared/storage/DevStore';
@@ -28,7 +27,7 @@ import {
 // Misc
 import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
+import CalendarDotsIcon from '~icons/ph/calendar-dots';
 // Icons
 import GitMergeIcon from '~icons/ph/git-merge';
 
@@ -233,7 +232,7 @@ export default function Settings(): React.JSX.Element {
                     <Button
                         variant='minimal'
                         size='small'
-                        icon={CalendarDots}
+                        icon={CalendarDotsIcon}
                         color='ut-black'
                         title='Open Calendar'
                         onClick={() => background.switchToCalendarTab({})}
