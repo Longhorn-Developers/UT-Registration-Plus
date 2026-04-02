@@ -97,6 +97,26 @@ export type LD_SWE_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_SWE)[number]['
  */
 export type LD_ADMIN_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_ADMINS)[number]['githubUsername'];
 
+export const UTRP_LEADS = [
+    {
+        name: 'Margaret Cartee',
+        role: ['UTRP Product Lead', 'Product Lead'],
+        githubUsername: 'margaret-ca',
+    },
+    {
+        name: 'Hannah Ha',
+        role: ['UTRP Product Lead', 'Product Lead'],
+        githubUsername: 'songhannahha-hub',
+    },
+    {
+        name: 'Leslie Looi',
+        role: ['UTRP UX Design Lead', 'UX Design Lead'],
+        githubUsername: 'lesliewlooi',
+    },
+] as const satisfies TeamMember[];
+
+export type UTRP_LEAD_GITHUB_USERNAMES = (typeof UTRP_LEADS)[number]['githubUsername'];
+
 /**
  * Service for fetching GitHub statistics.
  */
