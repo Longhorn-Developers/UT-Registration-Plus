@@ -8,6 +8,11 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
+    render: args => (
+        <div className='w-3xl max-w-[90vw]'>
+            <CalendarHeader {...args} />
+        </div>
+    ),
 } satisfies Meta<typeof CalendarHeader>;
 
 export default meta;

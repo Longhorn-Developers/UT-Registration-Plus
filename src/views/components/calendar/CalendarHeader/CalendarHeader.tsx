@@ -96,8 +96,8 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
 
     return (
         <div
-            style={{ scrollbarGutter: 'stable' }}
-            className='sticky left-0 right-0 top-0 z-10 min-h-[75px] flex items-center gap-5 overflow-x-auto overflow-y-hidden bg-white pl-spacing-7 pt-spacing-5 pb-1'
+            style={{ scrollbarGutter: 'auto' }}
+            className='sticky left-0 right-0 top-0 z-10 min-h-[75px] flex items-center gap-5 oveflow-x-auto overflow-y-hidden bg-white pl-spacing-7 pt-spacing-5 pb-1'
         >
             {!sidebarOpen && (
                 <Button
@@ -113,17 +113,17 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
             <LargeLogo className='hidden! screenshot:flex!' />
             <Divider className='self-center hidden! screenshot:block!' size='2.5rem' orientation='vertical' />
 
-            <div className='min-w-[11.5rem] screenshot:transform-origin-left screenshot:scale-120'>
+            <div className='truncate overflow-hidden flex-initial min-w-[min-content] screenshot:transform-origin-left screenshot:scale-120'>
                 <ScheduleTotalHoursAndCourses
                     scheduleName={activeSchedule.name}
                     totalHours={activeSchedule.hours}
                     totalCourses={activeSchedule.courses.length}
                 />
+                {/*<div className="inline truncate min-w-0 inline-block flex-1">Hello world please truncate me</div>*/}
             </div>
             <Divider className='self-center screenshot:hidden' size='1.75rem' orientation='vertical' />
-            {/* min-w-[310px] is the value with all the buttons */}
-            <div className={clsx(styles.cqInline, 'flex flex-1 gap-5 min-w-[45x] screenshot:hidden')}>
-                <div className={clsx(styles.primaryActions, 'min-w-fit flex gap-5')}>
+            <div className={clsx(styles.cqInline, 'flex grow shrink-0 gap-5 overflow-hidden screenshot:hidden')}>
+                <div className={clsx(styles.primaryActions, 'flex min-w-max gap-5')}>
                     <QuickAddModal />
                     <Menu>
                         <MenuButton className='bg-transparent'>
@@ -204,12 +204,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     </Button> */}
                 </div>
                 {hasRightHandSide && <Divider className='self-center' size='1.75rem' orientation='vertical' />}
-                <div
-                    className={clsx(
-                        styles.secondaryActions,
-                        'min-w-fit flex flex-1 items-center justify-end gap-3 self-start'
-                    )}
-                >
+                <div className={clsx(styles.secondaryActions, 'flex items-center gap-3 ml-auto')}>
                     {enableDataRefreshing && lastCheckedText && (
                         <Text variant='mini' className='whitespace-nowrap text-theme-black/50 !font-normal'>
                             Last checked: {lastCheckedText}
