@@ -82,8 +82,8 @@ export const LONGHORN_DEVELOPERS_SWE = [
         role: ['LHD Alumni'],
         githubUsername: 'Lukas-Zenick',
     },
-    { name: 'Vinson', role: ['LHD Alumni'], githubUsername: 'vinsonzheng499' },
-    { name: 'Vivek', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
+    { name: 'Vinson Zheng', role: ['LHD Alumni'], githubUsername: 'vinsonzheng499' },
+    { name: 'Vivek Malle', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
     { name: 'Ethan Lanting', role: ['LHD Alumni'], githubUsername: 'EthanL06' },
 ] as const satisfies TeamMember[];
 

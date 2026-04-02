@@ -19,7 +19,7 @@ import Text from '@views/components/common/Text/Text';
 // Hooks
 import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
-import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
+import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE, UTRP_LEADS, UTRP_ALUMNI } from '@views/lib/getGitHubStats';
 // Misc
 import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -193,8 +193,9 @@ export default function Settings(): JSX.Element {
     }, []);
 
     const sortedContributors = useMemo(() => {
-        if (!githubStats) return LONGHORN_DEVELOPERS_SWE;
-        return [...LONGHORN_DEVELOPERS_SWE].sort(
+        const base = [...LONGHORN_DEVELOPERS_SWE, ...UTRP_LEADS, ...UTRP_ALUMNI];
+        if (!githubStats) return base;
+        return [...base].sort(
             (a, b) =>
                 (githubStats.userGitHubStats[b.githubUsername]?.commits ?? 0) -
                 (githubStats.userGitHubStats[a.githubUsername]?.commits ?? 0)
@@ -203,16 +204,15 @@ export default function Settings(): JSX.Element {
 
     const additionalContributors = useMemo(() => {
         if (!githubStats) return [];
+        const knownUsernames = new Set<string>([
+            ...LONGHORN_DEVELOPERS_ADMINS.map(a => a.githubUsername),
+            ...LONGHORN_DEVELOPERS_SWE.map(s => s.githubUsername),
+            ...UTRP_LEADS.map(l => l.githubUsername),
+            ...UTRP_ALUMNI.map(a => a.githubUsername),
+        ]);
         return Object.keys(githubStats.userGitHubStats)
-            .filter(
-                username =>
-                    !LONGHORN_DEVELOPERS_ADMINS.some(admin => admin.githubUsername === username) &&
-                    !LONGHORN_DEVELOPERS_SWE.some(swe => swe.githubUsername === username)
-            )
-            .sort(
-                (a, b) =>
-                    (githubStats.userGitHubStats[b]?.commits ?? 0) - (githubStats.userGitHubStats[a]?.commits ?? 0)
-            );
+            .filter(username => !knownUsernames.has(username))
+            .sort((a, b) => (githubStats.userGitHubStats[b]?.commits ?? 0) - (githubStats.userGitHubStats[a]?.commits ?? 0));
     }, [githubStats]);
 
     if (devMode) {
@@ -399,6 +399,7 @@ export default function Settings(): JSX.Element {
                             </>
                         )}
                     </section>
+
                 </div>
 
                 <Divider className='lg:hidden' size='auto' orientation='horizontal' />
@@ -451,6 +452,7 @@ export default function Settings(): JSX.Element {
                                   ))}
                         </div>
                     </section>
+
                 </section>
             </div>
         </div>
