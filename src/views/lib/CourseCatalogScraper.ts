@@ -149,7 +149,7 @@ export class CourseCatalogScraper {
      * @returns the number of credit hours the course is worth
      */
     getCreditHours(courseNumberRaw: string): number {
-        let courseChars = courseNumberRaw.split('');
+        const courseChars = courseNumberRaw.split('');
         let creditHours = Number(['f', 's', 'n', 'w'].includes(courseChars[0] || '') ? courseChars[1] : courseChars[0]);
         const lastChar = courseNumberRaw.slice(-1);
 
@@ -165,7 +165,7 @@ export class CourseCatalogScraper {
                 break;
         }
 
-        return (Number.isNaN(creditHours) ? 0 : creditHours);
+        return Number.isNaN(creditHours) ? 0 : creditHours;
     }
 
     /**
