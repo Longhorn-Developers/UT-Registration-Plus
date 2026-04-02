@@ -23,12 +23,10 @@ export default function ScheduleTotalHoursAndCourses({
     totalCourses,
 }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div className='w-full flex flex-col items-start gap-0.5'>
-            <div className='max-w-full overflow-hidden'>
-                <Text className='block w-full truncate text-theme-black' variant='h1' as='span'>
-                    {scheduleName}
-                </Text>
-            </div>
+        <div className='gap-0.5 grid'>
+            <Text className='block truncate text-theme-black flex-initial overflow-hidden' variant='h1' as='div'>
+                {scheduleName}
+            </Text>
             <Text variant='h4' as='p' className='text-ut-burntorange inline-flex gap-3'>
                 <span>
                     {totalHours}&nbsp;
