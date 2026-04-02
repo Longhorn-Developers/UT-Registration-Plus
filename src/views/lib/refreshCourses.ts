@@ -7,8 +7,6 @@ import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { SiteSupport } from '@views/lib/getSiteSupport';
 
-const UTRP_LOGIN_URL = 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/';
-
 /**
  * Scrapes a single course page and returns the parsed Course, or null on failure.
  */
@@ -77,7 +75,7 @@ export default async function refreshCourses(): Promise<boolean> {
         return true;
     }
 
-    const loggedIn = await validateLoginStatus(UTRP_LOGIN_URL);
+    const loggedIn = await validateLoginStatus();
     if (!loggedIn) return false;
 
     const updatedCourses = await refreshScheduleCourses(activeSchedule);
