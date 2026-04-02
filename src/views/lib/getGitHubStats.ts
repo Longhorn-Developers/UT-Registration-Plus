@@ -100,22 +100,37 @@ export type LD_ADMIN_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_ADMINS)[numb
 export const UTRP_LEADS = [
     {
         name: 'Margaret Cartee',
-        role: ['UTRP Product Lead', 'Product Lead'],
+        role: ['UTRP Product Lead'],
         githubUsername: 'margaret-ca',
     },
     {
         name: 'Hannah Ha',
-        role: ['UTRP Product Lead', 'Product Lead'],
+        role: ['UTRP Product Lead'],
         githubUsername: 'songhannahha-hub',
     },
     {
         name: 'Leslie Looi',
-        role: ['UTRP UX Design Lead', 'UX Design Lead'],
+        role: ['UTRP UX Design Lead'],
         githubUsername: 'lesliewlooi',
     },
 ] as const satisfies TeamMember[];
 
 export type UTRP_LEAD_GITHUB_USERNAMES = (typeof UTRP_LEADS)[number]['githubUsername'];
+
+    export const UTRP_ALUMNI = [
+        {
+            name: 'Jessica Zhu',
+            role: ['LHD Alumni'],
+            githubUsername: 'zhuujessica',
+        },
+        {
+            name: 'Vivek Malle',
+            role: ['LHD Alumni'],
+            githubUsername: 'vivek12311',
+        },
+    ] as const satisfies TeamMember[];
+
+    export type UTRP_ALUMNI_GITHUB_USERNAMES = (typeof UTRP_ALUMNI)[number]['githubUsername'];
 
 /**
  * Service for fetching GitHub statistics.
