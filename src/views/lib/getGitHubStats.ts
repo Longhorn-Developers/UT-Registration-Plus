@@ -124,9 +124,9 @@ export type UTRP_LEAD_GITHUB_USERNAMES = (typeof UTRP_LEADS)[number]['githubUser
             githubUsername: 'zhuujessica',
         },
         {
-            name: 'Vivek Malle',
+            name: 'Samhith Dharani',
             role: ['LHD Alumni'],
-            githubUsername: 'vivek12311',
+            githubUsername: '',
         },
     ] as const satisfies TeamMember[];
 
