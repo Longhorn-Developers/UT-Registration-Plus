@@ -1,4 +1,5 @@
 import { ExtensionStore } from '@shared/storage/ExtensionStore';
+import Spinner from '@views/components/common/Spinner';
 import Text from '@views/components/common/Text/Text';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import type { ComponentType, SVGProps } from 'react';
@@ -16,6 +17,7 @@ import PlusIcon from '~icons/ph/plus-circle';
  * It should be incremented every time the "What's New" popup is updated.
  */
 const WHATSNEW_POPUP_VERSION = 3;
+const ACTIVE_WHATSNEW_POPUP_VERSION_KEY = 'activeWhatsNewPopupVersion';
 
 const WHATSNEW_VIDEO_URL = 'https://cdn.longhorns.dev/quickaddhero.mp4';
 
@@ -64,6 +66,7 @@ const NEW_FEATURES = [
  */
 export default function WhatsNewPopupContent(): JSX.Element {
     const [videoError, setVideoError] = useState(false);
+    const [videoLoaded, setVideoLoaded] = useState(false);
 
     return (
         <div className='w-full flex flex-row justify-between'>
@@ -83,7 +86,7 @@ export default function WhatsNewPopupContent(): JSX.Element {
                         </div>
                     ))}
                 </div>
-                <div className='h-full max-w-[464px] w-full flex items-center justify-center'>
+                <div className='relative h-full max-w-[464px] w-full flex items-center justify-center'>
                     {videoError ? (
                         <div className='h-full w-full flex items-center justify-center border border-ut-offwhite/50 rounded'>
                             <div className='flex flex-col items-center justify-center p-spacing-2'>
@@ -94,14 +97,22 @@ export default function WhatsNewPopupContent(): JSX.Element {
                             </div>
                         </div>
                     ) : (
-                        <video
-                            className='h-fit w-full flex items-center justify-center border border-ut-offwhite/50 rounded object-cover aspect-video'
-                            autoPlay
-                            loop
-                            muted
-                        >
-                            <source src={WHATSNEW_VIDEO_URL} type='video/mp4' onError={() => setVideoError(true)} />
-                        </video>
+                        <>
+                            {!videoLoaded && (
+                                <div className='absolute inset-0 z-0 flex items-center justify-center border border-ut-offwhite/50 rounded bg-white/80'>
+                                    <Spinner className='h-10 w-10 text-ut-burntorange' />
+                                </div>
+                            )}
+                            <video
+                                className='relative z-10 h-fit w-full flex items-center justify-center border border-ut-offwhite/50 rounded object-cover aspect-video'
+                                autoPlay
+                                loop
+                                muted
+                                onLoadedData={() => setVideoLoaded(true)}
+                            >
+                                <source src={WHATSNEW_VIDEO_URL} type='video/mp4' onError={() => setVideoError(true)} />
+                            </video>
+                        </>
                     )}
                 </div>
             </div>
@@ -129,14 +140,27 @@ export function WhatsNewDialog(): null {
     // biome-ignore lint/correctness/useExhaustiveDependencies: This is on purpose
     useEffect(() => {
         const checkUpdate = async () => {
-            const version = await ExtensionStore.get('lastWhatsNewPopupVersion');
-            if (version !== WHATSNEW_POPUP_VERSION) {
-                await ExtensionStore.set('lastWhatsNewPopupVersion', WHATSNEW_POPUP_VERSION);
-                showPopUp();
+            const [version, sessionStorage] = await Promise.all([
+                ExtensionStore.get('lastWhatsNewPopupVersion'),
+                chrome.storage.session.get(ACTIVE_WHATSNEW_POPUP_VERSION_KEY),
+            ]);
+            const activeVersion = sessionStorage[ACTIVE_WHATSNEW_POPUP_VERSION_KEY];
+            if (version !== WHATSNEW_POPUP_VERSION && activeVersion !== WHATSNEW_POPUP_VERSION) {
+                await chrome.storage.session.set({
+                    [ACTIVE_WHATSNEW_POPUP_VERSION_KEY]: WHATSNEW_POPUP_VERSION,
+                });
+                showPopUp({
+                    onClose: async () => {
+                        await Promise.all([
+                            ExtensionStore.set('lastWhatsNewPopupVersion', WHATSNEW_POPUP_VERSION),
+                            chrome.storage.session.remove(ACTIVE_WHATSNEW_POPUP_VERSION_KEY),
+                        ]);
+                    },
+                });
             }
         };
 
-        checkUpdate();
+        void checkUpdate();
 
         // This is on purpose
     }, []);
