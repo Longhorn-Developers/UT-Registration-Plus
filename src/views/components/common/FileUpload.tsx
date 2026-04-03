@@ -115,8 +115,8 @@ export default function FileUpload({
                     backgroundColor: `rgb(${colorRgb} / var(--un-bg-opacity))`,
                 }}
                 className={clsx(
-                    // todo: match focus styling to rest of buttons
-                    // todo: have active: state actually activate on click (shrink the button)
+                    // TODO: match focus styling to rest of buttons
+                    // TODO: have active: state actually activate on click (shrink the button)
                     'btn group-focus-within:outline group-focus-within:outline-2 group-focus-within:outline-offset-2 group-focus-within:outline-blue-400',
                     {
                         'ring-2 ring-offset-2 ring-blue-400': isDragging && !disabled,
