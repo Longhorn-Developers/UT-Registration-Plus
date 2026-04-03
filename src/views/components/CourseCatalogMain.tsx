@@ -25,8 +25,8 @@ interface Props {
  */
 export default function CourseCatalogMain({ support }: Props): JSX.Element | null {
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
-    const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-    const [showPopup, setShowPopup] = useState(false);
+    const [course, setCourse] = useState<Course | null>(null);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [enableScrollToLoad, setEnableScrollToLoad] = useState<boolean>(false);
     const prevCourseTitleRef = useRef<string | null>(null);
     // biome-ignore lint/style/noNonNullAssertion: TODO: add checks
@@ -35,12 +35,6 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
     useEffect(() => {
         populateSearchInputs();
     }, []);
-
-    useEffect(() => {
-        if (selectedCourse) {
-            setShowPopup(true);
-        }
-    }, [selectedCourse]);
 
     useEffect(() => {
         const tableRows = getCourseTableRows(document);
@@ -72,8 +66,9 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
         setRows([...rows, ...newRows]);
     };
 
-    const handleRowButtonClick = (course: Course) => () => {
-        setSelectedCourse(course);
+    const openCoursePopup = (course: Course) => () => {
+        setCourse(course);
+        setIsPopupOpen(true);
     };
 
     const [activeSchedule] = useSchedules();
@@ -94,18 +89,18 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
                             <TableRow
                                 key={row.course.uniqueId}
                                 row={row}
-                                isSelected={row.course.uniqueId === selectedCourse?.uniqueId}
+                                isSelected={row.course.uniqueId === course?.uniqueId}
                                 activeSchedule={activeSchedule}
-                                onClick={handleRowButtonClick(row.course)}
+                                onClick={openCoursePopup(row.course)}
                             />
                         )
                 )}
                 <CourseCatalogInjectedPopup
-                    // biome-ignore lint/style/noNonNullAssertion: selectedCourse is always defined when showPopup is true
-                    course={selectedCourse!}
-                    show={showPopup}
-                    onClose={() => setShowPopup(false)}
-                    afterLeave={() => setSelectedCourse(null)}
+                    // biome-ignore lint/style/noNonNullAssertion: course is always defined when the popup is open
+                    course={course!}
+                    open={isPopupOpen}
+                    onClose={() => setIsPopupOpen(false)}
+                    afterLeave={() => setCourse(null)}
                 />
                 {enableScrollToLoad && <AutoLoad addRows={addRows} />}
             </DialogProvider>
