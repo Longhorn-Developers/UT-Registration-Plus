@@ -32,6 +32,14 @@ interface AdvancedSettingsProps {
     handleImportClick: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
 }
 
+function BetaChip() {
+    return (
+        <span className='mx-2 border border-ut-burntorange rounded px-2 py-0.5 text-xs text-ut-burntorange font-medium'>
+            BETA
+        </span>
+    );
+}
+
 /**
  * Settings section component for advanced settings
  */
@@ -59,36 +67,39 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                            Export Current Schedule
+                            Enable Course Refresh
+                            <BetaChip />
                         </Text>
-                        <p className='text-sm text-gray-600'>Backup your active schedule to a portable file</p>
+                        <p className='text-sm text-gray-600'>
+                            Show a refresh button in the calendar to re-scrape course data from UT&apos;s site.
+                        </p>
                     </div>
-                    <Button
-                        variant='outline'
-                        color='ut-burntorange'
-                        onClick={() => handleExportJson(activeSchedule.id)}
-                    >
-                        Export
-                    </Button>
+                    <SwitchButton
+                        isChecked={enableDataRefreshing}
+                        onChange={() => {
+                            setEnableDataRefreshing(!enableDataRefreshing);
+                            OptionsStore.set('enableDataRefreshing', !enableDataRefreshing);
+                        }}
+                    />
                 </div>
-
-                <Divider size='auto' orientation='horizontal' />
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                            Import Schedule
+                            Course Status Indicators
+                            <BetaChip />
                         </Text>
-                        <p className='text-sm text-gray-600'>Import from a schedule file</p>
+                        <p className='text-sm text-gray-600'>
+                            Show waitlisted, cancelled, and closed status on courses.
+                        </p>
                     </div>
-                    <FileUpload
-                        variant='filled'
-                        color='ut-burntorange'
-                        onChange={handleImportClick}
-                        accept={MIMEType.JSON}
-                    >
-                        Import Schedule
-                    </FileUpload>
+                    <SwitchButton
+                        isChecked={enableCourseStatusChips}
+                        onChange={() => {
+                            setEnableCourseStatusChips(!enableCourseStatusChips);
+                            OptionsStore.set('enableCourseStatusChips', !enableCourseStatusChips);
+                        }}
+                    />
                 </div>
 
                 <Divider size='auto' orientation='horizontal' />
@@ -116,7 +127,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                            Load All Courses in Course Schedule
+                            Load Courses Automatically on Scroll
                         </Text>
                         <p className='text-sm text-gray-600'>
                             Loads all courses in the Course Schedule site by scrolling, instead of using next/prev page
@@ -128,27 +139,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         onChange={() => {
                             setLoadAllCourses(!loadAllCourses);
                             OptionsStore.set('enableScrollToLoad', !loadAllCourses);
-                        }}
-                    />
-                </div>
-
-                <Divider size='auto' orientation='horizontal' />
-
-                <div className='flex items-center justify-between'>
-                    <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                            Allow more than 10 schedules
-                        </Text>
-                        <p className='text-sm text-gray-600'>
-                            Allow bypassing the 10-schedule limit. Intended for advisors or staff who need to create
-                            many schedules on behalf of students.
-                        </p>
-                    </div>
-                    <SwitchButton
-                        isChecked={increaseScheduleLimit}
-                        onChange={() => {
-                            setIncreaseScheduleLimit(!increaseScheduleLimit);
-                            OptionsStore.set('allowMoreSchedules', !increaseScheduleLimit);
                         }}
                     />
                 </div>
@@ -179,39 +169,53 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                            Enable Course Refresh
+                            Allow more than 10 schedules
                         </Text>
                         <p className='text-sm text-gray-600'>
-                            Show a refresh button in the calendar to re-scrape course data from UT&apos;s site.
+                            Allow bypassing the 10-schedule limit. Intended for advisors or staff who need to create
+                            many schedules on behalf of students.
                         </p>
                     </div>
                     <SwitchButton
-                        isChecked={enableDataRefreshing}
+                        isChecked={increaseScheduleLimit}
                         onChange={() => {
-                            setEnableDataRefreshing(!enableDataRefreshing);
-                            OptionsStore.set('enableDataRefreshing', !enableDataRefreshing);
+                            setIncreaseScheduleLimit(!increaseScheduleLimit);
+                            OptionsStore.set('allowMoreSchedules', !increaseScheduleLimit);
                         }}
                     />
                 </div>
 
-                <Divider size='auto' orientation='horizontal' />
+                <div className='flex items-center justify-between'>
+                    <div className='max-w-xs'>
+                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                            Export Current Schedule
+                        </Text>
+                        <p className='text-sm text-gray-600'>Backup your active schedule to a portable file</p>
+                    </div>
+                    <Button
+                        variant='outline'
+                        color='ut-burntorange'
+                        onClick={() => handleExportJson(activeSchedule.id)}
+                    >
+                        Export
+                    </Button>
+                </div>
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                            Course Status Indicators
+                            Import Schedule
                         </Text>
-                        <p className='text-sm text-gray-600'>
-                            Show waitlisted, cancelled, and closed status on courses.
-                        </p>
+                        <p className='text-sm text-gray-600'>Import from a schedule file</p>
                     </div>
-                    <SwitchButton
-                        isChecked={enableCourseStatusChips}
-                        onChange={() => {
-                            setEnableCourseStatusChips(!enableCourseStatusChips);
-                            OptionsStore.set('enableCourseStatusChips', !enableCourseStatusChips);
-                        }}
-                    />
+                    <FileUpload
+                        variant='outline'
+                        color='ut-burntorange'
+                        onChange={handleImportClick}
+                        accept={MIMEType.JSON}
+                    >
+                        Import
+                    </FileUpload>
                 </div>
 
                 <Divider size='auto' orientation='horizontal' />
