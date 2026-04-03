@@ -126,7 +126,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             <div className='relative'>
                 <button
                     type='button'
-                    className='m1 h-6 w-6 flex items-center justify-center rounded bg-ut-burntorange color-white!'
+                    className='m1 h-6 w-6 flex items-center justify-center rounded bg-ut-burntorange color-white! cursor-pointer'
                     onClick={onClick}
                 >
                     <ChartBar className='text-ut-white h-4 w-4' weight='fill' />
