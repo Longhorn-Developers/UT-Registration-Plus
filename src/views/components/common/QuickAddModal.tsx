@@ -31,9 +31,7 @@ export default function QuickAddModal(): JSX.Element {
     const statusMessage = STATUS_MESSAGES[courseResult.status];
 
     const handleQuickAdd = () => {
-        background.validateLoginStatus({
-            url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/',
-        });
+        background.validateLoginStatus();
     };
 
     const handleAddCourse = async () => {

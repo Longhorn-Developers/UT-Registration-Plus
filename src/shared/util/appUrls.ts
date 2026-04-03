@@ -17,3 +17,9 @@ export const UT_DINING_GOOGLE_PLAY_URL = ''; // Placeholder for Google Play URL,
  * URL to the promo image
  */
 export const UT_DINING_PROMO_IMAGE_URL = new URL('https://cdn.longhorns.dev/ut-dining-advert1.png').toString();
+
+/**
+ * URL used to validate and initiate login with the UT Registrar.
+ * A successful fetch (without redirect) indicates the user is authenticated.
+ */
+export const UTRP_LOGIN_URL = 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/';
