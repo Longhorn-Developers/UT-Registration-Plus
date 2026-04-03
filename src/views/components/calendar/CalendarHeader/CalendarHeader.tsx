@@ -1,6 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ArrowsClockwise, CalendarDots, Export, FileCode, FilePng, FileText, Sidebar } from '@phosphor-icons/react';
-import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
@@ -12,12 +11,13 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import Text from '@views/components/common/Text/Text';
 import useRelativeTime from '@views/hooks/useRelativeTime';
 import useSchedules from '@views/hooks/useSchedules';
+import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
 
-interface CalendarHeaderProps {
+export interface CalendarHeaderProps {
     sidebarOpen?: boolean;
     onSidebarToggle?: () => void;
 }
@@ -44,15 +44,22 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
 
     const isCooldown = cooldownIds.has(activeSchedule.id);
     const hasRightHandSide = enableDataRefreshing;
+    const isRefreshingRef = useRef(false);
+    isRefreshingRef.current = isRefreshing;
 
-    const handleRefresh = async () => {
+    const handleRefresh = useCallback(async () => {
         setIsRefreshing(true);
         // Ensure the spinner is visible long enough to provide visual feedback
         const minSpin = new Promise(r => setTimeout(r, 400));
         try {
-            await Promise.all([background.refreshCourses({}), minSpin]);
+            await chrome.storage.session.set({ pendingRefresh: true });
+            const [success] = await Promise.all([refreshCourses(), minSpin]);
+            if (success) {
+                await chrome.storage.session.remove('pendingRefresh');
+            }
         } catch (error) {
             console.error('Failed to refresh courses:', error);
+            await chrome.storage.session.remove('pendingRefresh');
         } finally {
             setIsRefreshing(false);
             const scheduleId = activeSchedule.id;
@@ -65,7 +72,27 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 });
             }, 3000);
         }
-    };
+    }, [activeSchedule]);
+
+    // Auto-retry refresh after login redirect
+    useEffect(() => {
+        const checkPendingRefresh = async () => {
+            const { pendingRefresh } = await chrome.storage.session.get('pendingRefresh');
+            if (pendingRefresh && !isRefreshingRef.current) {
+                handleRefresh();
+            }
+        };
+
+        checkPendingRefresh();
+
+        const onVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                checkPendingRefresh();
+            }
+        };
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+    }, [handleRefresh]);
 
     return (
         <div

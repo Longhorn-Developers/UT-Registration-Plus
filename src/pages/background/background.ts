@@ -1,6 +1,7 @@
 import { MessageListener } from '@chrome-extension-toolkit';
 import type { BACKGROUND_MESSAGES } from '@shared/messages';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import updateBadgeText from '@shared/util/updateBadgeText';
 
 import onInstall from './events/onInstall';
@@ -10,7 +11,6 @@ import browserActionHandler from './handler/browserActionHandler';
 import CESHandler from './handler/CESHandler';
 import calendarBackgroundHandler from './handler/calendarBackgroundHandler';
 import gitHubStatsHandler from './handler/gitHubStatsHandler';
-import statusCheckerHandler from './handler/statusCheckerHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
 import userScheduleHandler from './handler/userScheduleHandler';
 
@@ -45,7 +45,7 @@ chrome.runtime.onInstalled.addListener(details => {
 // migration/login logic
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
     // console.log(changeInfo);
-    if (changeInfo.url === 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/') {
+    if (changeInfo.url === UTRP_LOGIN_URL) {
         function openPopupAction() {
             chrome.tabs.onActivated.removeListener(openPopupAction);
             chrome.action.openPopup();
@@ -64,7 +64,6 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...CESHandler,
     ...calendarBackgroundHandler,
     ...gitHubStatsHandler,
-    ...statusCheckerHandler,
 });
 
 messageListener.listen();

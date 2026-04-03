@@ -35,9 +35,7 @@ export async function getUTRPv1Courses(): Promise<string[]> {
  * @returns A promise that resolves when the migration is complete.
  */
 async function migrateUTRPv1Courses() {
-    const loggedInToUT = await validateLoginStatus(
-        'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/'
-    );
+    const loggedInToUT = await validateLoginStatus();
 
     if (!loggedInToUT) {
         console.warn('Not logged in to UT Registrar.');
