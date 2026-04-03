@@ -184,11 +184,11 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                     >
                         {isActive ? (
                             <RadioButton
-                                className='h-7.5 w-7.5 shrink-0 btn-transition active:scale-95'
+                                className='h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95'
                                 weight='fill'
                             />
                         ) : (
-                            <Circle className='h-7.5 w-7.5 shrink-0 btn-transition active:scale-95' />
+                            <Circle className='h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
                         )}
                         {isEditing && (
                             <Text
