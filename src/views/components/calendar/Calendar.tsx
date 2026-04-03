@@ -16,7 +16,6 @@ import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
-import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
@@ -34,11 +33,9 @@ import CalendarFooter from './CalendarFooter';
 export default function Calendar(): ReactNode {
     const { courseCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
     const displayBottomBar = true;
-
-    const [course, setCourse] = useState<Course | null>(useCourseFromUrl());
-
-    const [showPopup, setShowPopup] = useState<boolean>(course !== null);
-    const _showWhatsNewDialog = useWhatsNewPopUp();
+    const initialCourse = useCourseFromUrl();
+    const [course, setCourse] = useState<Course | null>(initialCourse);
+    const [isPopupOpen, setIsPopupOpen] = useState<boolean>(initialCourse !== null);
     const showReportIssueDialog = useReportIssueDialog();
 
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
@@ -68,7 +65,7 @@ export default function Calendar(): ReactNode {
                 if (course === undefined) return;
 
                 setCourse(course);
-                setShowPopup(true);
+                setIsPopupOpen(true);
 
                 const currentTab = await chrome.tabs.getCurrent();
                 if (currentTab === undefined) return;
@@ -81,9 +78,10 @@ export default function Calendar(): ReactNode {
         return () => listener.unlisten();
     }, [activeSchedule]);
 
-    useEffect(() => {
-        if (course) setShowPopup(true);
-    }, [course]);
+    const openCourse = (course: Course) => {
+        setCourse(course);
+        setIsPopupOpen(true);
+    };
 
     // --- Reset drag state when dragging leaves the window ---
     // TODO - Refactor this and FileUpload.tsx, they use similar things and it would be optimal later on to maybe extract this all somewhere
@@ -264,12 +262,12 @@ export default function Calendar(): ReactNode {
                         >
                             <CalendarGrid
                                 courseCells={courseCells}
-                                setCourse={setCourse}
+                                setCourse={openCourse}
                                 startMinutes={startMinutes}
                                 endMinutes={endMinutes}
                             />
                         </div>
-                        <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
+                        <CalendarBottomBar courseCells={courseCells} setCourse={openCourse} />
                     </div>
                 </div>
 
@@ -278,8 +276,8 @@ export default function Calendar(): ReactNode {
                     // Let's try to refactor this
                     // biome-ignore lint/style/noNonNullAssertion: course is always defined when showPopup is true
                     course={course!}
-                    onClose={() => setShowPopup(false)}
-                    open={showPopup}
+                    onClose={() => setIsPopupOpen(false)}
+                    open={isPopupOpen}
                     afterLeave={() => setCourse(null)}
                 />
             </div>

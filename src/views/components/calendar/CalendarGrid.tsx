@@ -19,7 +19,7 @@ interface Props {
     startMinutes?: number;
     endMinutes?: number;
     saturdayClass?: boolean;
-    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
+    setCourse: (course: Course) => void;
 }
 
 function CalendarHour({ hour }: { hour: number }) {
@@ -113,7 +113,7 @@ export default function CalendarGrid({
 
 interface AccountForCourseConflictsProps {
     courseCells: CalendarGridCourse[];
-    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
+    setCourse: (course: Course) => void;
 }
 
 // TODO: Possibly refactor to be more concise
