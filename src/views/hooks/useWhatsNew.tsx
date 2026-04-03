@@ -6,17 +6,21 @@ import { useDialog } from '@views/contexts/DialogContext';
 
 import useChangelog from './useChangelog';
 
+type WhatsNewPopupOptions = {
+    onClose?: () => void | Promise<void>;
+};
+
 /**
  * Custom hook that provides a function to display a what's new dialog.
  *
  * @returns A function that, when called, shows a dialog with the changelog.
  */
-export default function useWhatsNewPopUp(): () => void {
+export default function useWhatsNewPopUp(): (options?: WhatsNewPopupOptions) => void {
     const showDialog = useDialog();
     const showChangeLog = useChangelog();
     const { version } = chrome.runtime.getManifest();
 
-    const showPopUp = () => {
+    const showPopUp = (options?: WhatsNewPopupOptions) => {
         showDialog(close => ({
             className: 'w-[830px] flex flex-col items-center gap-spacing-7 p-spacing-8',
             title: (
@@ -38,6 +42,7 @@ export default function useWhatsNewPopUp(): () => void {
                     </Button>
                 </div>
             ),
+            onClose: options?.onClose,
         }));
     };
 
