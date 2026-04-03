@@ -117,20 +117,20 @@ export const UTRP_LEADS = [
 
 export type UTRP_LEAD_GITHUB_USERNAMES = (typeof UTRP_LEADS)[number]['githubUsername'];
 
-    export const UTRP_ALUMNI = [
-        {
-            name: 'Jessica Zhu',
-            role: ['LHD Alumni'],
-            githubUsername: 'zhuujessica',
-        },
-        {
-            name: 'Samhith Dharani',
-            role: ['LHD Alumni'],
-            githubUsername: '',
-        },
-    ] as const satisfies TeamMember[];
+export const UTRP_ALUMNI = [
+    {
+        name: 'Jessica Zhu',
+        role: ['LHD Alumni'],
+        githubUsername: 'zhuujessica',
+    },
+    {
+        name: 'Samhith Dharani',
+        role: ['LHD Alumni'],
+        githubUsername: '',
+    },
+] as const satisfies TeamMember[];
 
-    export type UTRP_ALUMNI_GITHUB_USERNAMES = (typeof UTRP_ALUMNI)[number]['githubUsername'];
+export type UTRP_ALUMNI_GITHUB_USERNAMES = (typeof UTRP_ALUMNI)[number]['githubUsername'];
 
 /**
  * Service for fetching GitHub statistics.

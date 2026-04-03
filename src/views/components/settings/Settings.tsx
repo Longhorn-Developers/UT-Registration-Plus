@@ -19,7 +19,13 @@ import Text from '@views/components/common/Text/Text';
 // Hooks
 import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
-import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE, UTRP_LEADS, UTRP_ALUMNI } from '@views/lib/getGitHubStats';
+import {
+    GitHubStatsService,
+    LONGHORN_DEVELOPERS_ADMINS,
+    LONGHORN_DEVELOPERS_SWE,
+    UTRP_ALUMNI,
+    UTRP_LEADS,
+} from '@views/lib/getGitHubStats';
 // Misc
 import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -212,7 +218,10 @@ export default function Settings(): JSX.Element {
         ]);
         return Object.keys(githubStats.userGitHubStats)
             .filter(username => !knownUsernames.has(username))
-            .sort((a, b) => (githubStats.userGitHubStats[b]?.commits ?? 0) - (githubStats.userGitHubStats[a]?.commits ?? 0));
+            .sort(
+                (a, b) =>
+                    (githubStats.userGitHubStats[b]?.commits ?? 0) - (githubStats.userGitHubStats[a]?.commits ?? 0)
+            );
     }, [githubStats]);
 
     if (devMode) {
@@ -399,7 +408,6 @@ export default function Settings(): JSX.Element {
                             </>
                         )}
                     </section>
-
                 </div>
 
                 <Divider className='lg:hidden' size='auto' orientation='horizontal' />
@@ -452,7 +460,6 @@ export default function Settings(): JSX.Element {
                                   ))}
                         </div>
                     </section>
-
                 </section>
             </div>
         </div>
