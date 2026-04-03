@@ -38,8 +38,8 @@ const links: LinkItem[] = [
         url: 'https://utdirect.utexas.edu/apps/degree/audits/',
     },
     {
-        text: "'25-'26 Academic Calendar",
-        url: 'https://registrar.utexas.edu/calendars/25-26',
+        text: "'26–'27 Academic Calendar",
+        url: 'https://registrar.utexas.edu/calendars/26-27',
     },
     {
         text: 'Registration Info Sheet (RIS)',

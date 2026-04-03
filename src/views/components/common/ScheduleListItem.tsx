@@ -31,7 +31,7 @@ import { SortableListDragHandle } from './SortableListDragHandle';
  */
 interface ScheduleListItemProps {
     schedule: UserSchedule;
-    onClick?: React.DOMAttributes<HTMLDivElement>['onClick'];
+    onClick?: React.DOMAttributes<HTMLButtonElement>['onClick'];
 }
 
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
@@ -159,8 +159,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
 
     return (
         // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: TODO:
-        <div className='h-7.5 rounded bg-white' tabIndex={0} onKeyDown={handleKeyDown}>
+        <div className='h-7.5 rounded bg-white' tabIndex={-1} onKeyDown={handleKeyDown}>
             <div className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
                 {IS_STORYBOOK ? (
                     <DotsSixVertical
@@ -176,10 +175,11 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                     </SortableListDragHandle>
                 )}
                 <div className='group relative flex flex-1 items-center overflow-x-hidden'>
-                    {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
-                    {/** biome-ignore lint/a11y/useKeyWithClickEvents: TODO: */}
-                    <div
-                        className='group/circle flex flex-grow items-center gap-spacing-3 overflow-x-hidden'
+                    <button
+                        type='button'
+                        aria-label={`Select schedule ${schedule.name}`}
+                        tabIndex={isEditing ? -1 : 0}
+                        className='group/circle cursor-pointer flex flex-grow text-left items-center gap-spacing-3 overflow-x-hidden'
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         {isActive ? (
@@ -219,10 +219,10 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                                 {schedule.name}
                             </Text>
                         )}
-                    </div>
+                    </button>
                     <DialogProvider>
                         <Menu>
-                            <MenuButton className='invisible h-fit bg-transparent p-0 text-ut-gray btn-transition data-[open]:visible group-hover:visible'>
+                            <MenuButton className='opacity-0 cursor-pointer h-fit bg-transparent p-0 text-ut-gray btn-transition data-[open]:opacity-100 group-hover:opacity-100 focus:opacity-100'>
                                 <DotsThree weight='bold' className='h-6 w-6' />
                             </MenuButton>
 

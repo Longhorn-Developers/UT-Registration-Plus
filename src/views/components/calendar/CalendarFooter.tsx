@@ -36,24 +36,29 @@ import Link from '../common/Link';
 
 interface SocialLink {
     icon: React.FC<React.SVGProps<SVGSVGElement>>;
+    name: string;
     url: string;
 }
 
 const socialLinks: SocialLink[] = [
     {
         icon: DiscordIcon,
+        name: 'Discord',
         url: 'https://discord.gg/7pQDBGdmb7',
     },
     {
         icon: InstagramIcon,
+        name: 'Instagram',
         url: 'https://www.instagram.com/longhorndevelopers',
     },
     {
         icon: LinkedinIcon,
+        name: 'LinkedIn',
         url: 'https://www.linkedin.com/company/longhorn-developers/posts/?feedView=all',
     },
     {
         icon: GithubIcon,
+        name: 'GitHub',
         url: 'https://github.com/Longhorn-Developers',
     },
 ];
@@ -75,14 +80,21 @@ export default function CalendarFooter(): JSX.Element {
     return (
         <footer className='min-w-full w-0 flex items-center justify-between bg-white pl-spacing-5 pr-spacing-8 pt-spacing-4'>
             <div className='flex'>
-                {socialLinks.map(({ icon: Icon, url }) => (
-                    <Link className='linkanimate p-2' href={url} key={url}>
+                {socialLinks.map(({ icon: Icon, url, name }) => (
+                    <Link className='linkanimate p-2' href={url} key={url} title={name}>
                         <Icon className='size-6' />
                     </Link>
                 ))}
             </div>
             <div>
-                <Button variant='minimal' size='small' icon={GearSix} color='ut-black' onClick={handleOpenOptions} />
+                <Button
+                    variant='minimal'
+                    size='small'
+                    icon={GearSix}
+                    title='Settings'
+                    color='ut-black'
+                    onClick={handleOpenOptions}
+                />
             </div>
         </footer>
     );

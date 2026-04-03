@@ -31,7 +31,7 @@ import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // Icons
-import IconoirGitFork from '~icons/iconoir/git-fork';
+import GitMergeIcon from '~icons/ph/git-merge';
 
 import { useMigrationDialog } from '../common/MigrationDialog';
 import { AdvancedSettings } from './AdvancedSettings';
@@ -51,6 +51,8 @@ const manifest = chrome.runtime.getManifest();
  */
 export default function Settings(): JSX.Element {
     const gitHubStatsService = useMemo(() => new GitHubStatsService(), []);
+    const calendarPageUrl = chrome.runtime.getURL(CRX_PAGES.CALENDAR);
+
     const getPersonalWebsite = (member: unknown): string | undefined => {
         if (typeof member !== 'object' || member === null) return undefined;
         const maybeWebsite = (member as { personalWebsite?: unknown }).personalWebsite;
@@ -245,11 +247,20 @@ export default function Settings(): JSX.Element {
             )}
 
             <header className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
-                <LargeLogo />
+                <a
+                    href={calendarPageUrl}
+                    title='Back to Calendar'
+                    onClick={event => {
+                        event.preventDefault();
+                        background.switchToCalendarTab({});
+                    }}
+                >
+                    <LargeLogo />
+                </a>
                 <Divider className='mx-2 self-center md:mx-4' size='2.5rem' orientation='vertical' />
                 <div className='flex flex-1 items-center gap-2'>
                     <Text variant='h1' className='text-ut-burntorange normal-case'>
-                        Settings and Credits
+                        Settings
                     </Text>
                     {isBirthday && (
                         // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
@@ -263,17 +274,26 @@ export default function Settings(): JSX.Element {
                         </span>
                     )}
                 </div>
-                <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
-                    <Button variant='minimal' color='theme-black' onClick={handleChangelogOnClick}>
-                        <IconoirGitFork className='h-6 w-6 text-ut-gray' />
-                        <Text variant='small' className='text-ut-gray font-normal'>
-                            v{manifest.version} - {process.env.NODE_ENV}
-                        </Text>
+                <div className='hidden flex-row items-center justify-end gap-spacing-7 screenshot:hidden lg:flex'>
+                    <Button
+                        variant='minimal'
+                        size='small'
+                        color='theme-black'
+                        title='Read Changelog'
+                        onClick={handleChangelogOnClick}
+                    >
+                        <GitMergeIcon className='h-6 w-6 text-ut-gray' />
+                        <span className='text-ut-black'>
+                            v{manifest.version}
+                            {import.meta.env.DEV ? '-dev' : ''}
+                        </span>
                     </Button>
                     <Button
-                        variant='filled'
+                        variant='minimal'
+                        size='small'
                         icon={CalendarDots}
-                        color='ut-burntorange'
+                        color='ut-black'
+                        title='Open Calendar'
                         onClick={() => background.switchToCalendarTab({})}
                     >
                         Calendar
