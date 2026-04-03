@@ -66,12 +66,12 @@ export interface UserScheduleMessages {
     renameSchedule: (data: { scheduleId: string; newName: string }) => string | undefined;
 
     /**
-     * Checks the login status by making a request to the provided URL.
+     * Checks whether the user is logged in to the UT Registrar.
+     * Opens a login tab if not authenticated.
      *
-     * @param data - The URL to check the login status against.
-     * @returns true if user was already logged into the provided URL, false otherwise
+     * @returns true if the user is logged in, false otherwise
      */
-    validateLoginStatus: (data: { url: string }) => boolean;
+    validateLoginStatus: () => boolean;
 
     /**
      * Exports the current schedule to a JSON file for backing up and sharing
