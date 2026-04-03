@@ -21,7 +21,8 @@ export const flagMap = {
 export type Core = 'ID' | 'C1' | 'HU' | 'GO' | 'HI' | 'SB' | 'MA' | 'N1' | 'N2' | 'VP';
 export const coreMap = {
     'First-Year Signature Course': 'ID',
-    'English Composition': 'C1',
+    'English Composition': 'C1', // pre-2026
+    Communication: 'C1',
     Humanities: 'HU',
     'American and Texas Government': 'GO',
     'U.S. History': 'HI',

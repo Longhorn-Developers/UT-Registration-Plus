@@ -38,9 +38,7 @@ export default function InjectedButton(): JSX.Element | null {
         const uniqueAnchorTags = Array.from(new Set(anchorTags.map(a => a.href)));
 
         // Make sure user is logged in
-        const loggedInToUT = await background.validateLoginStatus({
-            url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/',
-        });
+        const loggedInToUT = await background.validateLoginStatus();
 
         try {
             if (loggedInToUT) {
