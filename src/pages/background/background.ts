@@ -16,6 +16,15 @@ import userScheduleHandler from './handler/userScheduleHandler';
 
 onServiceWorkerAlive();
 
+chrome.tabs.onRemoved.addListener(async tabId => {
+    const storage = await chrome.storage.session.get('calendarTabs');
+    const calendarTabs = (storage.calendarTabs as Record<string, unknown> | undefined) ?? {};
+    if (String(tabId) in calendarTabs) {
+        delete calendarTabs[String(tabId)];
+        await chrome.storage.session.set({ calendarTabs });
+    }
+});
+
 /**
  * will be triggered on either install or update
  * (will also be triggered on a user's sync'd browsers (on other devices)))
