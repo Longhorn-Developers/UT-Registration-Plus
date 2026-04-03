@@ -46,7 +46,7 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
     }
 
     return (
-        <div className='w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4'>
+        <div className='sticky bottom-0 z-50 bg-white w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4'>
             {hasAsyncCourses && (
                 <div className='flex flex-grow items-center gap-1 text-nowrap'>
                     <Text variant='p' className='text-ut-black uppercase'>
