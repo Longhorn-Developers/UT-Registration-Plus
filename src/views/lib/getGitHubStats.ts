@@ -33,6 +33,7 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
         name: 'Carla Garcia Leija',
         role: ['LHD UX Design Director'],
         githubUsername: 'carlagarcialeija',
+        personalWebsite: 'https://www.carlagarcialeija.com/',
     },
     {
         name: 'Kabir Ramzan',
@@ -82,8 +83,8 @@ export const LONGHORN_DEVELOPERS_SWE = [
         role: ['LHD Alumni'],
         githubUsername: 'Lukas-Zenick',
     },
-    { name: 'Vinson', role: ['LHD Alumni'], githubUsername: 'vinsonzheng499' },
-    { name: 'Vivek', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
+    { name: 'Vinson Zheng', role: ['LHD Alumni'], githubUsername: 'vinsonzheng499' },
+    { name: 'Vivek Malle', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
     { name: 'Ethan Lanting', role: ['LHD Alumni'], githubUsername: 'EthanL06' },
 ] as const satisfies TeamMember[];
 
@@ -96,6 +97,43 @@ export type LD_SWE_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_SWE)[number]['
  * Represents the GitHub usernames of the admins in the LONGHORN_DEVELOPERS_ADMINS array.
  */
 export type LD_ADMIN_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_ADMINS)[number]['githubUsername'];
+
+export const UTRP_LEADS = [
+    {
+        name: 'Margaret Cartee',
+        role: ['UTRP Product Lead'],
+        githubUsername: 'margaret-ca',
+    },
+    {
+        name: 'Hannah Ha',
+        role: ['UTRP Product Lead'],
+        githubUsername: 'songhannahha-hub',
+    },
+    {
+        name: 'Leslie Looi',
+        role: ['UTRP UX Design Lead'],
+        githubUsername: 'lesliewlooi',
+        personalWebsite: 'https://leslielooi.super.site/',
+    },
+] as const satisfies TeamMember[];
+
+export type UTRP_LEAD_GITHUB_USERNAMES = (typeof UTRP_LEADS)[number]['githubUsername'];
+
+export const UTRP_ALUMNI = [
+    {
+        name: 'Jessica Zhu',
+        role: ['LHD Alumni'],
+        githubUsername: 'zhuujessica',
+        personalWebsite: 'https://jessicazhu.work/',
+    },
+    {
+        name: 'Samhith Dharani',
+        role: ['LHD Alumni'],
+        githubUsername: '',
+    },
+] as const satisfies TeamMember[];
+
+export type UTRP_ALUMNI_GITHUB_USERNAMES = (typeof UTRP_ALUMNI)[number]['githubUsername'];
 
 /**
  * Service for fetching GitHub statistics.
