@@ -174,27 +174,27 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         />
                     </SortableListDragHandle>
                 )}
-                <div className='group relative flex flex-1 items-center overflow-x-hidden'>
+                <div className='group flex flex-1 items-center min-w-0'>
                     <button
                         type='button'
                         aria-label={`Select schedule ${schedule.name}`}
                         tabIndex={isEditing ? -1 : 0}
-                        className='group/circle cursor-pointer flex flex-grow text-left items-center gap-spacing-3 overflow-x-hidden'
+                        className='group/circle cursor-pointer flex flex-auto text-left items-center space-x-spacing-3 min-w-0'
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         {isActive ? (
                             <RadioButton
-                                className='h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95'
+                                className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95'
                                 weight='fill'
                             />
                         ) : (
-                            <Circle className='h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
+                            <Circle className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
                         )}
                         {isEditing && (
                             <Text
                                 variant='p'
                                 as='input'
-                                className='mr-1 w-full flex-1 px-0.5 outline-blue-500 -ml-0.5'
+                                className='mr-1 flex-1 px-0.5 outline-blue-500 -ml-0.5'
                                 value={editorValue}
                                 onChange={e => setEditorValue(e.target.value)}
                                 onKeyDown={e => {
@@ -213,7 +213,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         {!isEditing && (
                             <Text
                                 variant='p'
-                                className='flex-1 select-none truncate'
+                                className='select-none flex-1 min-w-0 truncate'
                                 onDoubleClick={() => setIsEditing(true)}
                             >
                                 {schedule.name}
