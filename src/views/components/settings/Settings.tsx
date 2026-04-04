@@ -19,7 +19,13 @@ import Text from '@views/components/common/Text/Text';
 // Hooks
 import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
-import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
+import {
+    GitHubStatsService,
+    LONGHORN_DEVELOPERS_ADMINS,
+    LONGHORN_DEVELOPERS_SWE,
+    UTRP_ALUMNI,
+    UTRP_LEADS,
+} from '@views/lib/getGitHubStats';
 // Misc
 import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -45,6 +51,11 @@ const manifest = chrome.runtime.getManifest();
  */
 export default function Settings(): JSX.Element {
     const gitHubStatsService = useMemo(() => new GitHubStatsService(), []);
+    const getPersonalWebsite = (member: unknown): string | undefined => {
+        if (typeof member !== 'object' || member === null) return undefined;
+        const maybeWebsite = (member as { personalWebsite?: unknown }).personalWebsite;
+        return typeof maybeWebsite === 'string' ? maybeWebsite : undefined;
+    };
 
     // State
     const [options, setOptions] = useState<IOptionsStore | null>(null);
@@ -193,8 +204,9 @@ export default function Settings(): JSX.Element {
     }, []);
 
     const sortedContributors = useMemo(() => {
-        if (!githubStats) return LONGHORN_DEVELOPERS_SWE;
-        return [...LONGHORN_DEVELOPERS_SWE].sort(
+        const base = [...LONGHORN_DEVELOPERS_SWE, ...UTRP_LEADS, ...UTRP_ALUMNI];
+        if (!githubStats) return base;
+        return [...base].sort(
             (a, b) =>
                 (githubStats.userGitHubStats[b.githubUsername]?.commits ?? 0) -
                 (githubStats.userGitHubStats[a.githubUsername]?.commits ?? 0)
@@ -203,12 +215,14 @@ export default function Settings(): JSX.Element {
 
     const additionalContributors = useMemo(() => {
         if (!githubStats) return [];
+        const knownUsernames = new Set<string>([
+            ...LONGHORN_DEVELOPERS_ADMINS.map(a => a.githubUsername),
+            ...LONGHORN_DEVELOPERS_SWE.map(s => s.githubUsername),
+            ...UTRP_LEADS.map(l => l.githubUsername),
+            ...UTRP_ALUMNI.map(a => a.githubUsername),
+        ]);
         return Object.keys(githubStats.userGitHubStats)
-            .filter(
-                username =>
-                    !LONGHORN_DEVELOPERS_ADMINS.some(admin => admin.githubUsername === username) &&
-                    !LONGHORN_DEVELOPERS_SWE.some(swe => swe.githubUsername === username)
-            )
+            .filter(username => !knownUsernames.has(username))
             .sort(
                 (a, b) =>
                     (githubStats.userGitHubStats[b]?.commits ?? 0) - (githubStats.userGitHubStats[a]?.commits ?? 0)
@@ -414,6 +428,7 @@ export default function Settings(): JSX.Element {
                                     key={admin.githubUsername}
                                     name={admin.name}
                                     githubUsername={admin.githubUsername}
+                                    personalWebsite={getPersonalWebsite(admin)}
                                     roles={admin.role}
                                     stats={githubStats?.adminGitHubStats[admin.githubUsername]}
                                     showStats={showGitHubStats}
@@ -430,6 +445,7 @@ export default function Settings(): JSX.Element {
                                     key={swe.githubUsername}
                                     name={swe.name}
                                     githubUsername={swe.githubUsername}
+                                    personalWebsite={getPersonalWebsite(swe)}
                                     roles={swe.role}
                                     stats={githubStats?.userGitHubStats[swe.githubUsername]}
                                     showStats={showGitHubStats}
