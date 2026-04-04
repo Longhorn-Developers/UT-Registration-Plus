@@ -203,7 +203,7 @@ export default function Calendar(): ReactNode {
                         )}
                         tabIndex={showSidebar ? 0 : -1}
                         aria-hidden={!showSidebar}
-                        {...(!showSidebar ? { inert: '' } : {})}
+                        {...{ inert: !showSidebar }}
                     >
                         <div className='sticky top-0 z-50 w-full flex items-center justify-between bg-white px-spacing-7 pb-spacing-6'>
                             <LargeLogo />
