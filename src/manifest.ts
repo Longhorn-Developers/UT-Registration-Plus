@@ -111,6 +111,11 @@ function buildFirefoxManifest(options: FirefoxManifestGeneratorOptions): any {
         content_security_policy: {
             extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
         },
+        browser_specific_settings: {
+            gecko: {
+                id: 'ut-registration-plus@example.com',
+            },
+        },
     };
 
     if (backgroundFile) {
