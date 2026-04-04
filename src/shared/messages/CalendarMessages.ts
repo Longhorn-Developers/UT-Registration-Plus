@@ -1,10 +1,12 @@
+import browser from 'webextension-polyfill';
+
 interface CalendarBackgroundMessages {
     /**
      * Opens the calendar page if it is not already open, focuses the tab, and optionally opens the calendar for a specific course
      *
      * @param data - The unique id of the course to open the calendar page for (optional)
      */
-    switchToCalendarTab: (data: { uniqueId?: number }) => chrome.tabs.Tab;
+    switchToCalendarTab: (data: { uniqueId?: number }) => browser.Tabs.Tab;
 }
 
 interface CalendarTabMessages {

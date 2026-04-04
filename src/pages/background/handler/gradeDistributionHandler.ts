@@ -1,6 +1,6 @@
 import type { MessageHandler } from '@chrome-extension-toolkit';
 import type GradeDistributionMessages from '@shared/messages/GradeDistributionMessages';
-import { Course, type Semester } from '@shared/types/Course';
+import { Course } from '@shared/types/Course';
 import { queryAggregateDistribution, querySemesterDistribution, NoDataError } from '@views/lib/database/queryDistribution';
 
 const gradeDistributionHandler: MessageHandler<GradeDistributionMessages> = {

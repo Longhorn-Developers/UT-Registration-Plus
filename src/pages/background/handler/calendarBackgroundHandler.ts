@@ -48,7 +48,6 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
                 discarded: openCalendarTabInfo.tab.discarded!,
                 autoDiscardable: openCalendarTabInfo.tab.autoDiscardable!,
                 groupId: openCalendarTabInfo.tab.groupId!,
-                selected: true,
             });
         } else {
             const urlParams = new URLSearchParams();
