@@ -18,12 +18,15 @@ export type ScheduleDropdownProps = {
 export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDropdownProps) {
     const [activeSchedule] = useSchedules();
 
+    const totalHours = activeSchedule?.hours ?? 0;
+    const totalCourses = activeSchedule?.courses.length ?? 0;
+
     return (
         <div className='max-h-[200px] flex flex-col border border-ut-offwhite/50 rounded bg-white'>
             <Disclosure defaultOpen={defaultOpen}>
                 {({ open }) => (
                     <>
-                        <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left'>
+                        <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left cursor-pointer'>
                             <div className='min-w-0 flex-1 overflow-hidden'>
                                 <Text
                                     as='div'
@@ -32,20 +35,18 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
                                 >
                                     {activeSchedule ? activeSchedule.name : 'Schedule'}
                                 </Text>
-                                <div className='flex gap-2.5 text-theme-black leading-[75%]!'>
-                                    <div className='flex gap-1.25'>
-                                        <Text variant='h4'>{activeSchedule ? activeSchedule.hours : 0}</Text>
-                                        <Text variant='h4' className='font-all-small-caps!'>
-                                            {activeSchedule.hours === 1 ? 'HOUR' : 'HOURS'}
-                                        </Text>
-                                    </div>
-                                    <div className='flex gap-1.25'>
-                                        <Text variant='h4'>{activeSchedule ? activeSchedule.courses.length : 0}</Text>
-                                        <Text variant='h4' className='font-all-small-caps!'>
-                                            {activeSchedule.courses.length === 1 ? 'COURSE' : 'COURSES'}
-                                        </Text>
-                                    </div>
-                                </div>
+                                <Text variant='h4' as='p' className='mt-0.5 text-theme-black inline-flex gap-3'>
+                                    <span>
+                                        {totalHours}&nbsp;
+                                        <span className='ml-0.5 uppercase'>{totalHours === 1 ? 'Hour' : 'Hours'}</span>
+                                    </span>
+                                    <span>
+                                        {totalCourses}&nbsp;
+                                        <span className='ml-0.5 uppercase'>
+                                            {totalCourses === 1 ? 'Course' : 'Courses'}
+                                        </span>
+                                    </span>
+                                </Text>
                             </div>
                             <Text className='text-ut-burntorange text-2xl! font-normal!'>
                                 {open ? <CaretDown weight='fill' /> : <CaretUp weight='fill' />}
