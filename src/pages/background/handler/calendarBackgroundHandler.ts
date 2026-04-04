@@ -11,7 +11,6 @@ const getAllTabInfos = async () => {
         (tab): tab is browser.Tabs.Tab & { id: number } => tab.id !== undefined
     );
     const results = await Promise.allSettled(openTabs.map(tab => tabs.getTabInfo({ tabId: tab.id })));
-
     type TabInfo = PromiseFulfilledResult<Awaited<ReturnType<typeof tabs.getTabInfo>>>;
     return results
         .map((result, index) => ({ result, index }))
@@ -33,28 +32,27 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
         const openCalendarTabInfo = allTabs.find(tab => tab.tab.url?.startsWith(calendarUrl));
 
         if (openCalendarTabInfo !== undefined && !(await OptionsStore.get('alwaysOpenCalendarInNewTab'))) {
-            const tabid = openCalendarTabInfo.tab.id;
+            const { tab } = openCalendarTabInfo;
+            const { id: tabId, windowId, discarded, autoDiscardable, groupId } = tab;
 
-            await chrome.tabs.update(tabid, { active: true });
-            await chrome.windows.update(openCalendarTabInfo.tab.windowId!, {
-                focused: true,
-                drawAttention: true,
-            });
-            if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, { tabId: tabid });
+            if (
+                windowId === undefined ||
+                discarded === undefined ||
+                autoDiscardable === undefined ||
+                groupId === undefined
+            ) {
+                throw new Error('Calendar tab is missing required properties');
+            }
 
-            sendResponse({
-                ...openCalendarTabInfo.tab,
-                windowId: openCalendarTabInfo.tab.windowId!,
-                discarded: openCalendarTabInfo.tab.discarded!,
-                autoDiscardable: openCalendarTabInfo.tab.autoDiscardable!,
-                groupId: openCalendarTabInfo.tab.groupId!,
-            });
+            await chrome.tabs.update(tabId, { active: true });
+            await chrome.windows.update(windowId, { focused: true, drawAttention: true });
+            if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, { tabId });
+            sendResponse({ ...tab, windowId, discarded, autoDiscardable, groupId });
         } else {
             const urlParams = new URLSearchParams();
             if (uniqueId !== undefined) urlParams.set('uniqueId', uniqueId.toString());
             const url = `${calendarUrl}?${urlParams.toString()}`.replace(/\?$/, '');
             const tab = await openNewTab(url);
-
             sendResponse(tab);
         }
     },

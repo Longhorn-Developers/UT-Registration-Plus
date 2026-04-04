@@ -1,6 +1,5 @@
 import { defineManifest } from '@crxjs/vite-plugin';
 import type { Plugin, Rollup } from 'vite';
-
 import packageJson from '../package.json';
 
 // Convert from Semver (example: 0.1.0-beta6)
@@ -12,7 +11,6 @@ const [major, minor, patch, label = '0'] = packageJson.version
 
 const isBeta = !!process.env.BETA;
 const mode = isBeta ? 'beta' : process.env.NODE_ENV;
-
 if (isBeta && process.env.NODE_ENV !== 'production') throw new Error('Cannot have beta non-production build');
 const nameSuffix = isBeta ? ' (beta)' : mode === 'development' ? ' (dev)' : '';
 
@@ -80,10 +78,51 @@ interface FirefoxManifestGeneratorOptions {
     contentFile?: string;
 }
 
-function buildFirefoxManifest(options: FirefoxManifestGeneratorOptions): any {
+interface FirefoxManifest {
+    manifest_version: number;
+    name: string;
+    version: string;
+    description: string;
+    homepage_url: string;
+    icons: Record<string, string>;
+    permissions: string[];
+    host_permissions: string[];
+    action: {
+        default_popup: string;
+        default_icon: string;
+    };
+    options_page: string;
+    web_accessible_resources: Array<{
+        resources: string[];
+        matches: string[];
+    }>;
+    content_security_policy: {
+        extension_pages: string;
+    };
+    browser_specific_settings: {
+        gecko: {
+            id: string;
+        };
+    };
+    background?: {
+        scripts: string[];
+    };
+    content_scripts?: Array<{
+        matches: string[];
+        js: string[];
+        css: string[];
+    }>;
+    // Internal fields used during build, deleted before emit
+    _backgroundLoaderName?: string;
+    _backgroundLoaderSource?: string;
+    _contentLoaderName?: string;
+    _contentLoaderSource?: string;
+}
+
+function buildFirefoxManifest(options: FirefoxManifestGeneratorOptions): FirefoxManifest {
     const { cssFiles, backgroundFile, contentFile } = options;
 
-    const manifestForFirefox: any = {
+    const manifestForFirefox: FirefoxManifest = {
         manifest_version: 3,
         name: packageJson.displayName ?? packageJson.name,
         version: `${major}.${minor}.${patch}.${label}`,
@@ -155,17 +194,20 @@ export function createFirefoxManifestPlugin(): Plugin {
             let contentFile: string | undefined;
             const cssFiles: string[] = [];
 
-            for (const [fileName, chunk] of Object.entries(bundle)) {
+            for (const [fileName, chunk] of Object.entries(bundle) as [
+                string,
+                Rollup.OutputChunk | Rollup.OutputAsset,
+            ][]) {
                 if (fileName.endsWith('.css')) {
                     cssFiles.push(fileName);
                 }
 
-                if (chunk && (chunk as any).type === 'chunk') {
-                    const facade = (chunk as any).facadeModuleId || '';
-                    if (facade && facade.endsWith('src/pages/background/background.ts')) {
+                if (chunk.type === 'chunk') {
+                    const facade = chunk.facadeModuleId ?? '';
+                    if (facade.endsWith('src/pages/background/background.ts')) {
                         backgroundFile = fileName;
                     }
-                    if (facade && facade.endsWith('src/pages/content/index.tsx')) {
+                    if (facade.endsWith('src/pages/content/index.tsx')) {
                         contentFile = fileName;
                     }
                 }
@@ -180,6 +222,7 @@ export function createFirefoxManifestPlugin(): Plugin {
                     }
                 }
             }
+
             if (!contentFile) {
                 for (const fileName of Object.keys(bundle)) {
                     if (fileName.includes('content')) {

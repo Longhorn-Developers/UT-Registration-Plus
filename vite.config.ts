@@ -10,7 +10,7 @@ import { defineConfig } from 'vite';
 import inspect from 'vite-plugin-inspect';
 
 import packageJson from './package.json';
-import manifest, { HOST_PERMISSIONS, createFirefoxManifestPlugin } from './src/manifest';
+import manifest, { createFirefoxManifestPlugin } from './src/manifest';
 import vitePluginRunCommandOnDemand from './utils/plugins/run-command-on-demand';
 import { buildLogger } from './utils/plugins/vite-build-logger';
 

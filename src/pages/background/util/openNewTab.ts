@@ -16,6 +16,11 @@ export default async function openNewTab(url: string, tabIndex?: number): Promis
         index: tabIndex,
         active: true,
     })) as TabWithId;
-    await browser.windows.update(tab.windowId!, { focused: true });
+
+    if (tab.windowId === undefined) {
+        throw new Error('Newly created tab is missing a windowId');
+    }
+
+    await browser.windows.update(tab.windowId, { focused: true });
     return tab;
 }

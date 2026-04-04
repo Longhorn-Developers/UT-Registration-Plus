@@ -1,6 +1,6 @@
+import { background } from '@shared/messages';
 import type { Course, Semester } from '@shared/types/Course';
 import type { Distribution, LetterGrade } from '@shared/types/Distribution';
-import { background } from '@shared/messages';
 import { extendedColors } from '@shared/types/ThemeColors';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';

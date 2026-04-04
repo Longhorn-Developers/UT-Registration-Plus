@@ -1,12 +1,12 @@
 import { vi } from 'vitest';
+import type Browser from 'webextension-polyfill';
 
 // Minimal shim for webextension-polyfill used in tests.
 // Provide the pieces for runtime.getURL, storage, tabs, and messages.
-
-const browserStub: any = {
+const browserStub = {
     runtime: {
         getURL: (path: string) => path,
-        sendMessage: async (_msg: any) => undefined,
+        sendMessage: async (_msg: unknown) => undefined,
         onMessage: {
             addListener: () => {},
             removeListener: () => {},
@@ -14,9 +14,9 @@ const browserStub: any = {
     },
     storage: {
         local: {
-            get: async (keys?: any) => ({}),
-            set: async (_obj: any) => undefined,
-            remove: async (_key: any) => undefined,
+            get: async (_keys?: string | string[] | Record<string, unknown>) => ({}),
+            set: async (_obj: Record<string, unknown>) => undefined,
+            remove: async (_key: string | string[]) => undefined,
             clear: async () => undefined,
         },
         sync: {
@@ -25,8 +25,8 @@ const browserStub: any = {
         },
     },
     tabs: {
-        create: async (_opts: any) => ({}),
-        query: async (_q: any) => [],
+        create: async (_opts: Browser.Tabs.CreateCreatePropertiesType) => ({}),
+        query: async (_q: Browser.Tabs.QueryQueryInfoType) => [],
     },
     notifications: {
         create: async () => undefined,
@@ -35,5 +35,3 @@ const browserStub: any = {
 };
 
 vi.mock('webextension-polyfill', () => ({ default: browserStub }));
-
-export {};
