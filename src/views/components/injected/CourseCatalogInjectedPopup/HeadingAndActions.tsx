@@ -9,6 +9,7 @@ import {
     FileText,
     Minus,
     Plus,
+    RedditLogoIcon,
     Smiley,
     X,
 } from '@phosphor-icons/react';
@@ -118,6 +119,54 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
             const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=&unique=&instructor_first=&instructor_last=&course_type=In+Residence&search=Search`;
             openNewTab({ url });
         }
+    };
+
+    /**
+     * Function that generates a reddit search query on Google Search for the provided Course, and opens it in a new tab using the `site:reddit.com/r/UTAustin` operator
+     *
+     */
+    const handleOpenReddit = async () => {
+        // Step 1: Normalize inputs (standardize casing, remove extra whitespace/special chars)
+        const normalizedDepartment = department.replace(/\s+/g, ' ').trim().toUpperCase();
+        const departmentNoSpace = normalizedDepartment.replace(/\s+/g, '');
+
+        const normalizedCourseNumber = courseNumber.replace(/\s+/g, '').toUpperCase();
+        const numericCourseNumber = normalizedCourseNumber.match(/\d+/)?.[0] ?? '';
+
+        const normalizedCourseName = courseName
+            .replace(/[^\w\s]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        const courseNameNoSpace = normalizedCourseName.replace(/\s+/g, '');
+
+        // Step 2: Build a net of search variations (Strict, Loose, and Course Name)
+        const strictTerms = [
+            `"${normalizedDepartment} ${normalizedCourseNumber}"`,
+            `"${departmentNoSpace}${normalizedCourseNumber}"`,
+            normalizedCourseName ? `"${normalizedDepartment} ${normalizedCourseNumber} ${normalizedCourseName}"` : null,
+            normalizedCourseName ? `"${departmentNoSpace}${normalizedCourseNumber} ${normalizedCourseName}"` : null,
+        ];
+
+        // Captures split mentions like "ECE ... 460R"
+        const looseTerms = [
+            `("${normalizedDepartment}" AND "${normalizedCourseNumber}")`,
+            numericCourseNumber ? `("${normalizedDepartment}" AND "${numericCourseNumber}")` : null,
+            numericCourseNumber ? `("${departmentNoSpace}${numericCourseNumber}")` : null,
+        ];
+
+        const nameTerms = [
+            normalizedCourseName ? `"${normalizedCourseName}"` : null,
+            courseNameNoSpace ? `"${courseNameNoSpace}"` : null,
+        ];
+
+        // Step 3: De-duplicate terms and execute the Google search with 'site:' operator
+        const queryTerms = [
+            ...new Set([...strictTerms, ...looseTerms, ...nameTerms].filter((v): v is string => Boolean(v))),
+        ];
+
+        const searchQuery = `site:reddit.com/r/UTAustin (${queryTerms.join(' OR ')})`;
+        const url = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+        await openNewTab({ url });
     };
 
     const handleAddToNewSchedule = async (close: () => void) => {
@@ -302,6 +351,15 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     disabled={instructors.length === 0}
                 >
                     CES
+                </Button>
+                <Button
+                    variant='outline'
+                    color='ut-orange'
+                    icon={RedditLogoIcon}
+                    onClick={handleOpenReddit}
+                    title='Search r/UTAustin posts about this course'
+                >
+                    r/UTAustin
                 </Button>
                 <Button variant='outline' color='ut-orange' icon={FileText} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
