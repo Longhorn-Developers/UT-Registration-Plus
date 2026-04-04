@@ -203,7 +203,7 @@ export default function Calendar(): ReactNode {
                         aria-hidden={!showSidebar}
                         {...{ inert: !showSidebar }}
                     >
-                        <div className='sticky top-0 z-50 w-full flex items-center justify-between bg-white px-spacing-7 pb-spacing-6'>
+                        <div className='flex items-center justify-between px-spacing-7 mb-spacing-2'>
                             <LargeLogo />
                             <Button
                                 variant='minimal'
