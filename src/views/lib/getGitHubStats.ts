@@ -33,6 +33,7 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
         name: 'Carla Garcia Leija',
         role: ['LHD UX Design Director'],
         githubUsername: 'carlagarcialeija',
+        personalWebsite: 'https://www.carlagarcialeija.com/',
     },
     {
         name: 'Kabir Ramzan',
@@ -122,6 +123,7 @@ export const UTRP_ALUMNI = [
         name: 'Jessica Zhu',
         role: ['LHD Alumni'],
         githubUsername: 'zhuujessica',
+        personalWebsite: 'https://jessicazhu.work/',
     },
     {
         name: 'Samhith Dharani',

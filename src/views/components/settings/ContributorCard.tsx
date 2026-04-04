@@ -13,6 +13,7 @@ interface ContributorCardProps {
     };
     showStats: boolean;
     includeMergedPRs: boolean;
+    personalWebsite?: string;
 }
 
 /**
@@ -25,30 +26,39 @@ export const ContributorCard: React.FC<ContributorCardProps> = ({
     stats,
     showStats,
     includeMergedPRs,
-}) => (
-    <div className='border border-gray-300 rounded bg-ut-gray/10 p-4'>
-        <Text
-            variant='p'
-            className='text-ut-burntorange font-semibold hover:cursor-pointer'
-            onClick={() => window.open(`https://github.com/${githubUsername}`, '_blank')}
-        >
-            {name}
-        </Text>
-        {roles.map(role => (
-            <p key={`${githubUsername}-${role}`} className='text-sm text-gray-600'>
-                {role}
-            </p>
-        ))}
-        {showStats && stats && (
-            <div className='mt-2'>
-                <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
-                {includeMergedPRs && stats.mergedPRs !== undefined && (
-                    <p className='text-xs'>Merged PRs: {stats.mergedPRs}</p>
-                )}
-                <p className='text-xs'>Commits: {stats.commits}</p>
-                <p className='text-xs text-ut-green'>{stats.linesAdded}++</p>
-                <p className='text-xs text-theme-red'>{stats.linesDeleted}--</p>
-            </div>
-        )}
-    </div>
-);
+    personalWebsite,
+}) => {
+    const openLink = () => {
+        const website = personalWebsite?.trim();
+        const url = website
+            ? website.match(/^https?:\/\//i)
+                ? website
+                : `https://${website}`
+            : `https://github.com/${githubUsername}`;
+        window.open(url, '_blank');
+    };
+
+    return (
+        <div className='border border-gray-300 rounded bg-ut-gray/10 p-4'>
+            <Text variant='p' className='text-ut-burntorange font-semibold hover:cursor-pointer' onClick={openLink}>
+                {name}
+            </Text>
+            {roles.map(role => (
+                <p key={`${githubUsername}-${role}`} className='text-sm text-gray-600'>
+                    {role}
+                </p>
+            ))}
+            {showStats && stats && (
+                <div className='mt-2'>
+                    <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
+                    {includeMergedPRs && stats.mergedPRs !== undefined && (
+                        <p className='text-xs'>Merged PRs: {stats.mergedPRs}</p>
+                    )}
+                    <p className='text-xs'>Commits: {stats.commits}</p>
+                    <p className='text-xs text-ut-green'>{stats.linesAdded}++</p>
+                    <p className='text-xs text-theme-red'>{stats.linesDeleted}--</p>
+                </div>
+            )}
+        </div>
+    );
+};

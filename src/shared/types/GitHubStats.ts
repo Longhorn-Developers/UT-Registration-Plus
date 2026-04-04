@@ -3,6 +3,7 @@ export type TeamMember = {
     name: string;
     role: string[];
     githubUsername: string;
+    personalWebsite?: string;
 };
 
 export type GitHubStats = {

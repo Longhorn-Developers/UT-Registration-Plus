@@ -51,6 +51,11 @@ const manifest = chrome.runtime.getManifest();
  */
 export default function Settings(): JSX.Element {
     const gitHubStatsService = useMemo(() => new GitHubStatsService(), []);
+    const getPersonalWebsite = (member: unknown): string | undefined => {
+        if (typeof member !== 'object' || member === null) return undefined;
+        const maybeWebsite = (member as { personalWebsite?: unknown }).personalWebsite;
+        return typeof maybeWebsite === 'string' ? maybeWebsite : undefined;
+    };
 
     // State
     const [options, setOptions] = useState<IOptionsStore | null>(null);
@@ -423,6 +428,7 @@ export default function Settings(): JSX.Element {
                                     key={admin.githubUsername}
                                     name={admin.name}
                                     githubUsername={admin.githubUsername}
+                                    personalWebsite={getPersonalWebsite(admin)}
                                     roles={admin.role}
                                     stats={githubStats?.adminGitHubStats[admin.githubUsername]}
                                     showStats={showGitHubStats}
@@ -439,6 +445,7 @@ export default function Settings(): JSX.Element {
                                     key={swe.githubUsername}
                                     name={swe.name}
                                     githubUsername={swe.githubUsername}
+                                    personalWebsite={getPersonalWebsite(swe)}
                                     roles={swe.role}
                                     stats={githubStats?.userGitHubStats[swe.githubUsername]}
                                     showStats={showGitHubStats}
