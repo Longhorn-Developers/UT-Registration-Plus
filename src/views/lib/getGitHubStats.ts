@@ -113,6 +113,7 @@ export const UTRP_LEADS = [
         name: 'Leslie Looi',
         role: ['UTRP UX Design Lead'],
         githubUsername: 'lesliewlooi',
+        personalWebsite: 'https://leslielooi.super.site/',
     },
 ] as const satisfies TeamMember[];
 
