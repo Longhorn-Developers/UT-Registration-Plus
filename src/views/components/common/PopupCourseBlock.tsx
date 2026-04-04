@@ -8,7 +8,8 @@ import { pickFontColor } from '@shared/util/colors';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import type React from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Button } from './Button';
 import { SortableListDragHandle } from './SortableListDragHandle';
@@ -116,6 +117,8 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
     );
 
     return (
+        // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
+        // biome-ignore lint/a11y/useKeyWithClickEvents: TODO:
         <div
             style={{
                 backgroundColor: colors.primaryColor,
@@ -166,9 +169,9 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                         style={{
                             backgroundColor: colors.secondaryColor,
                         }}
-                        className='ml-1 flex items-center justify-center justify-self-end rounded p-[3px] text-white'
+                        className='ml-1 self-center justify-self-end rounded p-[5px] text-white'
                     >
-                        <StatusIcon status={course.status} className='h-6 w-6' />
+                        <StatusIcon status={course.status} className='size-5' />
                     </div>
                 )}
                 <div className='flex flex-col justify-center'>

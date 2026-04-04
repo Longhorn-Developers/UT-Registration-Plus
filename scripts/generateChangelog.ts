@@ -1,6 +1,6 @@
-import { exec } from 'child_process';
-import { resolve } from 'path';
-import { promisify } from 'util';
+import { exec } from 'node:child_process';
+import { resolve } from 'node:path';
+import { promisify } from 'node:util';
 
 const execPromise = promisify(exec);
 

@@ -7,7 +7,8 @@ import Text from '@views/components/common/Text/Text';
 import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
-import React, { useEffect, useRef, useState } from 'react';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '../common/Button';
 import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellColorPicker';
@@ -107,6 +108,8 @@ export default function CalendarCourseCell({
     // Note that overflow-hidden is the duct tape holding this all together
 
     return (
+        // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
+        // biome-ignore lint/a11y/useKeyWithClickEvents: TODO:
         <div
             className={clsx(
                 'h-full w-0 flex group relative justify-center rounded p-x-2 p-y-1.2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out',
@@ -150,6 +153,8 @@ export default function CalendarCourseCell({
                 </div>
             )}
 
+            {/** biome-ignore lint/a11y/useKeyWithClickEvents: TODO: */}
+            {/** biome-ignore lint/a11y/noStaticElementInteractions: This is on purpose */}
             <div
                 onClick={e => {
                     e.stopPropagation();

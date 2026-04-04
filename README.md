@@ -26,12 +26,11 @@
 ## Toolchain
 
 - React v20.9.0 (LTS)
-- TypeScript v5.x
+- TypeScript v7.x
 - Vite v5.x
 - pnpm v10.x
 - UnoCSS
-- ESLint
-- Prettier
+- Biome
 - Storybook
 - Figma
 - Semantic-Release
@@ -41,8 +40,7 @@
 
 We recommend using the following VSCode extensions to improve your development experience:
 
-- **[ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)**: For identifying and fixing linting issues.
-- **[Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)**: For automatic code formatting.
+- **[Biome](https://marketplace.visualstudio.com/items?itemName=biomejs.biome)**: Linting and formatting
 - **[Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)**: For Tailwind CSS class autocomplete and IntelliSense.
 - **[UnoCSS](https://marketplace.visualstudio.com/items?itemName=antfu.unocss)**: For better support with UnoCSS utilities.
 
@@ -52,7 +50,7 @@ Contributions are welcome and encouraged! To get started:
 
 1. **Fork** the repository.
 2. **Create a new branch**: `git checkout -b feature/your-feature`.
-3. **Make changes** and ensure your code passes linting and formatting checks: `pnpm run lint` and `pnpm run prettier`.
+3. **Make changes** and ensure your code passes linting and formatting checks: `pnpm run lint` and `pnpm run format`.
 4. **Commit your changes** following the [Conventional Commits](#conventional-commits--branch-naming-convention) specification.
 5. **Push** your branch: `git push origin feature/your-feature`.
 6. **Open a Pull Request**.
@@ -184,16 +182,6 @@ We maintain a strict code of conduct. By contributing, you agree to adhere to th
 
 Special thanks to the developers and contributors behind these amazing tools and libraries:
 
-- React v20.9.0 (LTS)
-- TypeScript v5.x
-- Vite v5.x
-- pnpm v10.x
-- UnoCSS
-- ESLint
-- Prettier
-- Storybook
-- Figma
-- Semantic-Release
 - [chrome-extension-toolkit](https://github.com/sghsri/chrome-extension-toolkit)
 - [UT_Grade_Parser](https://github.com/doprz/UT_Grade_Parser)
 - [eslint-plugin-import-essentials](https://github.com/doprz/eslint-plugin-import-essentials)

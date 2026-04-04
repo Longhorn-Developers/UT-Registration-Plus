@@ -25,7 +25,8 @@ import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import { useCalendar } from '@views/contexts/CalendarContext';
 import clsx from 'clsx';
-import React, { useRef, useState } from 'react';
+import type React from 'react';
+import { useRef, useState } from 'react';
 
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
@@ -95,7 +96,10 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
             let { firstName = '', lastName = '' } = instructor;
             firstName = capitalizeString(firstName);
             lastName = capitalizeString(lastName);
-            return openCESPage({ instructorFirstName: firstName, instructorLastName: lastName });
+            return openCESPage({
+                instructorFirstName: firstName,
+                instructorLastName: lastName,
+            });
         });
         await Promise.all(openTabs);
     };
@@ -220,7 +224,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                         </div>
                         {formattedUniqueId}
                     </Button>
-                    <button className='bg-transparent p-0 text-ut-black btn' onClick={onClose}>
+                    <button type='button' className='bg-transparent p-0 text-ut-black btn' onClick={onClose}>
                         <X className='h-6 w-6' />
                     </button>
                 </div>

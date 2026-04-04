@@ -1,5 +1,4 @@
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
-import React from 'react';
 
 /**
  *

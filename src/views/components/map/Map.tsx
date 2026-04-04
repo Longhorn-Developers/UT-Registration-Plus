@@ -6,7 +6,7 @@ import { LargeLogo } from '@views/components/common/LogoIcon';
 import Text from '@views/components/common/Text/Text';
 import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import IconoirGitFork from '~icons/iconoir/git-fork';
 
@@ -73,7 +73,7 @@ const convertMinutesToIndex = (minutes: number): number => Math.floor((minutes -
 /**
  * Renders the map component for the UTRP (UT Registration Plus) extension.
  */
-export default function Map(): JSX.Element {
+export default function UTRPMap(): JSX.Element {
     const handleChangelogOnClick = useChangelog();
     const [activeSchedule] = useSchedules();
 

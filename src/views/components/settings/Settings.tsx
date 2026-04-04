@@ -6,6 +6,7 @@ import { CalendarDots } from '@phosphor-icons/react';
 // Shared
 import { background } from '@shared/messages';
 import { DevStore } from '@shared/storage/DevStore';
+import type { IOptionsStore } from '@shared/storage/OptionsStore';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import Particles from '@tsparticles/react';
@@ -20,16 +21,17 @@ import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
 import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 // Misc
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // Icons
 import IconoirGitFork from '~icons/iconoir/git-fork';
 
 import { useMigrationDialog } from '../common/MigrationDialog';
 import { AdvancedSettings } from './AdvancedSettings';
-import { DEV_MODE_CLICK_TARGET, INCLUDE_MERGED_PRS, STATS_TOGGLE_KEY } from './constants';
 import { ContributorCard } from './ContributorCard';
 import { ContributorCardSkeleton } from './ContributorCardSkeleton';
+import { DEV_MODE_CLICK_TARGET, INCLUDE_MERGED_PRS, STATS_TOGGLE_KEY } from './constants';
 import DevMode from './DevMode';
 import { useBirthdayCelebration } from './useBirthdayCelebration';
 import { useDevMode } from './useDevMode';
@@ -45,10 +47,7 @@ export default function Settings(): JSX.Element {
     const gitHubStatsService = useMemo(() => new GitHubStatsService(), []);
 
     // State
-    const [highlightConflicts, setHighlightConflicts] = useState(false);
-    const [loadAllCourses, setLoadAllCourses] = useState(false);
-    const [calendarNewTab, setCalendarNewTab] = useState(false);
-    const [increaseScheduleLimit, setIncreaseScheduleLimit] = useState(false);
+    const [options, setOptions] = useState<IOptionsStore | null>(null);
     const [enableDataRefreshing, setEnableDataRefreshing] = useState(false);
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState(false);
     const [showGitHubStats, setShowGitHubStats] = useState(false);
@@ -80,20 +79,10 @@ export default function Settings(): JSX.Element {
         };
 
         const initAndSetSettings = async () => {
-            const {
-                enableHighlightConflicts,
-                enableScrollToLoad,
-                alwaysOpenCalendarInNewTab,
-                allowMoreSchedules,
-                enableDataRefreshing: dataRefreshing,
-                enableCourseStatusChips: courseStatusChips,
-            } = await initSettings();
-            setHighlightConflicts(enableHighlightConflicts);
-            setLoadAllCourses(enableScrollToLoad);
-            setCalendarNewTab(alwaysOpenCalendarInNewTab);
-            setIncreaseScheduleLimit(allowMoreSchedules);
-            setEnableDataRefreshing(dataRefreshing);
-            setEnableCourseStatusChips(courseStatusChips);
+            const settings = await initSettings();
+            setOptions(settings);
+            setEnableDataRefreshing(settings.enableDataRefreshing);
+            setEnableCourseStatusChips(settings.enableCourseStatusChips);
         };
 
         const initDS = async () => {
@@ -112,20 +101,26 @@ export default function Settings(): JSX.Element {
             setIsDeveloper(newValue);
         });
 
-        const l1 = OptionsStore.subscribe('enableHighlightConflicts', async ({ newValue }) => {
-            setHighlightConflicts(newValue);
+        const l1 = OptionsStore.subscribe('enableHighlightConflicts', ({ newValue }) => {
+            setOptions(prev => prev && { ...prev, enableHighlightConflicts: newValue });
         });
 
-        const l2 = OptionsStore.subscribe('enableScrollToLoad', async ({ newValue }) => {
-            setLoadAllCourses(newValue);
+        const l2 = OptionsStore.subscribe('enableScrollToLoad', ({ newValue }) => {
+            setOptions(prev => prev && { ...prev, enableScrollToLoad: newValue });
         });
 
-        const l3 = OptionsStore.subscribe('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
-            setCalendarNewTab(newValue);
+        const l3 = OptionsStore.subscribe('alwaysOpenCalendarInNewTab', ({ newValue }) => {
+            setOptions(
+                prev =>
+                    prev && {
+                        ...prev,
+                        alwaysOpenCalendarInNewTab: newValue,
+                    }
+            );
         });
 
-        const l4 = OptionsStore.subscribe('allowMoreSchedules', async ({ newValue }) => {
-            setIncreaseScheduleLimit(newValue);
+        const l4 = OptionsStore.subscribe('allowMoreSchedules', ({ newValue }) => {
+            setOptions(prev => prev && { ...prev, allowMoreSchedules: newValue });
         });
 
         const l5 = OptionsStore.subscribe('enableDataRefreshing', async ({ newValue }) => {
@@ -167,7 +162,6 @@ export default function Settings(): JSX.Element {
                     <p className='text-sm text-gray-600'>Note: This will not erase your settings and preferences.</p>
                 </>
             ),
-            // eslint-disable-next-line react/no-unstable-nested-components
             buttons: accept => (
                 <Button
                     variant='filled'
@@ -242,6 +236,8 @@ export default function Settings(): JSX.Element {
                         Settings and Credits
                     </Text>
                     {isBirthday && (
+                        // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
+                        // biome-ignore lint/a11y/useKeyWithClickEvents: TODO:
                         <span
                             onClick={triggerCelebration}
                             className='cursor-pointer px-4 text-sm text-ut-burntorange transition-transform hover:scale-110'
@@ -271,27 +267,62 @@ export default function Settings(): JSX.Element {
 
             <div className='p-6 lg:flex'>
                 <div className='mr-4 lg:w-1/2 xl:w-xl'>
-                    <AdvancedSettings
-                        highlightConflicts={highlightConflicts}
-                        setHighlightConflicts={setHighlightConflicts}
-                        loadAllCourses={loadAllCourses}
-                        setLoadAllCourses={setLoadAllCourses}
-                        increaseScheduleLimit={increaseScheduleLimit}
-                        setIncreaseScheduleLimit={setIncreaseScheduleLimit}
-                        calendarNewTab={calendarNewTab}
-                        setCalendarNewTab={setCalendarNewTab}
-                        enableDataRefreshing={enableDataRefreshing}
-                        setEnableDataRefreshing={setEnableDataRefreshing}
-                        enableCourseStatusChips={enableCourseStatusChips}
-                        setEnableCourseStatusChips={setEnableCourseStatusChips}
-                        activeSchedule={activeSchedule}
-                        handleEraseAll={handleEraseAll}
-                        handleImportClick={handleImportClick}
-                    />
+                    {options && (
+                        <AdvancedSettings
+                            highlightConflicts={options.enableHighlightConflicts}
+                            setHighlightConflicts={v =>
+                                setOptions(
+                                    prev =>
+                                        prev && {
+                                            ...prev,
+                                            enableHighlightConflicts: v,
+                                        }
+                                )
+                            }
+                            loadAllCourses={options.enableScrollToLoad}
+                            setLoadAllCourses={v =>
+                                setOptions(
+                                    prev =>
+                                        prev && {
+                                            ...prev,
+                                            enableScrollToLoad: v,
+                                        }
+                                )
+                            }
+                            increaseScheduleLimit={options.allowMoreSchedules}
+                            setIncreaseScheduleLimit={v =>
+                                setOptions(
+                                    prev =>
+                                        prev && {
+                                            ...prev,
+                                            allowMoreSchedules: v,
+                                        }
+                                )
+                            }
+                            calendarNewTab={options.alwaysOpenCalendarInNewTab}
+                            setCalendarNewTab={v =>
+                                setOptions(
+                                    prev =>
+                                        prev && {
+                                            ...prev,
+                                            alwaysOpenCalendarInNewTab: v,
+                                        }
+                                )
+                            }
+                            enableDataRefreshing={enableDataRefreshing}
+                            setEnableDataRefreshing={setEnableDataRefreshing}
+                            enableCourseStatusChips={enableCourseStatusChips}
+                            setEnableCourseStatusChips={setEnableCourseStatusChips}
+                            activeSchedule={activeSchedule}
+                            handleEraseAll={handleEraseAll}
+                            handleImportClick={handleImportClick}
+                        />
+                    )}
 
                     <Divider size='auto' orientation='horizontal' />
 
                     <section className='my-8 space-y-4'>
+                        {/** biome-ignore lint/a11y/useKeyWithClickEvents: TODO: */}
                         <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
                             Developer Mode
                         </h2>
@@ -342,7 +373,9 @@ export default function Settings(): JSX.Element {
                                         color='ut-burntorange'
                                         onClick={() => {
                                             const debugPageUrl = chrome.runtime.getURL(CRX_PAGES.DEBUG);
-                                            background.openNewTab({ url: debugPageUrl });
+                                            background.openNewTab({
+                                                url: debugPageUrl,
+                                            });
                                         }}
                                     >
                                         Open Debug Page
@@ -406,10 +439,10 @@ export default function Settings(): JSX.Element {
                                 : additionalContributors.map(username => (
                                       <ContributorCard
                                           key={username}
-                                          name={githubStats!.names[username] || username}
+                                          name={githubStats?.names[username] || username}
                                           githubUsername={username}
                                           roles={['Contributor']}
-                                          stats={githubStats!.userGitHubStats[username]}
+                                          stats={githubStats?.userGitHubStats[username]}
                                           showStats={showGitHubStats}
                                           includeMergedPRs={INCLUDE_MERGED_PRS}
                                       />

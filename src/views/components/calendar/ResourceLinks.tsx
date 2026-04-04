@@ -1,6 +1,5 @@
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
 
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 

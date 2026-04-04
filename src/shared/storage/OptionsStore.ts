@@ -23,8 +23,6 @@ export interface IOptionsStore {
     /** whether the calendar sidebar should be shown when the calendar is opened */
     showCalendarSidebar: boolean;
 
-    /** whether the promo should be shown */
-    showUTDiningPromo: boolean;
     /** whether users are allowed to bypass the 10 schedule limit */
     allowMoreSchedules: boolean;
 }
@@ -36,7 +34,6 @@ const defaults: StoreDefaults<IOptionsStore> = {
     enableDataRefreshing: false,
     alwaysOpenCalendarInNewTab: false,
     showCalendarSidebar: true,
-    showUTDiningPromo: true,
     allowMoreSchedules: false,
 };
 
@@ -91,21 +88,9 @@ OptionsStore.set = async function set<K extends keyof IOptionsStore>(
 } as typeof OptionsStore.set;
 
 /**
- * Initializes the settings by retrieving the values from the OptionsStore.
- *
- * @returns A promise that resolves to an object satisfying the IOptionsStore interface.
+ * Fetches all settings from the OptionsStore in a single storage read.
  */
-export const initSettings = async () =>
-    ({
-        enableCourseStatusChips: await OptionsStore.get('enableCourseStatusChips'),
-        enableHighlightConflicts: await OptionsStore.get('enableHighlightConflicts'),
-        enableScrollToLoad: await OptionsStore.get('enableScrollToLoad'),
-        enableDataRefreshing: await OptionsStore.get('enableDataRefreshing'),
-        alwaysOpenCalendarInNewTab: await OptionsStore.get('alwaysOpenCalendarInNewTab'),
-        showCalendarSidebar: await OptionsStore.get('showCalendarSidebar'),
-        showUTDiningPromo: await OptionsStore.get('showUTDiningPromo'),
-        allowMoreSchedules: await OptionsStore.get('allowMoreSchedules'),
-    }) satisfies IOptionsStore;
+export const initSettings = () => OptionsStore.all();
 
 // Clothing retailer right
 

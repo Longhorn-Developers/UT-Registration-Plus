@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@views/components/common/Button';
 import DialogProvider, { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import Text from '@views/components/common/Text/Text';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const meta = {
     title: 'Components/Common/DialogProvider',
@@ -35,7 +35,6 @@ const InnerComponent = () => {
         showDialog({
             title: 'Dialog Title',
             description: 'Dialog Description',
-            // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <Button variant='filled' color='ut-burntorange' onClick={close}>
                     Close
@@ -78,7 +77,6 @@ const FiveDialogsInnerComponent = () => {
                         title: `Dialog #${i}`,
                         description:
                             'Deleting Main Schedule is permanent and will remove all added courses from that schedule.',
-                        // eslint-disable-next-line react/no-unstable-nested-components
                         buttons: close => (
                             <Button variant='filled' color='ut-burntorange' onClick={close}>
                                 Close
@@ -113,7 +111,6 @@ const NestedDialogsInnerComponent = () => {
         showDialog({
             title: 'Dialog Title',
             description: 'Dialog Description',
-            // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <>
                     <NestedDialogsInnerComponent />
@@ -149,7 +146,6 @@ const DialogWithOnCloseInnerComponent = () => {
         showDialog({
             title: 'Dialog Title',
             description: 'Dialog Description',
-            // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <Button variant='filled' color='ut-burntorange' onClick={close}>
                     Close

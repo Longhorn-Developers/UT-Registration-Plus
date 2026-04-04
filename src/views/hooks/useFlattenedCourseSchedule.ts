@@ -45,7 +45,19 @@ export interface CalendarGridCourse {
 export interface FlattenedCourseSchedule {
     courseCells: CalendarGridCourse[];
     activeSchedule: UserSchedule;
+    startMinutes: number;
+    endMinutes: number;
 }
+
+/**
+ * 8:00 AM latest start time aka DEFAULT, in minutes
+ */
+export const GRID_DEFAULT_START = 480;
+
+/**
+ * 9:00 PM earliest end time aka DEFAULT, in minutes
+ */
+export const GRID_DEFAULT_END = 1260;
 
 /**
  * Converts minutes to an index value.
@@ -53,9 +65,10 @@ export interface FlattenedCourseSchedule {
  * @param minutes - The number of minutes.
  * @returns The index value.
  */
-export const convertMinutesToIndex = (minutes: number): number =>
+export const convertMinutesToIndex = (minutes: number, gridStartMinutes = GRID_DEFAULT_START): number =>
     // 480 = 8 a.m., 30 = 30 minute slots, 2 header rows, and grid rows start at 1
-    Math.floor((minutes - 480) / 30) + 2 + 1;
+    // ok so originally we had a hardcoded start of 6 am but now  we want start to be dynamic, with a max of 8 AM, oterhwise depending on the start of earliest class
+    Math.floor((minutes - gridStartMinutes) / 30) + 2 + 1;
 
 /**
  * Get the active schedule, and convert it to be render-able into a calendar.
@@ -63,21 +76,50 @@ export const convertMinutesToIndex = (minutes: number): number =>
  */
 export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const [activeSchedule] = useSchedules();
+    const allMeetings = activeSchedule.courses.flatMap(c => c.schedule.meetings);
+
+    // go through every meeting we have and finds minimum start time with starting best so far being GRID_DEFAULT_START_MINUTES
+    // this variable will go on a journey through time and space to finally be delivered to the viewable calendar grid as the start hour of the entire grid
+    const rawGridStartMinutes = allMeetings.reduce((earliest, current) => {
+        if (current.days.includes(DAY_MAP.S) || current.startTime >= 1440) {
+            // keep accumulator value unchanged, go to next iteration
+            return earliest;
+        }
+
+        const t = current.startTime >= 1440 ? current.startTime - 720 : current.startTime;
+        return Math.min(earliest, t);
+    }, GRID_DEFAULT_START);
+    // round down to closest hour (in minute units)
+    const gridStartMinutes = Math.floor(rawGridStartMinutes / 60) * 60;
+
+    const rawGridEndMinutes = allMeetings.reduce((latest, current) => {
+        if (current.days.includes(DAY_MAP.S) || current.endTime >= 1440) {
+            return latest;
+        }
+        const t = current.endTime >= 1440 ? current.endTime - 720 : current.endTime;
+        return Math.max(latest, t);
+    }, GRID_DEFAULT_END);
+    // round up to closest hour (in minute units)
+    const gridEndMinutes = Math.ceil(rawGridEndMinutes / 60) * 60;
 
     const processedCourses = activeSchedule.courses
         .flatMap(course => {
             const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
 
             if (meetings.length === 0) {
-                return processAsyncCourses({ courseDeptAndInstr, status, course });
+                return processAsyncCourses({
+                    courseDeptAndInstr,
+                    status,
+                    course,
+                });
             }
 
             return meetings.flatMap(meeting => {
-                if (meeting.days.includes(DAY_MAP.S) || meeting.startTime < 480) {
+                if (meeting.days.includes(DAY_MAP.S)) {
                     return processAsyncCourses({ courseDeptAndInstr, status, course });
                 }
 
-                return processInPersonMeetings(meeting, courseDeptAndInstr, status, course);
+                return processInPersonMeetings(meeting, courseDeptAndInstr, status, course, gridStartMinutes);
             });
         })
         .sort(sortCourses);
@@ -85,6 +127,8 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     return {
         courseCells: processedCourses,
         activeSchedule,
+        startMinutes: gridStartMinutes,
+        endMinutes: gridEndMinutes,
     };
 }
 
@@ -130,8 +174,16 @@ function processAsyncCourses({
                 courseDeptAndInstr,
                 status,
                 blockData: {
-                    calendarGridPoint: { dayIndex: -1, startIndex: -1, endIndex: -1 },
-                    componentProps: { courseDeptAndInstr, status, blockData: {} as CalendarGridCourse },
+                    calendarGridPoint: {
+                        dayIndex: -1,
+                        startIndex: -1,
+                        endIndex: -1,
+                    },
+                    componentProps: {
+                        courseDeptAndInstr,
+                        status,
+                        blockData: {} as CalendarGridCourse,
+                    },
                     course,
                     async: true,
                 },
@@ -149,7 +201,8 @@ function processInPersonMeetings(
     meeting: CourseMeeting,
     courseDeptAndInstr: string,
     status: StatusType,
-    course: Course
+    course: Course,
+    gridStartMinutes: number
 ): CalendarGridCourse[] {
     const { days, startTime, endTime, location } = meeting;
     const midnightIndex = 1440;
@@ -171,8 +224,9 @@ function processInPersonMeetings(
     return days.map(day => ({
         calendarGridPoint: {
             dayIndex: dayToNumber[day],
-            startIndex: convertMinutesToIndex(normalizedStartTime),
-            endIndex: convertMinutesToIndex(normalizedEndTime),
+            // pass in startMinutes to find the offset
+            startIndex: convertMinutesToIndex(normalizedStartTime, gridStartMinutes),
+            endIndex: convertMinutesToIndex(normalizedEndTime, gridStartMinutes),
         },
         componentProps: {
             courseDeptAndInstr,

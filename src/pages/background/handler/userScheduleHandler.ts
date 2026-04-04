@@ -33,8 +33,8 @@ const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
     renameSchedule({ data, sendResponse }) {
         renameSchedule(data.scheduleId, data.newName).then(sendResponse);
     },
-    // proxy so we can add courses
-    addCourseByURL({ data: { url, method, body, response }, sendResponse }) {
+    // Fetch proxy for content scripts that cannot make cross-origin requests.
+    fetchFromUrl({ data: { url, method, body, response }, sendResponse }) {
         fetch(url, {
             method,
             body,
@@ -42,8 +42,8 @@ const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
             .then(res => (response === 'json' ? res.json() : res.text()))
             .then(sendResponse);
     },
-    validateLoginStatus({ data, sendResponse }) {
-        validateLoginStatus(data.url).then(sendResponse);
+    validateLoginStatus({ sendResponse }) {
+        validateLoginStatus().then(sendResponse);
     },
     exportSchedule({ data, sendResponse }) {
         exportSchedule(data.scheduleId).then(sendResponse);

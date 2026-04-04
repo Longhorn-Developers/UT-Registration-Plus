@@ -1,15 +1,16 @@
 import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
-import { CalendarDots, GearSix, Plus } from '@phosphor-icons/react';
+import { CalendarDots, Flag, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
+import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
@@ -57,6 +58,7 @@ export default function PopupMain(): JSX.Element {
 
     // const [isRefreshing, setIsRefreshing] = useState(false);
     const [funny, setFunny] = useState<string>('');
+    const showReportIssueDialog = useReportIssueDialog();
 
     const enforceScheduleLimit = useEnforceScheduleLimit();
     const handleAddSchedule = () => {
@@ -65,6 +67,7 @@ export default function PopupMain(): JSX.Element {
         }
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Generate a new splash text every time the active schedule changes
     useEffect(() => {
         setFunny(prevFunny => {
             // Ensure that the next splash text is not the same as the previous one
@@ -98,9 +101,10 @@ export default function PopupMain(): JSX.Element {
             <div className='px-spacing-6 py-spacing-5'>
                 <div className='flex items-center justify-between bg-white'>
                     <SmallLogo />
-                    <div className='flex items-center gap-2.5'>
+                    <div className='flex items-center gap-1.5'>
                         <Button
                             variant='filled'
+                            size='small'
                             color='ut-burntorange'
                             onClick={handleCalendarOpenOnClick}
                             icon={CalendarDots}
@@ -108,7 +112,21 @@ export default function PopupMain(): JSX.Element {
                         >
                             Calendar
                         </Button>
-                        <Button variant='minimal' color='ut-black' onClick={handleOpenOptions} icon={GearSix} />
+                        <Button
+                            variant='minimal'
+                            size='small'
+                            color='ut-black'
+                            icon={Flag}
+                            title='Send feedback'
+                            onClick={showReportIssueDialog}
+                        />
+                        <Button
+                            variant='minimal'
+                            size='small'
+                            color='ut-black'
+                            onClick={handleOpenOptions}
+                            icon={GearSix}
+                        />
                     </div>
                 </div>
             </div>

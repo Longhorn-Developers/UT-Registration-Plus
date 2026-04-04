@@ -1,8 +1,8 @@
 import type { Serialized } from '@chrome-extension-toolkit';
-import { tz, TZDate } from '@date-fns/tz';
+import { TZDate, tz } from '@date-fns/tz';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import type { Course } from '@shared/types/Course';
+import { type Course, UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -151,7 +151,7 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
         return null;
     }
 
-    if (!Object.prototype.hasOwnProperty.call(academicCalendars, course.semester.code)) {
+    if (!Object.hasOwn(academicCalendars, course.semester.code)) {
         console.error(
             `No academic calendar found for semester code: ${course.semester.code}; course uniqueId: ${course.uniqueId}`
         );
@@ -161,6 +161,7 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
 
     const startDate = nextDayInclusive(
         parseISO(academicCalendar.firstClassDate, { in: TZ }),
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         DAY_NAME_TO_NUMBER[days[0]!]
     );
 
@@ -186,15 +187,22 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
     const icsDays = days.map(day => CAL_MAP[day]).join(',');
 
     // per spec, UNTIL must be in UTC
-    const untilDateFormatted = formatISO(untilDate, { format: 'basic', in: tz('utc') });
+    const untilDateFormatted = formatISO(untilDate, {
+        format: 'basic',
+        in: tz('utc'),
+    });
     const excludedDatesFormatted = excludedDates.map(date => iCalDateFormat(date));
 
-    const uniqueNumberFormatted = course.uniqueId.toString().padStart(5, '0');
+    const uniqueNumberFormatted = course.uniqueId.toString().padStart(UNIQUE_ID_LENGTH, '0');
 
     // The list part of "Taught by Michael Scott and Siddhartha Chatterjee Beasley"
     const instructorsFormatted = englishStringifyList(
         course.instructors
-            .map(instructor => Instructor.prototype.toString.call(instructor, { format: 'first_last' }))
+            .map(instructor =>
+                Instructor.prototype.toString.call(instructor, {
+                    format: 'first_last',
+                })
+            )
             .filter(name => name !== '')
     );
 
@@ -338,7 +346,7 @@ export const saveCalAsPng = () => {
     rootNode.style.height = `${HEIGHT_PX}px`;
     document.body.appendChild(rootNode);
 
-    const clonedNode = document.querySelector('#root')!.cloneNode(true) as HTMLDivElement;
+    const clonedNode = document.querySelector('#root')?.cloneNode(true) as HTMLDivElement;
     clonedNode.style.backgroundColor = 'white';
     (clonedNode.firstChild as HTMLDivElement).classList.add('screenshot-in-progress');
 
@@ -394,6 +402,7 @@ const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCours
     const connectedComponents: CalendarGridCourse[][] = [];
 
     for (let i = 0; i < cells.length; i++) {
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         const cell = cells[i]!;
 
         if (!cell.concurrentCells || cell.concurrentCells.length === 0) {
@@ -402,9 +411,10 @@ const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCours
             connectedComponents.push([]);
         }
 
-        connectedComponents.at(-1)!.push(cell);
+        connectedComponents.at(-1)?.push(cell);
 
         for (let j = i + 1; j < cells.length; j++) {
+            // biome-ignore lint/style/noNonNullAssertion: TOOD:
             const otherCell = cells[j]!;
             if (otherCell.calendarGridPoint.startIndex >= cell.calendarGridPoint.endIndex) {
                 break;
@@ -414,8 +424,8 @@ const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCours
             // By the if check above, we know cell.endTime > other.endTime
             // So, they're concurrent
             // Also, by initializing j to i + 1, we know we don't have duplicates
-            cell.concurrentCells!.push(otherCell);
-            otherCell.concurrentCells!.push(cell);
+            cell.concurrentCells?.push(otherCell);
+            otherCell.concurrentCells?.push(cell);
         }
     }
 
@@ -440,6 +450,7 @@ const assignColumns = (cells: CalendarGridCourse[]) => {
 
     for (const cell of cells) {
         availableColumns.fill(true);
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         for (const otherCell of cell.concurrentCells!) {
             if (otherCell.gridColumnStart !== undefined) {
                 availableColumns[otherCell.gridColumnStart - 1] = false;

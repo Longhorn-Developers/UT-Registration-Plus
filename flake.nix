@@ -14,6 +14,7 @@
         ./nix/packages.nix
         ./nix/devShells.nix
         ./nix/treefmt.nix
+        ./nix/utils.nix
       ];
 
       perSystem =

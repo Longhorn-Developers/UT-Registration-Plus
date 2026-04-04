@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
+import { execSync } from 'node:child_process';
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
-import { execSync } from 'child_process';
 import { resolve } from 'path';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
@@ -10,7 +10,7 @@ import { defineConfig } from 'vite';
 import inspect from 'vite-plugin-inspect';
 
 import packageJson from './package.json';
-import manifest from './src/manifest';
+import manifest, { HOST_PERMISSIONS, createFirefoxManifestPlugin } from './src/manifest';
 import vitePluginRunCommandOnDemand from './utils/plugins/run-command-on-demand';
 import { buildLogger } from './utils/plugins/vite-build-logger';
 
@@ -23,17 +23,6 @@ const root = resolve(__dirname, 'src');
 const pagesDir = resolve(root, 'pages');
 const assetsDir = resolve(root, 'assets');
 const publicDir = resolve(__dirname, 'public');
-
-const HOST_PERMISSIONS: string[] = [
-    '*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*',
-    '*://*.utdirect.utexas.edu/registration/classlist/*',
-    '*://*.utexas.collegescheduler.com/*',
-    '*://*.catalog.utexas.edu/ribbit/',
-    '*://*.registrar.utexas.edu/schedules/*',
-    '*://*.login.utexas.edu/login/*',
-    'https://utexas.bluera.com/*',
-    '*://my.utexas.edu/student/student/*',
-];
 
 const isBeta = !!process.env.BETA;
 if (isBeta) {
@@ -69,7 +58,7 @@ const renameFile = (source: string, destination: string): Plugin => {
         name: 'crx:rename-file',
         apply: 'build',
         enforce: 'post',
-        generateBundle(options, bundle) {
+        generateBundle(_options, bundle) {
             const file = bundle[source];
             if (!file) return;
             file.fileName = destination;
@@ -123,8 +112,8 @@ function getGitInfo() {
 
 const gitInfo = getGitInfo();
 
-let config: ResolvedConfig;
-let server: ViteDevServer;
+let _config: ResolvedConfig;
+let _server: ViteDevServer;
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -204,7 +193,6 @@ export default defineConfig({
         renameFile('src/pages/report/index.html', 'report.html'),
         renameFile('src/pages/map/index.html', 'map.html'),
         renameFile('src/pages/404/index.html', '404.html'),
-        renameFile('src/pages/offscreen/index.html', 'offscreen.html'),
         vitePluginRunCommandOnDemand({
             // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
             closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',
@@ -228,108 +216,7 @@ export default defineConfig({
                 nodeVersion: () => process.version,
             },
         }),
-        ...(BROWSER_TARGET === 'firefox'
-            ? [
-                  (function firefoxManifestGenerator(): Plugin {
-                      return {
-                          name: 'firefox-manifest-generator',
-                          apply: 'build',
-                          async generateBundle(_options, bundle) {
-                              let backgroundFile: string | undefined;
-                              let contentFile: string | undefined;
-                              const cssFiles: string[] = [];
-
-                              for (const [fileName, chunk] of Object.entries(bundle)) {
-                                  if (fileName.endsWith('.css')) {
-                                      cssFiles.push(fileName);
-                                  }
-
-                                  if (chunk && (chunk as any).type === 'chunk') {
-                                      const facade = (chunk as any).facadeModuleId || '';
-                                      if (facade && facade.endsWith('src/pages/background/background.ts')) {
-                                          backgroundFile = fileName;
-                                      }
-                                      if (facade && facade.endsWith('src/pages/content/index.tsx')) {
-                                          contentFile = fileName;
-                                      }
-                                  }
-                              }
-
-                              // fallback heuristics
-                              if (!backgroundFile) {
-                                  for (const fileName of Object.keys(bundle)) {
-                                      if (fileName.includes('background')) {
-                                          backgroundFile = fileName;
-                                          break;
-                                      }
-                                  }
-                              }
-                              if (!contentFile) {
-                                  for (const fileName of Object.keys(bundle)) {
-                                      if (fileName.includes('content')) {
-                                          contentFile = fileName;
-                                          break;
-                                      }
-                                  }
-                              }
-
-                              const manifestForFirefox: any = {
-                                  manifest_version: 2,
-                                  name: `${packageJson.displayName ?? packageJson.name}`,
-                                  version: packageJson.version,
-                                  description: packageJson.description,
-                                  homepage_url: packageJson.homepage,
-                                  icons: {
-                                      '16': `icons/icon_production_16.png`,
-                                      '32': `icons/icon_production_32.png`,
-                                      '48': `icons/icon_production_48.png`,
-                                      '128': `icons/icon_production_128.png`,
-                                  },
-                                  permissions: ['storage', 'unlimitedStorage', 'tabs', ...HOST_PERMISSIONS],
-                                  browser_action: {
-                                      default_popup: 'popup.html',
-                                      default_icon: `icons/icon_production_32.png`,
-                                  },
-                                  options_page: 'options.html',
-                                  web_accessible_resources: ['assets/*.js', 'assets/*.css', 'assets/*'],
-                                  content_security_policy: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
-                              };
-
-                              if (backgroundFile) {
-                                  const loaderName = 'background-loader.js';
-                                  const loaderSource = `(async()=>{try{await import(chrome.runtime.getURL('${backgroundFile}'));}catch(e){console.error('Failed to load background module',e);}})();`;
-                                  this.emitFile({ type: 'asset', fileName: loaderName, source: loaderSource });
-                                  manifestForFirefox.background = { scripts: [loaderName] };
-                              } else {
-                                  // best-effort fallback
-                                  manifestForFirefox.background = { scripts: ['src/pages/background/background.js'] };
-                              }
-
-                              if (contentFile) {
-                                  const contentLoaderName = 'content-loader.js';
-                                  const contentLoaderSource = `(async()=>{try{await import(chrome.runtime.getURL('${contentFile}'));}catch(e){console.error('Failed to load content module',e);}})();`;
-                                  this.emitFile({
-                                      type: 'asset',
-                                      fileName: contentLoaderName,
-                                      source: contentLoaderSource,
-                                  });
-
-                                  manifestForFirefox.content_scripts = [
-                                      {
-                                          matches: HOST_PERMISSIONS,
-                                          js: [contentLoaderName],
-                                          css: cssFiles,
-                                      },
-                                  ];
-                              }
-
-                              const out = JSON.stringify(manifestForFirefox, null, 2);
-                              this.emitFile({ type: 'asset', fileName: 'manifest.json', source: out });
-                          },
-                      };
-                  })(),
-              ]
-            : []),
+        ...(BROWSER_TARGET === 'firefox' ? [createFirefoxManifestPlugin()] : []),
     ],
     resolve: {
         alias: {
@@ -394,7 +281,6 @@ export default defineConfig({
                 404: 'src/pages/404/index.html',
                 background: 'src/pages/background/background.ts',
                 content: 'src/pages/content/index.tsx',
-                offscreen: 'src/pages/offscreen/index.html',
             },
             output: {
                 chunkFileNames: `assets/[name]-[hash].js`,

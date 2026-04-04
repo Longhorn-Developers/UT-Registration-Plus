@@ -1,11 +1,9 @@
-import { Octokit } from '@octokit/rest';
 import { CacheStore } from '@shared/storage/CacheStore';
-import type { CachedData } from '@shared/types/CachedData';
 import type {
     ContributorStats,
     ContributorUser,
-    FetchResult,
     GitHubStats,
+    GitHubStatsResult,
     TeamMember,
 } from '@shared/types/GitHubStats';
 
@@ -16,38 +14,77 @@ const REPO_NAME = 'UT-Registration-Plus';
 const CONTRIBUTORS_API_ROUTE = `/repos/${REPO_OWNER}/${REPO_NAME}/stats/contributors`;
 
 export const LONGHORN_DEVELOPERS_ADMINS = [
-    { name: 'Sriram Hariharan', role: ['LHD Co-Founder', 'UTRP Founder'], githubUsername: 'sghsri' },
     {
         name: 'Elie Soloveichik',
-        role: ['LHD Co-Founder', 'Learning and Development Director', 'UTRP Senior SWE'],
+        role: ['LHD President', 'LHD Co-Founder'],
         githubUsername: 'Razboy20',
     },
     {
-        name: 'Diego Perez',
-        role: ['LHD Co-Founder', 'Software Engineering Director', 'UTRP Senior SWE'],
-        githubUsername: 'doprz',
+        name: 'Brendan Early',
+        role: ['LHD Software Engineering Director'],
+        githubUsername: 'mymindstorm',
     },
-    { name: 'Isaiah Rodriguez', role: ['LHD Co-Founder', 'President and UI/UX Director'], githubUsername: 'IsaDavRod' },
     {
-        name: 'Samuel Gunter',
-        role: ['Administrative Director', 'UTRP Co-Lead', 'UTRP Senior SWE'],
-        githubUsername: 'Samathingamajig',
+        name: 'Denise Xu',
+        role: ['LHD Product Director'],
+        githubUsername: 'denise308',
+    },
+    {
+        name: 'Carla Garcia Leija',
+        role: ['LHD UX Design Director'],
+        githubUsername: 'carlagarcialeija',
+    },
+    {
+        name: 'Kabir Ramzan',
+        role: ['LHD Events Director'],
+        githubUsername: 'CMEONE',
     },
     {
         name: 'Derek Chen',
-        role: ['Communications Director', 'UTRP Co-Lead', 'UTRP Senior SWE'],
+        role: ['LHD Advisor', 'UTRP Tech Lead'],
         githubUsername: 'DereC4',
     },
-    { name: 'Kabir Ramzan', role: ['Events Director'], githubUsername: 'CMEONE' },
 ] as const satisfies TeamMember[];
 
 export const LONGHORN_DEVELOPERS_SWE = [
-    { name: 'Preston Cook', role: ['Software Engineer'], githubUsername: 'Preston-Cook' },
-    { name: 'Ethan Lanting', role: ['Software Engineer'], githubUsername: 'EthanL06' },
-    { name: 'Casey Charleston', role: ['Software Engineer'], githubUsername: 'caseycharleston' },
-    { name: 'Lukas Zenick', role: ['LHD Alumni', 'Senior Software Engineer'], githubUsername: 'Lukas-Zenick' },
-    { name: 'Vinson', role: ['LHD Alumni', 'Software Engineer'], githubUsername: 'vinsonzheng499' },
-    { name: 'Vivek', role: ['LHD Alumni', 'Software Engineer'], githubUsername: 'vivek12311' },
+    {
+        name: 'Diego Perez',
+        role: ['LHD Co-Founder', 'LHD Advisor', 'UTRP Senior SWE'],
+        githubUsername: 'doprz',
+    },
+    {
+        name: 'Samuel Gunter',
+        role: ['LHD Advisor', 'UTRP Senior SWE'],
+        githubUsername: 'Samathingamajig',
+    },
+    {
+        name: 'Isaiah Rodriguez',
+        role: ['LHD Co-Founder', 'LHD Advisor'],
+        githubUsername: 'IsaDavRod',
+    },
+    {
+        name: 'Sriram Hariharan',
+        role: ['UTRP Founder', 'LHD Alumni'],
+        githubUsername: 'sghsri',
+    },
+    {
+        name: 'Preston Cook',
+        role: ['LHD Alumni'],
+        githubUsername: 'Preston-Cook',
+    },
+    {
+        name: 'Casey Charleston',
+        role: ['LHD Alumni'],
+        githubUsername: 'caseycharleston',
+    },
+    {
+        name: 'Lukas Zenick',
+        role: ['LHD Alumni'],
+        githubUsername: 'Lukas-Zenick',
+    },
+    { name: 'Vinson', role: ['LHD Alumni'], githubUsername: 'vinsonzheng499' },
+    { name: 'Vivek', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
+    { name: 'Ethan Lanting', role: ['LHD Alumni'], githubUsername: 'EthanL06' },
 ] as const satisfies TeamMember[];
 
 /**
@@ -64,67 +101,10 @@ export type LD_ADMIN_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_ADMINS)[numb
  * Service for fetching GitHub statistics.
  */
 export class GitHubStatsService {
-    private octokit: Octokit;
-    private cache: Record<string, CachedData<unknown>>;
-
-    private storageLock: Promise<void> = Promise.resolve();
-
-    constructor(githubToken?: string) {
-        this.octokit = githubToken ? new Octokit({ auth: githubToken }) : new Octokit();
-        this.cache = {} as Record<string, CachedData<unknown>>;
-    }
-
-    private async getCachedData<T>(key: string): Promise<CachedData<T> | null> {
-        if (Object.keys(this.cache).length === 0) {
-            const githubCache = await CacheStore.get('github');
-            if (githubCache && typeof githubCache === 'object') {
-                this.cache = githubCache as Record<string, CachedData<unknown>>;
-            }
-        }
-
-        const cachedItem = this.cache[key] as CachedData<T> | undefined;
-        if (cachedItem) {
-            const timeDifference = Date.now() - cachedItem.dataFetched;
-            if (timeDifference < CACHE_TTL) {
-                return cachedItem;
-            }
-        }
-        return null;
-    }
-
-    private async setCachedData<T>(key: string, data: T, persist = true): Promise<void> {
-        // get the current lock
-        const existingLock = this.storageLock;
-
-        // update the lock with a new promise
-        this.storageLock = (async () => {
-            // wait for current lock to finish
-            await existingLock;
-
-            // ensure cache is loaded before modifying
-            if (Object.keys(this.cache).length === 0) {
-                const githubCache = await CacheStore.get('github');
-                if (githubCache && typeof githubCache === 'object') {
-                    this.cache = githubCache as Record<string, CachedData<unknown>>;
-                }
-            }
-
-            // update local memory
-            this.cache[key] = { data, dataFetched: Date.now() };
-
-            // only write to the physical storage API if persist is true
-            if (persist) {
-                await CacheStore.set('github', this.cache);
-            }
-        })();
-
-        return this.storageLock;
-    }
-
-    private async fetchWithRetry<T>(fetchFn: () => Promise<T>, retries: number = 3, delay: number = 5000): Promise<T> {
+    private async fetchWithRetry<T>(fetchFn: () => Promise<T>, retries = 3, delay = 5000): Promise<T> {
         try {
             return await fetchFn();
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // biome-ignore lint/suspicious/noExplicitAny: TODO: type the error properly
         } catch (error: any) {
             if (retries > 0 && error.status === 202) {
                 await new Promise(resolve => setTimeout(resolve, delay));
@@ -139,217 +119,79 @@ export class GitHubStatsService {
             const url = new URL(route, 'https://github.cachedapi.com');
             const response = await fetch(url);
             return await response.json();
-        } catch (error: unknown) {
+        } catch {
             const url = new URL(route, 'https://api.github.com');
             const response = await fetch(url);
             return await response.json();
         }
     }
 
-    private async fetchContributorStats(): Promise<FetchResult<ContributorStats[]>> {
-        const cacheKey = `contributor_stats_${REPO_OWNER}_${REPO_NAME}`;
-        const cachedStats = await this.getCachedData<ContributorStats[]>(cacheKey);
-
-        if (cachedStats) {
-            return {
-                data: cachedStats.data,
-                dataFetched: new Date(cachedStats.dataFetched),
-                lastUpdated: new Date(),
-                isCached: true,
-            };
+    private async fetchContributorStats(): Promise<Record<string, GitHubStats>> {
+        const cached = await CacheStore.get('githubStats');
+        if (cached && Date.now() - cached.dataFetched < CACHE_TTL) {
+            return cached.data;
         }
 
         const data = await this.fetchWithRetry(() => this.fetchGitHub(CONTRIBUTORS_API_ROUTE));
+        if (!Array.isArray(data)) throw new Error('Invalid response format');
 
-        if (Array.isArray(data)) {
-            const fetchResult: FetchResult<ContributorStats[]> = {
-                data: data as ContributorStats[],
-                dataFetched: new Date(),
-                lastUpdated: new Date(),
-                isCached: false,
+        const stats: Record<string, GitHubStats> = {};
+        for (const stat of data as ContributorStats[]) {
+            stats[stat.author.login] = {
+                commits: stat.total,
+                linesAdded: stat.weeks.reduce((sum, w) => sum + w.a, 0),
+                linesDeleted: stat.weeks.reduce((sum, w) => sum + w.d, 0),
             };
-            await this.setCachedData(cacheKey, fetchResult.data);
-            return fetchResult;
         }
 
-        throw new Error('Invalid response format');
+        await CacheStore.set('githubStats', {
+            data: stats,
+            dataFetched: Date.now(),
+        });
+        return stats;
     }
 
-    private async fetchContributorNames(contributors: string[]): Promise<Record<string, string>> {
+    private async fetchContributorNames(usernames: string[]): Promise<Record<string, string>> {
+        const cached = await CacheStore.get('githubNames');
+        if (cached && Date.now() - cached.dataFetched < CACHE_TTL) {
+            return cached.data;
+        }
+
         const names: Record<string, string> = {};
-
         await Promise.all(
-            contributors.map(async contributor => {
-                const cacheKey = `contributor_name_${contributor}`;
-                const cachedName = await this.getCachedData<string>(cacheKey);
-                let name = `@${contributor}`;
-
-                if (cachedName) {
-                    name = cachedName.data;
-                } else {
-                    try {
-                        const data = (await this.fetchWithRetry(() =>
-                            this.fetchGitHub(`/users/${contributor}`)
-                        )) as ContributorUser;
-                        if (data.name) {
-                            name = data.name;
-                        }
-                        // Pass 'false' to avoid writing to disk for every single name
-                        await this.setCachedData(cacheKey, name, false);
-                    } catch (e) {
-                        console.error(e);
-                    }
+            usernames.map(async username => {
+                try {
+                    const data = (await this.fetchWithRetry(() =>
+                        this.fetchGitHub(`/users/${username}`)
+                    )) as ContributorUser;
+                    names[username] = data.name || `@${username}`;
+                } catch {
+                    names[username] = `@${username}`;
                 }
-                names[contributor] = name;
             })
         );
+
+        await CacheStore.set('githubNames', {
+            data: names,
+            dataFetched: Date.now(),
+        });
         return names;
     }
-    private async fetchMergedPRsCount(username: string): Promise<FetchResult<number>> {
-        const cacheKey = `merged_prs_${username}`;
-        const cachedCount = await this.getCachedData<number>(cacheKey);
 
-        if (cachedCount !== null) {
-            return {
-                data: cachedCount.data,
-                dataFetched: new Date(cachedCount.dataFetched),
-                lastUpdated: new Date(),
-                isCached: true,
-            };
-        }
+    public async fetchGitHubStats(): Promise<GitHubStatsResult> {
+        const allStats = await this.fetchContributorStats();
 
-        const { data } = await this.octokit.search.issuesAndPullRequests({
-            q: `org:${REPO_OWNER} author:${username} type:pr is:merged`,
-        });
-
-        const fetchResult: FetchResult<number> = {
-            data: data.total_count,
-            dataFetched: new Date(),
-            lastUpdated: new Date(),
-            isCached: false,
-        };
-        await this.setCachedData(cacheKey, fetchResult.data, false);
-        return fetchResult;
-    }
-
-    private processContributorStats(stats: ContributorStats): GitHubStats {
-        return {
-            commits: stats.total,
-            linesAdded: stats.weeks.reduce((total, week) => total + week.a, 0),
-            linesDeleted: stats.weeks.reduce((total, week) => total + week.d, 0),
-        };
-    }
-
-    public async fetchGitHubStats(options: { includeMergedPRs?: boolean } = {}): Promise<{
-        adminGitHubStats: Record<string, GitHubStats>;
-        userGitHubStats: Record<string, GitHubStats>;
-        contributors: string[];
-        names: Record<string, string>;
-        dataFetched: Date;
-        lastUpdated: Date;
-        isCached: boolean;
-    }> {
-        const { includeMergedPRs = false } = options;
         const adminGitHubStats: Record<string, GitHubStats> = {};
         const userGitHubStats: Record<string, GitHubStats> = {};
-        const contributors: string[] = [];
-        let oldestDataFetch = new Date();
-        let newestDataFetch = new Date(0);
-        let allCached = true;
-
-        try {
-            const contributorStatsResult = await this.fetchContributorStats();
-            oldestDataFetch = contributorStatsResult.dataFetched;
-            newestDataFetch = contributorStatsResult.dataFetched;
-            allCached = contributorStatsResult.isCached;
-
-            await Promise.all(
-                contributorStatsResult.data.map(async stat => {
-                    const { login } = stat.author;
-                    contributors.push(login);
-
-                    const isAdmin = LONGHORN_DEVELOPERS_ADMINS.some(admin => admin.githubUsername === login);
-                    const statsObject = isAdmin ? adminGitHubStats : userGitHubStats;
-
-                    statsObject[login] = this.processContributorStats(stat);
-
-                    if (includeMergedPRs) {
-                        try {
-                            const mergedPRsResult = await this.fetchMergedPRsCount(login);
-                            statsObject[login].mergedPRs = mergedPRsResult.data;
-
-                            if (mergedPRsResult.dataFetched < oldestDataFetch) {
-                                oldestDataFetch = mergedPRsResult.dataFetched;
-                            }
-                            if (mergedPRsResult.dataFetched > newestDataFetch) {
-                                newestDataFetch = mergedPRsResult.dataFetched;
-                            }
-                            allCached = allCached && mergedPRsResult.isCached;
-                        } catch (error) {
-                            console.error(`Error fetching merged PRs for ${login}:`, error);
-                            statsObject[login].mergedPRs = 0;
-                        }
-                    }
-                })
-            );
-
-            const names = await this.fetchContributorNames(contributors);
-
-            await CacheStore.set('github', this.cache);
-
-            return {
-                adminGitHubStats,
-                userGitHubStats,
-                contributors,
-                names,
-                dataFetched: oldestDataFetch,
-                lastUpdated: new Date(),
-                isCached: allCached,
-            };
-        } catch (error) {
-            console.error('Error fetching GitHub stats:', error);
-            throw error;
+        for (const [login, stats] of Object.entries(allStats)) {
+            if (LONGHORN_DEVELOPERS_ADMINS.some(admin => admin.githubUsername === login)) {
+                adminGitHubStats[login] = stats;
+            } else {
+                userGitHubStats[login] = stats;
+            }
         }
+
+        const names = await this.fetchContributorNames(Object.keys(allStats));
+        return { adminGitHubStats, userGitHubStats, names };
     }
 }
-
-// /**
-//  * Runs an example that fetches GitHub stats using the GitHubStatsService.
-//  *
-//  * @returns A promise that resolves when the example is finished running.
-//  * @throws If there is an error fetching the GitHub stats.
-//  */
-// async function runExample() {
-//     // Token is now optional
-//     // const githubToken = process.env.GITHUB_TOKEN;
-//     const gitHubStatsService = new GitHubStatsService();
-
-//     try {
-//         console.log('Fetching stats without merged PRs...');
-//         const statsWithoutPRs = await gitHubStatsService.fetchGitHubStats();
-//         console.log('Data fetched:', statsWithoutPRs.dataFetched.toLocaleString());
-//         console.log('Last updated:', statsWithoutPRs.lastUpdated.toLocaleString());
-//         console.log('Is cached:', statsWithoutPRs.isCached);
-
-//         console.log(statsWithoutPRs);
-
-//         // console.log('\nFetching stats with merged PRs...');
-//         // const statsWithPRs = await gitHubStatsService.fetchGitHubStats({ includeMergedPRs: true });
-//         // console.log('Data fetched:', statsWithPRs.dataFetched.toLocaleString());
-//         // console.log('Last updated:', statsWithPRs.lastUpdated.toLocaleString());
-//         // console.log('Is cached:', statsWithPRs.isCached);
-
-//         // wait 5 seconds
-//         // await new Promise(resolve => setTimeout(resolve, 5000));
-
-//         // console.log('\nFetching stats again (should be cached)...');
-//         // const cachedStats = await gitHubStatsService.fetchGitHubStats();
-//         // console.log('Data fetched:', cachedStats.dataFetched.toLocaleString());
-//         // console.log('Last updated:', cachedStats.lastUpdated.toLocaleString());
-//         // console.log('Is cached:', cachedStats.isCached);
-//     } catch (error) {
-//         console.error('Failed to fetch GitHub stats:', error);
-//     }
-// }
-
-// runExample();

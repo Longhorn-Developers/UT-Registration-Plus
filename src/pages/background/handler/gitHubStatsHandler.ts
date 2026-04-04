@@ -8,21 +8,15 @@ const gitHubStatsService = new GitHubStatsService();
  * Handler for GitHub stats related messages
  */
 const gitHubStatsHandler: MessageHandler<GitHubStatsMessages> = {
-    async fetchGitHubStats({ data, sendResponse }) {
+    async fetchGitHubStats({ sendResponse }) {
         try {
-            const includeMergedPRs = data ?? false;
-            const stats = await gitHubStatsService.fetchGitHubStats({ includeMergedPRs });
-            sendResponse(stats);
+            sendResponse(await gitHubStatsService.fetchGitHubStats());
         } catch (error) {
             console.error('Error fetching GitHub stats in background:', error);
             sendResponse({
                 adminGitHubStats: {},
                 userGitHubStats: {},
-                contributors: [],
                 names: {},
-                dataFetched: new Date(),
-                lastUpdated: new Date(),
-                isCached: false,
             });
         }
     },

@@ -41,7 +41,6 @@ export default function useSchedules(): [active: UserSchedule, schedules: UserSc
         initialLoad = false;
 
         // trigger suspense
-        // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw new Promise(res => {
             fetchData().then(res);
         });
@@ -78,6 +77,19 @@ export default function useSchedules(): [active: UserSchedule, schedules: UserSc
  */
 export function getActiveSchedule(): UserSchedule {
     return schedulesCache[activeIndexCache] ?? errorSchedule;
+}
+
+/**
+ * Returns the schedule with the specified id.
+ * @param id - The id of the schedule to retrieve.
+ * @returns The schedule with the specified id, or undefined if not found.
+ */
+export async function getScheduleById(id: string): Promise<UserSchedule | undefined> {
+    const schedules = await UserScheduleStore.get('schedules');
+    const found = schedules.find(s => s.id === id);
+    if (!found) return undefined;
+    // todo: this is jank
+    return new UserSchedule(found);
 }
 
 /**
@@ -149,7 +161,7 @@ export async function updateCourseColors(courseID: number, primaryColor: HexColo
         }
 
         secondaryColor = colorFromWay;
-    } catch (e) {
+    } catch (_e) {
         secondaryColor = getDarkerShade(primaryColor, 20);
 
         // if primaryColor is too dark, get lighter shade instead

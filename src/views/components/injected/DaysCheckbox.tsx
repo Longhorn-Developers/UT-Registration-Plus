@@ -1,5 +1,5 @@
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const;
@@ -20,6 +20,7 @@ export default function DaysCheckbox(): JSX.Element | null {
             return;
         }
 
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         const formElement = daysDropdown.closest('.form_element')!;
         const checkboxContainer = document.createElement('div');
 

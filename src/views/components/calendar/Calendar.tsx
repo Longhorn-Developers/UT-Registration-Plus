@@ -4,8 +4,6 @@ import { Sidebar } from '@phosphor-icons/react';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
-import { CRX_PAGES } from '@shared/types/CRXPages';
-import { openReportWindow } from '@shared/util/openReportWindow';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
@@ -17,31 +15,32 @@ import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalog
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
+import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import clsx from 'clsx';
+import type React from 'react';
 import type { ReactNode } from 'react';
-import React, { useEffect, useState } from 'react';
-
+import { useEffect, useState } from 'react';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
 import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
-import DiningAppPromo from './DiningAppPromo';
+
 /**
  * Calendar page component
  */
 export default function Calendar(): ReactNode {
-    const { courseCells, activeSchedule } = useFlattenedCourseSchedule();
+    const { courseCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
     const displayBottomBar = true;
 
     const [course, setCourse] = useState<Course | null>(useCourseFromUrl());
 
     const [showPopup, setShowPopup] = useState<boolean>(course !== null);
-    const showWhatsNewDialog = useWhatsNewPopUp();
+    const _showWhatsNewDialog = useWhatsNewPopUp();
+    const showReportIssueDialog = useReportIssueDialog();
 
-    const [showUTDiningPromo, setShowUTDiningPromo] = useState<boolean>(false);
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
     const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
 
@@ -85,13 +84,6 @@ export default function Calendar(): ReactNode {
     useEffect(() => {
         if (course) setShowPopup(true);
     }, [course]);
-
-    useEffect(() => {
-        // Load the user's preference for the promo
-        OptionsStore.get('showUTDiningPromo').then(show => {
-            setShowUTDiningPromo(show);
-        });
-    }, []);
 
     // --- Reset drag state when dragging leaves the window ---
     // TODO - Refactor this and FileUpload.tsx, they use similar things and it would be optimal later on to maybe extract this all somewhere
@@ -193,6 +185,7 @@ export default function Calendar(): ReactNode {
                     </div>
                 )}
 
+                {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
                 <div
                     className='screenshot:calendar-target h-screen flex overflow-auto'
                     onDragEnter={handleDragEnter}
@@ -202,7 +195,7 @@ export default function Calendar(): ReactNode {
                 >
                     <div
                         className={clsx(
-                            'py-spacing-6 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
+                            'py-spacing-5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
                             {
                                 'max-w-[20.3125rem] ': showSidebar,
                                 'max-w-0 pointer-events-none': !showSidebar,
@@ -212,7 +205,7 @@ export default function Calendar(): ReactNode {
                         aria-hidden={!showSidebar}
                         {...(!showSidebar ? { inert: '' } : {})}
                     >
-                        <div className='sticky top-0 z-50 w-full flex items-center justify-between gap-x-3xl bg-white px-spacing-8 pb-spacing-6'>
+                        <div className='sticky top-0 z-50 w-full flex items-center justify-between bg-white px-spacing-7 pb-spacing-6'>
                             <LargeLogo />
                             <Button
                                 variant='minimal'
@@ -230,49 +223,21 @@ export default function Calendar(): ReactNode {
                             style={{
                                 scrollbarGutter: 'stable',
                             }}
-                            className='relative h-full w-full flex grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-8 pr-4.5'
+                            className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-7 pr-2.75'
                         >
                             <CalendarSchedules />
                             <Divider orientation='horizontal' size='100%' />
                             <ResourceLinks />
                             {/* <TeamLinks /> */}
                             <Divider orientation='horizontal' size='100%' />
-                            {showUTDiningPromo && (
-                                <DiningAppPromo
-                                    onClose={() => {
-                                        setShowUTDiningPromo(false);
-                                        OptionsStore.set('showUTDiningPromo', false);
-                                    }}
-                                />
-                            )}
-                            <div className='flex flex-col gap-spacing-3'>
-                                <a
-                                    href={CRX_PAGES.REPORT}
-                                    className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    onClick={event => {
-                                        event.preventDefault();
-                                        openReportWindow();
-                                    }}
-                                >
-                                    <Text variant='p'>Send us Feedback!</Text>
-                                    <OutwardArrowIcon className='h-4 w-4' />
-                                </a>
-                                <a
-                                    href=''
-                                    className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    onClick={event => {
-                                        event.preventDefault();
-                                        showWhatsNewDialog();
-                                    }}
-                                >
-                                    <Text variant='p'>What&apos;s New!</Text>
-                                    <OutwardArrowIcon className='h-4 w-4' />
-                                </a>
-                            </div>
+                            <button
+                                type='button'
+                                onClick={showReportIssueDialog}
+                                className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
+                            >
+                                <Text variant='p'>Send us Feedback!</Text>
+                                <OutwardArrowIcon className='h-4 w-4' />
+                            </button>
                         </div>
 
                         <CalendarFooter />
@@ -297,7 +262,12 @@ export default function Calendar(): ReactNode {
                                 'screenshot:flex-grow-0': displayBottomBar, // html-to-image seems to have a bug with flex-grow
                             })}
                         >
-                            <CalendarGrid courseCells={courseCells} setCourse={setCourse} />
+                            <CalendarGrid
+                                courseCells={courseCells}
+                                setCourse={setCourse}
+                                startMinutes={startMinutes}
+                                endMinutes={endMinutes}
+                            />
                         </div>
                         <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
                     </div>
@@ -306,7 +276,8 @@ export default function Calendar(): ReactNode {
                 <CourseCatalogInjectedPopup
                     // Ideally let's not use ! here, but it's fine since we know course is always defined when showPopup is true
                     // Let's try to refactor this
-                    course={course!} // always defined when showPopup is true
+                    // biome-ignore lint/style/noNonNullAssertion: course is always defined when showPopup is true
+                    course={course!}
                     onClose={() => setShowPopup(false)}
                     open={showPopup}
                     afterLeave={() => setCourse(null)}

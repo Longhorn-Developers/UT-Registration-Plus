@@ -4,9 +4,9 @@
  * for some reason the search form is cleared and the user has to re-enter their search parameters. This fixes that lol
  */
 export function populateSearchInputs() {
-    let params = new URL(window.location.href).searchParams;
-    let department = params.get('fos_fl');
-    let courseLevel = params.get('level');
+    const params = new URL(window.location.href).searchParams;
+    const department = params.get('fos_fl');
+    const courseLevel = params.get('level');
     if (!department || !courseLevel) return;
 
     const depInput = document.querySelector<HTMLInputElement>('#fos_fl');

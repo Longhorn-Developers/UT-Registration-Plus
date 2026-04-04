@@ -1,13 +1,16 @@
 import type { Serializable, StoreDefaults } from '@chrome-extension-toolkit';
 import { createLocalStore } from '@chrome-extension-toolkit';
 import type { CachedData } from '@shared/types/CachedData';
+import type { GitHubStats } from '@shared/types/GitHubStats';
 
 interface ICacheStore {
-    github?: Record<string, CachedData<unknown>>;
+    githubStats: CachedData<Record<string, GitHubStats>> | null;
+    githubNames: CachedData<Record<string, string>> | null;
 }
 
 const defaults: StoreDefaults<ICacheStore> = {
-    github: undefined,
+    githubStats: null,
+    githubNames: null,
 };
 
 /**
@@ -60,4 +63,5 @@ CacheStore.set = async function set<K extends keyof ICacheStore>(
     }
 } as typeof CacheStore.set;
 
-// debugStore({ cacheStore: CacheStore });
+// Remove the old monolithic github cache blob if it exists
+chrome.storage.local.remove('github');

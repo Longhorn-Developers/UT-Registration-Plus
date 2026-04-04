@@ -3,19 +3,21 @@ import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import { useSentryScope } from '@views/contexts/SentryContext';
-import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import React, { Fragment } from 'react';
+import { type CalendarGridCourse, GRID_DEFAULT_END, GRID_DEFAULT_START } from '@views/hooks/useFlattenedCourseSchedule';
+import type React from 'react';
+import { Fragment } from 'react';
 
 import CalendarCell from './CalendarGridCell';
 import { calculateCourseCellColumns } from './utils';
 
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
-const hoursOfDay = Array.from({ length: 14 }, (_, index) => index + 8);
-
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
+const _DEFAULT_START_HOUR = GRID_DEFAULT_START / 60; // 8 AM
 
 interface Props {
     courseCells?: CalendarGridCourse[];
+    startMinutes?: number;
+    endMinutes?: number;
     saturdayClass?: boolean;
     setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
 }
@@ -30,7 +32,8 @@ function CalendarHour({ hour }: { hour: number }) {
     );
 }
 
-function makeGridRow(row: number, cols: number): JSX.Element {
+function makeGridRow(row: number, cols: number, hoursOfDay: number[]): JSX.Element {
+    // biome-ignore lint/style/noNonNullAssertion: TODO:
     const hour = hoursOfDay[row]!;
 
     return (
@@ -44,8 +47,6 @@ function makeGridRow(row: number, cols: number): JSX.Element {
     );
 }
 
-// TODO: add Saturday class support
-
 /**
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  *
@@ -56,18 +57,33 @@ function makeGridRow(row: number, cols: number): JSX.Element {
  */
 export default function CalendarGrid({
     courseCells,
-    saturdayClass: _saturdayClass, // TODO: implement/move away from props
+    saturdayClass: _saturdayClass,
     setCourse,
+    startMinutes,
+    endMinutes,
 }: React.PropsWithChildren<Props>): JSX.Element {
+    // there was a huge mishap with 6 am start time calc here and now it is smoothly done
+    // let's try to keep our codebase organized and not so all over the place
+    const visualStartHour = Math.floor((startMinutes ?? GRID_DEFAULT_START) / 60);
+
+    const visualEndHour = Math.ceil((endMinutes ?? GRID_DEFAULT_END) / 60);
+    const hoursOfDay = Array.from({ length: visualEndHour - visualStartHour }, (_, i) => i + visualStartHour);
+    const totalRows = (visualEndHour - visualStartHour) * 2;
+
     return (
-        <div className='grid grid-cols-[auto_auto_repeat(5,1fr)] grid-rows-[auto_auto_repeat(27,1fr)] h-full'>
+        <div
+            className='grid grid-cols-[auto_auto_repeat(5,1fr)] h-full'
+            style={{
+                gridTemplateRows: `auto auto repeat(${totalRows}, 1fr)`,
+            }}
+        >
             {/* Cover top left corner of grid, so time gets cut off at the top of the partial border */}
-            <div className='sticky top-[85px] z-10 col-span-2 h-3 bg-white' />
-            {/* Displaying day labels */}
+            <div className='sticky top-[75px] z-10 col-span-2 h-3 bg-white' />
+
             {daysOfWeek.map(day => (
                 <div
                     // Full height with background to prevent grid lines from showing behind
-                    className='sticky top-[85px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end bg-white'
+                    className='sticky top-[75px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end bg-white'
                     key={day}
                 >
                     {/* Partial border height because that's what Isaiah wants */}
@@ -81,20 +97,13 @@ export default function CalendarGrid({
                     </div>
                 </div>
             ))}
-            {/* empty slot, for alignment */}
+
             <div />
             {/* time tick for the first hour */}
             <div className='h-4 w-4 self-end border-b border-r border-gray-300' />
-            {[...Array(13).keys()].map(i => makeGridRow(i, 5))}
-            <CalendarHour hour={21} />
-            {Array(6)
-                .fill(1)
-                .map((_, i) => (
-                    // Key suppresses warning about duplicate keys,
-                    // and index is fine because it doesn't change between renders
-                    // eslint-disable-next-line react/no-array-index-key
-                    <div key={i} className='h-4 flex items-end justify-center border-r border-gray-300' />
-                ))}
+
+            {hoursOfDay.map((_, i) => makeGridRow(i, 5, hoursOfDay))}
+
             <ColorPickerProvider>
                 {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
             </ColorPickerProvider>
@@ -113,8 +122,8 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
     // Sentry is not defined in storybook.
     // This is a valid use case for a condition hook, since IS_STORYBOOK is determined at build time,
     // it doesn't change between renders.
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [sentryScope] = IS_STORYBOOK ? [undefined] : useSentryScope();
+    // biome-ignore lint/correctness/useHookAtTopLevel: See above
+    const [sentryScope] = IS_STORYBOOK ? [] : (useSentryScope() ?? []);
 
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce(
@@ -123,18 +132,17 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
             if (acc[dayIndex] === undefined) {
                 acc[dayIndex] = [];
             }
-            acc[dayIndex]!.push(cell);
+            acc[dayIndex]?.push(cell);
             return acc;
         },
         {} as Record<number, CalendarGridCourse[]>
     );
-
     // Check for overlaps within each day and adjust gridColumnIndex and totalColumns
-    Object.values(days).forEach((dayCells: CalendarGridCourse[], idx) => {
+    Object.values(days).forEach((dayCells: CalendarGridCourse[], _idx) => {
         try {
             calculateCourseCellColumns(dayCells);
         } catch (error) {
-            console.error(`Error calculating course cell columns ${idx}`, error);
+            console.error(error);
             if (sentryScope) {
                 sentryScope.captureException(error);
             }

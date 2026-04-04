@@ -3,7 +3,7 @@ import type { ThemeColor } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/themeColors';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import type React from 'react';
 
 interface Props {
     className?: string;
@@ -16,6 +16,7 @@ interface Props {
     iconProps?: IconProps;
     disabled?: boolean;
     title?: string;
+    type?: 'button' | 'submit' | 'reset';
     color: ThemeColor;
 }
 
@@ -34,6 +35,7 @@ export function Button({
     iconProps,
     disabled,
     title,
+    type = 'button',
     color,
     children,
 }: React.PropsWithChildren<Props>): JSX.Element {
@@ -44,6 +46,7 @@ export function Button({
 
     return (
         <button
+            type={type}
             ref={ref}
             style={
                 {

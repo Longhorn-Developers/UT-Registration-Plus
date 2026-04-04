@@ -18,6 +18,7 @@ const getAllTabInfos = async () => {
         .filter((el): el is { result: TabInfo; index: number } => el.result.status === 'fulfilled')
         .map(({ result, index }) => ({
             ...result.value,
+            // biome-ignore lint/style/noNonNullAssertion: We've already checked for edge cases
             tab: openTabs[index]!,
         }));
 };
@@ -35,7 +36,10 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
             const tabid = openCalendarTabInfo.tab.id;
 
             await chrome.tabs.update(tabid, { active: true });
-            await chrome.windows.update(openCalendarTabInfo.tab.windowId!, { focused: true, drawAttention: true });
+            await chrome.windows.update(openCalendarTabInfo.tab.windowId!, {
+                focused: true,
+                drawAttention: true,
+            });
             if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, { tabId: tabid });
 
             sendResponse({
