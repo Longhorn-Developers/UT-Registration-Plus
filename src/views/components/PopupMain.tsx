@@ -94,7 +94,7 @@ export default function PopupMain(): JSX.Element {
         window.close();
     };
 
-    const isFirefox = typeof navigator !== 'undefined' && /Firefox/.test(navigator.userAgent);
+    const isFirefox = __BROWSER__ === 'firefox';
 
     return (
         <div className='h-screen max-h-full flex flex-col bg-white'>

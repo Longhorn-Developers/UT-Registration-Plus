@@ -117,6 +117,9 @@ let _server: ViteDevServer;
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    define: {
+        __BROWSER__: JSON.stringify(BROWSER_TARGET ?? 'chrome'),
+    },
     plugins: [
         react(),
         UnoCSS(),

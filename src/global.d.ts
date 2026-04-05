@@ -12,3 +12,5 @@ declare module '*.json' {
     const content: string;
     export default content;
 }
+
+declare const __BROWSER__: 'chrome' | 'firefox';
