@@ -30,9 +30,22 @@ const CalendarSidebar = memo(function CalendarSidebar() {
     const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
     const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
     const showReportIssueDialog = useReportIssueDialog();
+    const sidebarRef = useRef<HTMLDivElement>(null);
+
+    // TODO: Replace with JSX `inert={!showSidebar}` once React supports the inert attribute natively.
+    useEffect(() => {
+        if (sidebarRef.current) {
+            if (showSidebar) {
+                sidebarRef.current.removeAttribute('inert');
+            } else {
+                sidebarRef.current.setAttribute('inert', '');
+            }
+        }
+    }, [showSidebar]);
 
     return (
         <div
+            ref={sidebarRef}
             className={clsx(
                 'py-spacing-5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
                 {
@@ -40,9 +53,8 @@ const CalendarSidebar = memo(function CalendarSidebar() {
                     'max-w-0 pointer-events-none': !showSidebar,
                 }
             )}
-            tabIndex={showSidebar ? 0 : -1}
+            tabIndex={-1}
             aria-hidden={!showSidebar}
-            {...{ inert: !showSidebar }}
         >
             <div className='flex items-center justify-between px-spacing-7 mb-spacing-2'>
                 <LargeLogo />
@@ -205,6 +217,12 @@ export default function Calendar(): ReactNode {
     return (
         <CalendarContext.Provider value>
             <div className='relative h-full w-full flex flex-col'>
+                <a
+                    href='#calendar-content'
+                    className='sr-only focus:not-sr-only focus:absolute focus:z-100 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-ut-burntorange focus:shadow-lg'
+                >
+                    Skip to calendar
+                </a>
                 {/* Orange drag overlay indicator */}
                 {isDraggingFile && isValidFileType && (
                     <div
@@ -232,6 +250,7 @@ export default function Calendar(): ReactNode {
                     <CalendarSidebar />
 
                     <div
+                        id='calendar-content'
                         style={
                             {
                                 // scrollbarGutter: 'stable',

@@ -106,7 +106,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
             <LargeLogo className='hidden! screenshot:flex!' />
             <Divider className='self-center hidden! screenshot:block!' size='2.5rem' orientation='vertical' />
 
-            <div className='truncate overflow-hidden flex-initial min-w-[min-content] screenshot:transform-origin-left screenshot:scale-120'>
+            <div className='truncate flex-initial min-w-[min-content] screenshot:transform-origin-left screenshot:scale-120'>
                 <ScheduleTotalHoursAndCourses
                     scheduleName={activeSchedule.name}
                     totalHours={activeSchedule.hours}
@@ -115,21 +115,26 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 {/*<div className="inline truncate min-w-0 inline-block flex-1">Hello world please truncate me</div>*/}
             </div>
             <Divider className='self-center screenshot:hidden' size='1.75rem' orientation='vertical' />
-            <div className={clsx(styles.cqInline, 'flex grow shrink-0 gap-5 overflow-hidden screenshot:hidden')}>
+            <div className={clsx(styles.cqInline, 'flex grow shrink-0 gap-5 screenshot:hidden')}>
                 <div className={clsx(styles.primaryActions, 'flex min-w-max gap-5')}>
                     <QuickAddModal />
                     <Menu>
-                        <MenuButton className='bg-transparent'>
-                            <Button color='ut-black' size='small' variant='minimal' icon={Export}>
-                                Export
-                            </Button>
+                        <MenuButton
+                            as={Button}
+                            color='ut-black'
+                            size='small'
+                            variant='minimal'
+                            icon={Export}
+                            className='bg-transparent'
+                        >
+                            Export
                         </MenuButton>
                         <MenuItems
                             as={ExtensionRootWrapper}
                             className={clsx([
                                 styleResetClass,
                                 'mt-spacing-3',
-                                'min-w-max cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none z-20',
+                                'min-w-max origin-top rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 outline-none! z-20',
                                 'data-[closed]:(opacity-0 scale-95)',
                                 'data-[enter]:(ease-out-expo duration-150)',
                                 'data-[leave]:(ease-out duration-50)',
@@ -137,53 +142,49 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             transition
                             anchor='bottom start'
                         >
-                            <MenuItem>
-                                <Button
-                                    className='w-full flex justify-start'
-                                    onClick={() => requestAnimationFrame(() => saveCalAsPng())}
-                                    color='ut-black'
-                                    size='small'
-                                    variant='minimal'
-                                    icon={FilePng}
-                                >
-                                    Save as .png
-                                </Button>
+                            <MenuItem
+                                as={Button}
+                                className='w-full flex justify-start'
+                                onClick={() => requestAnimationFrame(() => saveCalAsPng())}
+                                color='ut-black'
+                                size='small'
+                                variant='minimal'
+                                icon={FilePng}
+                            >
+                                Save as .png
                             </MenuItem>
-                            <MenuItem>
-                                <Button
-                                    className='w-full flex justify-start'
-                                    onClick={saveAsCal}
-                                    color='ut-black'
-                                    size='small'
-                                    variant='minimal'
-                                    icon={CalendarDots}
-                                >
-                                    Save as .cal
-                                </Button>
+                            <MenuItem
+                                as={Button}
+                                className='w-full flex justify-start'
+                                onClick={saveAsCal}
+                                color='ut-black'
+                                size='small'
+                                variant='minimal'
+                                icon={CalendarDots}
+                            >
+                                Save as .cal
                             </MenuItem>
-                            <MenuItem>
-                                <Button
-                                    className='w-full flex justify-start'
-                                    onClick={() => handleExportJson(activeSchedule.id)}
-                                    color='ut-black'
-                                    size='small'
-                                    variant='minimal'
-                                    icon={FileCode}
-                                >
-                                    Save as .json
-                                </Button>
+                            <MenuItem
+                                as={Button}
+                                className='w-full flex justify-start'
+                                onClick={() => handleExportJson(activeSchedule.id)}
+                                color='ut-black'
+                                size='small'
+                                variant='minimal'
+                                icon={FileCode}
+                            >
+                                Save as .json
                             </MenuItem>
-                            <MenuItem>
-                                <Button
-                                    className='w-full flex justify-start'
-                                    onClick={saveAsText}
-                                    color='ut-black'
-                                    size='small'
-                                    variant='minimal'
-                                    icon={FileText}
-                                >
-                                    Save as .txt
-                                </Button>
+                            <MenuItem
+                                as={Button}
+                                className='w-full flex justify-start'
+                                onClick={saveAsText}
+                                color='ut-black'
+                                size='small'
+                                variant='minimal'
+                                icon={FileText}
+                            >
+                                Save as .txt
                             </MenuItem>
                             {/* <MenuItem>
                                 <Button color='ut-black' size='small' variant='minimal' icon={FileTxt}>

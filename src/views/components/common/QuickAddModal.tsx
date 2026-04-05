@@ -46,10 +46,16 @@ export default function QuickAddModal(): JSX.Element {
 
     return (
         <Popover>
-            <PopoverButton className='bg-transparent' as='div'>
-                <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle} onClick={handleQuickAdd}>
-                    Quick Add
-                </Button>
+            <PopoverButton
+                as={Button}
+                color='ut-black'
+                size='small'
+                variant='minimal'
+                icon={PlusCircle}
+                onClick={handleQuickAdd}
+                className='bg-transparent'
+            >
+                Quick Add
             </PopoverButton>
             <PopoverPanel
                 as={ExtensionRootWrapper}

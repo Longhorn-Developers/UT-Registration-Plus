@@ -133,7 +133,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
             )}
             <button
                 type='button'
-                className='h-full flex flex-1 justify-center gap-spacing-3 p-spacing-3 bg-transparent border-none cursor-pointer text-left focusable'
+                className='h-full flex flex-1 justify-center gap-spacing-3 p-spacing-3 bg-transparent border-none text-left'
                 onClick={handleClick}
             >
                 <div className='flex flex-1 flex-col justify-center gap-spacing-1'>
@@ -161,7 +161,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                     </div>
                 )}
             </button>
-            <div className='flex flex-col justify-center'>
+            <div className='flex flex-col justify-center pr-spacing-3'>
                 <Button
                     color='ut-gray'
                     onClick={handleCopy}
