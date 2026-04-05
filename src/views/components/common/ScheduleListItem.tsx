@@ -213,6 +213,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                                 variant='p'
                                 className='select-none flex-1 min-w-0 truncate'
                                 onDoubleClick={() => setIsEditing(true)}
+                                aria-label={`${schedule.name} (double-click to rename)`}
                             >
                                 {schedule.name}
                             </Text>
@@ -220,7 +221,10 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                     </button>
                     <DialogProvider>
                         <Menu>
-                            <MenuButton className='opacity-0 cursor-pointer h-fit bg-transparent p-0 text-ut-gray btn-transition data-[open]:opacity-100 group-hover:opacity-100 focus:opacity-100'>
+                            <MenuButton
+                                aria-label='Schedule options'
+                                className='opacity-0 cursor-pointer h-fit bg-transparent p-0 text-ut-gray btn-transition data-[open]:opacity-100 group-hover:opacity-100 focus:opacity-100'
+                            >
                                 <DotsThree weight='bold' className='h-6 w-6' />
                             </MenuButton>
 

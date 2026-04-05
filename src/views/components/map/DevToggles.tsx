@@ -54,8 +54,8 @@ export default function DevToggles({
                     type='button'
                     onClick={() => setIsCollapsed(prev => !prev)}
                     className='ml-2 p-1 text-gray-500 hover:text-gray-800'
+                    aria-label={isCollapsed ? 'Expand dev controls' : 'Collapse dev controls'}
                 >
-                    {/** biome-ignore lint/a11y/noSvgWithoutTitle: TODO: */}
                     <svg
                         xmlns='http://www.w3.org/2000/svg'
                         width='14'
@@ -66,6 +66,7 @@ export default function DevToggles({
                         strokeWidth='2'
                         strokeLinecap='round'
                         strokeLinejoin='round'
+                        aria-hidden='true'
                     >
                         {isCollapsed ? <polyline points='6 9 12 15 18 9' /> : <polyline points='18 15 12 9 6 15' />}
                     </svg>

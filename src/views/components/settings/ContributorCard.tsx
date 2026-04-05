@@ -40,9 +40,11 @@ export const ContributorCard: React.FC<ContributorCardProps> = ({
 
     return (
         <div className='border border-gray-300 rounded bg-ut-gray/10 p-4'>
-            <Text variant='p' className='text-ut-burntorange font-semibold hover:cursor-pointer' onClick={openLink}>
-                {name}
-            </Text>
+            <button type='button' onClick={openLink} className='cursor-pointer bg-transparent p-0'>
+                <Text variant='p' className='text-ut-burntorange font-semibold'>
+                    {name}
+                </Text>
+            </button>
             {roles.map(role => (
                 <p key={`${githubUsername}-${role}`} className='text-sm text-gray-600'>
                     {role}

@@ -52,7 +52,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
-    const ref = useRef<HTMLDivElement>(null);
+    const ref = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         // adds transition for shadow hover after three frames
@@ -102,14 +102,13 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
     );
 
     return (
-        // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
-        // biome-ignore lint/a11y/useKeyWithClickEvents: TODO:
-        <div
+        <button
+            type='button'
             style={{
                 backgroundColor: colors.primaryColor,
             }}
             className={clsx(
-                'w-full inline-flex items-center justify-center gap-1 rounded focusable cursor-pointer text-left hover:shadow-md ease-out group-[.is-dragging]:shadow-md min-h-[55px]',
+                'w-full inline-flex items-center justify-center gap-1 rounded focusable cursor-pointer text-left hover:shadow-md ease-out group-[.is-dragging]:shadow-md min-h-[55px] border-none',
                 className
             )}
             onClick={handleClick}
@@ -189,6 +188,6 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                     </Button>
                 </div>
             </div>
-        </div>
+        </button>
     );
 }

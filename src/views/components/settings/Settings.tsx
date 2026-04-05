@@ -206,15 +206,14 @@ export default function Settings(): React.JSX.Element {
                         Settings
                     </Text>
                     {isBirthday && (
-                        // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
-                        // biome-ignore lint/a11y/useKeyWithClickEvents: TODO:
-                        <span
+                        <button
+                            type='button'
                             onClick={triggerCelebration}
-                            className='cursor-pointer px-4 text-sm text-ut-burntorange transition-transform hover:scale-110'
+                            className='cursor-pointer bg-transparent px-4 text-sm text-ut-burntorange transition-transform hover:scale-110'
                             title='Click to celebrate!'
                         >
                             🎉 Happy Birthday LHD! 🎉
-                        </span>
+                        </button>
                     )}
                 </div>
                 <div className='hidden flex-row items-center justify-end gap-spacing-7 screenshot:hidden lg:flex'>
@@ -263,9 +262,14 @@ export default function Settings(): React.JSX.Element {
                     <Divider size='auto' orientation='horizontal' />
 
                     <section className='my-8 space-y-4'>
-                        {/** biome-ignore lint/a11y/useKeyWithClickEvents: TODO: */}
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
-                            Developer Mode
+                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>
+                            <button
+                                type='button'
+                                onClick={toggleDevMode}
+                                className='cursor-pointer bg-transparent text-inherit text-xl font-semibold'
+                            >
+                                Developer Mode
+                            </button>
                         </h2>
 
                         <div className='flex items-center justify-between'>

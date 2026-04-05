@@ -20,7 +20,7 @@ export interface CalendarCourseCellProps {
     courseDeptAndInstr: string;
     timeAndLocation?: string;
     status: StatusType;
-    onClick?: React.MouseEventHandler<HTMLDivElement>;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
     blockData: CalendarGridCourse;
     className?: string;
 }
@@ -95,11 +95,10 @@ export default function CalendarCourseCell({
     // Note that overflow-hidden is the duct tape holding this all together
 
     return (
-        // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
-        // biome-ignore lint/a11y/useKeyWithClickEvents: TODO:
-        <div
+        <button
+            type='button'
             className={clsx(
-                'h-full w-0 flex group relative justify-center rounded p-x-2 p-y-1.2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out',
+                'h-full w-0 flex group relative justify-center rounded p-x-2 p-y-1.2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out border-none text-left',
                 {
                     'min-w-full': timeAndLocation,
                     'w-full': !timeAndLocation,
@@ -111,6 +110,7 @@ export default function CalendarCourseCell({
                 backgroundColor: colors.primaryColor,
             }}
             onClick={onClick}
+            aria-label={`${courseDeptAndInstr}${timeAndLocation ? `, ${timeAndLocation}` : ''}`}
         >
             <div className={clsx('flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full')}>
                 <Text
@@ -197,6 +197,6 @@ export default function CalendarCourseCell({
                     )}
                 </div>
             </div>
-        </div>
+        </button>
     );
 }
