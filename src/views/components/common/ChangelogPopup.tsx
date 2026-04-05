@@ -157,12 +157,8 @@ export default function ChangelogPopup(): JSX.Element {
     };
 
     return (
-        <div className='px-4'>
-            <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={MarkdownComponents}
-                className='text-gray-800 dark:text-gray-200'
-            >
+        <div className='px-4 text-gray-800 dark:text-gray-200'>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={MarkdownComponents}>
                 {markdownContent}
             </ReactMarkdown>
         </div>
