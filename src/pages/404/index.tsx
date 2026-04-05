@@ -1,6 +1,5 @@
 import 'uno.css';
-import { createRoot } from 'react-dom/client';
+import renderRoot from '@shared/util/renderRoot';
 import Page404 from './Page404';
 
-// biome-ignore lint/style/noNonNullAssertion: This exists
-createRoot(document.getElementById('root')!).render(<Page404 />);
+renderRoot(<Page404 />);

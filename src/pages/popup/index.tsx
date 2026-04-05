@@ -1,14 +1,13 @@
 import 'uno.css';
 
+import renderRoot from '@shared/util/renderRoot';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { MigrationDialog } from '@views/components/common/MigrationDialog';
 import PopupMain from '@views/components/PopupMain';
 import SentryProvider from '@views/contexts/SentryContext';
-import { createRoot } from 'react-dom/client';
 
-// biome-ignore lint/style/noNonNullAssertion: This exists
-createRoot(document.getElementById('root')!).render(
+renderRoot(
     <SentryProvider fullInit>
         <ExtensionRoot>
             <DialogProvider>
