@@ -12,20 +12,34 @@
         font-family: inherit;
     }
 
-
     .extensionRoot {
         @apply font-sans;
         color: #303030;
-    
+
         // fix font-family on injected pages
         * {
             @apply font-sans;
         }
-    
+
+        // Global focus-visible styles for all interactive elements
+        button,
+        a,
+        input,
+        select,
+        textarea,
+        [tabindex]:not([tabindex='-1']) {
+            @apply focusable;
+        }
+
+        button,
+        [role='button'] {
+            cursor: pointer;
+        }
+
         [data-rfd-drag-handle-context-id=':r1:'] {
             cursor: move;
         }
-    
+
         ::-webkit-scrollbar {
             width: 14px;
             height: 14px;
@@ -42,7 +56,7 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgb(189, 193, 198);
         }
-    
+
         ::-webkit-scrollbar-thumb:active {
             background: rgb(128, 134, 139);
         }

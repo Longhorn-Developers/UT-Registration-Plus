@@ -209,7 +209,7 @@ export default function Settings(): React.JSX.Element {
                         <button
                             type='button'
                             onClick={triggerCelebration}
-                            className='cursor-pointer bg-transparent px-4 text-sm text-ut-burntorange transition-transform hover:scale-110'
+                            className='bg-transparent px-4 text-sm text-ut-burntorange transition-transform hover:scale-110'
                             title='Click to celebrate!'
                         >
                             🎉 Happy Birthday LHD! 🎉
@@ -266,7 +266,7 @@ export default function Settings(): React.JSX.Element {
                             <button
                                 type='button'
                                 onClick={toggleDevMode}
-                                className='cursor-pointer bg-transparent text-inherit text-xl font-semibold focusable'
+                                className='bg-transparent text-inherit text-xl font-semibold'
                             >
                                 Developer Mode
                             </button>

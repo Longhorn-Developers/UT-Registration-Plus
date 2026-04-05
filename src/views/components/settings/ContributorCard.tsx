@@ -40,7 +40,7 @@ export const ContributorCard: React.FC<ContributorCardProps> = ({
 
     return (
         <div className='border border-gray-300 rounded bg-ut-gray/10 p-4'>
-            <button type='button' onClick={openLink} className='cursor-pointer bg-transparent p-0 focusable'>
+            <button type='button' onClick={openLink} className='bg-transparent p-0'>
                 <Text variant='p' className='text-ut-burntorange font-semibold'>
                     {name}
                 </Text>

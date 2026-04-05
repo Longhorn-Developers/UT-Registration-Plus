@@ -779,7 +779,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): React.J
                                         // biome-ignore lint/suspicious/noArrayIndexKey: TODO:
                                         index
                                     }`}
-                                    className={`cursor-pointer space-y-1 text-xs text-left transition-colors duration-200 bg-transparent border-none w-full ${
+                                    className={`space-y-1 text-xs text-left transition-colors duration-200 bg-transparent border-none w-full ${
                                         toggledPathIndex === index ? 'bg-gray-100' : ''
                                     }`}
                                     style={{
