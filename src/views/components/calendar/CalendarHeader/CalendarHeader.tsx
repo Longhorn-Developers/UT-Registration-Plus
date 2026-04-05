@@ -13,6 +13,7 @@ import useRelativeTime from '@views/hooks/useRelativeTime';
 import useSchedules from '@views/hooks/useSchedules';
 import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
+import type { JSX } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';

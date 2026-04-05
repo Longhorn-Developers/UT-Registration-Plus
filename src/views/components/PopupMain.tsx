@@ -9,7 +9,7 @@ import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import useKC_DABR_WASM from 'kc-dabr-wasm';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
 import { Button } from './common/Button';
@@ -27,7 +27,6 @@ import { SortableList } from './common/SortableList';
 export default function PopupMain(): JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
     // const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
-    useKC_DABR_WASM();
 
     useEffect(() => {
         const initAllSettings = async () => {

@@ -1,7 +1,7 @@
 import { ClockUser, LockKey, Prohibit } from '@phosphor-icons/react';
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
-import type { SVGProps } from 'react';
+import type { JSX, SVGProps } from 'react';
 
 interface StatusIconProps extends SVGProps<SVGSVGElement> {
     status: StatusType;

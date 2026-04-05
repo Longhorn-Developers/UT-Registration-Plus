@@ -42,7 +42,7 @@ export default function CalendarCourseCell({
     onClick,
     blockData,
     className,
-}: CalendarCourseCellProps): JSX.Element {
+}: CalendarCourseCellProps): React.JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
     const colorPickerRef = useRef<HTMLDivElement>(null);
     const { selectedColor, setSelectedCourse, handleCloseColorPicker, isSelectedBlock, isSelectedCourse } =

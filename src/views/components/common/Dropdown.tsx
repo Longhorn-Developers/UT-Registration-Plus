@@ -42,7 +42,7 @@ export default function Dropdown({
     icon,
     iconProps,
     disabled,
-}: React.PropsWithChildren<Props>): JSX.Element {
+}: React.PropsWithChildren<Props>): React.JSX.Element {
     const Icon = icon;
     return (
         <Listbox

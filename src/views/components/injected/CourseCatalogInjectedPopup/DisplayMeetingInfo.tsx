@@ -2,6 +2,7 @@ import type { Course } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
+import type { JSX, ReactNode } from 'react';
 
 /**
  * Props for the DisplayMeetingInfo component.

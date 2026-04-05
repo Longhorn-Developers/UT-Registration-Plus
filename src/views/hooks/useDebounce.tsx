@@ -14,7 +14,7 @@ export function useDebounce<T extends unknown[]>(
     func: DebouncedCallback<T>,
     delay: number = 1000
 ): DebouncedCallback<T> {
-    const timer = useRef<Timer>();
+    const timer = useRef<Timer>(undefined);
 
     useEffect(
         () => () => {

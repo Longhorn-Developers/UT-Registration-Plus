@@ -76,7 +76,7 @@ const handleOpenOptions = async (): Promise<void> => {
  * The footer section of the calendar's sidebar
  * @returns
  */
-export default function CalendarFooter(): JSX.Element {
+export default function CalendarFooter(): React.JSX.Element {
     return (
         <footer className='min-w-full w-0 flex items-center justify-between bg-white pl-spacing-5 pr-spacing-8 pt-spacing-4'>
             <div className='flex'>

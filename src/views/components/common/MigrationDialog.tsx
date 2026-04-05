@@ -1,6 +1,7 @@
 import migrateUTRPv1Courses, { getUTRPv1Courses } from '@background/lib/migrateUTRPv1Courses';
 import Text from '@views/components/common/Text/Text';
 import { useSentryScope } from '@views/contexts/SentryContext';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
 import { Button } from './Button';

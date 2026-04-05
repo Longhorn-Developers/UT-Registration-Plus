@@ -38,7 +38,7 @@ export function Button({
     type = 'button',
     color,
     children,
-}: React.PropsWithChildren<Props>): JSX.Element {
+}: React.PropsWithChildren<Props>): React.JSX.Element {
     const Icon = icon;
     const isIconOnly = !children && !!icon;
     const colorHex = getThemeColorHexByName(color);

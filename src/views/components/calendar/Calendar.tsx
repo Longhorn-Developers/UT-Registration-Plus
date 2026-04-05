@@ -4,7 +4,6 @@ import { Sidebar } from '@phosphor-icons/react';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
@@ -30,7 +29,7 @@ import CalendarFooter from './CalendarFooter';
 /**
  * Calendar page component
  */
-export default function Calendar(): ReactNode {
+export default function Calendar({ initialShowSidebar = true }: { initialShowSidebar?: boolean }): ReactNode {
     const { courseCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
     const displayBottomBar = true;
     const initialCourse = useCourseFromUrl();
@@ -40,23 +39,7 @@ export default function Calendar(): ReactNode {
 
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
     const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
-
-    const queryClient = useQueryClient();
-    const { data: showSidebar, isPending: isSidebarStatePending } = useQuery({
-        queryKey: ['settings', 'showCalendarSidebar'],
-        queryFn: () => OptionsStore.get('showCalendarSidebar'),
-        staleTime: Infinity, // Prevent loading state on refocus
-    });
-
-    const { mutate: setShowSidebar } = useMutation({
-        mutationKey: ['settings', 'showCalendarSidebar'],
-        mutationFn: async (showSidebar: boolean) => {
-            OptionsStore.set('showCalendarSidebar', showSidebar);
-        },
-        onSuccess: (_, showSidebar) => {
-            queryClient.setQueryData(['settings', 'showCalendarSidebar'], showSidebar);
-        },
-    });
+    const [showSidebar, setShowSidebar] = useState(initialShowSidebar);
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
@@ -77,6 +60,16 @@ export default function Calendar(): ReactNode {
 
         return () => listener.unlisten();
     }, [activeSchedule]);
+
+    useEffect(() => {
+        const listener = OptionsStore.subscribe('showCalendarSidebar', ({ newValue }) => {
+            setShowSidebar(newValue);
+        });
+
+        return () => {
+            OptionsStore.unsubscribe(listener);
+        };
+    }, []);
 
     const openCourse = (course: Course) => {
         setCourse(course);
@@ -162,8 +155,6 @@ export default function Calendar(): ReactNode {
     };
     // --------------------------------------------------
 
-    if (isSidebarStatePending) return null;
-
     return (
         <CalendarContext.Provider value>
             <div className='relative h-full w-full flex flex-col'>
@@ -210,7 +201,9 @@ export default function Calendar(): ReactNode {
                                 size='small'
                                 color='theme-black'
                                 onClick={() => {
-                                    setShowSidebar(!showSidebar);
+                                    const nextShowSidebar = !showSidebar;
+                                    setShowSidebar(nextShowSidebar);
+                                    void OptionsStore.set('showCalendarSidebar', nextShowSidebar);
                                 }}
                                 className='screenshot:hidden'
                                 icon={Sidebar}
@@ -252,7 +245,9 @@ export default function Calendar(): ReactNode {
                         <CalendarHeader
                             sidebarOpen={showSidebar}
                             onSidebarToggle={() => {
-                                setShowSidebar(!showSidebar);
+                                const nextShowSidebar = !showSidebar;
+                                setShowSidebar(nextShowSidebar);
+                                void OptionsStore.set('showCalendarSidebar', nextShowSidebar);
                             }}
                         />
                         <div

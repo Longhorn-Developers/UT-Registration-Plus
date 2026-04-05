@@ -41,7 +41,7 @@ const links = [
  * The "From The Team" section of the calendar website
  * @returns
  */
-export default function TeamLinks({ className }: Props): JSX.Element {
+export default function TeamLinks({ className }: Props): React.JSX.Element {
     const showReportIssueDialog = useReportIssueDialog();
 
     const handleClick = (link: LinkItem, event: React.MouseEvent) => {

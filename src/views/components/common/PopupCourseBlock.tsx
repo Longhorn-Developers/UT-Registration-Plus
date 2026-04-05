@@ -47,7 +47,7 @@ const CourseMeeting = memo(
  * @param dragHandleProps - The drag handle props for the course block.
  * @returns The rendered PopupCourseBlock component.
  */
-export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): JSX.Element {
+export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): React.JSX.Element {
     const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
 
     const [isCopied, setIsCopied] = useState<boolean>(false);

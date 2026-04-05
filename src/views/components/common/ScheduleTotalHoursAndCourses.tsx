@@ -1,4 +1,5 @@
 import Text from '@views/components/common/Text/Text';
+import type { JSX } from 'react';
 
 /**
  * Props for ScheduleTotalHoursAndCourses

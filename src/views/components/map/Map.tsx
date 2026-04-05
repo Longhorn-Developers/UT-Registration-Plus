@@ -6,6 +6,7 @@ import { LargeLogo } from '@views/components/common/LogoIcon';
 import Text from '@views/components/common/Text/Text';
 import useChangelog from '@views/hooks/useChangelog';
 import useSchedules from '@views/hooks/useSchedules';
+import type { JSX } from 'react';
 import { useCallback, useEffect } from 'react';
 
 import IconoirGitFork from '~icons/iconoir/git-fork';

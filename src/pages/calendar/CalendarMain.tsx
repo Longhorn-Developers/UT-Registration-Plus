@@ -1,21 +1,38 @@
 import { MessageListener } from '@chrome-extension-toolkit';
 import { background } from '@shared/messages';
 import type TabInfoMessages from '@shared/messages/TabInfoMessages';
+import { initSettings } from '@shared/storage/OptionsStore';
 import Calendar from '@views/components/calendar/Calendar';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { MigrationDialog } from '@views/components/common/MigrationDialog';
 import { WhatsNewDialog } from '@views/components/common/WhatsNewPopup';
 import SentryProvider from '@views/contexts/SentryContext';
-import useKC_DABR_WASM from 'kc-dabr-wasm';
-import { useEffect } from 'react';
+import { initSchedules } from '@views/hooks/useSchedules';
+import { useEffect, useState } from 'react';
 
 /**
  * Calendar page
  * @returns entire page
  */
 export default function CalendarMain() {
-    useKC_DABR_WASM();
+    const [initialShowSidebar, setInitialShowSidebar] = useState<boolean | null>(null);
+
+    useEffect(() => {
+        let mounted = true;
+
+        void Promise.all([initSchedules(), initSettings()]).then(([, settings]) => {
+            if (!mounted) {
+                return;
+            }
+
+            setInitialShowSidebar(settings.showCalendarSidebar);
+        });
+
+        return () => {
+            mounted = false;
+        };
+    }, []);
 
     useEffect(() => {
         const registerCalendarTab = () => {
@@ -54,13 +71,17 @@ export default function CalendarMain() {
         return () => tabInfoListener.unlisten();
     }, []);
 
+    if (initialShowSidebar === null) {
+        return null;
+    }
+
     return (
         <SentryProvider fullInit>
             <ExtensionRoot className='h-full w-full'>
                 <DialogProvider>
                     <MigrationDialog />
                     <WhatsNewDialog />
-                    <Calendar />
+                    <Calendar initialShowSidebar={initialShowSidebar} />
                 </DialogProvider>
             </ExtensionRoot>
         </SentryProvider>

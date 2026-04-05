@@ -5,8 +5,8 @@ import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
+import type { JSX } from 'react';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
-
 import { Button } from './Button';
 import Dropdown from './Dropdown';
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
@@ -37,7 +37,10 @@ export default function QuickAddModal(): JSX.Element {
         e?.preventDefault();
         if (courseResult.status !== 'found') return;
 
-        await background.addCourse({ scheduleId: getActiveSchedule().id, course: courseResult.course });
+        await background.addCourse({
+            scheduleId: getActiveSchedule().id,
+            course: courseResult.course,
+        });
         uniqueNumber.reset();
     };
 
@@ -95,7 +98,10 @@ export default function QuickAddModal(): JSX.Element {
                             {courseResult.course.schedule.meetings.map((m, i) => (
                                 // biome-ignore lint/suspicious/noArrayIndexKey: TODO:
                                 <Text key={i} variant='small' className='text-ut-black'>
-                                    {m.getDaysString({ format: 'short' })} {m.getTimeString({ separator: '\u2013' })}
+                                    {m.getDaysString({ format: 'short' })}{' '}
+                                    {m.getTimeString({
+                                        separator: '\u2013',
+                                    })}
                                     {m.location ? `, ${m.location.building} ${m.location.room}` : ''}
                                 </Text>
                             ))}

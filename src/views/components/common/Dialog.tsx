@@ -8,7 +8,7 @@ import {
     TransitionChild,
 } from '@headlessui/react';
 import clsx from 'clsx';
-import type { PropsWithChildren } from 'react';
+import type { JSX, PropsWithChildren } from 'react';
 import { Fragment } from 'react';
 
 import ExtensionRoot from './ExtensionRoot/ExtensionRoot';

@@ -11,7 +11,7 @@ import {
 } from '@views/lib/database/queryDistribution';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, JSX } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import Skeleton from 'react-loading-skeleton';

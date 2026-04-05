@@ -40,7 +40,7 @@ const teamMembers = [...LONGHORN_DEVELOPERS_ADMINS, ...LONGHORN_DEVELOPERS_SWE];
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
-export default function ScheduleListItem({ schedule, onClick }: ScheduleListItemProps): JSX.Element {
+export default function ScheduleListItem({ schedule, onClick }: ScheduleListItemProps): React.JSX.Element {
     const [activeSchedule] = useSchedules();
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);

@@ -23,7 +23,7 @@ export interface CourseCatalogInjectedPopupProps extends DialogProps {
  * @param onClose - The function to close the popup.
  * @returns The CourseCatalogInjectedPopup component.
  */
-function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPopupProps): JSX.Element {
+function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPopupProps): React.JSX.Element {
     const emptyRef = React.useRef<HTMLDivElement>(null);
     const [activeSchedule] = useSchedules();
 

@@ -38,7 +38,11 @@ interface SentryProviderProps {
  *
  * @returns The Sentry context provider wrapping the children components.
  */
-export default function SentryProvider({ children, transactionName, fullInit }: SentryProviderProps): JSX.Element {
+export default function SentryProvider({
+    children,
+    transactionName,
+    fullInit,
+}: SentryProviderProps): React.JSX.Element {
     // prevent accidentally initializing sentry twice
     const parent = useSentryScope();
 

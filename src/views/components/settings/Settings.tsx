@@ -49,7 +49,7 @@ const manifest = chrome.runtime.getManifest();
  *
  * @returns The Settings component.
  */
-export default function Settings(): JSX.Element {
+export default function Settings(): React.JSX.Element {
     const gitHubStatsService = useMemo(() => new GitHubStatsService(), []);
     const calendarPageUrl = chrome.runtime.getURL(CRX_PAGES.CALENDAR);
 

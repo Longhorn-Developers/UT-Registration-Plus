@@ -3,7 +3,8 @@ import 'uno.css';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import clsx from 'clsx';
-import React, { forwardRef } from 'react';
+import type { Ref } from 'react';
+import React from 'react';
 
 import styles from './ExtensionRoot.module.scss';
 
@@ -14,7 +15,7 @@ const queryClient = new QueryClient();
 /**
  * A wrapper component for the extension elements that adds some basic styling to them
  */
-export default function ExtensionRoot(props: React.HTMLProps<HTMLDivElement>): JSX.Element {
+export default function ExtensionRoot(props: React.HTMLProps<HTMLDivElement>): React.JSX.Element {
     const { className, ...others } = props;
 
     return (
@@ -26,8 +27,15 @@ export default function ExtensionRoot(props: React.HTMLProps<HTMLDivElement>): J
     );
 }
 
-export const ExtensionRootWrapper = forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>((props, ref) => (
-    <div className={styleResetClass}>
-        <div {...props} ref={ref} />
-    </div>
-));
+export function ExtensionRootWrapper({
+    ref,
+    ...props
+}: React.HTMLProps<HTMLDivElement> & {
+    ref?: Ref<HTMLDivElement>;
+}): React.JSX.Element {
+    return (
+        <div className={styleResetClass}>
+            <div {...props} ref={ref} />
+        </div>
+    );
+}
