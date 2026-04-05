@@ -128,12 +128,7 @@ function buildFirefoxManifest(options: FirefoxManifestGeneratorOptions): Firefox
         version: `${major}.${minor}.${patch}.${label}`,
         description: packageJson.description,
         homepage_url: packageJson.homepage,
-        icons: {
-            '16': 'icons/icon_production_16.png',
-            '32': 'icons/icon_production_32.png',
-            '48': 'icons/icon_production_48.png',
-            '128': 'icons/icon_production_128.png',
-        },
+        icons: getIconSet(mode),
         permissions: ['storage', 'unlimitedStorage', 'tabs'],
         host_permissions: HOST_PERMISSIONS,
         action: {

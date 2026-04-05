@@ -6,6 +6,7 @@ import getSiteSupport, { SiteSupport } from '@views/lib/getSiteSupport';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
+// Firefox does not properly implement requestAnimationFrame
 if (typeof window !== 'undefined') {
     const raf = window.requestAnimationFrame;
     if (raf) {
