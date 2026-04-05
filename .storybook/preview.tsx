@@ -25,121 +25,88 @@ const preview: Preview = {
     ],
 };
 
-let localData = {};
 type ListenerFunction = (
     changes: { [key: string]: chrome.storage.StorageChange },
     areaName: chrome.storage.AreaName
 ) => void;
-const localDataListeners = new Map<
-    ListenerFunction, // key to remove listener
-    (changes: { [key: string]: chrome.storage.StorageChange }) => void
->();
+const allListeners = new Map<ListenerFunction, ListenerFunction>();
+
+function createMockStorageArea(areaName: chrome.storage.AreaName) {
+    let data = {};
+    return {
+        /**
+         * Removes all items from storage.
+         */
+        async clear() {
+            data = {};
+        },
+        /**
+         * Gets one or more items from storage.
+         * @param keys A single key to get, list of keys to get, or a dictionary specifying default values.
+         * An empty list or object will return an empty result object. Pass in null to get the entire contents of storage.
+         */
+        async get(keys?: string | string[] | { [key: string]: any } | null) {
+            if (keys === null) return data;
+            if (Array.isArray(keys)) {
+                return keys.reduce(
+                    (acc, key) => {
+                        acc[key] = data[key];
+                        return acc;
+                    },
+                    {} as Record<string, any>
+                );
+            }
+            if (typeof keys === 'string') return { [keys]: data[keys] };
+            return keys;
+        },
+        /**
+         * Gets the amount of space (in bytes) being used by one or more items.
+         */
+        async getBytesInUse() {
+            return 0;
+        },
+        /**
+         * Removes one or more items from storage.
+         * @param keys A single key or a list of keys for items to remove.
+         */
+        async remove(keys: string | string[]) {
+            const keyList = Array.isArray(keys) ? keys : [keys];
+            for (const key of keyList) {
+                for (const listener of allListeners.values()) {
+                    listener({ [key]: { oldValue: data[key], newValue: undefined } }, areaName);
+                }
+                delete data[key];
+            }
+        },
+        /**
+         * Sets multiple items.
+         * @param items An object which gives each key/value pair to update storage with.
+         */
+        async set(items: { [key: string]: any }) {
+            for (const key in items) {
+                const oldValue = data[key];
+                data[key] = JSON.parse(JSON.stringify(items[key]));
+                for (const listener of allListeners.values()) {
+                    listener({ [key]: { oldValue, newValue: data[key] } }, areaName);
+                }
+            }
+        },
+    };
+}
 
 // mock chrome api
 globalThis.chrome = {
     storage: {
-        local: {
-            /**
-             * Removes all items from storage.
-             * @param callback Optional.
-             * Callback on success, or on failure (in which case runtime.lastError will be set).
-             */
-            async clear() {
-                localData = {};
-            },
-            /**
-             * Gets one or more items from storage.
-             * @param keys A single key to get, list of keys to get, or a dictionary specifying default values.
-             * An empty list or object will return an empty result object. Pass in null to get the entire contents of storage.
-             * @return A Promise that resolves with an object containing items
-             */
-            async get(keys?: string | string[] | { [key: string]: any } | null) {
-                if (keys === null) {
-                    return localData;
-                }
-                if (Array.isArray(keys)) {
-                    return keys.reduce((acc, key) => {
-                        acc[key] = localData[key];
-                        return acc;
-                    }, {} as string); // funny types
-                }
-                if (typeof keys === 'string') {
-                    return { [keys]: localData[keys] };
-                }
-                return keys;
-            },
-            /**
-             * Gets the amount of space (in bytes) being used by one or more items.
-             * @param keys Optional. A single key or list of keys to get the total usage for. An empty list will return 0. Pass in null to get the total usage of all of storage.
-             * @param callback Callback with the amount of space being used by storage, or on failure (in which case runtime.lastError will be set).
-             * Parameter bytesInUse: Amount of space being used in storage, in bytes.
-             */
-            async getBytesInUse() {
-                return 0;
-            },
-            /**
-             * Removes one or more items from storage.
-             * @param keys A single key or a list of keys for items to remove.
-             * @param callback Optional.
-             * Callback on success, or on failure (in which case runtime.lastError will be set).
-             */
-            async remove(keys: string | string[]) {
-                if (Array.isArray(keys)) {
-                    keys.forEach(key => {
-                        for (const listener of localDataListeners.values()) {
-                            listener({ [key]: { oldValue: localData[key], newValue: undefined } });
-                        }
-
-                        delete localData[key];
-                    });
-                } else {
-                    for (const listener of localDataListeners.values()) {
-                        listener({ [keys]: { oldValue: localData[keys], newValue: undefined } });
-                    }
-
-                    delete localData[keys];
-                }
-            },
-            /**
-             * Sets multiple items.
-             * @param items An object which gives each key/value pair to update storage with. Any other key/value pairs in storage will not be affected.
-             * Primitive values such as numbers will serialize as expected. Values with a typeof "object" and "function" will typically serialize to {}, with the exception of Array (serializes as expected), Date, and Regex (serialize using their String representation).
-             * @param callback Optional.
-             * Callback on success, or on failure (in which case runtime.lastError will be set).
-             */
-            async set(items: { [key: string]: any }) {
-                for (const key in items) {
-                    const oldValue = localData[key];
-                    localData[key] = JSON.parse(JSON.stringify(items[key]));
-
-                    for (const listener of localDataListeners.values()) {
-                        listener({ [key]: { oldValue: oldValue, newValue: localData[key] } });
-                    }
-                }
-            },
-        },
+        local: createMockStorageArea('local'),
+        sync: createMockStorageArea('sync'),
+        session: createMockStorageArea('session'),
+        managed: createMockStorageArea('managed'),
         onChanged: {
-            /**
-             * Registers an event listener callback to an event.
-             * @param callback Called when an event occurs. The parameters of this function depend on the type of event.
-             */
-            addListener(
-                listener: (
-                    changes: { [key: string]: chrome.storage.StorageChange },
-                    areaName: chrome.storage.AreaName
-                ) => void
-            ) {
-                localDataListeners.set(listener, (changes: { [key: string]: chrome.storage.StorageChange }) => {
-                    listener(changes, 'local');
-                });
+            addListener(listener: ListenerFunction) {
+                allListeners.set(listener, listener);
             },
-
-            /**
-             * Deregisters an event listener callback from an event.
-             * @param callback Listener that shall be unregistered.
-             */
             removeListener(listener: ListenerFunction) {
-                localDataListeners.delete(listener);
+                allListeners.delete(listener);
             },
         },
     },

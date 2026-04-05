@@ -218,3 +218,7 @@ result-*
 
 # direnv
 .direnv
+
+# Playwright
+test-results/
+e2e/*-snapshots/
