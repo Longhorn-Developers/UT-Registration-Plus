@@ -1,4 +1,4 @@
-import 'uno.css';
+// import 'uno.css';
 
 import renderRoot from '@shared/util/renderRoot';
 

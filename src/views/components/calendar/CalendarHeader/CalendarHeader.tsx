@@ -2,9 +2,14 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ArrowsClockwise, CalendarDots, Export, FileCode, FilePng, FileText, Sidebar } from '@phosphor-icons/react';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
+import calendarHeaderStyles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss?inline';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
-import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import {
+    ExtensionRootWrapper,
+    styleResetClass,
+    useShadowStyles,
+} from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { LargeLogo } from '@views/components/common/LogoIcon';
 import QuickAddModal from '@views/components/common/QuickAddModal';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
@@ -28,6 +33,8 @@ export interface CalendarHeaderProps {
  * @returns The JSX element representing the calendar header.
  */
 export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: CalendarHeaderProps): JSX.Element {
+    useShadowStyles(calendarHeaderStyles);
+
     const [activeSchedule] = useSchedules();
     const lastCheckedText = useRelativeTime(activeSchedule.lastCheckedAt);
     const [isRefreshing, setIsRefreshing] = useState(false);

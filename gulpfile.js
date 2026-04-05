@@ -1,9 +1,9 @@
 import fs from 'node:fs';
+import path from 'node:path';
 import chalk from 'chalk';
 import { dest, series, src } from 'gulp';
 import { exec } from 'gulp-execa';
 import zip from 'gulp-zip';
-import path from 'path';
 
 const DIST_DIR = 'dist';
 const PACKAGE_DIR = 'package';

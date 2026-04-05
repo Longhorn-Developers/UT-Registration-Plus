@@ -21,6 +21,7 @@ export async function initializeDB(): Promise<Database> {
     if (!WASM_FILE_URL || !DB_FILE_URL) {
         throw new Error('WASM_FILE_URL or DB_FILE_URL is undefined');
     }
+
     if (db) {
         return db;
     }

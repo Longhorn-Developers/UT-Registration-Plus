@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process';
+import { resolve } from 'node:path';
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
 import type { Plugin, ResolvedConfig, Rollup, ViteDevServer } from 'vite';
@@ -47,6 +47,41 @@ window.__vite_plugin_react_preamble_installed__ = true
 `;
 
 const isOutputChunk = (input: Rollup.OutputAsset | Rollup.OutputChunk): input is Rollup.OutputChunk => 'code' in input;
+
+const ABSOLUTE_URL_PATTERN = /^[a-zA-Z][a-zA-Z\d+\-.]*:/;
+
+const shouldRewriteAssetPath = (value: string) =>
+    value.startsWith('/') && !value.startsWith('//') && !ABSOLUTE_URL_PATTERN.test(value);
+
+const toRuntimeAssetExpression = (quote: string, path: string) =>
+    `chrome.runtime.getURL(${quote}${path.replace(/^\//, '')}${quote})`;
+
+const toAbsoluteDevAssetUrl = (path: string) => {
+    const protocol = _config.server.https ? 'https' : 'http';
+    const host = _config.server.host && typeof _config.server.host === 'string' ? _config.server.host : 'localhost';
+    const port = _config.server.port ?? 5173;
+
+    return `${protocol}://${host}:${port}${path}`;
+};
+
+const rewriteUrlModuleAsset = (code: string, mode: 'serve' | 'build') =>
+    code.replace(/export default (['"])(\/(?!\/).*?)\1;?$/m, (match, quote, path) =>
+        shouldRewriteAssetPath(path)
+            ? `export default ${mode === 'serve' ? `${quote}${toAbsoluteDevAssetUrl(path)}${quote}` : toRuntimeAssetExpression(quote, path)};`
+            : match
+    );
+
+const normalizeCssUrlPath = (rawPath: string) => rawPath.trim().replace(/^['"]|['"]$/g, '');
+
+const shouldRewriteCssUrl = (rawPath: string) => {
+    const normalizedPath = normalizeCssUrlPath(rawPath);
+
+    if (!normalizedPath || normalizedPath.startsWith('#') || normalizedPath.startsWith('//')) {
+        return false;
+    }
+
+    return !ABSOLUTE_URL_PATTERN.test(normalizedPath);
+};
 
 const renameFile = (source: string, destination: string): Plugin => {
     if (typeof source !== 'string' || typeof destination !== 'string') {
@@ -119,7 +154,6 @@ let _server: ViteDevServer;
 export default defineConfig({
     plugins: [
         react(),
-        UnoCSS(),
         Icons({ compiler: 'jsx', jsx: 'react' }),
         crx({ manifest }),
         fixManifestOptionsPage(),
@@ -127,13 +161,22 @@ export default defineConfig({
         {
             name: 'public-transform',
             apply: 'serve',
+            configResolved(config) {
+                _config = config;
+            },
             transform(code, id) {
-                if (id.endsWith('.tsx') || id.endsWith('.ts') || id.endsWith('?url')) {
+                if (id.endsWith('.tsx') || id.endsWith('.ts')) {
                     return {
-                        code: code.replace(
-                            /(['"])(\/public\/.*?)(['"])/g,
-                            (_, quote1, path, quote2) => `chrome.runtime.getURL(${quote1}${path}${quote2})`
+                        code: code.replace(/(['"])(\/public\/.*?)(['"])/g, (_, quote1, path) =>
+                            toRuntimeAssetExpression(quote1, path)
                         ),
+                        map: null,
+                    };
+                }
+
+                if (id.endsWith('?url')) {
+                    return {
+                        code: rewriteUrlModuleAsset(code, 'serve'),
                         map: null,
                     };
                 }
@@ -142,13 +185,23 @@ export default defineConfig({
         {
             name: 'public-transform',
             apply: 'build',
+            configResolved(config) {
+                _config = config;
+            },
             transform(code, id) {
-                if (id.endsWith('.tsx') || id.endsWith('.ts') || id.endsWith('?url')) {
+                if (id.endsWith('.tsx') || id.endsWith('.ts')) {
                     return {
                         code: code.replace(
                             /(['"])(__VITE_ASSET__.*?__)(['"])/g,
                             (_, quote1, path, quote2) => `chrome.runtime.getURL(${quote1}${path}${quote2})`
                         ),
+                        map: null,
+                    };
+                }
+
+                if (id.endsWith('?url')) {
+                    return {
+                        code: rewriteUrlModuleAsset(code, 'build'),
                         map: null,
                     };
                 }
@@ -161,13 +214,14 @@ export default defineConfig({
             transform(code, id) {
                 if (process.env.NODE_ENV === 'development' && (id.endsWith('.css') || id.endsWith('.scss'))) {
                     return {
-                        code: code.replace(
-                            /url\((.*?)\)/g,
-                            (_, path) =>
-                                `url(\\"" + chrome.runtime.getURL(${path
-                                    .replaceAll(`\\"`, `"`)
-                                    .replace(/public\//, '')}) + "\\")`
-                        ),
+                        code: code.replace(/url\((.*?)\)/g, (match, path) => {
+                            const normalizedPath = normalizeCssUrlPath(path.replaceAll(`\\"`, `"`));
+                            if (!shouldRewriteCssUrl(normalizedPath)) {
+                                return match;
+                            }
+
+                            return `url(\\"" + chrome.runtime.getURL("${normalizedPath.replace(/^\/?(public\/)?/, '')}") + "\\")`;
+                        }),
                         map: null,
                     };
                 }
@@ -192,6 +246,7 @@ export default defineConfig({
         renameFile('src/pages/report/index.html', 'report.html'),
         renameFile('src/pages/map/index.html', 'map.html'),
         renameFile('src/pages/404/index.html', '404.html'),
+        UnoCSS(),
         vitePluginRunCommandOnDemand({
             // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
             closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',
