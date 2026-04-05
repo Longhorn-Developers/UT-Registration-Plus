@@ -55,6 +55,10 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'F2' && !isEditing) {
+            e.preventDefault();
+            setIsEditing(true);
+        }
         if (e.key === 'Delete' && !isEditing) {
             // Check if any popups/dialogs are open by looking for open menu elements
             const openMenus = document.querySelectorAll('[data-headlessui-state="open"]');
@@ -213,7 +217,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                                 variant='p'
                                 className='select-none flex-1 min-w-0 truncate'
                                 onDoubleClick={() => setIsEditing(true)}
-                                aria-label={`${schedule.name} (double-click to rename)`}
+                                aria-label={`${schedule.name} (F2 to rename)`}
                             >
                                 {schedule.name}
                             </Text>

@@ -98,7 +98,7 @@ export default function CalendarCourseCell({
         <button
             type='button'
             className={clsx(
-                'h-full w-0 flex group relative justify-center rounded p-x-2 p-y-1.2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out border-none text-left',
+                'h-full w-0 flex group relative justify-center rounded p-x-2 p-y-1.2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out border-none text-left focusable',
                 {
                     'min-w-full': timeAndLocation,
                     'w-full': !timeAndLocation,

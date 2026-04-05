@@ -266,7 +266,7 @@ export default function Settings(): React.JSX.Element {
                             <button
                                 type='button'
                                 onClick={toggleDevMode}
-                                className='cursor-pointer bg-transparent text-inherit text-xl font-semibold'
+                                className='cursor-pointer bg-transparent text-inherit text-xl font-semibold focusable'
                             >
                                 Developer Mode
                             </button>

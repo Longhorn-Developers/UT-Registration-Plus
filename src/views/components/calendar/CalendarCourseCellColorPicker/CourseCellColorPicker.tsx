@@ -88,7 +88,7 @@ export default function CourseCellColorPicker({ defaultColor }: CourseCellColorP
         defaultColor.slice(1).toLocaleLowerCase() || getThemeColorHexByName('ut-gray')
     );
 
-    const { setSelectedColor } = useColorPickerContext();
+    const { setSelectedColor, handleCloseColorPicker } = useColorPickerContext();
 
     const hexCodeWithHash = `#${hexCode}` as ThemeColor;
     const selectedBaseColor = hexCodeToBaseColor.get(hexCodeWithHash);
@@ -105,7 +105,17 @@ export default function CourseCellColorPicker({ defaultColor }: CourseCellColorP
     };
 
     return (
-        <div className='inline-flex flex-col border border-ut-offwhite rounded-1 bg-white p-1.25'>
+        <div
+            className='inline-flex flex-col border border-ut-offwhite rounded-1 bg-white p-1.25'
+            role='dialog'
+            aria-label='Color picker'
+            onKeyDown={e => {
+                if (e.key === 'Escape') {
+                    e.stopPropagation();
+                    handleCloseColorPicker();
+                }
+            }}
+        >
             <div className='grid grid-cols-6 gap-1'>
                 {Array.from(colorPatchColors.keys()).map(baseColor => (
                     <ColorPatch

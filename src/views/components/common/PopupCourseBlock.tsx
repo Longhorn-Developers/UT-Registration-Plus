@@ -52,7 +52,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
-    const ref = useRef<HTMLButtonElement>(null);
+    const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         // adds transition for shadow hover after three frames
@@ -102,16 +102,14 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
     );
 
     return (
-        <button
-            type='button'
+        <div
             style={{
                 backgroundColor: colors.primaryColor,
             }}
             className={clsx(
-                'w-full inline-flex items-center justify-center gap-1 rounded focusable cursor-pointer text-left hover:shadow-md ease-out group-[.is-dragging]:shadow-md min-h-[55px] border-none',
+                'w-full inline-flex items-center justify-center gap-1 rounded cursor-pointer text-left hover:shadow-md ease-out group-[.is-dragging]:shadow-md min-h-[55px]',
                 className
             )}
-            onClick={handleClick}
             ref={ref}
         >
             {IS_STORYBOOK ? (
@@ -133,7 +131,11 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                     <DotsSixVertical weight='bold' className='h-6 w-6 cursor-move text-white' />
                 </SortableListDragHandle>
             )}
-            <div className='h-full flex flex-1 justify-center gap-spacing-3 p-spacing-3'>
+            <button
+                type='button'
+                className='h-full flex flex-1 justify-center gap-spacing-3 p-spacing-3 bg-transparent border-none cursor-pointer text-left focusable'
+                onClick={handleClick}
+            >
                 <div className='flex flex-1 flex-col justify-center gap-spacing-1'>
                     <Text
                         className={clsx(
@@ -158,36 +160,36 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                         <StatusIcon status={course.status} className='size-5' />
                     </div>
                 )}
-                <div className='flex flex-col justify-center'>
-                    <Button
-                        color='ut-gray'
-                        onClick={handleCopy}
-                        className='h-full max-h-[30px] max-w-fit gap-spacing-2 rounded text-white px-spacing-3! py-spacing-2!'
-                        style={{
-                            backgroundColor: colors.secondaryColor,
-                        }}
-                    >
-                        <div className='relative h-[21px] w-[21px]'>
-                            <Check
-                                className={clsx(
-                                    'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out',
-                                    isCopied ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
-                                )}
-                            />
-                            <Copy
-                                weight='fill'
-                                className={clsx(
-                                    'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out select-none',
-                                    isCopied ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
-                                )}
-                            />
-                        </div>
-                        <Text variant='h2' className='select-none text-base!'>
-                            {formattedUniqueId}
-                        </Text>
-                    </Button>
-                </div>
+            </button>
+            <div className='flex flex-col justify-center'>
+                <Button
+                    color='ut-gray'
+                    onClick={handleCopy}
+                    className='h-full max-h-[30px] max-w-fit gap-spacing-2 rounded text-white px-spacing-3! py-spacing-2!'
+                    style={{
+                        backgroundColor: colors.secondaryColor,
+                    }}
+                >
+                    <div className='relative h-[21px] w-[21px]'>
+                        <Check
+                            className={clsx(
+                                'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out',
+                                isCopied ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+                            )}
+                        />
+                        <Copy
+                            weight='fill'
+                            className={clsx(
+                                'absolute size-full inset-0 text-white transition-all duration-250 ease-in-out select-none',
+                                isCopied ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
+                            )}
+                        />
+                    </div>
+                    <Text variant='h2' className='select-none text-base!'>
+                        {formattedUniqueId}
+                    </Text>
+                </Button>
             </div>
-        </button>
+        </div>
     );
 }

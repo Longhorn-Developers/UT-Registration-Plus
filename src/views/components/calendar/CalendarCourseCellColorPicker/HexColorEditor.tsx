@@ -53,7 +53,7 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
                     type='text'
                     maxLength={6}
                     aria-label='Hex color code'
-                    className='w-full border-none bg-transparent font-size-2.75 font-normal font-mono outline-none focus:outline-none'
+                    className='w-full border-none bg-transparent font-size-2.75 font-normal font-mono focusable'
                     value={localHexCode}
                     onChange={e => setLocalHexCode(e.target.value)}
                 />
