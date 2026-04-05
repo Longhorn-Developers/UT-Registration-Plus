@@ -40,15 +40,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     const [isRefreshing, setIsRefreshing] = useState(false);
     // track per-schedule cooldowns so switching schedules allows immediate refresh
     const [cooldownIds, setCooldownIds] = useState<Set<string>>(new Set());
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState(false);
-
-    useEffect(() => {
-        OptionsStore.get('enableDataRefreshing').then(setEnableDataRefreshing);
-        const unsubscribe = OptionsStore.subscribe('enableDataRefreshing', ({ newValue }) => {
-            setEnableDataRefreshing(newValue);
-        });
-        return () => OptionsStore.unsubscribe(unsubscribe);
-    }, []);
+    const enableDataRefreshing = OptionsStore.useStore(store => store.enableDataRefreshing);
 
     const isCooldown = cooldownIds.has(activeSchedule.id);
     const hasRightHandSide = enableDataRefreshing;

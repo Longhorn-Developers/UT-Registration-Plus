@@ -2,7 +2,7 @@ import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import useSchedules from '@views/hooks/useSchedules';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 import { Button } from '../components/common/Button';
 import { usePrompt } from '../components/common/DialogProvider/DialogProvider';
@@ -20,28 +20,7 @@ const SCHEDULE_LIMIT = 10;
 export function useEnforceScheduleLimit(): () => boolean {
     const [, schedules] = useSchedules();
     const showDialog = usePrompt();
-    const [allowMoreSchedules, setAllowMoreSchedules] = useState<boolean>(false);
-
-    useEffect(() => {
-        let mounted = true;
-        (async () => {
-            try {
-                const val = await OptionsStore.get('allowMoreSchedules');
-                if (mounted) setAllowMoreSchedules(val ?? false);
-            } catch (err) {
-                console.error('Failed to read allowMoreSchedules from OptionsStore:', err);
-            }
-        })();
-
-        const listener = OptionsStore.subscribe('allowMoreSchedules', async ({ newValue }) => {
-            setAllowMoreSchedules(newValue);
-        });
-
-        return () => {
-            mounted = false;
-            OptionsStore.unsubscribe(listener);
-        };
-    }, []);
+    const allowMoreSchedules = OptionsStore.useStore(store => store.allowMoreSchedules);
 
     return useCallback(() => {
         // If user has enabled bypass, allow creating more schedules

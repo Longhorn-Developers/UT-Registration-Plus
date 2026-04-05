@@ -29,7 +29,7 @@ import CalendarFooter from './CalendarFooter';
 /**
  * Calendar page component
  */
-export default function Calendar({ initialShowSidebar = true }: { initialShowSidebar?: boolean }): ReactNode {
+export default function Calendar(): ReactNode {
     const { courseCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
     const displayBottomBar = true;
     const initialCourse = useCourseFromUrl();
@@ -39,7 +39,8 @@ export default function Calendar({ initialShowSidebar = true }: { initialShowSid
 
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
     const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
-    const [showSidebar, setShowSidebar] = useState(initialShowSidebar);
+    const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
+    const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
@@ -60,16 +61,6 @@ export default function Calendar({ initialShowSidebar = true }: { initialShowSid
 
         return () => listener.unlisten();
     }, [activeSchedule]);
-
-    useEffect(() => {
-        const listener = OptionsStore.subscribe('showCalendarSidebar', ({ newValue }) => {
-            setShowSidebar(newValue);
-        });
-
-        return () => {
-            OptionsStore.unsubscribe(listener);
-        };
-    }, []);
 
     const openCourse = (course: Course) => {
         setCourse(course);
@@ -200,11 +191,7 @@ export default function Calendar({ initialShowSidebar = true }: { initialShowSid
                                 variant='minimal'
                                 size='small'
                                 color='theme-black'
-                                onClick={() => {
-                                    const nextShowSidebar = !showSidebar;
-                                    setShowSidebar(nextShowSidebar);
-                                    void OptionsStore.set('showCalendarSidebar', nextShowSidebar);
-                                }}
+                                onClick={toggleSidebar}
                                 className='screenshot:hidden'
                                 icon={Sidebar}
                             />
@@ -242,14 +229,7 @@ export default function Calendar({ initialShowSidebar = true }: { initialShowSid
                         }
                         className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5'
                     >
-                        <CalendarHeader
-                            sidebarOpen={showSidebar}
-                            onSidebarToggle={() => {
-                                const nextShowSidebar = !showSidebar;
-                                setShowSidebar(nextShowSidebar);
-                                void OptionsStore.set('showCalendarSidebar', nextShowSidebar);
-                            }}
-                        />
+                        <CalendarHeader sidebarOpen={showSidebar} onSidebarToggle={toggleSidebar} />
                         <div
                             className={clsx('min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl', {
                                 'screenshot:flex-grow-0': displayBottomBar, // html-to-image seems to have a bug with flex-grow

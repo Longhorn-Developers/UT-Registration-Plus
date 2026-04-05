@@ -27,7 +27,7 @@ export default function CourseCatalogMain({ support }: Props): React.JSX.Element
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
     const [course, setCourse] = useState<Course | null>(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [enableScrollToLoad, setEnableScrollToLoad] = useState<boolean>(false);
+    const enableScrollToLoad = OptionsStore.useStore(store => store.enableScrollToLoad);
     const prevCourseTitleRef = useRef<string | null>(null);
     // biome-ignore lint/style/noNonNullAssertion: TODO: add checks
     const tbody = document.querySelector('table tbody')!;
@@ -45,10 +45,6 @@ export default function CourseCatalogMain({ support }: Props): React.JSX.Element
             scrapedRows.findLast(row => row.course === null)?.element.querySelector('.course_header')?.textContent ??
             null;
     }, [support]);
-
-    useEffect(() => {
-        OptionsStore.get('enableScrollToLoad').then(setEnableScrollToLoad);
-    }, []);
 
     const addRows = (newRows: ScrapedRow[]) => {
         newRows.forEach(row => {

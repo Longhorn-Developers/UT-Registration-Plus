@@ -6,8 +6,7 @@ import { CalendarDots } from '@phosphor-icons/react';
 // Shared
 import { background } from '@shared/messages';
 import { DevStore } from '@shared/storage/DevStore';
-import type { IOptionsStore } from '@shared/storage/OptionsStore';
-import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import Particles from '@tsparticles/react';
 import { Button } from '@views/components/common/Button';
@@ -60,14 +59,14 @@ export default function Settings(): React.JSX.Element {
     };
 
     // State
-    const [options, setOptions] = useState<IOptionsStore | null>(null);
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState(false);
-    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState(false);
     const [showGitHubStats, setShowGitHubStats] = useState(false);
     const [githubStats, setGitHubStats] = useState<Awaited<
         ReturnType<typeof gitHubStatsService.fetchGitHubStats>
     > | null>(null);
-    const [isDeveloper, setIsDeveloper] = useState(false);
+    const options = OptionsStore.useStore();
+    const enableDataRefreshing = options.enableDataRefreshing;
+    const enableCourseStatusChips = options.enableCourseStatusChips;
+    const isDeveloper = DevStore.useStore(store => store.isDeveloper);
 
     const [activeSchedule] = useSchedules();
     const showDialog = usePrompt();
@@ -91,73 +90,17 @@ export default function Settings(): React.JSX.Element {
             }
         };
 
-        const initAndSetSettings = async () => {
-            const settings = await initSettings();
-            setOptions(settings);
-            setEnableDataRefreshing(settings.enableDataRefreshing);
-            setEnableCourseStatusChips(settings.enableCourseStatusChips);
-        };
-
-        const initDS = async () => {
-            const isDev = await DevStore.get('isDeveloper');
-            setIsDeveloper(isDev);
-        };
-
         const handleKeyPress = (event: KeyboardEvent) => {
             if (event.key === STATS_TOGGLE_KEY || event.key === STATS_TOGGLE_KEY.toUpperCase()) {
                 setShowGitHubStats(prev => !prev);
             }
         };
 
-        // Listeners
-        const ds_l1 = DevStore.subscribe('isDeveloper', async ({ newValue }) => {
-            setIsDeveloper(newValue);
-        });
-
-        const l1 = OptionsStore.subscribe('enableHighlightConflicts', ({ newValue }) => {
-            setOptions(prev => prev && { ...prev, enableHighlightConflicts: newValue });
-        });
-
-        const l2 = OptionsStore.subscribe('enableScrollToLoad', ({ newValue }) => {
-            setOptions(prev => prev && { ...prev, enableScrollToLoad: newValue });
-        });
-
-        const l3 = OptionsStore.subscribe('alwaysOpenCalendarInNewTab', ({ newValue }) => {
-            setOptions(
-                prev =>
-                    prev && {
-                        ...prev,
-                        alwaysOpenCalendarInNewTab: newValue,
-                    }
-            );
-        });
-
-        const l4 = OptionsStore.subscribe('allowMoreSchedules', ({ newValue }) => {
-            setOptions(prev => prev && { ...prev, allowMoreSchedules: newValue });
-        });
-
-        const l5 = OptionsStore.subscribe('enableDataRefreshing', async ({ newValue }) => {
-            setEnableDataRefreshing(newValue);
-        });
-
-        const l6 = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-        });
-
         window.addEventListener('keydown', handleKeyPress);
 
-        initDS();
         fetchGitHubStats();
-        initAndSetSettings();
 
         return () => {
-            OptionsStore.unsubscribe(l1);
-            OptionsStore.unsubscribe(l2);
-            OptionsStore.unsubscribe(l3);
-            OptionsStore.unsubscribe(l4);
-            OptionsStore.unsubscribe(l5);
-            OptionsStore.unsubscribe(l6);
-            DevStore.unsubscribe(ds_l1);
             window.removeEventListener('keydown', handleKeyPress);
         };
     }, [gitHubStatsService]);
@@ -306,49 +249,11 @@ export default function Settings(): React.JSX.Element {
                     {options && (
                         <AdvancedSettings
                             highlightConflicts={options.enableHighlightConflicts}
-                            setHighlightConflicts={v =>
-                                setOptions(
-                                    prev =>
-                                        prev && {
-                                            ...prev,
-                                            enableHighlightConflicts: v,
-                                        }
-                                )
-                            }
                             loadAllCourses={options.enableScrollToLoad}
-                            setLoadAllCourses={v =>
-                                setOptions(
-                                    prev =>
-                                        prev && {
-                                            ...prev,
-                                            enableScrollToLoad: v,
-                                        }
-                                )
-                            }
                             increaseScheduleLimit={options.allowMoreSchedules}
-                            setIncreaseScheduleLimit={v =>
-                                setOptions(
-                                    prev =>
-                                        prev && {
-                                            ...prev,
-                                            allowMoreSchedules: v,
-                                        }
-                                )
-                            }
                             calendarNewTab={options.alwaysOpenCalendarInNewTab}
-                            setCalendarNewTab={v =>
-                                setOptions(
-                                    prev =>
-                                        prev && {
-                                            ...prev,
-                                            alwaysOpenCalendarInNewTab: v,
-                                        }
-                                )
-                            }
                             enableDataRefreshing={enableDataRefreshing}
-                            setEnableDataRefreshing={setEnableDataRefreshing}
                             enableCourseStatusChips={enableCourseStatusChips}
-                            setEnableCourseStatusChips={setEnableCourseStatusChips}
                             activeSchedule={activeSchedule}
                             handleEraseAll={handleEraseAll}
                             handleImportClick={handleImportClick}

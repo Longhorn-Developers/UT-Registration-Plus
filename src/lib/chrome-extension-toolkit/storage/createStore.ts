@@ -1,12 +1,14 @@
 /* eslint-disable no-await-in-loop */
-import { useEffect, useState } from 'react';
+import { useRef, useSyncExternalStore } from "react";
 
-import type { Serializable } from '../types';
-import { Security } from './Security';
+import type { Serializable } from "../types";
+import { Security } from "./Security";
 
 /** A utility type that forces you to declare all the values specified in the type interface for a module. */
 export type StoreDefaults<T> = {
-    [P in keyof Required<T>]: Pick<T, P> extends Required<Pick<T, P>> ? T[P] : T[P] | undefined;
+    [P in keyof Required<T>]: Pick<T, P> extends Required<Pick<T, P>>
+        ? T[P]
+        : T[P] | undefined;
 };
 
 /**
@@ -53,6 +55,21 @@ export type Store<T = {}> = {
     initialize(): Promise<void>;
 
     /**
+     * Preloads the entire store into memory for synchronous reads.
+     */
+    preload(): Promise<Serializable<T>>;
+
+    /**
+     * Returns whether the store snapshot has been loaded into memory.
+     */
+    isReady(): boolean;
+
+    /**
+     * Reads the current snapshot during render. Suspends until preload completes.
+     */
+    read(): Serializable<T>;
+
+    /**
      * Gets the value of the specified key from the store.
      * @param key the key to get the value of
      * @returns a promise that resolves to the value of the specified key (wrapped in a Serialized type)
@@ -94,10 +111,14 @@ export type Store<T = {}> = {
      * @returns a tuple containing the value of the specified key, and a function to set the value
      */
     use<K extends keyof T | null>(
-        key: K
+        key: K,
     ): [
         K extends keyof T ? Serializable<T[K]> : Serializable<T>,
-        (value: K extends keyof T ? Serializable<T[K]> : Partial<Serializable<T>>) => Promise<void>,
+        (
+            value: K extends keyof T
+                ? Serializable<T[K]>
+                : Partial<Serializable<T>>,
+        ) => Promise<void>,
     ];
 
     /**
@@ -107,28 +128,41 @@ export type Store<T = {}> = {
      */
     use<K extends keyof T | null>(
         key: K,
-        defaultValue: K extends keyof T ? Serializable<T[K]> : Serializable<T>
+        defaultValue: K extends keyof T ? Serializable<T[K]> : Serializable<T>,
     ): [
         K extends keyof T ? Serializable<T[K]> : Serializable<T>,
-        (value: K extends keyof T ? Serializable<T[K]> : Partial<Serializable<T>>) => Promise<void>,
+        (
+            value: K extends keyof T
+                ? Serializable<T[K]>
+                : Partial<Serializable<T>>,
+        ) => Promise<void>,
     ];
+
+    /**
+     * React hook that synchronously reads from the in-memory store snapshot.
+     */
+    useStore(): Serializable<T>;
+    useStore<S>(selector: (value: Serializable<T>) => S): S;
 
     /**
      * Subscribes to changes in the specified key in the store, and calls the specified function when the key changes.
      * @param key the key to subscribe to
      * @param callback the function to call when the key changes
      */
-    // @ts-expect-error
-    subscribe<K extends keyof T>(key: K, callback: OnChangedFunction<T[K]>): (changes, area) => void;
-    // @ts-expect-error
-    subscribe<K extends keyof T>(key: K[], callback: OnChangedFunction<T[K]>): (changes, area) => void;
+    subscribe<K extends keyof T>(
+        key: K,
+        callback: OnChangedFunction<T[K]>,
+    ): (changes: Record<string, chrome.storage.StorageChange>, area: string) => void;
+    subscribe<K extends keyof T>(
+        key: K[],
+        callback: OnChangedFunction<T[K]>,
+    ): (changes: Record<string, chrome.storage.StorageChange>, area: string) => void;
 
     /**
      * Removes a subscription that was added with the subscribe function.
      * @param sub the subscription function that was added
      */
-    // @ts-expect-error
-    unsubscribe(sub: (changes, area) => void): void;
+    unsubscribe(sub: (changes: Record<string, chrome.storage.StorageChange>, area: string) => void): void;
 };
 
 /**
@@ -147,6 +181,14 @@ type StoreOptions = {
 
 const security = new Security();
 
+export function suspendUntilStoresReady(stores: Store<any>[]) {
+    const pendingStores = stores.filter((store) => !store.isReady());
+
+    if (pendingStores.length > 0) {
+        throw Promise.all(pendingStores.map((store) => store.preload()));
+    }
+}
+
 /**
  * A function that creates a virtual storage bucket within the chrome.storage API.
  *
@@ -157,12 +199,13 @@ const security = new Security();
 function createStore<T>(
     storeId: string,
     defaults: StoreDefaults<T>,
-    area: 'sync' | 'local' | 'session' | 'managed',
-    options?: StoreOptions
+    area: "sync" | "local" | "session" | "managed",
+    options?: StoreOptions,
 ): Store<T> {
-    const prefix = (options?.usePrefix ?? true) ? `${storeId}:` : '';
+    const prefix = (options?.usePrefix ?? true) ? `${storeId}:` : "";
     const makeActualKey = (rawKey: string) => `${prefix}${rawKey}`;
-    const removePrefix = (prefixedKey: string) => prefixedKey.replace(prefix, '');
+    const removePrefix = (prefixedKey: string) =>
+        prefixedKey.replace(prefix, "");
 
     const keys = Object.keys(defaults) as string[];
     const actualKeys = keys.map(makeActualKey);
@@ -180,9 +223,106 @@ function createStore<T>(
     } as Store<T>;
 
     let hasInitialized = false;
+    let snapshot: Serializable<T> | null = null;
+    let preloadPromise: Promise<Serializable<T>> | null = null;
+    const externalStoreListeners = new Set<() => void>();
+
+    const notifySnapshotListeners = () => {
+        externalStoreListeners.forEach((listener) => listener());
+    };
+
+    const subscribeSnapshot = (listener: () => void) => {
+        externalStoreListeners.add(listener);
+
+        return () => {
+            externalStoreListeners.delete(listener);
+        };
+    };
+
+    const readStoredValue = async (value: unknown) =>
+        isEncrypted && value !== undefined
+            ? await security.decrypt(value)
+            : value;
+
+    const loadSnapshot = async (): Promise<Serializable<T>> => {
+        if (!hasInitialized) {
+            await store.initialize();
+        }
+
+        const fullStore = await chrome.storage[area].get(actualKeys);
+        const nextSnapshot = {} as Serializable<T>;
+
+        for (const key of keys) {
+            const actualKey = makeActualKey(key);
+            // @ts-expect-error - runtime object construction
+            nextSnapshot[key] = await readStoredValue(fullStore[actualKey]);
+        }
+
+        snapshot = nextSnapshot;
+        notifySnapshotListeners();
+
+        return nextSnapshot;
+    };
+
+    const ensurePreloaded = async () => {
+        if (snapshot !== null) {
+            return snapshot;
+        }
+
+        if (preloadPromise === null) {
+            preloadPromise = loadSnapshot().finally(() => {
+                preloadPromise = null;
+            });
+        }
+
+        return preloadPromise;
+    };
+
+    const updateSnapshotKey = async (actualKey: string, newValue: unknown, alreadyDecoded = false) => {
+        if (snapshot === null) {
+            await ensurePreloaded();
+        }
+
+        if (snapshot === null) {
+            return;
+        }
+
+        const nextSnapshot = { ...snapshot };
+        const key = removePrefix(actualKey) as keyof T & string;
+        // @ts-expect-error - runtime object construction
+        nextSnapshot[key] = alreadyDecoded ? newValue : await readStoredValue(newValue);
+        snapshot = nextSnapshot;
+        notifySnapshotListeners();
+    };
+
+    const storageListener = async (
+        changes: Record<string, chrome.storage.StorageChange>,
+        areaName: string,
+    ) => {
+        if (areaName !== area) {
+            return;
+        }
+
+        const changedKeys = Object.keys(changes).filter((key) =>
+            actualKeys.includes(key),
+        );
+        if (changedKeys.length === 0) {
+            return;
+        }
+
+        await Promise.all(
+            changedKeys.map((actualKey) =>
+                updateSnapshotKey(actualKey, changes[actualKey]?.newValue),
+            ),
+        );
+    };
+
+    const storageChangeEvent = globalThis.chrome?.storage?.onChanged;
+    storageChangeEvent?.addListener(storageListener);
+
     store.initialize = async () => {
         const data = await chrome.storage[area].get(actualKeys);
-        const missingKeys = actualKeys.filter(key => data[key] === undefined);
+        const missingKeys = actualKeys.filter((key) => data[key] === undefined);
 
         if (missingKeys.length) {
             const defaultsToSet = {};
@@ -191,7 +331,9 @@ function createStore<T>(
                 // @ts-expect-error
                 const value = defaults[removePrefix(key)];
                 // @ts-expect-error
-                defaultsToSet[key] = isEncrypted ? await security.encrypt(value) : value;
+                defaultsToSet[key] = isEncrypted
+                    ? await security.encrypt(value)
+                    : value;
             }
 
             await chrome.storage[area].set(defaultsToSet);
@@ -199,15 +341,23 @@ function createStore<T>(
         hasInitialized = true;
     };
 
-    store.get = async (key: any) => {
-        if (!hasInitialized) {
-            await store.initialize();
+    store.preload = ensurePreloaded;
+    store.isReady = () => snapshot !== null;
+    store.read = () => {
+        if (snapshot === null) {
+            throw ensurePreloaded();
         }
 
-        const actualKey = makeActualKey(key);
+        return snapshot;
+    };
 
-        const value = (await chrome.storage[area].get(actualKey))[actualKey];
-        return isEncrypted ? await security.decrypt(value) : value;
+    store.get = async (key: any) => {
+        if (snapshot !== null) {
+            return (snapshot as any)[key];
+        }
+
+        await ensurePreloaded();
+        return (snapshot as any)?.[key];
     };
 
     store.set = async (key: any, value?: any) => {
@@ -216,7 +366,7 @@ function createStore<T>(
         }
 
         // Handle the case where key is an object
-        if (typeof key === 'object' && value === undefined) {
+        if (typeof key === "object" && value === undefined) {
             const entriesToRemove: string[] = [];
             const entriesToSet = {};
 
@@ -227,7 +377,9 @@ function createStore<T>(
                     entriesToRemove.push(actualKey);
                 } else {
                     // @ts-expect-error
-                    entriesToSet[actualKey] = isEncrypted ? await security.encrypt(v) : v;
+                    entriesToSet[actualKey] = isEncrypted
+                        ? await security.encrypt(v)
+                        : v;
                 }
             }
 
@@ -255,6 +407,8 @@ function createStore<T>(
         await chrome.storage[area].set({
             [actualKey]: isEncrypted ? await security.encrypt(value) : value,
         });
+
+        await updateSnapshotKey(actualKey, value, true);
     };
 
     store.remove = async (key: any) => {
@@ -264,30 +418,11 @@ function createStore<T>(
 
         const actualKey = makeActualKey(key);
         await chrome.storage[area].remove(actualKey);
+        await updateSnapshotKey(actualKey, undefined, true);
     };
 
     store.all = async () => {
-        if (!hasInitialized) {
-            await store.initialize();
-        }
-        const fullStore = await chrome.storage[area].get(actualKeys);
-        if (isEncrypted) {
-            await Promise.all(
-                keys.map(async key => {
-                    const actualKey = makeActualKey(key);
-                    fullStore[key] = await security.decrypt(fullStore[actualKey]);
-                })
-            );
-        }
-        // now we need to remove the prefix from the keys
-        Object.keys(fullStore).forEach(actualKey => {
-            const newKey = removePrefix(actualKey);
-            if (newKey !== actualKey) {
-                fullStore[newKey] = fullStore[actualKey];
-                delete fullStore[actualKey];
-            }
-        });
-        return fullStore as Serializable<T>;
+        return await ensurePreloaded();
     };
 
     store.keys = () => keys as (keyof T & string)[];
@@ -301,14 +436,20 @@ function createStore<T>(
             if (areaName !== area) return;
 
             // make sure that there are keys is in the changes object
-            const subKeys = Object.keys(changes).filter(k => actualKeys.includes(k));
+            const subKeys = Object.keys(changes).filter((k) =>
+                actualKeys.includes(k),
+            );
             if (!subKeys.length) return;
 
-            subKeys.forEach(async actualKey => {
+            subKeys.forEach(async (actualKey) => {
                 const key = removePrefix(actualKey);
                 const [oldValue, newValue] = await Promise.all([
-                    isEncrypted ? security.decrypt(changes[actualKey].oldValue) : changes[actualKey].oldValue,
-                    isEncrypted ? security.decrypt(changes[actualKey].newValue) : changes[actualKey].newValue,
+                    isEncrypted
+                        ? security.decrypt(changes[actualKey].oldValue)
+                        : changes[actualKey].oldValue,
+                    isEncrypted
+                        ? security.decrypt(changes[actualKey].newValue)
+                        : changes[actualKey].newValue,
                 ]);
 
                 callback({
@@ -319,63 +460,76 @@ function createStore<T>(
             });
         };
 
-        chrome.storage.onChanged.addListener(sub);
+        storageChangeEvent?.addListener(sub);
         return sub;
     };
 
-    store.unsubscribe = sub => {
-        chrome.storage.onChanged.removeListener(sub);
+    store.unsubscribe = (sub) => {
+        storageChangeEvent?.removeListener(sub);
     };
 
-    // @ts-ignore
-    store.use = (key: keyof T | null, defaultValue?: key extends null ? T : T[typeof key]) => {
-        const initialValue: any = (() => {
-            // an explicit default value was passed, use it
-            if (arguments.length === 2) {
-                return defaultValue;
-            }
-            // a key was passed, but no default value was passed, use the default value from the defaults object
-            if (key === null) {
-                return defaults;
-            }
-            // no key was passed, use the default value from the defaults object
-            return defaults[key];
-        })();
+    store.useStore = ((
+        selector = ((value) => value) as (value: Serializable<T>) => unknown,
+    ) => {
+        const selectionCacheRef = useRef<{
+            snapshot: Serializable<T>;
+            selection: unknown;
+        } | null>(null);
+        const defaultsSelectionCacheRef = useRef<{
+            snapshot: Serializable<T>;
+            selection: unknown;
+        } | null>(null);
 
-        const [value, setValue] = useState(initialValue);
+        store.read();
 
-        const onChange = ({ key: k, newValue }: DataChange<T>) => {
-            if (key === null) {
-                // @ts-expect-error
-                setValue(prev => ({ ...prev, [k]: newValue }) as any);
-            } else {
-                setValue(newValue as any);
+        const getSelection = (
+            nextSnapshot: Serializable<T>,
+            cacheRef: typeof selectionCacheRef,
+        ) => {
+            const cachedSelection = cacheRef.current;
+
+            if (cachedSelection?.snapshot === nextSnapshot) {
+                return cachedSelection.selection;
             }
+
+            const selection = selector(nextSnapshot);
+            cacheRef.current = {
+                snapshot: nextSnapshot,
+                selection,
+            };
+
+            return selection;
         };
 
-        useEffect(() => {
+        return useSyncExternalStore(
+            subscribeSnapshot,
+            () => getSelection(snapshot as Serializable<T>, selectionCacheRef),
+            () =>
+                getSelection(
+                    defaults as Serializable<T>,
+                    defaultsSelectionCacheRef,
+                ),
+        );
+    }) as Store<T>["useStore"];
+
+    // @ts-ignore
+    store.use = (key: keyof T | null, defaultValue?: any) => {
+        const hasExplicitDefault = defaultValue !== undefined;
+        const selectedValue = store.useStore((value) => {
             if (key === null) {
-                store
-                    .all()
-                    .then(setValue)
-                    .then(() => {
-                        store.subscribe(store.keys(), onChange as any);
-                    });
-            } else {
-                store
-                    .get(key)
-                    .then(setValue)
-                    .then(() => {
-                        store.subscribe(key, onChange as any);
-                    });
+                return value;
             }
-            return () => {
-                store.unsubscribe(onChange as any);
-            };
-        }, []);
+
+            const keyValue = (value as any)[key];
+            if (keyValue === undefined && hasExplicitDefault) {
+                return defaultValue;
+            }
+
+            return keyValue;
+        });
 
         // @ts-expect-error
-        const set = async newValue => {
+        const set = async (newValue) => {
             if (key === null) {
                 await store.set(newValue as any);
             } else {
@@ -383,7 +537,7 @@ function createStore<T>(
             }
         };
 
-        return [value, set] as any;
+        return [selectedValue, set] as any;
     };
 
     return store;
@@ -399,8 +553,12 @@ function createStore<T>(
  * @param area the storage area to use. Defaults to 'local'
  * @returns an object which contains getters/setters for the keys in the defaults object, as well as an initialize function and an onChanged functions
  */
-export function createLocalStore<T>(storeId: string, defaults: StoreDefaults<T>, options?: StoreOptions): Store<T> {
-    return createStore(storeId, defaults, 'local', options);
+export function createLocalStore<T>(
+    storeId: string,
+    defaults: StoreDefaults<T>,
+    options?: StoreOptions,
+): Store<T> {
+    return createStore(storeId, defaults, "local", options);
 }
 
 /**
@@ -413,8 +571,12 @@ export function createLocalStore<T>(storeId: string, defaults: StoreDefaults<T>,
  * @param options options that modify the behavior of the store
  * @returns an object which contains getters/setters for the keys in the defaults object, as well as an initialize function and an onChanged functions
  */
-export function createSyncStore<T>(storeId: string, defaults: StoreDefaults<T>, options?: StoreOptions): Store<T> {
-    return createStore(storeId, defaults, 'sync', options);
+export function createSyncStore<T>(
+    storeId: string,
+    defaults: StoreDefaults<T>,
+    options?: StoreOptions,
+): Store<T> {
+    return createStore(storeId, defaults, "sync", options);
 }
 
 /**
@@ -428,8 +590,12 @@ export function createSyncStore<T>(storeId: string, defaults: StoreDefaults<T>, 
  * @see https://developer.chrome.com/docs/extensions/reference/storage/#type-ManagedStorageArea
  *
  */
-export function createManagedStore<T>(storeId: string, defaults: StoreDefaults<T>, options?: StoreOptions): Store<T> {
-    return createStore(storeId, defaults, 'managed', options);
+export function createManagedStore<T>(
+    storeId: string,
+    defaults: StoreDefaults<T>,
+    options?: StoreOptions,
+): Store<T> {
+    return createStore(storeId, defaults, "managed", options);
 }
 
 /**
@@ -441,8 +607,12 @@ export function createManagedStore<T>(storeId: string, defaults: StoreDefaults<T
  * @param options options that modify the behavior of the store
  * @returns an object which contains getters/setters for the keys in the defaults object, as well as an initialize function and an onChanged functions
  */
-export function createSessionStore<T>(storeId: string, defaults: StoreDefaults<T>, options?: StoreOptions): Store<T> {
-    return createStore(storeId, defaults, 'session', options);
+export function createSessionStore<T>(
+    storeId: string,
+    defaults: StoreDefaults<T>,
+    options?: StoreOptions,
+): Store<T> {
+    return createStore(storeId, defaults, "session", options);
 }
 
 // interface MyStore {

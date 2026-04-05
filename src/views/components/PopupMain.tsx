@@ -2,7 +2,7 @@ import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
 import { CalendarDots, Flag, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
-import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
@@ -25,33 +25,8 @@ import { SortableList } from './common/SortableList';
  * This component displays the main schedule, courses, and options buttons.
  */
 export default function PopupMain(): JSX.Element {
-    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const enableCourseStatusChips = OptionsStore.useStore(store => store.enableCourseStatusChips);
     // const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
-
-    useEffect(() => {
-        const initAllSettings = async () => {
-            const { enableCourseStatusChips } = await initSettings();
-            setEnableCourseStatusChips(enableCourseStatusChips);
-            // setEnableDataRefreshing(enableDataRefreshing);
-        };
-
-        initAllSettings();
-
-        const l1 = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
-        });
-
-        // const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
-        //     setEnableDataRefreshing(newValue);
-        //     // console.log('enableDataRefreshing', newValue);
-        // });
-
-        return () => {
-            OptionsStore.unsubscribe(l1);
-            // OptionsStore.removeListener(l2);
-        };
-    }, []);
 
     const [activeSchedule, schedules] = useSchedules();
 

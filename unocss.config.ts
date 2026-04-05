@@ -9,7 +9,6 @@ import { colors } from './src/shared/types/ThemeColors';
 
 export default defineConfig({
     outputToCssLayers: true,
-    virtualModulePrefix: 'uno',
     content: {
         // yoink from both filesystem and build pipeline to fix dev
         filesystem: ['./src/**/*.{jsx,tsx}'],

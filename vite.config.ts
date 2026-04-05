@@ -3,9 +3,11 @@ import { resolve } from 'node:path';
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react';
 import UnoCSS from 'unocss/vite';
+import unocssInline from 'unocss-inline';
 import Icons from 'unplugin-icons/vite';
 import type { Plugin, ResolvedConfig, Rollup, ViteDevServer } from 'vite';
 import inspect from 'vite-plugin-inspect';
+import reactFallbackThrottlePlugin from 'vite-plugin-react-fallback-throttle';
 import { defineConfig } from 'vitest/config';
 
 import packageJson from './package.json';
@@ -135,6 +137,7 @@ let _server: ViteDevServer;
 export default defineConfig({
     plugins: [
         react(),
+        reactFallbackThrottlePlugin(0), // react 19 terrible defaults: https://github.com/facebook/react/issues/31819
         Icons({ compiler: 'jsx', jsx: 'react' }),
         crx({ manifest }),
         fixManifestOptionsPage(),
@@ -214,6 +217,7 @@ export default defineConfig({
         renameFile('src/pages/map/index.html', 'map.html'),
         renameFile('src/pages/404/index.html', '404.html'),
         UnoCSS(),
+        unocssInline(),
         vitePluginRunCommandOnDemand({
             // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
             closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',

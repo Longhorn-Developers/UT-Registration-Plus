@@ -1,5 +1,5 @@
 import { ClockUser, LockKey, Palette, Prohibit } from '@phosphor-icons/react';
-import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import { hexToRGB, pickFontColor } from '@shared/util/colors';
@@ -8,7 +8,7 @@ import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
 import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { Button } from '../common/Button';
 import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellColorPicker';
@@ -43,7 +43,7 @@ export default function CalendarCourseCell({
     blockData,
     className,
 }: CalendarCourseCellProps): React.JSX.Element {
-    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const enableCourseStatusChips = OptionsStore.useStore(store => store.enableCourseStatusChips);
     const colorPickerRef = useRef<HTMLDivElement>(null);
     const { selectedColor, setSelectedCourse, handleCloseColorPicker, isSelectedBlock, isSelectedCourse } =
         useColorPickerContext();
@@ -58,19 +58,6 @@ export default function CalendarCourseCell({
         selectedCourse = isSelectedCourse(courseID);
         selectedBlock = isSelectedBlock(courseID, dayIndex, startIndex);
     }
-
-    useEffect(() => {
-        initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
-
-        const l1 = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
-        });
-
-        return () => {
-            OptionsStore.unsubscribe(l1);
-        };
-    }, []);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
