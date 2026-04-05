@@ -133,7 +133,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
                 </button>
                 {conflicts.length > 0 && (
                     <ConflictsWithWarning
-                        className='invisible absolute left-13 top--3 text-white group-hover:visible'
+                        className='opacity-0 absolute left-13 top--3 text-white group-hover:opacity-100'
                         conflicts={conflicts}
                     />
                 )}

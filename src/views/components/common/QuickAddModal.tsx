@@ -8,7 +8,6 @@ import clsx from 'clsx';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
 
 import { Button } from './Button';
-import DialogProvider from './DialogProvider/DialogProvider';
 import Dropdown from './Dropdown';
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 import Input from './Input';
@@ -34,7 +33,8 @@ export default function QuickAddModal(): JSX.Element {
         background.validateLoginStatus();
     };
 
-    const handleAddCourse = async () => {
+    const handleAddCourse = async (e?: React.FormEvent) => {
+        e?.preventDefault();
         if (courseResult.status !== 'found') return;
 
         await background.addCourse({ scheduleId: getActiveSchedule().id, course: courseResult.course });
@@ -42,26 +42,26 @@ export default function QuickAddModal(): JSX.Element {
     };
 
     return (
-        <DialogProvider>
-            <Popover>
-                <PopoverButton className='bg-transparent' as='div'>
-                    <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle} onClick={handleQuickAdd}>
-                        Quick Add
-                    </Button>
-                </PopoverButton>
-                <PopoverPanel
-                    as={ExtensionRootWrapper}
-                    className={clsx([
-                        'mt-spacing-3',
-                        'origin-top rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
-                        'data-[closed]:(opacity-0 scale-95)',
-                        'data-[enter]:(ease-out-expo duration-150)',
-                        'data-[leave]:(ease-out duration-50)',
-                        'flex flex-col gap-spacing-7 px-spacing-7 py-spacing-6 w-[400px] z-20',
-                    ])}
-                    transition
-                    anchor='bottom start'
-                >
+        <Popover>
+            <PopoverButton className='bg-transparent' as='div'>
+                <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle} onClick={handleQuickAdd}>
+                    Quick Add
+                </Button>
+            </PopoverButton>
+            <PopoverPanel
+                as={ExtensionRootWrapper}
+                className={clsx([
+                    'mt-spacing-3',
+                    'origin-top rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
+                    'data-[closed]:(opacity-0 scale-95)',
+                    'data-[enter]:(ease-out-expo duration-150)',
+                    'data-[leave]:(ease-out duration-50)',
+                    'px-spacing-7 py-spacing-6 w-[400px] z-20',
+                ])}
+                transition
+                anchor='bottom start'
+            >
+                <form className='flex flex-col gap-spacing-7' onSubmit={handleAddCourse}>
                     <div className='flex flex-row gap-spacing-3'>
                         <Input
                             className='min-w-0 flex-1'
@@ -69,6 +69,7 @@ export default function QuickAddModal(): JSX.Element {
                             onChange={uniqueNumber.handleChange}
                             maxLength={UNIQUE_ID_LENGTH}
                             placeholder='Enter unique number'
+                            autoFocus
                         />
                         <Dropdown
                             className='w-40 flex-shrink-0'
@@ -121,14 +122,14 @@ export default function QuickAddModal(): JSX.Element {
                             size='regular'
                             variant='filled'
                             icon={Plus}
-                            onClick={handleAddCourse}
+                            type='submit'
                             disabled={courseResult.status !== 'found'}
                         >
                             Add Course
                         </Button>
                     </PopoverGroup>
-                </PopoverPanel>
-            </Popover>
-        </DialogProvider>
+                </form>
+            </PopoverPanel>
+        </Popover>
     );
 }

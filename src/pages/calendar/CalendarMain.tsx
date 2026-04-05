@@ -1,4 +1,5 @@
 import { MessageListener } from '@chrome-extension-toolkit';
+import { background } from '@shared/messages';
 import type TabInfoMessages from '@shared/messages/TabInfoMessages';
 import Calendar from '@views/components/calendar/Calendar';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
@@ -15,6 +16,29 @@ import { useEffect } from 'react';
  */
 export default function CalendarMain() {
     useKC_DABR_WASM();
+
+    useEffect(() => {
+        const registerCalendarTab = () => {
+            void background.registerCalendarTab();
+        };
+
+        registerCalendarTab();
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                registerCalendarTab();
+            }
+        };
+
+        window.addEventListener('focus', registerCalendarTab);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            window.removeEventListener('focus', registerCalendarTab);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+    }, []);
+
     useEffect(() => {
         const tabInfoListener = new MessageListener<TabInfoMessages>({
             getTabInfo: ({ sendResponse }) => {

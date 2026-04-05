@@ -21,7 +21,7 @@ export const HOST_PERMISSIONS: string[] = [
     '*://*.catalog.utexas.edu/ribbit/',
     '*://*.registrar.utexas.edu/schedules/*',
     '*://*.login.utexas.edu/login/*',
-    'https://utexas.bluera.com/*',
+    'https://*.bluera.com/rpvlf.aspx*',
     '*://my.utexas.edu/student/*',
 ];
 
@@ -49,7 +49,8 @@ const manifest = defineManifest(async () => ({
     ...commonManifest,
     name: `${packageJson.displayName ?? packageJson.name}${nameSuffix}`,
     version: `${major}.${minor}.${patch}.${label}`,
-    permissions: [...commonManifest.permissions, 'background', 'scripting', 'offscreen'],
+    permissions: [...commonManifest.permissions, 'background', 'offscreen'],
+    description: packageJson.description,
     host_permissions: process.env.MODE === 'development' ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
     action: {
         default_popup: 'src/pages/popup/index.html',
