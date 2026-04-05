@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process';
 import { crx } from '@crxjs/vite-plugin';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';

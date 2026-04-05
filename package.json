@@ -101,7 +101,7 @@
         "@unocss/reset": "^66.6.7",
         "@unocss/transformer-directives": "^66.6.7",
         "@unocss/transformer-variant-group": "^66.6.7",
-        "@vitejs/plugin-react-swc": "^4.3.0",
+        "@vitejs/plugin-react": "^5.2.0",
         "@vitest/coverage-v8": "^4.1.2",
         "@vitest/ui": "^4.1.2",
         "chalk": "^5.6.2",
@@ -117,7 +117,7 @@
         "prompts": "^2.4.2",
         "semantic-release": "^25.0.3",
         "storybook": "^10.3.4",
-        "typescript": "^5.9.3",
+        "typescript": "^6.0.0",
         "unocss": "^66.6.7",
         "unocss-preset-primitives": "0.0.2-beta.2",
         "unplugin-icons": "^23.0.1",
@@ -131,6 +131,9 @@
         "pnpm": "^10"
     },
     "pnpm": {
+        "patchedDependencies": {
+            "@crxjs/vite-plugin@2.4.0": "patches/@crxjs__vite-plugin@2.4.0.patch"
+        },
         "overrides": {},
         "onlyBuiltDependencies": [
             "@parcel/watcher",
