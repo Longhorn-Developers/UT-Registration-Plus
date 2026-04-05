@@ -1,0 +1,45 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 1234567..abcdefg 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1969,22 +1969,26 @@
+           })
+         );
+         if (config.command === "serve" && files.html.length) {
+-          const refId2 = this.emitFile({
+-            type: "asset",
+-            name: "loading-page.js",
+-            source: loadingPageScript.replace("%PROTO%", config.server.https ? "https" : "http").replace("%PORT%", `${config.server.port ?? 0}`)
+-          });
+-          const loadingPageScriptName = this.getFileName(refId2);
+-          files.html.map(
+-            (f) => this.emitFile({
++          const proto = config.server.https ? "https" : "http";
++          const port = config.server.port ?? 5173;
++          const devOrigin = `${proto}://localhost:${port}`;
++          for (const f of files.html) {
++            const htmlPath = join(config.root, f);
++            let htmlSource = await readFile(htmlPath, "utf-8");
++            const viteClientScript = `<script type="module" src="${devOrigin}/@vite/client"><\/script>`;
++            const preambleScript = `<script type="module" src="${devOrigin}/@crx/client-preamble"><\/script>`;
++            htmlSource = htmlSource.replace("</head>", `${viteClientScript}\n${preambleScript}\n</head>`);
++            const dir = dirname(f);
++            htmlSource = htmlSource.replace(
++              /(<script[^>]*\ssrc=")\.\//g,
++              `$1${devOrigin}/${dir}/`
++            );
++            this.emitFile({
+               type: "asset",
+               fileName: f,
+-              source: loadingPageHtml.replace(
+-                "%SCRIPT%",
+-                `/${loadingPageScriptName}`
+-              )
+-            })
+-          );
++              source: htmlSource
++            });
++          }
+         }
+         const manifestJson = bundle["manifest.json"];
+         if (typeof manifestJson === "undefined") {
