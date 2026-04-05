@@ -31,7 +31,7 @@ import { SortableListDragHandle } from './SortableListDragHandle';
  */
 interface ScheduleListItemProps {
     schedule: UserSchedule;
-    onClick?: React.DOMAttributes<HTMLDivElement>['onClick'];
+    onClick?: React.DOMAttributes<HTMLButtonElement>['onClick'];
 }
 
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
@@ -159,8 +159,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
 
     return (
         // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: TODO:
-        <div className='h-7.5 rounded bg-white' tabIndex={0} onKeyDown={handleKeyDown}>
+        <div className='h-7.5 rounded bg-white' tabIndex={-1} onKeyDown={handleKeyDown}>
             <div className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
                 {IS_STORYBOOK ? (
                     <DotsSixVertical
@@ -175,26 +174,27 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         />
                     </SortableListDragHandle>
                 )}
-                <div className='group relative flex flex-1 items-center overflow-x-hidden'>
-                    {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
-                    {/** biome-ignore lint/a11y/useKeyWithClickEvents: TODO: */}
-                    <div
-                        className='group/circle flex flex-grow items-center gap-spacing-3 overflow-x-hidden'
+                <div className='group flex flex-1 items-center min-w-0'>
+                    <button
+                        type='button'
+                        aria-label={`Select schedule ${schedule.name}`}
+                        tabIndex={isEditing ? -1 : 0}
+                        className='group/circle cursor-pointer flex flex-auto text-left items-center space-x-spacing-3 min-w-0'
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         {isActive ? (
                             <RadioButton
-                                className='h-7.5 w-7.5 shrink-0 btn-transition active:scale-95'
+                                className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95'
                                 weight='fill'
                             />
                         ) : (
-                            <Circle className='h-7.5 w-7.5 shrink-0 btn-transition active:scale-95' />
+                            <Circle className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
                         )}
                         {isEditing && (
                             <Text
                                 variant='p'
                                 as='input'
-                                className='mr-1 w-full flex-1 px-0.5 outline-blue-500 -ml-0.5'
+                                className='mr-1 flex-1 px-0.5 outline-blue-500 -ml-0.5'
                                 value={editorValue}
                                 onChange={e => setEditorValue(e.target.value)}
                                 onKeyDown={e => {
@@ -213,16 +213,16 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         {!isEditing && (
                             <Text
                                 variant='p'
-                                className='flex-1 select-none truncate'
+                                className='select-none flex-1 min-w-0 truncate'
                                 onDoubleClick={() => setIsEditing(true)}
                             >
                                 {schedule.name}
                             </Text>
                         )}
-                    </div>
+                    </button>
                     <DialogProvider>
                         <Menu>
-                            <MenuButton className='invisible h-fit bg-transparent p-0 text-ut-gray btn-transition data-[open]:visible group-hover:visible'>
+                            <MenuButton className='opacity-0 cursor-pointer h-fit bg-transparent p-0 text-ut-gray btn-transition data-[open]:opacity-100 group-hover:opacity-100 focus:opacity-100'>
                                 <DotsThree weight='bold' className='h-6 w-6' />
                             </MenuButton>
 

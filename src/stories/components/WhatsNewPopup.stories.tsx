@@ -27,10 +27,10 @@ export const Primary: Story = {
 };
 
 const InnerComponent = () => {
-    const handleOnClick = useWhatsNewPopUp();
+    const showPopup = useWhatsNewPopUp();
 
     return (
-        <Button color='ut-burntorange' onClick={handleOnClick}>
+        <Button color='ut-burntorange' onClick={() => showPopup()}>
             Open Dialog
         </Button>
     );

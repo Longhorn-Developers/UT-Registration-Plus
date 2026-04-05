@@ -33,7 +33,7 @@ export default function Link(props: PropsWithChildren<Props>): JSX.Element {
             tabIndex={isDisabled ? -1 : 0}
             className={clsx(
                 {
-                    'underline cursor-pointer p-2': !isDisabled,
+                    'underline cursor-pointer': !isDisabled,
                     'cursor-not-allowed color-ut-gray': isDisabled,
                 },
                 className

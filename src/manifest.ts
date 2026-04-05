@@ -22,7 +22,7 @@ const HOST_PERMISSIONS: string[] = [
     '*://*.catalog.utexas.edu/ribbit/',
     '*://*.registrar.utexas.edu/schedules/*',
     '*://*.login.utexas.edu/login/*',
-    'https://utexas.bluera.com/*',
+    'https://*.bluera.com/rpvlf.aspx*',
     '*://my.utexas.edu/student/*',
 ];
 
@@ -33,7 +33,7 @@ const manifest = defineManifest(async () => ({
     description: packageJson.description,
     options_page: 'src/pages/options/index.html',
     background: { service_worker: 'src/pages/background/background.ts' },
-    permissions: ['storage', 'unlimitedStorage', 'background', 'scripting', 'offscreen'],
+    permissions: ['storage', 'unlimitedStorage', 'background', 'scripting'],
     host_permissions: process.env.MODE === 'development' ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
     action: {
         default_popup: 'src/pages/popup/index.html',

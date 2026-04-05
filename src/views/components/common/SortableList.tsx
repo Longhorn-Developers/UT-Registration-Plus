@@ -106,7 +106,7 @@ export function SortableList<T extends BaseItem>({
 
     return (
         <div className={clsx('h-full w-full')}>
-            <ul className={clsx('overflow-clip flex gap-spacing-3 flex-col', className)}>
+            <ul className={clsx('flex gap-spacing-3 flex-col', className)}>
                 <DndContext
                     modifiers={[restrictToParentElement]}
                     sensors={sensors}

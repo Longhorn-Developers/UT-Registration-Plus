@@ -6,7 +6,6 @@ import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
-import type React from 'react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 
@@ -14,7 +13,7 @@ import CalendarCourseBlock from './CalendarCourseCell';
 
 type CalendarBottomBarProps = {
     courseCells?: CalendarGridCourse[];
-    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
+    setCourse: (course: Course) => void;
 };
 
 /**
