@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   '@crxjs/vite-plugin@2.4.0':
-    hash: c2146b1eea1cc7a15b9459fa997551b06e1f8c3278b842a4c55deda58afcad07
+    hash: 6de6a8d684fada76f0b8494bfd24b561539ec9ce9580400ff3aa920155173c28
     path: patches/@crxjs__vite-plugin@2.4.0.patch
 
 importers:
@@ -127,7 +127,7 @@ importers:
         version: 20.5.0
       '@crxjs/vite-plugin':
         specifier: 2.4.0
-        version: 2.4.0(patch_hash=c2146b1eea1cc7a15b9459fa997551b06e1f8c3278b842a4c55deda58afcad07)(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.2)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.0))
+        version: 2.4.0(patch_hash=6de6a8d684fada76f0b8494bfd24b561539ec9ce9580400ff3aa920155173c28)(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.2)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.0))
       '@iconify-json/bi':
         specifier: ^1.2.7
         version: 1.2.7
@@ -6529,7 +6529,7 @@ snapshots:
       conventional-commits-filter: 5.0.0
       conventional-commits-parser: 6.4.0
 
-  '@crxjs/vite-plugin@2.4.0(patch_hash=c2146b1eea1cc7a15b9459fa997551b06e1f8c3278b842a4c55deda58afcad07)(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.2)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.0))':
+  '@crxjs/vite-plugin@2.4.0(patch_hash=6de6a8d684fada76f0b8494bfd24b561539ec9ce9580400ff3aa920155173c28)(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.2)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.0))':
     dependencies:
       '@rollup/pluginutils': 4.2.1
       '@webcomponents/custom-elements': 1.6.0

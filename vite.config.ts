@@ -49,27 +49,8 @@ window.__vite_plugin_react_preamble_installed__ = true
 const isOutputChunk = (input: Rollup.OutputAsset | Rollup.OutputChunk): input is Rollup.OutputChunk => 'code' in input;
 
 const ABSOLUTE_URL_PATTERN = /^[a-zA-Z][a-zA-Z\d+\-.]*:/;
-
-const shouldRewriteAssetPath = (value: string) =>
-    value.startsWith('/') && !value.startsWith('//') && !ABSOLUTE_URL_PATTERN.test(value);
-
 const toRuntimeAssetExpression = (quote: string, path: string) =>
     `chrome.runtime.getURL(${quote}${path.replace(/^\//, '')}${quote})`;
-
-const toAbsoluteDevAssetUrl = (path: string) => {
-    const protocol = _config.server.https ? 'https' : 'http';
-    const host = _config.server.host && typeof _config.server.host === 'string' ? _config.server.host : 'localhost';
-    const port = _config.server.port ?? 5173;
-
-    return `${protocol}://${host}:${port}${path}`;
-};
-
-const rewriteUrlModuleAsset = (code: string, mode: 'serve' | 'build') =>
-    code.replace(/export default (['"])(\/(?!\/).*?)\1;?$/m, (match, quote, path) =>
-        shouldRewriteAssetPath(path)
-            ? `export default ${mode === 'serve' ? `${quote}${toAbsoluteDevAssetUrl(path)}${quote}` : toRuntimeAssetExpression(quote, path)};`
-            : match
-    );
 
 const normalizeCssUrlPath = (rawPath: string) => rawPath.trim().replace(/^['"]|['"]$/g, '');
 
@@ -173,17 +154,10 @@ export default defineConfig({
                         map: null,
                     };
                 }
-
-                if (id.endsWith('?url')) {
-                    return {
-                        code: rewriteUrlModuleAsset(code, 'serve'),
-                        map: null,
-                    };
-                }
             },
         },
         {
-            name: 'public-transform',
+            name: 'public-transform-build',
             apply: 'build',
             configResolved(config) {
                 _config = config;
@@ -195,13 +169,6 @@ export default defineConfig({
                             /(['"])(__VITE_ASSET__.*?__)(['"])/g,
                             (_, quote1, path, quote2) => `chrome.runtime.getURL(${quote1}${path}${quote2})`
                         ),
-                        map: null,
-                    };
-                }
-
-                if (id.endsWith('?url')) {
-                    return {
-                        code: rewriteUrlModuleAsset(code, 'build'),
                         map: null,
                     };
                 }

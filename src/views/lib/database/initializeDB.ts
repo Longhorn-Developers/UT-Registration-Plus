@@ -1,4 +1,4 @@
-import DB_FILE_URL from '@public/database/grade_distributions.db?url';
+import DB_FILE_URL from '@assets/database/grade_distributions.db?url';
 import initSqlJs from 'sql.js/dist/sql-wasm';
 import WASM_FILE_URL from 'sql.js/dist/sql-wasm.wasm?url';
 // import WASM_FILE_URL from '../../../../public/database/sql-wasm.wasm?url';
@@ -18,12 +18,12 @@ let db: Database;
  * @returns a reference to the sql.js Database object
  */
 export async function initializeDB(): Promise<Database> {
-    if (!WASM_FILE_URL || !DB_FILE_URL) {
-        throw new Error('WASM_FILE_URL or DB_FILE_URL is undefined');
-    }
-
     if (db) {
         return db;
+    }
+
+    if (!WASM_FILE_URL || !DB_FILE_URL) {
+        throw new Error('WASM_FILE_URL or DB_FILE_URL is undefined');
     }
 
     const [{ Database }, dbBuffer] = await Promise.all([
