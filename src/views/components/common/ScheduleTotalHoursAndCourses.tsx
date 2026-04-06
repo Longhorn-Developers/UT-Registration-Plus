@@ -1,20 +1,15 @@
-import type { ChangeEventHandler, FocusEventHandler, KeyboardEventHandler, RefObject } from 'react';
+import renameSchedule from '@pages/background/lib/renameSchedule';
+import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
 import Text from '@views/components/common/Text/Text';
 
 /**
  * Props for ScheduleTotalHoursAndCourses
  */
 export interface ScheduleTotalHoursAndCoursesProps {
+    scheduleId?: string;
     scheduleName: string;
     totalHours: number;
     totalCourses: number;
-    isEditingName?: boolean;
-    editorValue?: string;
-    onEditorChange?: ChangeEventHandler<HTMLInputElement>;
-    onEditorBlur?: FocusEventHandler<HTMLInputElement>;
-    onEditorKeyDown?: KeyboardEventHandler<HTMLInputElement>;
-    editorRef?: RefObject<HTMLInputElement | null>;
-    onScheduleNameDoubleClick?: () => void;
 }
 
 /**
@@ -26,17 +21,66 @@ export interface ScheduleTotalHoursAndCoursesProps {
  * @returns The rendered ScheduleTotalHoursAndCourses component.
  */
 export default function ScheduleTotalHoursAndCourses({
+    scheduleId,
     scheduleName,
     totalHours,
     totalCourses,
-    isEditingName = false,
-    editorValue,
-    onEditorChange,
-    onEditorBlur,
-    onEditorKeyDown,
-    editorRef,
-    onScheduleNameDoubleClick,
 }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
+    const [isEditingName, setIsEditingName] = useState(false);
+    const [displayName, setDisplayName] = useState(scheduleName);
+    const [editorValue, setEditorValue] = useState(scheduleName);
+    const editorRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        setDisplayName(scheduleName);
+        setEditorValue(scheduleName);
+    }, [scheduleName]);
+
+    useEffect(() => {
+        if (!isEditingName) {
+            return;
+        }
+        const editor = editorRef.current;
+        if (editor) {
+            editor.focus();
+            editor.setSelectionRange(0, editor.value.length);
+        }
+    }, [isEditingName]);
+
+    const handleBlur = useCallback(async () => {
+        const trimmedName = editorValue.trim();
+        if (!trimmedName) {
+            setEditorValue(displayName);
+            setIsEditingName(false);
+            return;
+        }
+
+        if (trimmedName !== displayName && scheduleId) {
+            const nextName = (await renameSchedule(scheduleId, trimmedName)) as string;
+            if (nextName) {
+                setDisplayName(nextName);
+                setEditorValue(nextName);
+            }
+        } else {
+            setEditorValue(displayName);
+        }
+
+        setIsEditingName(false);
+    }, [displayName, editorValue, scheduleId]);
+
+    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleBlur();
+        }
+        if (e.key === 'Escape') {
+            setEditorValue(displayName);
+            setIsEditingName(false);
+        }
+        if (e.key === 'Delete') {
+            e.stopPropagation();
+        }
+    };
+
     return (
         <div className='gap-0.5 grid'>
             {isEditingName ? (
@@ -44,10 +88,10 @@ export default function ScheduleTotalHoursAndCourses({
                     variant='h1'
                     as='input'
                     className='block min-w-0 w-full text-theme-black flex-initial overflow-hidden border-0 bg-transparent px-0 outline-blue-500'
-                    value={editorValue ?? scheduleName}
-                    onChange={onEditorChange}
-                    onBlur={onEditorBlur}
-                    onKeyDown={onEditorKeyDown}
+                    value={editorValue}
+                    onChange={e => setEditorValue(e.target.value)}
+                    onBlur={handleBlur}
+                    onKeyDown={handleKeyDown}
                     ref={editorRef}
                 />
             ) : (
@@ -55,9 +99,15 @@ export default function ScheduleTotalHoursAndCourses({
                     className='block truncate text-theme-black flex-initial overflow-hidden cursor-text'
                     variant='h1'
                     as='div'
-                    onDoubleClick={onScheduleNameDoubleClick}
+                    onDoubleClick={() => {
+                        if (!scheduleId) {
+                            return;
+                        }
+                        setEditorValue(displayName);
+                        setIsEditingName(true);
+                    }}
                 >
-                    {scheduleName}
+                    {displayName}
                 </Text>
             )}
             <Text variant='h4' as='p' className='text-ut-burntorange inline-flex gap-3'>
