@@ -102,10 +102,6 @@ Use `BETA=true pnpm build` to generate a beta build.
 
 </details>
 
-### Docker
-
-This project includes a Dockerfile that allows you to build, zip, or run the extension in development mode using Docker. Refer to [Docker Dev Setup](./DOCKER_DEV_SETUP.md) to get started.
-
 ## Loading the Extension Manually
 
 To load the extension manually in Chrome:
