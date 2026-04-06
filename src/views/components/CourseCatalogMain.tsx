@@ -95,13 +95,14 @@ export default function CourseCatalogMain({ support }: Props): React.JSX.Element
                             />
                         )
                 )}
-                <CourseCatalogInjectedPopup
-                    // biome-ignore lint/style/noNonNullAssertion: course is always defined when the popup is open
-                    course={course!}
-                    open={isPopupOpen}
-                    onClose={() => setIsPopupOpen(false)}
-                    afterLeave={() => setCourse(null)}
-                />
+                {course && (
+                    <CourseCatalogInjectedPopup
+                        course={course}
+                        open={isPopupOpen}
+                        onClose={() => setIsPopupOpen(false)}
+                        afterLeave={() => setCourse(null)}
+                    />
+                )}
                 {enableScrollToLoad && <AutoLoad addRows={addRows} />}
             </DialogProvider>
         </ExtensionRoot>

@@ -16,6 +16,28 @@ interface MeetingInfoTextProps {
     instructionMode: string;
 }
 
+function getLocationInfo(meeting: CourseMeeting, instructionMode: string): ReactNode {
+    const getBuildingUrl = (building: string) =>
+        `https://utdirect.utexas.edu/apps/campus/buildings/nlogon/maps/UTM/${building}`;
+
+    if (meeting.location) {
+        return (
+            <>
+                {' in '}
+                <Link href={getBuildingUrl(meeting.location.building)} className='link' variant='h4'>
+                    {meeting.location.building} {meeting.location.room}
+                </Link>
+            </>
+        );
+    }
+
+    if (instructionMode === 'Online') {
+        return ', Online (Internet)';
+    }
+
+    return ' (No location has been provided)';
+}
+
 /**
  * Renders a single meeting's time and location info.
  *
@@ -30,39 +52,11 @@ function MeetingInfoText({ meeting, instructionMode }: MeetingInfoTextProps): JS
     });
     const timeString = meeting.getTimeString({ separator: ' to ' });
 
-    const getBuildingUrl = (building: string) =>
-        `https://utdirect.utexas.edu/apps/campus/buildings/nlogon/maps/UTM/${building}`;
-
-    let locationInfo: JSX.Element | string | undefined;
-
-    if (meeting.location) {
-        locationInfo = (
-            <div className='ml-1'>
-                {'in '}
-                <Link href={getBuildingUrl(meeting.location.building)} className='link' variant='h4'>
-                    {meeting.location.building} {meeting.location.room}
-                </Link>
-            </div>
-        );
-    } else if (instructionMode !== 'Online') {
-        locationInfo = (
-            <Text variant='h4' as='p' className='ml-1'>
-                (No location has been provided)
-            </Text>
-        );
-    } else if (instructionMode === 'Online') {
-        locationInfo = ', Online (Internet)';
-    }
-
     return (
-        <div className='flex'>
-            <Text variant='h4' as='p'>
-                {daysString} {timeString}
-            </Text>
-            <Text variant='h4' as='p'>
-                {locationInfo}
-            </Text>
-        </div>
+        <Text variant='h4' as='p'>
+            {daysString} {timeString}
+            {getLocationInfo(meeting, instructionMode)}
+        </Text>
     );
 }
 

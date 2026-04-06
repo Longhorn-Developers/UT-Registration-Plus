@@ -266,15 +266,14 @@ export default function Calendar({ initialShowSidebar = true }: { initialShowSid
                     </div>
                 </div>
 
-                <CourseCatalogInjectedPopup
-                    // Ideally let's not use ! here, but it's fine since we know course is always defined when showPopup is true
-                    // Let's try to refactor this
-                    // biome-ignore lint/style/noNonNullAssertion: course is always defined when showPopup is true
-                    course={course!}
-                    onClose={() => setIsPopupOpen(false)}
-                    open={isPopupOpen}
-                    afterLeave={() => setCourse(null)}
-                />
+                {course && (
+                    <CourseCatalogInjectedPopup
+                        course={course}
+                        onClose={() => setIsPopupOpen(false)}
+                        open={isPopupOpen}
+                        afterLeave={() => setCourse(null)}
+                    />
+                )}
             </div>
         </CalendarContext.Provider>
     );
