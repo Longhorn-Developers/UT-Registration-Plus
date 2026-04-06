@@ -1,4 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import renameSchedule from '@pages/background/lib/renameSchedule';
 import { ArrowsClockwise, CalendarDots, Export, FileCode, FilePng, FileText, Sidebar } from '@phosphor-icons/react';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
@@ -13,7 +14,7 @@ import useRelativeTime from '@views/hooks/useRelativeTime';
 import useSchedules from '@views/hooks/useSchedules';
 import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type ChangeEvent, type KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
 
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
 
@@ -28,6 +29,8 @@ export interface CalendarHeaderProps {
  */
 export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const [activeSchedule] = useSchedules();
+    const [isEditingScheduleName, setIsEditingScheduleName] = useState(false);
+    const [scheduleNameEditorValue, setScheduleNameEditorValue] = useState(activeSchedule.name);
     const lastCheckedText = useRelativeTime(activeSchedule.lastCheckedAt);
     const [isRefreshing, setIsRefreshing] = useState(false);
     // track per-schedule cooldowns so switching schedules allows immediate refresh
@@ -45,7 +48,28 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     const isCooldown = cooldownIds.has(activeSchedule.id);
     const hasRightHandSide = enableDataRefreshing;
     const isRefreshingRef = useRef(false);
+    const scheduleNameEditorRef = useRef<HTMLInputElement>(null);
     isRefreshingRef.current = isRefreshing;
+
+    useEffect(() => {
+        setScheduleNameEditorValue(activeSchedule.name);
+    }, [activeSchedule.name]);
+
+    useEffect(() => {
+        const editor = scheduleNameEditorRef.current;
+        if (isEditingScheduleName && editor) {
+            editor.focus();
+            editor.setSelectionRange(0, editor.value.length);
+        }
+    }, [isEditingScheduleName]);
+
+    const handleScheduleNameBlur = useCallback(async () => {
+        const trimmedName = scheduleNameEditorValue.trim();
+        if (trimmedName && trimmedName !== activeSchedule.name) {
+            activeSchedule.name = (await renameSchedule(activeSchedule.id, trimmedName)) as string;
+        }
+        setIsEditingScheduleName(false);
+    }, [activeSchedule, scheduleNameEditorValue]);
 
     const handleRefresh = useCallback(async () => {
         setIsRefreshing(true);
@@ -118,6 +142,24 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     scheduleName={activeSchedule.name}
                     totalHours={activeSchedule.hours}
                     totalCourses={activeSchedule.courses.length}
+                    isEditingName={isEditingScheduleName}
+                    editorValue={scheduleNameEditorValue}
+                    onEditorChange={(e: ChangeEvent<HTMLInputElement>) => setScheduleNameEditorValue(e.target.value)}
+                    onEditorBlur={handleScheduleNameBlur}
+                    onEditorKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+                        if (e.key === 'Enter') {
+                            handleScheduleNameBlur();
+                        }
+                        if (e.key === 'Escape') {
+                            setScheduleNameEditorValue(activeSchedule.name);
+                            setIsEditingScheduleName(false);
+                        }
+                        if (e.key === 'Delete') {
+                            e.stopPropagation();
+                        }
+                    }}
+                    editorRef={scheduleNameEditorRef}
+                    onScheduleNameDoubleClick={() => setIsEditingScheduleName(true)}
                 />
                 {/*<div className="inline truncate min-w-0 inline-block flex-1">Hello world please truncate me</div>*/}
             </div>
