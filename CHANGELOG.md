@@ -1,3 +1,16 @@
+## [2.4.1](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.4.0...v2.4.1) (2026-04-06)
+
+### Features
+
+* add current utrp leads and two additional alumni and add new link field to credits page ([#829](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/829)) ([3867a08](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/3867a08b2c1a61d105d40b9cde574b092207b597))
+
+### Bug Fixes
+
+* add biome and remove launch and settings from .vscode dir ([ef68ed4](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/ef68ed4ab6db9137e6ad09acec60907e883b439d))
+* hours for summer courses are not counted correctly ([#832](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/832)) ([ff9c753](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/ff9c753e547fd58c0b7629e2fd1351ddf51d1291))
+* make bottom bar sticky ([#833](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/833)) ([64826fc](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/64826fcc7aa94c08d2414ffc20626d839d30d680))
+* many small issues and polishes in v2.4 release ([#835](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/835)) ([1439fdd](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/1439fdd27649fcc19734e08c37214fcb92a21114))
+
 ## [2.4.0](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.3.0...v2.4.0) (2026-04-01)
 
 ### Features
