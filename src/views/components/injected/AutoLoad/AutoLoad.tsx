@@ -41,11 +41,11 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
 
     useEffect(() => {
         setIsSinglePage(!getNextButton(document));
+        removePaginationButtons(document);
     }, []);
 
     useEffect(() => {
-        removePaginationButtons(document);
-        console.log(`AutoLoad is now ${status}`);
+        if (import.meta.env.DEV) console.log(`AutoLoad is now ${status}`);
         // FOR DEBUGGING
     }, [status]);
 
@@ -55,7 +55,8 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
         // fetch the next page of courses
         const [status, nextRows] = await loadNextCourseCatalogPage();
         setStatus(status);
-        if (!nextRows) {
+        if (nextRows.length === 0) {
+            console.log('AutoLoad: no more rows to load');
             return;
         }
         // scrape the courses from the page
