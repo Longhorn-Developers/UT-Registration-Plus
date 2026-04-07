@@ -41,21 +41,28 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
 
     useEffect(() => {
         setIsSinglePage(!getNextButton(document));
+        removePaginationButtons(document);
     }, []);
 
     useEffect(() => {
-        removePaginationButtons(document);
-        console.log(`AutoLoad is now ${status}`);
+        console.log('single page: ', isSinglePage);
+    }, [isSinglePage]);
+
+    useEffect(() => {
+        if (import.meta.env.DEV) console.log(`AutoLoad is now ${status}`);
         // FOR DEBUGGING
     }, [status]);
 
     // This hook will call the callback when the user scrolls to the bottom of the page.
     useInfiniteScroll(async () => {
+        console.log('AutoLoad: scrolled...');
         if (isSinglePage) return;
         // fetch the next page of courses
+        console.log('AutoLoad: fetching next page...');
         const [status, nextRows] = await loadNextCourseCatalogPage();
         setStatus(status);
-        if (!nextRows) {
+        if (nextRows.length === 0) {
+            console.log('AutoLoad: no more rows to load');
             return;
         }
         // scrape the courses from the page
