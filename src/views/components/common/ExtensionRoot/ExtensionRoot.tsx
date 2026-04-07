@@ -5,7 +5,7 @@ import React from 'react';
 
 import ShadowRootContainer from './ShadowRootContainer';
 
-export { styleResetClass, useShadowStyles } from './ShadowRootContainer';
+export { styleResetClass } from './ShadowRootContainer';
 
 const queryClient = new QueryClient();
 

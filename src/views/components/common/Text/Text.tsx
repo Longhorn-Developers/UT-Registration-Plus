@@ -1,6 +1,4 @@
-import { useShadowStyles } from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import styles from '@views/components/common/Text/Text.module.scss';
-import textStyles from '@views/components/common/Text/Text.module.scss?inline';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ElementType, ReactNode, Ref } from 'react';
@@ -51,8 +49,6 @@ function Text<TTag extends ElementType = 'span'>({
     ref,
     ...rest
 }: TextProps<TTag>): React.JSX.Element {
-    useShadowStyles(textStyles);
-
     const Comp = as || 'span';
     const mergedClassName = clsx(styles.text, styles[variant || 'p'], className);
 
