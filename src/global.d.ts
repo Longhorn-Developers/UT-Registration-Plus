@@ -12,3 +12,7 @@ declare module '*.json' {
     const content: string;
     export default content;
 }
+declare module 'virtual:inline-styles' {
+    const style: CSSStyleSheet;
+    export default style;
+}
