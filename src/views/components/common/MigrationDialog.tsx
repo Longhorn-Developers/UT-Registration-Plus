@@ -12,7 +12,7 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
     const [processState, setProcessState] = useState(0);
     const [error, setError] = useState<string | undefined>(undefined);
 
-    const [sentryScope] = useSentryScope() ?? [];
+    const sentryScope = useSentryScope();
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: This is on purpose
     useEffect(() => {

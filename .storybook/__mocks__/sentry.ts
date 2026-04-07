@@ -41,10 +41,10 @@ export const ErrorBoundary = ({ children }: PropsWithChildren) => children;
 export const getCurrentScope = () => currentScope;
 
 export const getDefaultIntegrations = (): Integration[] => [
-    { name: 'BrowserApiErrors' },
-    { name: 'Breadcrumbs' },
-    { name: 'GlobalHandlers' },
-    { name: 'LinkedErrors' },
+    // { name: 'BrowserApiErrors' },
+    // { name: 'Breadcrumbs' },
+    // { name: 'GlobalHandlers' },
+    // { name: 'LinkedErrors' },
 ];
 
 export const init = (_options?: unknown) => {
@@ -56,3 +56,7 @@ export const init = (_options?: unknown) => {
 export const makeFetchTransport = () => ({ send: async () => ({}) });
 
 export const captureFeedback = (..._args: unknown[]) => 'mock-event-id';
+
+export const getTraceData = () => ({});
+
+export const browserTracingIntegration = (_options?: unknown): Integration => ({ name: 'BrowserTracing' });

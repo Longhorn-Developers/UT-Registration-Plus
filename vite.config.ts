@@ -13,6 +13,7 @@ import { defineConfig } from 'vitest/config';
 import packageJson from './package.json';
 import manifest from './src/manifest';
 import vitePluginRunCommandOnDemand from './utils/plugins/run-command-on-demand';
+import sentryToolbarPlugin from './utils/plugins/sentry-toolbar';
 import { buildLogger } from './utils/plugins/vite-build-logger';
 
 const BROWSER_TARGET = process.env.BROWSER_TARGET || 'chrome';
@@ -216,6 +217,7 @@ export default defineConfig({
         renameFile('src/pages/report/index.html', 'report.html'),
         renameFile('src/pages/map/index.html', 'map.html'),
         renameFile('src/pages/404/index.html', '404.html'),
+        sentryToolbarPlugin(),
         UnoCSS(),
         unocssInline(),
         vitePluginRunCommandOnDemand({
