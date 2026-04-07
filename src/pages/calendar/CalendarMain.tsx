@@ -8,7 +8,6 @@ import DialogProvider from '@views/components/common/DialogProvider/DialogProvid
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { MigrationDialog } from '@views/components/common/MigrationDialog';
 import { WhatsNewDialog } from '@views/components/common/WhatsNewPopup';
-import SentryProvider from '@views/contexts/SentryContext';
 import { Suspense, useEffect } from 'react';
 import { suspendUntilStoresReady } from 'src/lib/chrome-extension-toolkit/storage/createStore';
 
@@ -55,17 +54,15 @@ export default function CalendarMain() {
     }, []);
 
     return (
-        <SentryProvider fullInit>
-            <ExtensionRoot className='h-full w-full'>
-                <DialogProvider>
-                    <MigrationDialog />
-                    <WhatsNewDialog />
-                    <Suspense fallback={null}>
-                        <CalendarBootstrap />
-                    </Suspense>
-                </DialogProvider>
-            </ExtensionRoot>
-        </SentryProvider>
+        <ExtensionRoot className='h-full w-full'>
+            <DialogProvider>
+                <MigrationDialog />
+                <WhatsNewDialog />
+                <Suspense fallback={null}>
+                    <CalendarBootstrap />
+                </Suspense>
+            </DialogProvider>
+        </ExtensionRoot>
     );
 }
 

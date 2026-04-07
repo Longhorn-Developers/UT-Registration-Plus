@@ -1,9 +1,9 @@
 import renderRoot from '@shared/util/renderRoot';
+import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import ReportIssueMain from '@views/components/ReportIssueMain';
-import SentryProvider from '@views/contexts/SentryContext';
 
 renderRoot(
-    <SentryProvider fullInit>
+    <ExtensionRoot>
         <ReportIssueMain />
-    </SentryProvider>
+    </ExtensionRoot>
 );

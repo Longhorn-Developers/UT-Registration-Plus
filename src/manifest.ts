@@ -36,7 +36,13 @@ const manifest = defineManifest(async env => {
         description: packageJson.description,
         options_page: 'src/pages/options/index.html',
         background: { service_worker: 'src/pages/background/background.ts' },
-        permissions: ['storage', 'unlimitedStorage', 'background', 'scripting'],
+        permissions: [
+            'storage',
+            'unlimitedStorage',
+            'background',
+            'scripting',
+            ...(isDev ? (['declarativeNetRequest', 'declarativeNetRequestWithHostAccess'] as const) : []),
+        ],
         host_permissions: isDev ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
         action: {
             default_popup: 'src/pages/popup/index.html',
@@ -62,7 +68,7 @@ const manifest = defineManifest(async env => {
         ],
         content_security_policy: {
             extension_pages: isDev
-                ? "script-src 'self' 'wasm-unsafe-eval' http://localhost:*; object-src 'self'"
+                ? "script-src 'self' 'wasm-unsafe-eval' http://localhost:*; object-src 'self'; frame-src https://*.sentry.io"
                 : "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
         },
     };

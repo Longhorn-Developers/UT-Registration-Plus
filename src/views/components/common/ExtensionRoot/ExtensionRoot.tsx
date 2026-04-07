@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import SentryProvider from '@views/contexts/SentryContext';
 import type { Ref } from 'react';
 import React from 'react';
 
@@ -14,9 +15,11 @@ const queryClient = new QueryClient();
 export default function ExtensionRoot(props: React.HTMLProps<HTMLDivElement>): React.JSX.Element {
     return (
         <React.StrictMode>
-            <QueryClientProvider client={queryClient}>
-                <ShadowRootContainer {...props} />
-            </QueryClientProvider>
+            <SentryProvider>
+                <QueryClientProvider client={queryClient}>
+                    <ShadowRootContainer {...props} />
+                </QueryClientProvider>
+            </SentryProvider>
         </React.StrictMode>
     );
 }

@@ -4,7 +4,6 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import Settings from '@views/components/settings/Settings';
-import SentryProvider from '@views/contexts/SentryContext';
 import { Suspense } from 'react';
 import { suspendUntilStoresReady } from 'src/lib/chrome-extension-toolkit/storage/createStore';
 
@@ -16,15 +15,13 @@ import { suspendUntilStoresReady } from 'src/lib/chrome-extension-toolkit/storag
  */
 export default function SettingsPage() {
     return (
-        <SentryProvider fullInit>
-            <ExtensionRoot>
-                <DialogProvider>
-                    <Suspense fallback={null}>
-                        <SettingsBootstrap />
-                    </Suspense>
-                </DialogProvider>
-            </ExtensionRoot>
-        </SentryProvider>
+        <ExtensionRoot>
+            <DialogProvider>
+                <Suspense fallback={null}>
+                    <SettingsBootstrap />
+                </Suspense>
+            </DialogProvider>
+        </ExtensionRoot>
     );
 }
 
