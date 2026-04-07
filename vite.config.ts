@@ -3,18 +3,17 @@ import { resolve } from 'node:path';
 import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react';
 import UnoCSS from 'unocss/vite';
-import unocssInline from 'unocss-inline';
 import Icons from 'unplugin-icons/vite';
 import type { Plugin, ResolvedConfig, Rollup, ViteDevServer } from 'vite';
 import inspect from 'vite-plugin-inspect';
 import reactFallbackThrottlePlugin from 'vite-plugin-react-fallback-throttle';
 import { defineConfig } from 'vitest/config';
-
 import packageJson from './package.json';
 import manifest from './src/manifest';
 import vitePluginRunCommandOnDemand from './utils/plugins/run-command-on-demand';
 import sentryToolbarPlugin from './utils/plugins/sentry-toolbar';
 import { buildLogger } from './utils/plugins/vite-build-logger';
+import { inlineStyles } from './utils/plugins/vite-inline-styles';
 
 const BROWSER_TARGET = process.env.BROWSER_TARGET || 'chrome';
 
@@ -178,6 +177,7 @@ export default defineConfig({
                 }
             },
         },
+        inlineStyles(),
         {
             name: 'public-css-dev-transform',
             apply: 'serve',
@@ -219,7 +219,6 @@ export default defineConfig({
         renameFile('src/pages/404/index.html', '404.html'),
         sentryToolbarPlugin(),
         UnoCSS(),
-        unocssInline(),
         vitePluginRunCommandOnDemand({
             // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
             closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',
