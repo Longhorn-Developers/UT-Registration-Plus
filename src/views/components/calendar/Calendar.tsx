@@ -18,13 +18,68 @@ import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
 import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
+
+const CalendarSidebar = memo(function CalendarSidebar() {
+    const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
+    const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
+    const showReportIssueDialog = useReportIssueDialog();
+
+    return (
+        <div
+            className={clsx(
+                'py-spacing-5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
+                {
+                    'max-w-[20.3125rem] ': showSidebar,
+                    'max-w-0 pointer-events-none': !showSidebar,
+                }
+            )}
+            tabIndex={showSidebar ? 0 : -1}
+            aria-hidden={!showSidebar}
+            {...{ inert: !showSidebar }}
+        >
+            <div className='flex items-center justify-between px-spacing-7 mb-spacing-2'>
+                <LargeLogo />
+                <Button
+                    variant='minimal'
+                    size='small'
+                    color='theme-black'
+                    onClick={toggleSidebar}
+                    className='screenshot:hidden'
+                    icon={Sidebar}
+                />
+            </div>
+
+            <div
+                style={{
+                    scrollbarGutter: 'stable',
+                }}
+                className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-7 pr-2.75'
+            >
+                <CalendarSchedules />
+                <Divider orientation='horizontal' size='100%' />
+                <ResourceLinks />
+                <Divider orientation='horizontal' size='100%' />
+                <button
+                    type='button'
+                    onClick={showReportIssueDialog}
+                    className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
+                >
+                    <Text variant='p'>Send us Feedback!</Text>
+                    <OutwardArrowIcon className='h-4 w-4' />
+                </button>
+            </div>
+
+            <CalendarFooter />
+        </div>
+    );
+});
 
 /**
  * Calendar page component
@@ -35,17 +90,18 @@ export default function Calendar(): ReactNode {
     const initialCourse = useCourseFromUrl();
     const [course, setCourse] = useState<Course | null>(initialCourse);
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(initialCourse !== null);
-    const showReportIssueDialog = useReportIssueDialog();
-
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
     const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
     const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
     const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
 
+    const activeScheduleRef = useRef(activeSchedule);
+    activeScheduleRef.current = activeSchedule;
+
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
             async openCoursePopup({ data, sendResponse }) {
-                const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
+                const course = activeScheduleRef.current.courses.find(course => course.uniqueId === data.uniqueId);
                 if (course === undefined) return;
 
                 setCourse(course);
@@ -60,7 +116,7 @@ export default function Calendar(): ReactNode {
         listener.listen();
 
         return () => listener.unlisten();
-    }, [activeSchedule]);
+    }, []);
 
     const openCourse = (course: Course) => {
         setCourse(course);
@@ -173,53 +229,7 @@ export default function Calendar(): ReactNode {
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                 >
-                    <div
-                        className={clsx(
-                            'py-spacing-5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
-                            {
-                                'max-w-[20.3125rem] ': showSidebar,
-                                'max-w-0 pointer-events-none': !showSidebar,
-                            }
-                        )}
-                        tabIndex={showSidebar ? 0 : -1}
-                        aria-hidden={!showSidebar}
-                        {...{ inert: !showSidebar }}
-                    >
-                        <div className='flex items-center justify-between px-spacing-7 mb-spacing-2'>
-                            <LargeLogo />
-                            <Button
-                                variant='minimal'
-                                size='small'
-                                color='theme-black'
-                                onClick={toggleSidebar}
-                                className='screenshot:hidden'
-                                icon={Sidebar}
-                            />
-                        </div>
-
-                        <div
-                            style={{
-                                scrollbarGutter: 'stable',
-                            }}
-                            className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-7 pr-2.75'
-                        >
-                            <CalendarSchedules />
-                            <Divider orientation='horizontal' size='100%' />
-                            <ResourceLinks />
-                            {/* <TeamLinks /> */}
-                            <Divider orientation='horizontal' size='100%' />
-                            <button
-                                type='button'
-                                onClick={showReportIssueDialog}
-                                className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
-                            >
-                                <Text variant='p'>Send us Feedback!</Text>
-                                <OutwardArrowIcon className='h-4 w-4' />
-                            </button>
-                        </div>
-
-                        <CalendarFooter />
-                    </div>
+                    <CalendarSidebar />
 
                     <div
                         style={

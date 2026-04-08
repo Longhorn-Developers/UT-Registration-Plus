@@ -142,7 +142,7 @@ export type Store<T = {}> = {
      * React hook that synchronously reads from the in-memory store snapshot.
      */
     useStore(): Serializable<T>;
-    useStore<S>(selector: (value: Serializable<T>) => S): S;
+    useStore<S>(selector: (value: Serializable<T>) => S, isEqual?: (a: S, b: S) => boolean): S;
 
     /**
      * Subscribes to changes in the specified key in the store, and calls the specified function when the key changes.
@@ -295,6 +295,29 @@ function createStore<T>(
         notifySnapshotListeners();
     };
 
+    const updateSnapshotBatch = async (entries: Record<string, unknown>, alreadyDecoded = false) => {
+        if (snapshot === null) {
+            await ensurePreloaded();
+        }
+
+        if (snapshot === null) {
+            return;
+        }
+
+        const nextSnapshot = { ...snapshot };
+        for (const [actualKey, newValue] of Object.entries(entries)) {
+            const key = removePrefix(actualKey) as keyof T & string;
+            // @ts-expect-error - runtime object construction
+            nextSnapshot[key] = alreadyDecoded ? newValue : await readStoredValue(newValue);
+        }
+        snapshot = nextSnapshot;
+        notifySnapshotListeners();
+    };
+
+    // Keys that were just set locally — the storage listener should skip these
+    // to avoid a redundant re-render with deserialized (new-reference) data.
+    const locallyPendingKeys = new Set<string>();
+
     const storageListener = async (
         changes: Record<string, chrome.storage.StorageChange>,
         areaName: string,
@@ -303,18 +326,23 @@ function createStore<T>(
             return;
         }
 
-        const changedKeys = Object.keys(changes).filter((key) =>
-            actualKeys.includes(key),
-        );
+        const changedKeys = Object.keys(changes).filter((key) => {
+            if (!actualKeys.includes(key)) return false;
+            if (locallyPendingKeys.has(key)) {
+                locallyPendingKeys.delete(key);
+                return false;
+            }
+            return true;
+        });
         if (changedKeys.length === 0) {
             return;
         }
 
-        await Promise.all(
-            changedKeys.map((actualKey) =>
-                updateSnapshotKey(actualKey, changes[actualKey]?.newValue),
-            ),
-        );
+        const entries: Record<string, unknown> = {};
+        for (const actualKey of changedKeys) {
+            entries[actualKey] = changes[actualKey]?.newValue;
+        }
+        await updateSnapshotBatch(entries);
     };
 
     const storageChangeEvent = globalThis.chrome?.storage?.onChanged;
@@ -369,6 +397,7 @@ function createStore<T>(
         if (typeof key === "object" && value === undefined) {
             const entriesToRemove: string[] = [];
             const entriesToSet = {};
+            const rawEntries: Record<string, unknown> = {};
 
             for (const [k, v] of Object.entries(key)) {
                 const actualKey = makeActualKey(k);
@@ -380,15 +409,24 @@ function createStore<T>(
                     entriesToSet[actualKey] = isEncrypted
                         ? await security.encrypt(v)
                         : v;
+                    rawEntries[actualKey] = v;
                 }
             }
+
+            // Mark keys as locally pending so the storage listener skips them
+            for (const actualKey of Object.keys(entriesToSet)) {
+                locallyPendingKeys.add(actualKey);
+            }
+
+            // Optimistically update snapshot (single notification for all keys)
+            await updateSnapshotBatch(rawEntries, true);
 
             // Remove keys with undefined values
             if (entriesToRemove.length > 0) {
                 await chrome.storage[area].remove(entriesToRemove);
             }
 
-            // Set keys with defined values
+            // Persist to storage
             if (Object.keys(entriesToSet).length > 0) {
                 await chrome.storage[area].set(entriesToSet);
             }
@@ -403,12 +441,16 @@ function createStore<T>(
             return await chrome.storage[area].remove(actualKey);
         }
 
+        // Mark as locally pending so the storage listener skips this key
+        locallyPendingKeys.add(actualKey);
+
+        // Optimistically update snapshot before persisting
+        await updateSnapshotKey(actualKey, value, true);
+
         // Set the value, applying encryption if necessary
         await chrome.storage[area].set({
             [actualKey]: isEncrypted ? await security.encrypt(value) : value,
         });
-
-        await updateSnapshotKey(actualKey, value, true);
     };
 
     store.remove = async (key: any) => {
@@ -470,6 +512,7 @@ function createStore<T>(
 
     store.useStore = ((
         selector = ((value) => value) as (value: Serializable<T>) => unknown,
+        isEqual: ((a: unknown, b: unknown) => boolean) | undefined = undefined,
     ) => {
         const selectionCacheRef = useRef<{
             snapshot: Serializable<T>;
@@ -493,6 +536,17 @@ function createStore<T>(
             }
 
             const selection = selector(nextSnapshot);
+
+            // If the selection is structurally equal to the cached one, return
+            // the cached reference so useSyncExternalStore skips the re-render.
+            if (cachedSelection && isEqual?.(cachedSelection.selection, selection)) {
+                cacheRef.current = {
+                    snapshot: nextSnapshot,
+                    selection: cachedSelection.selection,
+                };
+                return cachedSelection.selection;
+            }
+
             cacheRef.current = {
                 snapshot: nextSnapshot,
                 selection,
