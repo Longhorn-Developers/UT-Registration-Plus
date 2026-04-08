@@ -8,6 +8,7 @@ import ShadowRootContainer from './ShadowRootContainer';
 export { styleResetClass } from './ShadowRootContainer';
 
 const queryClient = new QueryClient();
+// import '@vitejs/devtools/client/inject';
 
 /**
  * A wrapper component for the extension elements that adds some basic styling to them
