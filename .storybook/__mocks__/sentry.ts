@@ -40,12 +40,7 @@ export const ErrorBoundary = ({ children }: PropsWithChildren) => children;
 
 export const getCurrentScope = () => currentScope;
 
-export const getDefaultIntegrations = (): Integration[] => [
-    // { name: 'BrowserApiErrors' },
-    // { name: 'Breadcrumbs' },
-    // { name: 'GlobalHandlers' },
-    // { name: 'LinkedErrors' },
-];
+export const getDefaultIntegrations = (): Integration[] => [];
 
 export const init = (_options?: unknown) => {
     const client = new BrowserClient(_options);

@@ -60,38 +60,7 @@ function zipDist() {
         .on('end', () => log(`Zip file created: ${path.join(PACKAGE_DIR, zipFileName)}`));
 }
 
-// Temp fix for CSP on Chrome 130
-// Manually remove them because there is no option to disable use_dynamic_url on @crxjs/vite-plugin
-// Force disable use_dynamic_url in manifest.json
-function forceDisableUseDynamicUrl(cb) {
-    const manifestPath = path.join(DIST_DIR, 'manifest.json');
-
-    if (!fs.existsSync(manifestPath)) {
-        logWarn('manifest.json not found. Skipping modification.');
-        return cb();
-    }
-
-    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
-    let modified = false;
-
-    manifest.web_accessible_resources.forEach(resource => {
-        if (resource.use_dynamic_url) {
-            delete resource.use_dynamic_url;
-            modified = true;
-        }
-    });
-
-    if (modified) {
-        fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
-        log('use_dynamic_url removed from manifest.json');
-    } else {
-        log('No use_dynamic_url found in manifest.json. No changes made.');
-    }
-
-    cb();
-}
-
 // Main build task
 const zipProdBuild = series(removeExtraDatabaseDir, instrumentWithSentry, zipDist);
 
-export { forceDisableUseDynamicUrl, zipProdBuild };
+export { zipProdBuild };

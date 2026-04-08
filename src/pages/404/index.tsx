@@ -1,4 +1,3 @@
-// import 'uno.css';
 import renderRoot from '@shared/util/renderRoot';
 import Page404 from './Page404';
 

@@ -4,13 +4,11 @@ import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
-import type { Plugin, ResolvedConfig, Rollup, ViteDevServer } from 'vite';
-import inspect from 'vite-plugin-inspect';
+import type { Plugin, ResolvedConfig, Rolldown, ViteDevServer } from 'vite';
 import reactFallbackThrottlePlugin from 'vite-plugin-react-fallback-throttle';
 import { defineConfig } from 'vitest/config';
 import packageJson from './package.json';
 import manifest from './src/manifest';
-import vitePluginRunCommandOnDemand from './utils/plugins/run-command-on-demand';
 import sentryToolbarPlugin from './utils/plugins/sentry-toolbar';
 import { buildLogger } from './utils/plugins/vite-build-logger';
 import { inlineStyles } from './utils/plugins/vite-inline-styles';
@@ -48,7 +46,8 @@ window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 `;
 
-const isOutputChunk = (input: Rollup.OutputAsset | Rollup.OutputChunk): input is Rollup.OutputChunk => 'code' in input;
+const isOutputChunk = (input: Rolldown.OutputAsset | Rolldown.OutputChunk): input is Rolldown.OutputChunk =>
+    'code' in input;
 
 const ABSOLUTE_URL_PATTERN = /^[a-zA-Z][a-zA-Z\d+\-.]*:/;
 const toRuntimeAssetExpression = (quote: string, path: string) =>
@@ -141,7 +140,6 @@ export default defineConfig({
         Icons({ compiler: 'jsx', jsx: 'react' }),
         crx({ manifest }),
         fixManifestOptionsPage(),
-        inspect(),
         {
             name: 'public-transform',
             apply: 'serve',
@@ -219,10 +217,6 @@ export default defineConfig({
         renameFile('src/pages/404/index.html', '404.html'),
         sentryToolbarPlugin(),
         UnoCSS(),
-        vitePluginRunCommandOnDemand({
-            // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
-            closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',
-        }),
         buildLogger({
             includeEnvVars: [
                 'VITE_PACKAGE_VERSION',
@@ -297,8 +291,9 @@ export default defineConfig({
         // outDir: `dist/${process.env.BROWSER_TARGET || 'chrome'}`,
         emptyOutDir: true,
         reportCompressedSize: false,
+        chunkSizeWarningLimit: 2000, // we're a extension
         sourcemap: true,
-        rollupOptions: {
+        rolldownOptions: {
             input: {
                 debug: 'src/pages/debug/index.html',
                 calendar: 'src/pages/calendar/index.html',
@@ -310,6 +305,10 @@ export default defineConfig({
             output: {
                 chunkFileNames: `assets/[name]-[hash].js`,
                 assetFileNames: `assets/[name]-[hash][extname]`,
+            },
+            treeshake: {
+                // Assume no modules have side effects (aggressive tree-shaking)
+                moduleSideEffects: false,
             },
         },
     },
