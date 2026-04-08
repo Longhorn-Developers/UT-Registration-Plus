@@ -17,7 +17,7 @@ import { LargeLogo } from '@views/components/common/LogoIcon';
 import Text from '@views/components/common/Text/Text';
 // Hooks
 import useChangelog from '@views/hooks/useChangelog';
-import useSchedules from '@views/hooks/useSchedules';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
 import {
     GitHubStatsService,
     LONGHORN_DEVELOPERS_ADMINS,
@@ -68,7 +68,7 @@ export default function Settings(): React.JSX.Element {
     const enableCourseStatusChips = options.enableCourseStatusChips;
     const isDeveloper = DevStore.useStore(store => store.isDeveloper);
 
-    const [activeSchedule] = useSchedules();
+    const activeSchedule = useActiveSchedule();
     const showDialog = usePrompt();
     const handleChangelogOnClick = useChangelog();
     const showMigrationDialog = useMigrationDialog();

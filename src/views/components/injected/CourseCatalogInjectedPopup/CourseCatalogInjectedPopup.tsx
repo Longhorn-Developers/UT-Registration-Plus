@@ -1,7 +1,7 @@
 import type { Course } from '@shared/types/Course';
 import type { DialogProps } from '@views/components/common/Dialog';
 import Dialog from '@views/components/common/Dialog';
-import useSchedules from '@views/hooks/useSchedules';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
 import React from 'react';
 
 import Description from './Description';
@@ -25,7 +25,7 @@ export interface CourseCatalogInjectedPopupProps extends DialogProps {
  */
 function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPopupProps): React.JSX.Element {
     const emptyRef = React.useRef<HTMLDivElement>(null);
-    const [activeSchedule] = useSchedules();
+    const activeSchedule = useActiveSchedule();
 
     return (
         <Dialog className='max-w-[780px] overflow-y-hidden px-4' {...rest} appear initialFocus={emptyRef}>

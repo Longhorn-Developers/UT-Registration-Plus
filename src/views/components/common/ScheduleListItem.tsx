@@ -15,10 +15,10 @@ import { background } from '@shared/messages';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
-import useSchedules from '@views/hooks/useSchedules';
+import { useIsActiveSchedule } from '@views/hooks/useSchedules';
 import { LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Button } from './Button';
 import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
@@ -41,7 +41,7 @@ const teamMembers = [...LONGHORN_DEVELOPERS_ADMINS, ...LONGHORN_DEVELOPERS_SWE];
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
 export default function ScheduleListItem({ schedule, onClick }: ScheduleListItemProps): React.JSX.Element {
-    const [activeSchedule] = useSchedules();
+    const isActive = useIsActiveSchedule(schedule.id);
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
     const teamMember = teamMembers[Math.floor(Math.random() * teamMembers.length)];
@@ -78,8 +78,6 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
             editor.setSelectionRange(0, editor.value.length);
         }
     }, [isEditing, schedule.name, editorRef]);
-
-    const isActive = useMemo(() => activeSchedule.id === schedule.id, [activeSchedule, schedule]);
 
     const handleBlur = async () => {
         if (editorValue.trim() !== '' && editorValue.trim() !== schedule.name) {
