@@ -7,7 +7,7 @@ import NewSearchLink from '@views/components/injected/NewSearchLink';
 import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from '@views/components/injected/TableHead';
 import TableRow from '@views/components/injected/TableRow/TableRow';
-import useSchedules from '@views/hooks/useSchedules';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import type { SiteSupportType } from '@views/lib/getSiteSupport';
@@ -67,7 +67,7 @@ export default function CourseCatalogMain({ support }: Props): React.JSX.Element
         setIsPopupOpen(true);
     };
 
-    const [activeSchedule] = useSchedules();
+    const activeSchedule = useActiveSchedule();
 
     if (!activeSchedule) {
         return null;

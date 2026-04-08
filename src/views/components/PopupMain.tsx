@@ -110,9 +110,7 @@ export default function PopupMain(): JSX.Element {
                             const activeSchedule = getActiveSchedule();
                             const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
-                            // don't care about the promise
-                            UserScheduleStore.set('schedules', reordered);
-                            UserScheduleStore.set('activeIndex', activeIndex);
+                            UserScheduleStore.set({ schedules: reordered, activeIndex });
                         }}
                         renderItem={schedule => (
                             <ScheduleListItem schedule={schedule} onClick={() => switchSchedule(schedule.id)} />
