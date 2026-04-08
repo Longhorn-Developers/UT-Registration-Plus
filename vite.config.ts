@@ -209,6 +209,31 @@ export default defineConfig({
                 }
             },
         },
+        {
+            name: 'inject-react-devtools',
+            enforce: 'post',
+            configResolved(config) {
+                if (config.mode !== 'development') return;
+                // @ts-expect-error
+                config.plugins.push({
+                    name: 'inject-react-devtools-transform',
+                    enforce: 'post',
+                    transformIndexHtml(html) {
+                        return {
+                            html,
+                            tags: [
+                                {
+                                    tag: 'script',
+                                    attrs: { src: 'http://localhost:8097' },
+                                    injectTo: 'head-prepend',
+                                },
+                            ],
+                        };
+                    },
+                } satisfies Plugin);
+            },
+        },
+
         renameFile('src/pages/debug/index.html', 'debug.html'),
         renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
