@@ -40,6 +40,7 @@ export interface SortableListProps<T extends BaseItem> {
      */
     renderItem(item: T): ReactNode;
     className?: string; // Impacts the spacing between items in the list
+    onDragStateChange?(state: { isDragging: boolean; activeId: UniqueIdentifier | null }): void;
 }
 
 /**
@@ -86,6 +87,7 @@ export function SortableList<T extends BaseItem>({
     renderItem,
     onChange,
     className,
+    onDragStateChange,
 }: SortableListProps<T>): JSX.Element {
     const [active, setActive] = useState<Active | null>(null);
     const [items, setItems] = useState<T[]>(draggables);
@@ -113,6 +115,7 @@ export function SortableList<T extends BaseItem>({
                     onDragStart={({ active }) => {
                         setCursorGrabbing(true);
                         setActive(active);
+                        onDragStateChange?.({ isDragging: true, activeId: active.id });
                     }}
                     onDragEnd={({ active, over }) => {
                         setCursorGrabbing(false);
@@ -124,10 +127,12 @@ export function SortableList<T extends BaseItem>({
                             setItems(reorderedItems);
                         }
                         setActive(null);
+                        onDragStateChange?.({ isDragging: false, activeId: null });
                     }}
                     onDragCancel={() => {
                         setCursorGrabbing(false);
                         setActive(null);
+                        onDragStateChange?.({ isDragging: false, activeId: null });
                     }}
                 >
                     <SortableContext items={items} strategy={verticalListSortingStrategy}>

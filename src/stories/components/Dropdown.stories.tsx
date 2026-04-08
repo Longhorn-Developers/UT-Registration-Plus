@@ -5,8 +5,6 @@ import { generateRandomId } from '@shared/util/random';
 import type { Meta, StoryObj } from '@storybook/react';
 import type { ScheduleDropdownProps } from '@views/components/common/ScheduleDropdown';
 import ScheduleDropdown from '@views/components/common/ScheduleDropdown';
-import ScheduleListItem from '@views/components/common/ScheduleListItem';
-import { SortableList } from '@views/components/common/SortableList';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import { useEffect } from 'react';
 
@@ -47,23 +45,21 @@ const meta: Meta<typeof ScheduleDropdown> = {
 
         return (
             <div className='w-80'>
-                <ScheduleDropdown {...args}>
-                    <SortableList
-                        className='gap-spacing-3'
-                        draggables={schedules}
-                        onChange={reordered => {
-                            const activeSchedule = getActiveSchedule();
-                            const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
+                <ScheduleDropdown
+                    {...args}
+                    schedules={schedules}
+                    activeScheduleId={activeSchedule.id}
+                    onScheduleClick={switchSchedule}
+                    onAddSchedule={() => {}}
+                    getEmptyMessage={() => 'Add a course from the UT Course Schedule to get started.'}
+                    onReorder={reordered => {
+                        const activeSchedule = getActiveSchedule();
+                        const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
-                            // don't care about the promise
-                            UserScheduleStore.set('schedules', reordered);
-                            UserScheduleStore.set('activeIndex', activeIndex);
-                        }}
-                        renderItem={schedule => (
-                            <ScheduleListItem schedule={schedule} onClick={() => switchSchedule(schedule.id)} />
-                        )}
-                    />
-                </ScheduleDropdown>
+                        UserScheduleStore.set('schedules', reordered);
+                        UserScheduleStore.set('activeIndex', Math.max(activeIndex, 0));
+                    }}
+                />
             </div>
         );
     },
@@ -72,21 +68,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Hidden: Story = {
+export const Default: Story = {
     parameters: {
         design: {
             type: 'figma',
             url: 'https://www.figma.com/file/8tsCay2FRqctrdcZ3r9Ahw/UTRP?type=design&node-id=1579-5083&mode=dev',
         },
-    },
-
-    args: {
-        defaultOpen: false,
-    },
-};
-
-export const Visible: Story = {
-    args: {
-        defaultOpen: true,
     },
 };

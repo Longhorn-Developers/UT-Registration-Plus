@@ -1,24 +1,20 @@
 import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
-import { CalendarDots, Flag, GearSix, Plus } from '@phosphor-icons/react';
+import { CalendarDots, Flag, GearSix } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import Divider from '@views/components/common/Divider';
-import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
-import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
+import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import useKC_DABR_WASM from 'kc-dabr-wasm';
 import { useEffect, useState } from 'react';
 
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
 import { SmallLogo } from './common/LogoIcon';
-import PopupCourseBlock from './common/PopupCourseBlock';
 import ScheduleDropdown from './common/ScheduleDropdown';
-import ScheduleListItem from './common/ScheduleListItem';
-import { SortableList } from './common/SortableList';
 
 /**
  * Renders the main popup component.
@@ -57,7 +53,7 @@ export default function PopupMain(): JSX.Element {
     const [activeSchedule, schedules] = useSchedules();
 
     // const [isRefreshing, setIsRefreshing] = useState(false);
-    const [funny, setFunny] = useState<string>('');
+    const [emptyMessagesByScheduleId, setEmptyMessagesByScheduleId] = useState<Record<string, string>>({});
     const showReportIssueDialog = useReportIssueDialog();
 
     const enforceScheduleLimit = useEnforceScheduleLimit();
@@ -67,21 +63,32 @@ export default function PopupMain(): JSX.Element {
         }
     };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: Generate a new splash text every time the active schedule changes
     useEffect(() => {
-        setFunny(prevFunny => {
-            // Ensure that the next splash text is not the same as the previous one
-            const splashTextWithoutCurrent = splashText.filter(text => text !== prevFunny);
-            const randomIndex = Math.floor(Math.random() * splashTextWithoutCurrent.length);
+        setEmptyMessagesByScheduleId(prev => {
+            const next: Record<string, string> = {};
+            const used = new Set<string>();
 
-            return (
-                splashTextWithoutCurrent[randomIndex] ??
-                'If you are seeing this, something has gone horribly wrong behind the scenes.'
-            );
+            for (const schedule of schedules) {
+                const existing = prev[schedule.id];
+                if (existing) {
+                    next[schedule.id] = existing;
+                    used.add(existing);
+                    continue;
+                }
+
+                const available = splashText.filter(text => !used.has(text));
+                const pool = available.length > 0 ? available : splashText;
+                const randomIndex = Math.floor(Math.random() * pool.length);
+                const selected =
+                    pool[randomIndex] ?? 'If you are seeing this, something has gone horribly wrong behind the scenes.';
+
+                next[schedule.id] = selected;
+                used.add(selected);
+            }
+
+            return next;
         });
-
-        // Generate a new splash text every time the active schedule changes
-    }, [activeSchedule.id]);
+    }, [schedules]);
 
     const handleOpenOptions = async () => {
         const url = chrome.runtime.getURL('/options.html');
@@ -128,62 +135,24 @@ export default function PopupMain(): JSX.Element {
                 </div>
             </div>
             <Divider className='bg-ut-offwhite/50' orientation='horizontal' size='100%' />
-            <div className='px-5 pb-2.5 pt-3.75'>
-                <ScheduleDropdown>
-                    <SortableList
-                        draggables={schedules}
-                        onChange={reordered => {
-                            const activeSchedule = getActiveSchedule();
-                            const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
+            <div className='flex-1 min-h-0 px-5 pb-2.5 pt-2.5'>
+                <ScheduleDropdown
+                    schedules={schedules}
+                    activeScheduleId={activeSchedule.id}
+                    onScheduleClick={switchSchedule}
+                    onAddSchedule={handleAddSchedule}
+                    getEmptyMessage={scheduleId =>
+                        emptyMessagesByScheduleId[scheduleId] ??
+                        'If you are seeing this, something has gone horribly wrong behind the scenes.'
+                    }
+                    onReorder={reordered => {
+                        const activeSchedule = getActiveSchedule();
+                        const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
-                            // don't care about the promise
-                            UserScheduleStore.set('schedules', reordered);
-                            UserScheduleStore.set('activeIndex', activeIndex);
-                        }}
-                        renderItem={schedule => (
-                            <ScheduleListItem schedule={schedule} onClick={() => switchSchedule(schedule.id)} />
-                        )}
-                    />
-                    <div className='bottom-0 right-0 mt-2.5 w-full flex justify-end'>
-                        <Button
-                            variant='filled'
-                            size='mini'
-                            color='ut-burntorange'
-                            onClick={handleAddSchedule}
-                            icon={Plus}
-                        />
-                    </div>
-                </ScheduleDropdown>
-            </div>
-            {activeSchedule?.courses?.length === 0 && (
-                <div className='max-w-64 flex flex-col items-center self-center gap-1.25 px-2 py-2 pt-24'>
-                    <Text variant='p' className='text-center text-ut-gray !font-normal'>
-                        {funny}
-                    </Text>
-                    <Text variant='small' className='text-center text-black'>
-                        (No courses added)
-                    </Text>
-                </div>
-            )}
-            <div
-                style={{ scrollbarGutter: 'stable' }}
-                className='flex-1 self-stretch overflow-y-scroll pl-spacing-6 pr-[6px]'
-            >
-                {activeSchedule?.courses?.length > 0 && (
-                    <SortableList
-                        draggables={activeSchedule.courses.map(course => ({
-                            id: course.uniqueId,
-                            course,
-                        }))}
-                        onChange={reordered => {
-                            activeSchedule.courses = reordered.map(({ course }) => course);
-                            replaceSchedule(getActiveSchedule(), activeSchedule);
-                        }}
-                        renderItem={({ id, course }) => (
-                            <PopupCourseBlock key={id} course={course} colors={course.colors} />
-                        )}
-                    />
-                )}
+                        UserScheduleStore.set('schedules', reordered);
+                        UserScheduleStore.set('activeIndex', Math.max(activeIndex, 0));
+                    }}
+                />
             </div>
             <div className='w-full flex flex-col items-center gap-1.25 px-spacing-6 py-spacing-5'>
                 <div className='flex gap-spacing-6'>
