@@ -13,7 +13,7 @@
 
       additionalPackages = with pkgs; [
         bun
-        nodePackages.conventional-changelog-cli
+        # nodePackages.conventional-changelog-cli
         sentry-cli
       ];
     in
