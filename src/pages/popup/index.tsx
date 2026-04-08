@@ -1,5 +1,3 @@
-// import 'uno.css';
-
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import renderRoot from '@shared/util/renderRoot';
