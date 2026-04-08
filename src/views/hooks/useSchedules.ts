@@ -2,6 +2,7 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { HexColor } from '@shared/types/Color';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import { getColorwayFromColor, getCourseColors, getDarkerShade, getLighterShade } from '@shared/util/colors';
+import { useMemo } from 'react';
 import type { Serializable } from 'src/lib/chrome-extension-toolkit/types';
 
 const errorSchedule = new UserSchedule({
@@ -16,17 +17,53 @@ function hydrateSchedules(schedules: Serializable<UserSchedule>[]) {
     return schedules.map(schedule => new UserSchedule(schedule));
 }
 
+function scheduleDataEqual(a: unknown, b: unknown): boolean {
+    if (a === b) return true;
+    if (!a || !b) return false;
+    return JSON.stringify(a) === JSON.stringify(b);
+}
+
+/**
+ * Hook that returns whether a specific schedule is the active one.
+ * Only the two affected items (old/new active) re-render on switch.
+ */
+export function useIsActiveSchedule(scheduleId: string): boolean {
+    return UserScheduleStore.useStore(store => {
+        const idx = store.activeIndex >= 0 ? store.activeIndex : 0;
+        return store.schedules[idx]?.id === scheduleId;
+    });
+}
+
+/**
+ * Hook that returns only the active schedule.
+ * Components using this won't re-render when the schedules array is reordered.
+ */
+export function useActiveSchedule(): UserSchedule {
+    const activeRaw = UserScheduleStore.useStore(store => {
+        const idx = store.activeIndex >= 0 ? store.activeIndex : 0;
+        return store.schedules[idx];
+    }, scheduleDataEqual);
+
+    return useMemo(() => (activeRaw ? new UserSchedule(activeRaw) : errorSchedule), [activeRaw]);
+}
+
+/**
+ * Hook that returns all hydrated schedules.
+ * Components using this won't re-render when only the active index changes.
+ */
+export function useAllSchedules(): UserSchedule[] {
+    const [rawSchedules] = UserScheduleStore.use('schedules');
+    return useMemo(() => hydrateSchedules(rawSchedules), [rawSchedules]);
+}
+
 /**
  * Custom hook that manages user schedules.
  * @returns A tuple containing the active schedule and an array of all schedules.
  */
 export default function useSchedules(): [active: UserSchedule, schedules: UserSchedule[]] {
-    const [schedules, activeIndex] = UserScheduleStore.useStore(store => [
-        hydrateSchedules(store.schedules),
-        store.activeIndex >= 0 ? store.activeIndex : 0,
-    ]);
-
-    return [schedules[activeIndex] ?? errorSchedule, schedules];
+    const activeSchedule = useActiveSchedule();
+    const schedules = useAllSchedules();
+    return [activeSchedule, schedules];
 }
 
 /**

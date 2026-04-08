@@ -1,7 +1,7 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from '@headlessui/react';
 import { CaretDown, CaretUp } from '@phosphor-icons/react';
 import Text from '@views/components/common/Text/Text';
-import useSchedules from '@views/hooks/useSchedules';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
 import type React from 'react';
 
 /**
@@ -16,7 +16,7 @@ export type ScheduleDropdownProps = {
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
 export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDropdownProps) {
-    const [activeSchedule] = useSchedules();
+    const activeSchedule = useActiveSchedule();
 
     const totalHours = activeSchedule?.hours ?? 0;
     const totalCourses = activeSchedule?.courses.length ?? 0;
