@@ -1,7 +1,6 @@
-import 'uno.css';
-
 import { X } from '@phosphor-icons/react';
 import { captureFeedback } from '@sentry/react';
+import type { JSX } from 'react';
 import { useState } from 'react';
 
 import { Button } from './common/Button';

@@ -58,7 +58,7 @@ type CampusMapProps = {
  * - Dev controls for toggling element visibility.
  * - Zoom and pan controls.
  */
-export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Element {
+export default function CampusMap({ processedCourses }: CampusMapProps): React.JSX.Element {
     // Core state
     const [selected, setSelected] = useState<SelectedBuildings>({
         start: null,

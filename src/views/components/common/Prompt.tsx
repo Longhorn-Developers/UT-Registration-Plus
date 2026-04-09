@@ -26,7 +26,7 @@ export interface PromptDialogProps {
  * @param children - The buttons to display in the dialog.
  * @returns The rendered PromptDialog component.
  */
-function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialogProps): JSX.Element {
+function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialogProps): React.JSX.Element {
     return (
         <Transition appear show={isOpen} as={React.Fragment}>
             <Dialog as='div' onClose={onClose} className='relative z-50'>

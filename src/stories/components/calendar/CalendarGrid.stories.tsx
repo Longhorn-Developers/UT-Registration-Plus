@@ -1,5 +1,5 @@
 import { Status } from '@shared/types/Course';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 

@@ -4,8 +4,9 @@ import { background } from '@shared/messages';
 import { Button } from '@views/components/common/Button';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { getScheduleById, switchSchedule } from '@views/hooks/useSchedules';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 import createSchedule from 'src/pages/background/lib/createSchedule';
 
 /**
@@ -106,7 +107,7 @@ export default function InjectedButton(): JSX.Element | null {
         return null;
     }
 
-    return ReactDOM.createPortal(
+    return createPortal(
         <ExtensionRoot>
             <Button
                 variant='filled'

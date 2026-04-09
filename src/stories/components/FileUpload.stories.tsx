@@ -1,6 +1,6 @@
 import { ImageSquare } from '@phosphor-icons/react';
 import { colorsFlattened } from '@shared/util/themeColors';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import FileUpload from '@views/components/common/FileUpload';
 
 /**

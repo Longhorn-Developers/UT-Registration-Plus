@@ -1,11 +1,12 @@
 import { ChartBar } from '@phosphor-icons/react';
-import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 
 import styles from './TableRow.module.scss';
 
@@ -25,25 +26,9 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     // the courses in the active schedule that conflict with the course for this row
     const [conflicts, setConflicts] = useState<Course[]>([]);
-    const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
+    const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
 
     const { element, course } = row;
-
-    useEffect(() => {
-        initSettings().then(({ enableHighlightConflicts }) => {
-            setHighlightConflicts(enableHighlightConflicts);
-        });
-
-        const l1 = OptionsStore.subscribe('enableHighlightConflicts', async ({ newValue }) => {
-            setHighlightConflicts(newValue);
-            // console.log('enableHighlightConflicts', newValue);
-        });
-
-        // Remove listeners when the component is unmounted
-        return () => {
-            OptionsStore.unsubscribe(l1);
-        };
-    }, []);
 
     useEffect(() => {
         // biome-ignore lint/style/noNonNullAssertion: TODO:
@@ -121,7 +106,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         return null;
     }
 
-    return ReactDOM.createPortal(
+    return createPortal(
         <ExtensionRoot>
             <div className='relative'>
                 <button

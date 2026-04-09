@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '../common/Button';
 
 interface FullscreenButtonProps {
-    containerRef: React.RefObject<HTMLDivElement>;
+    containerRef: React.RefObject<HTMLDivElement | null>;
 }
 
 /**
@@ -14,7 +14,7 @@ interface FullscreenButtonProps {
  *
  * @returns The rendered FullscreenButton component.
  */
-export default function FullscreenButton({ containerRef }: FullscreenButtonProps): JSX.Element {
+export default function FullscreenButton({ containerRef }: FullscreenButtonProps): React.JSX.Element {
     const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
     useEffect(() => {

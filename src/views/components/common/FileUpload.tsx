@@ -38,7 +38,7 @@ export default function FileUpload({
     color,
     accept,
     children,
-}: React.PropsWithChildren<Props>): JSX.Element {
+}: React.PropsWithChildren<Props>): React.JSX.Element {
     const Icon = icon;
     const isIconOnly = !children && !!icon;
     const inputId = useId();

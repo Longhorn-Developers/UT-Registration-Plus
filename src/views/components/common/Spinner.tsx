@@ -1,4 +1,4 @@
-import type { SVGProps } from 'react';
+import type { JSX, SVGProps } from 'react';
 
 /**
  * A simple spinner component that can be used to indicate loading.

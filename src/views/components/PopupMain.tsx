@@ -2,14 +2,14 @@ import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
 import { CalendarDots, Flag, GearSix, Plus } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
-import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import useKC_DABR_WASM from 'kc-dabr-wasm';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
 import { Button } from './common/Button';
@@ -25,34 +25,8 @@ import { SortableList } from './common/SortableList';
  * This component displays the main schedule, courses, and options buttons.
  */
 export default function PopupMain(): JSX.Element {
-    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+    const enableCourseStatusChips = OptionsStore.useStore(store => store.enableCourseStatusChips);
     // const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
-    useKC_DABR_WASM();
-
-    useEffect(() => {
-        const initAllSettings = async () => {
-            const { enableCourseStatusChips } = await initSettings();
-            setEnableCourseStatusChips(enableCourseStatusChips);
-            // setEnableDataRefreshing(enableDataRefreshing);
-        };
-
-        initAllSettings();
-
-        const l1 = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
-        });
-
-        // const l2 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
-        //     setEnableDataRefreshing(newValue);
-        //     // console.log('enableDataRefreshing', newValue);
-        // });
-
-        return () => {
-            OptionsStore.unsubscribe(l1);
-            // OptionsStore.removeListener(l2);
-        };
-    }, []);
 
     const [activeSchedule, schedules] = useSchedules();
 
@@ -136,9 +110,7 @@ export default function PopupMain(): JSX.Element {
                             const activeSchedule = getActiveSchedule();
                             const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
-                            // don't care about the promise
-                            UserScheduleStore.set('schedules', reordered);
-                            UserScheduleStore.set('activeIndex', activeIndex);
+                            UserScheduleStore.set({ schedules: reordered, activeIndex });
                         }}
                         renderItem={schedule => (
                             <ScheduleListItem schedule={schedule} onClick={() => switchSchedule(schedule.id)} />

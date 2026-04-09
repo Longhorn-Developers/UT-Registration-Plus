@@ -10,9 +10,10 @@ import QuickAddModal from '@views/components/common/QuickAddModal';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
 import Text from '@views/components/common/Text/Text';
 import useRelativeTime from '@views/hooks/useRelativeTime';
-import useSchedules from '@views/hooks/useSchedules';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
 import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
+import type { JSX } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
@@ -27,20 +28,12 @@ export interface CalendarHeaderProps {
  * @returns The JSX element representing the calendar header.
  */
 export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: CalendarHeaderProps): JSX.Element {
-    const [activeSchedule] = useSchedules();
+    const activeSchedule = useActiveSchedule();
     const lastCheckedText = useRelativeTime(activeSchedule.lastCheckedAt);
     const [isRefreshing, setIsRefreshing] = useState(false);
     // track per-schedule cooldowns so switching schedules allows immediate refresh
     const [cooldownIds, setCooldownIds] = useState<Set<string>>(new Set());
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState(false);
-
-    useEffect(() => {
-        OptionsStore.get('enableDataRefreshing').then(setEnableDataRefreshing);
-        const unsubscribe = OptionsStore.subscribe('enableDataRefreshing', ({ newValue }) => {
-            setEnableDataRefreshing(newValue);
-        });
-        return () => OptionsStore.unsubscribe(unsubscribe);
-    }, []);
+    const enableDataRefreshing = OptionsStore.useStore(store => store.enableDataRefreshing);
 
     const isCooldown = cooldownIds.has(activeSchedule.id);
     const hasRightHandSide = enableDataRefreshing;

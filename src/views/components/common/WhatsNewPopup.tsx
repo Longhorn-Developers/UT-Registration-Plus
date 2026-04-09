@@ -2,7 +2,7 @@ import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import Spinner from '@views/components/common/Spinner';
 import Text from '@views/components/common/Text/Text';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
-import type { ComponentType, SVGProps } from 'react';
+import type { ComponentType, JSX, SVGProps } from 'react';
 import { useEffect, useState } from 'react';
 import ChartBarIcon from '~icons/ph/chart-bar';
 import CloudXIcon from '~icons/ph/cloud-x';

@@ -1,4 +1,5 @@
 import type { ScrapedRow } from '@shared/types/Course';
+import type { JSX } from 'react';
 import { useEffect } from 'react';
 
 import styles from './TableSubheading.module.scss';

@@ -6,7 +6,8 @@ import ScheduleListItem from '@views/components/common/ScheduleListItem';
 import { SortableList } from '@views/components/common/SortableList';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
-import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
+import { getActiveSchedule, switchSchedule, useAllSchedules } from '@views/hooks/useSchedules';
+import { memo } from 'react';
 
 /**
  * Renders a component that displays a list of schedules.
@@ -14,8 +15,8 @@ import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/us
  * @param props - The component props.
  * @returns The rendered component.
  */
-export function CalendarSchedules() {
-    const [, schedules] = useSchedules();
+export const CalendarSchedules = memo(function CalendarSchedules() {
+    const schedules = useAllSchedules();
 
     const enforceScheduleLimit = useEnforceScheduleLimit();
     const handleAddSchedule = () => {
@@ -47,9 +48,7 @@ export function CalendarSchedules() {
                         const activeSchedule = getActiveSchedule();
                         const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
-                        // don't care about the promise
-                        UserScheduleStore.set('schedules', reordered);
-                        UserScheduleStore.set('activeIndex', activeIndex);
+                        UserScheduleStore.set({ schedules: reordered, activeIndex });
                     }}
                     renderItem={schedule => (
                         <ScheduleListItem schedule={schedule} onClick={() => switchSchedule(schedule.id)} />
@@ -58,4 +57,4 @@ export function CalendarSchedules() {
             </div>
         </div>
     );
-}
+});

@@ -1,19 +1,26 @@
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
+import type { Plugin } from 'vite';
 import { defineConfig } from 'vite';
+import { inlineStyles } from '../utils/plugins/vite-inline-styles';
+import reactFallbackThrottlePlugin from 'vite-plugin-react-fallback-throttle';
 
 const root = resolve(__dirname, '../src');
 const pagesDir = resolve(root, 'pages');
 const assetsDir = resolve(root, 'assets');
 const publicDir = resolve(__dirname, '../public');
 
-console.log(root);
-
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [react(), UnoCSS(), Icons({ compiler: 'jsx', jsx: 'react' })],
+    plugins: [
+        react(),
+        UnoCSS(),
+        reactFallbackThrottlePlugin(0),
+        Icons({ compiler: 'jsx', jsx: 'react' }),
+        inlineStyles(),
+    ],
     resolve: {
         alias: {
             src: root,

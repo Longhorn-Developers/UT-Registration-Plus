@@ -8,6 +8,14 @@ import { spacing } from './src/shared/types/Spacing';
 import { colors } from './src/shared/types/ThemeColors';
 
 export default defineConfig({
+    outputToCssLayers: true,
+    content: {
+        // yoink from both filesystem and build pipeline to fix dev
+        filesystem: ['./src/**/*.{jsx,tsx}'],
+        pipeline: {
+            include: [/\.(vue|svelte|[jt]sx|vine.ts|mdx?|astro|elm|php|phtml|marko|html)($|\?)/],
+        },
+    },
     rules: [
         [
             'btn-transition',

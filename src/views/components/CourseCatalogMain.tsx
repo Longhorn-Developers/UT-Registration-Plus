@@ -7,7 +7,7 @@ import NewSearchLink from '@views/components/injected/NewSearchLink';
 import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from '@views/components/injected/TableHead';
 import TableRow from '@views/components/injected/TableRow/TableRow';
-import useSchedules from '@views/hooks/useSchedules';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import type { SiteSupportType } from '@views/lib/getSiteSupport';
@@ -23,11 +23,11 @@ interface Props {
 /**
  * This is the top level react component orchestrating the course catalog page.
  */
-export default function CourseCatalogMain({ support }: Props): JSX.Element | null {
+export default function CourseCatalogMain({ support }: Props): React.JSX.Element | null {
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
     const [course, setCourse] = useState<Course | null>(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [enableScrollToLoad, setEnableScrollToLoad] = useState<boolean>(false);
+    const enableScrollToLoad = OptionsStore.useStore(store => store.enableScrollToLoad);
     const prevCourseTitleRef = useRef<string | null>(null);
     // biome-ignore lint/style/noNonNullAssertion: TODO: add checks
     const tbody = document.querySelector('table tbody')!;
@@ -45,10 +45,6 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
             scrapedRows.findLast(row => row.course === null)?.element.querySelector('.course_header')?.textContent ??
             null;
     }, [support]);
-
-    useEffect(() => {
-        OptionsStore.get('enableScrollToLoad').then(setEnableScrollToLoad);
-    }, []);
 
     const addRows = (newRows: ScrapedRow[]) => {
         newRows.forEach(row => {
@@ -71,7 +67,7 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
         setIsPopupOpen(true);
     };
 
-    const [activeSchedule] = useSchedules();
+    const activeSchedule = useActiveSchedule();
 
     if (!activeSchedule) {
         return null;
@@ -95,13 +91,14 @@ export default function CourseCatalogMain({ support }: Props): JSX.Element | nul
                             />
                         )
                 )}
-                <CourseCatalogInjectedPopup
-                    // biome-ignore lint/style/noNonNullAssertion: course is always defined when the popup is open
-                    course={course!}
-                    open={isPopupOpen}
-                    onClose={() => setIsPopupOpen(false)}
-                    afterLeave={() => setCourse(null)}
-                />
+                {course && (
+                    <CourseCatalogInjectedPopup
+                        course={course}
+                        open={isPopupOpen}
+                        onClose={() => setIsPopupOpen(false)}
+                        afterLeave={() => setCourse(null)}
+                    />
+                )}
                 {enableScrollToLoad && <AutoLoad addRows={addRows} />}
             </DialogProvider>
         </ExtensionRoot>

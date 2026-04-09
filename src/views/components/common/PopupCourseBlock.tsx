@@ -1,6 +1,6 @@
 import { Check, Copy, DotsSixVertical } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
-import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/types/ThemeColors';
@@ -47,25 +47,14 @@ const CourseMeeting = memo(
  * @param dragHandleProps - The drag handle props for the course block.
  * @returns The rendered PopupCourseBlock component.
  */
-export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): JSX.Element {
-    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): React.JSX.Element {
+    const enableCourseStatusChips = OptionsStore.useStore(store => store.enableCourseStatusChips);
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const initAllSettings = async () => {
-            const { enableCourseStatusChips } = await initSettings();
-            setEnableCourseStatusChips(enableCourseStatusChips);
-        };
-
-        initAllSettings();
-
-        const l1 = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-        });
-
         // adds transition for shadow hover after three frames
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
@@ -76,10 +65,6 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                 });
             });
         });
-
-        return () => {
-            OptionsStore.unsubscribe(l1);
-        };
     }, []);
 
     // text-white or text-black based on secondaryColor

@@ -1,11 +1,15 @@
+declare const ServiceWorkerGlobalScope:
+    | { new (): EventTarget; prototype: EventTarget }
+    | undefined;
+
 /**
  * Possible contexts in which a chrome extension can run.
  */
 export enum ScriptType {
-    CONTENT_SCRIPT = 'content_script',
-    BACKGROUND_SCRIPT = 'background_script',
-    EXTENSION_POPUP = 'extension_popup',
-    EXTENSION_PAGE = 'extension_page',
+    CONTENT_SCRIPT = "content_script",
+    BACKGROUND_SCRIPT = "background_script",
+    EXTENSION_POPUP = "extension_popup",
+    EXTENSION_PAGE = "extension_page",
 }
 
 /**
@@ -21,12 +25,22 @@ export default function getScriptType(): ScriptType | null {
         return null;
     }
     const manifest = chrome.runtime.getManifest();
-    if (globalThis.window === undefined) {
+    if (
+        typeof ServiceWorkerGlobalScope !== "undefined" &&
+        globalThis instanceof ServiceWorkerGlobalScope
+    ) {
         return ScriptType.BACKGROUND_SCRIPT;
     }
 
-    if (window.location.href.startsWith(`chrome-extension://${chrome.runtime.id}`)) {
-        if (manifest.action?.default_popup && window.location.href.includes(manifest.action.default_popup)) {
+    if (
+        window.location.href.startsWith(
+            `chrome-extension://${chrome.runtime.id}`,
+        )
+    ) {
+        if (
+            manifest.action?.default_popup &&
+            window.location.href.includes(manifest.action.default_popup)
+        ) {
             return ScriptType.EXTENSION_POPUP;
         }
         return ScriptType.EXTENSION_PAGE;
@@ -66,5 +80,7 @@ export function isExtensionPopup(): boolean {
  */
 export function isExtensionPage(pageName?: string): boolean {
     const isPage = getScriptType() === ScriptType.EXTENSION_PAGE;
-    return isPage && pageName ? window.location.href.includes(pageName) : isPage;
+    return isPage && pageName
+        ? window.location.href.includes(pageName)
+        : isPage;
 }

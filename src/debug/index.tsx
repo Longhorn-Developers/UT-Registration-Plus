@@ -1,5 +1,4 @@
 import { DevStore } from '@shared/storage/DevStore';
-import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -85,7 +84,6 @@ function DevDashboard() {
     const [localStorage, setLocalStorage] = React.useState<Record<string, unknown>>({});
     const [syncStorage, setSyncStorage] = React.useState<Record<string, unknown>>({});
     const [sessionStorage, setSessionStorage] = React.useState<Record<string, unknown>>({});
-    useKC_DABR_WASM();
 
     useEffect(() => {
         const onVisibilityChange = () => {
@@ -113,7 +111,10 @@ function DevDashboard() {
 
     // listen for changes to the chrome storage to update the local storage state displayed in the dashboard
     useEffect(() => {
-        const onChanged = (changes: chrome.storage.StorageChange, areaName: chrome.storage.AreaName) => {
+        const onChanged = (
+            changes: { [key: string]: chrome.storage.StorageChange },
+            areaName: chrome.storage.AreaName
+        ) => {
             let copy: Record<string, unknown> = {};
 
             if (areaName === 'local') {
@@ -125,7 +126,7 @@ function DevDashboard() {
             }
 
             Object.keys(changes).forEach((key: string) => {
-                copy[key] = changes[key as keyof typeof changes].newValue;
+                copy[key] = changes[key]?.newValue;
             });
 
             if (areaName === 'local') {

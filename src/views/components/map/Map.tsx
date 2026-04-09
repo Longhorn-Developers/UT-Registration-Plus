@@ -5,7 +5,8 @@ import Divider from '@views/components/common/Divider';
 import { LargeLogo } from '@views/components/common/LogoIcon';
 import Text from '@views/components/common/Text/Text';
 import useChangelog from '@views/hooks/useChangelog';
-import useSchedules from '@views/hooks/useSchedules';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
+import type { JSX } from 'react';
 import { useCallback, useEffect } from 'react';
 
 import IconoirGitFork from '~icons/iconoir/git-fork';
@@ -75,7 +76,7 @@ const convertMinutesToIndex = (minutes: number): number => Math.floor((minutes -
  */
 export default function UTRPMap(): JSX.Element {
     const handleChangelogOnClick = useChangelog();
-    const [activeSchedule] = useSchedules();
+    const activeSchedule = useActiveSchedule();
 
     /**
      * Function to extract and format basic course information

@@ -82,7 +82,7 @@ export interface CourseCellColorPickerProps {
  *
  * @returns The color picker component that displays a color palette with a list of color patches.
  */
-export default function CourseCellColorPicker({ defaultColor }: CourseCellColorPickerProps): JSX.Element {
+export default function CourseCellColorPicker({ defaultColor }: CourseCellColorPickerProps): React.JSX.Element {
     // hexCode mirrors contents of HexColorEditor which has no hash prefix
     const [hexCode, setHexCode] = React.useState<string>(
         defaultColor.slice(1).toLocaleLowerCase() || getThemeColorHexByName('ut-gray')

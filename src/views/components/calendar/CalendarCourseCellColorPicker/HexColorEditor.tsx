@@ -21,7 +21,7 @@ export interface HexColorEditorProps {
  * @param setHexCode - Set state fn to control the hex color code from parent
  * @returns The HexColorEditor component
  */
-export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorProps): JSX.Element {
+export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorProps): React.JSX.Element {
     const baseColor = React.useMemo(() => getThemeColorHexByName('ut-gray'), []);
     const previewColor = isValidHexColor(`#${hexCode}`) ? `#${hexCode}` : baseColor;
     const tagColor = pickFontColor(previewColor.slice(1) as `#${string}`);

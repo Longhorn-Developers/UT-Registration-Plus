@@ -1,5 +1,6 @@
 import { Check } from '@phosphor-icons/react';
 import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
+import type { JSX } from 'react';
 
 /**
  * Props for the ColorPatch component
