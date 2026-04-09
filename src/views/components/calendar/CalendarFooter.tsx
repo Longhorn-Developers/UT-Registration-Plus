@@ -1,6 +1,6 @@
-import { GearSix } from '@phosphor-icons/react';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import type React from 'react';
+import GearSixIcon from '~icons/ph/gear-six';
 import GithubIcon from '~icons/ph/github-logo';
 import InstagramIcon from '~icons/ph/instagram-logo';
 import LinkedinIcon from '~icons/ph/linkedin-logo';
@@ -90,7 +90,7 @@ export default function CalendarFooter(): React.JSX.Element {
                 <Button
                     variant='minimal'
                     size='small'
-                    icon={GearSix}
+                    icon={GearSixIcon}
                     title='Settings'
                     color='ut-black'
                     onClick={handleOpenOptions}

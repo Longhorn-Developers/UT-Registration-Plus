@@ -1,4 +1,3 @@
-import type { Icon, IconProps } from '@phosphor-icons/react';
 import type { ThemeColor } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/themeColors';
 import Text from '@views/components/common/Text/Text';
@@ -8,8 +7,8 @@ import React from 'react';
 interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'> {
     variant?: 'filled' | 'outline' | 'minimal';
     size?: 'regular' | 'small' | 'mini';
-    icon?: Icon;
-    iconProps?: IconProps;
+    icon?: React.FC<React.SVGProps<SVGSVGElement>>;
+    iconProps?: React.SVGProps<SVGSVGElement>;
     color: ThemeColor;
 }
 
@@ -48,7 +47,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 style={
                     {
                         color: colorHex,
-                        backgroundColor: `rgb(${colorRgb} / var(--un-bg-opacity)`,
+                        backgroundColor: `rgb(${colorRgb} / var(--un-bg-opacity))`,
                         ...style,
                     } satisfies React.CSSProperties
                 }

@@ -1,6 +1,5 @@
 import { MessageListener } from '@chrome-extension-toolkit';
 import importSchedule from '@pages/background/lib/importSchedule';
-import { Sidebar } from '@phosphor-icons/react';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
@@ -20,6 +19,7 @@ import type React from 'react';
 import type { ReactNode } from 'react';
 import { memo, useEffect, useRef, useState } from 'react';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
+import SidebarIcon from '~icons/ph/sidebar';
 
 import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
@@ -64,7 +64,7 @@ const CalendarSidebar = memo(function CalendarSidebar() {
                     color='theme-black'
                     onClick={toggleSidebar}
                     className='screenshot:hidden'
-                    icon={Sidebar}
+                    icon={SidebarIcon}
                 />
             </div>
 
