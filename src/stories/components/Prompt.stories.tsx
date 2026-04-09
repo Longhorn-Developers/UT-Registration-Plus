@@ -31,7 +31,7 @@ const PromptDialogWithButton = ({ children, ...args }: PromptDialogProps) => {
         if (child.type === Button) {
             return React.cloneElement(child, {
                 onClick: () => handleClose(),
-            } as React.HTMLAttributes<HTMLElement>);
+            } as Record<string, unknown>);
         }
         return child;
     });

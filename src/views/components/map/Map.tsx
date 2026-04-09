@@ -248,7 +248,7 @@ export default function UTRPMap(): JSX.Element {
                             v{manifest.version} - {process.env.NODE_ENV}
                         </Text>
                     </Button>
-                    <img src={LDIconURL} alt='LD Icon' className='h-10 w-10 rounded-lg' />
+                    <img src={LDIconURL} alt='Longhorn Developers logo' className='h-10 w-10 rounded-lg' />
                 </div>
             </header>
             <div className='h-full flex flex-row'>

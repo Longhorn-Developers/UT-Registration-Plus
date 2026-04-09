@@ -26,7 +26,7 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
             <Disclosure defaultOpen={defaultOpen}>
                 {({ open }) => (
                     <>
-                        <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left cursor-pointer'>
+                        <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left'>
                             <div className='min-w-0 flex-1 overflow-hidden'>
                                 <Text
                                     as='div'

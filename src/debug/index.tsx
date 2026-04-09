@@ -67,8 +67,13 @@ function JSONEditor(props: JSONEditorProps) {
                 </div>
             ) : (
                 <div>
-                    {/** biome-ignore lint/a11y/useKeyWithClickEvents: TODO:  */}
-                    <pre onClick={() => setIsEditing(true)}>{json}</pre>
+                    <button
+                        type='button'
+                        onClick={() => setIsEditing(true)}
+                        style={{ all: 'unset', cursor: 'pointer', display: 'block', width: '100%' }}
+                    >
+                        <pre>{json}</pre>
+                    </button>
                 </div>
             )}
         </div>

@@ -28,9 +28,9 @@ export default function ChangelogPopup(): JSX.Element {
 
     const MarkdownComponents: RMOptions['components'] = {
         h1: ({ children, ...props }) => (
-            <h1 className='mb-4 mt-6 text-3xl font-bold' {...props}>
+            <h2 className='mb-4 mt-6 text-3xl font-bold' {...props}>
                 {children}
-            </h1>
+            </h2>
         ),
         h2: ({ children, ...props }) => (
             <h2 className='mb-3 mt-5 text-2xl font-semibold' {...props}>

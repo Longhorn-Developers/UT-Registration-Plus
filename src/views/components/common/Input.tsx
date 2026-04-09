@@ -26,7 +26,7 @@ export default function Input({ className, icon, iconProps, ref, ...props }: Pro
                 ref={ref}
                 className={clsx(
                     'h-full w-full px-spacing-4 bg-transparent disabled:bg-ut-offwhite/20 text-[1rem]',
-                    'border border-ut-offwhite/50 border-rounded focus:outline-none focus:ring-0'
+                    'border border-ut-offwhite/50 border-rounded outline-none! focus:border-blue-500'
                 )}
             />
         </div>

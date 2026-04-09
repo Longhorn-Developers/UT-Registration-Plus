@@ -46,10 +46,16 @@ export default function QuickAddModal(): JSX.Element {
 
     return (
         <Popover>
-            <PopoverButton className='bg-transparent' as='div'>
-                <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle} onClick={handleQuickAdd}>
-                    Quick Add
-                </Button>
+            <PopoverButton
+                as={Button}
+                color='ut-black'
+                size='small'
+                variant='minimal'
+                icon={PlusCircle}
+                onClick={handleQuickAdd}
+                className='bg-transparent'
+            >
+                Quick Add
             </PopoverButton>
             <PopoverPanel
                 as={ExtensionRootWrapper}
@@ -72,6 +78,7 @@ export default function QuickAddModal(): JSX.Element {
                             onChange={uniqueNumber.handleChange}
                             maxLength={UNIQUE_ID_LENGTH}
                             placeholder='Enter unique number'
+                            aria-label='Course unique number'
                             autoFocus
                         />
                         <Dropdown
@@ -84,7 +91,7 @@ export default function QuickAddModal(): JSX.Element {
                         />
                     </div>
                     {statusMessage && (
-                        <Text variant='small' className='text-ut-black'>
+                        <Text variant='small' className='text-ut-black' aria-live='polite' aria-atomic='true'>
                             {statusMessage}
                         </Text>
                     )}

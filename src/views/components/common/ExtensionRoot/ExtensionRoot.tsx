@@ -3,7 +3,6 @@ import { scan } from 'react-scan';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SentryProvider from '@views/contexts/SentryContext';
-import type { Ref } from 'react';
 import React from 'react';
 
 import ShadowRootContainer from './ShadowRootContainer';
@@ -32,11 +31,8 @@ export default function ExtensionRoot(props: React.HTMLProps<HTMLDivElement>): R
     );
 }
 
-export function ExtensionRootWrapper({
-    ref,
-    ...props
-}: React.HTMLProps<HTMLDivElement> & {
-    ref?: Ref<HTMLDivElement>;
-}): React.JSX.Element {
-    return <ShadowRootContainer {...props} ref={ref} />;
-}
+export const ExtensionRootWrapper = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
+    ({ className, ...props }, ref) => <ShadowRootContainer {...props} className={className} ref={ref} />
+);
+
+ExtensionRootWrapper.displayName = 'ExtensionRootWrapper';
