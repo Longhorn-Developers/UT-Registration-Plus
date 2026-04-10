@@ -112,6 +112,7 @@ export default function Calendar(): ReactNode {
     activeScheduleRef.current = activeSchedule;
 
     // silently refreshes course data when the calendar opens or the active schedule changes
+    // biome-ignore lint/correctness/useExhaustiveDependencies: id is a trigger, not a value read
     useEffect(() => {
         void refreshCourses({ silent: true });
     }, [activeSchedule.id]);
