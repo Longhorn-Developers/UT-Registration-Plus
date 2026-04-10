@@ -3,9 +3,7 @@ import type { Plugin, Rollup } from 'vite';
 import packageJson from '../package.json';
 
 // Convert from Semver (example: 0.1.0-beta6)
-const [major, minor, patch, label = '0'] = packageJson.version
-    .replace(/[^\d.-]+/g, '')
-    .split(/[.-]/);
+const [major, minor, patch, label = '0'] = packageJson.version.replace(/[^\d.-]+/g, '').split(/[.-]/);
 
 const isBeta = !!process.env.BETA;
 if (isBeta && process.env.NODE_ENV !== 'production') throw new Error('Cannot have beta non-production build');
@@ -218,12 +216,18 @@ export function createFirefoxManifestPlugin(): Plugin {
 
             if (!backgroundFile) {
                 for (const fileName of Object.keys(bundle)) {
-                    if (fileName.includes('background')) { backgroundFile = fileName; break; }
+                    if (fileName.includes('background')) {
+                        backgroundFile = fileName;
+                        break;
+                    }
                 }
             }
             if (!contentFile) {
                 for (const fileName of Object.keys(bundle)) {
-                    if (fileName.includes('content')) { contentFile = fileName; break; }
+                    if (fileName.includes('content')) {
+                        contentFile = fileName;
+                        break;
+                    }
                 }
             }
 
@@ -231,14 +235,14 @@ export function createFirefoxManifestPlugin(): Plugin {
 
             if (manifestForFirefox._backgroundLoaderName) {
                 const fileName = manifestForFirefox._backgroundLoaderName;
-                const source = manifestForFirefox._backgroundLoaderSource!;
+                const source = manifestForFirefox._backgroundLoaderSource ?? '';
                 this.emitFile({ type: 'asset', fileName, source });
                 delete manifestForFirefox._backgroundLoaderName;
                 delete manifestForFirefox._backgroundLoaderSource;
             }
             if (manifestForFirefox._contentLoaderName) {
                 const fileName = manifestForFirefox._contentLoaderName;
-                const source = manifestForFirefox._contentLoaderSource!;
+                const source = manifestForFirefox._contentLoaderSource ?? '';
                 this.emitFile({ type: 'asset', fileName, source });
                 delete manifestForFirefox._contentLoaderName;
                 delete manifestForFirefox._contentLoaderSource;

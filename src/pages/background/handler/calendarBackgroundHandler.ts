@@ -1,5 +1,5 @@
-import openNewTab from '@background/util/openNewTab';
 import type { TabWithId } from '@background/util/openNewTab';
+import openNewTab from '@background/util/openNewTab';
 import type { MessageHandler } from '@chrome-extension-toolkit';
 import { tabs } from '@shared/messages';
 import type { CalendarBackgroundMessages } from '@shared/messages/CalendarMessages';
