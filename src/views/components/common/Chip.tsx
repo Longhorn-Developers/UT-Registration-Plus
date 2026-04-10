@@ -47,7 +47,7 @@ type Props =
  * A reusable chip component that follows the design system of the extension.
  * @returns
  */
-export function Chip({ variant, label }: React.PropsWithChildren<Props>): JSX.Element {
+export function Chip({ variant, label }: React.PropsWithChildren<Props>): React.JSX.Element {
     let labelMap: Record<string, Core | Flag>;
     switch (variant) {
         case 'core':

@@ -14,3 +14,7 @@ declare module '*.json' {
 }
 
 declare const __BROWSER__: 'chrome' | 'firefox';
+declare module 'virtual:inline-styles' {
+    const style: CSSStyleSheet;
+    export default style;
+}

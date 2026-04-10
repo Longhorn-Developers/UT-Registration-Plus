@@ -7,8 +7,9 @@ import Text from '@views/components/common/Text/Text';
 import Tooltip from '@views/components/common/Tooltip';
 import { NoDataError } from '@views/lib/database/queryDistribution';
 import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
-import type { ChangeEvent } from 'react';
+import type { HighchartsReactRefObject } from 'highcharts-react-official';
+import * as HighchartsReactModule from 'highcharts-react-official';
+import type { ChangeEvent, JSX } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import Skeleton from 'react-loading-skeleton';
@@ -28,6 +29,11 @@ const DataStatus = {
 } as const satisfies Record<string, string>;
 
 type DataStatusType = (typeof DataStatus)[keyof typeof DataStatus];
+
+const HighchartsReact =
+    HighchartsReactModule.default && '$$typeof' in HighchartsReactModule.default
+        ? HighchartsReactModule.default
+        : HighchartsReactModule.HighchartsReact;
 
 const GRADE_COLORS = {
     A: extendedColors.gradeDistribution.a,
@@ -56,7 +62,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
     type Distributions = Record<string, { data: Distribution; instructorIncluded: boolean }>;
     const [distributions, setDistributions] = useState<Distributions>({});
     const [status, setStatus] = useState<DataStatusType>(DataStatus.LOADING);
-    const ref = useRef<HighchartsReact.RefObject>(null);
+    const ref = useRef<HighchartsReactRefObject>(null);
 
     const chartData = useMemo(() => {
         if (status === DataStatus.FOUND && distributions[semester]) {

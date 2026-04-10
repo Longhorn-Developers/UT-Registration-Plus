@@ -1,12 +1,14 @@
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
-import { ArrowsClockwise, Check } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { Button } from '@views/components/common/Button';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { getScheduleById, switchSchedule } from '@views/hooks/useSchedules';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 import createSchedule from 'src/pages/background/lib/createSchedule';
+import ArrowsClockwiseIcon from '~icons/ph/arrows-clockwise';
+import CheckIcon from '~icons/ph/check';
 
 /**
  * InjectedButton component renders a button that adds courses to UTRP from official MyUT calendar
@@ -73,7 +75,8 @@ export default function InjectedButton(): JSX.Element | null {
               ? 'Imported!'
               : 'Add Courses to UT Registration+';
 
-    const buttonIcon = importStatus === 'loading' ? ArrowsClockwise : importStatus === 'complete' ? Check : undefined;
+    const buttonIcon =
+        importStatus === 'loading' ? ArrowsClockwiseIcon : importStatus === 'complete' ? CheckIcon : undefined;
 
     const buttonIconProps =
         importStatus === 'loading'
@@ -106,7 +109,7 @@ export default function InjectedButton(): JSX.Element | null {
         return null;
     }
 
-    return ReactDOM.createPortal(
+    return createPortal(
         <ExtensionRoot>
             <Button
                 variant='filled'

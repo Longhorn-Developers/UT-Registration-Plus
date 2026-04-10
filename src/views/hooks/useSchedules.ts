@@ -2,11 +2,8 @@ import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { HexColor } from '@shared/types/Color';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import { getColorwayFromColor, getCourseColors, getDarkerShade, getLighterShade } from '@shared/util/colors';
-import { useEffect, useState } from 'react';
-
-let schedulesCache: UserSchedule[] = [];
-let activeIndexCache = -1;
-let initialLoad = true;
+import { useMemo } from 'react';
+import type { Serializable } from 'src/lib/chrome-extension-toolkit/types';
 
 const errorSchedule = new UserSchedule({
     courses: [],
@@ -16,16 +13,47 @@ const errorSchedule = new UserSchedule({
     updatedAt: Date.now(),
 });
 
+function hydrateSchedules(schedules: Serializable<UserSchedule>[]) {
+    return schedules.map(schedule => new UserSchedule(schedule));
+}
+
+function scheduleDataEqual(a: unknown, b: unknown): boolean {
+    if (a === b) return true;
+    if (!a || !b) return false;
+    return JSON.stringify(a) === JSON.stringify(b);
+}
+
 /**
- * Fetches the user schedules from storage and sets the cached state.
+ * Hook that returns whether a specific schedule is the active one.
+ * Only the two affected items (old/new active) re-render on switch.
  */
-async function fetchData() {
-    const [storedSchedules, storedActiveIndex] = await Promise.all([
-        UserScheduleStore.get('schedules'),
-        UserScheduleStore.get('activeIndex'),
-    ]);
-    schedulesCache = storedSchedules.map(s => new UserSchedule(s));
-    activeIndexCache = storedActiveIndex >= 0 ? storedActiveIndex : 0;
+export function useIsActiveSchedule(scheduleId: string): boolean {
+    return UserScheduleStore.useStore(store => {
+        const idx = store.activeIndex >= 0 ? store.activeIndex : 0;
+        return store.schedules[idx]?.id === scheduleId;
+    });
+}
+
+/**
+ * Hook that returns only the active schedule.
+ * Components using this won't re-render when the schedules array is reordered.
+ */
+export function useActiveSchedule(): UserSchedule {
+    const activeRaw = UserScheduleStore.useStore(store => {
+        const idx = store.activeIndex >= 0 ? store.activeIndex : 0;
+        return store.schedules[idx];
+    }, scheduleDataEqual);
+
+    return useMemo(() => (activeRaw ? new UserSchedule(activeRaw) : errorSchedule), [activeRaw]);
+}
+
+/**
+ * Hook that returns all hydrated schedules.
+ * Components using this won't re-render when only the active index changes.
+ */
+export function useAllSchedules(): UserSchedule[] {
+    const [rawSchedules] = UserScheduleStore.use('schedules');
+    return useMemo(() => hydrateSchedules(rawSchedules), [rawSchedules]);
 }
 
 /**
@@ -33,41 +61,8 @@ async function fetchData() {
  * @returns A tuple containing the active schedule and an array of all schedules.
  */
 export default function useSchedules(): [active: UserSchedule, schedules: UserSchedule[]] {
-    const [schedules, setSchedules] = useState<UserSchedule[]>(schedulesCache);
-    const [activeIndex, setActiveIndex] = useState<number>(activeIndexCache);
-    const [activeSchedule, setActiveSchedule] = useState<UserSchedule>(schedules[activeIndex] ?? errorSchedule);
-
-    if (initialLoad) {
-        initialLoad = false;
-
-        // trigger suspense
-        throw new Promise(res => {
-            fetchData().then(res);
-        });
-    }
-
-    useEffect(() => {
-        const l1 = UserScheduleStore.subscribe('schedules', ({ newValue }) => {
-            schedulesCache = newValue.map(s => new UserSchedule(s));
-            setSchedules(schedulesCache);
-        });
-
-        const l2 = UserScheduleStore.subscribe('activeIndex', ({ newValue }) => {
-            activeIndexCache = newValue;
-            setActiveIndex(newValue);
-        });
-
-        return () => {
-            UserScheduleStore.unsubscribe(l1);
-            UserScheduleStore.unsubscribe(l2);
-        };
-    }, []);
-
-    // recompute active schedule on a schedule/index change
-    useEffect(() => {
-        setActiveSchedule(schedules[activeIndex] ?? errorSchedule);
-    }, [activeIndex, schedules]);
-
+    const activeSchedule = useActiveSchedule();
+    const schedules = useAllSchedules();
     return [activeSchedule, schedules];
 }
 
@@ -76,7 +71,10 @@ export default function useSchedules(): [active: UserSchedule, schedules: UserSc
  * @returns The active schedule.
  */
 export function getActiveSchedule(): UserSchedule {
-    return schedulesCache[activeIndexCache] ?? errorSchedule;
+    const { schedules, activeIndex } = UserScheduleStore.read();
+    const hydratedSchedules = hydrateSchedules(schedules);
+
+    return hydratedSchedules[activeIndex >= 0 ? activeIndex : 0] ?? errorSchedule;
 }
 
 /**

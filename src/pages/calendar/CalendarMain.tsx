@@ -1,22 +1,21 @@
 import { MessageListener } from '@chrome-extension-toolkit';
 import { background } from '@shared/messages';
 import type TabInfoMessages from '@shared/messages/TabInfoMessages';
+import { OptionsStore } from '@shared/storage/OptionsStore';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import Calendar from '@views/components/calendar/Calendar';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { MigrationDialog } from '@views/components/common/MigrationDialog';
 import { WhatsNewDialog } from '@views/components/common/WhatsNewPopup';
-import SentryProvider from '@views/contexts/SentryContext';
-import useKC_DABR_WASM from 'kc-dabr-wasm';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
+import { suspendUntilStoresReady } from 'src/lib/chrome-extension-toolkit/storage/createStore';
 
 /**
  * Calendar page
  * @returns entire page
  */
 export default function CalendarMain() {
-    useKC_DABR_WASM();
-
     useEffect(() => {
         const registerCalendarTab = () => {
             void background.registerCalendarTab();
@@ -55,14 +54,20 @@ export default function CalendarMain() {
     }, []);
 
     return (
-        <SentryProvider fullInit>
-            <ExtensionRoot className='h-full w-full'>
-                <DialogProvider>
-                    <MigrationDialog />
-                    <WhatsNewDialog />
-                    <Calendar />
-                </DialogProvider>
-            </ExtensionRoot>
-        </SentryProvider>
+        <ExtensionRoot className='h-full w-full'>
+            <DialogProvider>
+                <MigrationDialog />
+                <WhatsNewDialog />
+                <Suspense fallback={null}>
+                    <CalendarBootstrap />
+                </Suspense>
+            </DialogProvider>
+        </ExtensionRoot>
     );
+}
+
+function CalendarBootstrap() {
+    suspendUntilStoresReady([UserScheduleStore, OptionsStore]);
+
+    return <Calendar />;
 }

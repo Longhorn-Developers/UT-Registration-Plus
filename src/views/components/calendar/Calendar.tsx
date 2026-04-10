@@ -1,10 +1,8 @@
 import { MessageListener } from '@chrome-extension-toolkit';
 import importSchedule from '@pages/background/lib/importSchedule';
-import { Sidebar } from '@phosphor-icons/react';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
@@ -19,13 +17,81 @@ import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
+import SidebarIcon from '~icons/ph/sidebar';
 
 import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
+
+const CalendarSidebar = memo(function CalendarSidebar() {
+    const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
+    const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
+    const showReportIssueDialog = useReportIssueDialog();
+    const sidebarRef = useRef<HTMLDivElement>(null);
+
+    // TODO: Replace with JSX `inert={!showSidebar}` once React supports the inert attribute natively.
+    useEffect(() => {
+        if (sidebarRef.current) {
+            if (showSidebar) {
+                sidebarRef.current.removeAttribute('inert');
+            } else {
+                sidebarRef.current.setAttribute('inert', '');
+            }
+        }
+    }, [showSidebar]);
+
+    return (
+        <div
+            ref={sidebarRef}
+            className={clsx(
+                'py-spacing-5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
+                {
+                    'max-w-[20.3125rem] ': showSidebar,
+                    'max-w-0 pointer-events-none': !showSidebar,
+                }
+            )}
+            tabIndex={-1}
+            aria-hidden={!showSidebar}
+        >
+            <div className='flex items-center justify-between px-spacing-7 mb-spacing-2'>
+                <LargeLogo />
+                <Button
+                    variant='minimal'
+                    size='small'
+                    color='theme-black'
+                    onClick={toggleSidebar}
+                    className='screenshot:hidden'
+                    icon={SidebarIcon}
+                />
+            </div>
+
+            <div
+                style={{
+                    scrollbarGutter: 'stable',
+                }}
+                className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-7 pr-2.75'
+            >
+                <CalendarSchedules />
+                <Divider orientation='horizontal' size='100%' />
+                <ResourceLinks />
+                <Divider orientation='horizontal' size='100%' />
+                <button
+                    type='button'
+                    onClick={showReportIssueDialog}
+                    className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
+                >
+                    <Text variant='p'>Send us Feedback!</Text>
+                    <OutwardArrowIcon className='h-4 w-4' />
+                </button>
+            </div>
+
+            <CalendarFooter />
+        </div>
+    );
+});
 
 /**
  * Calendar page component
@@ -36,32 +102,18 @@ export default function Calendar(): ReactNode {
     const initialCourse = useCourseFromUrl();
     const [course, setCourse] = useState<Course | null>(initialCourse);
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(initialCourse !== null);
-    const showReportIssueDialog = useReportIssueDialog();
-
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
     const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
+    const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
+    const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
 
-    const queryClient = useQueryClient();
-    const { data: showSidebar, isPending: isSidebarStatePending } = useQuery({
-        queryKey: ['settings', 'showCalendarSidebar'],
-        queryFn: () => OptionsStore.get('showCalendarSidebar'),
-        staleTime: Infinity, // Prevent loading state on refocus
-    });
-
-    const { mutate: setShowSidebar } = useMutation({
-        mutationKey: ['settings', 'showCalendarSidebar'],
-        mutationFn: async (showSidebar: boolean) => {
-            OptionsStore.set('showCalendarSidebar', showSidebar);
-        },
-        onSuccess: (_, showSidebar) => {
-            queryClient.setQueryData(['settings', 'showCalendarSidebar'], showSidebar);
-        },
-    });
+    const activeScheduleRef = useRef(activeSchedule);
+    activeScheduleRef.current = activeSchedule;
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
             async openCoursePopup({ data, sendResponse }) {
-                const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
+                const course = activeScheduleRef.current.courses.find(course => course.uniqueId === data.uniqueId);
                 if (course === undefined) return;
 
                 setCourse(course);
@@ -76,7 +128,7 @@ export default function Calendar(): ReactNode {
         listener.listen();
 
         return () => listener.unlisten();
-    }, [activeSchedule]);
+    }, []);
 
     const openCourse = (course: Course) => {
         setCourse(course);
@@ -162,11 +214,15 @@ export default function Calendar(): ReactNode {
     };
     // --------------------------------------------------
 
-    if (isSidebarStatePending) return null;
-
     return (
         <CalendarContext.Provider value>
             <div className='relative h-full w-full flex flex-col'>
+                <a
+                    href='#calendar-content'
+                    className='sr-only focus:not-sr-only focus:absolute focus:z-100 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-ut-burntorange focus:shadow-lg'
+                >
+                    Skip to calendar
+                </a>
                 {/* Orange drag overlay indicator */}
                 {isDraggingFile && isValidFileType && (
                     <div
@@ -191,57 +247,10 @@ export default function Calendar(): ReactNode {
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                 >
-                    <div
-                        className={clsx(
-                            'py-spacing-5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
-                            {
-                                'max-w-[20.3125rem] ': showSidebar,
-                                'max-w-0 pointer-events-none': !showSidebar,
-                            }
-                        )}
-                        tabIndex={showSidebar ? 0 : -1}
-                        aria-hidden={!showSidebar}
-                        {...{ inert: !showSidebar }}
-                    >
-                        <div className='flex items-center justify-between px-spacing-7 mb-spacing-2'>
-                            <LargeLogo />
-                            <Button
-                                variant='minimal'
-                                size='small'
-                                color='theme-black'
-                                onClick={() => {
-                                    setShowSidebar(!showSidebar);
-                                }}
-                                className='screenshot:hidden'
-                                icon={Sidebar}
-                            />
-                        </div>
-
-                        <div
-                            style={{
-                                scrollbarGutter: 'stable',
-                            }}
-                            className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-7 pr-2.75'
-                        >
-                            <CalendarSchedules />
-                            <Divider orientation='horizontal' size='100%' />
-                            <ResourceLinks />
-                            {/* <TeamLinks /> */}
-                            <Divider orientation='horizontal' size='100%' />
-                            <button
-                                type='button'
-                                onClick={showReportIssueDialog}
-                                className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
-                            >
-                                <Text variant='p'>Send us Feedback!</Text>
-                                <OutwardArrowIcon className='h-4 w-4' />
-                            </button>
-                        </div>
-
-                        <CalendarFooter />
-                    </div>
+                    <CalendarSidebar />
 
                     <div
+                        id='calendar-content'
                         style={
                             {
                                 // scrollbarGutter: 'stable',
@@ -249,12 +258,7 @@ export default function Calendar(): ReactNode {
                         }
                         className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5'
                     >
-                        <CalendarHeader
-                            sidebarOpen={showSidebar}
-                            onSidebarToggle={() => {
-                                setShowSidebar(!showSidebar);
-                            }}
-                        />
+                        <CalendarHeader sidebarOpen={showSidebar} onSidebarToggle={toggleSidebar} />
                         <div
                             className={clsx('min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl', {
                                 'screenshot:flex-grow-0': displayBottomBar, // html-to-image seems to have a bug with flex-grow
@@ -271,15 +275,14 @@ export default function Calendar(): ReactNode {
                     </div>
                 </div>
 
-                <CourseCatalogInjectedPopup
-                    // Ideally let's not use ! here, but it's fine since we know course is always defined when showPopup is true
-                    // Let's try to refactor this
-                    // biome-ignore lint/style/noNonNullAssertion: course is always defined when showPopup is true
-                    course={course!}
-                    onClose={() => setIsPopupOpen(false)}
-                    open={isPopupOpen}
-                    afterLeave={() => setCourse(null)}
-                />
+                {course && (
+                    <CourseCatalogInjectedPopup
+                        course={course}
+                        onClose={() => setIsPopupOpen(false)}
+                        open={isPopupOpen}
+                        afterLeave={() => setCourse(null)}
+                    />
+                )}
             </div>
         </CalendarContext.Provider>
     );

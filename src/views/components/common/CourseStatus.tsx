@@ -1,6 +1,7 @@
 import type { StatusType } from '@shared/types/Course';
 import { StatusIcon } from '@shared/util/icons';
 import Text from '@views/components/common/Text/Text';
+import type { JSX } from 'react';
 
 type SizeType = 'small' | 'mini';
 

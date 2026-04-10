@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '../common/Button';
 
 interface FullscreenButtonProps {
-    containerRef: React.RefObject<HTMLDivElement>;
+    containerRef: React.RefObject<HTMLDivElement | null>;
 }
 
 /**
@@ -14,7 +14,7 @@ interface FullscreenButtonProps {
  *
  * @returns The rendered FullscreenButton component.
  */
-export default function FullscreenButton({ containerRef }: FullscreenButtonProps): JSX.Element {
+export default function FullscreenButton({ containerRef }: FullscreenButtonProps): React.JSX.Element {
     const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
     useEffect(() => {
@@ -49,7 +49,6 @@ export default function FullscreenButton({ containerRef }: FullscreenButtonProps
                 size='mini'
                 className='flex items-center gap-1 px-3 py-1'
             >
-                {/** biome-ignore lint/a11y/noSvgWithoutTitle: TODO: */}
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='16'
@@ -60,6 +59,7 @@ export default function FullscreenButton({ containerRef }: FullscreenButtonProps
                     strokeWidth='2'
                     strokeLinecap='round'
                     strokeLinejoin='round'
+                    aria-hidden='true'
                 >
                     {isFullscreen ? (
                         <path d='M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3' />

@@ -4,17 +4,13 @@ import packageJson from '../package.json';
 
 // Convert from Semver (example: 0.1.0-beta6)
 const [major, minor, patch, label = '0'] = packageJson.version
-    // can only contain digits, dots, or dash
     .replace(/[^\d.-]+/g, '')
-    // split into version parts
     .split(/[.-]/);
 
 const isBeta = !!process.env.BETA;
-const mode = isBeta ? 'beta' : process.env.NODE_ENV;
 if (isBeta && process.env.NODE_ENV !== 'production') throw new Error('Cannot have beta non-production build');
-const nameSuffix = isBeta ? ' (beta)' : mode === 'development' ? ' (dev)' : '';
 
-export const HOST_PERMISSIONS: string[] = [
+const HOST_PERMISSIONS: string[] = [
     '*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*',
     '*://*.utdirect.utexas.edu/registration/classlist/*',
     '*://*.utexas.collegescheduler.com/*',
@@ -33,45 +29,55 @@ const getIconSet = (name: string) => ({
     '128': `${iconPath(name)}128.png`,
 });
 
-const commonManifest = {
-    manifest_version: 3,
-    description: packageJson.description,
-    homepage_url: packageJson.homepage,
-    permissions: ['storage', 'unlimitedStorage'],
-    host_permissions: HOST_PERMISSIONS,
-    options_page: 'options.html',
-    content_security_policy: {
-        extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
-    },
-} as const;
+const manifest = defineManifest(async env => {
+    const isDev = env.mode === 'development';
+    const mode = isBeta ? 'beta' : isDev ? 'development' : 'production';
+    const nameSuffix = isBeta ? ' (beta)' : isDev ? ' (dev)' : '';
 
-const manifest = defineManifest(async () => ({
-    ...commonManifest,
-    name: `${packageJson.displayName ?? packageJson.name}${nameSuffix}`,
-    version: `${major}.${minor}.${patch}.${label}`,
-    permissions: [...commonManifest.permissions, 'background', 'offscreen'],
-    description: packageJson.description,
-    host_permissions: process.env.MODE === 'development' ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
-    action: {
-        default_popup: 'src/pages/popup/index.html',
-        default_icon: `icons/icon_${mode}_32.png`,
-    },
-    icons: getIconSet(mode),
-    options_page: 'src/pages/options/index.html',
-    background: { service_worker: 'src/pages/background/background.ts' },
-    content_scripts: [
-        {
-            matches: HOST_PERMISSIONS,
-            js: ['src/pages/content/index.tsx'],
+    return {
+        manifest_version: 3,
+        name: `${packageJson.displayName ?? packageJson.name}${nameSuffix}`,
+        version: `${major}.${minor}.${patch}.${label}`,
+        description: packageJson.description,
+        options_page: 'src/pages/options/index.html',
+        background: { service_worker: 'src/pages/background/background.ts' },
+        permissions: [
+            'storage',
+            'unlimitedStorage',
+            'background',
+            'scripting',
+            ...(isDev ? (['declarativeNetRequest', 'declarativeNetRequestWithHostAccess'] as const) : []),
+        ],
+        host_permissions: isDev ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
+        action: {
+            default_popup: 'src/pages/popup/index.html',
+            default_icon: `icons/icon_${mode}_32.png`,
         },
-    ],
-    web_accessible_resources: [
-        {
-            resources: ['assets/js/*.js', 'assets/css/*.css', 'assets/img/*'],
-            matches: ['*://*/*'],
+        icons: {
+            '16': `icons/icon_${mode}_16.png`,
+            '32': `icons/icon_${mode}_32.png`,
+            '48': `icons/icon_${mode}_48.png`,
+            '128': `icons/icon_${mode}_128.png`,
         },
-    ],
-}));
+        content_scripts: [
+            {
+                matches: HOST_PERMISSIONS,
+                js: ['src/pages/content/index.tsx'],
+            },
+        ],
+        web_accessible_resources: [
+            {
+                resources: ['assets/js/*.js', 'assets/css/*.css', 'assets/img/*', 'assets/*.wasm', 'database/*'],
+                matches: ['*://*/*'],
+            },
+        ],
+        content_security_policy: {
+            extension_pages: isDev
+                ? "script-src 'self' 'wasm-unsafe-eval' http://localhost:*; object-src 'self'; frame-src https://*.sentry.io"
+                : "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
+        },
+    };
+});
 
 interface FirefoxManifestGeneratorOptions {
     cssFiles: string[];
@@ -113,7 +119,6 @@ interface FirefoxManifest {
         js: string[];
         css: string[];
     }>;
-    // Internal fields used during build, deleted before emit
     _backgroundLoaderName?: string;
     _backgroundLoaderSource?: string;
     _contentLoaderName?: string;
@@ -122,6 +127,8 @@ interface FirefoxManifest {
 
 function buildFirefoxManifest(options: FirefoxManifestGeneratorOptions): FirefoxManifest {
     const { cssFiles, backgroundFile, contentFile } = options;
+    const isDev = process.env.NODE_ENV === 'development';
+    const mode = isBeta ? 'beta' : isDev ? 'development' : 'production';
 
     const manifestForFirefox: FirefoxManifest = {
         manifest_version: 3,
@@ -139,12 +146,14 @@ function buildFirefoxManifest(options: FirefoxManifestGeneratorOptions): Firefox
         options_page: 'options.html',
         web_accessible_resources: [
             {
-                resources: ['assets/*.js', 'assets/*.css', 'assets/*'],
+                resources: ['assets/*.js', 'assets/*.css', 'assets/*', 'assets/*.wasm', 'database/*'],
                 matches: ['<all_urls>'],
             },
         ],
         content_security_policy: {
-            extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
+            extension_pages: isDev
+                ? "script-src 'self' 'wasm-unsafe-eval' http://localhost:*; object-src 'self'; frame-src https://*.sentry.io"
+                : "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
         },
         browser_specific_settings: {
             gecko: {
@@ -160,7 +169,6 @@ function buildFirefoxManifest(options: FirefoxManifestGeneratorOptions): Firefox
         manifestForFirefox._backgroundLoaderName = loaderName;
         manifestForFirefox._backgroundLoaderSource = loaderSource;
     } else {
-        // best-effort fallback
         manifestForFirefox.background = { scripts: ['src/pages/background/background.js'] };
     }
 
@@ -197,7 +205,6 @@ export function createFirefoxManifestPlugin(): Plugin {
                 if (fileName.endsWith('.css')) {
                     cssFiles.push(fileName);
                 }
-
                 if (chunk.type === 'chunk') {
                     const facade = chunk.facadeModuleId ?? '';
                     if (facade.endsWith('src/pages/background/background.ts')) {
@@ -209,44 +216,30 @@ export function createFirefoxManifestPlugin(): Plugin {
                 }
             }
 
-            // fallback heuristics
             if (!backgroundFile) {
                 for (const fileName of Object.keys(bundle)) {
-                    if (fileName.includes('background')) {
-                        backgroundFile = fileName;
-                        break;
-                    }
+                    if (fileName.includes('background')) { backgroundFile = fileName; break; }
                 }
             }
-
             if (!contentFile) {
                 for (const fileName of Object.keys(bundle)) {
-                    if (fileName.includes('content')) {
-                        contentFile = fileName;
-                        break;
-                    }
+                    if (fileName.includes('content')) { contentFile = fileName; break; }
                 }
             }
 
             const manifestForFirefox = buildFirefoxManifest({ cssFiles, backgroundFile, contentFile });
 
-            // Emit loader files
             if (manifestForFirefox._backgroundLoaderName) {
-                this.emitFile({
-                    type: 'asset',
-                    fileName: manifestForFirefox._backgroundLoaderName,
-                    source: manifestForFirefox._backgroundLoaderSource,
-                });
+                const fileName = manifestForFirefox._backgroundLoaderName;
+                const source = manifestForFirefox._backgroundLoaderSource!;
+                this.emitFile({ type: 'asset', fileName, source });
                 delete manifestForFirefox._backgroundLoaderName;
                 delete manifestForFirefox._backgroundLoaderSource;
             }
-
             if (manifestForFirefox._contentLoaderName) {
-                this.emitFile({
-                    type: 'asset',
-                    fileName: manifestForFirefox._contentLoaderName,
-                    source: manifestForFirefox._contentLoaderSource,
-                });
+                const fileName = manifestForFirefox._contentLoaderName;
+                const source = manifestForFirefox._contentLoaderSource!;
+                this.emitFile({ type: 'asset', fileName, source });
                 delete manifestForFirefox._contentLoaderName;
                 delete manifestForFirefox._contentLoaderSource;
             }

@@ -1,9 +1,9 @@
-import { ArrowsVertical } from '@phosphor-icons/react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@views/components/common/Button';
 import DialogProvider, { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import Text from '@views/components/common/Text/Text';
 import { useState } from 'react';
+import ArrowsVerticalIcon from '~icons/ph/arrows-vertical';
 
 const meta = {
     title: 'Components/Common/DialogProvider',
@@ -47,7 +47,7 @@ const InnerComponent = () => {
         <Button
             variant='filled'
             color='ut-burntorange'
-            icon={ArrowsVertical}
+            icon={ArrowsVerticalIcon}
             iconProps={{ className: 'h-4 w-4' }}
             onClick={myShow}
         >
@@ -89,7 +89,7 @@ const FiveDialogsInnerComponent = () => {
     };
 
     return (
-        <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
+        <Button variant='filled' color='ut-burntorange' icon={ArrowsVerticalIcon} onClick={myShow}>
             Open Dialogs
         </Button>
     );
@@ -123,7 +123,7 @@ const NestedDialogsInnerComponent = () => {
     };
 
     return (
-        <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
+        <Button variant='filled' color='ut-burntorange' icon={ArrowsVerticalIcon} onClick={myShow}>
             Open Next Dialog
         </Button>
     );
@@ -162,7 +162,7 @@ const DialogWithOnCloseInnerComponent = () => {
             <h1>
                 You closed the button below {timesClosed} {timesClosed === 1 ? 'time' : 'times'}
             </h1>
-            <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
+            <Button variant='filled' color='ut-burntorange' icon={ArrowsVerticalIcon} onClick={myShow}>
                 Open Dialog
             </Button>
         </>

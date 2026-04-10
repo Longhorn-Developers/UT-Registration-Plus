@@ -1,6 +1,6 @@
 import type { CloseWrapper, DialogInfo, DialogOptions, ShowDialogFn } from '@views/contexts/DialogContext';
 import { DialogContext, useDialog } from '@views/contexts/DialogContext';
-import type { ReactNode } from 'react';
+import type { JSX, ReactNode } from 'react';
 import { useCallback, useRef, useState } from 'react';
 
 import Dialog from '../Dialog';
@@ -62,7 +62,7 @@ let nextId = 1;
 export default function DialogProvider(props: { children: ReactNode }): JSX.Element {
     const dialogQueue = useRef<DialogElement[]>([]);
     const [openDialog, setOpenDialog] = useState<DialogElement | undefined>();
-    const openRef = useRef<typeof openDialog>();
+    const openRef = useRef<typeof openDialog>(undefined);
     openRef.current = openDialog;
 
     const [isOpen, setIsOpen] = useState(false);

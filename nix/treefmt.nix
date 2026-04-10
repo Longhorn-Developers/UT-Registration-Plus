@@ -37,7 +37,6 @@
 
         programs.shellcheck.enable = true;
         programs.yamlfmt.enable = true;
-        programs.dockerfmt.enable = true;
 
         # NOTE: Make sure the biome version in package.json and the one used by treefmt are the same
         settings.formatter.biome = {

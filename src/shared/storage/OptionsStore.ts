@@ -41,12 +41,3 @@ export const OptionsStore = createSyncStore<IOptionsStore>(
         usePrefix: false,
     }
 );
-
-/**
- * Fetches all settings from the OptionsStore in a single storage read.
- */
-export const initSettings = () => OptionsStore.all();
-
-// Clothing retailer right
-
-// debugStore({ OptionsStore });

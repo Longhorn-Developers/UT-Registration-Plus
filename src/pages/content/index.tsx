@@ -1,10 +1,13 @@
+import { OptionsStore } from '@shared/storage/OptionsStore';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import CourseCatalogMain from '@views/components/CourseCatalogMain';
 import InjectedButton from '@views/components/injected/AddAllButton';
 import DaysCheckbox from '@views/components/injected/DaysCheckbox';
 import ShadedResults from '@views/components/injected/SearchResultShader';
 import getSiteSupport, { SiteSupport } from '@views/lib/getSiteSupport';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
+import { suspendUntilStoresReady } from 'src/lib/chrome-extension-toolkit/storage/createStore';
 
 // Firefox does not properly implement requestAnimationFrame
 if (typeof window !== 'undefined') {
@@ -27,17 +30,29 @@ const renderComponent = (Component: React.ComponentType) => {
 
     createRoot(container).render(
         <React.StrictMode>
-            <Component />
+            <Suspense fallback={null}>
+                <Component />
+            </Suspense>
         </React.StrictMode>
     );
 };
 
+function AddAllButtonBootstrap() {
+    suspendUntilStoresReady([UserScheduleStore]);
+
+    return <InjectedButton />;
+}
+
 if (support === SiteSupport.COURSE_CATALOG_DETAILS || support === SiteSupport.COURSE_CATALOG_LIST) {
-    renderComponent(() => <CourseCatalogMain support={support} />);
+    renderComponent(() => {
+        suspendUntilStoresReady([UserScheduleStore, OptionsStore]);
+
+        return <CourseCatalogMain support={support} />;
+    });
 }
 
 if (support === SiteSupport.MY_UT) {
-    renderComponent(InjectedButton);
+    renderComponent(AddAllButtonBootstrap);
 }
 
 if (support === SiteSupport.COURSE_CATALOG_SEARCH) {

@@ -1,6 +1,6 @@
-import { GearSix } from '@phosphor-icons/react';
 import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
 import type React from 'react';
+import GearSixIcon from '~icons/ph/gear-six';
 import GithubIcon from '~icons/ph/github-logo';
 import InstagramIcon from '~icons/ph/instagram-logo';
 import LinkedinIcon from '~icons/ph/linkedin-logo';
@@ -76,7 +76,7 @@ const handleOpenOptions = async (): Promise<void> => {
  * The footer section of the calendar's sidebar
  * @returns
  */
-export default function CalendarFooter(): JSX.Element {
+export default function CalendarFooter(): React.JSX.Element {
     return (
         <footer className='min-w-full w-0 flex items-center justify-between bg-white pl-spacing-5 pr-spacing-8 pt-spacing-4'>
             <div className='flex'>
@@ -90,7 +90,7 @@ export default function CalendarFooter(): JSX.Element {
                 <Button
                     variant='minimal'
                     size='small'
-                    icon={GearSix}
+                    icon={GearSixIcon}
                     title='Settings'
                     color='ut-black'
                     onClick={handleOpenOptions}

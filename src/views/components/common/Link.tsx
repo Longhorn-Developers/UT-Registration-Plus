@@ -2,7 +2,7 @@ import { background } from '@shared/messages';
 import type { TextProps } from '@views/components/common/Text/Text';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import type { PropsWithChildren } from 'react';
+import type { JSX, PropsWithChildren } from 'react';
 
 type Props = TextProps<'a'> & {
     href?: string;

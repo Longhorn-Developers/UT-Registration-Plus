@@ -1,12 +1,13 @@
 import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react';
-import { Plus, PlusCircle } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
+import type { JSX } from 'react';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
-
+import PlusIcon from '~icons/ph/plus';
+import PlusCircleIcon from '~icons/ph/plus-circle';
 import { Button } from './Button';
 import Dropdown from './Dropdown';
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
@@ -37,16 +38,25 @@ export default function QuickAddModal(): JSX.Element {
         e?.preventDefault();
         if (courseResult.status !== 'found') return;
 
-        await background.addCourse({ scheduleId: getActiveSchedule().id, course: courseResult.course });
+        await background.addCourse({
+            scheduleId: getActiveSchedule().id,
+            course: courseResult.course,
+        });
         uniqueNumber.reset();
     };
 
     return (
         <Popover>
-            <PopoverButton className='bg-transparent' as='div'>
-                <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle} onClick={handleQuickAdd}>
-                    Quick Add
-                </Button>
+            <PopoverButton
+                as={Button}
+                color='ut-black'
+                size='small'
+                variant='minimal'
+                icon={PlusCircleIcon}
+                onClick={handleQuickAdd}
+                className='bg-transparent'
+            >
+                Quick Add
             </PopoverButton>
             <PopoverPanel
                 as={ExtensionRootWrapper}
@@ -69,6 +79,7 @@ export default function QuickAddModal(): JSX.Element {
                             onChange={uniqueNumber.handleChange}
                             maxLength={UNIQUE_ID_LENGTH}
                             placeholder='Enter unique number'
+                            aria-label='Course unique number'
                             autoFocus
                         />
                         <Dropdown
@@ -81,7 +92,7 @@ export default function QuickAddModal(): JSX.Element {
                         />
                     </div>
                     {statusMessage && (
-                        <Text variant='small' className='text-ut-black'>
+                        <Text variant='small' className='text-ut-black' aria-live='polite' aria-atomic='true'>
                             {statusMessage}
                         </Text>
                     )}
@@ -95,7 +106,10 @@ export default function QuickAddModal(): JSX.Element {
                             {courseResult.course.schedule.meetings.map((m, i) => (
                                 // biome-ignore lint/suspicious/noArrayIndexKey: TODO:
                                 <Text key={i} variant='small' className='text-ut-black'>
-                                    {m.getDaysString({ format: 'short' })} {m.getTimeString({ separator: '\u2013' })}
+                                    {m.getDaysString({ format: 'short' })}{' '}
+                                    {m.getTimeString({
+                                        separator: '\u2013',
+                                    })}
                                     {m.location ? `, ${m.location.building} ${m.location.room}` : ''}
                                 </Text>
                             ))}
@@ -121,7 +135,7 @@ export default function QuickAddModal(): JSX.Element {
                             color={courseResult.status === 'found' ? 'ut-green' : 'ut-gray'}
                             size='regular'
                             variant='filled'
-                            icon={Plus}
+                            icon={PlusIcon}
                             type='submit'
                             disabled={courseResult.status !== 'found'}
                         >
