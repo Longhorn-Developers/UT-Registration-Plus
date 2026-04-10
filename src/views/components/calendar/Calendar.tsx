@@ -14,6 +14,7 @@ import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
+import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
@@ -109,6 +110,11 @@ export default function Calendar(): ReactNode {
 
     const activeScheduleRef = useRef(activeSchedule);
     activeScheduleRef.current = activeSchedule;
+
+    // silently refreshes course data when the calendar opens or the active schedule changes
+    useEffect(() => {
+        void refreshCourses({ silent: true });
+    }, [activeSchedule.id]);
 
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
