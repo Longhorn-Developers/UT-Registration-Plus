@@ -1,5 +1,6 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ArrowsClockwise, CalendarDots, Export, FileCode, FilePng, FileText, Sidebar } from '@phosphor-icons/react';
+import AddCustomTimeBlockPopover from '@views/components/calendar/AddCustomTimeBlockPopover';
 import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
@@ -169,6 +170,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             </MenuItem> */}
                         </MenuItems>
                     </Menu>
+                    <AddCustomTimeBlockPopover activeScheduleId={activeSchedule.id} />
                     {/* <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
                         Quick Add
                     </Button>

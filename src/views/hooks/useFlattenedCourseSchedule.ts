@@ -1,8 +1,12 @@
 import type { Course, StatusType } from '@shared/types/Course';
+import type { SerializedCustomTimeBlock } from '@shared/types/CustomTimeBlock';
+import { customTimeBlockAsMeeting } from '@shared/types/CustomTimeBlock';
 import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { customTimeBlocksForSchedule } from '@shared/util/customTimeBlocks';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 
+import useCustomTimeBlocks from './useCustomTimeBlocks';
 import useSchedules from './useSchedules';
 
 const dayToNumber = {
@@ -15,7 +19,7 @@ const dayToNumber = {
     Sunday: 6,
 } as const satisfies Record<string, number>;
 
-interface CalendarGridPoint {
+export interface CalendarGridPoint {
     dayIndex: number;
     startIndex: number;
     endIndex: number;
@@ -26,17 +30,32 @@ interface CalendarGridPoint {
 // }
 
 /**
- * Return type of useFlattenedCourseSchedule
+ * Minimal cell shape used by {@link calculateCourseCellColumns} for overlapping interval layout.
  */
-export interface CalendarGridCourse {
+export interface CalendarIntervalLayoutCell {
     calendarGridPoint: CalendarGridPoint;
-    componentProps: CalendarCourseCellProps;
-    course: Course;
     async: boolean;
     gridColumnStart?: number;
     gridColumnEnd?: number;
     totalColumns?: number;
-    concurrentCells?: CalendarGridCourse[];
+    concurrentCells?: CalendarIntervalLayoutCell[];
+}
+
+/**
+ * Return type of useFlattenedCourseSchedule
+ */
+export interface CalendarGridCourse extends CalendarIntervalLayoutCell {
+    componentProps: CalendarCourseCellProps;
+    course: Course;
+}
+
+/**
+ * One rendered segment of a custom time block on the weekday calendar grid.
+ */
+export interface CalendarGridCustomBlockCell extends CalendarIntervalLayoutCell {
+    block: SerializedCustomTimeBlock;
+    displayTitle: string;
+    displayTime: string;
 }
 
 /**
@@ -44,6 +63,7 @@ export interface CalendarGridCourse {
  */
 export interface FlattenedCourseSchedule {
     courseCells: CalendarGridCourse[];
+    customBlockCells: CalendarGridCustomBlockCell[];
     activeSchedule: UserSchedule;
     startMinutes: number;
     endMinutes: number;
@@ -76,7 +96,14 @@ export const convertMinutesToIndex = (minutes: number, gridStartMinutes = GRID_D
  */
 export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const [activeSchedule] = useSchedules();
-    const allMeetings = activeSchedule.courses.flatMap(c => c.schedule.meetings);
+    const customBlocksAll = useCustomTimeBlocks();
+    const customBlocksForActive = customTimeBlocksForSchedule(customBlocksAll, activeSchedule.id);
+    const customMeetingsForBounds = customBlocksForActive.map(customTimeBlockAsMeeting);
+
+    const allMeetings = [
+        ...activeSchedule.courses.flatMap(c => c.schedule.meetings),
+        ...customMeetingsForBounds,
+    ];
 
     // go through every meeting we have and finds minimum start time with starting best so far being GRID_DEFAULT_START_MINUTES
     // this variable will go on a journey through time and space to finally be delivered to the viewable calendar grid as the start hour of the entire grid
@@ -120,8 +147,11 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
         })
         .sort(sortCourses);
 
+    const customBlockCells = flattenCustomBlockCells(customBlocksForActive, gridStartMinutes, gridEndMinutes);
+
     return {
         courseCells: processedCourses,
+        customBlockCells,
         activeSchedule,
         startMinutes: gridStartMinutes,
         endMinutes: gridEndMinutes,
@@ -241,4 +271,61 @@ function sortCourses(a: CalendarGridCourse, b: CalendarGridCourse): number {
         return startIndexA - startIndexB;
     }
     return endIndexA - endIndexB;
+}
+
+const MAX_WEEKDAY_GRID_DAY_INDEX = 4;
+
+function flattenCustomBlockCells(
+    blocks: SerializedCustomTimeBlock[],
+    gridStartMinutes: number,
+    gridEndMinutes: number
+): CalendarGridCustomBlockCell[] {
+    const cells: CalendarGridCustomBlockCell[] = [];
+
+    for (const block of blocks) {
+        const meeting = customTimeBlockAsMeeting(block);
+        const timeLine = block.allDay ? 'All day' : meeting.getTimeString({ separator: '–' });
+        const { startTime, endTime } = meeting;
+        const midnightIndex = 1440;
+        const normalizingTimeFactor = 720;
+        let normalizedStartTime = startTime >= midnightIndex ? startTime - normalizingTimeFactor : startTime;
+        let normalizedEndTime = endTime >= midnightIndex ? endTime - normalizingTimeFactor : endTime;
+
+        if (block.allDay) {
+            normalizedStartTime = gridStartMinutes;
+            normalizedEndTime = gridEndMinutes;
+        }
+
+        for (const day of block.days) {
+            const dayIndex = dayToNumber[day];
+            if (dayIndex === undefined || dayIndex > MAX_WEEKDAY_GRID_DAY_INDEX) {
+                continue;
+            }
+
+            cells.push({
+                block,
+                displayTitle: block.title,
+                displayTime: timeLine,
+                async: false,
+                calendarGridPoint: {
+                    dayIndex,
+                    startIndex: convertMinutesToIndex(normalizedStartTime, gridStartMinutes),
+                    endIndex: convertMinutesToIndex(normalizedEndTime, gridStartMinutes),
+                },
+            });
+        }
+    }
+
+    return cells.sort((a, b) => {
+        const { dayIndex: dayIndexA, startIndex: startIndexA, endIndex: endIndexA } = a.calendarGridPoint;
+        const { dayIndex: dayIndexB, startIndex: startIndexB, endIndex: endIndexB } = b.calendarGridPoint;
+
+        if (dayIndexA !== dayIndexB) {
+            return dayIndexA - dayIndexB;
+        }
+        if (startIndexA !== startIndexB) {
+            return startIndexA - startIndexB;
+        }
+        return endIndexA - endIndexB;
+    });
 }

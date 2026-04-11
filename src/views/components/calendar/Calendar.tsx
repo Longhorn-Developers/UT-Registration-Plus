@@ -10,12 +10,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
+import EditCustomTimeBlockOverlay from '@views/components/calendar/EditCustomTimeBlockOverlay';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
 import ResourceLinks from '@views/components/calendar/ResourceLinks';
 import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
+import useCustomTimeBlocks from '@views/hooks/useCustomTimeBlocks';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import clsx from 'clsx';
@@ -34,7 +36,9 @@ import DiningAppPromo from './DiningAppPromo';
  * Calendar page component
  */
 export default function Calendar(): ReactNode {
-    const { courseCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
+    const { courseCells, customBlockCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
+    const allCustomBlocks = useCustomTimeBlocks();
+    const [editingCustomBlockId, setEditingCustomBlockId] = useState<string | null>(null);
     const displayBottomBar = true;
 
     const [course, setCourse] = useState<Course | null>(useCourseFromUrl());
@@ -86,6 +90,15 @@ export default function Calendar(): ReactNode {
     useEffect(() => {
         if (course) setShowPopup(true);
     }, [course]);
+
+    useEffect(() => {
+        if (editingCustomBlockId && !allCustomBlocks.some(b => b.id === editingCustomBlockId)) {
+            setEditingCustomBlockId(null);
+        }
+    }, [allCustomBlocks, editingCustomBlockId]);
+
+    const editingCustomBlock =
+        editingCustomBlockId !== null ? allCustomBlocks.find(b => b.id === editingCustomBlockId) : undefined;
 
     useEffect(() => {
         // Load the user's preference for the promo
@@ -294,15 +307,23 @@ export default function Calendar(): ReactNode {
                             }}
                         />
                         <div
-                            className={clsx('min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl', {
+                            className={clsx('relative min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl', {
                                 'screenshot:flex-grow-0': displayBottomBar, // html-to-image seems to have a bug with flex-grow
                             })}
                         >
+                            {editingCustomBlock && (
+                                <EditCustomTimeBlockOverlay
+                                    block={editingCustomBlock}
+                                    onClose={() => setEditingCustomBlockId(null)}
+                                />
+                            )}
                             <CalendarGrid
                                 courseCells={courseCells}
+                                customBlockCells={customBlockCells}
                                 setCourse={setCourse}
                                 startMinutes={startMinutes}
                                 endMinutes={endMinutes}
+                                onCustomBlockClick={b => setEditingCustomBlockId(b.id)}
                             />
                         </div>
                         <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />

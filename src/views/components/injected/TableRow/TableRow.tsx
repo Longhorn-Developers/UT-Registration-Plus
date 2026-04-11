@@ -1,7 +1,10 @@
 import { ChartBar } from '@phosphor-icons/react';
 import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Course, ScrapedRow } from '@shared/types/Course';
+import type { SerializedCustomTimeBlock } from '@shared/types/CustomTimeBlock';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { courseConflictsWithHighlightedCustomBlocks } from '@shared/util/customTimeBlocks';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React, { useEffect, useState } from 'react';
@@ -26,6 +29,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     // the courses in the active schedule that conflict with the course for this row
     const [conflicts, setConflicts] = useState<Course[]>([]);
     const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
+    const [customTimeBlocks, setCustomTimeBlocks] = useState<SerializedCustomTimeBlock[]>([]);
 
     const { element, course } = row;
 
@@ -42,6 +46,18 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         // Remove listeners when the component is unmounted
         return () => {
             OptionsStore.unsubscribe(l1);
+        };
+    }, []);
+
+    useEffect(() => {
+        void UserScheduleStore.get('customTimeBlocks').then(v => setCustomTimeBlocks(v ?? []));
+
+        const unsub = UserScheduleStore.subscribe('customTimeBlocks', ({ newValue }) => {
+            setCustomTimeBlocks(newValue ?? []);
+        });
+
+        return () => {
+            UserScheduleStore.unsubscribe(unsub);
         };
     }, []);
 
@@ -89,14 +105,21 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             }
         }
 
+        const customCatalogConflict = courseConflictsWithHighlightedCustomBlocks(
+            course,
+            customTimeBlocks,
+            activeSchedule.id
+        );
+        const hasRowConflict = conflicts.length > 0 || customCatalogConflict;
+
         // Clear conflict styling
         element.classList.remove(styles.isConflict!);
         element.classList.remove(styles.isConflictNoLineThrough!);
 
         if (highlightConflicts) {
-            element.classList[conflicts.length ? 'add' : 'remove'](styles.isConflict!);
+            element.classList[hasRowConflict ? 'add' : 'remove'](styles.isConflict!);
         } else {
-            element.classList[conflicts.length ? 'add' : 'remove'](styles.isConflictNoLineThrough!);
+            element.classList[hasRowConflict ? 'add' : 'remove'](styles.isConflictNoLineThrough!);
         }
 
         setConflicts(conflicts);
@@ -105,7 +128,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             element.classList.remove(styles.isConflict!);
             setConflicts([]);
         };
-    }, [activeSchedule, course, element.classList, highlightConflicts]);
+    }, [activeSchedule, course, element.classList, highlightConflicts, customTimeBlocks]);
 
     if (!container) {
         return null;
