@@ -2,13 +2,13 @@ import type { Serialized } from '@chrome-extension-toolkit';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import { generateRandomId } from '@shared/util/random';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ScheduleDropdownProps } from '@views/components/common/ScheduleDropdown';
 import ScheduleDropdown from '@views/components/common/ScheduleDropdown';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
 import { SortableList } from '@views/components/common/SortableList';
 import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { exampleSchedule } from '../injected/mocked';
 

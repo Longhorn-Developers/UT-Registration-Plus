@@ -31,6 +31,7 @@ export type SiteSupportType = (typeof SiteSupport)[keyof typeof SiteSupport];
  * @returns a list of page types that the current page is
  */
 export default function getSiteSupport(url: string): SiteSupportType | null {
+    console.debug('[UTRP] Injecting on', url);
     if (isExtensionPopup()) {
         return SiteSupport.EXTENSION_POPUP;
     }
@@ -55,8 +56,16 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
     if (url.includes('utdirect.utexas.edu') && (url.includes('waitlist') || url.includes('classlist'))) {
         return SiteSupport.WAITLIST;
     }
-    if (url.includes('my.utexas.edu/student/student/index') || url.includes('my.utexas.edu/student/')) {
-        return SiteSupport.MY_UT;
+    try {
+        const parsed = new URL(url);
+        if (
+            parsed.hostname === 'my.utexas.edu' &&
+            (parsed.pathname === '/student' || parsed.pathname.startsWith('/student/'))
+        ) {
+            return SiteSupport.MY_UT;
+        }
+    } catch {
+        // Ignore malformed URLs and continue with other matchers.
     }
     if (url.includes('registration/classlist.WBX')) {
         return SiteSupport.CLASSLIST;

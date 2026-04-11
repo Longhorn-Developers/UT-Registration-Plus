@@ -1,5 +1,4 @@
-import React from 'react';
-
+import type { JSX } from 'react';
 import { Button } from '../common/Button';
 import type { DayCode } from './types';
 import { DAY_MAPPING } from './types';

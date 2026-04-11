@@ -1,7 +1,6 @@
 import { Status } from '@shared/types/Course';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import CourseStatus from '@views/components/common/CourseStatus';
-import React from 'react';
 
 const meta = {
     title: 'Components/Common/CourseStatus',

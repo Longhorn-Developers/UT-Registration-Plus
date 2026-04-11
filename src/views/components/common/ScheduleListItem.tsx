@@ -2,26 +2,24 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
-import {
-    Circle,
-    CopySimple,
-    DotsSixVertical,
-    DotsThree,
-    PencilSimpleLine,
-    RadioButton,
-    Trash,
-} from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
-import useSchedules from '@views/hooks/useSchedules';
+import { useIsActiveSchedule } from '@views/hooks/useSchedules';
 import { LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import CircleIcon from '~icons/ph/circle';
+import CopySimpleIcon from '~icons/ph/copy-simple';
+import DotsSixVerticalBoldIcon from '~icons/ph/dots-six-vertical-bold';
+import DotsThreeBoldIcon from '~icons/ph/dots-three-bold';
+import PencilSimpleLineIcon from '~icons/ph/pencil-simple-line';
+import RadioButtonFillIcon from '~icons/ph/radio-button-fill';
+import TrashIcon from '~icons/ph/trash';
 
 import { Button } from './Button';
-import DialogProvider, { usePrompt } from './DialogProvider/DialogProvider';
+import { usePrompt } from './DialogProvider/DialogProvider';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 import Link from './Link';
 import { SortableListDragHandle } from './SortableListDragHandle';
@@ -31,7 +29,7 @@ import { SortableListDragHandle } from './SortableListDragHandle';
  */
 interface ScheduleListItemProps {
     schedule: UserSchedule;
-    onClick?: React.DOMAttributes<HTMLDivElement>['onClick'];
+    onClick?: React.DOMAttributes<HTMLButtonElement>['onClick'];
 }
 
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
@@ -40,8 +38,8 @@ const teamMembers = [...LONGHORN_DEVELOPERS_ADMINS, ...LONGHORN_DEVELOPERS_SWE];
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
-export default function ScheduleListItem({ schedule, onClick }: ScheduleListItemProps): JSX.Element {
-    const [activeSchedule] = useSchedules();
+export default function ScheduleListItem({ schedule, onClick }: ScheduleListItemProps): React.JSX.Element {
+    const isActive = useIsActiveSchedule(schedule.id);
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
     const teamMember = teamMembers[Math.floor(Math.random() * teamMembers.length)];
@@ -55,6 +53,10 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'F2' && !isEditing) {
+            e.preventDefault();
+            setIsEditing(true);
+        }
         if (e.key === 'Delete' && !isEditing) {
             // Check if any popups/dialogs are open by looking for open menu elements
             const openMenus = document.querySelectorAll('[data-headlessui-state="open"]');
@@ -68,6 +70,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
     };
 
     const editorRef = React.useRef<HTMLInputElement>(null);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: This is on purpose
     useEffect(() => {
         const editor = editorRef.current;
         setEditorValue(schedule.name);
@@ -77,8 +80,6 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
             editor.setSelectionRange(0, editor.value.length);
         }
     }, [isEditing, schedule.name, editorRef]);
-
-    const isActive = useMemo(() => activeSchedule.id === schedule.id, [activeSchedule, schedule]);
 
     const handleBlur = async () => {
         if (editorValue.trim() !== '' && editorValue.trim() !== schedule.name) {
@@ -108,7 +109,6 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                             <Text> to contact {teamMember?.name as string}.</Text>
                         </>
                     ),
-                    // eslint-disable-next-line react/no-unstable-nested-components
                     buttons: close => (
                         <Button variant='minimal' color='ut-black' onClick={close}>
                             Go Back
@@ -136,7 +136,6 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                     <Text>.</Text>
                 </>
             ),
-            // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <>
                     <Button variant='minimal' color='ut-black' onClick={close}>
@@ -145,7 +144,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                     <Button
                         variant='filled'
                         color='theme-red'
-                        icon={Trash}
+                        icon={TrashIcon}
                         onClick={() => {
                             close();
                             deleteSchedule(schedule.id);
@@ -159,39 +158,34 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
     };
 
     return (
-        <div className='h-7.5 rounded bg-white' tabIndex={0} onKeyDown={handleKeyDown}>
+        // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
+        <div className='h-7.5 rounded bg-white' tabIndex={-1} onKeyDown={handleKeyDown}>
             <div className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
                 {IS_STORYBOOK ? (
-                    <DotsSixVertical
-                        weight='bold'
-                        className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400'
-                    />
+                    <DotsSixVerticalBoldIcon className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
                 ) : (
-                    <SortableListDragHandle className='flex cursor-move items-center justify-center'>
-                        <DotsSixVertical
-                            weight='bold'
-                            className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400'
-                        />
+                    <SortableListDragHandle className='flex cursor-move items-center justify-center rounded-md'>
+                        <DotsSixVerticalBoldIcon className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
                     </SortableListDragHandle>
                 )}
-                <div className='group relative flex flex-1 items-center overflow-x-hidden'>
-                    <div
-                        className='group/circle flex flex-grow items-center gap-spacing-3 overflow-x-hidden'
+                <div className='group flex flex-1 items-center min-w-0'>
+                    <button
+                        type='button'
+                        aria-label={`Select schedule ${schedule.name}`}
+                        tabIndex={isEditing ? -1 : 0}
+                        className='group/circle flex flex-auto text-left items-center gap-3 min-w-0 rounded-md outline-offset-0!'
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         {isActive ? (
-                            <RadioButton
-                                className='h-7.5 w-7.5 shrink-0 btn-transition active:scale-95'
-                                weight='fill'
-                            />
+                            <RadioButtonFillIcon className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
                         ) : (
-                            <Circle className='h-7.5 w-7.5 shrink-0 btn-transition active:scale-95' />
+                            <CircleIcon className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
                         )}
                         {isEditing && (
                             <Text
                                 variant='p'
                                 as='input'
-                                className='mr-1 w-full flex-1 px-0.5 outline-blue-500 -ml-0.5'
+                                className='mr-1 flex-1 px-0.5 rounded -ml-0.5'
                                 value={editorValue}
                                 onChange={e => setEditorValue(e.target.value)}
                                 onKeyDown={e => {
@@ -210,70 +204,69 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         {!isEditing && (
                             <Text
                                 variant='p'
-                                className='flex-1 select-none truncate'
+                                className='select-none flex-1 min-w-0 truncate'
                                 onDoubleClick={() => setIsEditing(true)}
+                                aria-label={`${schedule.name} (F2 to rename)`}
                             >
                                 {schedule.name}
                             </Text>
                         )}
-                    </div>
-                    <DialogProvider>
-                        <Menu>
-                            <MenuButton className='invisible h-fit bg-transparent p-0 text-ut-gray btn-transition data-[open]:visible group-hover:visible'>
-                                <DotsThree weight='bold' className='h-6 w-6' />
-                            </MenuButton>
+                    </button>
+                    <Menu>
+                        <MenuButton
+                            aria-label='Schedule options'
+                            className='opacity-0 h-fit bg-transparent p-0 text-ut-gray btn-transition data-[open]:opacity-100 group-hover:opacity-100 focus:opacity-100 rounded-md'
+                        >
+                            <DotsThreeBoldIcon className='h-6 w-6' />
+                        </MenuButton>
 
-                            <MenuItems
-                                as={ExtensionRootWrapper}
-                                className={clsx([
-                                    styleResetClass,
-                                    'w-fit cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
-                                    'data-[closed]:(opacity-0 scale-95)',
-                                    'data-[enter]:(ease-out-expo duration-150)',
-                                    'data-[leave]:(ease-out duration-50)',
-                                ])}
-                                transition
-                                anchor='bottom end'
+                        <MenuItems
+                            as={ExtensionRootWrapper}
+                            className={clsx([
+                                styleResetClass,
+                                'w-fit origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 outline-none!',
+                                'data-[closed]:(opacity-0 scale-95)',
+                                'data-[enter]:(ease-out-expo duration-150)',
+                                'data-[leave]:(ease-out duration-50)',
+                            ])}
+                            transition
+                            anchor='bottom end'
+                        >
+                            <MenuItem
+                                as={Button}
+                                className='w-full flex justify-start'
+                                onClick={() => setIsEditing(true)}
+                                color='ut-black'
+                                size='small'
+                                variant='minimal'
+                                icon={PencilSimpleLineIcon}
                             >
-                                <MenuItem>
-                                    <Button
-                                        className='w-full flex justify-start'
-                                        onClick={() => setIsEditing(true)}
-                                        color='ut-black'
-                                        size='small'
-                                        variant='minimal'
-                                        icon={PencilSimpleLine}
-                                    >
-                                        Rename
-                                    </Button>
-                                </MenuItem>
-                                <MenuItem>
-                                    <Button
-                                        className='w-full flex justify-start'
-                                        onClick={() => handleDuplicateSchedule(schedule.id)}
-                                        color='ut-black'
-                                        size='small'
-                                        variant='minimal'
-                                        icon={CopySimple}
-                                    >
-                                        Duplicate
-                                    </Button>
-                                </MenuItem>
-                                <MenuItem>
-                                    <Button
-                                        className='w-full flex justify-start'
-                                        onClick={handleDelete}
-                                        color='theme-red'
-                                        size='small'
-                                        variant='minimal'
-                                        icon={Trash}
-                                    >
-                                        Delete Schedule
-                                    </Button>
-                                </MenuItem>
-                            </MenuItems>
-                        </Menu>
-                    </DialogProvider>
+                                Rename
+                            </MenuItem>
+                            <MenuItem
+                                as={Button}
+                                className='w-full flex justify-start'
+                                onClick={() => handleDuplicateSchedule(schedule.id)}
+                                color='ut-black'
+                                size='small'
+                                variant='minimal'
+                                icon={CopySimpleIcon}
+                            >
+                                Duplicate
+                            </MenuItem>
+                            <MenuItem
+                                as={Button}
+                                className='w-full flex justify-start'
+                                onClick={handleDelete}
+                                color='theme-red'
+                                size='small'
+                                variant='minimal'
+                                icon={TrashIcon}
+                            >
+                                Delete Schedule
+                            </MenuItem>
+                        </MenuItems>
+                    </Menu>
                 </div>
             </div>
         </div>

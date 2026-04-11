@@ -177,3 +177,39 @@ export type ScrapedRow = {
     element: HTMLTableRowElement;
     course: Course | null;
 };
+
+/**
+ * Constant of length of a UT course unique ID
+ * Leading zeroes
+ */
+export const UNIQUE_ID_LENGTH = 5;
+
+const SEASON_BY_CODE = {
+    '2': 'Spring',
+    '6': 'Summer',
+    '9': 'Fall',
+} as const satisfies Record<string, Semester['season']>;
+
+/**
+ * Parses a UT semester code (e.g. "20262") into a Semester object.
+ *
+ * @param code - The 5-digit semester code where the first 4 digits are the year
+ *               and the last digit identifies the season (2=Spring, 6=Summer, 9=Fall).
+ * @returns The parsed Semester, or undefined if the code is invalid.
+ *
+ * @example
+ * ```ts
+ * parseSemesterCode('20262') // { year: 2026, season: 'Spring', code: '20262' }
+ * parseSemesterCode('20259') // { year: 2025, season: 'Fall', code: '20259' }
+ * parseSemesterCode('abc')   // undefined
+ * ```
+ */
+export function parseSemesterCode(code: string): Semester | undefined {
+    if (code.length !== 5) return undefined;
+
+    const year = code.slice(0, 4);
+    const season = SEASON_BY_CODE[code[4] as keyof typeof SEASON_BY_CODE];
+    if (!season) return undefined;
+
+    return { year: Number(year), season, code };
+}

@@ -1,13 +1,13 @@
 import createSchedule from '@pages/background/lib/createSchedule';
-import { Plus } from '@phosphor-icons/react';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { Button } from '@views/components/common/Button';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
 import { SortableList } from '@views/components/common/SortableList';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
-import useSchedules, { getActiveSchedule, switchSchedule } from '@views/hooks/useSchedules';
-import React from 'react';
+import { getActiveSchedule, switchSchedule, useAllSchedules } from '@views/hooks/useSchedules';
+import { memo } from 'react';
+import PlusIcon from '~icons/ph/plus';
 
 /**
  * Renders a component that displays a list of schedules.
@@ -15,8 +15,8 @@ import React from 'react';
  * @param props - The component props.
  * @returns The rendered component.
  */
-export function CalendarSchedules() {
-    const [, schedules] = useSchedules();
+export const CalendarSchedules = memo(function CalendarSchedules() {
+    const schedules = useAllSchedules();
 
     const enforceScheduleLimit = useEnforceScheduleLimit();
     const handleAddSchedule = () => {
@@ -27,7 +27,7 @@ export function CalendarSchedules() {
 
     return (
         <div className='min-w-full w-0 flex flex-col items-center gap-y-spacing-2'>
-            <div className='m0 w-full flex items-center justify-between'>
+            <div className='m0 w-full flex items-center justify-between sticky top-0 z-10 bg-white pt-1'>
                 <Text variant='h3' className='text-nowrap text-theme-black'>
                     MY SCHEDULES
                 </Text>
@@ -37,7 +37,7 @@ export function CalendarSchedules() {
                     color='theme-black'
                     className='!p-0 btn'
                     onClick={handleAddSchedule}
-                    icon={Plus}
+                    icon={PlusIcon}
                 />
             </div>
             <div className='w-full flex flex-col'>
@@ -48,9 +48,7 @@ export function CalendarSchedules() {
                         const activeSchedule = getActiveSchedule();
                         const activeIndex = reordered.findIndex(s => s.id === activeSchedule.id);
 
-                        // don't care about the promise
-                        UserScheduleStore.set('schedules', reordered);
-                        UserScheduleStore.set('activeIndex', activeIndex);
+                        UserScheduleStore.set({ schedules: reordered, activeIndex });
                     }}
                     renderItem={schedule => (
                         <ScheduleListItem schedule={schedule} onClick={() => switchSchedule(schedule.id)} />
@@ -59,4 +57,4 @@ export function CalendarSchedules() {
             </div>
         </div>
     );
-}
+});

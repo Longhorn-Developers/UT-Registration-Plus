@@ -1,6 +1,6 @@
-import type { PropsWithChildren } from 'react';
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import type { JSX, PropsWithChildren } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 /**
  * This adds a new column to the course catalog table header.
@@ -14,7 +14,7 @@ export default function TableHead({ children }: PropsWithChildren): JSX.Element 
         container.setAttribute('scope', 'col');
         container.setAttribute('id', 'ut-registration-plus-table-head');
         const lastTableHeadCell = document.querySelector('table thead th:last-child');
-        lastTableHeadCell!.after(container);
+        lastTableHeadCell?.after(container);
         setContainer(container);
         return () => {
             container.remove();
@@ -25,5 +25,5 @@ export default function TableHead({ children }: PropsWithChildren): JSX.Element 
         return null;
     }
 
-    return ReactDOM.createPortal(<span>{children}</span>, container);
+    return createPortal(<span>{children}</span>, container);
 }

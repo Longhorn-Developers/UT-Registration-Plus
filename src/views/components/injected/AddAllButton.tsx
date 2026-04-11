@@ -2,9 +2,13 @@ import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { background } from '@shared/messages';
 import { Button } from '@views/components/common/Button';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
-import useSchedules from '@views/hooks/useSchedules';
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { getScheduleById, switchSchedule } from '@views/hooks/useSchedules';
+import type { JSX } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import createSchedule from 'src/pages/background/lib/createSchedule';
+import ArrowsClockwiseIcon from '~icons/ph/arrows-clockwise';
+import CheckIcon from '~icons/ph/check';
 
 /**
  * InjectedButton component renders a button that adds courses to UTRP from official MyUT calendar
@@ -14,13 +18,17 @@ import ReactDOM from 'react-dom';
  */
 export default function InjectedButton(): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
-    const [activeSchedule, _] = useSchedules();
+    const [importStatus, setImportStatus] = useState<'idle' | 'loading' | 'complete'>('idle');
 
     const extractCoursesFromCalendar = async () => {
-        const calendarElement = document.querySelector('#kgoui_Rcontent_I3_Rprimary_I1_Rcontent_I1_Rcontent_I0_Ritems');
+        setImportStatus('loading');
+
+        const tableElements = document.querySelectorAll('table');
+        const calendarElement = Array.from(tableElements).find(el => el.textContent?.includes('12PM'));
 
         if (!calendarElement) {
             console.error('Calendar element not found');
+            setImportStatus('idle');
             return [];
         }
 
@@ -32,29 +40,59 @@ export default function InjectedButton(): JSX.Element | null {
         const uniqueAnchorTags = Array.from(new Set(anchorTags.map(a => a.href)));
 
         // Make sure user is logged in
-        const loggedInToUT = await background.validateLoginStatus({
-            url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/',
-        });
+        const loggedInToUT = await background.validateLoginStatus();
 
-        if (loggedInToUT) {
-            for (const a of uniqueAnchorTags) {
-                // eslint-disable-next-line no-await-in-loop
-                await addCourseByURL(activeSchedule, a);
+        try {
+            if (loggedInToUT) {
+                const scheduleId = await createSchedule('Imported Schedule');
+                switchSchedule(scheduleId);
+                const newSchedule = await getScheduleById(scheduleId);
+                if (!newSchedule) {
+                    throw new Error('Failed to retrieve new schedule');
+                }
+
+                for (const a of uniqueAnchorTags) {
+                    await addCourseByURL(newSchedule, a);
+                }
+
+                setImportStatus('complete');
+                return;
             }
-        } else {
+
             // We'll allow the alert for this WIP feature
-            // eslint-disable-next-line no-alert
             window.alert('Logged into UT Registrar.');
+        } catch (error) {
+            console.error('Failed to import courses from calendar', error);
         }
+
+        setImportStatus('idle');
     };
 
-    useEffect(() => {
-        const targetElement = document.getElementById('kgoui_Rcontent_I3_Rsecondary');
+    const buttonText =
+        importStatus === 'loading'
+            ? 'Importing...'
+            : importStatus === 'complete'
+              ? 'Imported!'
+              : 'Add Courses to UT Registration+';
 
-        if (
-            targetElement &&
-            targetElement.classList.contains('kgoui_container_responsive_asymmetric2_column_secondary')
-        ) {
+    const buttonIcon =
+        importStatus === 'loading' ? ArrowsClockwiseIcon : importStatus === 'complete' ? CheckIcon : undefined;
+
+    const buttonIconProps =
+        importStatus === 'loading'
+            ? {
+                  className: 'animate-spin animate-duration-800',
+              }
+            : undefined;
+
+    useEffect(() => {
+        const targetElements = document.querySelectorAll(
+            'div.kgoui_object_region.kgoui_container_responsive_asymmetric2_column_secondary'
+        );
+        const targetElement = Array.from(targetElements).find(el => el.textContent?.includes('My Information'));
+
+        if (targetElement) {
+            console.debug('[UTRP] Injecting AddAllButton into My Information region');
             const buttonContainer = document.createElement('div');
             targetElement.appendChild(buttonContainer);
             setContainer(buttonContainer);
@@ -62,6 +100,8 @@ export default function InjectedButton(): JSX.Element | null {
             return () => {
                 buttonContainer.remove();
             };
+        } else {
+            console.debug('[UTRP] My Information region not found, AddAllButton not injected');
         }
     }, []);
 
@@ -69,10 +109,18 @@ export default function InjectedButton(): JSX.Element | null {
         return null;
     }
 
-    return ReactDOM.createPortal(
+    return createPortal(
         <ExtensionRoot>
-            <Button variant='filled' color='ut-burntorange' onClick={extractCoursesFromCalendar}>
-                Add Courses to UT Registration+
+            <Button
+                variant='filled'
+                color='ut-burntorange'
+                className='flex!'
+                onClick={extractCoursesFromCalendar}
+                disabled={importStatus !== 'idle'}
+                icon={buttonIcon}
+                iconProps={buttonIconProps}
+            >
+                {buttonText}
             </Button>
         </ExtensionRoot>,
         container

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import type { JSX } from 'react';
+import { useState } from 'react';
 
 interface DevTogglesProps {
     dynamicRendering: boolean;
@@ -50,8 +51,10 @@ export default function DevToggles({
             <div className='flex items-center justify-between text-xs text-gray-700 font-semibold'>
                 <span>Dev Controls</span>
                 <button
+                    type='button'
                     onClick={() => setIsCollapsed(prev => !prev)}
                     className='ml-2 p-1 text-gray-500 hover:text-gray-800'
+                    aria-label={isCollapsed ? 'Expand dev controls' : 'Collapse dev controls'}
                 >
                     <svg
                         xmlns='http://www.w3.org/2000/svg'
@@ -63,6 +66,7 @@ export default function DevToggles({
                         strokeWidth='2'
                         strokeLinecap='round'
                         strokeLinejoin='round'
+                        aria-hidden='true'
                     >
                         {isCollapsed ? <polyline points='6 9 12 15 18 9' /> : <polyline points='18 15 12 9 6 15' />}
                     </svg>

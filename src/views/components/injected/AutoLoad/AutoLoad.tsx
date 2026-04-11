@@ -11,7 +11,8 @@ import {
     loadNextCourseCatalogPage,
     removePaginationButtons,
 } from '@views/lib/loadNextCourseCatalogPage';
-import React, { useEffect, useState } from 'react';
+import type { JSX } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Skeleton from 'react-loading-skeleton';
 
@@ -40,11 +41,11 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
 
     useEffect(() => {
         setIsSinglePage(!getNextButton(document));
+        removePaginationButtons(document);
     }, []);
 
     useEffect(() => {
-        removePaginationButtons(document);
-        console.log(`AutoLoad is now ${status}`);
+        if (import.meta.env.DEV) console.log(`AutoLoad is now ${status}`);
         // FOR DEBUGGING
     }, [status]);
 
@@ -54,12 +55,13 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
         // fetch the next page of courses
         const [status, nextRows] = await loadNextCourseCatalogPage();
         setStatus(status);
-        if (!nextRows) {
+        if (nextRows.length === 0) {
+            console.log('AutoLoad: no more rows to load');
             return;
         }
         // scrape the courses from the page
         const ccs = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_LIST);
-        const scrapedRows = await ccs.scrape(nextRows, true);
+        const scrapedRows = ccs.scrape(nextRows, true);
 
         // add the scraped courses to the current page
         addRows(scrapedRows);
@@ -74,6 +76,7 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
             {status !== AutoLoadStatus.ERROR && (
                 <div className=''>
                     {Array.from({ length: 8 }).map(() => (
+                        // biome-ignore lint/correctness/useJsxKeyInIterable: TODO:
                         <Skeleton style={{ marginBottom: 30 }} height={40} />
                     ))}
                 </div>
@@ -82,7 +85,9 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
                 <div className={styles.error}>
                     <h2>Something went wrong</h2>
                     <p>Try refreshing the page</p>
-                    <button onClick={() => window.location.reload()}>Refresh</button>
+                    <button type='button' onClick={() => window.location.reload()}>
+                        Refresh
+                    </button>
                 </div>
             )}
         </div>,

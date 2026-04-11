@@ -136,5 +136,11 @@ export const useBirthdayCelebration = () => {
         []
     );
 
-    return { showParticles, particlesInit, particlesOptions, triggerCelebration, isBirthday };
+    return {
+        showParticles,
+        particlesInit,
+        particlesOptions,
+        triggerCelebration,
+        isBirthday,
+    };
 };

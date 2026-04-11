@@ -1,10 +1,10 @@
-import type { Icon, IconProps } from '@phosphor-icons/react';
 import type { MIMETypeValue } from '@shared/types/MIMEType';
 import type { ThemeColor } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/themeColors';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React, { useEffect, useRef, useState } from 'react';
+import type React from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 interface Props {
     className?: string;
@@ -12,8 +12,8 @@ interface Props {
     variant?: 'filled' | 'outline' | 'minimal';
     size?: 'regular' | 'small' | 'mini';
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    icon?: Icon;
-    iconProps?: IconProps;
+    icon?: React.FC<React.SVGProps<SVGSVGElement>>;
+    iconProps?: React.SVGProps<SVGSVGElement>;
     disabled?: boolean;
     title?: string;
     color: ThemeColor;
@@ -37,9 +37,10 @@ export default function FileUpload({
     color,
     accept,
     children,
-}: React.PropsWithChildren<Props>): JSX.Element {
+}: React.PropsWithChildren<Props>): React.JSX.Element {
     const Icon = icon;
     const isIconOnly = !children && !!icon;
+    const inputId = useId();
     const colorHex = getThemeColorHexByName(color);
     const colorRgb = getThemeColorRgbByName(color)?.join(' ');
     const inputRef = useRef<HTMLInputElement>(null);
@@ -66,7 +67,7 @@ export default function FileUpload({
     // ------------------------------------------------------------------
 
     // --- Local drag and drop handlers for this button only -------------
-    const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {
+    const handleDrop = (event: React.DragEvent<HTMLFieldSetElement>) => {
         event.preventDefault();
         event.stopPropagation();
         setIsDragging(false);
@@ -79,17 +80,19 @@ export default function FileUpload({
             inputRef.current.files = dataTransfer.files;
 
             // Trigger change event manually
-            onChange({ target: inputRef.current } as React.ChangeEvent<HTMLInputElement>);
+            onChange({
+                target: inputRef.current,
+            } as React.ChangeEvent<HTMLInputElement>);
         }
     };
 
-    const handleDragOver = (event: React.DragEvent<HTMLLabelElement>) => {
+    const handleDragOver = (event: React.DragEvent<HTMLFieldSetElement>) => {
         event.preventDefault();
         event.stopPropagation();
         if (!disabled) setIsDragging(true);
     };
 
-    const handleDragLeave = (event: React.DragEvent<HTMLLabelElement>) => {
+    const handleDragLeave = (event: React.DragEvent<HTMLFieldSetElement>) => {
         event.preventDefault();
         event.stopPropagation();
         setIsDragging(false);
@@ -97,53 +100,61 @@ export default function FileUpload({
     // ------------------------------------------------------------------
 
     return (
-        <label
+        <fieldset
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
-            style={{
-                ...style,
-                color: disabled ? 'ut-gray' : colorHex,
-                backgroundColor: `rgb(${colorRgb} / var(--un-bg-opacity))`,
-            }}
-            className={clsx(
-                'btn transition-colors select-none',
-                {
-                    'ring-2 ring-offset-2 ring-blue-400': isDragging && !disabled,
-                    'text-white! bg-opacity-100 hover:enabled:shadow-md active:enabled:shadow-sm shadow-black/20':
-                        variant === 'filled',
-                    'bg-opacity-0 border-current hover:enabled:bg-opacity-8 border stroke-width-[1px]':
-                        variant === 'outline',
-                    'bg-opacity-0 border-none hover:enabled:bg-opacity-8': variant === 'minimal',
-                    'h-10 gap-spacing-3 px-spacing-5': size === 'regular' && !isIconOnly,
-                    'h-10 w-10 p-spacing-2': size === 'regular' && isIconOnly,
-                    'h-[35px] gap-spacing-3 px-spacing-3': size === 'small' && !isIconOnly,
-                    'h-[35px] w-[35px] p-spacing-2': size === 'small' && isIconOnly,
-                    'h-6 p-spacing-2': size === 'mini' && !isIconOnly,
-                    'h-6 w-6 p-0': size === 'mini' && isIconOnly,
-                    'opacity-60 cursor-not-allowed': disabled,
-                },
-                className
-            )}
-            title={title}
+            className='group m-0 relative inline-flex min-w-0 border-0 p-0'
         >
-            {Icon && <Icon {...iconProps} className={clsx('h-6 w-6', iconProps?.className)} />}
-            {!isIconOnly && (
-                <Text
-                    variant={size === 'regular' ? 'h4' : 'small'}
-                    className='inline-flex translate-y-0.08 items-center gap-2'
-                >
-                    {children}
-                </Text>
-            )}
+            <label
+                htmlFor={inputId}
+                style={{
+                    ...style,
+                    color: disabled ? 'ut-gray' : colorHex,
+                    backgroundColor: `rgb(${colorRgb} / var(--un-bg-opacity))`,
+                }}
+                className={clsx(
+                    // TODO: match focus styling to rest of buttons
+                    // TODO: have active: state actually activate on click (shrink the button)
+                    'btn group-focus-within:outline group-focus-within:outline-2 group-focus-within:outline-offset-2 group-focus-within:outline-blue-400',
+                    {
+                        'ring-2 ring-offset-2 ring-blue-400': isDragging && !disabled,
+                        'text-white! bg-opacity-100 group-hover:shadow-md group-active:shadow-sm shadow-black/20':
+                            variant === 'filled',
+                        'bg-opacity-0 border-current group-hover:bg-opacity-8 border stroke-width-[1px]':
+                            variant === 'outline',
+                        'bg-opacity-0 border-none group-hover:bg-opacity-8': variant === 'minimal',
+                        'h-10 gap-spacing-3 px-spacing-5': size === 'regular' && !isIconOnly,
+                        'h-10 w-10 p-spacing-2': size === 'regular' && isIconOnly,
+                        'h-[35px] gap-spacing-3 px-spacing-3': size === 'small' && !isIconOnly,
+                        'h-[35px] w-[35px] p-spacing-2': size === 'small' && isIconOnly,
+                        'h-6 p-spacing-2': size === 'mini' && !isIconOnly,
+                        'h-6 w-6 p-0': size === 'mini' && isIconOnly,
+                        'opacity-60 cursor-not-allowed': disabled,
+                    },
+                    className
+                )}
+                title={title}
+            >
+                {Icon && <Icon {...iconProps} className={clsx('h-6 w-6', iconProps?.className)} />}
+                {!isIconOnly && (
+                    <Text
+                        variant={size === 'regular' ? 'h4' : 'small'}
+                        className='inline-flex translate-y-0.08 items-center gap-2'
+                    >
+                        {children}
+                    </Text>
+                )}
+            </label>
             <input
+                id={inputId}
                 ref={inputRef}
                 type='file'
                 {...(accept ? { accept: acceptValue } : {})}
-                className='hidden'
+                className='absolute w-0 h-0 cursor-pointer opacity-0 disabled:cursor-not-allowed'
                 disabled={disabled}
                 onChange={disabled ? undefined : onChange}
             />
-        </label>
+        </fieldset>
     );
 }

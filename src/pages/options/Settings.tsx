@@ -1,9 +1,11 @@
+import { DevStore } from '@shared/storage/DevStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import Settings from '@views/components/settings/Settings';
-import SentryProvider from '@views/contexts/SentryContext';
-import useKC_DABR_WASM from 'kc-dabr-wasm';
-import React from 'react';
+import { Suspense } from 'react';
+import { suspendUntilStoresReady } from 'src/lib/chrome-extension-toolkit/storage/createStore';
 
 /**
  * Renders the settings page for the UTRP (UT Registration Plus) extension.
@@ -12,14 +14,19 @@ import React from 'react';
  * @returns The JSX element representing the settings page.
  */
 export default function SettingsPage() {
-    useKC_DABR_WASM();
     return (
-        <SentryProvider fullInit>
-            <ExtensionRoot>
-                <DialogProvider>
-                    <Settings />
-                </DialogProvider>
-            </ExtensionRoot>
-        </SentryProvider>
+        <ExtensionRoot>
+            <DialogProvider>
+                <Suspense fallback={null}>
+                    <SettingsBootstrap />
+                </Suspense>
+            </DialogProvider>
+        </ExtensionRoot>
     );
+}
+
+function SettingsBootstrap() {
+    suspendUntilStoresReady([UserScheduleStore, OptionsStore, DevStore]);
+
+    return <Settings />;
 }

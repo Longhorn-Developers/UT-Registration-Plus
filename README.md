@@ -25,13 +25,12 @@
 
 ## Toolchain
 
-- React v20.9.0 (LTS)
-- TypeScript v5.x
-- Vite v5.x
+- Node v24 (LTS)
+- TypeScript v7.x
+- Vite v8.x
 - pnpm v10.x
 - UnoCSS
-- ESLint
-- Prettier
+- Biome
 - Storybook
 - Figma
 - Semantic-Release
@@ -41,8 +40,7 @@
 
 We recommend using the following VSCode extensions to improve your development experience:
 
-- **[ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)**: For identifying and fixing linting issues.
-- **[Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)**: For automatic code formatting.
+- **[Biome](https://marketplace.visualstudio.com/items?itemName=biomejs.biome)**: Linting and formatting
 - **[Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)**: For Tailwind CSS class autocomplete and IntelliSense.
 - **[UnoCSS](https://marketplace.visualstudio.com/items?itemName=antfu.unocss)**: For better support with UnoCSS utilities.
 
@@ -52,7 +50,7 @@ Contributions are welcome and encouraged! To get started:
 
 1. **Fork** the repository.
 2. **Create a new branch**: `git checkout -b feature/your-feature`.
-3. **Make changes** and ensure your code passes linting and formatting checks: `pnpm run lint` and `pnpm run prettier`.
+3. **Make changes** and ensure your code passes linting and formatting checks: `pnpm run lint` and `pnpm run format`.
 4. **Commit your changes** following the [Conventional Commits](#conventional-commits--branch-naming-convention) specification.
 5. **Push** your branch: `git push origin feature/your-feature`.
 6. **Open a Pull Request**.
@@ -64,16 +62,40 @@ For significant changes, it’s recommended to open an issue first to discuss th
 ### Getting Started
 
 1. Clone this repository: `git clone https://github.com/Longhorn-Developers/UT-Registration-Plus.git`
-2. **Node Version**: This project requires the Node.js version specified in `.nvmrc`. Use [nvm](https://github.com/nvm-sh/nvm) to install and manage the correct version:
-    ```bash
-    nvm install
-    nvm use
-    ```
-    _Note: Installing the wrong Node version can lead to errors during setup._
-3. Install dependencies using `pnpm` (which manages and patches dependencies):
-    ```bash
-    pnpm install
-    ```
+2. Install the required tooling. This project uses the Node.js version specified in `.nvmrc` and `pnpm` for dependency management.
+
+<details open>
+<summary>Preferred: use <a href="https://moonrepo.dev/docs/proto/install">proto</a></summary>
+
+Install `proto`, then let it provision the correct Node.js and `pnpm` versions for this repo:
+
+```bash
+proto install
+pnpm install
+```
+
+</details>
+
+<details>
+<summary>Alternative: use <a href="https://github.com/nvm-sh/nvm">nvm</a></summary>
+
+Install and use the Node.js version from `.nvmrc`:
+
+```bash
+nvm install
+nvm use
+```
+
+Then install `pnpm` by following the official install instructions at [pnpm.io/installation](https://pnpm.io/installation), or with npm after `nvm use`:
+
+```bash
+npm install --global pnpm
+pnpm install
+```
+
+_Note: Installing the wrong Node.js version can lead to setup and build errors._
+
+</details>
 
 Once set up, the extension can be built to the `dist/` directory using the following methods:
 
@@ -83,12 +105,6 @@ Once set up, the extension can be built to the `dist/` directory using the follo
     ```bash
     pnpm dev
     ```
-
-> **Note**: Injected content on UT pages may not display correctly in development mode. To develop with accurate styles, use the following command:
->
-> ```bash
-> NODE_ENV='development' pnpm run dev build --mode development -w
-> ```
 
 ### Production Builds
 
@@ -103,10 +119,6 @@ Once set up, the extension can be built to the `dist/` directory using the follo
 Use `BETA=true pnpm build` to generate a beta build.
 
 </details>
-
-### Docker
-
-This project includes a Dockerfile that allows you to build, zip, or run the extension in development mode using Docker. Refer to [Docker Dev Setup](./DOCKER_DEV_SETUP.md) to get started.
 
 ## Loading the Extension Manually
 
@@ -184,16 +196,6 @@ We maintain a strict code of conduct. By contributing, you agree to adhere to th
 
 Special thanks to the developers and contributors behind these amazing tools and libraries:
 
-- React v20.9.0 (LTS)
-- TypeScript v5.x
-- Vite v5.x
-- pnpm v10.x
-- UnoCSS
-- ESLint
-- Prettier
-- Storybook
-- Figma
-- Semantic-Release
 - [chrome-extension-toolkit](https://github.com/sghsri/chrome-extension-toolkit)
 - [UT_Grade_Parser](https://github.com/doprz/UT_Grade_Parser)
 - [eslint-plugin-import-essentials](https://github.com/doprz/eslint-plugin-import-essentials)
@@ -205,7 +207,7 @@ Special thanks to the developers and contributors behind these amazing tools and
 
 ## Activity
 
-![UT-Registration-Plus Activity](https://repobeats.axiom.co/api/embed/47930fa3916ac1b475cd63a05948c449eb5ad502.svg 'UT-Registration-Plus Repobeats analytics image')
+![UT-Registration-Plus Activity](https://repobeats.axiom.co/api/embed/47930fa3916ac1b475cd63a05948c449eb5ad502.svg "UT-Registration-Plus Repobeats analytics image")
 
 ## Star History
 

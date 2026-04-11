@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@views/components/common/Button';
 import type { PromptDialogProps } from '@views/components/common/Prompt';
 import PromptDialog from '@views/components/common/Prompt';
@@ -27,9 +27,11 @@ const PromptDialogWithButton = ({ children, ...args }: PromptDialogProps) => {
     const handleClose = () => setIsOpen(false);
     const { title, content } = args;
 
-    const childrenWithHandleClose: React.ReactElement[] = (children ?? []).map(child => {
+    const childrenWithHandleClose = (children ?? []).map(child => {
         if (child.type === Button) {
-            return React.cloneElement(child, { onClick: () => handleClose() } as React.HTMLAttributes<HTMLElement>);
+            return React.cloneElement(child, {
+                onClick: () => handleClose(),
+            } as Record<string, unknown>);
         }
         return child;
     });

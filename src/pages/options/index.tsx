@@ -1,6 +1,4 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-
+import renderRoot from '@shared/util/renderRoot';
 import SettingsPage from './Settings';
 
-createRoot(document.getElementById('root')!).render(<SettingsPage />);
+renderRoot(<SettingsPage />);

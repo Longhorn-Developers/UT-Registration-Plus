@@ -1,6 +1,4 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { ArrowsClockwise, CalendarDots, Export, FileCode, FilePng, FileText, Sidebar } from '@phosphor-icons/react';
-import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import AddCustomTimeBlockPopover from '@views/components/calendar/AddCustomTimeBlockPopover';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
@@ -8,16 +6,26 @@ import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
 import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { LargeLogo } from '@views/components/common/LogoIcon';
+import QuickAddModal from '@views/components/common/QuickAddModal';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
 import Text from '@views/components/common/Text/Text';
 import useRelativeTime from '@views/hooks/useRelativeTime';
-import useSchedules from '@views/hooks/useSchedules';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
+import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import type { JSX } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import ArrowsClockwiseIcon from '~icons/ph/arrows-clockwise';
+import CalendarDotsIcon from '~icons/ph/calendar-dots';
+import ExportIcon from '~icons/ph/export';
+import FileCodeIcon from '~icons/ph/file-code';
+import FilePngIcon from '~icons/ph/file-png';
+import FileTextIcon from '~icons/ph/file-text';
+import SidebarIcon from '~icons/ph/sidebar';
 
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
 
-interface CalendarHeaderProps {
+export interface CalendarHeaderProps {
     sidebarOpen?: boolean;
     onSidebarToggle?: () => void;
 }
@@ -27,31 +35,31 @@ interface CalendarHeaderProps {
  * @returns The JSX element representing the calendar header.
  */
 export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: CalendarHeaderProps): JSX.Element {
-    const [activeSchedule] = useSchedules();
+    const activeSchedule = useActiveSchedule();
     const lastCheckedText = useRelativeTime(activeSchedule.lastCheckedAt);
     const [isRefreshing, setIsRefreshing] = useState(false);
     // track per-schedule cooldowns so switching schedules allows immediate refresh
     const [cooldownIds, setCooldownIds] = useState<Set<string>>(new Set());
-    const [enableDataRefreshing, setEnableDataRefreshing] = useState(false);
-
-    useEffect(() => {
-        OptionsStore.get('enableDataRefreshing').then(setEnableDataRefreshing);
-        const unsubscribe = OptionsStore.subscribe('enableDataRefreshing', ({ newValue }) => {
-            setEnableDataRefreshing(newValue);
-        });
-        return () => OptionsStore.unsubscribe(unsubscribe);
-    }, []);
+    const enableDataRefreshing = OptionsStore.useStore(store => store.enableDataRefreshing);
 
     const isCooldown = cooldownIds.has(activeSchedule.id);
+    const hasRightHandSide = enableDataRefreshing;
+    const isRefreshingRef = useRef(false);
+    isRefreshingRef.current = isRefreshing;
 
-    const handleRefresh = async () => {
+    const handleRefresh = useCallback(async () => {
         setIsRefreshing(true);
         // Ensure the spinner is visible long enough to provide visual feedback
         const minSpin = new Promise(r => setTimeout(r, 400));
         try {
-            await Promise.all([background.refreshCourses({}), minSpin]);
+            await chrome.storage.session.set({ pendingRefresh: true });
+            const [success] = await Promise.all([refreshCourses(), minSpin]);
+            if (success) {
+                await chrome.storage.session.remove('pendingRefresh');
+            }
         } catch (error) {
             console.error('Failed to refresh courses:', error);
+            await chrome.storage.session.remove('pendingRefresh');
         } finally {
             setIsRefreshing(false);
             const scheduleId = activeSchedule.id;
@@ -64,12 +72,32 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 });
             }, 3000);
         }
-    };
+    }, [activeSchedule]);
+
+    // Auto-retry refresh after login redirect
+    useEffect(() => {
+        const checkPendingRefresh = async () => {
+            const { pendingRefresh } = await chrome.storage.session.get('pendingRefresh');
+            if (pendingRefresh && !isRefreshingRef.current) {
+                handleRefresh();
+            }
+        };
+
+        checkPendingRefresh();
+
+        const onVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                checkPendingRefresh();
+            }
+        };
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+    }, [handleRefresh]);
 
     return (
         <div
-            style={{ scrollbarGutter: 'stable' }}
-            className='sticky left-0 right-0 top-0 z-10 min-h-[85px] flex items-center gap-5 overflow-x-auto overflow-y-hidden bg-white pl-spacing-7 pt-spacing-5'
+            style={{ scrollbarGutter: 'auto' }}
+            className='sticky left-0 right-0 top-0 z-10 min-h-[75px] flex items-center gap-5 oveflow-x-auto overflow-y-hidden bg-white pl-spacing-7 pt-spacing-5 pb-1'
         >
             {!sidebarOpen && (
                 <Button
@@ -78,36 +106,42 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     color='theme-black'
                     onClick={onSidebarToggle}
                     className='screenshot:hidden'
-                    icon={Sidebar}
+                    icon={SidebarIcon}
                 />
             )}
 
             <LargeLogo className='hidden! screenshot:flex!' />
             <Divider className='self-center hidden! screenshot:block!' size='2.5rem' orientation='vertical' />
 
-            <div className='min-w-[11.5rem] screenshot:transform-origin-left screenshot:scale-120'>
+            <div className='truncate flex-initial min-w-[min-content] screenshot:transform-origin-left screenshot:scale-120'>
                 <ScheduleTotalHoursAndCourses
                     scheduleName={activeSchedule.name}
                     totalHours={activeSchedule.hours}
                     totalCourses={activeSchedule.courses.length}
                 />
+                {/*<div className="inline truncate min-w-0 inline-block flex-1">Hello world please truncate me</div>*/}
             </div>
             <Divider className='self-center screenshot:hidden' size='1.75rem' orientation='vertical' />
-            {/* min-w-[310px] is the value with all the buttons */}
-            <div className={clsx(styles.cqInline, 'flex flex-1 gap-5 min-w-[45x] screenshot:hidden')}>
-                <div className={clsx(styles.primaryActions, 'min-w-fit flex gap-5')}>
+            <div className={clsx(styles.cqInline, 'flex grow shrink-0 gap-5 screenshot:hidden')}>
+                <div className={clsx(styles.primaryActions, 'flex min-w-max gap-5')}>
+                    <QuickAddModal />
                     <Menu>
-                        <MenuButton className='bg-transparent'>
-                            <Button color='ut-black' size='small' variant='minimal' icon={Export}>
-                                Export
-                            </Button>
+                        <MenuButton
+                            as={Button}
+                            color='ut-black'
+                            size='small'
+                            variant='minimal'
+                            icon={ExportIcon}
+                            className='bg-transparent'
+                        >
+                            Export
                         </MenuButton>
                         <MenuItems
                             as={ExtensionRootWrapper}
                             className={clsx([
                                 styleResetClass,
                                 'mt-spacing-3',
-                                'min-w-max cursor-pointer origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none z-20',
+                                'min-w-max origin-top rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 outline-none! z-20',
                                 'data-[closed]:(opacity-0 scale-95)',
                                 'data-[enter]:(ease-out-expo duration-150)',
                                 'data-[leave]:(ease-out duration-50)',
@@ -115,53 +149,49 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             transition
                             anchor='bottom start'
                         >
-                            <MenuItem>
-                                <Button
-                                    className='w-full flex justify-start'
-                                    onClick={() => requestAnimationFrame(() => saveCalAsPng())}
-                                    color='ut-black'
-                                    size='small'
-                                    variant='minimal'
-                                    icon={FilePng}
-                                >
-                                    Save as .png
-                                </Button>
+                            <MenuItem
+                                as={Button}
+                                className='w-full flex justify-start'
+                                onClick={() => requestAnimationFrame(() => saveCalAsPng())}
+                                color='ut-black'
+                                size='small'
+                                variant='minimal'
+                                icon={FilePngIcon}
+                            >
+                                Save as .png
                             </MenuItem>
-                            <MenuItem>
-                                <Button
-                                    className='w-full flex justify-start'
-                                    onClick={saveAsCal}
-                                    color='ut-black'
-                                    size='small'
-                                    variant='minimal'
-                                    icon={CalendarDots}
-                                >
-                                    Save as .cal
-                                </Button>
+                            <MenuItem
+                                as={Button}
+                                className='w-full flex justify-start'
+                                onClick={saveAsCal}
+                                color='ut-black'
+                                size='small'
+                                variant='minimal'
+                                icon={CalendarDotsIcon}
+                            >
+                                Save as .cal
                             </MenuItem>
-                            <MenuItem>
-                                <Button
-                                    className='w-full flex justify-start'
-                                    onClick={() => handleExportJson(activeSchedule.id)}
-                                    color='ut-black'
-                                    size='small'
-                                    variant='minimal'
-                                    icon={FileCode}
-                                >
-                                    Save as .json
-                                </Button>
+                            <MenuItem
+                                as={Button}
+                                className='w-full flex justify-start'
+                                onClick={() => handleExportJson(activeSchedule.id)}
+                                color='ut-black'
+                                size='small'
+                                variant='minimal'
+                                icon={FileCodeIcon}
+                            >
+                                Save as .json
                             </MenuItem>
-                            <MenuItem>
-                                <Button
-                                    className='w-full flex justify-start'
-                                    onClick={saveAsText}
-                                    color='ut-black'
-                                    size='small'
-                                    variant='minimal'
-                                    icon={FileText}
-                                >
-                                    Save as .txt
-                                </Button>
+                            <MenuItem
+                                as={Button}
+                                className='w-full flex justify-start'
+                                onClick={saveAsText}
+                                color='ut-black'
+                                size='small'
+                                variant='minimal'
+                                icon={FileTextIcon}
+                            >
+                                Save as .txt
                             </MenuItem>
                             {/* <MenuItem>
                                 <Button color='ut-black' size='small' variant='minimal' icon={FileTxt}>
@@ -178,14 +208,10 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                         Block
                     </Button> */}
                 </div>
-                <div
-                    className={clsx(
-                        styles.secondaryActions,
-                        'min-w-fit flex flex-1 items-center justify-end gap-3 self-start'
-                    )}
-                >
+                {hasRightHandSide && <Divider className='self-center' size='1.75rem' orientation='vertical' />}
+                <div className={clsx(styles.secondaryActions, 'flex items-center gap-3 ml-auto')}>
                     {enableDataRefreshing && lastCheckedText && (
-                        <Text variant='mini' className='whitespace-nowrap text-ut-gray !font-normal'>
+                        <Text variant='mini' className='whitespace-nowrap text-theme-black/50 !font-normal'>
                             Last checked: {lastCheckedText}
                         </Text>
                     )}
@@ -194,7 +220,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             color='ut-black'
                             size='small'
                             variant='minimal'
-                            icon={ArrowsClockwise}
+                            icon={ArrowsClockwiseIcon}
                             iconProps={{
                                 className: clsx({
                                     'animate-spin animate-duration-800': isRefreshing,
@@ -207,8 +233,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                         </Button>
                     )}
                 </div>
-                {/* <Divider className='self-center' size='1.75rem' orientation='vertical' />
-                <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 justify-end gap-5')}>
+                {/* <div className={clsx(styles.secondaryActions, 'min-w-fit flex flex-1 justify-end gap-5')}>
                     <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={BookmarkSimple}>
                         Bookmarks
                     </Button>

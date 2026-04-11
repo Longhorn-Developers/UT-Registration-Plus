@@ -14,7 +14,11 @@ const REPO_NAME = 'UT-Registration-Plus';
 const CONTRIBUTORS_API_ROUTE = `/repos/${REPO_OWNER}/${REPO_NAME}/stats/contributors`;
 
 export const LONGHORN_DEVELOPERS_ADMINS = [
-    { name: 'Elie Soloveichik', role: ['LHD President', 'LHD Co-Founder'], githubUsername: 'Razboy20' },
+    {
+        name: 'Elie Soloveichik',
+        role: ['LHD President', 'LHD Co-Founder'],
+        githubUsername: 'Razboy20',
+    },
     {
         name: 'Brendan Early',
         role: ['LHD Software Engineering Director'],
@@ -29,6 +33,7 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
         name: 'Carla Garcia Leija',
         role: ['LHD UX Design Director'],
         githubUsername: 'carlagarcialeija',
+        personalWebsite: 'https://www.carlagarcialeija.com/',
     },
     {
         name: 'Kabir Ramzan',
@@ -53,13 +58,33 @@ export const LONGHORN_DEVELOPERS_SWE = [
         role: ['LHD Advisor', 'UTRP Senior SWE'],
         githubUsername: 'Samathingamajig',
     },
-    { name: 'Isaiah Rodriguez', role: ['LHD Co-Founder', 'LHD Advisor'], githubUsername: 'IsaDavRod' },
-    { name: 'Sriram Hariharan', role: ['UTRP Founder', 'LHD Alumni'], githubUsername: 'sghsri' },
-    { name: 'Preston Cook', role: ['LHD Alumni'], githubUsername: 'Preston-Cook' },
-    { name: 'Casey Charleston', role: ['LHD Alumni'], githubUsername: 'caseycharleston' },
-    { name: 'Lukas Zenick', role: ['LHD Alumni'], githubUsername: 'Lukas-Zenick' },
-    { name: 'Vinson', role: ['LHD Alumni'], githubUsername: 'vinsonzheng499' },
-    { name: 'Vivek', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
+    {
+        name: 'Isaiah Rodriguez',
+        role: ['LHD Co-Founder', 'LHD Advisor'],
+        githubUsername: 'IsaDavRod',
+    },
+    {
+        name: 'Sriram Hariharan',
+        role: ['UTRP Founder', 'LHD Alumni'],
+        githubUsername: 'sghsri',
+    },
+    {
+        name: 'Preston Cook',
+        role: ['LHD Alumni'],
+        githubUsername: 'Preston-Cook',
+    },
+    {
+        name: 'Casey Charleston',
+        role: ['LHD Alumni'],
+        githubUsername: 'caseycharleston',
+    },
+    {
+        name: 'Lukas Zenick',
+        role: ['LHD Alumni'],
+        githubUsername: 'Lukas-Zenick',
+    },
+    { name: 'Vinson Zheng', role: ['LHD Alumni'], githubUsername: 'vinsonzheng499' },
+    { name: 'Vivek Malle', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
     { name: 'Ethan Lanting', role: ['LHD Alumni'], githubUsername: 'EthanL06' },
 ] as const satisfies TeamMember[];
 
@@ -73,6 +98,43 @@ export type LD_SWE_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_SWE)[number]['
  */
 export type LD_ADMIN_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_ADMINS)[number]['githubUsername'];
 
+export const UTRP_LEADS = [
+    {
+        name: 'Margaret Cartee',
+        role: ['UTRP Product Lead'],
+        githubUsername: 'margaret-ca',
+    },
+    {
+        name: 'Hannah Ha',
+        role: ['UTRP Product Lead'],
+        githubUsername: 'songhannahha-hub',
+    },
+    {
+        name: 'Leslie Looi',
+        role: ['UTRP UX Design Lead'],
+        githubUsername: 'lesliewlooi',
+        personalWebsite: 'https://leslielooi.super.site/',
+    },
+] as const satisfies TeamMember[];
+
+export type UTRP_LEAD_GITHUB_USERNAMES = (typeof UTRP_LEADS)[number]['githubUsername'];
+
+export const UTRP_ALUMNI = [
+    {
+        name: 'Jessica Zhu',
+        role: ['LHD Alumni'],
+        githubUsername: 'zhuujessica',
+        personalWebsite: 'https://jessicazhu.work/',
+    },
+    {
+        name: 'Samhith Dharani',
+        role: ['LHD Alumni'],
+        githubUsername: '',
+    },
+] as const satisfies TeamMember[];
+
+export type UTRP_ALUMNI_GITHUB_USERNAMES = (typeof UTRP_ALUMNI)[number]['githubUsername'];
+
 /**
  * Service for fetching GitHub statistics.
  */
@@ -80,7 +142,7 @@ export class GitHubStatsService {
     private async fetchWithRetry<T>(fetchFn: () => Promise<T>, retries = 3, delay = 5000): Promise<T> {
         try {
             return await fetchFn();
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // biome-ignore lint/suspicious/noExplicitAny: TODO: type the error properly
         } catch (error: any) {
             if (retries > 0 && error.status === 202) {
                 await new Promise(resolve => setTimeout(resolve, delay));
@@ -120,7 +182,10 @@ export class GitHubStatsService {
             };
         }
 
-        await CacheStore.set('githubStats', { data: stats, dataFetched: Date.now() });
+        await CacheStore.set('githubStats', {
+            data: stats,
+            dataFetched: Date.now(),
+        });
         return stats;
     }
 
@@ -144,7 +209,10 @@ export class GitHubStatsService {
             })
         );
 
-        await CacheStore.set('githubNames', { data: names, dataFetched: Date.now() });
+        await CacheStore.set('githubNames', {
+            data: names,
+            dataFetched: Date.now(),
+        });
         return names;
     }
 

@@ -1,7 +1,8 @@
 import migrateUTRPv1Courses, { getUTRPv1Courses } from '@background/lib/migrateUTRPv1Courses';
 import Text from '@views/components/common/Text/Text';
 import { useSentryScope } from '@views/contexts/SentryContext';
-import React, { useEffect, useState } from 'react';
+import type { JSX } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from './Button';
 import { usePrompt } from './DialogProvider/DialogProvider';
@@ -11,21 +12,26 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
     const [processState, setProcessState] = useState(0);
     const [error, setError] = useState<string | undefined>(undefined);
 
-    const [sentryScope] = useSentryScope();
+    const sentryScope = useSentryScope();
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: This is on purpose
     useEffect(() => {
         const handleMigration = async () => {
             if (processState === 1) {
                 try {
-                    await chrome.storage.session.set({ pendingMigration: true });
+                    await chrome.storage.session.set({
+                        pendingMigration: true,
+                    });
                     const successful = await migrateUTRPv1Courses();
                     if (successful) {
-                        await chrome.storage.local.set({ finishedMigration: true });
+                        await chrome.storage.local.set({
+                            finishedMigration: true,
+                        });
                         await chrome.storage.session.remove('pendingMigration');
                     }
                 } catch (error) {
                     console.error(error);
-                    const sentryId = sentryScope.captureException(error);
+                    const sentryId = sentryScope?.captureException(error);
                     setError(sentryId);
                     await chrome.storage.session.remove('pendingMigration');
                     return;
@@ -41,7 +47,6 @@ function MigrationButtons({ close }: { close: () => void }): JSX.Element {
         handleMigration();
 
         // This is on purpose
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [processState]);
 
     return (
@@ -142,6 +147,7 @@ export function useMigrationDialog() {
 export function MigrationDialog(): JSX.Element {
     const showMigrationDialog = useMigrationDialog();
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: This is on purpose
     useEffect(() => {
         const checkMigration = async () => {
             // check if migration was already attempted
@@ -153,10 +159,8 @@ export function MigrationDialog(): JSX.Element {
         checkMigration();
 
         // This is on purpose
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // (not actually a useless fragment)
-    // eslint-disable-next-line react/jsx-no-useless-fragment
+    // biome-ignore lint/complexity/noUselessFragments: (not actually a useless fragment)
     return <></>;
 }

@@ -134,7 +134,11 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
             const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
 
             if (meetings.length === 0) {
-                return processAsyncCourses({ courseDeptAndInstr, status, course });
+                return processAsyncCourses({
+                    courseDeptAndInstr,
+                    status,
+                    course,
+                });
             }
 
             return meetings.flatMap(meeting => {
@@ -200,8 +204,16 @@ function processAsyncCourses({
                 courseDeptAndInstr,
                 status,
                 blockData: {
-                    calendarGridPoint: { dayIndex: -1, startIndex: -1, endIndex: -1 },
-                    componentProps: { courseDeptAndInstr, status, blockData: {} as CalendarGridCourse },
+                    calendarGridPoint: {
+                        dayIndex: -1,
+                        startIndex: -1,
+                        endIndex: -1,
+                    },
+                    componentProps: {
+                        courseDeptAndInstr,
+                        status,
+                        blockData: {} as CalendarGridCourse,
+                    },
                     course,
                     async: true,
                 },

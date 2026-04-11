@@ -1,4 +1,5 @@
 import type { ScrapedRow } from '@shared/types/Course';
+import type { JSX } from 'react';
 import { useEffect } from 'react';
 
 import styles from './TableSubheading.module.scss';
@@ -15,9 +16,11 @@ export default function TableSubheading({ row }: Props): JSX.Element | null {
     const { element } = row;
 
     useEffect(() => {
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         element.classList.add(styles.subheader!);
 
         return () => {
+            // biome-ignore lint/style/noNonNullAssertion: TODO:
             element.classList.remove(styles.subheader!);
         };
     }, [element]);

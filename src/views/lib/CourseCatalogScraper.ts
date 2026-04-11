@@ -145,14 +145,14 @@ export class CourseCatalogScraper {
     /**
      * Gets how many credit hours the course is worth
      *
-     * @param courseNumber - the course number, CS 314H
+     * @param courseNumber - the course number, 314H
      * @returns the number of credit hours the course is worth
      */
-    getCreditHours(courseNumber: string): number {
-        let creditHours = Number(courseNumber.split('')[0]);
-        const lastChar = courseNumber.slice(-1);
+    getCreditHours(courseNumberRaw: string): number {
+        const courseChars = courseNumberRaw.split('');
+        let creditHours = Number(['f', 's', 'n', 'w'].includes(courseChars[0] || '') ? courseChars[1] : courseChars[0]);
+        const lastChar = courseNumberRaw.slice(-1);
 
-        // eslint-disable-next-line default-case
         switch (lastChar) {
             case 'A':
             case 'B':
@@ -165,7 +165,7 @@ export class CourseCatalogScraper {
                 break;
         }
 
-        return creditHours;
+        return Number.isNaN(creditHours) ? 0 : creditHours;
     }
 
     /**
@@ -269,8 +269,8 @@ export class CourseCatalogScraper {
             throw new Error('Semester not found in URL');
         }
 
-        let year = Number(code.substring(0, 4));
-        let seasonCode = Number(code.substring(4, 6));
+        const year = Number(code.substring(0, 4));
+        const seasonCode = Number(code.substring(4, 6));
 
         if (!year || !seasonCode) {
             throw new Error('Invalid semester found in URL');

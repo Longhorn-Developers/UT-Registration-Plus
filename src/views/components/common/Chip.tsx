@@ -1,6 +1,6 @@
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import type React from 'react';
 
 /**
  * A type that represents the flags that a course can have
@@ -21,7 +21,8 @@ export const flagMap = {
 export type Core = 'ID' | 'C1' | 'HU' | 'GO' | 'HI' | 'SB' | 'MA' | 'N1' | 'N2' | 'VP';
 export const coreMap = {
     'First-Year Signature Course': 'ID',
-    'English Composition': 'C1',
+    'English Composition': 'C1', // pre-2026
+    Communication: 'C1',
     Humanities: 'HU',
     'American and Texas Government': 'GO',
     'U.S. History': 'HI',
@@ -46,8 +47,8 @@ type Props =
  * A reusable chip component that follows the design system of the extension.
  * @returns
  */
-export function Chip({ variant, label }: React.PropsWithChildren<Props>): JSX.Element {
-    let labelMap;
+export function Chip({ variant, label }: React.PropsWithChildren<Props>): React.JSX.Element {
+    let labelMap: Record<string, Core | Flag>;
     switch (variant) {
         case 'core':
             labelMap = coreMap;

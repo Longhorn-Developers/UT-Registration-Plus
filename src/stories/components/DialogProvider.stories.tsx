@@ -1,9 +1,9 @@
-import { ArrowsVertical } from '@phosphor-icons/react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@views/components/common/Button';
 import DialogProvider, { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import Text from '@views/components/common/Text/Text';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import ArrowsVerticalIcon from '~icons/ph/arrows-vertical';
 
 const meta = {
     title: 'Components/Common/DialogProvider',
@@ -35,7 +35,6 @@ const InnerComponent = () => {
         showDialog({
             title: 'Dialog Title',
             description: 'Dialog Description',
-            // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <Button variant='filled' color='ut-burntorange' onClick={close}>
                     Close
@@ -48,7 +47,7 @@ const InnerComponent = () => {
         <Button
             variant='filled'
             color='ut-burntorange'
-            icon={ArrowsVertical}
+            icon={ArrowsVerticalIcon}
             iconProps={{ className: 'h-4 w-4' }}
             onClick={myShow}
         >
@@ -78,7 +77,6 @@ const FiveDialogsInnerComponent = () => {
                         title: `Dialog #${i}`,
                         description:
                             'Deleting Main Schedule is permanent and will remove all added courses from that schedule.',
-                        // eslint-disable-next-line react/no-unstable-nested-components
                         buttons: close => (
                             <Button variant='filled' color='ut-burntorange' onClick={close}>
                                 Close
@@ -91,7 +89,7 @@ const FiveDialogsInnerComponent = () => {
     };
 
     return (
-        <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
+        <Button variant='filled' color='ut-burntorange' icon={ArrowsVerticalIcon} onClick={myShow}>
             Open Dialogs
         </Button>
     );
@@ -113,7 +111,6 @@ const NestedDialogsInnerComponent = () => {
         showDialog({
             title: 'Dialog Title',
             description: 'Dialog Description',
-            // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <>
                     <NestedDialogsInnerComponent />
@@ -126,7 +123,7 @@ const NestedDialogsInnerComponent = () => {
     };
 
     return (
-        <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
+        <Button variant='filled' color='ut-burntorange' icon={ArrowsVerticalIcon} onClick={myShow}>
             Open Next Dialog
         </Button>
     );
@@ -149,7 +146,6 @@ const DialogWithOnCloseInnerComponent = () => {
         showDialog({
             title: 'Dialog Title',
             description: 'Dialog Description',
-            // eslint-disable-next-line react/no-unstable-nested-components
             buttons: close => (
                 <Button variant='filled' color='ut-burntorange' onClick={close}>
                     Close
@@ -166,7 +162,7 @@ const DialogWithOnCloseInnerComponent = () => {
             <h1>
                 You closed the button below {timesClosed} {timesClosed === 1 ? 'time' : 'times'}
             </h1>
-            <Button variant='filled' color='ut-burntorange' icon={ArrowsVertical} onClick={myShow}>
+            <Button variant='filled' color='ut-burntorange' icon={ArrowsVerticalIcon} onClick={myShow}>
                 Open Dialog
             </Button>
         </>

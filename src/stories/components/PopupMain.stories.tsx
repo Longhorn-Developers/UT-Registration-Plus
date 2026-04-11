@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import PopupMain from '@views/components/PopupMain';
-import React from 'react';
 
 const meta = {
     title: 'Components/Common/PopupMain',

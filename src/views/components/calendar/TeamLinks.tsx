@@ -1,9 +1,9 @@
-import { ArrowUpRight } from '@phosphor-icons/react';
 import { CRX_PAGES } from '@shared/types/CRXPages';
-import { openReportWindow } from '@shared/util/openReportWindow';
 import Text from '@views/components/common/Text/Text';
+import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import clsx from 'clsx';
-import React from 'react';
+import type React from 'react';
+import ArrowUpRightIcon from '~icons/ph/arrow-up-right';
 
 type Props = {
     className?: string;
@@ -41,11 +41,13 @@ const links = [
  * The "From The Team" section of the calendar website
  * @returns
  */
-export default function TeamLinks({ className }: Props): JSX.Element {
+export default function TeamLinks({ className }: Props): React.JSX.Element {
+    const showReportIssueDialog = useReportIssueDialog();
+
     const handleClick = (link: LinkItem, event: React.MouseEvent) => {
         if (link.url === CRX_PAGES.REPORT) {
             event.preventDefault();
-            openReportWindow();
+            showReportIssueDialog();
         }
     };
 
@@ -62,7 +64,7 @@ export default function TeamLinks({ className }: Props): JSX.Element {
                     onClick={event => handleClick(link, event)}
                 >
                     <Text variant='p'>{link.text}</Text>
-                    <ArrowUpRight className='h-4 w-4' />
+                    <ArrowUpRightIcon className='h-4 w-4' />
                 </a>
             ))}
         </article>

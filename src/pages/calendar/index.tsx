@@ -1,8 +1,5 @@
-import 'uno.css';
-
-import React from 'react';
-import { createRoot } from 'react-dom/client';
+import renderRoot from '@shared/util/renderRoot';
 
 import CalendarMain from './CalendarMain';
 
-createRoot(document.getElementById('root')!).render(<CalendarMain />);
+renderRoot(<CalendarMain />);

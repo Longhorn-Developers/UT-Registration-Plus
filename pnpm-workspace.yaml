@@ -1,0 +1,6 @@
+blockExoticSubdeps: true
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - "@typescript/native-preview*"
+  - "@unocss/*"
+  - "unocss"

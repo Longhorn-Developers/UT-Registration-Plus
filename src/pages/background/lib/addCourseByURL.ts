@@ -1,9 +1,6 @@
 import addCourse from '@pages/background/lib/addCourse';
-import { background } from '@shared/messages';
+import { getCourseByURL } from '@pages/background/lib/getCourseByURL';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-import getCourseTableRows from '@views/lib/getCourseTableRows';
-import { SiteSupport } from '@views/lib/getSiteSupport';
 
 /**
  * Adds a course to the active schedule by fetching course details from a provided URL.
@@ -19,7 +16,6 @@ import { SiteSupport } from '@views/lib/getSiteSupport';
  */
 export async function addCourseByURL(activeSchedule: UserSchedule, link?: string): Promise<void> {
     // todo: Use a proper modal instead of a prompt
-    // eslint-disable-next-line no-param-reassign, no-alert
     if (!link) link = prompt('Enter course link') || undefined;
 
     // Exit if the user cancels the prompt
@@ -28,38 +24,17 @@ export async function addCourseByURL(activeSchedule: UserSchedule, link?: string
     }
 
     try {
-        let htmlText: string;
-        try {
-            htmlText = await background.addCourseByURL({
-                url: link,
-                method: 'GET',
-                response: 'text',
-            });
-        } catch (e) {
-            // eslint-disable-next-line no-alert
-            alert(`Failed to fetch url '${link}'`);
+        const course = await getCourseByURL(link);
+        if (!course) return;
+        if (activeSchedule.courses.some(c => c.uniqueId === course.uniqueId)) {
+            console.log('Course already exists');
             return;
         }
 
-        const doc = new DOMParser().parseFromString(htmlText, 'text/html');
-
-        const scraper = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_DETAILS, doc, link);
-        const tableRows = getCourseTableRows(doc);
-        const scrapedCourses = scraper.scrape(tableRows, false);
-
-        if (scrapedCourses.length !== 1) return;
-        const description = scraper.getDescription(doc);
-        const row = scrapedCourses[0]!;
-        const course = row.course!;
-        course.description = description;
-
-        if (activeSchedule.courses.every(c => c.uniqueId !== course.uniqueId)) {
-            console.log('Adding course');
-            await addCourse(activeSchedule.id, course);
-        } else {
-            console.log('Course already exists');
-        }
+        console.log('Adding course');
+        await addCourse(activeSchedule.id, course);
     } catch (error) {
+        alert(`Failed to fetch url '${link}'`);
         console.error('Error scraping course:', error);
     }
 }

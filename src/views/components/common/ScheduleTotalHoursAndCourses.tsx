@@ -1,5 +1,5 @@
 import Text from '@views/components/common/Text/Text';
-import React from 'react';
+import type { JSX } from 'react';
 
 /**
  * Props for ScheduleTotalHoursAndCourses
@@ -24,25 +24,19 @@ export default function ScheduleTotalHoursAndCourses({
     totalCourses,
 }: ScheduleTotalHoursAndCoursesProps): JSX.Element {
     return (
-        <div className='w-full flex flex-col items-start'>
-            <div className='max-w-full overflow-hidden'>
-                <Text className='block w-full truncate text-ut-burntorange' variant='h1' as='span'>
-                    {scheduleName}
-                </Text>
-            </div>
-            <Text variant='h3' as='div' className='flex flex-row items-center gap-2.5 text-theme-black'>
-                <Text variant='h4' as='span' className='inline text-theme-black'>
+        <div className='gap-0.5 grid'>
+            <Text className='block truncate text-theme-black flex-initial overflow-hidden' variant='h1' as='div'>
+                {scheduleName}
+            </Text>
+            <Text variant='h4' as='p' className='text-ut-burntorange inline-flex gap-3'>
+                <span>
                     {totalHours}&nbsp;
-                    <Text variant='h3' as='span' className='inline text-theme-black font-all-small-caps!'>
-                        {totalHours === 1 ? 'Hour' : 'Hours'}
-                    </Text>
-                </Text>
-                <Text variant='h4' as='span' className='inline text-theme-black'>
+                    <span className='ml-0.5 uppercase'>{totalHours === 1 ? 'Hour' : 'Hours'}</span>
+                </span>
+                <span>
                     {totalCourses}&nbsp;
-                    <Text variant='h3' as='span' className='inline text-theme-black font-all-small-caps!'>
-                        {totalCourses === 1 ? 'Course' : 'Courses'}
-                    </Text>
-                </Text>
+                    <span className='ml-0.5 uppercase'>{totalCourses === 1 ? 'Course' : 'Courses'}</span>
+                </span>
             </Text>
         </div>
     );

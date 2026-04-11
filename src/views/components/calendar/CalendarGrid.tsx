@@ -19,6 +19,7 @@ import { calculateCourseCellColumns } from './utils';
 
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
+const _DEFAULT_START_HOUR = GRID_DEFAULT_START / 60; // 8 AM
 
 interface Props {
     courseCells?: CalendarGridCourse[];
@@ -92,7 +93,7 @@ export default function CalendarGrid({
             {daysOfWeek.map(day => (
                 <div
                     // Full height with background to prevent grid lines from showing behind
-                    className='sticky top-[85px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end bg-white'
+                    className='sticky top-[75px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end bg-white'
                     key={day}
                 >
                     {/* Partial border height because that's what Isaiah wants */}
@@ -145,8 +146,8 @@ function AccountForCourseConflicts({
     // Sentry is not defined in storybook.
     // This is a valid use case for a condition hook, since IS_STORYBOOK is determined at build time,
     // it doesn't change between renders.
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [sentryScope] = IS_STORYBOOK ? [undefined] : useSentryScope();
+    // biome-ignore lint/correctness/useHookAtTopLevel: See above
+    const sentryScope = IS_STORYBOOK ? undefined : useSentryScope();
 
     //  Groups by dayIndex to identify overlaps (courses + custom blocks share column layout)
     const layoutByDay = courseCells.reduce(
@@ -155,7 +156,7 @@ function AccountForCourseConflicts({
             if (acc[dayIndex] === undefined) {
                 acc[dayIndex] = [];
             }
-            acc[dayIndex]!.push(cell);
+            acc[dayIndex]?.push(cell);
             return acc;
         },
         {} as Record<number, CalendarIntervalLayoutCell[]>

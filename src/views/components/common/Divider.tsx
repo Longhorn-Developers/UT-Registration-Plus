@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React from 'react';
+import type React from 'react';
 
 /**
  * Props for the Divider component
@@ -31,7 +31,7 @@ export type DividerProps = {
  * <Divider size="19px" orientation="horizontal" />
  * ```
  */
-export default function Divider({ className, testId, size, orientation }: DividerProps): JSX.Element {
+export default function Divider({ className, testId, size, orientation }: DividerProps): React.JSX.Element {
     const style: React.CSSProperties =
         orientation === 'horizontal'
             ? { width: size, borderBottomWidth: '1px' }

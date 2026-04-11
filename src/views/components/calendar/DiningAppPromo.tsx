@@ -1,8 +1,9 @@
-import { AppStoreLogo, ForkKnife, X as CloseIcon } from '@phosphor-icons/react';
 import { UT_DINING_APP_STORE_URL } from '@shared/util/appUrls';
 import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
-import React from 'react';
+import AppStoreLogoIcon from '~icons/ph/app-store-logo';
+import ForkKnifeIcon from '~icons/ph/fork-knife';
+import CloseIcon from '~icons/ph/x';
 
 interface DiningAppPromoProps {
     onClose: () => void;
@@ -15,7 +16,7 @@ export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
     return (
         <div className='relative min-w-[16.25rem] w-full flex items-center gap-spacing-3 border border-ut-offwhite/50 rounded p-spacing-4'>
             <div className='flex items-center justify-center'>
-                <ForkKnife className='h-6 w-6 text-ut-black' />
+                <ForkKnifeIcon className='h-6 w-6 text-ut-black' />
             </div>
             <div className='flex flex-col gap-spacing-1'>
                 <Text as='p' variant='small' className='whitespace-normal text-ut-black'>
@@ -42,7 +43,7 @@ export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
                         aria-label='Download on App Store'
                         className='text-theme-black transition-colors hover:text-ut-burntorange'
                     >
-                        <AppStoreLogo className='h-4.5 w-4.5' />
+                        <AppStoreLogoIcon className='h-4.5 w-4.5' />
                     </a>
                     {/* <a
                         href={UT_DINING_GOOGLE_PLAY_URL}

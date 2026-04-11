@@ -1,5 +1,4 @@
 import { DevStore } from '@shared/storage/DevStore';
-import useKC_DABR_WASM from 'kc-dabr-wasm';
 import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -41,7 +40,6 @@ function JSONEditor(props: JSONEditorProps) {
         } catch (e) {
             console.error(e);
 
-            // eslint-disable-next-line no-alert
             alert('Invalid JSON');
         }
     };
@@ -50,11 +48,18 @@ function JSONEditor(props: JSONEditorProps) {
         <div>
             {isEditing ? (
                 <div>
-                    <div style={{ flex: 1, marginBottom: 10, gap: 10, display: 'flex' }}>
-                        <button style={{ color: 'green' }} onClick={handleSave}>
+                    <div
+                        style={{
+                            flex: 1,
+                            marginBottom: 10,
+                            gap: 10,
+                            display: 'flex',
+                        }}
+                    >
+                        <button type='button' style={{ color: 'green' }} onClick={handleSave}>
                             Save
                         </button>
-                        <button style={{ color: 'red' }} onClick={() => setIsEditing(false)}>
+                        <button type='button' style={{ color: 'red' }} onClick={() => setIsEditing(false)}>
                             Cancel
                         </button>
                     </div>
@@ -62,7 +67,13 @@ function JSONEditor(props: JSONEditorProps) {
                 </div>
             ) : (
                 <div>
-                    <pre onClick={() => setIsEditing(true)}>{json}</pre>
+                    <button
+                        type='button'
+                        onClick={() => setIsEditing(true)}
+                        style={{ all: 'unset', cursor: 'pointer', display: 'block', width: '100%' }}
+                    >
+                        <pre>{json}</pre>
+                    </button>
                 </div>
             )}
         </div>
@@ -78,7 +89,6 @@ function DevDashboard() {
     const [localStorage, setLocalStorage] = React.useState<Record<string, unknown>>({});
     const [syncStorage, setSyncStorage] = React.useState<Record<string, unknown>>({});
     const [sessionStorage, setSessionStorage] = React.useState<Record<string, unknown>>({});
-    useKC_DABR_WASM();
 
     useEffect(() => {
         const onVisibilityChange = () => {
@@ -106,7 +116,10 @@ function DevDashboard() {
 
     // listen for changes to the chrome storage to update the local storage state displayed in the dashboard
     useEffect(() => {
-        const onChanged = (changes: chrome.storage.StorageChange, areaName: chrome.storage.AreaName) => {
+        const onChanged = (
+            changes: { [key: string]: chrome.storage.StorageChange },
+            areaName: chrome.storage.AreaName
+        ) => {
             let copy: Record<string, unknown> = {};
 
             if (areaName === 'local') {
@@ -118,7 +131,7 @@ function DevDashboard() {
             }
 
             Object.keys(changes).forEach((key: string) => {
-                copy[key] = changes[key as keyof typeof changes].newValue;
+                copy[key] = changes[key]?.newValue;
             });
 
             if (areaName === 'local') {
@@ -156,4 +169,5 @@ function DevDashboard() {
     );
 }
 
+// biome-ignore lint/style/noNonNullAssertion: This exists
 createRoot(document.getElementById('root')!).render(<DevDashboard />);

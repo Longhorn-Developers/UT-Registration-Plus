@@ -7,8 +7,10 @@ import type { UserSchedule } from '@shared/types/UserSchedule';
 import { courseConflictsWithHighlightedCustomBlocks } from '@shared/util/customTimeBlocks';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import type { JSX } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import ChartBarFillIcon from '~icons/ph/chart-bar-fill';
 
 import styles from './TableRow.module.scss';
 
@@ -67,16 +69,18 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         const portalContainer = document.createElement('td');
         // portalContainer.style.textAlign = 'right';
         const lastTableCell = element.querySelector('td:last-child');
-        lastTableCell!.after(portalContainer);
+        lastTableCell?.after(portalContainer);
         setContainer(portalContainer);
 
         return () => {
             portalContainer.remove();
+            // biome-ignore lint/style/noNonNullAssertion: TODO:
             element.classList.remove(styles.row!);
         };
     }, [element]);
 
     useEffect(() => {
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         element.classList[isSelected ? 'add' : 'remove'](styles.selectedRow!);
     }, [isSelected, element.classList]);
 
@@ -85,9 +89,11 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
         const isInSchedule = activeSchedule.containsCourse(course);
 
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         element.classList[isInSchedule ? 'add' : 'remove'](styles.inActiveSchedule!);
 
         return () => {
+            // biome-ignore lint/style/noNonNullAssertion: TODO:
             element.classList.remove(styles.inActiveSchedule!);
         };
     }, [activeSchedule, course, element.classList]);
@@ -97,7 +103,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             return;
         }
 
-        let conflicts: Course[] = [];
+        const conflicts: Course[] = [];
 
         for (const c of activeSchedule.courses) {
             if (c.uniqueId !== course.uniqueId && course.getConflicts(c).length > 0) {
@@ -113,7 +119,9 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         const hasRowConflict = conflicts.length > 0 || customCatalogConflict;
 
         // Clear conflict styling
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         element.classList.remove(styles.isConflict!);
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         element.classList.remove(styles.isConflictNoLineThrough!);
 
         if (highlightConflicts) {
@@ -125,6 +133,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         setConflicts(conflicts);
 
         return () => {
+            // biome-ignore lint/style/noNonNullAssertion: TODO:
             element.classList.remove(styles.isConflict!);
             setConflicts([]);
         };
@@ -134,18 +143,19 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         return null;
     }
 
-    return ReactDOM.createPortal(
+    return createPortal(
         <ExtensionRoot>
             <div className='relative'>
                 <button
-                    className='m1 h-6 w-6 flex items-center justify-center rounded bg-ut-burntorange color-white!'
+                    type='button'
+                    className='m1 h-6 w-6 flex items-center justify-center rounded bg-ut-burntorange color-white! cursor-pointer'
                     onClick={onClick}
                 >
-                    <ChartBar className='text-ut-white h-4 w-4' weight='fill' />
+                    <ChartBarFillIcon className='text-ut-white h-4 w-4' />
                 </button>
                 {conflicts.length > 0 && (
                     <ConflictsWithWarning
-                        className='invisible absolute left-13 top--3 text-white group-hover:visible'
+                        className='opacity-0 absolute left-13 top--3 text-white group-hover:opacity-100'
                         conflicts={conflicts}
                     />
                 )}
