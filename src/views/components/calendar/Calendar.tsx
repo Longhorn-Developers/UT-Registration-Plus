@@ -27,6 +27,11 @@ import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
 
+interface CourseRemovalUndoState {
+    scheduleId: string;
+    course: Course;
+}
+
 const CalendarSidebar = memo(function CalendarSidebar() {
     const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
     const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
@@ -102,6 +107,7 @@ export default function Calendar(): ReactNode {
     const displayBottomBar = true;
     const initialCourse = useCourseFromUrl();
     const [course, setCourse] = useState<Course | null>(initialCourse);
+    const [lastRemovedCourse, setLastRemovedCourse] = useState<CourseRemovalUndoState | null>(null);
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(initialCourse !== null);
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
     const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
@@ -140,6 +146,13 @@ export default function Calendar(): ReactNode {
     const openCourse = (course: Course) => {
         setCourse(course);
         setIsPopupOpen(true);
+    };
+
+    const handleCourseRemoved = (removedCourse: Course, scheduleId: string) => {
+        setLastRemovedCourse({
+            scheduleId,
+            course: removedCourse,
+        });
     };
 
     // --- Reset drag state when dragging leaves the window ---
@@ -288,6 +301,7 @@ export default function Calendar(): ReactNode {
                         onClose={() => setIsPopupOpen(false)}
                         open={isPopupOpen}
                         afterLeave={() => setCourse(null)}
+                        onCourseRemoved={handleCourseRemoved}
                     />
                 )}
             </div>
