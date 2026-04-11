@@ -13,8 +13,6 @@ import HeadingAndActions from './HeadingAndActions';
  */
 export interface CourseCatalogInjectedPopupProps extends DialogProps {
     course: Course;
-    // adding this to the props here, because adding it to dialogprops would be out of scope - derek
-    onCourseRemoved?: (removedCourse: Course, scheduleId: string) => void;
 }
 
 /**
@@ -27,7 +25,6 @@ export interface CourseCatalogInjectedPopupProps extends DialogProps {
  */
 function CourseCatalogInjectedPopup({
     course,
-    onCourseRemoved,
     ...rest
 }: CourseCatalogInjectedPopupProps): React.JSX.Element {
     const emptyRef = React.useRef<HTMLDivElement>(null);
@@ -40,7 +37,6 @@ function CourseCatalogInjectedPopup({
                 course={course}
                 onClose={rest.onClose as () => void}
                 activeSchedule={activeSchedule}
-                onCourseRemoved={onCourseRemoved}
             />
             <div className='overflow-y-auto px-2'>
                 <Description course={course} />

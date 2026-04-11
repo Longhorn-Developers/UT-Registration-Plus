@@ -38,6 +38,11 @@ const { openNewTab, addCourse, removeCourse, openCESPage } = background;
  */
 const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
+interface CourseRemovalUndoState {
+    scheduleId: string;
+    course: Course;
+}
+
 interface HeadingAndActionProps {
     /* The course to display */
     course: Course;
@@ -45,7 +50,6 @@ interface HeadingAndActionProps {
     activeSchedule: UserSchedule;
     /* The function to call when the popup should be closed */
     onClose: () => void;
-    onCourseRemoved?: (removedCourse: Course, scheduleId: string) => void;
 }
 
 /**
@@ -54,14 +58,12 @@ interface HeadingAndActionProps {
  * @param course - The course object containing course details.
  * @param activeSchedule - The active schedule object.
  * @param onClose - The function to close the popup.
- * @param onCourseRemoved - Function that triggers on course removal
  * @returns The rendered component.
  */
 export default function HeadingAndActions({
     course,
     activeSchedule,
     onClose,
-    onCourseRemoved,
 }: HeadingAndActionProps): React.JSX.Element {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, core } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
@@ -69,6 +71,7 @@ export default function HeadingAndActions({
     const isInCalendar = useCalendar();
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
+    const [, setLastRemovedCourse] = useState<CourseRemovalUndoState | null>(null);
     const lastCopyTime = useRef<number>(0);
     const showDialog = usePrompt();
     const getInstructorFullName = (instructor: Instructor) => instructor.toString({ format: 'first_last' });
@@ -198,8 +201,11 @@ export default function HeadingAndActions({
                 addCourse({ course, scheduleId: activeSchedule.id });
             }
         } else {
-            removeCourse({ course, scheduleId: activeSchedule.id });
-            onCourseRemoved?.(course, activeSchedule.id);
+            await removeCourse({ course, scheduleId: activeSchedule.id });
+            setLastRemovedCourse({
+                scheduleId: activeSchedule.id,
+                course,
+            });
         }
     };
 
