@@ -9,7 +9,7 @@ export default function useCustomTimeBlocks(): SerializedCustomTimeBlock[] {
     const [blocks, setBlocks] = useState<SerializedCustomTimeBlock[]>([]);
 
     useEffect(() => {
-        void UserScheduleStore.get('customTimeBlocks').then(v => setBlocks(v ?? []));
+        UserScheduleStore.get('customTimeBlocks').then(v => setBlocks(v ?? []));
 
         const unsub = UserScheduleStore.subscribe('customTimeBlocks', ({ newValue }) => {
             setBlocks(newValue ?? []);
@@ -23,6 +23,9 @@ export default function useCustomTimeBlocks(): SerializedCustomTimeBlock[] {
     return blocks;
 }
 
+/**
+ * Insert or replace one custom time block in persistent storage.
+ */
 export async function upsertCustomTimeBlock(block: SerializedCustomTimeBlock): Promise<void> {
     const blocks = (await UserScheduleStore.get('customTimeBlocks')) ?? [];
     const idx = blocks.findIndex(b => b.id === block.id);
@@ -35,6 +38,9 @@ export async function upsertCustomTimeBlock(block: SerializedCustomTimeBlock): P
     }
 }
 
+/**
+ * Remove a custom time block by id from persistent storage.
+ */
 export async function removeCustomTimeBlock(id: string): Promise<void> {
     const blocks = (await UserScheduleStore.get('customTimeBlocks')) ?? [];
     await UserScheduleStore.set(

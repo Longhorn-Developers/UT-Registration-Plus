@@ -1,7 +1,7 @@
 import type { Course, StatusType } from '@shared/types/Course';
+import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { SerializedCustomTimeBlock } from '@shared/types/CustomTimeBlock';
 import { customTimeBlockAsMeeting } from '@shared/types/CustomTimeBlock';
-import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { customTimeBlocksForSchedule } from '@shared/util/customTimeBlocks';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
@@ -19,6 +19,9 @@ const dayToNumber = {
     Sunday: 6,
 } as const satisfies Record<string, number>;
 
+/**
+ * Row/column indices for one cell on the calendar grid.
+ */
 export interface CalendarGridPoint {
     dayIndex: number;
     startIndex: number;
@@ -100,10 +103,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
     const customBlocksForActive = customTimeBlocksForSchedule(customBlocksAll, activeSchedule.id);
     const customMeetingsForBounds = customBlocksForActive.map(customTimeBlockAsMeeting);
 
-    const allMeetings = [
-        ...activeSchedule.courses.flatMap(c => c.schedule.meetings),
-        ...customMeetingsForBounds,
-    ];
+    const allMeetings = [...activeSchedule.courses.flatMap(c => c.schedule.meetings), ...customMeetingsForBounds];
 
     // go through every meeting we have and finds minimum start time with starting best so far being GRID_DEFAULT_START_MINUTES
     // this variable will go on a journey through time and space to finally be delivered to the viewable calendar grid as the start hour of the entire grid

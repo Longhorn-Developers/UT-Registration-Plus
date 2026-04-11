@@ -1,15 +1,15 @@
 import { Check, PencilSimple, Trash, X } from '@phosphor-icons/react';
-import type { SerializedCustomTimeBlock } from '@shared/types/CustomTimeBlock';
 import type { Day } from '@shared/types/CourseMeeting';
-import { Button } from '@views/components/common/Button';
-import { styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
-import SwitchButton from '@views/components/common/SwitchButton';
-import Text from '@views/components/common/Text/Text';
+import type { SerializedCustomTimeBlock } from '@shared/types/CustomTimeBlock';
 import {
     CUSTOM_BLOCK_DAY_TOGGLES,
     formatCustomBlockSubtitle,
     sortDaysByWeek,
 } from '@views/components/calendar/customTimeBlockLabels';
+import { Button } from '@views/components/common/Button';
+import { styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import SwitchButton from '@views/components/common/SwitchButton';
+import Text from '@views/components/common/Text/Text';
 import { removeCustomTimeBlock, upsertCustomTimeBlock } from '@views/hooks/useCustomTimeBlocks';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -116,7 +116,7 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
 
     return (
         <div
-            className='absolute inset-0 z-20 flex justify-center bg-ut-black/25 px-spacing-4 pt-spacing-6 pb-spacing-8'
+            className='absolute inset-0 z-20 flex justify-center bg-ut-black/25 px-spacing-4 pb-spacing-8 pt-spacing-6'
             role='presentation'
             onMouseDown={e => {
                 if (e.target === e.currentTarget) {
@@ -135,7 +135,7 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
             >
                 <div className='flex items-start justify-between gap-3'>
                     <div className='min-w-0 flex flex-1 flex-col gap-1 pr-2'>
-                        <Text id='custom-block-edit-title' variant='h4' className='font-semibold text-ut-black'>
+                        <Text id='custom-block-edit-title' variant='h4' className='text-ut-black font-semibold'>
                             {title.trim() || 'Custom block'}
                         </Text>
                         {subtitle ? (
@@ -160,7 +160,9 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
                             type='button'
                             className='rounded p-2 text-ut-gray transition hover:bg-ut-offwhite/40 hover:text-theme-red'
                             aria-label='Delete block'
-                            onClick={() => void handleDelete()}
+                            onClick={() => {
+                                handleDelete().catch(() => undefined);
+                            }}
                         >
                             <Trash className='h-5 w-5' />
                         </button>
@@ -182,7 +184,7 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
                         value={title}
                         onChange={e => setTitle(e.target.value)}
                         placeholder='Enter Block Name...'
-                        className='h-10 min-w-0 flex-1 border-b border-ut-offwhite/80 bg-transparent text-sm outline-none transition placeholder:text-ut-gray/70 focus:border-ut-burntorange'
+                        className='h-10 min-w-0 flex-1 border-b border-ut-offwhite/80 bg-transparent text-sm outline-none transition focus:border-ut-burntorange placeholder:text-ut-gray/70'
                     />
                 </div>
 
@@ -195,7 +197,7 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
                             value={startTime}
                             disabled={allDay}
                             onChange={e => setStartTime(e.target.value)}
-                            className='h-10 min-w-[6.5rem] flex-1 rounded border border-ut-offwhite/80 px-2 text-sm outline-none enabled:focus:border-ut-burntorange disabled:cursor-not-allowed disabled:bg-ut-offwhite/20 disabled:opacity-60'
+                            className='h-10 min-w-[6.5rem] flex-1 border border-ut-offwhite/80 rounded px-2 text-sm outline-none disabled:cursor-not-allowed disabled:bg-ut-offwhite/20 disabled:opacity-60 enabled:focus:border-ut-burntorange'
                         />
                         <Text variant='small' className='shrink-0 text-ut-gray'>
                             —
@@ -206,7 +208,7 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
                             value={endTime}
                             disabled={allDay}
                             onChange={e => setEndTime(e.target.value)}
-                            className='h-10 min-w-[6.5rem] flex-1 rounded border border-ut-offwhite/80 px-2 text-sm outline-none enabled:focus:border-ut-burntorange disabled:cursor-not-allowed disabled:bg-ut-offwhite/20 disabled:opacity-60'
+                            className='h-10 min-w-[6.5rem] flex-1 border border-ut-offwhite/80 rounded px-2 text-sm outline-none disabled:cursor-not-allowed disabled:bg-ut-offwhite/20 disabled:opacity-60 enabled:focus:border-ut-burntorange'
                         />
                     </div>
                     <label className='flex cursor-pointer items-center gap-2 pl-8'>
@@ -230,7 +232,7 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
 
                 <div className='flex flex-wrap items-start gap-3'>
                     <span className='w-5 shrink-0' aria-hidden />
-                    <div className='flex min-w-0 flex-1 flex-wrap gap-2'>
+                    <div className='min-w-0 flex flex-1 flex-wrap gap-2'>
                         {CUSTOM_BLOCK_DAY_TOGGLES.map(({ label, day }) => {
                             const on = days.includes(day);
                             return (
@@ -257,7 +259,7 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
                 </div>
 
                 <div className='flex flex-col gap-spacing-4 border-t border-ut-offwhite/50 pt-spacing-5'>
-                    <Text variant='mini' className='font-semibold tracking-wide text-ut-gray uppercase'>
+                    <Text variant='mini' className='text-ut-gray font-semibold tracking-wide uppercase'>
                         Advanced options
                     </Text>
                     <div className='flex flex-col gap-spacing-4'>
@@ -271,7 +273,10 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
                             <Text variant='small' className='max-w-[14rem] font-semibold'>
                                 Conflict highlight
                             </Text>
-                            <SwitchButton isChecked={highlightCatalogConflicts} onChange={setHighlightCatalogConflicts} />
+                            <SwitchButton
+                                isChecked={highlightCatalogConflicts}
+                                onChange={setHighlightCatalogConflicts}
+                            />
                         </div>
                     </div>
                 </div>
@@ -289,7 +294,9 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
                         size='small'
                         variant='filled'
                         icon={Check}
-                        onClick={() => void handleSave()}
+                        onClick={() => {
+                            handleSave().catch(() => undefined);
+                        }}
                     >
                         Save
                     </Button>

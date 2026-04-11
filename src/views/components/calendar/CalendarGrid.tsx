@@ -19,7 +19,6 @@ import { calculateCourseCellColumns } from './utils';
 
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
-const DEFAULT_START_HOUR = GRID_DEFAULT_START / 60; // 8 AM
 
 interface Props {
     courseCells?: CalendarGridCourse[];

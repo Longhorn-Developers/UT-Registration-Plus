@@ -27,7 +27,7 @@ export default function CalendarCustomBlockCell({
                 className
             )}
         >
-            <Text variant='h1-course' as='p' className='leading-tight! truncate text-ut-black'>
+            <Text variant='h1-course' as='p' className='truncate text-ut-black leading-tight!'>
                 {title}
             </Text>
             <Text variant='h3-course' as='p' className='whitespace-pre-line text-ut-black'>

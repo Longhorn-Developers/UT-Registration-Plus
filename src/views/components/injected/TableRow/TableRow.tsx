@@ -50,7 +50,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     }, []);
 
     useEffect(() => {
-        void UserScheduleStore.get('customTimeBlocks').then(v => setCustomTimeBlocks(v ?? []));
+        UserScheduleStore.get('customTimeBlocks').then(v => setCustomTimeBlocks(v ?? []));
 
         const unsub = UserScheduleStore.subscribe('customTimeBlocks', ({ newValue }) => {
             setCustomTimeBlocks(newValue ?? []);

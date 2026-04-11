@@ -1,8 +1,8 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ArrowsClockwise, CalendarDots, Export, FileCode, FilePng, FileText, Sidebar } from '@phosphor-icons/react';
-import AddCustomTimeBlockPopover from '@views/components/calendar/AddCustomTimeBlockPopover';
 import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
+import AddCustomTimeBlockPopover from '@views/components/calendar/AddCustomTimeBlockPopover';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';

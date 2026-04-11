@@ -10,8 +10,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
-import EditCustomTimeBlockOverlay from '@views/components/calendar/EditCustomTimeBlockOverlay';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
+import EditCustomTimeBlockOverlay from '@views/components/calendar/EditCustomTimeBlockOverlay';
 import ResourceLinks from '@views/components/calendar/ResourceLinks';
 import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
@@ -22,7 +22,7 @@ import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSched
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
@@ -67,13 +67,16 @@ export default function Calendar(): ReactNode {
         },
     });
 
+    const activeScheduleRef = useRef(activeSchedule);
+    activeScheduleRef.current = activeSchedule;
+
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
             async openCoursePopup({ data, sendResponse }) {
-                const course = activeSchedule.courses.find(course => course.uniqueId === data.uniqueId);
-                if (course === undefined) return;
+                const found = activeScheduleRef.current.courses.find(c => c.uniqueId === data.uniqueId);
+                if (found === undefined) return;
 
-                setCourse(course);
+                setCourse(found);
                 setShowPopup(true);
 
                 const currentTab = await chrome.tabs.getCurrent();
@@ -85,7 +88,7 @@ export default function Calendar(): ReactNode {
         listener.listen();
 
         return () => listener.unlisten();
-    }, [activeSchedule]);
+    }, []);
 
     useEffect(() => {
         if (course) setShowPopup(true);
@@ -307,9 +310,12 @@ export default function Calendar(): ReactNode {
                             }}
                         />
                         <div
-                            className={clsx('relative min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl', {
-                                'screenshot:flex-grow-0': displayBottomBar, // html-to-image seems to have a bug with flex-grow
-                            })}
+                            className={clsx(
+                                'relative min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl',
+                                {
+                                    'screenshot:flex-grow-0': displayBottomBar, // html-to-image seems to have a bug with flex-grow
+                                }
+                            )}
                         >
                             {editingCustomBlock && (
                                 <EditCustomTimeBlockOverlay

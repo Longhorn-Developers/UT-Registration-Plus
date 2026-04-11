@@ -10,16 +10,13 @@ import {
     Prohibit,
     SelectionPlus,
 } from '@phosphor-icons/react';
-import type { SerializedCustomTimeBlock } from '@shared/types/CustomTimeBlock';
 import type { Day } from '@shared/types/CourseMeeting';
+import type { SerializedCustomTimeBlock } from '@shared/types/CustomTimeBlock';
 import { generateRandomId } from '@shared/util/random';
+import { CUSTOM_BLOCK_DAY_TOGGLES, sortDaysByWeek } from '@views/components/calendar/customTimeBlockLabels';
 import { Button } from '@views/components/common/Button';
 import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import Text from '@views/components/common/Text/Text';
-import {
-    CUSTOM_BLOCK_DAY_TOGGLES,
-    sortDaysByWeek,
-} from '@views/components/calendar/customTimeBlockLabels';
 import { upsertCustomTimeBlock } from '@views/hooks/useCustomTimeBlocks';
 import clsx from 'clsx';
 import React, { useCallback, useState } from 'react';
@@ -49,12 +46,7 @@ function OptionCheckbox({
 }): JSX.Element {
     return (
         <label className='flex cursor-pointer items-start gap-3'>
-            <input
-                type='checkbox'
-                className='sr-only'
-                checked={checked}
-                onChange={e => onChange(e.target.checked)}
-            />
+            <input type='checkbox' className='sr-only' checked={checked} onChange={e => onChange(e.target.checked)} />
             <span
                 className={clsx(
                     'mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors',
@@ -64,8 +56,8 @@ function OptionCheckbox({
                 {checked && <Check className='h-3 w-3 text-white' weight='bold' />}
             </span>
             <IconComponent className='mt-0.25 h-5 w-5 shrink-0 text-ut-gray' />
-            <span className='flex min-w-0 flex-1 flex-col gap-0.5'>
-                <Text variant='small' className='font-semibold text-ut-black'>
+            <span className='min-w-0 flex flex-1 flex-col gap-0.5'>
+                <Text variant='small' className='text-ut-black font-semibold'>
                     {title}
                 </Text>
                 {description ? (
@@ -170,7 +162,7 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
                                 value={title}
                                 onChange={e => setTitle(e.target.value)}
                                 placeholder='Enter Block Name...'
-                                className='h-10 min-w-0 flex-1 border-b border-ut-offwhite/80 bg-transparent text-sm outline-none transition placeholder:text-ut-gray/70 focus:border-ut-burntorange'
+                                className='h-10 min-w-0 flex-1 border-b border-ut-offwhite/80 bg-transparent text-sm outline-none transition focus:border-ut-burntorange placeholder:text-ut-gray/70'
                             />
                         </div>
 
@@ -183,7 +175,7 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
                                     value={startTime}
                                     disabled={allDay}
                                     onChange={e => setStartTime(e.target.value)}
-                                    className='h-10 min-w-[6.5rem] flex-1 rounded border border-ut-offwhite/80 px-2 text-sm outline-none enabled:focus:border-ut-burntorange disabled:cursor-not-allowed disabled:bg-ut-offwhite/20 disabled:opacity-60'
+                                    className='h-10 min-w-[6.5rem] flex-1 border border-ut-offwhite/80 rounded px-2 text-sm outline-none disabled:cursor-not-allowed disabled:bg-ut-offwhite/20 disabled:opacity-60 enabled:focus:border-ut-burntorange'
                                 />
                                 <Text variant='small' className='shrink-0 text-ut-gray'>
                                     —
@@ -194,7 +186,7 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
                                     value={endTime}
                                     disabled={allDay}
                                     onChange={e => setEndTime(e.target.value)}
-                                    className='h-10 min-w-[6.5rem] flex-1 rounded border border-ut-offwhite/80 px-2 text-sm outline-none enabled:focus:border-ut-burntorange disabled:cursor-not-allowed disabled:bg-ut-offwhite/20 disabled:opacity-60'
+                                    className='h-10 min-w-[6.5rem] flex-1 border border-ut-offwhite/80 rounded px-2 text-sm outline-none disabled:cursor-not-allowed disabled:bg-ut-offwhite/20 disabled:opacity-60 enabled:focus:border-ut-burntorange'
                                 />
                             </div>
                             <label className='flex cursor-pointer items-center gap-2 pl-8'>
@@ -207,7 +199,9 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
                                 <span
                                     className={clsx(
                                         'flex h-5 w-5 items-center justify-center rounded border-2 transition-colors',
-                                        allDay ? 'border-ut-burntorange bg-ut-burntorange' : 'border-ut-gray/50 bg-white'
+                                        allDay
+                                            ? 'border-ut-burntorange bg-ut-burntorange'
+                                            : 'border-ut-gray/50 bg-white'
                                     )}
                                 >
                                     {allDay && <Check className='h-3 w-3 text-white' weight='bold' />}
@@ -219,7 +213,7 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
                         <div className='flex flex-col gap-spacing-3'>
                             <div className='flex flex-wrap items-start gap-3'>
                                 <CalendarBlank className='mt-0.5 h-5 w-5 shrink-0 text-ut-gray' aria-hidden />
-                                <div className='flex min-w-0 flex-1 flex-wrap gap-2'>
+                                <div className='min-w-0 flex flex-1 flex-wrap gap-2'>
                                     {CUSTOM_BLOCK_DAY_TOGGLES.map(({ label, day }) => {
                                         const on = days.includes(day);
                                         return (
@@ -247,7 +241,7 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
                         </div>
 
                         <div className='flex flex-col gap-spacing-4 border-t border-ut-offwhite/50 pt-spacing-5'>
-                            <Text variant='mini' className='font-semibold tracking-wide text-ut-gray uppercase'>
+                            <Text variant='mini' className='text-ut-gray font-semibold tracking-wide uppercase'>
                                 Advanced options
                             </Text>
                             <div className='flex flex-col gap-spacing-4'>
@@ -281,7 +275,9 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
                                 size='small'
                                 variant='filled'
                                 icon={Plus}
-                                onClick={() => void handleSubmit(close)}
+                                onClick={() => {
+                                    handleSubmit(close).catch(() => undefined);
+                                }}
                             >
                                 Add Block
                             </Button>
