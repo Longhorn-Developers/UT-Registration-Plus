@@ -5,7 +5,7 @@
         "target": "esnext",
         "module": "esnext",
         "noEmit": true,
-        "jsx": "react",
+        "jsx": "react-jsx",
         "typeRoots": ["./node_modules/@types", "@types"],
         "skipLibCheck": true,
         "esModuleInterop": true,

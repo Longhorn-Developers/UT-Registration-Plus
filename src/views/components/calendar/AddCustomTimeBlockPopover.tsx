@@ -19,7 +19,7 @@ import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/
 import Text from '@views/components/common/Text/Text';
 import { upsertCustomTimeBlock } from '@views/hooks/useCustomTimeBlocks';
 import clsx from 'clsx';
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 function parseTimeToMinutes(value: string): number | null {
     const parts = value.split(':').map(Number);

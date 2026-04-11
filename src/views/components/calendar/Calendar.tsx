@@ -21,8 +21,8 @@ import useCustomTimeBlocks from '@views/hooks/useCustomTimeBlocks';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
 import clsx from 'clsx';
-import type { ReactNode } from 'react';
-import React, { useEffect, useRef, useState } from 'react';
+import type { DragEvent, ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
@@ -113,7 +113,7 @@ export default function Calendar(): ReactNode {
     // --- Reset drag state when dragging leaves the window ---
     // TODO - Refactor this and FileUpload.tsx, they use similar things and it would be optimal later on to maybe extract this all somewhere
     useEffect(() => {
-        const handleGlobalDragLeave = (e: DragEvent) => {
+        const handleGlobalDragLeave = (e: globalThis.DragEvent) => {
             // Reset drag state when leaving the window entirely
             if (e.clientX === 0 && e.clientY === 0) {
                 setIsDraggingFile(false);
@@ -128,7 +128,7 @@ export default function Calendar(): ReactNode {
     }, []);
 
     // --- Drag and drop handlers for calendar page ---
-    const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDragEnter = (event: DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
         const { items } = event.dataTransfer;
@@ -145,12 +145,12 @@ export default function Calendar(): ReactNode {
         }
     };
 
-    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
     };
 
-    const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDragLeave = (event: DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
 
@@ -162,7 +162,7 @@ export default function Calendar(): ReactNode {
         }
     };
 
-    const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDrop = async (event: DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
         setIsDraggingFile(false);
@@ -336,14 +336,14 @@ export default function Calendar(): ReactNode {
                     </div>
                 </div>
 
-                <CourseCatalogInjectedPopup
-                    // Ideally let's not use ! here, but it's fine since we know course is always defined when showPopup is true
-                    // Let's try to refactor this
-                    course={course!} // always defined when showPopup is true
-                    onClose={() => setShowPopup(false)}
-                    open={showPopup}
-                    afterLeave={() => setCourse(null)}
-                />
+                {course !== null && (
+                    <CourseCatalogInjectedPopup
+                        course={course}
+                        onClose={() => setShowPopup(false)}
+                        open={showPopup}
+                        afterLeave={() => setCourse(null)}
+                    />
+                )}
             </div>
         </CalendarContext.Provider>
     );

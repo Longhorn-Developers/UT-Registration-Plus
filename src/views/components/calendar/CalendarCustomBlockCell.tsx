@@ -1,11 +1,11 @@
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import type { MouseEventHandler } from 'react';
 
 interface CalendarCustomBlockCellProps {
     title: string;
     time: string;
-    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+    onClick?: MouseEventHandler<HTMLButtonElement>;
     className?: string;
 }
 

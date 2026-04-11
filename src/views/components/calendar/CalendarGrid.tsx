@@ -12,7 +12,8 @@ import {
     GRID_DEFAULT_END,
     GRID_DEFAULT_START,
 } from '@views/hooks/useFlattenedCourseSchedule';
-import React, { Fragment } from 'react';
+import type { Dispatch, PropsWithChildren, SetStateAction } from 'react';
+import { Fragment } from 'react';
 
 import CalendarCell from './CalendarGridCell';
 import { calculateCourseCellColumns } from './utils';
@@ -26,7 +27,7 @@ interface Props {
     startMinutes?: number;
     endMinutes?: number;
     saturdayClass?: boolean;
-    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
+    setCourse: Dispatch<SetStateAction<Course | null>>;
     onCustomBlockClick?: (block: SerializedCustomTimeBlock) => void;
 }
 
@@ -41,7 +42,10 @@ function CalendarHour({ hour }: { hour: number }) {
 }
 
 function makeGridRow(row: number, cols: number, hoursOfDay: number[]): JSX.Element {
-    const hour = hoursOfDay[row]!;
+    const hour = hoursOfDay[row];
+    if (hour === undefined) {
+        return <Fragment key={row} />;
+    }
 
     return (
         <Fragment key={row}>
@@ -70,7 +74,7 @@ export default function CalendarGrid({
     startMinutes,
     endMinutes,
     onCustomBlockClick,
-}: React.PropsWithChildren<Props>): JSX.Element {
+}: PropsWithChildren<Props>): JSX.Element {
     // there was a huge mishap with 6 am start time calc here and now it is smoothly done
     // let's try to keep our codebase organized and not so all over the place
     const visualStartHour = Math.floor((startMinutes ?? GRID_DEFAULT_START) / 60);
@@ -130,7 +134,7 @@ export default function CalendarGrid({
 interface AccountForCourseConflictsProps {
     courseCells: CalendarGridCourse[];
     customBlockCells?: CalendarGridCustomBlockCell[];
-    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
+    setCourse: Dispatch<SetStateAction<Course | null>>;
     onCustomBlockClick?: (block: SerializedCustomTimeBlock) => void;
 }
 
@@ -152,10 +156,8 @@ function AccountForCourseConflicts({
     const layoutByDay = courseCells.reduce(
         (acc, cell: CalendarGridCourse) => {
             const { dayIndex } = cell.calendarGridPoint;
-            if (acc[dayIndex] === undefined) {
-                acc[dayIndex] = [];
-            }
-            acc[dayIndex]!.push(cell);
+            const bucket = acc[dayIndex] ?? (acc[dayIndex] = []);
+            bucket.push(cell);
             return acc;
         },
         {} as Record<number, CalendarIntervalLayoutCell[]>
@@ -163,10 +165,8 @@ function AccountForCourseConflicts({
 
     for (const cell of customBlockCells) {
         const { dayIndex } = cell.calendarGridPoint;
-        if (layoutByDay[dayIndex] === undefined) {
-            layoutByDay[dayIndex] = [];
-        }
-        layoutByDay[dayIndex]!.push(cell);
+        const bucket = layoutByDay[dayIndex] ?? (layoutByDay[dayIndex] = []);
+        bucket.push(cell);
     }
 
     // Check for overlaps within each day and adjust gridColumnIndex and totalColumns

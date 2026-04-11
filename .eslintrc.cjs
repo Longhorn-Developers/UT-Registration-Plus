@@ -50,6 +50,7 @@ module.exports = {
     settings: {
         react: {
             version: 'detect',
+            runtime: 'automatic',
         },
         jsdoc: {
             mode: 'typescript',
