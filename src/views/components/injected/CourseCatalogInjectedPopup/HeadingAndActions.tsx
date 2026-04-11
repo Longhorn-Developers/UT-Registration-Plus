@@ -45,6 +45,7 @@ interface HeadingAndActionProps {
     activeSchedule: UserSchedule;
     /* The function to call when the popup should be closed */
     onClose: () => void;
+    onCourseRemoved?: (removedCourse: Course, scheduleId: string) => void;
 }
 
 /**
@@ -53,12 +54,14 @@ interface HeadingAndActionProps {
  * @param course - The course object containing course details.
  * @param activeSchedule - The active schedule object.
  * @param onClose - The function to close the popup.
+ * @param onCourseRemoved - Function that triggers on course removal
  * @returns The rendered component.
  */
 export default function HeadingAndActions({
     course,
     activeSchedule,
     onClose,
+    onCourseRemoved,
 }: HeadingAndActionProps): React.JSX.Element {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, core } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
@@ -196,6 +199,7 @@ export default function HeadingAndActions({
             }
         } else {
             removeCourse({ course, scheduleId: activeSchedule.id });
+            onCourseRemoved?.(course, activeSchedule.id);
         }
     };
 

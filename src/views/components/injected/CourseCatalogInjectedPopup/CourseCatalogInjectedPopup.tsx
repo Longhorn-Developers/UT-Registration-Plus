@@ -25,14 +25,23 @@ export interface CourseCatalogInjectedPopupProps extends DialogProps {
  * @param onClose - The function to close the popup.
  * @returns The CourseCatalogInjectedPopup component.
  */
-function CourseCatalogInjectedPopup({ course, ...rest }: CourseCatalogInjectedPopupProps): React.JSX.Element {
+function CourseCatalogInjectedPopup({
+    course,
+    onCourseRemoved,
+    ...rest
+}: CourseCatalogInjectedPopupProps): React.JSX.Element {
     const emptyRef = React.useRef<HTMLDivElement>(null);
     const activeSchedule = useActiveSchedule();
 
     return (
         <Dialog className='max-w-[780px] overflow-y-hidden px-4' {...rest} appear initialFocus={emptyRef}>
             <div className='hidden' ref={emptyRef} />
-            <HeadingAndActions course={course} onClose={rest.onClose as () => void} activeSchedule={activeSchedule} />
+            <HeadingAndActions
+                course={course}
+                onClose={rest.onClose as () => void}
+                activeSchedule={activeSchedule}
+                onCourseRemoved={onCourseRemoved}
+            />
             <div className='overflow-y-auto px-2'>
                 <Description course={course} />
                 <GradeDistribution course={course} />
