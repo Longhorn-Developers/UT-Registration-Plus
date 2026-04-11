@@ -13,6 +13,9 @@ import HeadingAndActions from './HeadingAndActions';
  */
 export interface CourseCatalogInjectedPopupProps extends DialogProps {
     course: Course;
+    // adding this to the props here, because adding it to dialogprops would be out of scope - derek
+    onCourseRemoved?: (removedCourse: Course, scheduleId: string) => void;
+
 }
 
 /**
