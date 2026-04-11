@@ -1,6 +1,7 @@
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import Text from '@views/components/common/Text/Text';
 import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
+import type { JSX } from 'react';
 
 /**
  * Props for ScheduleTotalHoursAndCourses

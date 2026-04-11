@@ -1,4 +1,3 @@
-import type { Icon, IconProps } from '@phosphor-icons/react';
 import type { MIMETypeValue } from '@shared/types/MIMEType';
 import type { ThemeColor } from '@shared/types/ThemeColors';
 import { getThemeColorHexByName, getThemeColorRgbByName } from '@shared/util/themeColors';
@@ -13,8 +12,8 @@ interface Props {
     variant?: 'filled' | 'outline' | 'minimal';
     size?: 'regular' | 'small' | 'mini';
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    icon?: Icon;
-    iconProps?: IconProps;
+    icon?: React.FC<React.SVGProps<SVGSVGElement>>;
+    iconProps?: React.SVGProps<SVGSVGElement>;
     disabled?: boolean;
     title?: string;
     color: ThemeColor;
@@ -38,7 +37,7 @@ export default function FileUpload({
     color,
     accept,
     children,
-}: React.PropsWithChildren<Props>): JSX.Element {
+}: React.PropsWithChildren<Props>): React.JSX.Element {
     const Icon = icon;
     const isIconOnly = !children && !!icon;
     const inputId = useId();

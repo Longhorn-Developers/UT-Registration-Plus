@@ -1,5 +1,4 @@
-import { ClockUser, LockKey, Palette, Prohibit } from '@phosphor-icons/react';
-import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import { hexToRGB, pickFontColor } from '@shared/util/colors';
@@ -8,7 +7,11 @@ import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
 import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import ClockUserFillIcon from '~icons/ph/clock-user-fill';
+import LockKeyFillIcon from '~icons/ph/lock-key-fill';
+import PaletteFillIcon from '~icons/ph/palette-fill';
+import ProhibitFillIcon from '~icons/ph/prohibit-fill';
 
 import { Button } from '../common/Button';
 import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellColorPicker';
@@ -20,7 +23,7 @@ export interface CalendarCourseCellProps {
     courseDeptAndInstr: string;
     timeAndLocation?: string;
     status: StatusType;
-    onClick?: React.MouseEventHandler<HTMLDivElement>;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
     blockData: CalendarGridCourse;
     className?: string;
 }
@@ -42,8 +45,8 @@ export default function CalendarCourseCell({
     onClick,
     blockData,
     className,
-}: CalendarCourseCellProps): JSX.Element {
-    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
+}: CalendarCourseCellProps): React.JSX.Element {
+    const enableCourseStatusChips = OptionsStore.useStore(store => store.enableCourseStatusChips);
     const colorPickerRef = useRef<HTMLDivElement>(null);
     const { selectedColor, setSelectedCourse, handleCloseColorPicker, isSelectedBlock, isSelectedCourse } =
         useColorPickerContext();
@@ -58,19 +61,6 @@ export default function CalendarCourseCell({
         selectedCourse = isSelectedCourse(courseID);
         selectedBlock = isSelectedBlock(courseID, dayIndex, startIndex);
     }
-
-    useEffect(() => {
-        initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
-
-        const l1 = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
-        });
-
-        return () => {
-            OptionsStore.unsubscribe(l1);
-        };
-    }, []);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -95,11 +85,11 @@ export default function CalendarCourseCell({
     let rightIcon: React.ReactNode | null = null;
     if (enableCourseStatusChips) {
         if (status === Status.WAITLISTED) {
-            rightIcon = <ClockUser weight='fill' className='h-5 w-5' />;
+            rightIcon = <ClockUserFillIcon className='h-5 w-5' />;
         } else if (status === Status.CLOSED) {
-            rightIcon = <LockKey weight='fill' className='h-5 w-5' />;
+            rightIcon = <LockKeyFillIcon className='h-5 w-5' />;
         } else if (status === Status.CANCELLED) {
-            rightIcon = <Prohibit weight='fill' className='h-5 w-5' />;
+            rightIcon = <ProhibitFillIcon className='h-5 w-5' />;
         }
     }
 
@@ -108,11 +98,10 @@ export default function CalendarCourseCell({
     // Note that overflow-hidden is the duct tape holding this all together
 
     return (
-        // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
-        // biome-ignore lint/a11y/useKeyWithClickEvents: TODO:
-        <div
+        <button
+            type='button'
             className={clsx(
-                'h-full w-0 flex group relative justify-center rounded p-x-2 p-y-1.2 cursor-pointer screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out',
+                'h-full w-0 flex group relative justify-center rounded p-x-2 p-y-1.2 screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out border-none text-left',
                 {
                     'min-w-full': timeAndLocation,
                     'w-full': !timeAndLocation,
@@ -124,6 +113,7 @@ export default function CalendarCourseCell({
                 backgroundColor: colors.primaryColor,
             }}
             onClick={onClick}
+            aria-label={`${courseDeptAndInstr}${timeAndLocation ? `, ${timeAndLocation}` : ''}`}
         >
             <div className={clsx('flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full')}>
                 <Text
@@ -178,10 +168,9 @@ export default function CalendarCourseCell({
                                 setSelectedCourse(courseID, dayIndex, startIndex);
                             }
                         }}
-                        icon={Palette}
+                        icon={PaletteFillIcon}
                         iconProps={{
                             fill: colors.secondaryColor,
-                            weight: 'fill',
                         }}
                         variant='outline'
                         className={clsx(
@@ -210,6 +199,6 @@ export default function CalendarCourseCell({
                     )}
                 </div>
             </div>
-        </div>
+        </button>
     );
 }

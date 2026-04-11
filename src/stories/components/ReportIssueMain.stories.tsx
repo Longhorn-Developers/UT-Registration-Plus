@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import ReportIssueMain from '@views/components/ReportIssueMain';
+import { fn } from 'storybook/test';
 
 const meta = {
     title: 'Components/Common/ReportIssueMain',

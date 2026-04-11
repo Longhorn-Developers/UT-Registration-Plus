@@ -10,10 +10,8 @@ const [major, minor, patch, label = '0'] = packageJson.version
     .split(/[.-]/);
 
 const isBeta = !!process.env.BETA;
-const mode = isBeta ? 'beta' : process.env.NODE_ENV;
 
 if (isBeta && process.env.NODE_ENV !== 'production') throw new Error('Cannot have beta non-production build');
-const nameSuffix = isBeta ? ' (beta)' : mode === 'development' ? ' (dev)' : '';
 
 const HOST_PERMISSIONS: string[] = [
     '*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*',
@@ -26,40 +24,54 @@ const HOST_PERMISSIONS: string[] = [
     '*://my.utexas.edu/student/*',
 ];
 
-const manifest = defineManifest(async () => ({
-    manifest_version: 3,
-    name: `${packageJson.displayName ?? packageJson.name}${nameSuffix}`,
-    version: `${major}.${minor}.${patch}.${label}`,
-    description: packageJson.description,
-    options_page: 'src/pages/options/index.html',
-    background: { service_worker: 'src/pages/background/background.ts' },
-    permissions: ['storage', 'unlimitedStorage', 'background', 'scripting'],
-    host_permissions: process.env.MODE === 'development' ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
-    action: {
-        default_popup: 'src/pages/popup/index.html',
-        default_icon: `icons/icon_${mode}_32.png`,
-    },
-    icons: {
-        '16': `icons/icon_${mode}_16.png`,
-        '32': `icons/icon_${mode}_32.png`,
-        '48': `icons/icon_${mode}_48.png`,
-        '128': `icons/icon_${mode}_128.png`,
-    },
-    content_scripts: [
-        {
-            matches: HOST_PERMISSIONS,
-            js: ['src/pages/content/index.tsx'],
+const manifest = defineManifest(async env => {
+    const isDev = env.mode === 'development';
+    const mode = isBeta ? 'beta' : isDev ? 'development' : 'production';
+    const nameSuffix = isBeta ? ' (beta)' : isDev ? ' (dev)' : '';
+
+    return {
+        manifest_version: 3,
+        name: `${packageJson.displayName ?? packageJson.name}${nameSuffix}`,
+        version: `${major}.${minor}.${patch}.${label}`,
+        description: packageJson.description,
+        options_page: 'src/pages/options/index.html',
+        background: { service_worker: 'src/pages/background/background.ts' },
+        permissions: [
+            'storage',
+            'unlimitedStorage',
+            'background',
+            'scripting',
+            ...(isDev ? (['declarativeNetRequest', 'declarativeNetRequestWithHostAccess'] as const) : []),
+        ],
+        host_permissions: isDev ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
+        action: {
+            default_popup: 'src/pages/popup/index.html',
+            default_icon: `icons/icon_${mode}_32.png`,
         },
-    ],
-    web_accessible_resources: [
-        {
-            resources: ['assets/js/*.js', 'assets/css/*.css', 'assets/img/*'],
-            matches: ['*://*/*'],
+        icons: {
+            '16': `icons/icon_${mode}_16.png`,
+            '32': `icons/icon_${mode}_32.png`,
+            '48': `icons/icon_${mode}_48.png`,
+            '128': `icons/icon_${mode}_128.png`,
         },
-    ],
-    content_security_policy: {
-        extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
-    },
-}));
+        content_scripts: [
+            {
+                matches: HOST_PERMISSIONS,
+                js: ['src/pages/content/index.tsx'],
+            },
+        ],
+        web_accessible_resources: [
+            {
+                resources: ['assets/js/*.js', 'assets/css/*.css', 'assets/img/*', 'assets/*.wasm', 'database/*'],
+                matches: ['*://*/*'],
+            },
+        ],
+        content_security_policy: {
+            extension_pages: isDev
+                ? "script-src 'self' 'wasm-unsafe-eval' http://localhost:*; object-src 'self'; frame-src https://*.sentry.io"
+                : "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
+        },
+    };
+});
 
 export default manifest;

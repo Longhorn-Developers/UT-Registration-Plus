@@ -1,6 +1,6 @@
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-
+import type { JSX } from 'react';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
 type Props = {

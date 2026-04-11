@@ -1,4 +1,3 @@
-import { Trash } from '@phosphor-icons/react';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import MIMEType from '@shared/types/MIMEType';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -9,6 +8,7 @@ import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import type React from 'react';
+import TrashIcon from '~icons/ph/trash';
 
 import FileUpload from '../common/FileUpload';
 import { DISPLAY_PREVIEWS, PREVIEW_SECTION_DIV_CLASSNAME } from './constants';
@@ -16,17 +16,11 @@ import Preview from './Preview';
 
 interface AdvancedSettingsProps {
     highlightConflicts: boolean;
-    setHighlightConflicts: (value: boolean) => void;
     loadAllCourses: boolean;
-    setLoadAllCourses: (value: boolean) => void;
     increaseScheduleLimit: boolean;
-    setIncreaseScheduleLimit: (value: boolean) => void;
     calendarNewTab: boolean;
-    setCalendarNewTab: (value: boolean) => void;
     enableDataRefreshing: boolean;
-    setEnableDataRefreshing: (value: boolean) => void;
     enableCourseStatusChips: boolean;
-    setEnableCourseStatusChips: (value: boolean) => void;
     activeSchedule: UserSchedule;
     handleEraseAll: () => void;
     handleImportClick: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
@@ -45,17 +39,11 @@ function BetaChip() {
  */
 export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     highlightConflicts,
-    setHighlightConflicts,
     loadAllCourses,
-    setLoadAllCourses,
     increaseScheduleLimit,
-    setIncreaseScheduleLimit,
     calendarNewTab,
-    setCalendarNewTab,
     enableDataRefreshing,
-    setEnableDataRefreshing,
     enableCourseStatusChips,
-    setEnableCourseStatusChips,
     activeSchedule,
     handleEraseAll,
     handleImportClick,
@@ -77,8 +65,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     <SwitchButton
                         isChecked={enableDataRefreshing}
                         onChange={() => {
-                            setEnableDataRefreshing(!enableDataRefreshing);
-                            OptionsStore.set('enableDataRefreshing', !enableDataRefreshing);
+                            void OptionsStore.set('enableDataRefreshing', !enableDataRefreshing);
                         }}
                     />
                 </div>
@@ -96,8 +83,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     <SwitchButton
                         isChecked={enableCourseStatusChips}
                         onChange={() => {
-                            setEnableCourseStatusChips(!enableCourseStatusChips);
-                            OptionsStore.set('enableCourseStatusChips', !enableCourseStatusChips);
+                            void OptionsStore.set('enableCourseStatusChips', !enableCourseStatusChips);
                         }}
                     />
                 </div>
@@ -116,8 +102,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     <SwitchButton
                         isChecked={highlightConflicts}
                         onChange={() => {
-                            setHighlightConflicts(!highlightConflicts);
-                            OptionsStore.set('enableHighlightConflicts', !highlightConflicts);
+                            void OptionsStore.set('enableHighlightConflicts', !highlightConflicts);
                         }}
                     />
                 </div>
@@ -137,8 +122,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     <SwitchButton
                         isChecked={loadAllCourses}
                         onChange={() => {
-                            setLoadAllCourses(!loadAllCourses);
-                            OptionsStore.set('enableScrollToLoad', !loadAllCourses);
+                            void OptionsStore.set('enableScrollToLoad', !loadAllCourses);
                         }}
                     />
                 </div>
@@ -158,8 +142,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     <SwitchButton
                         isChecked={calendarNewTab}
                         onChange={() => {
-                            setCalendarNewTab(!calendarNewTab);
-                            OptionsStore.set('alwaysOpenCalendarInNewTab', !calendarNewTab);
+                            void OptionsStore.set('alwaysOpenCalendarInNewTab', !calendarNewTab);
                         }}
                     />
                 </div>
@@ -179,8 +162,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     <SwitchButton
                         isChecked={increaseScheduleLimit}
                         onChange={() => {
-                            setIncreaseScheduleLimit(!increaseScheduleLimit);
-                            OptionsStore.set('allowMoreSchedules', !increaseScheduleLimit);
+                            void OptionsStore.set('allowMoreSchedules', !increaseScheduleLimit);
                         }}
                     />
                 </div>
@@ -227,7 +209,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         </Text>
                         <p className='text-sm text-gray-600'>Erases all schedules and courses you have.</p>
                     </div>
-                    <Button variant='outline' color='theme-red' icon={Trash} onClick={handleEraseAll}>
+                    <Button variant='outline' color='theme-red' icon={TrashIcon} onClick={handleEraseAll}>
                         Erase All
                     </Button>
                 </div>

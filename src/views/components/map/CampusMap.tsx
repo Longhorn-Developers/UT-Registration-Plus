@@ -58,7 +58,7 @@ type CampusMapProps = {
  * - Dev controls for toggling element visibility.
  * - Zoom and pan controls.
  */
-export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Element {
+export default function CampusMap({ processedCourses }: CampusMapProps): React.JSX.Element {
     // Core state
     const [selected, setSelected] = useState<SelectedBuildings>({
         start: null,
@@ -773,14 +773,13 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                         </div>
                         <div className='space-y-4'>
                             {relevantPaths.map((path, index) => (
-                                // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
-                                // biome-ignore lint/a11y/useKeyWithClickEvents: TODO:
-                                <div
+                                <button
+                                    type='button'
                                     key={`path-info-${
                                         // biome-ignore lint/suspicious/noArrayIndexKey: TODO:
                                         index
                                     }`}
-                                    className={`cursor-pointer space-y-1 text-xs transition-colors duration-200 ${
+                                    className={`space-y-1 text-xs text-left transition-colors duration-200 bg-transparent border-none w-full ${
                                         toggledPathIndex === index ? 'bg-gray-100' : ''
                                     }`}
                                     style={{
@@ -812,7 +811,7 @@ export default function CampusMap({ processedCourses }: CampusMapProps): JSX.Ele
                                         {path.timeBetweenClasses < 15 && ' ⚠️'}
                                     </p>
                                     <p className='ml-2'>{path.endCourseName}</p>
-                                </div>
+                                </button>
                             ))}
                         </div>
                     </div>

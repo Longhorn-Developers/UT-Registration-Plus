@@ -25,9 +25,9 @@
 
 ## Toolchain
 
-- React v20.9.0 (LTS)
+- Node v24 (LTS)
 - TypeScript v7.x
-- Vite v5.x
+- Vite v8.x
 - pnpm v10.x
 - UnoCSS
 - Biome
@@ -62,16 +62,40 @@ For significant changes, it’s recommended to open an issue first to discuss th
 ### Getting Started
 
 1. Clone this repository: `git clone https://github.com/Longhorn-Developers/UT-Registration-Plus.git`
-2. **Node Version**: This project requires the Node.js version specified in `.nvmrc`. Use [nvm](https://github.com/nvm-sh/nvm) to install and manage the correct version:
-    ```bash
-    nvm install
-    nvm use
-    ```
-    _Note: Installing the wrong Node version can lead to errors during setup._
-3. Install dependencies using `pnpm` (which manages and patches dependencies):
-    ```bash
-    pnpm install
-    ```
+2. Install the required tooling. This project uses the Node.js version specified in `.nvmrc` and `pnpm` for dependency management.
+
+<details open>
+<summary>Preferred: use <a href="https://moonrepo.dev/docs/proto/install">proto</a></summary>
+
+Install `proto`, then let it provision the correct Node.js and `pnpm` versions for this repo:
+
+```bash
+proto install
+pnpm install
+```
+
+</details>
+
+<details>
+<summary>Alternative: use <a href="https://github.com/nvm-sh/nvm">nvm</a></summary>
+
+Install and use the Node.js version from `.nvmrc`:
+
+```bash
+nvm install
+nvm use
+```
+
+Then install `pnpm` by following the official install instructions at [pnpm.io/installation](https://pnpm.io/installation), or with npm after `nvm use`:
+
+```bash
+npm install --global pnpm
+pnpm install
+```
+
+_Note: Installing the wrong Node.js version can lead to setup and build errors._
+
+</details>
 
 Once set up, the extension can be built to the `dist/` directory using the following methods:
 
@@ -81,12 +105,6 @@ Once set up, the extension can be built to the `dist/` directory using the follo
     ```bash
     pnpm dev
     ```
-
-> **Note**: Injected content on UT pages may not display correctly in development mode. To develop with accurate styles, use the following command:
->
-> ```bash
-> NODE_ENV='development' pnpm run dev build --mode development -w
-> ```
 
 ### Production Builds
 
@@ -189,7 +207,7 @@ Special thanks to the developers and contributors behind these amazing tools and
 
 ## Activity
 
-![UT-Registration-Plus Activity](https://repobeats.axiom.co/api/embed/47930fa3916ac1b475cd63a05948c449eb5ad502.svg 'UT-Registration-Plus Repobeats analytics image')
+![UT-Registration-Plus Activity](https://repobeats.axiom.co/api/embed/47930fa3916ac1b475cd63a05948c449eb5ad502.svg "UT-Registration-Plus Repobeats analytics image")
 
 ## Star History
 

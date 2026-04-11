@@ -1,8 +1,9 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from '@headlessui/react';
-import { CaretDown, CaretUp } from '@phosphor-icons/react';
 import Text from '@views/components/common/Text/Text';
-import useSchedules from '@views/hooks/useSchedules';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
 import type React from 'react';
+import CaretDownFillIcon from '~icons/ph/caret-down-fill';
+import CaretUpFillIcon from '~icons/ph/caret-up-fill';
 
 /**
  * Props for the Dropdown component.
@@ -16,7 +17,7 @@ export type ScheduleDropdownProps = {
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
 export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDropdownProps) {
-    const [activeSchedule] = useSchedules();
+    const activeSchedule = useActiveSchedule();
 
     const totalHours = activeSchedule?.hours ?? 0;
     const totalCourses = activeSchedule?.courses.length ?? 0;
@@ -26,7 +27,7 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
             <Disclosure defaultOpen={defaultOpen}>
                 {({ open }) => (
                     <>
-                        <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left cursor-pointer'>
+                        <DisclosureButton className='w-full flex items-center border-none bg-transparent px-3.5 py-2.5 text-left'>
                             <div className='min-w-0 flex-1 overflow-hidden'>
                                 <Text
                                     as='div'
@@ -49,7 +50,7 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
                                 </Text>
                             </div>
                             <Text className='text-ut-burntorange text-2xl! font-normal!'>
-                                {open ? <CaretDown weight='fill' /> : <CaretUp weight='fill' />}
+                                {open ? <CaretDownFillIcon /> : <CaretUpFillIcon />}
                             </Text>
                         </DisclosureButton>
 

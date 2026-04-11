@@ -1,4 +1,5 @@
 import { createLocalStore } from '@chrome-extension-toolkit';
+import { generateRandomId } from '@shared/util/random';
 
 /**
  * A store that is used for storing user options
@@ -10,6 +11,8 @@ interface IExtensionStore {
     lastUpdate: number;
     /** The last version of the "What's New" popup that was shown to the user */
     lastWhatsNewPopupVersion: number;
+    /** Stable anonymous ID for Sentry user correlation (no PII) */
+    anonymousId: string;
 }
 
 export const ExtensionStore = createLocalStore<IExtensionStore>(
@@ -18,6 +21,7 @@ export const ExtensionStore = createLocalStore<IExtensionStore>(
         version: chrome.runtime.getManifest().version,
         lastUpdate: Date.now(),
         lastWhatsNewPopupVersion: 0,
+        anonymousId: generateRandomId(),
     },
     {
         usePrefix: false,
