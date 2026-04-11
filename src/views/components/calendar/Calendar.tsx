@@ -7,18 +7,21 @@ import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
+import EditCustomTimeBlockOverlay from '@views/components/calendar/EditCustomTimeBlockOverlay';
 import ResourceLinks from '@views/components/calendar/ResourceLinks';
 import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
+import useCustomTimeBlocks from '@views/hooks/useCustomTimeBlocks';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
-import { memo, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 import SidebarIcon from '~icons/ph/sidebar';
 
@@ -26,79 +29,15 @@ import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
-
-const CalendarSidebar = memo(function CalendarSidebar() {
-    const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
-    const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
-    const showReportIssueDialog = useReportIssueDialog();
-    const sidebarRef = useRef<HTMLDivElement>(null);
-
-    // TODO: Replace with JSX `inert={!showSidebar}` once React supports the inert attribute natively.
-    useEffect(() => {
-        if (sidebarRef.current) {
-            if (showSidebar) {
-                sidebarRef.current.removeAttribute('inert');
-            } else {
-                sidebarRef.current.setAttribute('inert', '');
-            }
-        }
-    }, [showSidebar]);
-
-    return (
-        <div
-            ref={sidebarRef}
-            className={clsx(
-                'py-spacing-5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
-                {
-                    'max-w-[20.3125rem] ': showSidebar,
-                    'max-w-0 pointer-events-none': !showSidebar,
-                }
-            )}
-            tabIndex={-1}
-            aria-hidden={!showSidebar}
-        >
-            <div className='flex items-center justify-between px-spacing-7 mb-spacing-2'>
-                <LargeLogo />
-                <Button
-                    variant='minimal'
-                    size='small'
-                    color='theme-black'
-                    onClick={toggleSidebar}
-                    className='screenshot:hidden'
-                    icon={SidebarIcon}
-                />
-            </div>
-
-            <div
-                style={{
-                    scrollbarGutter: 'stable',
-                }}
-                className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-7 pr-2.75'
-            >
-                <CalendarSchedules />
-                <Divider orientation='horizontal' size='100%' />
-                <ResourceLinks />
-                <Divider orientation='horizontal' size='100%' />
-                <button
-                    type='button'
-                    onClick={showReportIssueDialog}
-                    className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
-                >
-                    <Text variant='p'>Send us Feedback!</Text>
-                    <OutwardArrowIcon className='h-4 w-4' />
-                </button>
-            </div>
-
-            <CalendarFooter />
-        </div>
-    );
-});
+import DiningAppPromo from './DiningAppPromo';
 
 /**
  * Calendar page component
  */
 export default function Calendar(): ReactNode {
-    const { courseCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
+    const { courseCells, customBlockCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
+    const allCustomBlocks = useCustomTimeBlocks();
+    const [editingCustomBlockId, setEditingCustomBlockId] = useState<string | null>(null);
     const displayBottomBar = true;
     const initialCourse = useCourseFromUrl();
     const [course, setCourse] = useState<Course | null>(initialCourse);
@@ -117,14 +56,17 @@ export default function Calendar(): ReactNode {
         void refreshCourses({ silent: true });
     }, [activeSchedule.id]);
 
+    const activeScheduleRef = useRef(activeSchedule);
+    activeScheduleRef.current = activeSchedule;
+
     useEffect(() => {
         const listener = new MessageListener<CalendarTabMessages>({
             async openCoursePopup({ data, sendResponse }) {
-                const course = activeScheduleRef.current.courses.find(course => course.uniqueId === data.uniqueId);
-                if (course === undefined) return;
+                const found = activeScheduleRef.current.courses.find(c => c.uniqueId === data.uniqueId);
+                if (found === undefined) return;
 
-                setCourse(course);
-                setIsPopupOpen(true);
+                setCourse(found);
+                setShowPopup(true);
 
                 const currentTab = await chrome.tabs.getCurrent();
                 if (currentTab === undefined) return;
@@ -135,6 +77,26 @@ export default function Calendar(): ReactNode {
         listener.listen();
 
         return () => listener.unlisten();
+    }, []);
+
+    useEffect(() => {
+        if (course) setShowPopup(true);
+    }, [course]);
+
+    useEffect(() => {
+        if (editingCustomBlockId && !allCustomBlocks.some(b => b.id === editingCustomBlockId)) {
+            setEditingCustomBlockId(null);
+        }
+    }, [allCustomBlocks, editingCustomBlockId]);
+
+    const editingCustomBlock =
+        editingCustomBlockId !== null ? allCustomBlocks.find(b => b.id === editingCustomBlockId) : undefined;
+
+    useEffect(() => {
+        // Load the user's preference for the promo
+        OptionsStore.get('showUTDiningPromo').then(show => {
+            setShowUTDiningPromo(show);
+        });
     }, []);
 
     const openCourse = (course: Course) => {
@@ -267,15 +229,26 @@ export default function Calendar(): ReactNode {
                     >
                         <CalendarHeader sidebarOpen={showSidebar} onSidebarToggle={toggleSidebar} />
                         <div
-                            className={clsx('min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl', {
-                                'screenshot:flex-grow-0': displayBottomBar, // html-to-image seems to have a bug with flex-grow
-                            })}
+                            className={clsx(
+                                'relative min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl',
+                                {
+                                    'screenshot:flex-grow-0': displayBottomBar, // html-to-image seems to have a bug with flex-grow
+                                }
+                            )}
                         >
+                            {editingCustomBlock && (
+                                <EditCustomTimeBlockOverlay
+                                    block={editingCustomBlock}
+                                    onClose={() => setEditingCustomBlockId(null)}
+                                />
+                            )}
                             <CalendarGrid
                                 courseCells={courseCells}
-                                setCourse={openCourse}
+                                customBlockCells={customBlockCells}
+                                setCourse={setCourse}
                                 startMinutes={startMinutes}
                                 endMinutes={endMinutes}
+                                onCustomBlockClick={b => setEditingCustomBlockId(b.id)}
                             />
                         </div>
                         <CalendarBottomBar courseCells={courseCells} setCourse={openCourse} />

@@ -8,7 +8,7 @@ import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import { englishStringifyList } from '@shared/util/string';
-import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
+import type { CalendarIntervalLayoutCell } from '@views/hooks/useFlattenedCourseSchedule';
 import type { DateArg, Day } from 'date-fns';
 import {
     addDays,
@@ -398,8 +398,8 @@ export const saveCalAsPng = () => {
  * @example [[8am, 9am), [8:30am, 10am), [9:30am, 11am)] // is all one connected component
  * @example [[8am, 9am), [8:30am, 10am), [10am, 11am)] // has two connected components, [[8am, 9am), [8:30am, 10am)] and [[10am, 11am)]]
  */
-const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCourse[][] => {
-    const connectedComponents: CalendarGridCourse[][] = [];
+const findConnectedComponents = (cells: CalendarIntervalLayoutCell[]): CalendarIntervalLayoutCell[][] => {
+    const connectedComponents: CalendarIntervalLayoutCell[][] = [];
 
     for (let i = 0; i < cells.length; i++) {
         // biome-ignore lint/style/noNonNullAssertion: TODO:
@@ -445,7 +445,7 @@ const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCours
  * The minimum number of columns needed is the maximum number of events that happen concurrently.
  * Research Interval Graphs for more info https://en.wikipedia.org/wiki/Interval_graph
  */
-const assignColumns = (cells: CalendarGridCourse[]) => {
+const assignColumns = (cells: CalendarIntervalLayoutCell[]) => {
     const availableColumns = [true];
 
     for (const cell of cells) {
@@ -484,7 +484,7 @@ const assignColumns = (cells: CalendarGridCourse[]) => {
  *
  * @param dayCells - An array of calendar grid course cells for a specific day
  */
-export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
+export const calculateCourseCellColumns = (dayCells: CalendarIntervalLayoutCell[]) => {
     // Sort by start time, increasing
     // This is necessary for the correctness of the column assignment
     const cells = dayCells

@@ -1,4 +1,5 @@
 import { createLocalStore } from '@chrome-extension-toolkit';
+import type { SerializedCustomTimeBlock } from '@shared/types/CustomTimeBlock';
 import { UserSchedule } from '@shared/types/UserSchedule';
 
 import { generateRandomId } from '../util/random';
@@ -6,6 +7,8 @@ import { generateRandomId } from '../util/random';
 interface IUserScheduleStore {
     schedules: UserSchedule[];
     activeIndex: number;
+    /** Personal / work blocks layered on the calendar and optionally used for catalog conflict styling. */
+    customTimeBlocks: SerializedCustomTimeBlock[];
 }
 
 /**
@@ -24,6 +27,7 @@ export const UserScheduleStore = createLocalStore<IUserScheduleStore>(
             }),
         ],
         activeIndex: 0,
+        customTimeBlocks: [],
     },
     {
         usePrefix: false,

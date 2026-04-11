@@ -1,5 +1,6 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { OptionsStore } from '@shared/storage/OptionsStore';
+import AddCustomTimeBlockPopover from '@views/components/calendar/AddCustomTimeBlockPopover';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
@@ -199,7 +200,11 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             </MenuItem> */}
                         </MenuItems>
                     </Menu>
-                    {/* <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={SelectionPlus}>
+                    <AddCustomTimeBlockPopover activeScheduleId={activeSchedule.id} />
+                    {/* <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={PlusCircle}>
+                        Quick Add
+                    </Button>
+                    <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={SelectionPlus}>
                         Block
                     </Button> */}
                 </div>

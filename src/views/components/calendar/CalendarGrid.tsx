@@ -1,11 +1,18 @@
 import type { Course } from '@shared/types/Course';
+import type { SerializedCustomTimeBlock } from '@shared/types/CustomTimeBlock';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
+import CalendarCustomBlockCell from '@views/components/calendar/CalendarCustomBlockCell';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import { useSentryScope } from '@views/contexts/SentryContext';
-import { type CalendarGridCourse, GRID_DEFAULT_END, GRID_DEFAULT_START } from '@views/hooks/useFlattenedCourseSchedule';
-import type React from 'react';
-import { Fragment } from 'react';
+import {
+    type CalendarGridCourse,
+    type CalendarGridCustomBlockCell,
+    type CalendarIntervalLayoutCell,
+    GRID_DEFAULT_END,
+    GRID_DEFAULT_START,
+} from '@views/hooks/useFlattenedCourseSchedule';
+import React, { Fragment } from 'react';
 
 import CalendarCell from './CalendarGridCell';
 import { calculateCourseCellColumns } from './utils';
@@ -16,10 +23,12 @@ const _DEFAULT_START_HOUR = GRID_DEFAULT_START / 60; // 8 AM
 
 interface Props {
     courseCells?: CalendarGridCourse[];
+    customBlockCells?: CalendarGridCustomBlockCell[];
     startMinutes?: number;
     endMinutes?: number;
     saturdayClass?: boolean;
-    setCourse: (course: Course) => void;
+    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
+    onCustomBlockClick?: (block: SerializedCustomTimeBlock) => void;
 }
 
 function CalendarHour({ hour }: { hour: number }) {
@@ -32,8 +41,7 @@ function CalendarHour({ hour }: { hour: number }) {
     );
 }
 
-function makeGridRow(row: number, cols: number, hoursOfDay: number[]): React.JSX.Element {
-    // biome-ignore lint/style/noNonNullAssertion: TODO:
+function makeGridRow(row: number, cols: number, hoursOfDay: number[]): JSX.Element {
     const hour = hoursOfDay[row]!;
 
     return (
@@ -57,11 +65,13 @@ function makeGridRow(row: number, cols: number, hoursOfDay: number[]): React.JSX
  */
 export default function CalendarGrid({
     courseCells,
+    customBlockCells,
     saturdayClass: _saturdayClass,
     setCourse,
     startMinutes,
     endMinutes,
-}: React.PropsWithChildren<Props>): React.JSX.Element {
+    onCustomBlockClick,
+}: React.PropsWithChildren<Props>): JSX.Element {
     // there was a huge mishap with 6 am start time calc here and now it is smoothly done
     // let's try to keep our codebase organized and not so all over the place
     const visualStartHour = Math.floor((startMinutes ?? GRID_DEFAULT_START) / 60);
@@ -78,7 +88,7 @@ export default function CalendarGrid({
             }}
         >
             {/* Cover top left corner of grid, so time gets cut off at the top of the partial border */}
-            <div className='sticky top-[75px] z-10 col-span-2 h-3 bg-white' />
+            <div className='sticky top-[85px] z-10 col-span-2 h-3 bg-white' />
 
             {daysOfWeek.map(day => (
                 <div
@@ -105,7 +115,14 @@ export default function CalendarGrid({
             {hoursOfDay.map((_, i) => makeGridRow(i, 5, hoursOfDay))}
 
             <ColorPickerProvider>
-                {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
+                {courseCells && (
+                    <AccountForCourseConflicts
+                        courseCells={courseCells}
+                        customBlockCells={customBlockCells}
+                        setCourse={setCourse}
+                        onCustomBlockClick={onCustomBlockClick}
+                    />
+                )}
             </ColorPickerProvider>
         </div>
     );
@@ -113,20 +130,27 @@ export default function CalendarGrid({
 
 interface AccountForCourseConflictsProps {
     courseCells: CalendarGridCourse[];
-    setCourse: (course: Course) => void;
+    customBlockCells?: CalendarGridCustomBlockCell[];
+    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
+    onCustomBlockClick?: (block: SerializedCustomTimeBlock) => void;
 }
 
 // TODO: Possibly refactor to be more concise
 // TODO: Deal with react strict mode (wacky movements)
-function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): React.JSX.Element[] {
+function AccountForCourseConflicts({
+    courseCells,
+    customBlockCells = [],
+    setCourse,
+    onCustomBlockClick,
+}: AccountForCourseConflictsProps): JSX.Element[] {
     // Sentry is not defined in storybook.
     // This is a valid use case for a condition hook, since IS_STORYBOOK is determined at build time,
     // it doesn't change between renders.
     // biome-ignore lint/correctness/useHookAtTopLevel: See above
     const sentryScope = IS_STORYBOOK ? undefined : useSentryScope();
 
-    //  Groups by dayIndex to identify overlaps
-    const days = courseCells.reduce(
+    //  Groups by dayIndex to identify overlaps (courses + custom blocks share column layout)
+    const layoutByDay = courseCells.reduce(
         (acc, cell: CalendarGridCourse) => {
             const { dayIndex } = cell.calendarGridPoint;
             if (acc[dayIndex] === undefined) {
@@ -135,10 +159,19 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
             acc[dayIndex]?.push(cell);
             return acc;
         },
-        {} as Record<number, CalendarGridCourse[]>
+        {} as Record<number, CalendarIntervalLayoutCell[]>
     );
+
+    for (const cell of customBlockCells) {
+        const { dayIndex } = cell.calendarGridPoint;
+        if (layoutByDay[dayIndex] === undefined) {
+            layoutByDay[dayIndex] = [];
+        }
+        layoutByDay[dayIndex]!.push(cell);
+    }
+
     // Check for overlaps within each day and adjust gridColumnIndex and totalColumns
-    Object.values(days).forEach((dayCells: CalendarGridCourse[], _idx) => {
+    Object.values(layoutByDay).forEach((dayCells: CalendarIntervalLayoutCell[]) => {
         try {
             calculateCourseCellColumns(dayCells);
         } catch (error) {
@@ -149,21 +182,21 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
         }
     });
 
-    return courseCells
+    const courseElements = courseCells
         .filter(block => !block.async)
         .map(block => {
             const { courseDeptAndInstr, timeAndLocation, status } = block.componentProps;
 
             return (
                 <div
-                    key={`${JSON.stringify(block)}`}
+                    key={`course-${block.course.uniqueId}-${block.calendarGridPoint.dayIndex}-${block.calendarGridPoint.startIndex}`}
                     style={{
                         gridColumn: `${block.calendarGridPoint.dayIndex + 3}`,
                         gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
                         width: `calc(100% / ${block.totalColumns ?? 1})`,
                         marginLeft: `calc(100% * ${((block.gridColumnStart ?? 0) - 1) / (block.totalColumns ?? 1)})`,
                     }}
-                    className='pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5'
+                    className='z-[1] pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5'
                 >
                     <CalendarCourseCell
                         courseDeptAndInstr={courseDeptAndInstr}
@@ -175,4 +208,27 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                 </div>
             );
         });
+
+    const customElements = customBlockCells.map(cell => (
+        <div
+            key={`custom-${cell.block.id}-${cell.calendarGridPoint.dayIndex}-${cell.calendarGridPoint.startIndex}`}
+            style={{
+                gridColumn: `${cell.calendarGridPoint.dayIndex + 3}`,
+                gridRow: `${cell.calendarGridPoint.startIndex} / ${cell.calendarGridPoint.endIndex}`,
+                width: `calc(100% / ${cell.totalColumns ?? 1})`,
+                marginLeft: `calc(100% * ${((cell.gridColumnStart ?? 0) - 1) / (cell.totalColumns ?? 1)})`,
+            }}
+            className='z-[2] pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5'
+        >
+            <CalendarCustomBlockCell
+                title={cell.displayTitle}
+                time={cell.displayTime}
+                onClick={() => {
+                    onCustomBlockClick?.(cell.block);
+                }}
+            />
+        </div>
+    ));
+
+    return [...courseElements, ...customElements];
 }
