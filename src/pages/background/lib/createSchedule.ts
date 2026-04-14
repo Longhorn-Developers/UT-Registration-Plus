@@ -33,6 +33,8 @@ export default async function createSchedule(scheduleName: string) {
         hours: 0,
         updatedAt: Date.now(),
     };
+
+    // 4.14.2026 instead of .push() create a new schedule array to trigger an immediate refresh
     const nextSchedules = [...schedules, newSchedule];
 
     await UserScheduleStore.set('schedules', nextSchedules);
