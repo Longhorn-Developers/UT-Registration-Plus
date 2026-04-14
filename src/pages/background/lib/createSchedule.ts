@@ -33,17 +33,13 @@ export default async function createSchedule(scheduleName: string) {
         hours: 0,
         updatedAt: Date.now(),
     };
-    schedules.push(newSchedule);
+    const nextSchedules = [...schedules, newSchedule];
 
-    await UserScheduleStore.set('schedules', schedules);
+    await UserScheduleStore.set('schedules', nextSchedules);
 
     // Automatically switch to the new schedule
-    await UserScheduleStore.set('activeIndex', schedules.length - 1);
-
     // If there is only one schedule, set the active index to the new schedule
-    if (schedules.length <= 1) {
-        await UserScheduleStore.set('activeIndex', 0);
-    }
+    await UserScheduleStore.set('activeIndex', nextSchedules.length <= 1 ? 0 : nextSchedules.length - 1);
 
     return newSchedule.id;
 }

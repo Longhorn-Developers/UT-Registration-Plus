@@ -32,10 +32,16 @@ export default async function renameSchedule(scheduleId: string, newName: string
     }
 
     const updatedName = await handleDuplicate(newName);
+    const updatedSchedules = schedules.map((currentSchedule, index) =>
+        index === scheduleIndex
+            ? {
+                  ...currentSchedule,
+                  name: updatedName,
+                  updatedAt: Date.now(),
+              }
+            : currentSchedule
+    );
 
-    schedule.name = updatedName;
-    schedule.updatedAt = Date.now();
-
-    await UserScheduleStore.set('schedules', schedules);
-    return newName;
+    await UserScheduleStore.set('schedules', updatedSchedules);
+    return updatedName;
 }
