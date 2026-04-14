@@ -97,7 +97,9 @@ export default function ScheduleTotalHoursAndCourses({
                 />
             ) : (
                 <Text
-                    className='block truncate text-theme-black flex-initial overflow-hidden cursor-text'
+                    className={`block truncate text-theme-black flex-initial overflow-hidden ${
+                        scheduleId ? 'cursor-pointer' : 'cursor-text'
+                    }`}
                     variant='h1'
                     as='div'
                     onDoubleClick={() => {
