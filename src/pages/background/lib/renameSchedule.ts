@@ -36,11 +36,11 @@ export default async function renameSchedule(scheduleId: string, newName: string
     // object was being altered directly, now we iterate through and make a new schedule, modifying the specific one we wanted to rename
     const updatedSchedules = schedules.map((currentSchedule, index) =>
         index === scheduleIndex
-            ? {
+            ? ({
                   ...currentSchedule,
                   name: updatedName,
                   updatedAt: Date.now(),
-              }
+              } satisfies (typeof schedules)[number])
             : currentSchedule
     );
 
