@@ -19,7 +19,7 @@ export default async function deleteSchedule(scheduleId: string): Promise<string
         throw new Error(`Schedule ${scheduleId} does not exist`);
     }
 
-    // 4.14.2026 replaced the in-place splice function
+    // replaced the in-place splice function
     const nextSchedules = schedules.filter((_, index) => index !== scheduleIndex);
     await UserScheduleStore.set('schedules', nextSchedules);
 

@@ -33,7 +33,7 @@ export default async function renameSchedule(scheduleId: string, newName: string
 
     const updatedName = await handleDuplicate(newName);
 
-    // 4.14.2026 object was being altered directly, now we iterate through and make a new schedule, modifying the specific one we wanted to rename
+    // object was being altered directly, now we iterate through and make a new schedule, modifying the specific one we wanted to rename
     const updatedSchedules = schedules.map((currentSchedule, index) =>
         index === scheduleIndex
             ? {
