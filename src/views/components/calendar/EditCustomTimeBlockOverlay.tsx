@@ -2,6 +2,11 @@ import { Check, PencilSimple, Trash, X } from '@phosphor-icons/react';
 import type { Day } from '@shared/types/CourseMeeting';
 import type { SerializedCustomTimeBlock } from '@shared/types/CustomTimeBlock';
 import {
+    CUSTOM_TIME_BLOCK_ALL_DAY_INPUT_END,
+    CUSTOM_TIME_BLOCK_ALL_DAY_INPUT_START,
+} from '@shared/util/customTimeBlocks';
+import { minutesToTimeInputValue, parseTimeToMinutes } from '@shared/util/time';
+import {
     CUSTOM_BLOCK_DAY_TOGGLES,
     formatCustomBlockSubtitle,
     sortDaysByWeek,
@@ -13,22 +18,6 @@ import Text from '@views/components/common/Text/Text';
 import { removeCustomTimeBlock, upsertCustomTimeBlock } from '@views/hooks/useCustomTimeBlocks';
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-
-function minutesToTimeInputValue(totalMinutes: number): string {
-    const h = Math.floor(totalMinutes / 60);
-    const m = totalMinutes % 60;
-    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-}
-
-function parseTimeToMinutes(value: string): number | null {
-    const parts = value.split(':').map(Number);
-    const h = parts[0];
-    const m = parts[1];
-    if (h === undefined || m === undefined || !Number.isFinite(h) || !Number.isFinite(m)) {
-        return null;
-    }
-    return h * 60 + m;
-}
 
 interface EditCustomTimeBlockOverlayProps {
     block: SerializedCustomTimeBlock;
@@ -43,9 +32,11 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
     const [title, setTitle] = useState(block.title);
     const [days, setDays] = useState<Day[]>(block.days);
     const [startTime, setStartTime] = useState(() =>
-        block.allDay ? '08:00' : minutesToTimeInputValue(block.startTime)
+        block.allDay ? CUSTOM_TIME_BLOCK_ALL_DAY_INPUT_START : minutesToTimeInputValue(block.startTime)
     );
-    const [endTime, setEndTime] = useState(() => (block.allDay ? '09:00' : minutesToTimeInputValue(block.endTime)));
+    const [endTime, setEndTime] = useState(() =>
+        block.allDay ? CUSTOM_TIME_BLOCK_ALL_DAY_INPUT_END : minutesToTimeInputValue(block.endTime)
+    );
     const [allDay, setAllDay] = useState(!!block.allDay);
     const [syncAcrossAllSchedules, setSyncAcrossAllSchedules] = useState(block.syncAcrossAllSchedules);
     const [highlightCatalogConflicts, setHighlightCatalogConflicts] = useState(block.highlightCatalogConflicts);
@@ -53,8 +44,8 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
     useEffect(() => {
         setTitle(block.title);
         setDays(block.days);
-        setStartTime(block.allDay ? '08:00' : minutesToTimeInputValue(block.startTime));
-        setEndTime(block.allDay ? '09:00' : minutesToTimeInputValue(block.endTime));
+        setStartTime(block.allDay ? CUSTOM_TIME_BLOCK_ALL_DAY_INPUT_START : minutesToTimeInputValue(block.startTime));
+        setEndTime(block.allDay ? CUSTOM_TIME_BLOCK_ALL_DAY_INPUT_END : minutesToTimeInputValue(block.endTime));
         setAllDay(!!block.allDay);
         setSyncAcrossAllSchedules(block.syncAcrossAllSchedules);
         setHighlightCatalogConflicts(block.highlightCatalogConflicts);
@@ -105,7 +96,7 @@ export default function EditCustomTimeBlockOverlay({ block, onClose }: EditCusto
             allDay,
             syncAcrossAllSchedules,
             highlightCatalogConflicts,
-        });
+        } satisfies SerializedCustomTimeBlock);
         onClose();
     };
 

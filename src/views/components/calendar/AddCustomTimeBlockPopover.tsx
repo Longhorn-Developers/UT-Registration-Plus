@@ -12,24 +12,19 @@ import {
 } from '@phosphor-icons/react';
 import type { Day } from '@shared/types/CourseMeeting';
 import type { SerializedCustomTimeBlock } from '@shared/types/CustomTimeBlock';
+import {
+    CUSTOM_TIME_BLOCK_ALL_DAY_INPUT_END,
+    CUSTOM_TIME_BLOCK_ALL_DAY_INPUT_START,
+} from '@shared/util/customTimeBlocks';
 import { generateRandomId } from '@shared/util/random';
+import { parseTimeToMinutes } from '@shared/util/time';
 import { CUSTOM_BLOCK_DAY_TOGGLES, sortDaysByWeek } from '@views/components/calendar/customTimeBlockLabels';
 import { Button } from '@views/components/common/Button';
 import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import Text from '@views/components/common/Text/Text';
 import { upsertCustomTimeBlock } from '@views/hooks/useCustomTimeBlocks';
 import clsx from 'clsx';
-import { useCallback, useState } from 'react';
-
-function parseTimeToMinutes(value: string): number | null {
-    const parts = value.split(':').map(Number);
-    const h = parts[0];
-    const m = parts[1];
-    if (h === undefined || m === undefined || !Number.isFinite(h) || !Number.isFinite(m)) {
-        return null;
-    }
-    return h * 60 + m;
-}
+import { useCallback, useId, useMemo, useState } from 'react';
 
 function OptionCheckbox({
     checked,
@@ -78,10 +73,11 @@ interface AddCustomTimeBlockPopoverProps {
  * Popover anchored to the toolbar “Add block” control for creating a custom time range.
  */
 export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCustomTimeBlockPopoverProps): JSX.Element {
+    const titleFieldId = useId();
     const [title, setTitle] = useState('');
     const [days, setDays] = useState<Day[]>([]);
-    const [startTime, setStartTime] = useState('08:00');
-    const [endTime, setEndTime] = useState('09:00');
+    const [startTime, setStartTime] = useState(CUSTOM_TIME_BLOCK_ALL_DAY_INPUT_START);
+    const [endTime, setEndTime] = useState(CUSTOM_TIME_BLOCK_ALL_DAY_INPUT_END);
     const [allDay, setAllDay] = useState(false);
     const [syncAcrossAllSchedules, setSyncAcrossAllSchedules] = useState(true);
     const [highlightCatalogConflicts, setHighlightCatalogConflicts] = useState(true);
@@ -89,8 +85,8 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
     const resetForm = useCallback(() => {
         setTitle('');
         setDays([]);
-        setStartTime('08:00');
-        setEndTime('09:00');
+        setStartTime(CUSTOM_TIME_BLOCK_ALL_DAY_INPUT_START);
+        setEndTime(CUSTOM_TIME_BLOCK_ALL_DAY_INPUT_END);
         setAllDay(false);
         setSyncAcrossAllSchedules(true);
         setHighlightCatalogConflicts(true);
@@ -100,8 +96,43 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
         setDays(prev => (prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]));
     };
 
-    const handleSubmit = async (close: () => void) => {
+    const canSubmit = useMemo(() => {
         if (!title.trim() || days.length === 0) {
+            return false;
+        }
+        if (allDay) {
+            return true;
+        }
+        const s = parseTimeToMinutes(startTime);
+        const e = parseTimeToMinutes(endTime);
+        return s !== null && e !== null && s < e;
+    }, [allDay, days.length, endTime, startTime, title]);
+
+    const addBlockDisabledHint = useMemo(() => {
+        if (canSubmit) {
+            return undefined;
+        }
+        if (!title.trim()) {
+            return 'Enter a block name';
+        }
+        if (days.length === 0) {
+            return 'Select at least one day';
+        }
+        if (!allDay) {
+            const s = parseTimeToMinutes(startTime);
+            const e = parseTimeToMinutes(endTime);
+            if (s === null || e === null) {
+                return 'Choose valid start and end times';
+            }
+            if (s >= e) {
+                return 'End time must be after start time';
+            }
+        }
+        return undefined;
+    }, [allDay, canSubmit, days.length, endTime, startTime, title]);
+
+    const handleSubmit = async (close: () => void) => {
+        if (!canSubmit) {
             return;
         }
 
@@ -147,27 +178,35 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
                 modal={false}
                 className={clsx(
                     styleResetClass,
-                    'mt-spacing-3 w-[23rem] max-w-[calc(100vw-2rem)] rounded-lg border border-ut-offwhite/50 bg-white p-spacing-6 shadow-lg',
+                    'mt-spacing-3 box-border w-[min(23rem,calc(100vw-2rem))] rounded-lg border border-ut-offwhite/50 bg-white p-spacing-6 shadow-lg',
                     'data-[closed]:opacity-0 data-[closed]:scale-95',
                     'data-[enter]:ease-out-expo data-[enter]:duration-150',
                     'data-[leave]:ease-out data-[leave]:duration-75',
-                    'z-30'
+                    'z-[100]'
                 )}
             >
                 {({ close }) => (
-                    <div className='flex flex-col gap-spacing-5 text-ut-black'>
-                        <div className='flex items-center gap-3'>
-                            <PencilSimple className='h-5 w-5 shrink-0 text-ut-gray' aria-hidden />
-                            <input
-                                value={title}
-                                onChange={e => setTitle(e.target.value)}
-                                placeholder='Enter Block Name...'
-                                className='h-10 min-w-0 flex-1 border-b border-ut-offwhite/80 bg-transparent text-sm outline-none transition focus:border-ut-burntorange placeholder:text-ut-gray/70'
-                            />
+                    <div className='flex min-w-0 w-full flex-col gap-spacing-5 text-ut-black'>
+                        <div className='flex min-w-0 flex-col gap-spacing-2'>
+                            <label htmlFor={titleFieldId} className='text-xs font-semibold tracking-wide text-ut-gray uppercase'>
+                                Block name
+                            </label>
+                            <div className='flex min-w-0 items-center gap-3'>
+                                <PencilSimple className='h-5 w-5 shrink-0 text-ut-gray' aria-hidden />
+                                <input
+                                    id={titleFieldId}
+                                    type='text'
+                                    autoComplete='off'
+                                    value={title}
+                                    onChange={e => setTitle(e.target.value)}
+                                    placeholder='e.g. Work, gym, office hours'
+                                    className='h-10 min-w-0 flex-1 border border-ut-offwhite/80 rounded bg-white px-3 text-sm text-ut-black outline-none transition placeholder:text-ut-gray/70 focus:border-ut-burntorange'
+                                />
+                            </div>
                         </div>
 
-                        <div className='flex flex-col gap-spacing-3'>
-                            <div className='flex flex-wrap items-center gap-3'>
+                        <div className='flex min-w-0 flex-col gap-spacing-3'>
+                            <div className='flex min-w-0 flex-wrap items-center gap-3'>
                                 <Clock className='h-5 w-5 shrink-0 text-ut-gray' aria-hidden />
                                 <input
                                     type='time'
@@ -210,10 +249,10 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
                             </label>
                         </div>
 
-                        <div className='flex flex-col gap-spacing-3'>
-                            <div className='flex flex-wrap items-start gap-3'>
+                        <div className='flex min-w-0 flex-col gap-spacing-3'>
+                            <div className='flex min-w-0 flex-wrap items-start gap-3'>
                                 <CalendarBlank className='mt-0.5 h-5 w-5 shrink-0 text-ut-gray' aria-hidden />
-                                <div className='min-w-0 flex flex-1 flex-wrap gap-2'>
+                                <div className='flex min-w-0 flex-1 flex-wrap gap-2'>
                                     {CUSTOM_BLOCK_DAY_TOGGLES.map(({ label, day }) => {
                                         const on = days.includes(day);
                                         return (
@@ -240,7 +279,7 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
                             </div>
                         </div>
 
-                        <div className='flex flex-col gap-spacing-4 border-t border-ut-offwhite/50 pt-spacing-5'>
+                        <div className='flex min-w-0 flex-col gap-spacing-4 border-t border-ut-offwhite/50 pt-spacing-5'>
                             <Text variant='mini' className='text-ut-gray font-semibold tracking-wide uppercase'>
                                 Advanced options
                             </Text>
@@ -262,7 +301,7 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
                             </div>
                         </div>
 
-                        <div className='flex items-center justify-between gap-spacing-4 pt-spacing-2'>
+                        <div className='flex min-w-0 items-center justify-between gap-spacing-4 pt-spacing-2'>
                             <button
                                 type='button'
                                 className='text-sm text-ut-blue underline-offset-2 transition hover:underline'
@@ -275,6 +314,8 @@ export default function AddCustomTimeBlockPopover({ activeScheduleId }: AddCusto
                                 size='small'
                                 variant='filled'
                                 icon={Plus}
+                                disabled={!canSubmit}
+                                title={addBlockDisabledHint}
                                 onClick={() => {
                                     handleSubmit(close).catch(() => undefined);
                                 }}

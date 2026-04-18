@@ -73,12 +73,12 @@ export interface FlattenedCourseSchedule {
 }
 
 /**
- * 8:00 AM latest start time aka DEFAULT, in minutes
+ * Default start of the visible weekday calendar grid (8:00 AM), minutes from midnight.
  */
 export const GRID_DEFAULT_START = 480;
 
 /**
- * 9:00 PM earliest end time aka DEFAULT, in minutes
+ * Default end of the visible weekday calendar grid (9:00 PM), minutes from midnight.
  */
 export const GRID_DEFAULT_END = 1260;
 
@@ -105,11 +105,9 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
 
     const allMeetings = [...activeSchedule.courses.flatMap(c => c.schedule.meetings), ...customMeetingsForBounds];
 
-    // go through every meeting we have and finds minimum start time with starting best so far being GRID_DEFAULT_START_MINUTES
-    // this variable will go on a journey through time and space to finally be delivered to the viewable calendar grid as the start hour of the entire grid
+    // Earliest in-person start (minutes); reduce is seeded with GRID_DEFAULT_START, then floored to a whole hour below.
     const rawGridStartMinutes = allMeetings.reduce((earliest, current) => {
         if (current.days.includes(DAY_MAP.S) || current.startTime >= 1440) {
-            // keep accumulator value unchanged, go to next iteration
             return earliest;
         }
 
@@ -312,7 +310,7 @@ function flattenCustomBlockCells(
                     startIndex: convertMinutesToIndex(normalizedStartTime, gridStartMinutes),
                     endIndex: convertMinutesToIndex(normalizedEndTime, gridStartMinutes),
                 },
-            });
+            } satisfies CalendarGridCustomBlockCell);
         }
     }
 

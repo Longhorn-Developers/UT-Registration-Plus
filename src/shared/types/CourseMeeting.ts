@@ -108,7 +108,7 @@ export class CourseMeeting {
             startTimeString = `${startHour}`;
         }
 
-        startTimeString += startMinute === 0 ? ':00' : `:${startMinute}`;
+        startTimeString += `:${String(startMinute).padStart(2, '0')}`;
         startTimeString += startHour >= 12 ? 'pm' : 'am';
 
         if (endHour === 0) {
@@ -119,7 +119,7 @@ export class CourseMeeting {
             endTimeString = `${endHour}`;
         }
 
-        endTimeString += endMinute === 0 ? ':00' : `:${endMinute}`;
+        endTimeString += `:${String(endMinute).padStart(2, '0')}`;
         endTimeString += endHour >= 12 ? 'pm' : 'am';
 
         return `${startTimeString} ${separator} ${endTimeString}`;

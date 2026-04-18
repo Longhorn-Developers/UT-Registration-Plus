@@ -3,6 +3,7 @@ import { CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import { UserSchedule } from '@shared/types/UserSchedule';
 import { getCourseColors } from '@shared/util/colors';
+import { GRID_DEFAULT_START } from '@views/hooks/useFlattenedCourseSchedule';
 
 export const exampleCourse: Course = new Course({
     courseName: 'ELEMS OF COMPTRS/PROGRAMMNG-WB',
@@ -86,7 +87,7 @@ export const bevoCourse: Course = new Course({
         meetings: [
             new CourseMeeting({
                 days: ['Tuesday', 'Thursday'],
-                startTime: 480,
+                startTime: GRID_DEFAULT_START,
                 endTime: 570,
                 location: { building: 'UTC', room: '123' },
             }),
@@ -142,7 +143,7 @@ export const mikeScottCS314Course: Course = new Course({
         meetings: [
             new CourseMeeting({
                 days: [DAY_MAP.T, DAY_MAP.TH],
-                startTime: 480,
+                startTime: GRID_DEFAULT_START,
                 endTime: 570,
                 location: { building: 'UTC', room: '123' },
             }),

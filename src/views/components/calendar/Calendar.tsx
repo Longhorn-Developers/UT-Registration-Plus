@@ -39,7 +39,7 @@ export default function Calendar(): ReactNode {
     const { courseCells, customBlockCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
     const allCustomBlocks = useCustomTimeBlocks();
     const [editingCustomBlockId, setEditingCustomBlockId] = useState<string | null>(null);
-    const displayBottomBar = true;
+    const displayBottomBar = courseCells.some(cell => cell.async);
 
     const [course, setCourse] = useState<Course | null>(useCourseFromUrl());
 
@@ -332,7 +332,7 @@ export default function Calendar(): ReactNode {
                                 onCustomBlockClick={b => setEditingCustomBlockId(b.id)}
                             />
                         </div>
-                        <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />
+                        {displayBottomBar && <CalendarBottomBar courseCells={courseCells} setCourse={setCourse} />}
                     </div>
                 </div>
 

@@ -5,14 +5,14 @@ import { convertMinutesToIndex, GRID_DEFAULT_START } from '../useFlattenedCourse
 describe('useFlattenedCourseSchedule', () => {
     describe('convertMinutesToIndex', () => {
         it('should use 8 AM as the default grid start', () => {
-            const minutes = 480; // 8:00 AM
+            const minutes = GRID_DEFAULT_START;
             // (480 - 480) / 30 + 2 + 1 = 3
             expect(convertMinutesToIndex(minutes)).toBe(3);
         });
 
         it('should adjust index when a course starts before 8 AM (dynamic start)', () => {
             const gridStart = 360; // 6:00 AM — pushed back by an early course
-            const minutes = 480; // 8:00 AM course
+            const minutes = GRID_DEFAULT_START; // 8:00 AM course
             // (480 - 360) / 30 + 2 + 1 = 7
             expect(convertMinutesToIndex(minutes, gridStart)).toBe(7);
         });
