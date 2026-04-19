@@ -57,7 +57,7 @@ export default function ScheduleTotalHoursAndCourses({
         }
 
         if (trimmedName !== displayName && scheduleId) {
-            const nextName = (await renameSchedule(scheduleId, trimmedName)) as string;
+            const nextName = await renameSchedule(scheduleId, trimmedName);
             if (nextName) {
                 setDisplayName(nextName);
                 setEditorValue(nextName);
