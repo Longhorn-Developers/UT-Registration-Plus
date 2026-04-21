@@ -159,7 +159,6 @@ export default function Calendar(): ReactNode {
         };
     }, []);
 
-    // --- Drag and drop handlers for calendar page ---
     const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
@@ -219,7 +218,6 @@ export default function Calendar(): ReactNode {
             alert('Failed to import schedule. Make sure the file is a valid .json format.');
         }
     };
-    // --------------------------------------------------
 
     return (
         <CalendarContext.Provider value>
