@@ -195,7 +195,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                 >
                                     Log in
                                 </a>
-                                {' to refresh course statuses'}
+                                {' to refresh course data'}
                             </Text>
                         ) : (
                             lastCheckedText && (
