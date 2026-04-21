@@ -19,19 +19,21 @@ export default async function deleteSchedule(scheduleId: string): Promise<string
         throw new Error(`Schedule ${scheduleId} does not exist`);
     }
 
-    schedules.splice(scheduleIndex, 1);
-    await UserScheduleStore.set('schedules', schedules);
+    // replaced the in-place splice function
+    const nextSchedules = schedules.filter((_, index) => index !== scheduleIndex);
+    await UserScheduleStore.set('schedules', nextSchedules);
 
     // By invariant, there must always be at least one schedule
-    if (schedules.length === 0) {
+    // hah. algos - derek
+    if (nextSchedules.length === 0) {
         createSchedule('Schedule 1');
     }
 
     let newActiveIndex = activeIndex;
     if (scheduleIndex < activeIndex) {
         newActiveIndex = activeIndex - 1;
-    } else if (activeIndex >= schedules.length) {
-        newActiveIndex = schedules.length - 1;
+    } else if (activeIndex >= nextSchedules.length) {
+        newActiveIndex = nextSchedules.length - 1;
     }
     await UserScheduleStore.set('activeIndex', newActiveIndex);
 
