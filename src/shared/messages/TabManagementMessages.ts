@@ -1,3 +1,5 @@
+import type browser from 'webextension-polyfill';
+
 /**
  * Messages for managing the user's open tabs list
  */
@@ -7,7 +9,7 @@ export default interface TabManagementMessages {
      *
      * @param data - The URL to open
      */
-    openNewTab: (data: { url: string }) => chrome.tabs.Tab;
+    openNewTab: (data: { url: string }) => browser.Tabs.Tab;
 
     /**
      * Gets the ID of the current tab (the tab that sent the message)

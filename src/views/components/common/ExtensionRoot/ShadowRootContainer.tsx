@@ -36,7 +36,12 @@ function ensureShadowStyles(shadowRoot: ShadowRoot) {
         return;
     }
 
-    shadowRoot.adoptedStyleSheets = [globalStyleSheet];
+    const adopted =
+        // biome-ignore lint/suspicious/noExplicitAny: Firefox jank
+        ((shadowRoot.adoptedStyleSheets as Record<string, any>).wrappedJSObject as CSSStyleSheet[]) ||
+        shadowRoot.adoptedStyleSheets;
+    adopted.length = 0;
+    adopted.push(globalStyleSheet);
     styledShadowRoots.add(shadowRoot);
 }
 

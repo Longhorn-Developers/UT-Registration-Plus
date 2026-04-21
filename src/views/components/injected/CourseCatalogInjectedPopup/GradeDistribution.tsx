@@ -1,14 +1,11 @@
-import type { Course } from '@shared/types/Course';
+import { background } from '@shared/messages';
+import type { Course, Semester } from '@shared/types/Course';
 import type { Distribution, LetterGrade } from '@shared/types/Distribution';
 import { extendedColors } from '@shared/types/ThemeColors';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import Tooltip from '@views/components/common/Tooltip';
-import {
-    NoDataError,
-    queryAggregateDistribution,
-    querySemesterDistribution,
-} from '@views/lib/database/queryDistribution';
+import { NoDataError } from '@views/lib/database/queryDistribution';
 import Highcharts from 'highcharts';
 import type { HighchartsReactRefObject } from 'highcharts-react-official';
 import * as HighchartsReactModule from 'highcharts-react-official';
@@ -80,15 +77,33 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
-                const [aggregateDist, semesters, instructorIncludedAggregate] =
-                    await queryAggregateDistribution(course);
+                const aggregateResult = await background.getAggregateGradeDistribution({
+                    course,
+                });
+
+                // Check if we received an error from the background worker
+                if (!aggregateResult.success) {
+                    if (aggregateResult.error === 'NO_DATA') {
+                        throw new NoDataError(course);
+                    } else {
+                        throw new Error(aggregateResult.message);
+                    }
+                }
+
+                const [aggregateDist, semesters, instructorIncludedAggregate] = aggregateResult.data as [
+                    Distribution,
+                    Semester[],
+                    boolean,
+                ];
                 const initialDistributions: Distributions = {
                     Aggregate: {
                         data: aggregateDist,
                         instructorIncluded: instructorIncludedAggregate,
                     },
                 };
-                const semesterPromises = semesters.map(semester => querySemesterDistribution(course, semester));
+                const semesterPromises = semesters.map(semester =>
+                    background.getSemesterGradeDistribution({ course, semester })
+                );
                 const semesterDistributions = await Promise.allSettled(semesterPromises);
                 semesters.forEach((semester, i) => {
                     const distributionResult = semesterDistributions[i];
@@ -98,7 +113,17 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     }
 
                     if (distributionResult.status === 'fulfilled') {
-                        const [distribution, instructorIncluded] = distributionResult.value;
+                        const result = distributionResult.value;
+
+                        // Check if we received an error from the background worker
+                        if (!result.success) {
+                            if (result.error !== 'NO_DATA') {
+                                console.error(`Failed to fetch ${semester} data:`, result.message);
+                            }
+                            return;
+                        }
+
+                        const [distribution, instructorIncluded] = result.data as [Distribution, boolean];
                         initialDistributions[`${semester.season} ${semester.year}`] = {
                             data: distribution,
                             instructorIncluded,

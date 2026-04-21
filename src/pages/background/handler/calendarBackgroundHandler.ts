@@ -5,6 +5,7 @@ import { tabs } from '@shared/messages';
 import type { CalendarBackgroundMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
+import browser from 'webextension-polyfill';
 
 const CALENDAR_TABS_KEY = 'calendarTabs';
 
@@ -15,20 +16,20 @@ type CalendarTabRecord = {
 type CalendarTabsState = Record<string, CalendarTabRecord>;
 
 const getCalendarTabsState = async (): Promise<CalendarTabsState> => {
-    const storage = await chrome.storage.session.get(CALENDAR_TABS_KEY);
+    const storage = await browser.storage.session.get(CALENDAR_TABS_KEY);
     return (storage[CALENDAR_TABS_KEY] as CalendarTabsState | undefined) ?? {};
 };
 
 const setCalendarTabRecord = async (tabId: number, record: CalendarTabRecord) => {
     const calendarTabs = await getCalendarTabsState();
     calendarTabs[tabId] = record;
-    await chrome.storage.session.set({ [CALENDAR_TABS_KEY]: calendarTabs });
+    await browser.storage.session.set({ [CALENDAR_TABS_KEY]: calendarTabs });
 };
 
 const removeCalendarTabRecord = async (tabId: number) => {
     const calendarTabs = await getCalendarTabsState();
     delete calendarTabs[tabId];
-    await chrome.storage.session.set({ [CALENDAR_TABS_KEY]: calendarTabs });
+    await browser.storage.session.set({ [CALENDAR_TABS_KEY]: calendarTabs });
 };
 
 const getTrackedCalendarTabs = async (): Promise<Array<{ record: CalendarTabRecord; tab: TabWithId }>> => {
@@ -38,7 +39,7 @@ const getTrackedCalendarTabs = async (): Promise<Array<{ record: CalendarTabReco
         trackedEntries.map(async ([tabId, record]) => {
             const numericTabId = Number(tabId);
             try {
-                const tab = await chrome.tabs.get(numericTabId);
+                const tab = await browser.tabs.get(numericTabId);
                 if (tab.id === undefined) {
                     await removeCalendarTabRecord(numericTabId);
                     return undefined;
@@ -60,7 +61,7 @@ const getTrackedCalendarTabs = async (): Promise<Array<{ record: CalendarTabReco
 
 const shouldReuseCalendarTab = async (tab: TabWithId): Promise<boolean> => {
     try {
-        const window = await chrome.windows.get(tab.windowId);
+        const window = await browser.windows.get(tab.windowId);
         return window.state !== 'minimized';
     } catch {
         return false;
@@ -101,7 +102,7 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
     },
     async switchToCalendarTab({ data, sender, sendResponse }) {
         const { uniqueId } = data;
-        const calendarUrl = chrome.runtime.getURL(CRX_PAGES.CALENDAR);
+        const calendarUrl = browser.runtime.getURL(CRX_PAGES.CALENDAR);
         const trackedCalendarTab = await getMostRecentlyFocusedCalendarTab();
 
         if (
@@ -111,8 +112,8 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
         ) {
             const tabid = trackedCalendarTab.id;
 
-            await chrome.tabs.update(tabid, { active: true });
-            await chrome.windows.update(trackedCalendarTab.windowId, {
+            await browser.tabs.update(tabid, { active: true });
+            await browser.windows.update(trackedCalendarTab.windowId, {
                 focused: true,
                 drawAttention: true,
             });
