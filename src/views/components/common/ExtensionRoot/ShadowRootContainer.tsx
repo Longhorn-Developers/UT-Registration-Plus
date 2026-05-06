@@ -8,12 +8,11 @@
 
 import 'virtual:uno.css';
 import globalStyleSheet from 'virtual:inline-styles';
+import clsx from 'clsx';
 import type { Ref } from 'react';
 import React from 'react';
 import { createPortal } from 'react-dom';
-
 import styles from './ExtensionRoot.module.scss';
-import clsx from 'clsx';
 
 /** CSS module class that applies the extension's base font, color, and scrollbar resets. */
 export const styleResetClass = styles.extensionRoot;

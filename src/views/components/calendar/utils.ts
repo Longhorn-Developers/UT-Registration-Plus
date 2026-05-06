@@ -8,6 +8,7 @@ import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import { englishStringifyList } from '@shared/util/string';
+import { ensureShadowStyles } from '@views/components/common/ExtensionRoot/ShadowRootContainer';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import type { DateArg, Day } from 'date-fns';
 import {
@@ -21,9 +22,7 @@ import {
     set as setMultiple,
 } from 'date-fns';
 import { toBlob } from 'html-to-image';
-
 import { academicCalendars } from './academic-calendars';
-import { ensureShadowStyles } from '@views/components/common/ExtensionRoot/ShadowRootContainer';
 
 // Do all timezone calculations relative to UT's timezone
 const TIMEZONE_ID = 'America/Chicago';
