@@ -23,6 +23,7 @@ import {
 import { toBlob } from 'html-to-image';
 
 import { academicCalendars } from './academic-calendars';
+import { ensureShadowStyles } from '@views/components/common/ExtensionRoot/ShadowRootContainer';
 
 // Do all timezone calculations relative to UT's timezone
 const TIMEZONE_ID = 'America/Chicago';
@@ -348,9 +349,14 @@ export const saveCalAsPng = () => {
 
     const clonedNode = document.querySelector('#root')?.cloneNode(true) as HTMLDivElement;
     clonedNode.style.backgroundColor = 'white';
-    (clonedNode.firstChild as HTMLDivElement).classList.add('screenshot-in-progress');
 
-    const calendarTarget = clonedNode.querySelector('.screenshot\\:calendar-target') as HTMLDivElement;
+    const shadowRoot = clonedNode.querySelector('.shadow-root-container')?.shadowRoot as ShadowRoot;
+    ensureShadowStyles(shadowRoot);
+    for (const node of shadowRoot.children) {
+        node.classList.add('screenshot-in-progress');
+    }
+
+    const calendarTarget = shadowRoot.querySelector('.screenshot\\:calendar-target') as HTMLDivElement;
     calendarTarget.style.width = `${WIDTH_PX}px`;
     calendarTarget.style.height = `${HEIGHT_PX}px`;
 
