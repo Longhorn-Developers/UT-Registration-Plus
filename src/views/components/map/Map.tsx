@@ -7,7 +7,7 @@ import Text from '@views/components/common/Text/Text';
 import useChangelog from '@views/hooks/useChangelog';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
 import type { JSX } from 'react';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import IconoirGitFork from '~icons/iconoir/git-fork';
 
@@ -20,6 +20,9 @@ import { type DAY, DAYS } from './types';
 
 const manifest = chrome.runtime.getManifest();
 const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
+
+// Building codes that don't correspond to a physical campus location
+const NON_PHYSICAL_BUILDINGS = new Set(['TBA', 'ONL', 'INTERNET', '']);
 
 const dayToNumber = {
     Monday: 0,
@@ -179,6 +182,15 @@ export default function UTRPMap(): JSX.Element {
         );
     });
 
+    // Derive unique on-campus buildings to highlight from the active schedule
+    const highlightedBuildings = useMemo<string[]>(() => {
+        const ids = activeSchedule.courses
+            .flatMap(course => course.schedule.meetings)
+            .map(meeting => meeting.location?.building)
+            .filter((b): b is string => !!b && !NON_PHYSICAL_BUILDINGS.has(b.toUpperCase()));
+        return [...new Set(ids)];
+    }, [activeSchedule]);
+
     const generateWeekSchedule = useCallback((): Record<DAY, string[]> => {
         const weekSchedule: Record<string, string[]> = {};
 
@@ -263,7 +275,7 @@ export default function UTRPMap(): JSX.Element {
                     <CalendarFooter />
                 </div>
                 <div className='flex p-12'>
-                    <CampusMap processedCourses={processedCourses} />
+                    <CampusMap processedCourses={processedCourses} highlightedBuildings={highlightedBuildings} />
                 </div>
 
                 {/* Show week schedule */}

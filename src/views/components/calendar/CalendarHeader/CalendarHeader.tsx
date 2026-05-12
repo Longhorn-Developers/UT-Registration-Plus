@@ -1,5 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
+import { CRX_PAGES } from '@shared/types/CRXPages';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
@@ -20,6 +22,7 @@ import ExportIcon from '~icons/ph/export';
 import FileCodeIcon from '~icons/ph/file-code';
 import FilePngIcon from '~icons/ph/file-png';
 import FileTextIcon from '~icons/ph/file-text';
+import MapPinAreaIcon from '~icons/ph/map-pin-area';
 import SidebarIcon from '~icons/ph/sidebar';
 
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
@@ -42,9 +45,16 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     const enableDataRefreshing = OptionsStore.useStore(store => store.enableDataRefreshing);
 
     const isCooldown = cooldownIds.has(activeSchedule.id);
-    const hasRightHandSide = enableDataRefreshing;
+    // UTRP Map button is always present, so the right-hand-side divider should always render
+    const hasRightHandSide = true;
     const isRefreshingRef = useRef(false);
     isRefreshingRef.current = isRefreshing;
+
+    // Open the UTRP Map in a new tab so highlights can render against the active schedule
+    const handleOpenMap = useCallback(() => {
+        const mapPageUrl = chrome.runtime.getURL(CRX_PAGES.MAP);
+        background.openNewTab({ url: mapPageUrl });
+    }, []);
 
     const handleRefresh = useCallback(async () => {
         setIsRefreshing(true);
@@ -206,6 +216,15 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 </div>
                 {hasRightHandSide && <Divider className='self-center' size='1.75rem' orientation='vertical' />}
                 <div className={clsx(styles.secondaryActions, 'flex items-center gap-3 ml-auto')}>
+                    <Button
+                        color='ut-black'
+                        size='small'
+                        variant='minimal'
+                        icon={MapPinAreaIcon}
+                        onClick={handleOpenMap}
+                    >
+                        UTRP Map
+                    </Button>
                     {enableDataRefreshing && lastCheckedText && (
                         <Text variant='mini' className='whitespace-nowrap text-theme-black/50 !font-normal'>
                             Last checked: {lastCheckedText}
