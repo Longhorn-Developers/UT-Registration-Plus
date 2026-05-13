@@ -184,11 +184,16 @@ export default function UTRPMap(): JSX.Element {
 
     // Derive unique on-campus buildings to highlight from the active schedule
     const highlightedBuildings = useMemo<string[]>(() => {
-        const ids = activeSchedule.courses
+        const rawBuildings = activeSchedule.courses
             .flatMap(course => course.schedule.meetings)
-            .map(meeting => meeting.location?.building)
-            .filter((b): b is string => !!b && !NON_PHYSICAL_BUILDINGS.has(b.toUpperCase()));
-        return [...new Set(ids)];
+            .map(meeting => meeting.location?.building);
+        const ids = rawBuildings
+            .filter((b): b is string => !!b && !NON_PHYSICAL_BUILDINGS.has(b.toUpperCase()))
+            .map(b => b.toUpperCase());
+        const unique = [...new Set(ids)];
+        // TODO: remove after verifying yellow render
+        console.log('[utrp-highlight] raw:', rawBuildings, 'unique:', unique);
+        return unique;
     }, [activeSchedule]);
 
     const generateWeekSchedule = useCallback((): Record<DAY, string[]> => {
@@ -278,8 +283,31 @@ export default function UTRPMap(): JSX.Element {
                     <CampusMap processedCourses={processedCourses} highlightedBuildings={highlightedBuildings} />
                 </div>
 
-                {/* Show week schedule */}
                 <div className='flex flex-col py-12'>
+                    {/* Map legend */}
+                    <div className='flex flex-col pb-8'>
+                        <p className='text-lg font-medium'>Legend:</p>
+                        <div className='flex flex-col pb-4'>
+                            <p className='text-sm font-medium'>Active Schedule</p>
+                            <div className='flex items-center gap-2 text-xs'>
+                                <svg width='14' height='14' aria-hidden='true'>
+                                    <circle
+                                        cx='7'
+                                        cy='7'
+                                        r='6'
+                                        fill='#FFD700'
+                                        fillOpacity={0.55}
+                                        stroke='#FFD700'
+                                        strokeWidth='1'
+                                    />
+                                    <circle cx='7' cy='7' r='3' fill='#FFD700' stroke='white' strokeWidth='1' />
+                                </svg>
+                                Buildings hosting courses in your active schedule
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Show week schedule */}
                     <p className='text-lg font-medium'>Week Schedule:</p>
                     {Object.entries(generateWeekSchedule()).map(([day, courses]) => (
                         <div key={day} className='flex flex-col pb-4'>
