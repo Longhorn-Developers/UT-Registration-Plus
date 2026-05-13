@@ -203,7 +203,9 @@ export default function CampusMap({ processedCourses, highlightedBuildings = [] 
         });
 
         // Always render active-schedule buildings, regardless of zoom-level clustering
-        highlightedBuildingSet.forEach(id => result.add(id));
+        for (const id of highlightedBuildingSet) {
+            result.add(id);
+        }
 
         return result;
     }, [selected.start, selected.end, relevantPaths, highlightedBuildingSet]);
@@ -623,7 +625,6 @@ export default function CampusMap({ processedCourses, highlightedBuildings = [] 
                         ([id, node]) =>
                             shouldShowNode(node.type, id) && (
                                 <g key={id}>
-                                    {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
                                     {/* Larger semi-transparent yellow halo behind highlighted building circles */}
                                     {node.type === 'building' && highlightedBuildingSet.has(id) && (
                                         <circle
@@ -638,6 +639,7 @@ export default function CampusMap({ processedCourses, highlightedBuildings = [] 
                                             pointerEvents='none'
                                         />
                                     )}
+                                    {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
                                     <circle
                                         cx={node.x}
                                         cy={node.y}
