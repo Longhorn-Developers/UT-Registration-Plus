@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { Button } from '../common/Button';
 
 interface ZoomPanControlsProps {

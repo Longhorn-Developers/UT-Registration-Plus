@@ -1,4 +1,4 @@
-import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import CourseStatus from '@views/components/common/CourseStatus';
@@ -6,15 +6,13 @@ import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
-import type React from 'react';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
 
 import CalendarCourseBlock from './CalendarCourseCell';
 
 type CalendarBottomBarProps = {
     courseCells?: CalendarGridCourse[];
-    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
+    setCourse: (course: Course) => void;
 };
 
 /**
@@ -25,19 +23,7 @@ type CalendarBottomBarProps = {
  */
 export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBottomBarProps): ReactNode {
     const asyncCourseCells = courseCells?.filter(block => block.async);
-    const [enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-
-    useEffect(() => {
-        initSettings().then(({ enableCourseStatusChips }) => setEnableCourseStatusChips(enableCourseStatusChips));
-
-        const unsubscribe = OptionsStore.subscribe('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-        });
-
-        return () => {
-            OptionsStore.unsubscribe(unsubscribe);
-        };
-    }, []);
+    const enableCourseStatusChips = OptionsStore.useStore(store => store.enableCourseStatusChips);
 
     const hasAsyncCourses = !!asyncCourseCells?.length;
 
@@ -46,7 +32,7 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
     }
 
     return (
-        <div className='w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4'>
+        <div className='sticky bottom-0 z-50 bg-white w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4'>
             {hasAsyncCourses && (
                 <div className='flex flex-grow items-center gap-1 text-nowrap'>
                     <Text variant='p' className='text-ut-black uppercase'>
@@ -76,13 +62,13 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
             )}
             {enableCourseStatusChips && (
                 <div
-                    className={clsx('flex items-center gap-4 pr-spacing-3', {
+                    className={clsx('flex items-center gap-4 py-2 mr-5', {
                         'ml-auto': !hasAsyncCourses,
                     })}
                 >
                     <CourseStatus status={Status.WAITLISTED} size='mini' />
-                    <CourseStatus status={Status.CLOSED} size='mini' />
                     <CourseStatus status={Status.CANCELLED} size='mini' />
+                    <CourseStatus status={Status.CLOSED} size='mini' />
                 </div>
             )}
         </div>

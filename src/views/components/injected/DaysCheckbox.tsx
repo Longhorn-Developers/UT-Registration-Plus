@@ -1,6 +1,7 @@
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const;
 /**
@@ -66,7 +67,7 @@ export default function DaysCheckbox(): JSX.Element | null {
         return null;
     }
 
-    return ReactDOM.createPortal(
+    return createPortal(
         <ExtensionRoot>
             <ul className='text-black font-[Verdana,_"Helvetica_Neue",_Helvetica,_Arial,_sans-serif]'>
                 {days.map((day, index) => (

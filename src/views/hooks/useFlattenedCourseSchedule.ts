@@ -3,7 +3,7 @@ import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 
-import useSchedules from './useSchedules';
+import { useActiveSchedule } from './useSchedules';
 
 const dayToNumber = {
     Monday: 0,
@@ -75,7 +75,7 @@ export const convertMinutesToIndex = (minutes: number, gridStartMinutes = GRID_D
  * @returns CalendarGridCourse
  */
 export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
-    const [activeSchedule] = useSchedules();
+    const activeSchedule = useActiveSchedule();
     const allMeetings = activeSchedule.courses.flatMap(c => c.schedule.meetings);
 
     // go through every meeting we have and finds minimum start time with starting best so far being GRID_DEFAULT_START_MINUTES

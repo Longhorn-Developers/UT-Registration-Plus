@@ -1,11 +1,12 @@
-import { ChartBar } from '@phosphor-icons/react';
-import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
+import ChartBarFillIcon from '~icons/ph/chart-bar-fill';
 
 import styles from './TableRow.module.scss';
 
@@ -25,25 +26,9 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     // the courses in the active schedule that conflict with the course for this row
     const [conflicts, setConflicts] = useState<Course[]>([]);
-    const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
+    const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
 
     const { element, course } = row;
-
-    useEffect(() => {
-        initSettings().then(({ enableHighlightConflicts }) => {
-            setHighlightConflicts(enableHighlightConflicts);
-        });
-
-        const l1 = OptionsStore.subscribe('enableHighlightConflicts', async ({ newValue }) => {
-            setHighlightConflicts(newValue);
-            // console.log('enableHighlightConflicts', newValue);
-        });
-
-        // Remove listeners when the component is unmounted
-        return () => {
-            OptionsStore.unsubscribe(l1);
-        };
-    }, []);
 
     useEffect(() => {
         // biome-ignore lint/style/noNonNullAssertion: TODO:
@@ -121,19 +106,19 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         return null;
     }
 
-    return ReactDOM.createPortal(
+    return createPortal(
         <ExtensionRoot>
             <div className='relative'>
                 <button
                     type='button'
-                    className='m1 h-6 w-6 flex items-center justify-center rounded bg-ut-burntorange color-white!'
+                    className='m1 h-6 w-6 flex items-center justify-center rounded bg-ut-burntorange color-white! cursor-pointer'
                     onClick={onClick}
                 >
-                    <ChartBar className='text-ut-white h-4 w-4' weight='fill' />
+                    <ChartBarFillIcon className='text-ut-white h-4 w-4' />
                 </button>
                 {conflicts.length > 0 && (
                     <ConflictsWithWarning
-                        className='invisible absolute left-13 top--3 text-white group-hover:visible'
+                        className='opacity-0 absolute left-13 top--3 text-white group-hover:opacity-100'
                         conflicts={conflicts}
                     />
                 )}

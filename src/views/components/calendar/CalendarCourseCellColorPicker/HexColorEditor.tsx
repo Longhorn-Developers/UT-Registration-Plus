@@ -1,9 +1,9 @@
-import { Hash } from '@phosphor-icons/react';
 import { isValidHexColor, pickFontColor } from '@shared/util/colors';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import { useDebounce } from '@views/hooks/useDebounce';
 import clsx from 'clsx';
 import React, { useEffect } from 'react';
+import HashIcon from '~icons/ph/hash';
 
 /**
  * Props for the HexColorEditor component
@@ -21,7 +21,7 @@ export interface HexColorEditorProps {
  * @param setHexCode - Set state fn to control the hex color code from parent
  * @returns The HexColorEditor component
  */
-export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorProps): JSX.Element {
+export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorProps): React.JSX.Element {
     const baseColor = React.useMemo(() => getThemeColorHexByName('ut-gray'), []);
     const previewColor = isValidHexColor(`#${hexCode}`) ? `#${hexCode}` : baseColor;
     const tagColor = pickFontColor(previewColor.slice(1) as `#${string}`);
@@ -46,13 +46,14 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
                 style={{ backgroundColor: previewColor }}
                 className='h-6.5 w-6.5 flex items-center justify-center rounded-l-1'
             >
-                <Hash className={clsx('h-5 w-5 text-color-white', tagColor)} />
+                <HashIcon className={clsx('h-5 w-5 text-color-white', tagColor)} />
             </div>
             <div className='h-6.5 w-[53px] flex flex-1 items-center justify-center border-b border-r border-t rounded-br rounded-tr p-1.25'>
                 <input
                     type='text'
                     maxLength={6}
-                    className='w-full border-none bg-transparent font-size-2.75 font-normal font-mono outline-none focus:outline-none'
+                    aria-label='Hex color code'
+                    className='w-full border-none bg-transparent font-size-2.75 font-normal font-mono'
                     value={localHexCode}
                     onChange={e => setLocalHexCode(e.target.value)}
                 />

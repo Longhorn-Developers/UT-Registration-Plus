@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { graphNodes } from './graphNodes';
 import { isValidNode, PIXELS_TO_FEET, WALKING_SPEED } from './types';
 

@@ -1,14 +1,14 @@
 import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react';
-import { Plus, PlusCircle } from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
+import type { JSX } from 'react';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
-
+import PlusIcon from '~icons/ph/plus';
+import PlusCircleIcon from '~icons/ph/plus-circle';
 import { Button } from './Button';
-import DialogProvider from './DialogProvider/DialogProvider';
 import Dropdown from './Dropdown';
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 import Input from './Input';
@@ -31,39 +31,47 @@ export default function QuickAddModal(): JSX.Element {
     const statusMessage = STATUS_MESSAGES[courseResult.status];
 
     const handleQuickAdd = () => {
-        background.validateLoginStatus({
-            url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/',
-        });
+        background.validateLoginStatus();
     };
 
-    const handleAddCourse = async () => {
+    const handleAddCourse = async (e?: React.FormEvent) => {
+        e?.preventDefault();
         if (courseResult.status !== 'found') return;
 
-        await background.addCourse({ scheduleId: getActiveSchedule().id, course: courseResult.course });
+        await background.addCourse({
+            scheduleId: getActiveSchedule().id,
+            course: courseResult.course,
+        });
         uniqueNumber.reset();
     };
 
     return (
-        <DialogProvider>
-            <Popover>
-                <PopoverButton className='bg-transparent' as='div'>
-                    <Button color='ut-black' size='small' variant='minimal' icon={PlusCircle} onClick={handleQuickAdd}>
-                        Quick Add
-                    </Button>
-                </PopoverButton>
-                <PopoverPanel
-                    as={ExtensionRootWrapper}
-                    className={clsx([
-                        'mt-spacing-3',
-                        'origin-top rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
-                        'data-[closed]:(opacity-0 scale-95)',
-                        'data-[enter]:(ease-out-expo duration-150)',
-                        'data-[leave]:(ease-out duration-50)',
-                        'flex flex-col gap-spacing-7 px-spacing-7 py-spacing-6 w-[400px] z-20',
-                    ])}
-                    transition
-                    anchor='bottom start'
-                >
+        <Popover>
+            <PopoverButton
+                as={Button}
+                color='ut-black'
+                size='small'
+                variant='minimal'
+                icon={PlusCircleIcon}
+                onClick={handleQuickAdd}
+                className='bg-transparent'
+            >
+                Quick Add
+            </PopoverButton>
+            <PopoverPanel
+                as={ExtensionRootWrapper}
+                className={clsx([
+                    'mt-spacing-3',
+                    'origin-top rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
+                    'data-[closed]:(opacity-0 scale-95)',
+                    'data-[enter]:(ease-out-expo duration-150)',
+                    'data-[leave]:(ease-out duration-50)',
+                    'px-spacing-7 py-spacing-6 w-[400px] z-20',
+                ])}
+                transition
+                anchor='bottom start'
+            >
+                <form className='flex flex-col gap-spacing-7' onSubmit={handleAddCourse}>
                     <div className='flex flex-row gap-spacing-3'>
                         <Input
                             className='min-w-0 flex-1'
@@ -71,6 +79,8 @@ export default function QuickAddModal(): JSX.Element {
                             onChange={uniqueNumber.handleChange}
                             maxLength={UNIQUE_ID_LENGTH}
                             placeholder='Enter unique number'
+                            aria-label='Course unique number'
+                            autoFocus
                         />
                         <Dropdown
                             className='w-40 flex-shrink-0'
@@ -82,7 +92,7 @@ export default function QuickAddModal(): JSX.Element {
                         />
                     </div>
                     {statusMessage && (
-                        <Text variant='small' className='text-ut-black'>
+                        <Text variant='small' className='text-ut-black' aria-live='polite' aria-atomic='true'>
                             {statusMessage}
                         </Text>
                     )}
@@ -96,7 +106,10 @@ export default function QuickAddModal(): JSX.Element {
                             {courseResult.course.schedule.meetings.map((m, i) => (
                                 // biome-ignore lint/suspicious/noArrayIndexKey: TODO:
                                 <Text key={i} variant='small' className='text-ut-black'>
-                                    {m.getDaysString({ format: 'short' })} {m.getTimeString({ separator: '\u2013' })}
+                                    {m.getDaysString({ format: 'short' })}{' '}
+                                    {m.getTimeString({
+                                        separator: '\u2013',
+                                    })}
                                     {m.location ? `, ${m.location.building} ${m.location.room}` : ''}
                                 </Text>
                             ))}
@@ -122,15 +135,15 @@ export default function QuickAddModal(): JSX.Element {
                             color={courseResult.status === 'found' ? 'ut-green' : 'ut-gray'}
                             size='regular'
                             variant='filled'
-                            icon={Plus}
-                            onClick={handleAddCourse}
+                            icon={PlusIcon}
+                            type='submit'
                             disabled={courseResult.status !== 'found'}
                         >
                             Add Course
                         </Button>
                     </PopoverGroup>
-                </PopoverPanel>
-            </Popover>
-        </DialogProvider>
+                </form>
+            </PopoverPanel>
+        </Popover>
     );
 }

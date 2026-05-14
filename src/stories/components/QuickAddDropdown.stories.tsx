@@ -1,7 +1,7 @@
-import { ImageSquare } from '@phosphor-icons/react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import Dropdown from '@views/components/common/Dropdown';
 import React, { type ComponentProps, useState } from 'react';
+import ImageSquareIcon from '~icons/ph/image-square';
 
 const meta = {
     title: 'Components/Common/QuickAddDropdown',
@@ -38,7 +38,7 @@ export const Primary: Story = {
             .fill(null)
             .map((_, i) => ({ id: `${i + 1}`, label: `Option ${i + 1}` })),
         selectedOption: null,
-        icon: ImageSquare,
+        icon: ImageSquareIcon,
         disabled: false,
     },
 };
@@ -53,7 +53,7 @@ export const Disabled: Story = {
             { id: '3', label: 'Option 3' },
         ],
         selectedOption: null,
-        icon: ImageSquare,
+        icon: ImageSquareIcon,
         disabled: true,
     },
 };

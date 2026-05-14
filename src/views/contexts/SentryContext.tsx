@@ -1,5 +1,7 @@
+import { isContentScript } from '@chrome-extension-toolkit';
 import {
     BrowserClient,
+    browserTracingIntegration,
     defaultStackParser,
     ErrorBoundary,
     getCurrentScope,
@@ -8,91 +10,78 @@ import {
     makeFetchTransport,
     Scope,
 } from '@sentry/react';
-import type { Client, ClientOptions } from '@sentry/types';
+import { useSentryToolbar } from '@sentry/toolbar';
+import { SENTRY_OPTIONS } from '@shared/sentry';
 import type React from 'react';
 import { createContext, useContext, useMemo } from 'react';
 
-/**
- * Context for the sentry provider.
- */
-export const SentryContext = createContext<[scope: Scope, client: Client] | undefined>(undefined);
+// Integrations that attach global listeners or modify shared state, filtered per
+// https://docs.sentry.io/platforms/javascript/best-practices/shared-environments/
+const SHARED_ENV_FILTERED = new Set([
+    'BrowserApiErrors',
+    'BrowserSession',
+    'Breadcrumbs',
+    'ConversationId',
+    'FunctionToString',
+    'GlobalHandlers',
+]);
 
-/**
- * @returns The dialog context for showing dialogs.
- */
+const SentryContext = createContext<Scope | undefined>(undefined);
+
 export const useSentryScope = () => useContext(SentryContext);
 
 interface SentryProviderProps {
     children: React.ReactNode;
     transactionName?: string;
-    fullInit?: boolean;
 }
 
-/**
- * SentryProvider component initializes and provides Sentry error tracking context to its children.
- * It ensures that Sentry is not initialized more than once and configures the Sentry client and scope.
- *
- * @param children - The child components that will have access to the Sentry context.
- * @param transactionName - Optional name for the Sentry transaction.
- * @param fullInit - Flag to determine if full initialization of Sentry should be performed.
- *
- * @returns The Sentry context provider wrapping the children components.
- */
-export default function SentryProvider({ children, transactionName, fullInit }: SentryProviderProps): JSX.Element {
-    // prevent accidentally initializing sentry twice
-    const parent = useSentryScope();
+export default function SentryProvider({ children, transactionName }: SentryProviderProps): React.JSX.Element {
+    const parentScope = useSentryScope();
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: This is on purpose to only run once
-    const providerValue = useMemo((): [scope: Scope, client: Client] => {
-        if (parent) {
-            const [parentScope, parentClient] = parent;
-
+    // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally only runs once
+    const scope = useMemo(() => {
+        if (parentScope) {
             const scope = parentScope.clone();
             if (transactionName) scope.setTransactionName(transactionName);
-
-            return [scope, parentClient];
+            return scope;
         }
 
-        // filter integrations that use the global variable
-        const integrations = getDefaultIntegrations({}).filter(
-            defaultIntegration =>
-                !['BrowserApiErrors', 'Breadcrumbs', 'GlobalHandlers'].includes(defaultIntegration.name)
-        );
-
-        const options: ClientOptions = {
-            dsn: 'https://ed1a50d8626ff6be35b98d7b1ec86d9d@o4508033820852224.ingest.us.sentry.io/4508033822490624',
-            integrations,
-            transport: makeFetchTransport,
-            stackParser: defaultStackParser,
-            debug: import.meta.env.DEV,
-            release: import.meta.env.VITE_PACKAGE_VERSION,
-            environment: import.meta.env.VITE_SENTRY_ENVIRONMENT,
-        };
-
-        let client: Client;
-        let scope: Scope;
-
-        if (fullInit) {
-            const initializedClient = init(options);
-            if (!initializedClient) throw new Error('Sentry failed to initialize');
-            client = initializedClient;
-            scope = getCurrentScope();
-        } else {
-            client = new BrowserClient(options);
-
-            scope = new Scope();
-
+        // Content scripts share the host page's environment — use an isolated client
+        // to avoid polluting global Sentry state.
+        if (isContentScript()) {
+            const client = new BrowserClient({
+                ...SENTRY_OPTIONS,
+                integrations: getDefaultIntegrations({}).filter(i => !SHARED_ENV_FILTERED.has(i.name)),
+                transport: makeFetchTransport,
+                stackParser: defaultStackParser,
+            });
+            const scope = new Scope();
             scope.setClient(client);
             client.init();
+            return scope;
         }
-        return [scope, client];
 
-        // This is on purpose to only run once
+        // Standalone extension pages can safely use the global client with tracing.
+        if (!init({ ...SENTRY_OPTIONS, integrations: [browserTracingIntegration()] }))
+            throw new Error('Sentry failed to initialize');
+        return getCurrentScope();
     }, []);
+
+    if (import.meta.env.DEV) {
+        // biome-ignore lint/correctness/useHookAtTopLevel: import.meta.env.DEV is a compile-time constant
+        useSentryToolbar({
+            enabled: !parentScope && !isContentScript(),
+            cdn: chrome.runtime.getURL('sentry-toolbar.js'),
+            initProps: {
+                organizationSlug: 'longhorn-developers',
+                projectIdOrSlug: 'ut-registration-plus',
+            },
+        });
+    }
 
     return (
         <ErrorBoundary>
-            <SentryContext.Provider value={providerValue}>{children}</SentryContext.Provider>
+            <SentryContext.Provider value={scope}>{children}</SentryContext.Provider>
         </ErrorBoundary>
     );
 }

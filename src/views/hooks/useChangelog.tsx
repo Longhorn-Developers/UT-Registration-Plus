@@ -1,9 +1,11 @@
-import { X } from '@phosphor-icons/react';
-import ChangelogPopup from '@views/components/common/ChangelogPopup';
 import Text from '@views/components/common/Text/Text';
 import { useDialog } from '@views/contexts/DialogContext';
+import { lazy, Suspense } from 'react';
+import XIcon from '~icons/ph/x';
 
 import { Button } from '../components/common/Button';
+
+const ChangelogPopup = lazy(() => import('@views/components/common/ChangelogPopup'));
 
 /**
  * Custom hook that provides a function to display a changelog dialog.
@@ -21,11 +23,15 @@ export default function useChangelog(): () => void {
                         Changelog
                     </Text>
                     <Button variant='minimal' onClick={close} color='theme-black' className='p-1 text-gray-700'>
-                        <X className='h-6 w-6' />
+                        <XIcon className='h-6 w-6' />
                     </Button>
                 </div>
             ),
-            description: <ChangelogPopup />,
+            description: (
+                <Suspense>
+                    <ChangelogPopup />
+                </Suspense>
+            ),
         }));
     };
 

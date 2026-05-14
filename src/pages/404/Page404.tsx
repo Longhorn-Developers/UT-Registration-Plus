@@ -1,5 +1,7 @@
 // @ts-nocheck
 // biome-ignore-all lint: This is on purpose
+
+import type { JSX } from 'react';
 import { useEffect, useRef } from 'react';
 
 /**

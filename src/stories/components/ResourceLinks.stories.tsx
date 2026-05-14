@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import ResourceLinks from '@views/components/calendar/ResourceLinks';
 
 const meta = {

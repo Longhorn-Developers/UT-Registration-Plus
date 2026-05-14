@@ -19,7 +19,7 @@ interface Props {
     startMinutes?: number;
     endMinutes?: number;
     saturdayClass?: boolean;
-    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
+    setCourse: (course: Course) => void;
 }
 
 function CalendarHour({ hour }: { hour: number }) {
@@ -32,7 +32,7 @@ function CalendarHour({ hour }: { hour: number }) {
     );
 }
 
-function makeGridRow(row: number, cols: number, hoursOfDay: number[]): JSX.Element {
+function makeGridRow(row: number, cols: number, hoursOfDay: number[]): React.JSX.Element {
     // biome-ignore lint/style/noNonNullAssertion: TODO:
     const hour = hoursOfDay[row]!;
 
@@ -61,7 +61,7 @@ export default function CalendarGrid({
     setCourse,
     startMinutes,
     endMinutes,
-}: React.PropsWithChildren<Props>): JSX.Element {
+}: React.PropsWithChildren<Props>): React.JSX.Element {
     // there was a huge mishap with 6 am start time calc here and now it is smoothly done
     // let's try to keep our codebase organized and not so all over the place
     const visualStartHour = Math.floor((startMinutes ?? GRID_DEFAULT_START) / 60);
@@ -78,12 +78,12 @@ export default function CalendarGrid({
             }}
         >
             {/* Cover top left corner of grid, so time gets cut off at the top of the partial border */}
-            <div className='sticky top-[85px] z-10 col-span-2 h-3 bg-white' />
+            <div className='sticky top-[75px] z-10 col-span-2 h-3 bg-white' />
 
             {daysOfWeek.map(day => (
                 <div
                     // Full height with background to prevent grid lines from showing behind
-                    className='sticky top-[85px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end bg-white'
+                    className='sticky top-[75px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end bg-white'
                     key={day}
                 >
                     {/* Partial border height because that's what Isaiah wants */}
@@ -113,17 +113,17 @@ export default function CalendarGrid({
 
 interface AccountForCourseConflictsProps {
     courseCells: CalendarGridCourse[];
-    setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
+    setCourse: (course: Course) => void;
 }
 
 // TODO: Possibly refactor to be more concise
 // TODO: Deal with react strict mode (wacky movements)
-function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): JSX.Element[] {
+function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): React.JSX.Element[] {
     // Sentry is not defined in storybook.
     // This is a valid use case for a condition hook, since IS_STORYBOOK is determined at build time,
     // it doesn't change between renders.
     // biome-ignore lint/correctness/useHookAtTopLevel: See above
-    const [sentryScope] = IS_STORYBOOK ? [] : (useSentryScope() ?? []);
+    const sentryScope = IS_STORYBOOK ? undefined : useSentryScope();
 
     //  Groups by dayIndex to identify overlaps
     const days = courseCells.reduce(

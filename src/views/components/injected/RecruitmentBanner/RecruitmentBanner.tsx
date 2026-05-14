@@ -1,5 +1,6 @@
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
+import type { JSX } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 

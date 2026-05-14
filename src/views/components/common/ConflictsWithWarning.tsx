@@ -1,6 +1,7 @@
 import type { Course } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
+import type { JSX } from 'react';
 
 /**
  * Props for ConflictWithWarningProps

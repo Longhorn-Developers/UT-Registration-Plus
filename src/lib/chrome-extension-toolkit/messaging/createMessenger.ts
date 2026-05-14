@@ -1,5 +1,16 @@
-import type { Message, MessageData, MessageResponse } from '../types';
+import type { Message, MessageData, MessageResponse, TraceContext } from '../types';
 import { MessageEndpoint } from '../types';
+
+let traceContextProvider: (() => TraceContext) | undefined;
+
+/**
+ * Configures the trace context provider for distributed tracing.
+ * When set, every outgoing message automatically includes trace headers.
+ */
+export function setTraceContextProvider(provider: () => TraceContext): void {
+    traceContextProvider = provider;
+}
+
 /**
  * An object that can be used to send messages to the background script.
  */ export type BackgroundMessenger<M> = {
@@ -65,6 +76,10 @@ export function createMessenger<M>(destination: 'background' | 'foreground') {
                     from,
                     to,
                 };
+
+                if (traceContextProvider) {
+                    message.sentry = traceContextProvider();
+                }
 
                 if (to === MessageEndpoint.FOREGROUND && options) {
                     // for messages sent to the tabs, we want to send to the tabs using chrome.tabs.sendMessage,

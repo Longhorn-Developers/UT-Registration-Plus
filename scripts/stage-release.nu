@@ -10,7 +10,7 @@ export def main [
     print "Staging Release"
     print "===============\n"
 
-    if $version_type not-in ["major, minor", "patch"] {
+    if $version_type not-in ["major", "minor", "patch"] {
         error make {msg: $"version_type must be major, minor, or patch.\nGot: ($version_type)"}
     }
 

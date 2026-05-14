@@ -1,4 +1,5 @@
 import { Switch } from '@headlessui/react';
+import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 
 type ToggleSwitchProps = {

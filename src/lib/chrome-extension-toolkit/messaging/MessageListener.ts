@@ -2,6 +2,20 @@ import getScriptType, { ScriptType } from '../getScriptType';
 import type { IMessageListener, Message, MessageHandler, Serializable } from '../types';
 import { MessageEndpoint } from '../types';
 
+import type { TraceContext } from '../types';
+
+type TraceHandlerFn = (context: TraceContext & { name: string }, fn: () => void) => void;
+let traceHandler: TraceHandlerFn | undefined;
+
+/**
+ * Configures the trace handler for distributed tracing on the receive side.
+ * When set, every incoming message handler is wrapped in a continuation of
+ * the sender's trace, creating a linked span.
+ */
+export function setTraceHandler(handler: TraceHandlerFn): void {
+    traceHandler = handler;
+}
+
 /**
  * Options for configuring a message listener.
  */
@@ -80,12 +94,20 @@ export class MessageListener<M> implements IMessageListener<M> {
                     sender,
                 });
             }
-            // this message is for my current context, and I have a handler for it, so handle it
-            handler({
-                data: message.data as Serializable<typeof message.data>,
-                sendResponse,
-                sender,
-            });
+
+            const invokeHandler = () => {
+                handler({
+                    data: message.data as Serializable<typeof message.data>,
+                    sendResponse,
+                    sender,
+                });
+            };
+
+            if (traceHandler) {
+                traceHandler({ ...message.sentry, name: messageName }, invokeHandler);
+            } else {
+                invokeHandler();
+            }
         } catch (error) {
             console.error(`[crx-kit]: Error handling message ${messageName}`, {
                 name: messageName,

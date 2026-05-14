@@ -1,10 +1,9 @@
+import renderRoot from '@shared/util/renderRoot';
+import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import ReportIssueMain from '@views/components/ReportIssueMain';
-import SentryProvider from '@views/contexts/SentryContext';
-import { createRoot } from 'react-dom/client';
 
-// biome-ignore lint/style/noNonNullAssertion: This exists
-createRoot(document.getElementById('root')!).render(
-    <SentryProvider fullInit>
+renderRoot(
+    <ExtensionRoot>
         <ReportIssueMain />
-    </SentryProvider>
+    </ExtensionRoot>
 );

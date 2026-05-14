@@ -28,6 +28,16 @@ import { useCalendar } from '@views/contexts/CalendarContext';
 import clsx from 'clsx';
 import type React from 'react';
 import { useRef, useState } from 'react';
+import ArrowUpRightIcon from '~icons/ph/arrow-up-right';
+import CalendarDotsIcon from '~icons/ph/calendar-dots';
+import ChatTextIcon from '~icons/ph/chat-text';
+import CheckIcon from '~icons/ph/check';
+import CopyIcon from '~icons/ph/copy';
+import FileTextIcon from '~icons/ph/file-text';
+import MinusIcon from '~icons/ph/minus';
+import PlusIcon from '~icons/ph/plus';
+import SmileyIcon from '~icons/ph/smiley';
+import XIcon from '~icons/ph/x';
 
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
@@ -58,7 +68,11 @@ interface HeadingAndActionProps {
  * @param onClose - The function to close the popup.
  * @returns The rendered component.
  */
-export default function HeadingAndActions({ course, activeSchedule, onClose }: HeadingAndActionProps): JSX.Element {
+export default function HeadingAndActions({
+    course,
+    activeSchedule,
+    onClose,
+}: HeadingAndActionProps): React.JSX.Element {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, core } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
@@ -258,13 +272,13 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                     </Text>
                     <Button color='ut-burntorange' variant='minimal' onClick={handleCopy}>
                         <div className='relative h-5.5 w-5.5'>
-                            <Check
+                            <CheckIcon
                                 className={clsx(
                                     'absolute size-full inset-0 text-ut-burntorange transition-all duration-250 ease-in-out',
                                     isCopied ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
                                 )}
                             />
-                            <Copy
+                            <CopyIcon
                                 className={clsx(
                                     'absolute size-full inset-0 text-ut-burntorange transition-all duration-250 ease-in-out',
                                     isCopied ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
@@ -274,7 +288,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                         {formattedUniqueId}
                     </Button>
                     <button type='button' className='bg-transparent p-0 text-ut-black btn' onClick={onClose}>
-                        <X className='h-6 w-6' />
+                        <XIcon className='h-6 w-6' />
                     </button>
                 </div>
                 <div className='flex items-center gap-2'>
@@ -322,7 +336,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 <Button
                     variant='filled'
                     color='ut-burntorange'
-                    icon={isInCalendar ? ArrowUpRight : CalendarDots}
+                    icon={isInCalendar ? ArrowUpRightIcon : CalendarDotsIcon}
                     onClick={() => {
                         if (isInCalendar) {
                             openNewTab({
@@ -337,7 +351,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 <Button
                     variant='outline'
                     color='ut-blue'
-                    icon={ChatText}
+                    icon={ChatTextIcon}
                     onClick={handleOpenRateMyProf}
                     disabled={instructors.length === 0}
                 >
@@ -346,7 +360,7 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 <Button
                     variant='outline'
                     color='ut-teal'
-                    icon={Smiley}
+                    icon={SmileyIcon}
                     onClick={handleOpenCES}
                     disabled={instructors.length === 0}
                 >
@@ -361,13 +375,13 @@ export default function HeadingAndActions({ course, activeSchedule, onClose }: H
                 >
                     r/UTAustin
                 </Button>
-                <Button variant='outline' color='ut-orange' icon={FileText} onClick={handleOpenPastSyllabi}>
+                <Button variant='outline' color='ut-orange' icon={FileTextIcon} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
                 </Button>
                 <Button
                     variant='filled'
                     color={!courseAdded ? 'ut-green' : 'theme-red'}
-                    icon={!courseAdded ? Plus : Minus}
+                    icon={!courseAdded ? PlusIcon : MinusIcon}
                     onClick={handleAddOrRemoveCourse}
                 >
                     {!courseAdded ? 'Add Course' : 'Remove Course'}

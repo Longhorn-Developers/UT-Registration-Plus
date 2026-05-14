@@ -42,8 +42,8 @@ const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
             .then(res => (response === 'json' ? res.json() : res.text()))
             .then(sendResponse);
     },
-    validateLoginStatus({ data, sendResponse }) {
-        validateLoginStatus(data.url).then(sendResponse);
+    validateLoginStatus({ sendResponse }) {
+        validateLoginStatus().then(sendResponse);
     },
     exportSchedule({ data, sendResponse }) {
         exportSchedule(data.scheduleId).then(sendResponse);

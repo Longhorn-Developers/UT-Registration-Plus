@@ -32,7 +32,7 @@ interface Props {
 /**
  * A component that displays a message onto a content script when the context extension is invalidated.
  */
-export function ContextInvalidated(props: Props): JSX.Element | null {
+export function ContextInvalidated(props: Props): React.JSX.Element | null {
     const [isShowing, setIsShowing] = useState(true);
 
     const hide = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

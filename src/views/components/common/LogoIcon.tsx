@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import type { SVGProps } from 'react';
+import type { JSX, SVGProps } from 'react';
 
 interface LogoIconProps {
     className?: string;

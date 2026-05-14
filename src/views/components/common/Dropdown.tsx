@@ -1,10 +1,9 @@
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
-import type { Icon, IconProps } from '@phosphor-icons/react';
-import { CaretDown } from '@phosphor-icons/react';
 import { ellipsify } from '@shared/util/string';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import type React from 'react';
+import CaretDownIcon from '~icons/ph/caret-down';
 
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 
@@ -23,8 +22,8 @@ interface Props {
     selectedOption: DropdownOption | null;
     onOptionChange?: (newOption: DropdownOption) => void;
     noOptionsText?: string;
-    icon?: Icon;
-    iconProps?: IconProps;
+    icon?: React.FC<React.SVGProps<SVGSVGElement>>;
+    iconProps?: React.SVGProps<SVGSVGElement>;
     disabled?: boolean;
 }
 
@@ -42,7 +41,7 @@ export default function Dropdown({
     icon,
     iconProps,
     disabled,
-}: React.PropsWithChildren<Props>): JSX.Element {
+}: React.PropsWithChildren<Props>): React.JSX.Element {
     const Icon = icon;
     return (
         <Listbox
@@ -69,7 +68,7 @@ export default function Dropdown({
                     ) : (
                         placeholderText && <Text className='text-ut-black/50'>{placeholderText}</Text>
                     )}
-                    <CaretDown className='h-5 w-5' />
+                    <CaretDownIcon className='h-5 w-5' />
                 </div>
             </ListboxButton>
             <ListboxOptions

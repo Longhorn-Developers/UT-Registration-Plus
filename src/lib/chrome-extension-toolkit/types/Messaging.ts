@@ -23,11 +23,14 @@ export type MessageResponse<M, K extends keyof M> = Serializable<
 /**
  * The internal object representing a message sent between chrome extension contexts.
  */
+export type TraceContext = { trace?: string; baggage?: string };
+
 export type Message<M> = {
     name: keyof M;
     data: MessageData<M, keyof M>;
     from: MessageEndpoint;
     to: MessageEndpoint;
+    sentry?: TraceContext;
 };
 
 /**

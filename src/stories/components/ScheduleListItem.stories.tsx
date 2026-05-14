@@ -1,7 +1,7 @@
 import { UserSchedule } from '@shared/types/UserSchedule';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import ScheduleListItem from '@views/components/common/ScheduleListItem';
-import useSchedules from '@views/hooks/useSchedules';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
 
 import { exampleSchedule } from '../injected/mocked';
 
@@ -22,7 +22,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Active: Story = {
     render(args) {
-        const [activeSchedule] = useSchedules();
+        const activeSchedule = useActiveSchedule();
 
         return (
             <ScheduleListItem
