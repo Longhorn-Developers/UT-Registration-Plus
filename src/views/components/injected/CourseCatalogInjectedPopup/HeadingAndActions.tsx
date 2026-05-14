@@ -1,18 +1,5 @@
 import createSchedule from '@pages/background/lib/createSchedule';
 import switchSchedule from '@pages/background/lib/switchSchedule';
-import {
-    ArrowUpRight,
-    CalendarDots,
-    ChatText,
-    Check,
-    Copy,
-    FileText,
-    Minus,
-    Plus,
-    RedditLogoIcon,
-    Smiley,
-    X,
-} from '@phosphor-icons/react';
 import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
@@ -38,7 +25,7 @@ import MinusIcon from '~icons/ph/minus';
 import PlusIcon from '~icons/ph/plus';
 import SmileyIcon from '~icons/ph/smiley';
 import XIcon from '~icons/ph/x';
-
+import RedditLogoIcon from '~icons/ph/reddit-logo';
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
