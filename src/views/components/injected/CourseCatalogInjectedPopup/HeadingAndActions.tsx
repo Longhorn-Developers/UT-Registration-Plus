@@ -127,6 +127,9 @@ export default function HeadingAndActions({
      *
      */
     const handleOpenReddit = async () => {
+        // list for course IDs that have multiple subcourses, feel free to modify
+        const exceptions = new Set(['UGS302', 'UGS303', 'CS378']);
+
         const normalizedDepartment = department.replace(/\s+/g, ' ').trim().toUpperCase();
         const departmentNoSpace = normalizedDepartment.replace(/\s+/g, '');
 
