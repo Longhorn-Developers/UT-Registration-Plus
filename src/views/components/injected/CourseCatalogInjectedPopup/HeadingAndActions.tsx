@@ -23,9 +23,9 @@ import CopyIcon from '~icons/ph/copy';
 import FileTextIcon from '~icons/ph/file-text';
 import MinusIcon from '~icons/ph/minus';
 import PlusIcon from '~icons/ph/plus';
+import RedditLogoIcon from '~icons/ph/reddit-logo';
 import SmileyIcon from '~icons/ph/smiley';
 import XIcon from '~icons/ph/x';
-import RedditLogoIcon from '~icons/ph/reddit-logo';
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
@@ -127,7 +127,6 @@ export default function HeadingAndActions({
      *
      */
     const handleOpenReddit = async () => {
-        // Step 1: Normalize inputs (standardize casing, remove extra whitespace/special chars)
         const normalizedDepartment = department.replace(/\s+/g, ' ').trim().toUpperCase();
         const departmentNoSpace = normalizedDepartment.replace(/\s+/g, '');
 
@@ -140,7 +139,7 @@ export default function HeadingAndActions({
             .trim();
         const courseNameNoSpace = normalizedCourseName.replace(/\s+/g, '');
 
-        // Step 2: Build a net of search variations (Strict, Loose, and Course Name)
+        // make search variations
         const strictTerms = [
             `"${normalizedDepartment} ${normalizedCourseNumber}"`,
             `"${departmentNoSpace}${normalizedCourseNumber}"`,
@@ -148,19 +147,14 @@ export default function HeadingAndActions({
             normalizedCourseName ? `"${departmentNoSpace}${normalizedCourseNumber} ${normalizedCourseName}"` : null,
         ];
 
-        // Captures split mentions like "ECE ... 460R"
-        const looseTerms = [
-            `("${normalizedDepartment}" AND "${normalizedCourseNumber}")`,
-            numericCourseNumber ? `("${normalizedDepartment}" AND "${numericCourseNumber}")` : null,
-            numericCourseNumber ? `("${departmentNoSpace}${numericCourseNumber}")` : null,
-        ];
+        const looseTerms = [numericCourseNumber ? `("${departmentNoSpace}${numericCourseNumber}")` : null];
 
         const nameTerms = [
             normalizedCourseName ? `"${normalizedCourseName}"` : null,
             courseNameNoSpace ? `"${courseNameNoSpace}"` : null,
         ];
 
-        // Step 3: De-duplicate terms and execute the Google search with 'site:' operator
+        // de-duplicate terms and execute the Google search with 'site:' operator for UT subreddit
         const queryTerms = [
             ...new Set([...strictTerms, ...looseTerms, ...nameTerms].filter((v): v is string => Boolean(v))),
         ];
