@@ -8,6 +8,7 @@ import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import { englishStringifyList } from '@shared/util/string';
+import { ensureShadowStyles } from '@views/components/common/ExtensionRoot/ShadowRootContainer';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import type { DateArg, Day } from 'date-fns';
 import {
@@ -21,7 +22,6 @@ import {
     set as setMultiple,
 } from 'date-fns';
 import { toBlob } from 'html-to-image';
-
 import { academicCalendars } from './academic-calendars';
 
 // Do all timezone calculations relative to UT's timezone
@@ -348,9 +348,14 @@ export const saveCalAsPng = () => {
 
     const clonedNode = document.querySelector('#root')?.cloneNode(true) as HTMLDivElement;
     clonedNode.style.backgroundColor = 'white';
-    (clonedNode.firstChild as HTMLDivElement).classList.add('screenshot-in-progress');
 
-    const calendarTarget = clonedNode.querySelector('.screenshot\\:calendar-target') as HTMLDivElement;
+    const shadowRoot = clonedNode.querySelector('.shadow-root-container')?.shadowRoot as ShadowRoot;
+    ensureShadowStyles(shadowRoot);
+    for (const node of shadowRoot.children) {
+        node.classList.add('screenshot-in-progress');
+    }
+
+    const calendarTarget = shadowRoot.querySelector('.screenshot\\:calendar-target') as HTMLDivElement;
     calendarTarget.style.width = `${WIDTH_PX}px`;
     calendarTarget.style.height = `${HEIGHT_PX}px`;
 
