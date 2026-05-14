@@ -127,7 +127,7 @@ export default function HeadingAndActions({
      *
      */
     const handleOpenReddit = async () => {
-        // list for course IDs that have multiple subcourses, feel free to modify
+        // list for course IDs that have multiple subcourses, feel free to modify. Maybe we should export this to a thing if it's needed elsewhere lol
         const exceptions = new Set(['UGS302', 'UGS303', 'CS378']);
 
         const normalizedDepartment = department.replace(/\s+/g, ' ').trim().toUpperCase();
@@ -142,15 +142,20 @@ export default function HeadingAndActions({
             .trim();
         const courseNameNoSpace = normalizedCourseName.replace(/\s+/g, '');
 
+        const courseCodeKey = `${departmentNoSpace}${normalizedCourseNumber}`;
+        const isExceptionCourse = exceptions.has(courseCodeKey);
+
         // make search variations
         const strictTerms = [
-            `"${normalizedDepartment} ${normalizedCourseNumber}"`,
-            `"${departmentNoSpace}${normalizedCourseNumber}"`,
+            !isExceptionCourse ? `"${normalizedDepartment} ${normalizedCourseNumber}"` : null,
+            !isExceptionCourse ? `"${departmentNoSpace}${normalizedCourseNumber}"` : null,
             normalizedCourseName ? `"${normalizedDepartment} ${normalizedCourseNumber} ${normalizedCourseName}"` : null,
             normalizedCourseName ? `"${departmentNoSpace}${normalizedCourseNumber} ${normalizedCourseName}"` : null,
         ];
 
-        const looseTerms = [numericCourseNumber ? `("${departmentNoSpace}${numericCourseNumber}")` : null];
+        const looseTerms = !isExceptionCourse && numericCourseNumber
+            ? [`("${departmentNoSpace}${numericCourseNumber}")`]
+            : [];
 
         const nameTerms = [
             normalizedCourseName ? `"${normalizedCourseName}"` : null,
