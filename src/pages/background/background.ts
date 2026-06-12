@@ -5,6 +5,7 @@ import { SENTRY_OPTIONS } from '@shared/sentry';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import updateBadgeText from '@shared/util/updateBadgeText';
+import { UNINSTALL_REVIEW_URL } from '@shared/urls';
 
 init(SENTRY_OPTIONS);
 
@@ -47,6 +48,13 @@ if (import.meta.env.DEV) {
         .catch(() => {
             // Already registered from a previous SW activation
         });
+}
+
+try {
+    const url = UNINSTALL_REVIEW_URL;
+    chrome.runtime.setUninstallURL(url);
+} catch (e) {
+    console.error('Error opening uninstall page: ', e);
 }
 
 setTraceContextProvider(() => {

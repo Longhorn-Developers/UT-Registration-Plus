@@ -2,10 +2,10 @@ import renderRoot from '@shared/util/renderRoot';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React from 'react';
 import { Button } from 'src/views/components/common/Button';
+import { UNINSTALL_REVIEW_URL } from '@shared/urls';
 
 export default function UninstallPage() {
-    const chromeReviewUrl =
-        'https://chromewebstore.google.com/detail/ut-registration-plus/hboadpjkoaieogjimneceaahlppnipaa/reviews?hl=en';
+    const chromeReviewUrl = UNINSTALL_REVIEW_URL;
 
     return (
         <ExtensionRoot>

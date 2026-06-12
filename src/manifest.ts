@@ -71,8 +71,6 @@ const manifest = defineManifest(async env => {
                 ? "script-src 'self' 'wasm-unsafe-eval' http://localhost:*; object-src 'self'; frame-src https://*.sentry.io"
                 : "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
         },
-        uninstall_url:
-            'https://chromewebstore.google.com/detail/ut-registration-plus/hboadpjkoaieogjimneceaahlppnipaa/reviews?hl=en',
     };
 });
 
