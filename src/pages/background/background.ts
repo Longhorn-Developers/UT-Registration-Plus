@@ -3,9 +3,9 @@ import { captureException, continueTrace, getTraceData, init, startSpan } from '
 import type { BACKGROUND_MESSAGES } from '@shared/messages';
 import { SENTRY_OPTIONS } from '@shared/sentry';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { UNINSTALL_REVIEW_URL } from '@shared/urls';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import updateBadgeText from '@shared/util/updateBadgeText';
-import { UNINSTALL_REVIEW_URL } from '@shared/urls';
 
 init(SENTRY_OPTIONS);
 

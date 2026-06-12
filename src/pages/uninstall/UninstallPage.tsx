@@ -1,7 +1,7 @@
+import { UNINSTALL_REVIEW_URL } from '@shared/urls';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React from 'react';
 import { Button } from 'src/views/components/common/Button';
-import { UNINSTALL_REVIEW_URL } from '@shared/urls';
 
 export default function UninstallPage() {
     const chromeReviewUrl = UNINSTALL_REVIEW_URL;
