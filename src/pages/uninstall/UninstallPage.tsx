@@ -1,4 +1,3 @@
-import renderRoot from '@shared/util/renderRoot';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import React from 'react';
 import { Button } from 'src/views/components/common/Button';
