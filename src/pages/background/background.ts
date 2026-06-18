@@ -51,8 +51,7 @@ if (import.meta.env.DEV) {
 }
 
 try {
-    const url = UNINSTALL_REVIEW_URL;
-    chrome.runtime.setUninstallURL(url);
+    chrome.runtime.setUninstallURL(UNINSTALL_REVIEW_URL);
 } catch (e) {
     console.error('Error opening uninstall page: ', e);
 }
