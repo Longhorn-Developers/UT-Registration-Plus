@@ -3,5 +3,4 @@
  *
  * @see https://github.com/Longhorn-Developers/Uninstall-Page
  */
-export const UNINSTALL_REVIEW_URL =
-    'https://uninstall.longhorns.dev/';
+export const UNINSTALL_REVIEW_URL = 'https://uninstall.longhorns.dev/';
