@@ -51,9 +51,9 @@ if (import.meta.env.DEV) {
 }
 
 try {
-    chrome.runtime.setUninstallURL(UNINSTALL_REVIEW_URL);
+  await chrome.runtime.setUninstallURL(UNINSTALL_REVIEW_URL);
 } catch (e) {
-    console.error('Error opening uninstall page: ', e);
+  console.error('Error opening uninstall page: ', e);
 }
 
 setTraceContextProvider(() => {
