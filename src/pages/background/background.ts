@@ -50,12 +50,6 @@ if (import.meta.env.DEV) {
         });
 }
 
-try {
-    await chrome.runtime.setUninstallURL(UNINSTALL_REVIEW_URL);
-} catch (e) {
-    console.error('Error opening uninstall page: ', e);
-}
-
 setTraceContextProvider(() => {
     const data = getTraceData();
     return { trace: data['sentry-trace'], baggage: data.baggage };
@@ -135,6 +129,10 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
 });
 
 messageListener.listen({ onError: error => captureException(error) });
+
+void chrome.runtime.setUninstallURL(UNINSTALL_REVIEW_URL).catch(e => {
+    console.error('Error setting uninstall URL:', e);
+});
 
 UserScheduleStore.subscribe('schedules', async schedules => {
     const index = await UserScheduleStore.get('activeIndex');
