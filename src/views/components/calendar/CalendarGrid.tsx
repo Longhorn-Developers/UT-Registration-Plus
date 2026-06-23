@@ -82,7 +82,12 @@ export default function CalendarGrid({
             }}
         >
             {/* Cover top left corner of grid, so time gets cut off at the top of the partial border */}
-            <div className={clsx('sticky top-[75px] z-10 col-span-2 h-3', hasCustomWallpaper ? 'bg-transparent' : 'bg-white')} />
+            <div
+                className={clsx(
+                    'sticky top-[75px] z-10 col-span-2 h-3',
+                    hasCustomWallpaper ? 'bg-transparent' : 'bg-white'
+                )}
+            />
 
             {daysOfWeek.map(day => (
                 <div
