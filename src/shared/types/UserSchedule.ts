@@ -17,6 +17,8 @@ export class UserSchedule {
     lastCheckedAt?: number | null;
     /** Unix timestamp of the last failed silent refresh attempt — gates a 60s cooldown before retry */
     lastAttemptedAt?: number | null;
+    /** value for the calendar wallpaper */
+    wallpaper?: string;
 
     constructor(schedule: Serialized<UserSchedule>) {
         this.courses = schedule.courses.map(c => new Course(c));
@@ -26,6 +28,9 @@ export class UserSchedule {
         this.updatedAt = schedule.updatedAt ?? 0;
         this.lastCheckedAt = schedule.lastCheckedAt ?? null;
         this.lastAttemptedAt = schedule.lastAttemptedAt ?? null;
+        if (schedule.wallpaper !== undefined) {
+            this.wallpaper = schedule.wallpaper;
+        }
     }
 
     containsCourse(course: Course): boolean {
