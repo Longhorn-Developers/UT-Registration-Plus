@@ -8,10 +8,10 @@
 
 import 'virtual:uno.css';
 import globalStyleSheet from 'virtual:inline-styles';
+import clsx from 'clsx';
 import type { Ref } from 'react';
 import React from 'react';
 import { createPortal } from 'react-dom';
-
 import styles from './ExtensionRoot.module.scss';
 
 /** CSS module class that applies the extension's base font, color, and scrollbar resets. */
@@ -31,7 +31,7 @@ function assignRef<T>(ref: Ref<T> | undefined, value: T | null) {
 }
 
 /** Adopts the global CSSStyleSheet into a shadow root exactly once. */
-function ensureShadowStyles(shadowRoot: ShadowRoot) {
+export function ensureShadowStyles(shadowRoot: ShadowRoot) {
     if (styledShadowRoots.has(shadowRoot)) {
         return;
     }
@@ -64,7 +64,7 @@ export default function ShadowRootContainer({
                 return;
             }
 
-            const root = node.shadowRoot ?? node.attachShadow({ mode: 'open' });
+            const root = node.shadowRoot ?? node.attachShadow({ mode: 'open', clonable: true });
             ensureShadowStyles(root);
             setShadowRoot(root);
         },
@@ -72,7 +72,7 @@ export default function ShadowRootContainer({
     );
 
     return (
-        <div className={className} {...props} ref={setHostRef}>
+        <div className={clsx(className, 'shadow-root-container')} {...props} ref={setHostRef}>
             {shadowRoot && createPortal(<div className={styleResetClass}>{children}</div>, shadowRoot)}
         </div>
     );
