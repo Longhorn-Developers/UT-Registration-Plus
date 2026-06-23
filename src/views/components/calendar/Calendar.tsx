@@ -221,6 +221,7 @@ export default function Calendar(): ReactNode {
     // --------------------------------------------------
 
     const bottomBar = <CalendarBottomBar courseCells={courseCells} setCourse={openCourse} />;
+    const wallpaper = activeSchedule.wallpaper ?? '#ffffff';
 
     return (
         <CalendarContext.Provider value>
@@ -259,11 +260,7 @@ export default function Calendar(): ReactNode {
 
                     <div
                         id='calendar-content'
-                        style={
-                            {
-                                // scrollbarGutter: 'stable',
-                            }
-                        }
+                        style={{ background: wallpaper }}
                         className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5'
                     >
                         <CalendarHeader sidebarOpen={showSidebar} onSidebarToggle={toggleSidebar} />

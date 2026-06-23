@@ -43,6 +43,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
 
     const isCooldown = cooldownIds.has(activeSchedule.id);
     const hasRightHandSide = enableDataRefreshing;
+    const hasCustomWallpaper = (activeSchedule.wallpaper ?? '#ffffff') !== '#ffffff';
     const isRefreshingRef = useRef(false);
     isRefreshingRef.current = isRefreshing;
 
@@ -96,7 +97,10 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     return (
         <div
             style={{ scrollbarGutter: 'auto' }}
-            className='sticky left-0 right-0 top-0 z-10 min-h-[75px] flex items-center gap-5 oveflow-x-auto overflow-y-hidden bg-white pl-spacing-7 pt-spacing-5 pb-1'
+            className={clsx(
+                'sticky left-0 right-0 top-0 z-10 min-h-[75px] flex items-center gap-5 oveflow-x-auto overflow-y-hidden pl-spacing-7 pt-spacing-5 pb-1',
+                hasCustomWallpaper ? 'bg-transparent' : 'bg-white'
+            )}
         >
             {!sidebarOpen && (
                 <Button

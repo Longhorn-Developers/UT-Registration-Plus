@@ -5,6 +5,7 @@ import CourseStatus from '@views/components/common/CourseStatus';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 
@@ -24,6 +25,8 @@ type CalendarBottomBarProps = {
 export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBottomBarProps): ReactNode {
     const asyncCourseCells = courseCells?.filter(block => block.async);
     const enableCourseStatusChips = OptionsStore.useStore(store => store.enableCourseStatusChips);
+    const activeSchedule = useActiveSchedule();
+    const hasCustomWallpaper = (activeSchedule.wallpaper ?? '#ffffff') !== '#ffffff';
 
     const hasAsyncCourses = !!asyncCourseCells?.length;
 
@@ -32,7 +35,12 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
     }
 
     return (
-        <div className='sticky bottom-0 z-50 bg-white w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4'>
+        <div
+            className={clsx(
+                'sticky bottom-0 z-50 w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4',
+                hasCustomWallpaper ? 'bg-transparent' : 'bg-white'
+            )}
+        >
             {hasAsyncCourses && (
                 <div className='flex flex-grow items-center gap-1 text-nowrap'>
                     <Text variant='p' className='text-ut-black uppercase'>

@@ -17,8 +17,8 @@ export class UserSchedule {
     lastCheckedAt?: number | null;
     /** Unix timestamp of the last failed silent refresh attempt — gates a 60s cooldown before retry */
     lastAttemptedAt?: number | null;
-    /** CSS `background` value for the calendar wallpaper */
-    wallpaper: string;
+    /** Value for the calendar wallpaper, defaults to white */
+    wallpaper?: string;
 
     constructor(schedule: Serialized<UserSchedule>) {
         this.courses = schedule.courses.map(c => new Course(c));

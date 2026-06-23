@@ -4,6 +4,8 @@ import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import { useSentryScope } from '@views/contexts/SentryContext';
 import { type CalendarGridCourse, GRID_DEFAULT_END, GRID_DEFAULT_START } from '@views/hooks/useFlattenedCourseSchedule';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
+import clsx from 'clsx';
 import type React from 'react';
 import { Fragment } from 'react';
 
@@ -69,6 +71,8 @@ export default function CalendarGrid({
     const visualEndHour = Math.ceil((endMinutes ?? GRID_DEFAULT_END) / 60);
     const hoursOfDay = Array.from({ length: visualEndHour - visualStartHour }, (_, i) => i + visualStartHour);
     const totalRows = (visualEndHour - visualStartHour) * 2;
+    const activeSchedule = useActiveSchedule();
+    const hasCustomWallpaper = (activeSchedule.wallpaper ?? '#ffffff') !== '#ffffff';
 
     return (
         <div
@@ -78,12 +82,15 @@ export default function CalendarGrid({
             }}
         >
             {/* Cover top left corner of grid, so time gets cut off at the top of the partial border */}
-            <div className='sticky top-[75px] z-10 col-span-2 h-3 bg-white' />
+            <div className={clsx('sticky top-[75px] z-10 col-span-2 h-3', hasCustomWallpaper ? 'bg-transparent' : 'bg-white')} />
 
             {daysOfWeek.map(day => (
                 <div
                     // Full height with background to prevent grid lines from showing behind
-                    className='sticky top-[75px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end bg-white'
+                    className={clsx(
+                        'sticky top-[75px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end',
+                        hasCustomWallpaper ? 'bg-transparent' : 'bg-white'
+                    )}
                     key={day}
                 >
                     {/* Partial border height because that's what Isaiah wants */}
