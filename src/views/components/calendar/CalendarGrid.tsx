@@ -5,7 +5,6 @@ import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import { useSentryScope } from '@views/contexts/SentryContext';
 import { type CalendarGridCourse, GRID_DEFAULT_END, GRID_DEFAULT_START } from '@views/hooks/useFlattenedCourseSchedule';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
-import clsx from 'clsx';
 import type React from 'react';
 import { Fragment } from 'react';
 
@@ -83,19 +82,13 @@ export default function CalendarGrid({
         >
             {/* Cover top left corner of grid, so time gets cut off at the top of the partial border */}
             <div
-                className={clsx(
-                    'sticky top-[75px] z-10 col-span-2 h-3',
-                    hasCustomWallpaper ? 'bg-transparent' : 'bg-white'
-                )}
+                className={`sticky top-[75px] z-10 col-span-2 h-3 ${hasCustomWallpaper ? 'bg-transparent' : 'bg-white'}`}
             />
 
             {daysOfWeek.map(day => (
                 <div
                     // Full height with background to prevent grid lines from showing behind
-                    className={clsx(
-                        'sticky top-[75px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end',
-                        hasCustomWallpaper ? 'bg-transparent' : 'bg-white'
-                    )}
+                    className={`sticky top-[75px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end ${hasCustomWallpaper ? 'bg-transparent' : 'bg-white'}`}
                     key={day}
                 >
                     {/* Partial border height because that's what Isaiah wants */}

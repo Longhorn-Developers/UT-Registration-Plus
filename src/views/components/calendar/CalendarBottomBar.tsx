@@ -36,10 +36,7 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
 
     return (
         <div
-            className={clsx(
-                'sticky bottom-0 z-50 w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4',
-                hasCustomWallpaper ? 'bg-transparent' : 'bg-white'
-            )}
+            className={`sticky bottom-0 z-50 w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4 ${hasCustomWallpaper ? 'bg-transparent' : 'bg-white'}`}
         >
             {hasAsyncCourses && (
                 <div className='flex flex-grow items-center gap-1 text-nowrap'>
