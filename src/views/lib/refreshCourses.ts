@@ -25,7 +25,8 @@ function scrapeCourseFromHTML(htmlText: string, url: string): Course | null {
 
 /**
  * Re-scrapes every course in the given schedule and returns updated courses.
- * Preserves user-set properties (colors). Courses that fail to scrape keep their existing data.
+ * Preserves user-set properties (colors). Courses that fail to scrape keep their existing data,
+ * so the returned array holds the same reference identity for each course that was not successfully scraped.
  *
  * Must be called from a page context (not the background service worker) as it relies on DOMParser.
  */
@@ -58,13 +59,19 @@ export async function refreshScheduleCourses(schedule: Serialized<UserSchedule>)
     });
 }
 
+const SILENT_RETRY_COOLDOWN_MS = 60 * 1000;
+
 /**
  * Refreshes all course data for the active schedule.
  * Checks login status first, then scrapes and persists updated data.
+ * When `silent` is true, skips opening the login tab on 401 and applies a 60s cooldown
+ * via `lastAttemptedAt` so repeated mounts do not retry in a tight loop.
  *
- * @returns true if refresh completed, false if login was required
+ * @param options.silent when true, runs the refresh without surfacing login UI
+ * @returns true if refresh completed, false if login was required or the cooldown was active
  */
-export default async function refreshCourses(): Promise<boolean> {
+export default async function refreshCourses(options?: { silent?: boolean }): Promise<boolean> {
+    const silent = options?.silent ?? false;
     const [schedules, activeIndex] = await Promise.all([
         UserScheduleStore.get('schedules'),
         UserScheduleStore.get('activeIndex'),
@@ -75,8 +82,25 @@ export default async function refreshCourses(): Promise<boolean> {
         return true;
     }
 
-    const loggedIn = await validateLoginStatus();
-    if (!loggedIn) return false;
+    if (silent && activeSchedule.lastAttemptedAt != null) {
+        const sinceLastAttempt = Date.now() - activeSchedule.lastAttemptedAt;
+        if (sinceLastAttempt < SILENT_RETRY_COOLDOWN_MS) {
+            return false;
+        }
+    }
+
+    const loggedIn = await validateLoginStatus({ silent });
+    if (!loggedIn) {
+        if (silent) {
+            const updatedSchedules = [...schedules];
+            updatedSchedules[activeIndex] = {
+                ...activeSchedule,
+                lastAttemptedAt: Date.now(),
+            };
+            await UserScheduleStore.set('schedules', updatedSchedules);
+        }
+        return false;
+    }
 
     const updatedCourses = await refreshScheduleCourses(activeSchedule);
 
@@ -86,6 +110,7 @@ export default async function refreshCourses(): Promise<boolean> {
         courses: updatedCourses,
         updatedAt: Date.now(),
         lastCheckedAt: Date.now(),
+        lastAttemptedAt: null,
     };
 
     await UserScheduleStore.set('schedules', updatedSchedules);
