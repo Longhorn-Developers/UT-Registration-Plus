@@ -23,6 +23,7 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
         name: "Miles Fritzmather",
         role: ["LHD Software Engineering Director"],
         githubUsername: "miles-fritzmather",
+        personalWebsite: "https://milesfm.me/",
     },
     {
         name: "Margaret Cartee",
@@ -36,13 +37,8 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
     },
     {
         name: "Kabir Ramzan",
-        role: ["LHD Events Director"],
+        role: ["LHD Membership Director"],
         githubUsername: "CMEONE",
-    },
-    {
-        name: "Derek Chen",
-        role: ["LHD Advisor", "UTRP Tech Lead"],
-        githubUsername: "DereC4",
     },
 ] as const satisfies TeamMember[];
 
