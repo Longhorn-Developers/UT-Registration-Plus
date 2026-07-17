@@ -141,8 +141,26 @@ export const UTRP_ALUMNI = [
         role: ['LHD Alumni'],
         githubUsername: 'vinsonzheng499',
     },
-    { name: 'Vivek Malle', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
-    { name: 'Ethan Lanting', role: ['LHD Alumni'], githubUsername: 'EthanL06' },
+    {
+        name: 'Som Gupta',
+        role: ['LHD Alumni'],
+        githubUsername: 'knownotunknown',
+    },
+    {
+        name: 'Dhruv Arora',
+        role: ['LHD Alumni'],
+        githubUsername: 'DhruvArora-03',
+    },
+    {
+        name: 'Vivek Malle',
+        role: ['LHD Alumni'],
+        githubUsername: 'vivek12311',
+    },
+    {
+        name: 'Ethan Lanting',
+        role: ['LHD Alumni'],
+        githubUsername: 'EthanL06',
+    },
     {
         name: 'Jessica Zhu',
         role: ['LHD Alumni'],
