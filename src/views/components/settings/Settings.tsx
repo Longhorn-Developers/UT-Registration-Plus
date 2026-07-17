@@ -20,7 +20,7 @@ import { useActiveSchedule } from '@views/hooks/useSchedules';
 import {
     GitHubStatsService,
     LONGHORN_DEVELOPERS_ADMINS,
-    LONGHORN_DEVELOPERS_SWE,
+    LONGHORN_DEVELOPERS_HARDCODED,
     UTRP_ALUMNI,
     UTRP_LEADS,
 } from '@views/lib/getGitHubStats';
@@ -148,7 +148,7 @@ export default function Settings(): React.JSX.Element {
     }, []);
 
     const sortedContributors = useMemo(() => {
-        const base = [...LONGHORN_DEVELOPERS_SWE, ...UTRP_LEADS, ...UTRP_ALUMNI];
+        const base = [...LONGHORN_DEVELOPERS_HARDCODED, ...UTRP_LEADS, ...UTRP_ALUMNI];
         if (!githubStats) return base;
         return [...base].sort(
             (a, b) =>
@@ -161,7 +161,7 @@ export default function Settings(): React.JSX.Element {
         if (!githubStats) return [];
         const knownUsernames = new Set<string>([
             ...LONGHORN_DEVELOPERS_ADMINS.map(a => a.githubUsername),
-            ...LONGHORN_DEVELOPERS_SWE.map(s => s.githubUsername),
+            ...LONGHORN_DEVELOPERS_HARDCODED.map(s => s.githubUsername),
             ...UTRP_LEADS.map(l => l.githubUsername),
             ...UTRP_ALUMNI.map(a => a.githubUsername),
         ]);

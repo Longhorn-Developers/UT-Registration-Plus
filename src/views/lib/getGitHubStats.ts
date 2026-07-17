@@ -42,7 +42,10 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
     },
 ] as const satisfies TeamMember[];
 
-export const LONGHORN_DEVELOPERS_SWE = [
+/**
+ * List of members that are hard coded, like officer alumni and the OG team
+ */
+export const LONGHORN_DEVELOPERS_HARDCODED = [
     {
         name: 'Diego Perez',
         role: ['LHD Co-Founder', 'LHD Advisor', 'UTRP Senior SWE'],
@@ -67,6 +70,27 @@ export const LONGHORN_DEVELOPERS_SWE = [
         name: 'Derek Chen',
         role: ['LHD Advisor', 'UTRP Senior SWE'],
         githubUsername: 'DereC4',
+    },
+    {
+        name: 'Elie Soloveichik',
+        role: ['Former President', 'LHD Co-Founder'],
+        githubUsername: 'Razboy20',
+    },
+    {
+        name: 'Brendan Early',
+        role: ['Former SWE Director', 'LHD Advisor'],
+        githubUsername: 'mymindstorm',
+    },
+    {
+        name: 'Carla Garcia Leija',
+        role: ['Former Design Director'],
+        githubUsername: 'carlagarcialeija',
+        personalWebsite: 'https://www.carlagarcialeija.com/',
+    },
+    {
+        name: 'Denise Xu',
+        role: ['Former Product Director'],
+        githubUsername: 'denise308',
     },
     {
         name: 'Preston Cook',
@@ -95,7 +119,7 @@ export const LONGHORN_DEVELOPERS_SWE = [
 /**
  * Represents the GitHub usernames of the SWEs in the LONGHORN_DEVELOPERS_SWE array.
  */
-export type LD_SWE_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_SWE)[number]['githubUsername'];
+export type LD_SWE_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_HARDCODED)[number]['githubUsername'];
 
 /**
  * Represents the GitHub usernames of the admins in the LONGHORN_DEVELOPERS_ADMINS array.
