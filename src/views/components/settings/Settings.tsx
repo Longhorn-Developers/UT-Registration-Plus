@@ -43,6 +43,25 @@ import { useDevMode } from './useDevMode';
 const manifest = chrome.runtime.getManifest();
 
 /**
+ * Function that returns sort order of a provided member, for the settings page stats.
+ * This is located outside of the component because we use useMemo and there is no need
+ * to use useCallback with a function that deals with no components
+ * @param member A member of LHD
+ * @returns
+ */
+const getContributorPriority = (member: { role: string[] }) => {
+    const roles = member.role.map(role => role.toLowerCase());
+
+    if (roles.some(role => role.includes('founder'))) return 0;
+    if (roles.some(role => role.includes('co-founder'))) return 1;
+    if (roles.some(role => role.includes('advisor'))) return 2;
+    if (roles.some(role => role.includes('former'))) return 3;
+    if (roles.some(role => role.includes('alumni'))) return 4;
+
+    return 5;
+};
+
+/**
  * Main Settings Component for managing user settings and preferences.
  *
  * @returns The Settings component.
@@ -150,11 +169,16 @@ export default function Settings(): React.JSX.Element {
     const sortedContributors = useMemo(() => {
         const base = [...LONGHORN_DEVELOPERS_HARDCODED, ...UTRP_LEADS, ...UTRP_ALUMNI];
         if (!githubStats) return base;
-        return [...base].sort(
-            (a, b) =>
+
+        return [...base].sort((a, b) => {
+            const priorityDiff = getContributorPriority(a) - getContributorPriority(b);
+            if (priorityDiff !== 0) return priorityDiff;
+
+            return (
                 (githubStats.userGitHubStats[b.githubUsername]?.commits ?? 0) -
                 (githubStats.userGitHubStats[a.githubUsername]?.commits ?? 0)
-        );
+            );
+        });
     }, [githubStats]);
 
     const additionalContributors = useMemo(() => {

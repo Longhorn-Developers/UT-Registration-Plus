@@ -73,7 +73,7 @@ export const LONGHORN_DEVELOPERS_HARDCODED = [
     },
     {
         name: 'Elie Soloveichik',
-        role: ['Former President', 'LHD Co-Founder'],
+        role: ['Former President', 'LHD Co-Founder', 'LHD Advisor'],
         githubUsername: 'Razboy20',
     },
     {
@@ -83,37 +83,15 @@ export const LONGHORN_DEVELOPERS_HARDCODED = [
     },
     {
         name: 'Carla Garcia Leija',
-        role: ['Former Design Director'],
+        role: ['Former Design Director', 'LHD Advisor'],
         githubUsername: 'carlagarcialeija',
         personalWebsite: 'https://www.carlagarcialeija.com/',
     },
     {
         name: 'Denise Xu',
-        role: ['Former Product Director'],
+        role: ['Former Product Director', 'LHD Advisor'],
         githubUsername: 'denise308',
     },
-    {
-        name: 'Preston Cook',
-        role: ['LHD Alumni'],
-        githubUsername: 'Preston-Cook',
-    },
-    {
-        name: 'Casey Charleston',
-        role: ['LHD Alumni'],
-        githubUsername: 'caseycharleston',
-    },
-    {
-        name: 'Lukas Zenick',
-        role: ['LHD Alumni'],
-        githubUsername: 'Lukas-Zenick',
-    },
-    {
-        name: 'Vinson Zheng',
-        role: ['LHD Alumni'],
-        githubUsername: 'vinsonzheng499',
-    },
-    { name: 'Vivek Malle', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
-    { name: 'Ethan Lanting', role: ['LHD Alumni'], githubUsername: 'EthanL06' },
 ] as const satisfies TeamMember[];
 
 /**
@@ -143,6 +121,28 @@ export const UTRP_LEADS = [
 export type UTRP_LEAD_GITHUB_USERNAMES = (typeof UTRP_LEADS)[number]['githubUsername'];
 
 export const UTRP_ALUMNI = [
+    {
+        name: 'Preston Cook',
+        role: ['LHD Alumni'],
+        githubUsername: 'Preston-Cook',
+    },
+    {
+        name: 'Casey Charleston',
+        role: ['LHD Alumni'],
+        githubUsername: 'caseycharleston',
+    },
+    {
+        name: 'Lukas Zenick',
+        role: ['LHD Alumni'],
+        githubUsername: 'Lukas-Zenick',
+    },
+    {
+        name: 'Vinson Zheng',
+        role: ['LHD Alumni'],
+        githubUsername: 'vinsonzheng499',
+    },
+    { name: 'Vivek Malle', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
+    { name: 'Ethan Lanting', role: ['LHD Alumni'], githubUsername: 'EthanL06' },
     {
         name: 'Jessica Zhu',
         role: ['LHD Alumni'],
