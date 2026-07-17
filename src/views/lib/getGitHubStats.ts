@@ -128,11 +128,6 @@ export type LD_ADMIN_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_ADMINS)[numb
 
 export const UTRP_LEADS = [
     {
-        name: 'Margaret Cartee',
-        role: ['UTRP Product Lead'],
-        githubUsername: 'margaret-ca',
-    },
-    {
         name: 'Hannah Ha',
         role: ['UTRP Product Lead'],
         githubUsername: 'songhannahha-hub',
