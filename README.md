@@ -218,3 +218,9 @@ Special thanks to the developers and contributors behind these amazing tools and
    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Longhorn-Developers/UT-Registration-Plus&type=Date" />
  </picture>
 </a>
+
+## Contributors
+
+<a href="https://github.com/pittcsc/Summer2026-Internships/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=Longhorn-Developers/UT-Registration-Plus&columns=24&max=480" />
+</a>
