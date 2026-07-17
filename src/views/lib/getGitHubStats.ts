@@ -64,6 +64,11 @@ export const LONGHORN_DEVELOPERS_SWE = [
         githubUsername: 'sghsri',
     },
     {
+        name: 'Derek Chen',
+        role: ['LHD Advisor', 'UTRP Senior SWE'],
+        githubUsername: 'DereC4',
+    },
+    {
         name: 'Preston Cook',
         role: ['LHD Alumni'],
         githubUsername: 'Preston-Cook',
