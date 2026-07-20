@@ -221,6 +221,6 @@ Special thanks to the developers and contributors behind these amazing tools and
 
 ## Contributors
 
-<a href="https://github.com/pittcsc/Summer2026-Internships/graphs/contributors">
+<a href="https://github.com/Longhorn-Developers/UT-Registration-Plus/graphs/contributors">
 <img src="https://contrib.rocks/image?repo=Longhorn-Developers/UT-Registration-Plus&columns=24&max=480" />
 </a>
