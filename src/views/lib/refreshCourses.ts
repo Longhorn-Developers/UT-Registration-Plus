@@ -1,8 +1,11 @@
 import type { Serialized } from '@chrome-extension-toolkit';
+import { SeatAlertStore } from '@shared/storage/SeatAlertStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Course } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { validateLoginStatus } from '@shared/util/checkLoginStatus';
+import updateBadgeText from '@shared/util/updateBadgeText';
+import { applySeatAlerts } from '@shared/util/seatAlerts';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { SiteSupport } from '@views/lib/getSiteSupport';
@@ -102,7 +105,14 @@ export default async function refreshCourses(options?: { silent?: boolean }): Pr
         return false;
     }
 
+    const previousCourses = activeSchedule.courses;
     const updatedCourses = await refreshScheduleCourses(activeSchedule);
+    const watchedCourses = (await SeatAlertStore.get('watchedCourses')) ?? [];
+    const { alerts, watchedCourses: nextWatchedCourses, pendingCount } = applySeatAlerts(
+        previousCourses,
+        updatedCourses,
+        watchedCourses
+    );
 
     const updatedSchedules = [...schedules];
     updatedSchedules[activeIndex] = {
@@ -113,6 +123,26 @@ export default async function refreshCourses(options?: { silent?: boolean }): Pr
         lastAttemptedAt: null,
     };
 
-    await UserScheduleStore.set('schedules', updatedSchedules);
+    await Promise.all([
+        UserScheduleStore.set('schedules', updatedSchedules),
+        SeatAlertStore.set('watchedCourses', nextWatchedCourses),
+        SeatAlertStore.set('pendingCount', pendingCount),
+    ]);
+
+    if (alerts.length > 0) {
+        for (const alert of alerts) {
+            const course = updatedCourses.find(item => item.uniqueId === alert.uniqueId);
+            if (!course) continue;
+
+            chrome.notifications.create(`seat-alert-${course.uniqueId}`, {
+                type: 'basic',
+                iconUrl: chrome.runtime.getURL('icons/icon_128.png'),
+                title: 'A seat opened up',
+                message: `${course.department} ${course.number} is now open.`,
+            });
+        }
+    }
+
+    updateBadgeText(pendingCount > 0 ? pendingCount : updatedCourses.length || 0);
     return true;
 }
