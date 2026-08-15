@@ -8,7 +8,7 @@ import type { Plugin, ResolvedConfig, Rolldown, ViteDevServer } from 'vite';
 import reactFallbackThrottlePlugin from 'vite-plugin-react-fallback-throttle';
 import { defineConfig } from 'vitest/config';
 import packageJson from './package.json';
-import manifest from './src/manifest';
+import manifest, { createFirefoxManifestPlugin } from './src/manifest';
 import sentryToolbarPlugin from './utils/plugins/sentry-toolbar';
 import { buildLogger } from './utils/plugins/vite-build-logger';
 import { inlineStyles } from './utils/plugins/vite-inline-styles';
@@ -93,10 +93,9 @@ const fixManifestOptionsPage = (): Plugin => ({
                 if (!chunk) continue;
 
                 if (isOutputChunk(chunk)) {
-                    chunk.code = chunk.code.replace(
-                        /"options_page":"src\/pages\/options\/index.html"/,
-                        `"options_page":"options.html"`
-                    );
+                    chunk.code = chunk.code
+                        .replace(/"options_page":"src\/pages\/options\/index.html"/, `"options_page":"options.html"`)
+                        .replace(/"default_popup":"src\/pages\/popup\/index.html"/g, '"default_popup":"popup.html"');
                     return;
                 }
             }
@@ -134,11 +133,14 @@ let _server: ViteDevServer;
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    define: {
+        __BROWSER__: JSON.stringify(BROWSER_TARGET ?? 'chrome'),
+    },
     plugins: [
         react(),
         reactFallbackThrottlePlugin(0), // react 19 terrible defaults: https://github.com/facebook/react/issues/31819
         Icons({ compiler: 'jsx', jsx: 'react' }),
-        crx({ manifest }),
+        ...(BROWSER_TARGET === 'firefox' ? [] : [crx({ manifest })]),
         fixManifestOptionsPage(),
         {
             name: 'public-transform',
@@ -236,6 +238,7 @@ export default defineConfig({
         // },
 
         renameFile('src/pages/debug/index.html', 'debug.html'),
+        renameFile('src/pages/popup/index.html', 'popup.html'),
         renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
         renameFile('src/pages/report/index.html', 'report.html'),
@@ -262,6 +265,7 @@ export default defineConfig({
                 nodeVersion: () => process.version,
             },
         }),
+        ...(BROWSER_TARGET === 'firefox' ? [createFirefoxManifestPlugin()] : []),
     ],
     resolve: {
         alias: {
@@ -322,11 +326,14 @@ export default defineConfig({
         rolldownOptions: {
             input: {
                 debug: 'src/pages/debug/index.html',
+                popup: 'src/pages/popup/index.html',
                 calendar: 'src/pages/calendar/index.html',
                 options: 'src/pages/options/index.html',
                 report: 'src/pages/report/index.html',
                 map: 'src/pages/map/index.html',
                 404: 'src/pages/404/index.html',
+                background: 'src/pages/background/background.ts',
+                content: 'src/pages/content/index.tsx',
             },
             output: {
                 chunkFileNames: `assets/[name]-[hash].js`,
@@ -344,5 +351,6 @@ export default defineConfig({
         coverage: {
             provider: 'v8',
         },
+        setupFiles: ['./test/setupTests.ts'],
     },
 });

@@ -26,26 +26,24 @@ export default function getScriptType(): ScriptType | null {
     }
     const manifest = chrome.runtime.getManifest();
     if (
-        typeof ServiceWorkerGlobalScope !== "undefined" &&
+        typeof ServiceWorkerGlobalScope !== 'undefined' &&
         globalThis instanceof ServiceWorkerGlobalScope
     ) {
         return ScriptType.BACKGROUND_SCRIPT;
     }
-
-    if (
-        window.location.href.startsWith(
-            `chrome-extension://${chrome.runtime.id}`,
-        )
-    ) {
+    const runtimeBase = chrome.runtime.getURL('');
+    if (window.location.href.startsWith(runtimeBase)) {
+        if (window.location.href.includes('_generated_background_page.html')) {
+            return ScriptType.BACKGROUND_SCRIPT;
+        }
         if (
-            manifest.action?.default_popup &&
+            (manifest.action?.default_popup || manifest.browser_action?.default_popup) &&
             window.location.href.includes(manifest.action.default_popup)
         ) {
             return ScriptType.EXTENSION_POPUP;
         }
         return ScriptType.EXTENSION_PAGE;
     }
-
     return ScriptType.CONTENT_SCRIPT;
 }
 

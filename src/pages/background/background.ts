@@ -73,6 +73,7 @@ import browserActionHandler from './handler/browserActionHandler';
 import CESHandler from './handler/CESHandler';
 import calendarBackgroundHandler from './handler/calendarBackgroundHandler';
 import gitHubStatsHandler from './handler/gitHubStatsHandler';
+import gradeDistributionHandler from './handler/gradeDistributionHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
 import userScheduleHandler from './handler/userScheduleHandler';
 
@@ -126,6 +127,7 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...CESHandler,
     ...calendarBackgroundHandler,
     ...gitHubStatsHandler,
+    ...gradeDistributionHandler,
 });
 
 messageListener.listen({ onError: error => captureException(error) });
