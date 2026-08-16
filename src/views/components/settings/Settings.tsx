@@ -174,7 +174,6 @@ export default function Settings(): React.JSX.Element {
     }, [githubStats]);
 
     if (devMode) {
-        DevStore.set('isDeveloper', true);
         return <DevMode />;
     }
 
