@@ -40,12 +40,17 @@ function createMockStorageArea(areaName: chrome.storage.AreaName) {
             }
         },
         async set(items: { [key: string]: any }) {
-            for (const key in items) {
-                const oldValue = data[key];
-                data[key] = JSON.parse(JSON.stringify(items[key]));
-                for (const listener of allListeners.values()) {
-                    listener({ [key]: { oldValue, newValue: data[key] } }, areaName);
-                }
+            const keys = Object.keys(items);
+            const updates: Record<string, chrome.storage.StorageChange> = {};
+            for (const key of keys) {
+                const oldValue = data[key]
+                const newValue = structuredClone(items[key])
+                data[key] = newValue
+                updates[key] = { oldValue, newValue: structuredClone(newValue) }
+            }
+
+            for (const listener of allListeners.values()) {
+                listener(updates, areaName);
             }
         },
     };
