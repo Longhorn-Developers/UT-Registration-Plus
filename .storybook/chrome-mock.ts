@@ -1,6 +1,6 @@
 /// <reference types="chrome" />
 import { version } from '../package.json';
-import deepEqual from "fast-deep-equal/es6"
+import deepEqual from 'fast-deep-equal/es6';
 
 type ListenerFunction = (
     changes: { [key: string]: chrome.storage.StorageChange },
@@ -44,11 +44,11 @@ function createMockStorageArea(areaName: chrome.storage.AreaName) {
             let hasUpdates = false;
             const updates: Record<string, chrome.storage.StorageChange> = {};
             for (const [key, newValue] of Object.entries(items)) {
-                const oldValue = data[key]
+                const oldValue = data[key];
                 if (!deepEqual(newValue, oldValue)) {
                     hasUpdates = true;
-                    data[key] = structuredClone(newValue)
-                    updates[key] = { oldValue, newValue }
+                    data[key] = structuredClone(newValue);
+                    updates[key] = { oldValue, newValue };
                 }
             }
 
