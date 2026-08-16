@@ -209,6 +209,9 @@ importers:
       conventional-changelog:
         specifier: ^7.2.0
         version: 7.2.0(conventional-commits-filter@5.0.0)
+      fast-deep-equal:
+        specifier: ^3.1.3
+        version: 3.1.3
       gulp:
         specifier: ^5.0.1
         version: 5.0.1
