@@ -1,6 +1,6 @@
 /// <reference types="chrome" />
 import { version } from '../package.json';
-import deepEqual from "fast-deep-equal"
+import deepEqual from "fast-deep-equal/es6"
 
 type ListenerFunction = (
     changes: { [key: string]: chrome.storage.StorageChange },
