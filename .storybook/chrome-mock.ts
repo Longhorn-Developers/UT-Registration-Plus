@@ -19,13 +19,13 @@ function createMockStorageArea(areaName: chrome.storage.AreaName) {
             if (Array.isArray(keys)) {
                 return keys.reduce(
                     (acc, key) => {
-                        acc[key] = data[key];
+                        acc[key] = structuredClone(data[key]);
                         return acc;
                     },
                     {} as Record<string, any>
                 );
             }
-            if (typeof keys === 'string') return { [keys]: data[keys] };
+            if (typeof keys === 'string') return { [keys]: structuredClone(data[keys]) };
             return keys;
         },
         async getBytesInUse() {
@@ -48,13 +48,13 @@ function createMockStorageArea(areaName: chrome.storage.AreaName) {
                 if (!deepEqual(newValue, oldValue)) {
                     hasUpdates = true;
                     data[key] = structuredClone(newValue)
-                    updates[key] = { oldValue, newValue: structuredClone(newValue) }
+                    updates[key] = { oldValue, newValue }
                 }
             }
 
             if (hasUpdates) {
                 for (const listener of allListeners.values()) {
-                    listener(updates, areaName);
+                    listener(structuredClone(updates), areaName);
                 }
             }
         },
