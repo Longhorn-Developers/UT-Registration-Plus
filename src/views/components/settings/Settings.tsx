@@ -72,7 +72,7 @@ export default function Settings(): React.JSX.Element {
     const handleChangelogOnClick = useChangelog();
     const showMigrationDialog = useMigrationDialog();
 
-    const [devMode, toggleDevMode] = useDevMode(DEV_MODE_CLICK_TARGET);
+    const [devModeJustEnabled, toggleDevMode] = useDevMode(DEV_MODE_CLICK_TARGET);
     const { showParticles, particlesInit, particlesOptions, triggerCelebration, isBirthday } = useBirthdayCelebration();
 
     // Stable skeleton ids to avoid using array index as keys
@@ -173,7 +173,7 @@ export default function Settings(): React.JSX.Element {
             );
     }, [githubStats]);
 
-    if (devMode) {
+    if (devModeJustEnabled) {
         return <DevMode />;
     }
 
