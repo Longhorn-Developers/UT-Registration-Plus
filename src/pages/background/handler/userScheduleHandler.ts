@@ -7,6 +7,7 @@ import exportSchedule from '@pages/background/lib/exportSchedule';
 import removeCourse from '@pages/background/lib/removeCourse';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import switchSchedule from '@pages/background/lib/switchSchedule';
+import toggleCourseVisibility from '@pages/background/lib/toggleCourseVisibility';
 import type { UserScheduleMessages } from '@shared/messages/UserScheduleMessages';
 import { Course } from '@shared/types/Course';
 import { validateLoginStatus } from '@shared/util/checkLoginStatus';
@@ -47,6 +48,9 @@ const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
     },
     exportSchedule({ data, sendResponse }) {
         exportSchedule(data.scheduleId).then(sendResponse);
+    },
+    toggleCourseVisibility({ data, sendResponse }) {
+        toggleCourseVisibility(data.scheduleId, data.uniqueId).then(sendResponse);
     },
 };
 

@@ -36,6 +36,8 @@ export interface CalendarHeaderProps {
 export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const activeSchedule = useActiveSchedule();
     const lastCheckedText = useRelativeTime(activeSchedule.lastCheckedAt);
+    const visibleCourses = activeSchedule.getVisibleCourses();
+    const visibleHours = visibleCourses.reduce((acc, c) => acc + c.creditHours, 0);
     const [isRefreshing, setIsRefreshing] = useState(false);
     // track per-schedule cooldowns so switching schedules allows immediate refresh
     const [cooldownIds, setCooldownIds] = useState<Set<string>>(new Set());
@@ -116,8 +118,8 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 <ScheduleTotalHoursAndCourses
                     scheduleId={activeSchedule.id}
                     scheduleName={activeSchedule.name}
-                    totalHours={activeSchedule.hours}
-                    totalCourses={activeSchedule.courses.length}
+                    totalHours={visibleHours}
+                    totalCourses={visibleCourses.length}
                 />
                 {/*<div className="inline truncate min-w-0 inline-block flex-1">Hello world please truncate me</div>*/}
             </div>
