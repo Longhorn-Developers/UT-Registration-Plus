@@ -1,3 +1,4 @@
+import { DevStore } from '@shared/storage/DevStore';
 import { useCallback, useEffect, useState } from 'react';
 
 import { DEV_MODE_CLICK_INTERVAL, DEV_MODE_CLICK_TIMEOUT } from './constants';
@@ -17,6 +18,7 @@ export const useDevMode = (targetCount: number): [boolean, () => void] => {
                 const newCount = prevCount + 1;
                 if (newCount === targetCount) {
                     setActive(true);
+                    DevStore.set('isDeveloper', true);
                 }
                 return newCount;
             });
