@@ -89,7 +89,7 @@ export default async function refreshCourses(options?: { silent?: boolean }): Pr
         }
     }
 
-    const loggedIn = await validateLoginStatus({ silent });
+    const loggedIn = await validateLoginStatus();
     if (!loggedIn) {
         if (silent) {
             const updatedSchedules = [...schedules];
