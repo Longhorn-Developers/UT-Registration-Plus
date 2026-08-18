@@ -1,13 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import Settings from '@views/components/settings/Settings';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import Settings from "@views/components/settings/Settings";
 
 const meta = {
-    title: 'Components/Common/Settings',
+    title: "Components/Common/Settings",
     component: Settings,
     parameters: {
-        layout: 'centered',
+        layout: "centered",
+        chromatic: { delay: 60000 },
     },
-    tags: ['autodocs'],
+    tags: ["autodocs"],
     argTypes: {},
 } satisfies Meta<typeof Settings>;
 export default meta;
