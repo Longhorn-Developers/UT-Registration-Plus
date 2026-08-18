@@ -29,6 +29,7 @@ export default async function duplicateSchedule(scheduleId: string): Promise<str
         courses: JSON.parse(JSON.stringify(schedule.courses)),
         hours: schedule.hours,
         updatedAt: Date.now(),
+        ...(schedule.wallpaper !== undefined ? { wallpaper: schedule.wallpaper } : {}),
     } satisfies typeof schedule);
 
     await UserScheduleStore.set('schedules', schedules);

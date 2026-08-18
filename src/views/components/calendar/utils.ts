@@ -331,13 +331,18 @@ export const handleExportJson = async (id: string) => {
  *
  * @param calendarRef - The reference to the calendar component.
  */
-export const saveCalAsPng = () => {
+export const saveCalAsPng = async () => {
     const WIDTH_PX = 1165;
     const HEIGHT_PX = 754;
     const SCALE = 2;
 
+    const schedules = await UserScheduleStore.get('schedules');
+    const activeIndex = await UserScheduleStore.get('activeIndex');
+    const idx = activeIndex >= 0 ? activeIndex : 0;
+    const wallpaper = schedules[idx]?.wallpaper ?? '#ffffff';
+
     const rootNode = document.createElement('div');
-    rootNode.style.backgroundColor = 'white';
+    rootNode.style.background = wallpaper;
     rootNode.style.position = 'fixed';
     rootNode.style.zIndex = '1000';
     rootNode.style.top = '-10000px';
@@ -347,7 +352,7 @@ export const saveCalAsPng = () => {
     document.body.appendChild(rootNode);
 
     const clonedNode = document.querySelector('#root')?.cloneNode(true) as HTMLDivElement;
-    clonedNode.style.backgroundColor = 'white';
+    clonedNode.style.background = wallpaper;
 
     const shadowRoot = clonedNode.querySelector('.shadow-root-container')?.shadowRoot as ShadowRoot;
     ensureShadowStyles(shadowRoot);
