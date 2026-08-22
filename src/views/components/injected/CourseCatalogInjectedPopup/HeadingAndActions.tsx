@@ -38,6 +38,11 @@ const { openNewTab, addCourse, removeCourse, openCESPage } = background;
  */
 const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
+interface CourseRemovalUndoState {
+    scheduleId: string;
+    course: Course;
+}
+
 interface HeadingAndActionProps {
     /* The course to display */
     course: Course;
@@ -66,6 +71,7 @@ export default function HeadingAndActions({
     const isInCalendar = useCalendar();
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
+    const [, setLastRemovedCourse] = useState<CourseRemovalUndoState | null>(null);
     const lastCopyTime = useRef<number>(0);
     const showDialog = usePrompt();
     const getInstructorFullName = (instructor: Instructor) => instructor.toString({ format: 'first_last' });
@@ -195,7 +201,11 @@ export default function HeadingAndActions({
                 addCourse({ course, scheduleId: activeSchedule.id });
             }
         } else {
-            removeCourse({ course, scheduleId: activeSchedule.id });
+            await removeCourse({ course, scheduleId: activeSchedule.id });
+            setLastRemovedCourse({
+                scheduleId: activeSchedule.id,
+                course,
+            });
         }
     };
 
