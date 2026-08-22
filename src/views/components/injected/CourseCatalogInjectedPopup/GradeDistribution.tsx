@@ -54,6 +54,12 @@ const GRADE_COLORS = {
     Other: extendedColors.gradeDistribution.other,
 } as const satisfies Record<LetterGrade, string>;
 
+const semesterOrdering = new Map([
+    ['Fall', 0],
+    ['Summer', 1],
+    ['Spring', 2],
+]);
+
 /**
  * Renders the grade distribution chart for a specific course.
  *
@@ -255,7 +261,11 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     }}
                 />
             )}
-            {status === DataStatus.ERROR && <Text variant='p'>Error fetching grade distribution data</Text>}
+            {status === DataStatus.ERROR && (
+                <Text variant='p' className='pb-3'>
+                    Error fetching grade distribution data
+                </Text>
+            )}
             {status === DataStatus.FOUND && (
                 <>
                     <div className='flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
@@ -279,13 +289,16 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                                     }
 
                                     const [season1, year1] = k1.split(' ');
-                                    const [, year2] = k2.split(' ');
+                                    const [season2, year2] = k2.split(' ');
 
                                     if (year1 !== year2) {
                                         return parseInt(year2 as string, 10) - parseInt(year1 as string, 10);
                                     }
 
-                                    return season1 === 'Fall' ? -1 : 1;
+                                    return (
+                                        (semesterOrdering.get(season1 ?? 'Fall') ?? 0) -
+                                        (semesterOrdering.get(season2 ?? 'Fall') ?? 0)
+                                    );
                                 })
                                 .map(semester => (
                                     <option key={semester} value={semester}>

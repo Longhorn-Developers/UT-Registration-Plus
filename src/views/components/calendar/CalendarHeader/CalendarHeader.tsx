@@ -114,6 +114,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
 
             <div className='truncate flex-initial min-w-[min-content] screenshot:transform-origin-left screenshot:scale-120'>
                 <ScheduleTotalHoursAndCourses
+                    scheduleId={activeSchedule.id}
                     scheduleName={activeSchedule.name}
                     totalHours={activeSchedule.hours}
                     totalCourses={activeSchedule.courses.length}
