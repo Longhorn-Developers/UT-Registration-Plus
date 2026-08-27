@@ -78,6 +78,14 @@
     }
 }
 
+.isEarly {
+    > *:not(td:last-child), > *:not(td:first-child) {
+        color: colors.$warning;
+        font-weight: bold !important;
+    }
+}
+
+
 // for the edge case where they have conflicting classes in their schedule
 .isConflict:not(.inActiveSchedule) {
     > *:not(td:last-child) {

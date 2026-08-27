@@ -28,6 +28,10 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     const [conflicts, setConflicts] = useState<Course[]>([]);
     const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
 
+    // whether the course for this row is deemed "too early"
+    const [earlyHighlight, setEarlyHighlight] = useState(false);
+    const highlightEarlyClasses = OptionsStore.useStore(store => store.enableEarlyCourseHighlights);
+
     const { element, course } = row;
 
     useEffect(() => {
@@ -101,6 +105,18 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             setConflicts([]);
         };
     }, [activeSchedule, course, element.classList, highlightConflicts]);
+
+    useEffect(() => {
+        if (!course) {
+            return;
+        }
+
+        element.classList.remove(styles.isEarly!);
+
+        if (highlightEarlyClasses && course.checkEarly()) {
+            element.classList['add'](styles.isEarly!);
+        }
+    }, [course, highlightEarlyClasses]);
 
     if (!container) {
         return null;

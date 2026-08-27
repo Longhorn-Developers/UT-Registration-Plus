@@ -157,6 +157,20 @@ export class Course {
         return conflicts;
     }
 
+    /** 
+     * Checks whether the currentcourse starts "too early" (currently if any meeting of the course starts at 9:30am or before).
+     * 
+     * @returns A boolean of whether the class is too early (true) or not (false)
+     */
+
+    checkEarly(): boolean {
+        for (const meeting of this.schedule.meetings) {
+            if (meeting.startTime <= 570) return true;
+        }
+        return false;
+    }
+
+
     /**
      * @returns The course number without the summer term
      * @example
