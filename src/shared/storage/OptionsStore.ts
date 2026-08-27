@@ -10,6 +10,9 @@ export interface IOptionsStore {
     /** whether we should automatically highlight conflicts on the course schedule page (adds a red strikethrough to courses that have conflicting times) */
     enableHighlightConflicts: boolean;
 
+    /** whether we should automatically highlight courses that start on or before 9:30am (adds a yellow highlight to the course details) */
+    enableEarlyCourseHighlights: boolean;
+
     /** whether we should automatically scroll to load more courses on the course schedule page (without having to click next) */
     enableScrollToLoad: boolean;
 
@@ -31,6 +34,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>(
     {
         enableCourseStatusChips: false,
         enableHighlightConflicts: true,
+        enableEarlyCourseHighlights: false,
         enableScrollToLoad: true,
         enableDataRefreshing: false,
         alwaysOpenCalendarInNewTab: false,

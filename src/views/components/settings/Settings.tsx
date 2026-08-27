@@ -246,6 +246,7 @@ export default function Settings(): React.JSX.Element {
                     {options && (
                         <AdvancedSettings
                             highlightConflicts={options.enableHighlightConflicts}
+                            highlightEarlyClasses={options.enableEarlyCourseHighlights}
                             loadAllCourses={options.enableScrollToLoad}
                             increaseScheduleLimit={options.allowMoreSchedules}
                             calendarNewTab={options.alwaysOpenCalendarInNewTab}

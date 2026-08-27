@@ -16,6 +16,7 @@ import Preview from './Preview';
 
 interface AdvancedSettingsProps {
     highlightConflicts: boolean;
+    highlightEarlyClasses: boolean;
     loadAllCourses: boolean;
     increaseScheduleLimit: boolean;
     calendarNewTab: boolean;
@@ -39,6 +40,7 @@ function BetaChip() {
  */
 export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     highlightConflicts,
+    highlightEarlyClasses,
     loadAllCourses,
     increaseScheduleLimit,
     calendarNewTab,
@@ -103,6 +105,23 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         isChecked={highlightConflicts}
                         onChange={() => {
                             void OptionsStore.set('enableHighlightConflicts', !highlightConflicts);
+                        }}
+                    />
+                </div>
+
+                <div className='flex items-center justify-between'>
+                    <div className='max-w-xs'>
+                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                            Early Course Highlight
+                        </Text>
+                        <p className='text-sm text-gray-600'>
+                            Highlights classes that start at 9:30am or before in yellow.
+                        </p>
+                    </div>
+                    <SwitchButton
+                        isChecked={highlightEarlyClasses}
+                        onChange={() => {
+                            void OptionsStore.set('enableEarlyCourseHighlights', !highlightEarlyClasses);
                         }}
                     />
                 </div>
