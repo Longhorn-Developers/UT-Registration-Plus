@@ -78,10 +78,9 @@
     }
 }
 
-.isEarly {
-    > *:not(td:last-child), > *:not(td:first-child) {
+.isEarly:not(.isConflict) {
+    > td:not(:last-child), > td:not(:first-child), > td:not(:nth-last-child(2)) {
         color: colors.$warning;
-        font-weight: bold !important;
     }
 }
 
