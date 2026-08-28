@@ -17,12 +17,14 @@ import Preview from './Preview';
 
 const options = [
     { id: '0', label: 'None' },
+    { id: '390', label: '6:30am' },
+    { id: '420', label: '7:00am' },
+    { id: '450', label: '7:30am' },
     { id: '480', label: '8:00am' },
     { id: '510', label: '8:30am' },
     { id: '540', label: '9:00am' },
     { id: '570', label: '9:30am' },
     { id: '600', label: '10:00am' },
-    { id: '630', label: '10:30am' }
 ]
 
 function findSelectionFromThreshold(id: string): DropdownOption {
@@ -131,7 +133,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         </Text>
                         <p className='text-sm text-gray-600'>
                             Adds a yellow highlight to courses which have any meeting 
-                            that starts at the selected time or before.
+                            that starts at or before selected time.
                         </p>
                     </div>
                     <Dropdown 
