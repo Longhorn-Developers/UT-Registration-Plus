@@ -127,6 +127,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
                             Highlight Early Courses
+                            <BetaChip />
                         </Text>
                         <p className='text-sm text-gray-600'>
                             Adds a yellow highlight to courses which have any meeting 
