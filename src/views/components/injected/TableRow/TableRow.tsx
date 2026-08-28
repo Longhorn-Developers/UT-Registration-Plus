@@ -28,9 +28,9 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     const [conflicts, setConflicts] = useState<Course[]>([]);
     const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
 
-    // whether the course for this row is deemed "too early"
-    const [earlyHighlight, setEarlyHighlight] = useState(false);
-    const highlightEarlyClasses = OptionsStore.useStore(store => store.enableEarlyCourseHighlights);
+    // the threshold for whether a course is classified as "early" by the user
+    const earlyCourseThreshold = OptionsStore.useStore(store => store.earlyCourseThreshold);
+    
 
     const { element, course } = row;
 
@@ -111,12 +111,15 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             return;
         }
 
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         element.classList.remove(styles.isEarly!);
 
-        if (highlightEarlyClasses && course.checkEarly()) {
-            element.classList['add'](styles.isEarly!);
+        if (earlyCourseThreshold > 0 && course.checkEarly(earlyCourseThreshold)) {
+            console.log("early");
+            // biome-ignore lint/style/noNonNullAssertion: TODO:
+            element.classList.add(styles.isEarly!);
         }
-    }, [course, highlightEarlyClasses]);
+    }, [element, course, earlyCourseThreshold]);
 
     if (!container) {
         return null;
