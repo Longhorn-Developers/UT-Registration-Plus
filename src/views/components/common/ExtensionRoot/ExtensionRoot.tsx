@@ -1,4 +1,4 @@
-// biome-ignore assist/source/organizeImports: react-scan must be imported before React and React DOM
+// biome-ignore-all assist/source/organizeImports: react-scan must be imported before React and React DOM
 import { scan } from 'react-scan';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

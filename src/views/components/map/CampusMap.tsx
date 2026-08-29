@@ -35,6 +35,8 @@ type SelectedBuildings = {
 
 type CampusMapProps = {
     processedCourses: ProcessInPersonMeetings[];
+    /** Building IDs (e.g. 'GDC') to highlight yellow for the active schedule. Empty if no schedule. */
+    highlightedBuildings?: string[];
 };
 
 /**
@@ -58,7 +60,9 @@ type CampusMapProps = {
  * - Dev controls for toggling element visibility.
  * - Zoom and pan controls.
  */
-export default function CampusMap({ processedCourses }: CampusMapProps): React.JSX.Element {
+export default function CampusMap({ processedCourses, highlightedBuildings = [] }: CampusMapProps): React.JSX.Element {
+    // Set lookup for O(1) building-id-in-active-schedule checks in the render loop
+    const highlightedBuildingSet = useMemo(() => new Set(highlightedBuildings), [highlightedBuildings]);
     // Core state
     const [selected, setSelected] = useState<SelectedBuildings>({
         start: null,
@@ -198,8 +202,13 @@ export default function CampusMap({ processedCourses }: CampusMapProps): React.J
             result.add(path.end);
         });
 
+        // Always render active-schedule buildings, regardless of zoom-level clustering
+        for (const id of highlightedBuildingSet) {
+            result.add(id);
+        }
+
         return result;
-    }, [selected.start, selected.end, relevantPaths]);
+    }, [selected.start, selected.end, relevantPaths, highlightedBuildingSet]);
 
     // Memoized set of buildings to show based on zoom level and grid clustering
     const visibleBuildings = useMemo(() => {
@@ -616,6 +625,20 @@ export default function CampusMap({ processedCourses }: CampusMapProps): React.J
                         ([id, node]) =>
                             shouldShowNode(node.type, id) && (
                                 <g key={id}>
+                                    {/* Larger semi-transparent yellow halo behind highlighted building circles */}
+                                    {node.type === 'building' && highlightedBuildingSet.has(id) && (
+                                        <circle
+                                            cx={node.x}
+                                            cy={node.y}
+                                            r={getNodeSize(node.type) * 2.1}
+                                            fill='#FFD700'
+                                            fillOpacity={0.55}
+                                            stroke='#FFD700'
+                                            strokeOpacity={0.9}
+                                            strokeWidth='1.5'
+                                            pointerEvents='none'
+                                        />
+                                    )}
                                     {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
                                     <circle
                                         cx={node.x}
@@ -626,11 +649,13 @@ export default function CampusMap({ processedCourses }: CampusMapProps): React.J
                                                 ? '#579D42'
                                                 : id === selected.end
                                                   ? '#D10000'
-                                                  : node.type === 'building'
-                                                    ? '#BF5700'
-                                                    : node.type === 'intersection'
-                                                      ? '#9CADB7'
-                                                      : '#D6D2C400'
+                                                  : node.type === 'building' && highlightedBuildingSet.has(id)
+                                                    ? '#FFD700'
+                                                    : node.type === 'building'
+                                                      ? '#BF5700'
+                                                      : node.type === 'intersection'
+                                                        ? '#9CADB7'
+                                                        : '#D6D2C400'
                                         }
                                         stroke={node.type !== 'walkway' ? 'white' : 'green'}
                                         strokeWidth={zoomLevel < ZOOM_LEVELS.MEDIUM ? '1.5' : '2'}
