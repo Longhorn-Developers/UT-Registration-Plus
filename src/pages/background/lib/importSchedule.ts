@@ -26,6 +26,9 @@ export default async function importSchedule(scheduleData: unknown): Promise<voi
             const course = new Course(c);
             await addCourse(newScheduleId, course, true);
         }
+
+        // TODO: restore wallpaper from imported JSON when wallpaper UI is added
+
         console.log('Course schedule successfully parsed!');
     } else {
         console.error('No schedule data provided for import');
