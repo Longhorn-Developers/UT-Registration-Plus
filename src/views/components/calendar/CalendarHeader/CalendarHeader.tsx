@@ -1,5 +1,6 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { OptionsStore } from '@shared/storage/OptionsStore';
+import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
@@ -13,7 +14,7 @@ import { useActiveSchedule } from '@views/hooks/useSchedules';
 import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
 import type { JSX } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import ArrowsClockwiseIcon from '~icons/ph/arrows-clockwise';
 import CalendarDotsIcon from '~icons/ph/calendar-dots';
 import ExportIcon from '~icons/ph/export';
@@ -39,28 +40,25 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     const visibleCourses = activeSchedule.getVisibleCourses();
     const visibleHours = visibleCourses.reduce((acc, c) => acc + c.creditHours, 0);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     // track per-schedule cooldowns so switching schedules allows immediate refresh
     const [cooldownIds, setCooldownIds] = useState<Set<string>>(new Set());
     const enableDataRefreshing = OptionsStore.useStore(store => store.enableDataRefreshing);
 
     const isCooldown = cooldownIds.has(activeSchedule.id);
     const hasRightHandSide = enableDataRefreshing;
-    const isRefreshingRef = useRef(false);
-    isRefreshingRef.current = isRefreshing;
 
     const handleRefresh = useCallback(async () => {
+        if (isRefreshing) return;
         setIsRefreshing(true);
         // Ensure the spinner is visible long enough to provide visual feedback
-        const minSpin = new Promise(r => setTimeout(r, 400));
+        const minSpin = new Promise(resolve => setTimeout(resolve, 400));
         try {
-            await chrome.storage.session.set({ pendingRefresh: true });
             const [success] = await Promise.all([refreshCourses(), minSpin]);
-            if (success) {
-                await chrome.storage.session.remove('pendingRefresh');
-            }
+            setShowLoginPrompt(!success);
         } catch (error) {
             console.error('Failed to refresh courses:', error);
-            await chrome.storage.session.remove('pendingRefresh');
+            setShowLoginPrompt(true);
         } finally {
             setIsRefreshing(false);
             const scheduleId = activeSchedule.id;
@@ -73,27 +71,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 });
             }, 3000);
         }
-    }, [activeSchedule]);
-
-    // Auto-retry refresh after login redirect
-    useEffect(() => {
-        const checkPendingRefresh = async () => {
-            const { pendingRefresh } = await chrome.storage.session.get('pendingRefresh');
-            if (pendingRefresh && !isRefreshingRef.current) {
-                handleRefresh();
-            }
-        };
-
-        checkPendingRefresh();
-
-        const onVisibilityChange = () => {
-            if (document.visibilityState === 'visible') {
-                checkPendingRefresh();
-            }
-        };
-        document.addEventListener('visibilitychange', onVisibilityChange);
-        return () => document.removeEventListener('visibilitychange', onVisibilityChange);
-    }, [handleRefresh]);
+    }, [activeSchedule, isRefreshing]);
 
     return (
         <div
@@ -208,11 +186,26 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 </div>
                 {hasRightHandSide && <Divider className='self-center' size='1.75rem' orientation='vertical' />}
                 <div className={clsx(styles.secondaryActions, 'flex items-center gap-3 ml-auto')}>
-                    {enableDataRefreshing && lastCheckedText && (
-                        <Text variant='mini' className='whitespace-nowrap text-theme-black/50 !font-normal'>
-                            Last checked: {lastCheckedText}
-                        </Text>
-                    )}
+                    {enableDataRefreshing &&
+                        (showLoginPrompt ? (
+                            <Text variant='mini' className='whitespace-nowrap text-theme-black/50 !font-normal'>
+                                <a
+                                    href={UTRP_LOGIN_URL}
+                                    target='_blank'
+                                    rel='noreferrer'
+                                    className='text-ut-burntorange underline'
+                                >
+                                    Log in
+                                </a>
+                                {' to refresh course data'}
+                            </Text>
+                        ) : (
+                            lastCheckedText && (
+                                <Text variant='mini' className='whitespace-nowrap text-theme-black/50 !font-normal'>
+                                    Last checked: {lastCheckedText}
+                                </Text>
+                            )
+                        ))}
                     {enableDataRefreshing && (
                         <Button
                             color='ut-black'
