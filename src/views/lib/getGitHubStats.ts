@@ -138,7 +138,7 @@ export type UTRP_ALUMNI_GITHUB_USERNAMES = (typeof UTRP_ALUMNI)[number]['githubU
 /**
  * Service for fetching GitHub statistics.
  */
-export class GitHubStatsService {""
+export class GitHubStatsService {
     private async fetchWithRetry<T>(fetchFn: () => Promise<T>, retries = 3, delay = 5000): Promise<T> {
         try {
             return await fetchFn();
