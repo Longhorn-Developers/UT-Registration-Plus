@@ -7,7 +7,7 @@ import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import { useIsActiveSchedule } from '@views/hooks/useSchedules';
-import { LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
+import { LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_HARDCODED } from '@views/lib/getGitHubStats';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import CircleIcon from '~icons/ph/circle';
@@ -33,7 +33,7 @@ interface ScheduleListItemProps {
 }
 
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
-const teamMembers = [...LONGHORN_DEVELOPERS_ADMINS, ...LONGHORN_DEVELOPERS_SWE];
+const teamMembers = [...LONGHORN_DEVELOPERS_ADMINS, ...LONGHORN_DEVELOPERS_HARDCODED];
 
 /**
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
