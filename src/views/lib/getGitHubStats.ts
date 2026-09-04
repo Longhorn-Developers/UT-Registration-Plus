@@ -15,39 +15,37 @@ const CONTRIBUTORS_API_ROUTE = `/repos/${REPO_OWNER}/${REPO_NAME}/stats/contribu
 
 export const LONGHORN_DEVELOPERS_ADMINS = [
     {
-        name: 'Elie Soloveichik',
-        role: ['LHD President', 'LHD Co-Founder'],
-        githubUsername: 'Razboy20',
+        name: 'Kamsi Elele',
+        role: ['LHD President'],
+        githubUsername: 'Kamsi-Elele',
     },
     {
-        name: 'Brendan Early',
+        name: 'Miles Fritzmather',
         role: ['LHD Software Engineering Director'],
-        githubUsername: 'mymindstorm',
+        githubUsername: 'miles-fritzmather',
+        personalWebsite: 'https://milesfm.me/',
     },
     {
-        name: 'Denise Xu',
+        name: 'Margaret Cartee',
         role: ['LHD Product Director'],
-        githubUsername: 'denise308',
+        githubUsername: 'margaret-ca',
     },
     {
-        name: 'Carla Garcia Leija',
+        name: 'Tyler Henry',
         role: ['LHD UX Design Director'],
-        githubUsername: 'carlagarcialeija',
-        personalWebsite: 'https://www.carlagarcialeija.com/',
+        githubUsername: 'tyler-henry08',
     },
     {
         name: 'Kabir Ramzan',
-        role: ['LHD Events Director'],
+        role: ['LHD Membership Director'],
         githubUsername: 'CMEONE',
-    },
-    {
-        name: 'Derek Chen',
-        role: ['LHD Advisor', 'UTRP Tech Lead'],
-        githubUsername: 'DereC4',
     },
 ] as const satisfies TeamMember[];
 
-export const LONGHORN_DEVELOPERS_SWE = [
+/**
+ * List of members that are hard coded, like officer alumni and the OG team
+ */
+export const LONGHORN_DEVELOPERS_HARDCODED = [
     {
         name: 'Diego Perez',
         role: ['LHD Co-Founder', 'LHD Advisor', 'UTRP Senior SWE'],
@@ -69,29 +67,37 @@ export const LONGHORN_DEVELOPERS_SWE = [
         githubUsername: 'sghsri',
     },
     {
-        name: 'Preston Cook',
-        role: ['LHD Alumni'],
-        githubUsername: 'Preston-Cook',
+        name: 'Derek Chen',
+        role: ['LHD Advisor', 'UTRP Senior SWE'],
+        githubUsername: 'DereC4',
     },
     {
-        name: 'Casey Charleston',
-        role: ['LHD Alumni'],
-        githubUsername: 'caseycharleston',
+        name: 'Elie Soloveichik',
+        role: ['Former President', 'LHD Co-Founder', 'LHD Advisor'],
+        githubUsername: 'Razboy20',
     },
     {
-        name: 'Lukas Zenick',
-        role: ['LHD Alumni'],
-        githubUsername: 'Lukas-Zenick',
+        name: 'Brendan Early',
+        role: ['Former SWE Director', 'LHD Advisor'],
+        githubUsername: 'mymindstorm',
     },
-    { name: 'Vinson Zheng', role: ['LHD Alumni'], githubUsername: 'vinsonzheng499' },
-    { name: 'Vivek Malle', role: ['LHD Alumni'], githubUsername: 'vivek12311' },
-    { name: 'Ethan Lanting', role: ['LHD Alumni'], githubUsername: 'EthanL06' },
+    {
+        name: 'Carla Garcia Leija',
+        role: ['Former Design Director', 'LHD Advisor'],
+        githubUsername: 'carlagarcialeija',
+        personalWebsite: 'https://www.carlagarcialeija.com/',
+    },
+    {
+        name: 'Denise Xu',
+        role: ['Former Product Director', 'LHD Advisor'],
+        githubUsername: 'denise308',
+    },
 ] as const satisfies TeamMember[];
 
 /**
  * Represents the GitHub usernames of the SWEs in the LONGHORN_DEVELOPERS_SWE array.
  */
-export type LD_SWE_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_SWE)[number]['githubUsername'];
+export type LD_SWE_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_HARDCODED)[number]['githubUsername'];
 
 /**
  * Represents the GitHub usernames of the admins in the LONGHORN_DEVELOPERS_ADMINS array.
@@ -99,11 +105,6 @@ export type LD_SWE_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_SWE)[number]['
 export type LD_ADMIN_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_ADMINS)[number]['githubUsername'];
 
 export const UTRP_LEADS = [
-    {
-        name: 'Margaret Cartee',
-        role: ['UTRP Product Lead'],
-        githubUsername: 'margaret-ca',
-    },
     {
         name: 'Hannah Ha',
         role: ['UTRP Product Lead'],
@@ -120,6 +121,46 @@ export const UTRP_LEADS = [
 export type UTRP_LEAD_GITHUB_USERNAMES = (typeof UTRP_LEADS)[number]['githubUsername'];
 
 export const UTRP_ALUMNI = [
+    {
+        name: 'Preston Cook',
+        role: ['LHD Alumni'],
+        githubUsername: 'Preston-Cook',
+    },
+    {
+        name: 'Casey Charleston',
+        role: ['LHD Alumni'],
+        githubUsername: 'caseycharleston',
+    },
+    {
+        name: 'Lukas Zenick',
+        role: ['LHD Alumni'],
+        githubUsername: 'Lukas-Zenick',
+    },
+    {
+        name: 'Vinson Zheng',
+        role: ['LHD Alumni'],
+        githubUsername: 'vinsonzheng499',
+    },
+    {
+        name: 'Som Gupta',
+        role: ['LHD Alumni'],
+        githubUsername: 'knownotunknown',
+    },
+    {
+        name: 'Dhruv Arora',
+        role: ['LHD Alumni'],
+        githubUsername: 'DhruvArora-03',
+    },
+    {
+        name: 'Vivek Malle',
+        role: ['LHD Alumni'],
+        githubUsername: 'vivek12311',
+    },
+    {
+        name: 'Ethan Lanting',
+        role: ['LHD Alumni'],
+        githubUsername: 'EthanL06',
+    },
     {
         name: 'Jessica Zhu',
         role: ['LHD Alumni'],
