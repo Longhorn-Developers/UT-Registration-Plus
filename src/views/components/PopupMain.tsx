@@ -130,7 +130,7 @@ export default function PopupMain(): JSX.Element {
                 </ScheduleDropdown>
             </div>
             {activeSchedule?.courses?.length === 0 && (
-                <div className='max-w-64 flex flex-col items-center self-center gap-1.25 px-2 py-2 pt-24'>
+                <div className='max-w-64 flex flex-col items-center self-center gap-1.25 px-2 py-2 pt-24 chromatic-ignore'>
                     <Text variant='p' className='text-center text-ut-gray !font-normal'>
                         {funny}
                     </Text>
