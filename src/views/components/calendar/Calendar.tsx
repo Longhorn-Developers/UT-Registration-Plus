@@ -99,7 +99,6 @@ const CalendarSidebar = memo(function CalendarSidebar() {
  */
 export default function Calendar(): ReactNode {
     const { courseCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
-    const displayBottomBar = true;
     const initialCourse = useCourseFromUrl();
     const [course, setCourse] = useState<Course | null>(initialCourse);
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(initialCourse !== null);
@@ -221,6 +220,8 @@ export default function Calendar(): ReactNode {
     };
     // --------------------------------------------------
 
+    const bottomBar = <CalendarBottomBar courseCells={courseCells} setCourse={openCourse} />;
+
     return (
         <CalendarContext.Provider value>
             <div className='relative h-full w-full flex flex-col'>
@@ -268,7 +269,7 @@ export default function Calendar(): ReactNode {
                         <CalendarHeader sidebarOpen={showSidebar} onSidebarToggle={toggleSidebar} />
                         <div
                             className={clsx('min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl', {
-                                'screenshot:flex-grow-0': displayBottomBar, // html-to-image seems to have a bug with flex-grow
+                                'screenshot:flex-grow-0': bottomBar !== null, // html-to-image seems to have a bug with flex-grow
                             })}
                         >
                             <CalendarGrid
@@ -278,7 +279,7 @@ export default function Calendar(): ReactNode {
                                 endMinutes={endMinutes}
                             />
                         </div>
-                        <CalendarBottomBar courseCells={courseCells} setCourse={openCourse} />
+                        {bottomBar}
                     </div>
                 </div>
 

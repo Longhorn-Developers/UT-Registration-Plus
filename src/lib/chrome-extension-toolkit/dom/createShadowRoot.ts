@@ -31,6 +31,7 @@ export function createShadowDOM(id: string, options?: ShadowRootInit, isolate = 
     div.style.all = 'initial';
     div.attachShadow({
         mode: 'open',
+        clonable: true,
         ...(options || {}),
     });
 
