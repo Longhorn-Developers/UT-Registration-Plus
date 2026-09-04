@@ -1,4 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
@@ -14,7 +15,7 @@ import { useActiveSchedule } from '@views/hooks/useSchedules';
 import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
 import type { JSX } from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import ArrowsClockwiseIcon from '~icons/ph/arrows-clockwise';
 import CalendarDotsIcon from '~icons/ph/calendar-dots';
 import ExportIcon from '~icons/ph/export';
@@ -70,6 +71,22 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
             }, 3000);
         }
     }, [activeSchedule, isRefreshing]);
+
+    const handleRefreshRef = useRef(handleRefresh);
+    handleRefreshRef.current = handleRefresh;
+
+    // Retries after the user returns from the login tab, so the prompt yields to a timestamp
+    useEffect(() => {
+        if (!showLoginPrompt) return undefined;
+
+        const onVisibilityChange = async () => {
+            if (document.visibilityState !== 'visible') return;
+            if (await background.validateLoginStatus()) void handleRefreshRef.current();
+        };
+
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+    }, [showLoginPrompt]);
 
     return (
         <div
