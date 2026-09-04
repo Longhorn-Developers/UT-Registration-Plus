@@ -2,6 +2,7 @@ import { MessageListener, setTraceContextProvider, setTraceHandler } from '@chro
 import { captureException, continueTrace, getTraceData, init, startSpan } from '@sentry/react';
 import type { BACKGROUND_MESSAGES } from '@shared/messages';
 import { SENTRY_OPTIONS } from '@shared/sentry';
+import { SeatAlertStore } from '@shared/storage/SeatAlertStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { UNINSTALL_REVIEW_URL } from '@shared/urls';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
@@ -134,14 +135,26 @@ void chrome.runtime.setUninstallURL(UNINSTALL_REVIEW_URL).catch(e => {
     console.error('Error setting uninstall URL:', e);
 });
 
-UserScheduleStore.subscribe('schedules', async schedules => {
-    const index = await UserScheduleStore.get('activeIndex');
-    const numCourses = schedules.newValue[index]?.courses?.length;
-    updateBadgeText(numCourses || 0);
+async function updateBadgeFromStores() {
+    const [schedules, activeIndex, pendingCount] = await Promise.all([
+        UserScheduleStore.get('schedules'),
+        UserScheduleStore.get('activeIndex'),
+        SeatAlertStore.get('pendingCount'),
+    ]);
+    const numCourses = schedules[activeIndex]?.courses?.length ?? 0;
+    updateBadgeText(pendingCount > 0 ? pendingCount : numCourses || 0);
+}
+
+UserScheduleStore.subscribe('schedules', async () => {
+    await updateBadgeFromStores();
 });
 
-UserScheduleStore.subscribe('activeIndex', async ({ newValue }) => {
-    const schedules = await UserScheduleStore.get('schedules');
-    const numCourses = schedules[newValue]?.courses?.length;
-    updateBadgeText(numCourses || 0);
+UserScheduleStore.subscribe('activeIndex', async () => {
+    await updateBadgeFromStores();
 });
+
+SeatAlertStore.subscribe('pendingCount', async () => {
+    await updateBadgeFromStores();
+});
+
+void updateBadgeFromStores();
