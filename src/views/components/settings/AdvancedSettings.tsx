@@ -6,6 +6,7 @@ import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
 import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
+import Dropdown, { DropdownOption } from '@views/components/common/Dropdown';
 import clsx from 'clsx';
 import type React from 'react';
 import TrashIcon from '~icons/ph/trash';
@@ -14,8 +15,25 @@ import FileUpload from '../common/FileUpload';
 import { DISPLAY_PREVIEWS, PREVIEW_SECTION_DIV_CLASSNAME } from './constants';
 import Preview from './Preview';
 
+const options = [
+    { id: '0', label: 'None' },
+    { id: '390', label: '6:30am' },
+    { id: '420', label: '7:00am' },
+    { id: '450', label: '7:30am' },
+    { id: '480', label: '8:00am' },
+    { id: '510', label: '8:30am' },
+    { id: '540', label: '9:00am' },
+    { id: '570', label: '9:30am' },
+    { id: '600', label: '10:00am' },
+]
+
+function findSelectionFromThreshold(id: string): DropdownOption {
+    return options.find(option => option.id === id) ?? options[0] ?? { id: '0', label: 'None' };
+}
+
 interface AdvancedSettingsProps {
     highlightConflicts: boolean;
+    earlyCourseThreshold: number;
     loadAllCourses: boolean;
     increaseScheduleLimit: boolean;
     calendarNewTab: boolean;
@@ -33,12 +51,12 @@ function BetaChip() {
         </span>
     );
 }
-
 /**
  * Settings section component for advanced settings
  */
 export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     highlightConflicts,
+    earlyCourseThreshold,
     loadAllCourses,
     increaseScheduleLimit,
     calendarNewTab,
@@ -93,7 +111,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                            Course Conflict Highlight
+                            Highlight Course Conflicts
                         </Text>
                         <p className='text-sm text-gray-600'>
                             Adds a red strikethrough to courses that have conflicting times.
@@ -103,6 +121,27 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         isChecked={highlightConflicts}
                         onChange={() => {
                             void OptionsStore.set('enableHighlightConflicts', !highlightConflicts);
+                        }}
+                    />
+                </div>
+
+                <div className='flex items-center justify-between'>
+                    <div className='max-w-xs'>
+                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                            Highlight Early Courses
+                            <BetaChip />
+                        </Text>
+                        <p className='text-sm text-gray-600'>
+                            Adds a yellow highlight to courses which have any meeting 
+                            that starts at or before selected time.
+                        </p>
+                    </div>
+                    <Dropdown 
+                        selectedOption = { findSelectionFromThreshold(earlyCourseThreshold.toString()) }
+                        options = { options }
+                        onOptionChange = {(event) => {
+                            earlyCourseThreshold = parseInt(event.id, 10)
+                            void OptionsStore.set('earlyCourseThreshold', earlyCourseThreshold);
                         }}
                     />
                 </div>

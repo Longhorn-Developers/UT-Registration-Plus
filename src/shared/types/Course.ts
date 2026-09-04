@@ -157,6 +157,21 @@ export class Course {
         return conflicts;
     }
 
+    /** 
+     * Checks whether the current course starts "too early" (based on the threshold).
+     * 
+     * @param threshold - The threshold for what classifies the course as "early", in minutes from midnight
+     * @returns A boolean of whether the class is too early (true) or not (false)
+     */
+
+    checkEarly(threshold: number): boolean {
+        for (const meeting of this.schedule.meetings) {
+            if (meeting.startTime <= threshold) return true;
+        }
+        return false;
+    }
+
+
     /**
      * @returns The course number without the summer term
      * @example

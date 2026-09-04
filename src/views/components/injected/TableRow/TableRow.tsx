@@ -28,6 +28,10 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     const [conflicts, setConflicts] = useState<Course[]>([]);
     const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
 
+    // the threshold for whether a course is classified as "early" by the user
+    const earlyCourseThreshold = OptionsStore.useStore(store => store.earlyCourseThreshold);
+    
+
     const { element, course } = row;
 
     useEffect(() => {
@@ -101,6 +105,21 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
             setConflicts([]);
         };
     }, [activeSchedule, course, element.classList, highlightConflicts]);
+
+    useEffect(() => {
+        if (!course) {
+            return;
+        }
+
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
+        element.classList.remove(styles.isEarly!);
+
+        if (earlyCourseThreshold > 0 && course.checkEarly(earlyCourseThreshold)) {
+            console.log("early");
+            // biome-ignore lint/style/noNonNullAssertion: TODO:
+            element.classList.add(styles.isEarly!);
+        }
+    }, [element, course, earlyCourseThreshold]);
 
     if (!container) {
         return null;
