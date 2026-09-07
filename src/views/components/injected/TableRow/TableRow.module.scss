@@ -78,6 +78,13 @@
     }
 }
 
+.isEarly:not(.isConflict) {
+    > td:not(:last-child), > td:not(:first-child), > td:not(:nth-last-child(2)) {
+        color: colors.$warning;
+    }
+}
+
+
 // for the edge case where they have conflicting classes in their schedule
 .isConflict:not(.inActiveSchedule) {
     > *:not(td:last-child) {
