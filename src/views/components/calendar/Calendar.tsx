@@ -27,26 +27,16 @@ import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
 
-const CalendarSidebar = memo(function CalendarSidebar() {
     const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
     const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
     const showReportIssueDialog = useReportIssueDialog();
-    const sidebarRef = useRef<HTMLDivElement>(null);
-
-    // TODO: Replace with JSX `inert={!showSidebar}` once React supports the inert attribute natively.
-    useEffect(() => {
-        if (sidebarRef.current) {
-            if (showSidebar) {
-                sidebarRef.current.removeAttribute('inert');
-            } else {
-                sidebarRef.current.setAttribute('inert', '');
-            }
-        }
-    }, [showSidebar]);
 
     return (
         <div
-            ref={sidebarRef}
+            // React 19 (pinned in package.json) now maps boolean `inert` props to the native
+            // HTML boolean attribute, so the ref + useEffect DOM manipulation this TODO called
+            // out is no longer needed.
+            inert={!showSidebar}
             className={clsx(
                 'py-spacing-5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
                 {
