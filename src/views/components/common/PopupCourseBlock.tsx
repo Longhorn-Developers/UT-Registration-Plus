@@ -1,10 +1,12 @@
 import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
+import { SeatAlertStore } from '@shared/storage/SeatAlertStore';
 import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import type { CourseColors } from '@shared/types/ThemeColors';
 import { pickFontColor } from '@shared/util/colors';
 import { StatusIcon } from '@shared/util/icons';
+import { toggleSeatAlertWatch } from '@shared/util/seatAlerts';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import type React from 'react';
@@ -53,6 +55,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
     const enableCourseStatusChips = OptionsStore.useStore(store => store.enableCourseStatusChips);
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
+    const [isWatching, setIsWatching] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
     const ref = useRef<HTMLDivElement>(null);
 
@@ -68,6 +71,19 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
             });
         });
     }, []);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        void SeatAlertStore.get('watchedCourses').then(watchedCourses => {
+            if (!isMounted) return;
+            setIsWatching(watchedCourses.some(item => item.uniqueId === course.uniqueId));
+        });
+
+        return () => {
+            isMounted = false;
+        };
+    }, [course.uniqueId]);
 
     // text-white or text-black based on secondaryColor
     const fontColor = pickFontColor(colors.primaryColor);
@@ -89,6 +105,21 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
         await navigator.clipboard.writeText(formattedUniqueId);
         setIsCopied(true);
         setTimeout(() => setIsCopied(false), 500);
+    };
+
+    const handleToggleSeatAlert = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.stopPropagation();
+        const watchedCourses = (await SeatAlertStore.get('watchedCourses')) ?? [];
+        const { watchedCourses: nextWatchedCourses, isWatching: nextIsWatching } = toggleSeatAlertWatch(
+            watchedCourses,
+            course
+        );
+
+        await Promise.all([
+            SeatAlertStore.set('watchedCourses', nextWatchedCourses),
+            SeatAlertStore.set('pendingCount', nextWatchedCourses.filter(item => item.pending).length),
+        ]);
+        setIsWatching(nextIsWatching);
     };
 
     const meetings = useMemo(
@@ -163,7 +194,17 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                     </div>
                 )}
             </button>
-            <div className='flex flex-col justify-center pr-spacing-3'>
+            <div className='flex flex-col justify-center gap-spacing-2 pr-spacing-3'>
+                <Button
+                    color={isWatching ? 'ut-green' : 'ut-gray'}
+                    variant='outline'
+                    size='small'
+                    onClick={handleToggleSeatAlert}
+                    className='max-w-fit rounded px-spacing-3! py-spacing-2!'
+                    disabled={course.status === Status.OPEN}
+                >
+                    {isWatching ? 'Watching' : 'Alert'}
+                </Button>
                 <Button
                     color='ut-gray'
                     onClick={handleCopy}
