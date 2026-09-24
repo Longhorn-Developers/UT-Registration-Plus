@@ -45,7 +45,13 @@ export default defineConfig({
             'in-out-expo': 'cubic-bezier(.46, 0, .21, 1)',
             'out-expo': 'cubic-bezier(0.19, 1, 0.22, 1)',
         },
-        colors,
+        colors: {
+            ...colors,
+            // Theme-dependent semantic tokens, see ExtensionRoot.module.scss for values
+            surface: { DEFAULT: 'var(--color-bg)', raised: 'var(--color-surface)' },
+            content: { DEFAULT: 'var(--color-text)', muted: 'var(--color-text-muted)' },
+            divider: 'var(--color-border)',
+        },
         spacing,
     },
     variants: [

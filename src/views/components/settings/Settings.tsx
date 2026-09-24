@@ -17,6 +17,7 @@ import Text from '@views/components/common/Text/Text';
 // Hooks
 import useChangelog from '@views/hooks/useChangelog';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
+import { useThemeSync } from '@views/hooks/useThemeSync';
 import {
     GitHubStatsService,
     LONGHORN_DEVELOPERS_ADMINS,
@@ -86,6 +87,8 @@ export default function Settings(): React.JSX.Element {
     const enableCourseStatusChips = options.enableCourseStatusChips;
     const isDeveloper = DevStore.useStore(store => store.isDeveloper);
 
+    useThemeSync(options.enableThemesBeta ? options.theme : 'light');
+
     const activeSchedule = useActiveSchedule();
     const showDialog = usePrompt();
     const handleChangelogOnClick = useChangelog();
@@ -133,7 +136,9 @@ export default function Settings(): React.JSX.Element {
                         cannot be undone.
                     </p>
                     <br />
-                    <p className='text-sm text-gray-600'>Note: This will not erase your settings and preferences.</p>
+                    <p className='text-sm text-content-muted'>
+                        Note: This will not erase your settings and preferences.
+                    </p>
                 </>
             ),
             buttons: accept => (
@@ -202,7 +207,7 @@ export default function Settings(): React.JSX.Element {
     }
 
     return (
-        <div className='relative'>
+        <div className='relative min-h-screen bg-surface'>
             {particlesInit && showParticles && (
                 <Particles
                     id='birthday-particles'
@@ -211,7 +216,7 @@ export default function Settings(): React.JSX.Element {
                 />
             )}
 
-            <header className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
+            <header className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-divider px-7 py-4 md:overflow-x-hidden'>
                 <a
                     href={calendarPageUrl}
                     title='Back to Calendar'
@@ -247,7 +252,7 @@ export default function Settings(): React.JSX.Element {
                         onClick={handleChangelogOnClick}
                     >
                         <GitMergeIcon className='h-6 w-6 text-ut-gray' />
-                        <span className='text-ut-black'>
+                        <span className='text-content'>
                             v{manifest.version}
                             {import.meta.env.DEV ? '-dev' : ''}
                         </span>
@@ -275,6 +280,8 @@ export default function Settings(): React.JSX.Element {
                             calendarNewTab={options.alwaysOpenCalendarInNewTab}
                             enableDataRefreshing={enableDataRefreshing}
                             enableCourseStatusChips={enableCourseStatusChips}
+                            enableThemesBeta={options.enableThemesBeta}
+                            theme={options.theme}
                             activeSchedule={activeSchedule}
                             handleEraseAll={handleEraseAll}
                             handleImportClick={handleImportClick}
@@ -284,7 +291,7 @@ export default function Settings(): React.JSX.Element {
                     <Divider size='auto' orientation='horizontal' />
 
                     <section className='my-8 space-y-4'>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>
+                        <h2 className='mb-4 text-xl text-content font-semibold'>
                             <button
                                 type='button'
                                 onClick={toggleDevMode}
@@ -302,7 +309,7 @@ export default function Settings(): React.JSX.Element {
                                 <span className='mx-2 border border-ut-burntorange rounded px-2 py-0.5 text-xs text-ut-burntorange font-medium'>
                                     BETA
                                 </span>
-                                <p className='text-sm text-gray-600'>
+                                <p className='text-sm text-content-muted'>
                                     Navigate campus efficiently with our interactive map tool that integrates with your
                                     schedule
                                 </p>
@@ -331,7 +338,7 @@ export default function Settings(): React.JSX.Element {
                                         <span className='mx-2 border border-ut-gray rounded px-2 py-0.5 text-xs text-ut-gray font-medium'>
                                             DEV
                                         </span>
-                                        <p className='text-sm text-gray-600'>
+                                        <p className='text-sm text-content-muted'>
                                             Open the developer debug page to view extension storage and debug logs
                                         </p>
                                     </div>
@@ -370,7 +377,7 @@ export default function Settings(): React.JSX.Element {
 
                 <section className='my-8 lg:my-0 lg:ml-4 lg:w-1/2'>
                     <section>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>
+                        <h2 className='mb-4 text-xl text-content font-semibold'>
                             LONGHORN DEVELOPERS (LHD) EXECUTIVE BOARD
                         </h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3'>
@@ -389,7 +396,7 @@ export default function Settings(): React.JSX.Element {
                         </div>
                     </section>
                     <section className='my-8'>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTORS</h2>
+                        <h2 className='mb-4 text-xl text-content font-semibold'>UTRP CONTRIBUTORS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
                             {sortedContributors.map(swe => (
                                 <ContributorCard

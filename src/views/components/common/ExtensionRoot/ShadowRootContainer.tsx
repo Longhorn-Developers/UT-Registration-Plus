@@ -8,6 +8,7 @@
 
 import 'virtual:uno.css';
 import globalStyleSheet from 'virtual:inline-styles';
+import type { ThemeName } from '@shared/types/Theme';
 import clsx from 'clsx';
 import type { Ref } from 'react';
 import React from 'react';
@@ -49,9 +50,11 @@ export default function ShadowRootContainer({
     ref,
     className,
     children,
+    theme,
     ...props
 }: React.HTMLProps<HTMLDivElement> & {
     ref?: Ref<HTMLDivElement>;
+    theme?: ThemeName;
 }): React.JSX.Element {
     const [shadowRoot, setShadowRoot] = React.useState<ShadowRoot | null>(null);
 
@@ -73,7 +76,13 @@ export default function ShadowRootContainer({
 
     return (
         <div className={clsx(className, 'shadow-root-container')} {...props} ref={setHostRef}>
-            {shadowRoot && createPortal(<div className={styleResetClass}>{children}</div>, shadowRoot)}
+            {shadowRoot &&
+                createPortal(
+                    <div className={styleResetClass} data-theme={theme}>
+                        {children}
+                    </div>,
+                    shadowRoot
+                )}
         </div>
     );
 }
