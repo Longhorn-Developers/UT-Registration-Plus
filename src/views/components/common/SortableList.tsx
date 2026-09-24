@@ -12,8 +12,8 @@ import { CSS } from '@dnd-kit/utilities';
 import { SortableItemProvider } from '@views/contexts/SortableItemContext';
 import { useCursor } from '@views/hooks/useCursor';
 import clsx from 'clsx';
-import type { CSSProperties, PropsWithChildren, ReactNode } from 'react';
-import React, { useEffect, useMemo, useState } from 'react';
+import type { CSSProperties, JSX, PropsWithChildren, ReactNode } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { SortableItemOverlay } from './SortableItemOverlay';
 
@@ -106,7 +106,7 @@ export function SortableList<T extends BaseItem>({
 
     return (
         <div className={clsx('h-full w-full')}>
-            <ul className={clsx('overflow-clip flex gap-spacing-3 flex-col', className)}>
+            <ul className={clsx('flex gap-spacing-3 flex-col', className)}>
                 <DndContext
                     modifiers={[restrictToParentElement]}
                     sensors={sensors}

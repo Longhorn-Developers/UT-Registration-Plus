@@ -1,5 +1,4 @@
-import { ContextInvalidated, createShadowDOM, onContextInvalidated } from 'chrome-extension-toolkit';
-import React from 'react';
+import { ContextInvalidated, createShadowDOM, onContextInvalidated } from '@chrome-extension-toolkit';
 
 import CourseCatalogMain from './components/CourseCatalogMain';
 import PopupMain from './components/PopupMain';

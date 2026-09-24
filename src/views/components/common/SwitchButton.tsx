@@ -1,5 +1,6 @@
 import { Switch } from '@headlessui/react';
-import React, { useEffect, useState } from 'react';
+import type { JSX } from 'react';
+import { useEffect, useState } from 'react';
 
 type ToggleSwitchProps = {
     isChecked?: boolean;
@@ -32,7 +33,7 @@ const SwitchButton = ({ isChecked = true, onChange }: ToggleSwitchProps): JSX.El
             checked={enabled}
             onChange={handleChange}
             className={`${enabled ? 'bg-[#579D42]' : 'bg-gray-400'}
-          relative inline-flex items-center h-8 w-13 rounded-full transition-colors ease-in-out duration-200 min-w-[52px]`}
+          relative inline-flex items-center h-8 w-13 rounded-full transition-colors ease-in-out duration-200 min-w-[52px] cursor-pointer`}
         >
             <span
                 className={`${enabled ? 'translate-x-6' : 'translate-x-1'}

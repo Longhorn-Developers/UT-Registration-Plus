@@ -1,5 +1,5 @@
-/* eslint-disable react/no-unstable-nested-components */
-import React, { useEffect, useState } from 'react';
+import type { JSX } from 'react';
+import { useEffect, useState } from 'react';
 import type { Options as RMOptions } from 'react-markdown';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -28,9 +28,9 @@ export default function ChangelogPopup(): JSX.Element {
 
     const MarkdownComponents: RMOptions['components'] = {
         h1: ({ children, ...props }) => (
-            <h1 className='mb-4 mt-6 text-3xl font-bold' {...props}>
+            <h2 className='mb-4 mt-6 text-3xl font-bold' {...props}>
                 {children}
-            </h1>
+            </h2>
         ),
         h2: ({ children, ...props }) => (
             <h2 className='mb-3 mt-5 text-2xl font-semibold' {...props}>
@@ -158,12 +158,8 @@ export default function ChangelogPopup(): JSX.Element {
     };
 
     return (
-        <div className='px-4'>
-            <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={MarkdownComponents}
-                className='text-gray-800 dark:text-gray-200'
-            >
+        <div className='px-4 text-gray-800 dark:text-gray-200'>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={MarkdownComponents}>
                 {markdownContent}
             </ReactMarkdown>
         </div>

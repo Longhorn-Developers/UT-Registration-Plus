@@ -1,92 +1,72 @@
-// import addCourse from '@pages/background/lib/addCourse';
+// Pages
 import { addCourseByURL } from '@pages/background/lib/addCourseByURL';
 import { deleteAllSchedules } from '@pages/background/lib/deleteSchedule';
-import exportSchedule from '@pages/background/lib/exportSchedule';
 import importSchedule from '@pages/background/lib/importSchedule';
-import { CalendarDots, Trash } from '@phosphor-icons/react';
+// Shared
 import { background } from '@shared/messages';
 import { DevStore } from '@shared/storage/DevStore';
-import { initSettings, OptionsStore } from '@shared/storage/OptionsStore';
-import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
-import MIMEType from '@shared/types/MIMEType';
-import { downloadBlob } from '@shared/util/downloadBlob';
-// import { addCourseByUrl } from '@shared/util/courseUtils';
-// import { getCourseColors } from '@shared/util/colors';
-// import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
+import Particles from '@tsparticles/react';
 import { Button } from '@views/components/common/Button';
 import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
+// Views
 import Divider from '@views/components/common/Divider';
 import { LargeLogo } from '@views/components/common/LogoIcon';
-// import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
-import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
+// Hooks
 import useChangelog from '@views/hooks/useChangelog';
-import useSchedules from '@views/hooks/useSchedules';
-// import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
-// import getCourseTableRows from '@views/lib/getCourseTableRows';
-import { GitHubStatsService, LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_SWE } from '@views/lib/getGitHubStats';
-// import { SiteSupport } from '@views/lib/getSiteSupport';
-import clsx from 'clsx';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
+import {
+    GitHubStatsService,
+    LONGHORN_DEVELOPERS_ADMINS,
+    LONGHORN_DEVELOPERS_HARDCODED,
+    UTRP_ALUMNI,
+    UTRP_LEADS,
+} from '@views/lib/getGitHubStats';
+// Misc
+import type React from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import CalendarDotsIcon from '~icons/ph/calendar-dots';
+// Icons
+import GitMergeIcon from '~icons/ph/git-merge';
 
-import IconoirGitFork from '~icons/iconoir/git-fork';
-
-// import { ExampleCourse } from 'src/stories/components/ConflictsWithWarning.stories';;
-import FileUpload from '../common/FileUpload';
 import { useMigrationDialog } from '../common/MigrationDialog';
-// import RefreshIcon from '~icons/material-symbols/refresh';
+import { AdvancedSettings } from './AdvancedSettings';
+import { ContributorCard } from './ContributorCard';
+import { ContributorCardSkeleton } from './ContributorCardSkeleton';
+import { DEV_MODE_CLICK_TARGET, INCLUDE_MERGED_PRS, STATS_TOGGLE_KEY } from './constants';
 import DevMode from './DevMode';
-import Preview from './Preview';
+import { useBirthdayCelebration } from './useBirthdayCelebration';
+import { useDevMode } from './useDevMode';
 
 const manifest = chrome.runtime.getManifest();
 
-const gitHubStatsService = new GitHubStatsService();
-const includeMergedPRs = false;
-
-const DISPLAY_PREVIEWS = false;
-const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS ? 'w-1/2 space-y-4' : 'flex-grow space-y-4';
-
 /**
- * Custom hook for enabling developer mode.
- *
- * @param targetCount - The target count to activate developer mode.
- * @returns A tuple containing a boolean indicating if developer mode is active and a function to increment the count.
+ * Function that returns sort order of a provided member, for the settings page stats.
+ * This is located outside of the component because we use useMemo and there is no need
+ * to use useCallback with a function that deals with no components
+ * @param member A member of LHD
+ * @returns
  */
-const useDevMode = (targetCount: number): [boolean, () => void] => {
-    const [count, setCount] = useState(0);
-    const [active, setActive] = useState(false);
-    const [lastClick, setLastClick] = useState(0);
+const getContributorPriority = (member: { role: string[] }) => {
+    const roles = member.role.map(role => role.toLowerCase());
 
-    const incrementCount = useCallback(() => {
-        const now = Date.now();
-        if (now - lastClick < 500) {
-            setCount(prevCount => {
-                const newCount = prevCount + 1;
-                if (newCount === targetCount) {
-                    setActive(true);
-                }
-                return newCount;
-            });
-        } else {
-            setCount(1);
-        }
-        setLastClick(now);
-    }, [lastClick, targetCount]);
+    if (roles.some(role => role.includes('founder'))) return 0;
+    if (roles.some(role => role.includes('co-founder'))) return 1;
+    if (roles.some(role => role.includes('advisor'))) return 2;
+    if (roles.some(role => role.includes('former'))) return 3;
+    if (roles.some(role => role.includes('alumni'))) return 4;
 
-    useEffect(() => {
-        const timer = setTimeout(() => setCount(0), 3000);
-        return () => clearTimeout(timer);
-    }, [count]);
-
-    return [active, incrementCount];
+    return 5;
 };
 
 /**
- * Component for managing user settings and preferences.
+ * Main Settings Component for managing user settings and preferences.
  *
  * @returns The Settings component.
  */
+TEST TEST
 export default function Settings(): JSX.Element {
     const [_enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
     // const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
@@ -97,21 +77,38 @@ export default function Settings(): JSX.Element {
     const [reducedMotion, setReducedMotion] = useState<boolean>(false);
 
     const showMigrationDialog = useMigrationDialog();
+export default function Settings(): React.JSX.Element {
+    const gitHubStatsService = useMemo(() => new GitHubStatsService(), []);
+    const calendarPageUrl = chrome.runtime.getURL(CRX_PAGES.CALENDAR);
 
-    // Toggle GitHub stats when the user presses the 'S' key
-    const [showGitHubStats, setShowGitHubStats] = useState<boolean>(false);
+    const getPersonalWebsite = (member: unknown): string | undefined => {
+        if (typeof member !== 'object' || member === null) return undefined;
+        const maybeWebsite = (member as { personalWebsite?: unknown }).personalWebsite;
+        return typeof maybeWebsite === 'string' ? maybeWebsite : undefined;
+    };
+
+    // State
+    const [showGitHubStats, setShowGitHubStats] = useState(false);
     const [githubStats, setGitHubStats] = useState<Awaited<
         ReturnType<typeof gitHubStatsService.fetchGitHubStats>
     > | null>(null);
+    const options = OptionsStore.useStore();
+    const enableDataRefreshing = options.enableDataRefreshing;
+    const enableCourseStatusChips = options.enableCourseStatusChips;
+    const isDeveloper = DevStore.useStore(store => store.isDeveloper);
 
-    const [activeSchedule] = useSchedules();
-    // const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
-
-    const [isDeveloper, setIsDeveloper] = useState<boolean>(false);
-
+    const activeSchedule = useActiveSchedule();
     const showDialog = usePrompt();
     const handleChangelogOnClick = useChangelog();
+    const showMigrationDialog = useMigrationDialog();
 
+    const [devModeJustEnabled, toggleDevMode] = useDevMode(DEV_MODE_CLICK_TARGET);
+    const { showParticles, particlesInit, particlesOptions, triggerCelebration, isBirthday } = useBirthdayCelebration();
+
+    // Stable skeleton ids to avoid using array index as keys
+    const skeletonIdsRef = useRef<string[]>(Array.from({ length: 8 }, (_, i) => `skeleton-${i}`));
+
+    // Initialize settings and listeners
     useEffect(() => {
         const fetchGitHubStats = async () => {
             try {
@@ -122,74 +119,16 @@ export default function Settings(): JSX.Element {
             }
         };
 
-        const initAndSetSettings = async () => {
-            const {
-                enableCourseStatusChips,
-                enableHighlightConflicts,
-                enableScrollToLoad,
-                enableDataRefreshing,
-                alwaysOpenCalendarInNewTab,
-            } = await initSettings();
-            setEnableCourseStatusChips(enableCourseStatusChips);
-            // setShowTimeLocation(enableTimeAndLocationInPopup);
-            setHighlightConflicts(enableHighlightConflicts);
-            setLoadAllCourses(enableScrollToLoad);
-            setEnableDataRefreshing(enableDataRefreshing);
-            setCalendarNewTab(alwaysOpenCalendarInNewTab);
-        };
-
-        const initDS = async () => {
-            const isDev = await DevStore.get('isDeveloper');
-            setIsDeveloper(isDev);
-        };
-
-        const ds_l1 = DevStore.listen('isDeveloper', async ({ newValue }) => {
-            setIsDeveloper(newValue);
-        });
-
-        initDS();
-        fetchGitHubStats();
-        initAndSetSettings();
-
         const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.key === 'S' || event.key === 's') {
+            if (event.key === STATS_TOGGLE_KEY || event.key === STATS_TOGGLE_KEY.toUpperCase()) {
                 setShowGitHubStats(prev => !prev);
             }
         };
 
         window.addEventListener('keydown', handleKeyPress);
 
-        // Listen for changes in the settings
-        const l1 = OptionsStore.listen('enableCourseStatusChips', async ({ newValue }) => {
-            setEnableCourseStatusChips(newValue);
-            // console.log('enableCourseStatusChips', newValue);
-        });
-
-        // const l2 = OptionsStore.listen('enableTimeAndLocationInPopup', async ({ newValue }) => {
-        //     setShowTimeLocation(newValue);
-        //     // console.log('enableTimeAndLocationInPopup', newValue);
-        // });
-
-        const l2 = OptionsStore.listen('enableHighlightConflicts', async ({ newValue }) => {
-            setHighlightConflicts(newValue);
-            // console.log('enableHighlightConflicts', newValue);
-        });
-
-        const l3 = OptionsStore.listen('enableScrollToLoad', async ({ newValue }) => {
-            setLoadAllCourses(newValue);
-            // console.log('enableScrollToLoad', newValue);
-        });
-
-        const l4 = OptionsStore.listen('enableDataRefreshing', async ({ newValue }) => {
-            setEnableDataRefreshing(newValue);
-            // console.log('enableDataRefreshing', newValue);
-        });
-
-        const l5 = OptionsStore.listen('alwaysOpenCalendarInNewTab', async ({ newValue }) => {
-            setCalendarNewTab(newValue);
-            // console.log('alwaysOpenCalendarInNewTab', newValue);
-        });
-
+        fetchGitHubStats();
+TEST TEST
         const l6 = OptionsStore.listen('enableReducedMotion', async ({ newValue }) => {
             setReducedMotion(newValue);
         });
@@ -205,11 +144,12 @@ export default function Settings(): JSX.Element {
 
             DevStore.removeListener(ds_l1);
 
+        return () => {
             window.removeEventListener('keydown', handleKeyPress);
         };
-    }, []);
+    }, [gitHubStatsService]);
 
-    const handleEraseAll = () => {
+    const handleEraseAll = useCallback(() => {
         showDialog({
             title: 'Erase All Course/Schedule Data',
             description: (
@@ -222,7 +162,6 @@ export default function Settings(): JSX.Element {
                     <p className='text-sm text-gray-600'>Note: This will not erase your settings and preferences.</p>
                 </>
             ),
-            // eslint-disable-next-line react/no-unstable-nested-components
             buttons: accept => (
                 <Button
                     variant='filled'
@@ -236,71 +175,115 @@ export default function Settings(): JSX.Element {
                 </Button>
             ),
         });
-    };
+    }, [showDialog]);
 
-    const handleExportClick = async (id: string) => {
-        const jsonString = await exportSchedule(id);
-        if (jsonString) {
-            const schedules = await UserScheduleStore.get('schedules');
-            const schedule = schedules.find(s => s.id === id);
-            const fileName = `${schedule?.name ?? `schedule_${id}`}_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
-            await downloadBlob(jsonString, 'JSON', fileName);
-        } else {
-            console.error('Error exporting schedule: jsonString is undefined');
-        }
-    };
-
-    const handleImportClick = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImportClick = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = async e => {
-                try {
-                    const result = e.target?.result as string;
-                    const jsonObject = JSON.parse(result);
-                    await importSchedule(jsonObject);
-                } catch (error) {
-                    console.error('Invalid import file!');
-                }
-            };
-            reader.readAsText(file);
+        if (!file) return;
+
+        try {
+            const text = await file.text();
+            const data = JSON.parse(text);
+            await importSchedule(data);
+            alert('Schedule imported successfully.');
+        } catch (error) {
+            console.error('Error importing schedule:', error);
+            alert('Failed to import schedule. Make sure the file is a valid .json format.');
         }
-    };
+    }, []);
 
-    // const handleAddCourseByLink = async () => {
-    //     // todo: Use a proper modal instead of a prompt
-    //     const link: string | null = prompt('Enter course link');
-    //     // Exit if the user cancels the prompt
-    //     if (link === null) return;
-    //     await addCourseByUrl(link, activeSchedule);
-    // };
+    const sortedContributors = useMemo(() => {
+        const base = [...LONGHORN_DEVELOPERS_HARDCODED, ...UTRP_LEADS, ...UTRP_ALUMNI];
+        if (!githubStats) return base;
 
-    const [devMode, toggleDevMode] = useDevMode(10);
+        return [...base].sort((a, b) => {
+            const priorityDiff = getContributorPriority(a) - getContributorPriority(b);
+            if (priorityDiff !== 0) return priorityDiff;
 
-    if (devMode) {
-        DevStore.set('isDeveloper', true);
+            return (
+                (githubStats.userGitHubStats[b.githubUsername]?.commits ?? 0) -
+                (githubStats.userGitHubStats[a.githubUsername]?.commits ?? 0)
+            );
+        });
+    }, [githubStats]);
+
+    const additionalContributors = useMemo(() => {
+        if (!githubStats) return [];
+        const knownUsernames = new Set<string>([
+            ...LONGHORN_DEVELOPERS_ADMINS.map(a => a.githubUsername),
+            ...LONGHORN_DEVELOPERS_HARDCODED.map(s => s.githubUsername),
+            ...UTRP_LEADS.map(l => l.githubUsername),
+            ...UTRP_ALUMNI.map(a => a.githubUsername),
+        ]);
+        return Object.keys(githubStats.userGitHubStats)
+            .filter(username => !knownUsernames.has(username))
+            .sort(
+                (a, b) =>
+                    (githubStats.userGitHubStats[b]?.commits ?? 0) - (githubStats.userGitHubStats[a]?.commits ?? 0)
+            );
+    }, [githubStats]);
+
+    if (devModeJustEnabled) {
         return <DevMode />;
     }
 
     return (
-        <div>
+        <div className='relative'>
+            {particlesInit && showParticles && (
+                <Particles
+                    id='birthday-particles'
+                    options={particlesOptions}
+                    className='pointer-events-none absolute inset-0 z-50'
+                />
+            )}
+
             <header className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
-                <LargeLogo />
+                <a
+                    href={calendarPageUrl}
+                    title='Back to Calendar'
+                    onClick={event => {
+                        event.preventDefault();
+                        background.switchToCalendarTab({});
+                    }}
+                >
+                    <LargeLogo />
+                </a>
                 <Divider className='mx-2 self-center md:mx-4' size='2.5rem' orientation='vertical' />
-                <Text variant='h1' className='flex-1 text-ut-burntorange normal-case!'>
-                    Settings and Credits
-                </Text>
-                <div className='hidden flex-row items-center justify-end gap-6 screenshot:hidden lg:flex'>
-                    <Button variant='minimal' color='theme-black' onClick={handleChangelogOnClick}>
-                        <IconoirGitFork className='h-6 w-6 text-ut-gray' />
-                        <Text variant='small' className='text-ut-gray font-normal'>
-                            v{manifest.version} - {process.env.NODE_ENV}
-                        </Text>
+                <div className='flex flex-1 items-center gap-2'>
+                    <Text variant='h1' className='text-ut-burntorange normal-case'>
+                        Settings
+                    </Text>
+                    {isBirthday && (
+                        <button
+                            type='button'
+                            onClick={triggerCelebration}
+                            className='bg-transparent px-4 text-sm text-ut-burntorange transition-transform hover:scale-110'
+                            title='Click to celebrate!'
+                        >
+                            🎉 Happy Birthday LHD! 🎉
+                        </button>
+                    )}
+                </div>
+                <div className='hidden flex-row items-center justify-end gap-spacing-7 screenshot:hidden lg:flex'>
+                    <Button
+                        variant='minimal'
+                        size='small'
+                        color='theme-black'
+                        title='Read Changelog'
+                        onClick={handleChangelogOnClick}
+                    >
+                        <GitMergeIcon className='h-6 w-6 text-ut-gray' />
+                        <span className='text-ut-black'>
+                            v{manifest.version}
+                            {import.meta.env.DEV ? '-dev' : ''}
+                        </span>
                     </Button>
                     <Button
-                        variant='filled'
-                        icon={CalendarDots}
-                        color='ut-burntorange'
+                        variant='minimal'
+                        size='small'
+                        icon={CalendarDotsIcon}
+                        color='ut-black'
+                        title='Open Calendar'
                         onClick={() => background.switchToCalendarTab({})}
                     >
                         Calendar
@@ -309,7 +292,7 @@ export default function Settings(): JSX.Element {
             </header>
 
             <div className='p-6 lg:flex'>
-                <div className='mr-4 lg:w-1/2 xl:w-xl'>
+                <div className='mr-4 lg:w-1/2 xl:w-xl TEST TEST
                     {/* <section className='mb-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>CUSTOMIZATION OPTIONS</h2>
                         <div className='flex space-x-4'>
@@ -541,12 +524,31 @@ export default function Settings(): JSX.Element {
                             )}
                         </div>
                     </section>
+                    {options && (
+                        <AdvancedSettings
+                            highlightConflicts={options.enableHighlightConflicts}
+                            loadAllCourses={options.enableScrollToLoad}
+                            increaseScheduleLimit={options.allowMoreSchedules}
+                            calendarNewTab={options.alwaysOpenCalendarInNewTab}
+                            enableDataRefreshing={enableDataRefreshing}
+                            enableCourseStatusChips={enableCourseStatusChips}
+                            activeSchedule={activeSchedule}
+                            handleEraseAll={handleEraseAll}
+                            handleImportClick={handleImportClick}
+                        />
+                    )}
 
                     <Divider size='auto' orientation='horizontal' />
 
                     <section className='my-8 space-y-4'>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold' onClick={toggleDevMode}>
-                            Developer Mode
+                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>
+                            <button
+                                type='button'
+                                onClick={toggleDevMode}
+                                className='bg-transparent text-inherit text-xl font-semibold'
+                            >
+                                Developer Mode
+                            </button>
                         </h2>
 
                         <div className='flex items-center justify-between'>
@@ -595,23 +597,29 @@ export default function Settings(): JSX.Element {
                                         color='ut-burntorange'
                                         onClick={() => {
                                             const debugPageUrl = chrome.runtime.getURL(CRX_PAGES.DEBUG);
-                                            background.openNewTab({ url: debugPageUrl });
+                                            background.openNewTab({
+                                                url: debugPageUrl,
+                                            });
                                         }}
                                     >
                                         Open Debug Page
                                     </Button>
                                 </div>
+
+                                <Divider size='auto' orientation='horizontal' />
+
+                                <Button
+                                    variant='filled'
+                                    color='ut-black'
+                                    onClick={() => addCourseByURL(activeSchedule)}
+                                >
+                                    Add course by link
+                                </Button>
+                                <Button variant='filled' color='ut-burntorange' onClick={showMigrationDialog}>
+                                    Show Migration Dialog
+                                </Button>
                             </>
                         )}
-
-                        <Divider size='auto' orientation='horizontal' />
-
-                        <Button variant='filled' color='ut-black' onClick={() => addCourseByURL(activeSchedule)}>
-                            Add course by link
-                        </Button>
-                        <Button variant='filled' color='ut-burntorange' onClick={showMigrationDialog}>
-                            Show Migration Dialog
-                        </Button>
                     </section>
                 </div>
 
@@ -624,144 +632,47 @@ export default function Settings(): JSX.Element {
                         </h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3'>
                             {LONGHORN_DEVELOPERS_ADMINS.map(admin => (
-                                <div
+                                <ContributorCard
                                     key={admin.githubUsername}
-                                    className='border border-gray-300 rounded bg-ut-gray/10 p-4'
-                                >
-                                    <Text
-                                        variant='p'
-                                        className='text-ut-burntorange font-semibold hover:cursor-pointer'
-                                        onClick={() =>
-                                            window.open(`https://github.com/${admin.githubUsername}`, '_blank')
-                                        }
-                                    >
-                                        {admin.name}
-                                    </Text>
-                                    {admin.role.map(role => (
-                                        <p key={admin.githubUsername} className='text-sm text-gray-600'>
-                                            {role}
-                                        </p>
-                                    ))}
-                                    {showGitHubStats && githubStats && (
-                                        <div className='mt-2'>
-                                            <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
-                                            {includeMergedPRs && (
-                                                <p className='text-xs'>
-                                                    Merged PRS:{' '}
-                                                    {githubStats.adminGitHubStats[admin.githubUsername]?.mergedPRs}
-                                                </p>
-                                            )}
-                                            <p className='text-xs'>
-                                                Commits: {githubStats.adminGitHubStats[admin.githubUsername]?.commits}
-                                            </p>
-                                            <p className='text-xs text-ut-green'>
-                                                {githubStats.adminGitHubStats[admin.githubUsername]?.linesAdded} ++
-                                            </p>
-                                            <p className='text-xs text-theme-red'>
-                                                {githubStats.adminGitHubStats[admin.githubUsername]?.linesDeleted} --
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
+                                    name={admin.name}
+                                    githubUsername={admin.githubUsername}
+                                    personalWebsite={getPersonalWebsite(admin)}
+                                    roles={admin.role}
+                                    stats={githubStats?.adminGitHubStats[admin.githubUsername]}
+                                    showStats={showGitHubStats}
+                                    includeMergedPRs={INCLUDE_MERGED_PRS}
+                                />
                             ))}
                         </div>
                     </section>
                     <section className='my-8'>
                         <h2 className='mb-4 text-xl text-ut-black font-semibold'>UTRP CONTRIBUTORS</h2>
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
-                            {LONGHORN_DEVELOPERS_SWE.sort(
-                                (a, b) =>
-                                    (githubStats?.userGitHubStats[b.githubUsername]?.commits ?? 0) -
-                                    (githubStats?.userGitHubStats[a.githubUsername]?.commits ?? 0)
-                            ).map(swe => (
-                                <div
+                            {sortedContributors.map(swe => (
+                                <ContributorCard
                                     key={swe.githubUsername}
-                                    className='border border-gray-300 rounded bg-ut-gray/10 p-4'
-                                >
-                                    <Text
-                                        variant='p'
-                                        className='text-ut-burntorange font-semibold hover:cursor-pointer'
-                                        onClick={() =>
-                                            window.open(`https://github.com/${swe.githubUsername}`, '_blank')
-                                        }
-                                    >
-                                        {swe.name}
-                                    </Text>
-                                    {swe.role.map(role => (
-                                        <p key={swe.githubUsername} className='text-sm text-gray-600'>
-                                            {role}
-                                        </p>
-                                    ))}
-                                    {showGitHubStats && githubStats && (
-                                        <div className='mt-2'>
-                                            <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
-                                            {includeMergedPRs && (
-                                                <p className='text-xs'>
-                                                    Merged PRS:{' '}
-                                                    {githubStats.userGitHubStats[swe.githubUsername]?.mergedPRs}
-                                                </p>
-                                            )}
-                                            <p className='text-xs'>
-                                                Commits: {githubStats.userGitHubStats[swe.githubUsername]?.commits}
-                                            </p>
-                                            <p className='text-xs text-ut-green'>
-                                                {githubStats.userGitHubStats[swe.githubUsername]?.linesAdded} ++
-                                            </p>
-                                            <p className='text-xs text-theme-red'>
-                                                {githubStats.userGitHubStats[swe.githubUsername]?.linesDeleted} --
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
+                                    name={swe.name}
+                                    githubUsername={swe.githubUsername}
+                                    personalWebsite={getPersonalWebsite(swe)}
+                                    roles={swe.role}
+                                    stats={githubStats?.userGitHubStats[swe.githubUsername]}
+                                    showStats={showGitHubStats}
+                                    includeMergedPRs={INCLUDE_MERGED_PRS}
+                                />
                             ))}
-                            {githubStats &&
-                                Object.keys(githubStats.userGitHubStats)
-                                    .filter(
-                                        username =>
-                                            !LONGHORN_DEVELOPERS_ADMINS.some(
-                                                admin => admin.githubUsername === username
-                                            ) && !LONGHORN_DEVELOPERS_SWE.some(swe => swe.githubUsername === username)
-                                    )
-                                    .sort(
-                                        (a, b) =>
-                                            (githubStats.userGitHubStats[b]?.commits ?? 0) -
-                                            (githubStats.userGitHubStats[a]?.commits ?? 0)
-                                    )
-                                    .map(username => (
-                                        <div
-                                            key={username}
-                                            className='overflow-clip border border-gray-300 rounded bg-ut-gray/10 p-4'
-                                        >
-                                            <Text
-                                                variant='p'
-                                                className='text-ut-burntorange font-semibold hover:cursor-pointer'
-                                                onClick={() => window.open(`https://github.com/${username}`, '_blank')}
-                                            >
-                                                {githubStats.names[username]}
-                                            </Text>
-                                            <p className='text-sm text-gray-600'>Contributor</p>
-                                            {showGitHubStats && (
-                                                <div className='mt-2'>
-                                                    <p className='text-xs text-gray-500'>GitHub Stats (UTRP repo):</p>
-                                                    {includeMergedPRs && (
-                                                        <p className='text-xs'>
-                                                            Merged PRs:{' '}
-                                                            {githubStats.userGitHubStats[username]?.mergedPRs}
-                                                        </p>
-                                                    )}
-                                                    <p className='text-xs'>
-                                                        Commits: {githubStats.userGitHubStats[username]?.commits}
-                                                    </p>
-                                                    <p className='text-xs text-ut-green'>
-                                                        {githubStats.userGitHubStats[username]?.linesAdded} ++
-                                                    </p>
-                                                    <p className='text-xs text-theme-red'>
-                                                        {githubStats.userGitHubStats[username]?.linesDeleted} --
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
+                            {githubStats === null
+                                ? skeletonIdsRef.current.slice(0, 8).map(id => <ContributorCardSkeleton key={id} />)
+                                : additionalContributors.map(username => (
+                                      <ContributorCard
+                                          key={username}
+                                          name={githubStats?.names[username] || username}
+                                          githubUsername={username}
+                                          roles={['Contributor']}
+                                          stats={githubStats?.userGitHubStats[username]}
+                                          showStats={showGitHubStats}
+                                          includeMergedPRs={INCLUDE_MERGED_PRS}
+                                      />
+                                  ))}
                         </div>
                     </section>
                 </section>

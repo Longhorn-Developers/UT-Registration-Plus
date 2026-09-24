@@ -1,4 +1,4 @@
-import { createMessenger } from 'chrome-extension-toolkit';
+import { createMessenger } from '@chrome-extension-toolkit';
 
 type MyMessages = {
     openNewTab: (data: { url: string }) => void;

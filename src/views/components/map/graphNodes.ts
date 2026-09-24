@@ -1039,6 +1039,7 @@ const generateWalkwayNodes = (config: Walkway): Graph => {
 const generateAllWalkwayNodes = (): Graph => {
     const generatedNodes = walkways.reduce((acc, config) => {
         const nodes = generateWalkwayNodes(config);
+        // biome-ignore lint/performance/noAccumulatingSpread: TODO:
         return { ...acc, ...nodes };
     }, {} as Graph);
 

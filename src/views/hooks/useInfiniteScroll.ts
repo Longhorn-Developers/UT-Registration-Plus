@@ -17,6 +17,7 @@ export default function useInfiniteScroll(
     callback: () => Promise<void> | void,
     deps?: React.DependencyList | undefined
 ) {
+    // biome-ignore lint/correctness/useExhaustiveDependencies: This works as expected
     useEffect(() => {
         const isScrolling = () => {
             const { innerHeight } = window;

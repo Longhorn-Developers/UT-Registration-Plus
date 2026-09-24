@@ -1,9 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@views/components/common/Button';
 import DialogProvider from '@views/components/common/DialogProvider/DialogProvider';
 import WhatsNewPopup from '@views/components/common/WhatsNewPopup';
 import useWhatsNewPopUp from '@views/hooks/useWhatsNew';
-import React from 'react';
 
 const meta = {
     title: 'Components/Common/WhatsNewPopup',
@@ -28,10 +27,10 @@ export const Primary: Story = {
 };
 
 const InnerComponent = () => {
-    const handleOnClick = useWhatsNewPopUp();
+    const showPopup = useWhatsNewPopUp();
 
     return (
-        <Button color='ut-burntorange' onClick={handleOnClick}>
+        <Button color='ut-burntorange' onClick={() => showPopup()}>
             Open Dialog
         </Button>
     );

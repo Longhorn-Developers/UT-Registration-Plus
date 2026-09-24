@@ -1,18 +1,17 @@
-/// <reference types="vitest" />
+import { execSync } from 'node:child_process';
+import { resolve } from 'node:path';
 import { crx } from '@crxjs/vite-plugin';
-import react from '@vitejs/plugin-react-swc';
-import { execSync } from 'child_process';
-import { resolve } from 'path';
+import react from '@vitejs/plugin-react';
 import UnoCSS from 'unocss/vite';
 import Icons from 'unplugin-icons/vite';
-import type { Plugin, ResolvedConfig, Rollup, ViteDevServer } from 'vite';
-import { defineConfig } from 'vite';
-import inspect from 'vite-plugin-inspect';
-
+import type { Plugin, ResolvedConfig, Rolldown, ViteDevServer } from 'vite';
+import reactFallbackThrottlePlugin from 'vite-plugin-react-fallback-throttle';
+import { defineConfig } from 'vitest/config';
 import packageJson from './package.json';
 import manifest from './src/manifest';
-import vitePluginRunCommandOnDemand from './utils/plugins/run-command-on-demand';
+import sentryToolbarPlugin from './utils/plugins/sentry-toolbar';
 import { buildLogger } from './utils/plugins/vite-build-logger';
+import { inlineStyles } from './utils/plugins/vite-inline-styles';
 
 const BROWSER_TARGET = process.env.BROWSER_TARGET || 'chrome';
 
@@ -47,7 +46,24 @@ window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 `;
 
-const isOutputChunk = (input: Rollup.OutputAsset | Rollup.OutputChunk): input is Rollup.OutputChunk => 'code' in input;
+const isOutputChunk = (input: Rolldown.OutputAsset | Rolldown.OutputChunk): input is Rolldown.OutputChunk =>
+    'code' in input;
+
+const ABSOLUTE_URL_PATTERN = /^[a-zA-Z][a-zA-Z\d+\-.]*:/;
+const toRuntimeAssetExpression = (quote: string, path: string) =>
+    `chrome.runtime.getURL(${quote}${path.replace(/^\//, '')}${quote})`;
+
+const normalizeCssUrlPath = (rawPath: string) => rawPath.trim().replace(/^['"]|['"]$/g, '');
+
+const shouldRewriteCssUrl = (rawPath: string) => {
+    const normalizedPath = normalizeCssUrlPath(rawPath);
+
+    if (!normalizedPath || normalizedPath.startsWith('#') || normalizedPath.startsWith('//')) {
+        return false;
+    }
+
+    return !ABSOLUTE_URL_PATTERN.test(normalizedPath);
+};
 
 const renameFile = (source: string, destination: string): Plugin => {
     if (typeof source !== 'string' || typeof destination !== 'string') {
@@ -58,7 +74,7 @@ const renameFile = (source: string, destination: string): Plugin => {
         name: 'crx:rename-file',
         apply: 'build',
         enforce: 'post',
-        generateBundle(options, bundle) {
+        generateBundle(_options, bundle) {
             const file = bundle[source];
             if (!file) return;
             file.fileName = destination;
@@ -88,27 +104,53 @@ const fixManifestOptionsPage = (): Plugin => ({
     },
 });
 
-let config: ResolvedConfig;
-let server: ViteDevServer;
+function getGitInfo() {
+    // Try environment variables first (for Nix builds)
+    if (process.env.VITE_GIT_BRANCH && process.env.VITE_GIT_COMMIT) {
+        return {
+            gitBranch: process.env.VITE_GIT_BRANCH,
+            gitCommit: process.env.VITE_GIT_COMMIT,
+        };
+    }
+
+    // Fall back to git commands (for local development)
+    try {
+        return {
+            gitBranch: execSync('git rev-parse --abbrev-ref HEAD').toString().trim(),
+            gitCommit: execSync('git rev-parse --short HEAD').toString().trim(),
+        };
+    } catch {
+        return {
+            gitBranch: 'unknown',
+            gitCommit: 'unknown',
+        };
+    }
+}
+
+const gitInfo = getGitInfo();
+
+let _config: ResolvedConfig;
+let _server: ViteDevServer;
 
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
         react(),
-        UnoCSS(),
+        reactFallbackThrottlePlugin(0), // react 19 terrible defaults: https://github.com/facebook/react/issues/31819
         Icons({ compiler: 'jsx', jsx: 'react' }),
         crx({ manifest }),
         fixManifestOptionsPage(),
-        inspect(),
         {
             name: 'public-transform',
             apply: 'serve',
+            configResolved(config) {
+                _config = config;
+            },
             transform(code, id) {
-                if (id.endsWith('.tsx') || id.endsWith('.ts') || id.endsWith('?url')) {
+                if (id.endsWith('.tsx') || id.endsWith('.ts')) {
                     return {
-                        code: code.replace(
-                            /(['"])(\/public\/.*?)(['"])/g,
-                            (_, quote1, path, quote2) => `chrome.runtime.getURL(${quote1}${path}${quote2})`
+                        code: code.replace(/(['"])(\/public\/.*?)(['"])/g, (_, quote1, path) =>
+                            toRuntimeAssetExpression(quote1, path)
                         ),
                         map: null,
                     };
@@ -116,10 +158,13 @@ export default defineConfig({
             },
         },
         {
-            name: 'public-transform',
+            name: 'public-transform-build',
             apply: 'build',
+            configResolved(config) {
+                _config = config;
+            },
             transform(code, id) {
-                if (id.endsWith('.tsx') || id.endsWith('.ts') || id.endsWith('?url')) {
+                if (id.endsWith('.tsx') || id.endsWith('.ts')) {
                     return {
                         code: code.replace(
                             /(['"])(__VITE_ASSET__.*?__)(['"])/g,
@@ -130,6 +175,7 @@ export default defineConfig({
                 }
             },
         },
+        inlineStyles(),
         {
             name: 'public-css-dev-transform',
             apply: 'serve',
@@ -137,13 +183,14 @@ export default defineConfig({
             transform(code, id) {
                 if (process.env.NODE_ENV === 'development' && (id.endsWith('.css') || id.endsWith('.scss'))) {
                     return {
-                        code: code.replace(
-                            /url\((.*?)\)/g,
-                            (_, path) =>
-                                `url(\\"" + chrome.runtime.getURL(${path
-                                    .replaceAll(`\\"`, `"`)
-                                    .replace(/public\//, '')}) + "\\")`
-                        ),
+                        code: code.replace(/url\((.*?)\)/g, (match, path) => {
+                            const normalizedPath = normalizeCssUrlPath(path.replaceAll(`\\"`, `"`));
+                            if (!shouldRewriteCssUrl(normalizedPath)) {
+                                return match;
+                            }
+
+                            return `url(\\"" + chrome.runtime.getURL("${normalizedPath.replace(/^\/?(public\/)?/, '')}") + "\\")`;
+                        }),
                         map: null,
                     };
                 }
@@ -162,16 +209,40 @@ export default defineConfig({
                 }
             },
         },
+        // Uncomment to enable React DevTools injection
+        // {
+        //     name: 'inject-react-devtools',
+        //     enforce: 'post',
+        //     configResolved(config) {
+        //         if (config.mode !== 'development') return;
+        //         // @ts-expect-error
+        //         config.plugins.push({
+        //             name: 'inject-react-devtools-transform',
+        //             enforce: 'post',
+        //             transformIndexHtml(html) {
+        //                 return {
+        //                     html,
+        //                     tags: [
+        //                         {
+        //                             tag: 'script',
+        //                             attrs: { src: 'http://localhost:8097' },
+        //                             injectTo: 'head-prepend',
+        //                         },
+        //                     ],
+        //                 };
+        //             },
+        //         } satisfies Plugin);
+        //     },
+        // },
+
         renameFile('src/pages/debug/index.html', 'debug.html'),
         renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
         renameFile('src/pages/report/index.html', 'report.html'),
         renameFile('src/pages/map/index.html', 'map.html'),
         renameFile('src/pages/404/index.html', '404.html'),
-        vitePluginRunCommandOnDemand({
-            // afterServerStart: 'pnpm gulp forceDisableUseDynamicUrl',
-            closeBundle: 'pnpm gulp forceDisableUseDynamicUrl',
-        }),
+        sentryToolbarPlugin(),
+        UnoCSS(),
         buildLogger({
             includeEnvVars: [
                 'VITE_PACKAGE_VERSION',
@@ -180,12 +251,14 @@ export default defineConfig({
                 'PROD',
                 'VITE_SENTRY_ENVIRONMENT',
                 'VITE_BETA_BUILD',
+                'VITE_GIT_BRANCH',
+                'VITE_GIT_COMMIT',
             ],
             includeTimestamp: true,
             includeBuildTime: true,
             customMetadata: {
-                gitBranch: () => execSync('git rev-parse --abbrev-ref HEAD').toString().trim(),
-                gitCommit: () => execSync('git rev-parse --short HEAD').toString().trim(),
+                gitBranch: () => gitInfo.gitBranch,
+                gitCommit: () => gitInfo.gitCommit,
                 nodeVersion: () => process.version,
             },
         }),
@@ -199,6 +272,7 @@ export default defineConfig({
             '@shared': resolve(root, 'shared'),
             '@background': resolve(pagesDir, 'background'),
             '@views': resolve(root, 'views'),
+            '@chrome-extension-toolkit': resolve(root, 'lib/chrome-extension-toolkit'),
         },
     },
     server: {
@@ -206,6 +280,9 @@ export default defineConfig({
         port: 5173,
         hmr: {
             clientPort: 5173,
+        },
+        cors: {
+            origin: [/chrome-extension:\/\//],
         },
         proxy: {
             '/debug.html': {
@@ -240,8 +317,9 @@ export default defineConfig({
         // outDir: `dist/${process.env.BROWSER_TARGET || 'chrome'}`,
         emptyOutDir: true,
         reportCompressedSize: false,
+        chunkSizeWarningLimit: 2000, // we're a extension
         sourcemap: true,
-        rollupOptions: {
+        rolldownOptions: {
             input: {
                 debug: 'src/pages/debug/index.html',
                 calendar: 'src/pages/calendar/index.html',
@@ -254,18 +332,17 @@ export default defineConfig({
                 chunkFileNames: `assets/[name]-[hash].js`,
                 assetFileNames: `assets/[name]-[hash][extname]`,
             },
+            treeshake: {
+                // Assume no modules have side effects (aggressive tree-shaking)
+                moduleSideEffects: false,
+            },
         },
     },
     test: {
+        environment: 'jsdom',
+        exclude: ['e2e/**', 'node_modules/**'],
         coverage: {
             provider: 'v8',
-        },
-    },
-    css: {
-        preprocessorOptions: {
-            scss: {
-                api: 'modern-compiler',
-            },
         },
     },
 });

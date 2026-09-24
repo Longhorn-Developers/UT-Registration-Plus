@@ -1,11 +1,22 @@
-import { createMessenger } from 'chrome-extension-toolkit';
+import { createMessenger, setTraceContextProvider } from '@chrome-extension-toolkit';
+import { getTraceData } from '@sentry/react';
 
 import type BrowserActionMessages from './BrowserActionMessages';
 import type { CalendarBackgroundMessages, CalendarTabMessages } from './CalendarMessages';
 import type CESMessage from './CESMessage';
+import type GitHubStatsMessages from './GitHubStatsMessages';
 import type TabInfoMessages from './TabInfoMessages';
 import type TabManagementMessages from './TabManagementMessages';
 import type { UserScheduleMessages } from './UserScheduleMessages';
+
+setTraceContextProvider(() => {
+    try {
+        const traceData = getTraceData();
+        return { trace: traceData['sentry-trace'], baggage: traceData.baggage };
+    } catch {
+        return {};
+    }
+});
 
 /**
  * This is a type with all the message definitions that can be sent TO the background script
@@ -14,7 +25,8 @@ export type BACKGROUND_MESSAGES = BrowserActionMessages &
     TabManagementMessages &
     UserScheduleMessages &
     CESMessage &
-    CalendarBackgroundMessages;
+    CalendarBackgroundMessages &
+    GitHubStatsMessages;
 
 /**
  * This is a type with all the message definitions that can be sent TO specific tabs

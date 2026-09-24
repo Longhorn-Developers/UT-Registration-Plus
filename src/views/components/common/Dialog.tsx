@@ -1,20 +1,21 @@
 import type { TransitionRootProps } from '@headlessui/react';
 import {
     Description,
-    Dialog as HDialog,
     DialogPanel,
     DialogTitle,
+    Dialog as HDialog,
     Transition,
     TransitionChild,
 } from '@headlessui/react';
 import clsx from 'clsx';
-import type { PropsWithChildren } from 'react';
-import React, { Fragment } from 'react';
-
+import type { JSX, PropsWithChildren } from 'react';
+import { Fragment } from 'react';
+TEST TEST
 import ExtensionRoot from './ExtensionRoot/ExtensionRoot';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { OptionsStore } from 'src/shared/storage/OptionsStore';
+import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 
 /**
  * Represents the props for the _Dialog component
@@ -48,7 +49,7 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
 
     return (
         <Transition show={open} as={HDialog} {...rest}>
-            <ExtensionRoot>
+            <ExtensionRootWrapper>
                 <TransitionChild
                     as={Fragment}
                     enter={
@@ -88,13 +89,13 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                                 className
                             )}
                         >
-                            {title && <DialogTitle as={Fragment}>{title}</DialogTitle>}
-                            {description && <Description as={Fragment}>{description}</Description>}
+                            {title && <DialogTitle>{title}</DialogTitle>}
+                            {description && <Description as='div'>{description}</Description>}
                             {children}
                         </DialogPanel>
                     </TransitionChild>
                 </div>
-            </ExtensionRoot>
+            </ExtensionRootWrapper>
         </Transition>
     );
 }

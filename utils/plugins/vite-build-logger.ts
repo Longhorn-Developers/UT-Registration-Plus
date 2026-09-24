@@ -69,7 +69,6 @@ export function buildLogger(options: BuildLoggerOptions = {}): Plugin {
             if (options.customMetadata) {
                 console.log(chalk.yellow('\nCustom Metadata:'));
                 for (const [key, getter] of Object.entries(options.customMetadata)) {
-                    // eslint-disable-next-line no-await-in-loop
                     const value = await getter();
                     console.log(`${key}: ${value}`);
                 }

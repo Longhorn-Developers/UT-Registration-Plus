@@ -23,6 +23,21 @@ let isLoading = false;
 let nextPageURL = getNextButton(document)?.href;
 
 /**
+ * Extracts the raw href attribute from the next-page link in a document.
+ * Uses getAttribute instead of .href to avoid DOMParser resolving relative
+ * URLs against about:blank.
+ */
+function getNextPageURL(doc: Document): string | undefined {
+    const raw = getNextButton(doc)?.getAttribute('href');
+    if (!raw) return undefined;
+    try {
+        return new URL(raw, window.location.href).href;
+    } catch {
+        return undefined;
+    }
+}
+
+/**
  * This will scrape the pagination buttons from the course list and use them to load the next page
  * and then return the table rows from the next page
  *
@@ -52,16 +67,18 @@ export async function loadNextCourseCatalogPage(): Promise<[AutoLoadStatusType, 
 
         // extract the table rows from the document of the next page
         const tableRows = getCourseTableRows(newDocument);
-        if (!tableRows) {
+        if (!tableRows.length) {
+            isLoading = false;
             return [AutoLoadStatus.ERROR, []];
         }
 
         // extract the next page url from the document of the next page, so when we scroll again we can use that
-        nextPageURL = getNextButton(newDocument)?.href;
+        nextPageURL = getNextPageURL(newDocument);
         isLoading = false;
-        return [AutoLoadStatus.IDLE, Array.from(tableRows)];
+        return [AutoLoadStatus.IDLE, tableRows];
     } catch (e) {
         console.error(e);
+        isLoading = false;
         return [AutoLoadStatus.ERROR, []];
     }
 }
@@ -77,13 +94,18 @@ export function getNextButton(doc: Document) {
 }
 
 /**
- * Removes the next and previous buttons from the document so that we don't load the same page twice
+ * Hides the next and previous buttons from the document
  *
  * @param doc - the document to remove the next and previous buttons from
  */
 export function removePaginationButtons(doc: Document) {
     const nextButton = doc.querySelectorAll<HTMLAnchorElement>(NEXT_PAGE_BUTTON_SELECTOR);
-    nextButton.forEach(button => button.remove());
+    nextButton.forEach(button => {
+        button.style.display = 'none';
+    });
+
     const prevButton = doc.querySelectorAll<HTMLAnchorElement>(PREV_PAGE_BUTTON_SELECTOR);
-    prevButton.forEach(button => button.remove());
+    prevButton.forEach(button => {
+        button.style.display = 'none';
+    });
 }

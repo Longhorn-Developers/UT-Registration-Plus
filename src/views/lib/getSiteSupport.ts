@@ -1,4 +1,4 @@
-import { isExtensionPage, isExtensionPopup } from 'chrome-extension-toolkit';
+import { isExtensionPage, isExtensionPopup } from '@chrome-extension-toolkit';
 
 /**
  * An enum that represents the different types of pages that we support
@@ -15,6 +15,7 @@ export const SiteSupport = {
     MY_UT: 'MY_UT',
     COURSE_CATALOG_SEARCH: 'COURSE_CATALOG_SEARCH',
     CLASSLIST: 'CLASSLIST',
+    COURSE_CATALOG_KWS: 'COURSE_CATALOG_KWS',
 } as const;
 
 /**
@@ -30,6 +31,7 @@ export type SiteSupportType = (typeof SiteSupport)[keyof typeof SiteSupport];
  * @returns a list of page types that the current page is
  */
 export default function getSiteSupport(url: string): SiteSupportType | null {
+    console.debug('[UTRP] Injecting on', url);
     if (isExtensionPopup()) {
         return SiteSupport.EXTENSION_POPUP;
     }
@@ -40,6 +42,9 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
         return SiteSupport.UT_PLANNER;
     }
     if (url.includes('utdirect.utexas.edu/apps/registrar/course_schedule')) {
+        if (url.includes('kws_results')) {
+            return SiteSupport.COURSE_CATALOG_KWS;
+        }
         if (url.includes('results')) {
             return SiteSupport.COURSE_CATALOG_LIST;
         }
@@ -51,8 +56,16 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
     if (url.includes('utdirect.utexas.edu') && (url.includes('waitlist') || url.includes('classlist'))) {
         return SiteSupport.WAITLIST;
     }
-    if (url.includes('my.utexas.edu/student/student/index') || url.includes('my.utexas.edu/student/')) {
-        return SiteSupport.MY_UT;
+    try {
+        const parsed = new URL(url);
+        if (
+            parsed.hostname === 'my.utexas.edu' &&
+            (parsed.pathname === '/student' || parsed.pathname.startsWith('/student/'))
+        ) {
+            return SiteSupport.MY_UT;
+        }
+    } catch {
+        // Ignore malformed URLs and continue with other matchers.
     }
     if (url.includes('registration/classlist.WBX')) {
         return SiteSupport.CLASSLIST;

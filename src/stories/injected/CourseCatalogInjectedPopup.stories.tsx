@@ -1,8 +1,8 @@
 import type { Course } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { bevoCourse, mikeScottCS314Course } from './mocked';
 

@@ -1,4 +1,4 @@
-import type { Serialized } from 'chrome-extension-toolkit';
+import type { Serialized } from '@chrome-extension-toolkit';
 
 import type { Day } from './CourseMeeting';
 import { CourseMeeting, DAY_MAP } from './CourseMeeting';
@@ -28,7 +28,7 @@ export class CourseSchedule {
      */
     static parse(dayLine: string, timeLine: string, locLine: string): CourseMeeting {
         try {
-            let days: Day[] = dayLine
+            const days: Day[] = dayLine
                 .split('')
                 .map((char, i) => {
                     const nextChar = dayLine.charAt(i + 1);
@@ -80,7 +80,7 @@ export class CourseSchedule {
                       }
                     : undefined,
             } satisfies Serialized<CourseMeeting>);
-        } catch (e) {
+        } catch (_e) {
             throw new Error(`Failed to parse schedule: ${dayLine} ${timeLine} ${locLine}`);
         }
     }

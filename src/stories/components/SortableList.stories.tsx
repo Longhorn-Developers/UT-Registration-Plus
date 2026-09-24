@@ -2,11 +2,10 @@ import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import { tailwindColorways } from '@shared/util/storybook';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
-import type { BaseItem } from '@views/components/common/SortableList';
+import type { BaseItem, SortableListProps } from '@views/components/common/SortableList';
 import { SortableList } from '@views/components/common/SortableList';
-import React from 'react';
 
 const numberOfCourses = 5;
 
@@ -62,6 +61,7 @@ const generateCourses = (count: number): Course[] => {
             status: Status.WAITLISTED,
             uniqueId: 12345 + i, // Make uniqueId different for each course
             url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20242/12345/',
+            // biome-ignore lint/style/noNonNullAssertion: TODO:
             colors: tailwindColorways[i]!,
         });
 
@@ -94,11 +94,13 @@ export const Default: Story = {
             course,
         })),
         onChange: () => {},
-        renderItem: ({ id, course }) => <PopupCourseBlock key={id} course={course} colors={course.colors} />,
+        renderItem: ({ id, course }: CourseWithId) => (
+            <PopupCourseBlock key={id} course={course} colors={course.colors} />
+        ),
     },
     render: args => (
         <div className='h-3xl w-3xl transform-none'>
-            <SortableList {...args} />
+            <SortableList {...(args as SortableListProps<CourseWithId>)} />
         </div>
     ),
 };

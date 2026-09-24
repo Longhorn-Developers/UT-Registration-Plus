@@ -1,7 +1,7 @@
 import type { Course } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
+import type { JSX } from 'react';
 
 /**
  * Props for ConflictWithWarningProps
@@ -30,6 +30,7 @@ export default function ConflictsWithWarning({ className, conflicts }: Conflicts
         >
             <div>Conflicts With:</div>
             {conflicts.map(course => (
+                // biome-ignore lint/correctness/useJsxKeyInIterable: TODO:
                 <div>
                     <Text as='strong' variant='mini' className='font-bold!'>
                         {course.department} {course.number}

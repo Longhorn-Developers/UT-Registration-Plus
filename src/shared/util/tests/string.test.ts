@@ -91,7 +91,10 @@ describe('englishStringifyList', () => {
             { data: ['foo', 'bar'], expected: 'foo and bar' },
             { data: ['foo', 'bar', 'baz'], expected: 'foo, bar, and baz' },
             { data: ['a', 'b', 'c', 'd'], expected: 'a, b, c, and d' },
-            { data: 'abcdefghijk'.split(''), expected: 'a, b, c, d, e, f, g, h, i, j, and k' },
+            {
+                data: 'abcdefghijk'.split(''),
+                expected: 'a, b, c, d, e, f, g, h, i, j, and k',
+            },
         ] satisfies { data: string[]; expected: string }[];
 
         for (const { data, expected } of testcases) {

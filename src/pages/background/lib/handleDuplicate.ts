@@ -21,17 +21,16 @@ export default async function handleDuplicate(scheduleName: string): Promise<str
 
     // Extract base name and existing index
     const match = scheduleName.match(regex);
-    const baseName = match && match[1] ? match[1].trim() : scheduleName;
+    const baseName = match?.[1] ? match[1].trim() : scheduleName;
 
     // Extract number from parentheses and increment
-    let index = match && match[2] ? parseInt(match[2].slice(1, -1), 10) + 1 : 1;
+    let index = match?.[2] ? parseInt(match[2].slice(1, -1), 10) + 1 : 1;
 
     let newName: string;
 
     // Increment until an unused index is found
     do {
         newName = `${baseName} (${index++})`;
-        // eslint-disable-next-line @typescript-eslint/no-loop-func
     } while (schedules.find(schedule => schedule.name === newName));
 
     return newName;

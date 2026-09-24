@@ -1,5 +1,4 @@
-import React from 'react';
-
+import type { JSX } from 'react';
 import { PathFinder } from './PathFinder';
 import { type Graph, isValidNode, type NodeId } from './types';
 

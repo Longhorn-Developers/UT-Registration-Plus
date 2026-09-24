@@ -12,12 +12,13 @@ export interface UserScheduleMessages {
     addCourse: (data: { scheduleId: string; course: Course; hasColor?: boolean }) => void;
 
     /**
-     * Adds a course by URL
+     * Proxies a fetch request through the background script, since content scripts
+     * cannot make cross-origin requests directly.
      *
-     * @param data - The URL of the course to add
-     * @returns Response of the requested course URL
+     * @param data - The URL to fetch, HTTP method, optional body, and desired response format.
+     * @returns The response body as a string.
      */
-    addCourseByURL: (data: { url: string; method: string; body?: string; response: 'json' | 'text' }) => string;
+    fetchFromUrl: (data: { url: string; method: string; body?: string; response: 'json' | 'text' }) => string;
 
     /**
      * Remove a course from a schedule
@@ -65,12 +66,12 @@ export interface UserScheduleMessages {
     renameSchedule: (data: { scheduleId: string; newName: string }) => string | undefined;
 
     /**
-     * Checks the login status by making a request to the provided URL.
+     * Checks whether the user is logged in to the UT Registrar.
+     * Opens a login tab if not authenticated.
      *
-     * @param data - The URL to check the login status against.
-     * @returns true if user was already logged into the provided URL, false otherwise
+     * @returns true if the user is logged in, false otherwise
      */
-    validateLoginStatus: (data: { url: string }) => boolean;
+    validateLoginStatus: () => boolean;
 
     /**
      * Exports the current schedule to a JSON file for backing up and sharing

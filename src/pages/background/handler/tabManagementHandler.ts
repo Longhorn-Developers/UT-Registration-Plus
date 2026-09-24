@@ -1,6 +1,6 @@
+import type { MessageHandler } from '@chrome-extension-toolkit';
 import openNewTab from '@pages/background/util/openNewTab';
 import type TabManagementMessages from '@shared/messages/TabManagementMessages';
-import type { MessageHandler } from 'chrome-extension-toolkit';
 
 const tabManagementHandler: MessageHandler<TabManagementMessages> = {
     getTabId({ sendResponse, sender }) {
@@ -8,8 +8,11 @@ const tabManagementHandler: MessageHandler<TabManagementMessages> = {
     },
     openNewTab({ data, sender, sendResponse }) {
         const { url } = data;
-        const nextIndex = sender.tab?.index ? sender.tab.index + 1 : undefined;
-        openNewTab(url, nextIndex).then(sendResponse);
+        const nextIndex = sender.tab?.index !== undefined ? sender.tab.index + 1 : undefined;
+        openNewTab(url, {
+            tabIndex: nextIndex,
+            windowId: sender.tab?.windowId,
+        }).then(sendResponse);
     },
     removeTab({ data, sendResponse }) {
         const { tabId } = data;

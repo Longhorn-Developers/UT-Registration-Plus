@@ -72,7 +72,14 @@ export const bevoCourse: Course = new Course({
     department: 'BVO',
     creditHours: 3,
     status: Status.OPEN,
-    instructors: [new Instructor({ fullName: 'BEVO', firstName: '', lastName: 'BEVO', middleInitial: '' })],
+    instructors: [
+        new Instructor({
+            fullName: 'BEVO',
+            firstName: '',
+            lastName: 'BEVO',
+            middleInitial: '',
+        }),
+    ],
     isReserved: false,
     description: [
         'Restricted to Students in the School of Longhorn Enthusiasts',
@@ -128,7 +135,12 @@ export const mikeScottCS314Course: Course = new Course({
     creditHours: 3,
     status: Status.OPEN,
     instructors: [
-        new Instructor({ fullName: 'SCOTT, MICHAEL', firstName: 'MICHAEL', lastName: 'SCOTT', middleInitial: 'D' }),
+        new Instructor({
+            fullName: 'SCOTT, MICHAEL',
+            firstName: 'MICHAEL',
+            lastName: 'SCOTT',
+            middleInitial: 'D',
+        }),
     ],
     isReserved: true,
     description: [

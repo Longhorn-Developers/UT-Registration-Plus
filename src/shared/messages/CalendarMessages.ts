@@ -1,5 +1,10 @@
 interface CalendarBackgroundMessages {
     /**
+     * Registers the current tab as the active calendar tab.
+     */
+    registerCalendarTab: () => void;
+
+    /**
      * Opens the calendar page if it is not already open, focuses the tab, and optionally opens the calendar for a specific course
      *
      * @param data - The unique id of the course to open the calendar page for (optional)

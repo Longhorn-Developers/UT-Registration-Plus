@@ -1,10 +1,9 @@
 import { Course, Status } from '@shared/types/Course';
 import Instructor from '@shared/types/Instructor';
 import { getCourseColors } from '@shared/util/colors';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import React from 'react';
 
 const exampleGovCourse: Course = new Course({
     courseName: 'Nope',
@@ -90,14 +89,22 @@ export const Default: Story = {
         courseCells: [
             {
                 async: true,
-                calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
+                calendarGridPoint: {
+                    dayIndex: -1,
+                    endIndex: -1,
+                    startIndex: -1,
+                },
                 componentProps: {
-                    courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
+                    courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]?.lastName}`,
                     status: exampleGovCourse.status,
                     blockData: {
-                        calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
+                        calendarGridPoint: {
+                            dayIndex: -1,
+                            endIndex: -1,
+                            startIndex: -1,
+                        },
                         componentProps: {
-                            courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]!.lastName}`,
+                            courseDeptAndInstr: `${exampleGovCourse.department} ${exampleGovCourse.number} – ${exampleGovCourse.instructors[0]?.lastName}`,
                             status: exampleGovCourse.status,
                             blockData: {} as CalendarGridCourse,
                         },
@@ -109,14 +116,22 @@ export const Default: Story = {
             },
             {
                 async: true,
-                calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
+                calendarGridPoint: {
+                    dayIndex: -1,
+                    endIndex: -1,
+                    startIndex: -1,
+                },
                 componentProps: {
-                    courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
+                    courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]?.lastName}`,
                     status: examplePsyCourse.status,
                     blockData: {
-                        calendarGridPoint: { dayIndex: -1, endIndex: -1, startIndex: -1 },
+                        calendarGridPoint: {
+                            dayIndex: -1,
+                            endIndex: -1,
+                            startIndex: -1,
+                        },
                         componentProps: {
-                            courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]!.lastName}`,
+                            courseDeptAndInstr: `${examplePsyCourse.department} ${examplePsyCourse.number} – ${examplePsyCourse.instructors[0]?.lastName}`,
                             status: examplePsyCourse.status,
                             blockData: {} as CalendarGridCourse,
                         },

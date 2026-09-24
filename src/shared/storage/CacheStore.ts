@@ -1,15 +1,28 @@
+import { createLocalStore } from '@chrome-extension-toolkit';
 import type { CachedData } from '@shared/types/CachedData';
-import { createLocalStore, debugStore } from 'chrome-extension-toolkit';
+import type { Semester } from '@shared/types/Course';
+import type { GitHubStats } from '@shared/types/GitHubStats';
 
 interface ICacheStore {
-    github: Record<string, CachedData<unknown>>;
+    githubStats: CachedData<Record<string, GitHubStats>> | null;
+    githubNames: CachedData<Record<string, string>> | null;
+    availableSemesters: CachedData<Semester[]> | null;
 }
 
 /**
  * A store that is used for storing cached data such as GitHub contributors
  */
-export const CacheStore = createLocalStore<ICacheStore>({
-    github: {},
-});
+export const CacheStore = createLocalStore<ICacheStore>(
+    'CacheStore',
+    {
+        githubStats: null,
+        githubNames: null,
+        availableSemesters: null,
+    },
+    {
+        usePrefix: false,
+    }
+);
 
-debugStore({ cacheStore: CacheStore });
+// Remove the old monolithic github cache blob if it exists
+chrome.storage.local.remove('github');

@@ -1,8 +1,9 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from '@headlessui/react';
-import { CaretDown, CaretUp } from '@phosphor-icons/react';
 import Text from '@views/components/common/Text/Text';
-import useSchedules from '@views/hooks/useSchedules';
-import React from 'react';
+import { useActiveSchedule } from '@views/hooks/useSchedules';
+import type React from 'react';
+import CaretDownFillIcon from '~icons/ph/caret-down-fill';
+import CaretUpFillIcon from '~icons/ph/caret-up-fill';
 
 /**
  * Props for the Dropdown component.
@@ -16,7 +17,10 @@ export type ScheduleDropdownProps = {
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
 export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDropdownProps) {
-    const [activeSchedule] = useSchedules();
+    const activeSchedule = useActiveSchedule();
+
+    const totalHours = activeSchedule?.hours ?? 0;
+    const totalCourses = activeSchedule?.courses.length ?? 0;
 
     return (
         <div className='max-h-[200px] flex flex-col border border-ut-offwhite/50 rounded bg-white'>
@@ -32,23 +36,21 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
                                 >
                                     {activeSchedule ? activeSchedule.name : 'Schedule'}
                                 </Text>
-                                <div className='flex gap-2.5 text-theme-black leading-[75%]!'>
-                                    <div className='flex gap-1.25'>
-                                        <Text variant='h4'>{activeSchedule ? activeSchedule.hours : 0}</Text>
-                                        <Text variant='h4' className='font-all-small-caps!'>
-                                            {activeSchedule.hours === 1 ? 'HOUR' : 'HOURS'}
-                                        </Text>
-                                    </div>
-                                    <div className='flex gap-1.25'>
-                                        <Text variant='h4'>{activeSchedule ? activeSchedule.courses.length : 0}</Text>
-                                        <Text variant='h4' className='font-all-small-caps!'>
-                                            {activeSchedule.courses.length === 1 ? 'COURSE' : 'COURSES'}
-                                        </Text>
-                                    </div>
-                                </div>
+                                <Text variant='h4' as='p' className='mt-0.5 text-theme-black inline-flex gap-3'>
+                                    <span>
+                                        {totalHours}&nbsp;
+                                        <span className='ml-0.5 uppercase'>{totalHours === 1 ? 'Hour' : 'Hours'}</span>
+                                    </span>
+                                    <span>
+                                        {totalCourses}&nbsp;
+                                        <span className='ml-0.5 uppercase'>
+                                            {totalCourses === 1 ? 'Course' : 'Courses'}
+                                        </span>
+                                    </span>
+                                </Text>
                             </div>
                             <Text className='text-ut-burntorange text-2xl! font-normal!'>
-                                {open ? <CaretDown weight='fill' /> : <CaretUp weight='fill' />}
+                                {open ? <CaretDownFillIcon /> : <CaretUpFillIcon />}
                             </Text>
                         </DisclosureButton>
 

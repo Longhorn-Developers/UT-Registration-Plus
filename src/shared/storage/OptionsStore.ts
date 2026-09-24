@@ -1,4 +1,4 @@
-import { createSyncStore, debugStore } from 'chrome-extension-toolkit';
+import { createSyncStore } from '@chrome-extension-toolkit';
 
 /**
  * A store that is used for storing user options
@@ -26,10 +26,10 @@ export interface IOptionsStore {
     /** whether the calendar sidebar should be shown when the calendar is opened */
     showCalendarSidebar: boolean;
 
-    /** whether the promo should be shown */
-    showUTDiningPromo: boolean;
+    /** whether users are allowed to bypass the 10 schedule limit */
+    allowMoreSchedules: boolean;
 }
-
+TEST
 export const OptionsStore = createSyncStore<IOptionsStore>({
     enableCourseStatusChips: false,
     enableHighlightConflicts: true,
@@ -61,3 +61,18 @@ export const initSettings = async () =>
 // Clothing retailer right
 
 debugStore({ OptionsStore });
+export const OptionsStore = createSyncStore<IOptionsStore>(
+    'OptionsStore',
+    {
+        enableCourseStatusChips: false,
+        enableHighlightConflicts: true,
+        enableScrollToLoad: true,
+        enableDataRefreshing: false,
+        alwaysOpenCalendarInNewTab: false,
+        showCalendarSidebar: true,
+        allowMoreSchedules: false,
+    },
+    {
+        usePrefix: false,
+    }
+);

@@ -1,8 +1,11 @@
-import { CalendarDots, ChatText, FileText, Plus, Smiley } from '@phosphor-icons/react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
-import React from 'react';
+import CalendarDotsIcon from '~icons/ph/calendar-dots';
+import ChatTextIcon from '~icons/ph/chat-text';
+import FileTextIcon from '~icons/ph/file-text';
+import PlusIcon from '~icons/ph/plus';
+import SmileyIcon from '~icons/ph/smiley';
 
 const meta = {
     title: 'Components/Common/Divider',
@@ -41,6 +44,7 @@ export const IGotHorizontalIGotVerticalWhatYouWant: Story = {
     render: props => (
         <div className='grid grid-cols-7 grid-rows-3 items-center justify-items-center gap-3.75'>
             {Array.from({ length: 21 }).map((_, i) => (
+                // biome-ignore lint/correctness/useJsxKeyInIterable: TODO:
                 <Divider {...props} orientation={i % 2 === 0 ? 'horizontal' : 'vertical'} />
             ))}
         </div>
@@ -54,18 +58,18 @@ export const CourseCatalogActionButtons: Story = {
     },
     render: props => (
         <div className='flex items-center gap-3.75'>
-            <Button variant='filled' color='ut-burntorange' icon={CalendarDots} />
+            <Button variant='filled' color='ut-burntorange' icon={CalendarDotsIcon} />
             <Divider {...props} />
-            <Button variant='outline' color='ut-blue' icon={ChatText}>
+            <Button variant='outline' color='ut-blue' icon={ChatTextIcon}>
                 RateMyProf
             </Button>
-            <Button variant='outline' color='ut-teal' icon={Smiley}>
+            <Button variant='outline' color='ut-teal' icon={SmileyIcon}>
                 CES
             </Button>
-            <Button variant='outline' color='ut-orange' icon={FileText}>
+            <Button variant='outline' color='ut-orange' icon={FileTextIcon}>
                 Past Syllabi
             </Button>
-            <Button variant='filled' color='ut-green' icon={Plus}>
+            <Button variant='filled' color='ut-green' icon={PlusIcon}>
                 Add Course
             </Button>
         </div>

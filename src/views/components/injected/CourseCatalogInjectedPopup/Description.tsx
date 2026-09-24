@@ -35,7 +35,7 @@ const fetchDescription = async (course: Course): Promise<string[]> => {
  * @param course - The course for which to display the description.
  * @returns The rendered description component.
  */
-export default function Description({ course }: DescriptionProps): JSX.Element {
+export default function Description({ course }: DescriptionProps): React.JSX.Element {
     const [description, setDescription] = React.useState<string[]>([]);
     const [status, setStatus] = React.useState<LoadStatusType>(LoadStatus.LOADING);
 
@@ -59,6 +59,7 @@ export default function Description({ course }: DescriptionProps): JSX.Element {
                 </Text>
             )}
             {status === LoadStatus.LOADING &&
+                // biome-ignore lint/correctness/useJsxKeyInIterable: TODO:
                 Array.from({ length: 5 }).map(() => <Skeleton style={{ marginBottom: 10 }} height={35} />)}
             {status === LoadStatus.DONE && (
                 <ul className='ml-6 mt-1.5 list-disc list-outside space-y-1.5'>

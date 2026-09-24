@@ -1,6 +1,5 @@
 import clsx from 'clsx';
-import type { PropsWithChildren } from 'react';
-import React from 'react';
+import type { JSX, PropsWithChildren } from 'react';
 
 /**
  * Props for the Preview component.

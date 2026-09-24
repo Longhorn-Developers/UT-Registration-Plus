@@ -1,8 +1,7 @@
-import { ImageSquare } from '@phosphor-icons/react';
 import { colorsFlattened } from '@shared/util/themeColors';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import FileUpload from '@views/components/common/FileUpload';
-import React from 'react';
+import ImageSquareIcon from '~icons/ph/image-square';
 
 /**
  * Stole this straight from Button.stories.tsx to test the input
@@ -16,7 +15,7 @@ const meta = {
     tags: ['autodocs'],
     args: {
         children: 'Upload File',
-        icon: ImageSquare,
+        icon: ImageSquareIcon,
     },
     argTypes: {
         children: { control: 'text' },
@@ -46,7 +45,7 @@ export const Default: Story = {
 };
 
 export const Small: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: '',
     },
@@ -65,16 +64,16 @@ export const Small: Story = {
             </div>
             <hr />
             <div style={{ display: 'flex', gap: '15px' }}>
-                <FileUpload {...props} icon={ImageSquare} variant='filled' color='ut-black' size='small' />
-                <FileUpload {...props} icon={ImageSquare} variant='outline' color='ut-black' size='small' />
-                <FileUpload {...props} icon={ImageSquare} variant='minimal' color='ut-black' size='small' />
+                <FileUpload {...props} icon={ImageSquareIcon} variant='filled' color='ut-black' size='small' />
+                <FileUpload {...props} icon={ImageSquareIcon} variant='outline' color='ut-black' size='small' />
+                <FileUpload {...props} icon={ImageSquareIcon} variant='minimal' color='ut-black' size='small' />
             </div>
         </div>
     ),
 };
 
 export const Mini: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: '',
     },
@@ -93,9 +92,9 @@ export const Mini: Story = {
             </div>
             <hr />
             <div style={{ display: 'flex', gap: '15px' }}>
-                <FileUpload {...props} icon={ImageSquare} variant='filled' color='ut-black' size='mini' />
-                <FileUpload {...props} icon={ImageSquare} variant='outline' color='ut-black' size='mini' />
-                <FileUpload {...props} icon={ImageSquare} variant='minimal' color='ut-black' size='mini' />
+                <FileUpload {...props} icon={ImageSquareIcon} variant='filled' color='ut-black' size='mini' />
+                <FileUpload {...props} icon={ImageSquareIcon} variant='outline' color='ut-black' size='mini' />
+                <FileUpload {...props} icon={ImageSquareIcon} variant='minimal' color='ut-black' size='mini' />
             </div>
         </div>
     ),
@@ -109,7 +108,7 @@ export const Disabled: Story = {
     },
 };
 
-// @ts-ignore
+// @ts-expect-error
 export const Grid: Story = {
     render: props => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -131,7 +130,7 @@ export const Grid: Story = {
 };
 
 export const PrettyColors: Story = {
-    // @ts-ignore
+    // @ts-expect-error
     args: {
         children: '',
     },
@@ -139,7 +138,13 @@ export const PrettyColors: Story = {
         const colorsNames = Object.keys(colorsFlattened) as (keyof typeof colorsFlattened)[];
 
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '15px',
+                }}
+            >
                 {colorsNames.map(color => (
                     <div style={{ display: 'flex', gap: '15px' }} key={color}>
                         <FileUpload {...props} variant='filled' color={color}>

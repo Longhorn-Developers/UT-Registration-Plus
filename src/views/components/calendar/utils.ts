@@ -1,13 +1,15 @@
-import { tz, TZDate } from '@date-fns/tz';
+import type { Serialized } from '@chrome-extension-toolkit';
+import { TZDate, tz } from '@date-fns/tz';
+import exportSchedule from '@pages/background/lib/exportSchedule';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import type { Course } from '@shared/types/Course';
+import { type Course, UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import { englishStringifyList } from '@shared/util/string';
+import { ensureShadowStyles } from '@views/components/common/ExtensionRoot/ShadowRootContainer';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
-import type { Serialized } from 'chrome-extension-toolkit';
 import type { DateArg, Day } from 'date-fns';
 import {
     addDays,
@@ -20,7 +22,6 @@ import {
     set as setMultiple,
 } from 'date-fns';
 import { toBlob } from 'html-to-image';
-
 import { academicCalendars } from './academic-calendars';
 
 // Do all timezone calculations relative to UT's timezone
@@ -150,7 +151,7 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
         return null;
     }
 
-    if (!Object.prototype.hasOwnProperty.call(academicCalendars, course.semester.code)) {
+    if (!Object.hasOwn(academicCalendars, course.semester.code)) {
         console.error(
             `No academic calendar found for semester code: ${course.semester.code}; course uniqueId: ${course.uniqueId}`
         );
@@ -160,6 +161,7 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
 
     const startDate = nextDayInclusive(
         parseISO(academicCalendar.firstClassDate, { in: TZ }),
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         DAY_NAME_TO_NUMBER[days[0]!]
     );
 
@@ -185,15 +187,22 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
     const icsDays = days.map(day => CAL_MAP[day]).join(',');
 
     // per spec, UNTIL must be in UTC
-    const untilDateFormatted = formatISO(untilDate, { format: 'basic', in: tz('utc') });
+    const untilDateFormatted = formatISO(untilDate, {
+        format: 'basic',
+        in: tz('utc'),
+    });
     const excludedDatesFormatted = excludedDates.map(date => iCalDateFormat(date));
 
-    const uniqueNumberFormatted = course.uniqueId.toString().padStart(5, '0');
+    const uniqueNumberFormatted = course.uniqueId.toString().padStart(UNIQUE_ID_LENGTH, '0');
 
     // The list part of "Taught by Michael Scott and Siddhartha Chatterjee Beasley"
     const instructorsFormatted = englishStringifyList(
         course.instructors
-            .map(instructor => Instructor.prototype.toString.call(instructor, { format: 'first_last' }))
+            .map(instructor =>
+                Instructor.prototype.toString.call(instructor, {
+                    format: 'first_last',
+                })
+            )
             .filter(name => name !== '')
     );
 
@@ -245,6 +254,27 @@ export const scheduleToIcsString = (schedule: Serialized<UserSchedule>) => {
 };
 
 /**
+ * Returns the provided schedule in a human readable/copyable text format
+ * @param schedule - The schedule object
+ * @returns
+ */
+export const scheduleToText = (schedule: Serialized<UserSchedule>) => {
+    const lines: string[] = [];
+
+    lines.push(`Schedule: ${schedule.name}`);
+    lines.push('');
+
+    for (const c of schedule.courses) {
+        lines.push(c.fullName);
+        lines.push(`${c.creditHours} Credit Hours`);
+        lines.push(`${c.uniqueId}`);
+        lines.push('');
+    }
+
+    return lines.join('\n');
+};
+
+/**
  * Saves the current schedule as a calendar file in the iCalendar format (ICS).
  * Fetches the current active schedule and converts it into an ICS string.
  * Downloads the ICS file to the user's device.
@@ -259,6 +289,41 @@ export const saveAsCal = async () => {
     const icsString = scheduleToIcsString(schedule);
 
     downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
+};
+
+/**
+ * Save current schedule as a plain text file consisting of
+ * Course Name - Course ID
+ * Course Time
+ * Unique Number
+ * Line Break
+ * Repeat
+ */
+export const saveAsText = async () => {
+    const schedule = await getSchedule();
+
+    if (!schedule) {
+        throw new Error('No schedule found');
+    }
+
+    const scheduleText = scheduleToText(schedule);
+    downloadBlob(scheduleText, 'TEXT', 'schedule.txt');
+};
+
+/**
+ * Saves current schedule to JSON that can be imported on other devices.
+ * @param id - Provided schedule ID to download
+ */
+export const handleExportJson = async (id: string) => {
+    const jsonString = await exportSchedule(id);
+    if (jsonString) {
+        const schedules = await UserScheduleStore.get('schedules');
+        const schedule = schedules.find(s => s.id === id);
+        const fileName = `${schedule?.name ?? `schedule_${id}`}_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+        await downloadBlob(jsonString, 'JSON', fileName);
+    } else {
+        console.error('Error exporting schedule: jsonString is undefined');
+    }
 };
 
 /**
@@ -281,11 +346,16 @@ export const saveCalAsPng = () => {
     rootNode.style.height = `${HEIGHT_PX}px`;
     document.body.appendChild(rootNode);
 
-    const clonedNode = document.querySelector('#root')!.cloneNode(true) as HTMLDivElement;
+    const clonedNode = document.querySelector('#root')?.cloneNode(true) as HTMLDivElement;
     clonedNode.style.backgroundColor = 'white';
-    (clonedNode.firstChild as HTMLDivElement).classList.add('screenshot-in-progress');
 
-    const calendarTarget = clonedNode.querySelector('.screenshot\\:calendar-target') as HTMLDivElement;
+    const shadowRoot = clonedNode.querySelector('.shadow-root-container')?.shadowRoot as ShadowRoot;
+    ensureShadowStyles(shadowRoot);
+    for (const node of shadowRoot.children) {
+        node.classList.add('screenshot-in-progress');
+    }
+
+    const calendarTarget = shadowRoot.querySelector('.screenshot\\:calendar-target') as HTMLDivElement;
     calendarTarget.style.width = `${WIDTH_PX}px`;
     calendarTarget.style.height = `${HEIGHT_PX}px`;
 
@@ -337,6 +407,7 @@ const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCours
     const connectedComponents: CalendarGridCourse[][] = [];
 
     for (let i = 0; i < cells.length; i++) {
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         const cell = cells[i]!;
 
         if (!cell.concurrentCells || cell.concurrentCells.length === 0) {
@@ -345,9 +416,10 @@ const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCours
             connectedComponents.push([]);
         }
 
-        connectedComponents.at(-1)!.push(cell);
+        connectedComponents.at(-1)?.push(cell);
 
         for (let j = i + 1; j < cells.length; j++) {
+            // biome-ignore lint/style/noNonNullAssertion: TOOD:
             const otherCell = cells[j]!;
             if (otherCell.calendarGridPoint.startIndex >= cell.calendarGridPoint.endIndex) {
                 break;
@@ -357,8 +429,8 @@ const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCours
             // By the if check above, we know cell.endTime > other.endTime
             // So, they're concurrent
             // Also, by initializing j to i + 1, we know we don't have duplicates
-            cell.concurrentCells!.push(otherCell);
-            otherCell.concurrentCells!.push(cell);
+            cell.concurrentCells?.push(otherCell);
+            otherCell.concurrentCells?.push(cell);
         }
     }
 
@@ -383,6 +455,7 @@ const assignColumns = (cells: CalendarGridCourse[]) => {
 
     for (const cell of cells) {
         availableColumns.fill(true);
+        // biome-ignore lint/style/noNonNullAssertion: TODO:
         for (const otherCell of cell.concurrentCells!) {
             if (otherCell.gridColumnStart !== undefined) {
                 availableColumns[otherCell.gridColumnStart - 1] = false;
@@ -427,7 +500,8 @@ export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
                 typeof cell.calendarGridPoint.startIndex === 'number' &&
                 cell.calendarGridPoint.startIndex >= 0
         )
-        .toSorted((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
+        .slice()
+        .sort((a, b) => a.calendarGridPoint.startIndex - b.calendarGridPoint.startIndex);
 
     // Initialize metadata
     for (const cell of cells) {

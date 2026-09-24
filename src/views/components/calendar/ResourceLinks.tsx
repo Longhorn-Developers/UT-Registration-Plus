@@ -1,7 +1,6 @@
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
-import React from 'react';
-
+import type { JSX } from 'react';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 
 type Props = {
@@ -14,30 +13,34 @@ interface LinkItem {
 }
 
 const links: LinkItem[] = [
-    {
-        text: "Fall '25 Course Schedule",
-        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20259/',
-    },
-    {
-        text: "Summer '25 Course Schedule",
-        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20256/',
-    },
     // {
-    //     text: "Spring '25 Course Schedule",
-    //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/',
+    //     text: "Fall '25 Course Schedule",
+    //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20259/',
+    // },
+    // {
+    //     text: 'Course Schedule Archives',
+    //     url: 'https://registrar.utexas.edu/schedules/archive',
     // },
     {
-        text: 'Course Schedule Archives',
-        url: 'https://registrar.utexas.edu/schedules/archive',
+        text: "Fall '26 Course Schedule",
+        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20269/',
+    },
+    {
+        text: "Summer '26 Course Schedule",
+        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20266/',
+    },
+    {
+        text: 'Other Course Schedules',
+        url: 'https://registrar.utexas.edu/schedules',
     },
     {
         text: 'My Degree Audit (IDA)',
         url: 'https://utdirect.utexas.edu/apps/degree/audits/',
     },
-    // {
-    //     text: "'24-'25 Academic Calendar",
-    //     url: 'https://registrar.utexas.edu/calendars/24-25',
-    // },
+    {
+        text: "'26–'27 Academic Calendar",
+        url: 'https://registrar.utexas.edu/calendars/26-27',
+    },
     {
         text: 'Registration Info Sheet (RIS)',
         url: 'https://utdirect.utexas.edu/registrar/ris.WBX',
