@@ -273,6 +273,7 @@ export default function Settings(): React.JSX.Element {
                             loadAllCourses={options.enableScrollToLoad}
                             increaseScheduleLimit={options.allowMoreSchedules}
                             calendarNewTab={options.alwaysOpenCalendarInNewTab}
+                            enableReducedMotion={options.enableReducedMotion}
                             enableDataRefreshing={enableDataRefreshing}
                             enableCourseStatusChips={enableCourseStatusChips}
                             activeSchedule={activeSchedule}

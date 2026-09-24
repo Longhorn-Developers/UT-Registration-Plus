@@ -1,4 +1,5 @@
 import { Description, Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { ReactElement } from 'react';
 import React from 'react';
 
@@ -27,15 +28,17 @@ export interface PromptDialogProps {
  * @returns The rendered PromptDialog component.
  */
 function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialogProps): React.JSX.Element {
+    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
+
     return (
         <Transition appear show={isOpen} as={React.Fragment}>
             <Dialog as='div' onClose={onClose} className='relative z-50'>
                 <TransitionChild
                     as={React.Fragment}
-                    enter='ease-out duration-200'
+                    enter={reducedMotion ? 'transition-none' : 'ease-out duration-200'}
                     enterFrom='opacity-0'
                     enterTo='opacity-100'
-                    leave='ease-in duration-200'
+                    leave={reducedMotion ? 'transition-none' : 'ease-in duration-200'}
                     leaveFrom='opacity-100'
                     leaveTo='opacity-0'
                 >
@@ -44,10 +47,10 @@ function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialo
 
                 <TransitionChild
                     as={React.Fragment}
-                    enter='ease-out duration-200'
+                    enter={reducedMotion ? 'transition-none' : 'ease-out duration-200'}
                     enterFrom='opacity-0 scale-95'
                     enterTo='opacity-100 scale-100'
-                    leave='ease-in duration-200'
+                    leave={reducedMotion ? 'transition-none' : 'ease-in duration-200'}
                     leaveFrom='opacity-100 scale-100'
                     leaveTo='opacity-0 scale-95'
                 >

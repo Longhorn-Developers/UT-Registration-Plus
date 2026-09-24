@@ -9,6 +9,7 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import { SortableItemProvider } from '@views/contexts/SortableItemContext';
 import { useCursor } from '@views/hooks/useCursor';
 import clsx from 'clsx';
@@ -50,6 +51,7 @@ export interface SortableListItemProps {
 }
 
 function SortableListItem({ children, id }: PropsWithChildren<SortableListItemProps>) {
+    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
     const { attributes, isDragging, listeners, setNodeRef, setActivatorNodeRef, transform, transition } = useSortable({
         id,
     });
@@ -66,7 +68,7 @@ function SortableListItem({ children, id }: PropsWithChildren<SortableListItemPr
         listStyle: 'none',
         visibility: isDragging ? 'hidden' : 'visible',
         transform: CSS.Translate.toString(transform),
-        transition,
+        transition: reducedMotion ? undefined : transition,
     } satisfies CSSProperties;
 
     return (

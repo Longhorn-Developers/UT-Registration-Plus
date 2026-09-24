@@ -19,6 +19,9 @@ export interface IOptionsStore {
     /** whether we should open the calendar in a new tab; default is to focus an existing calendar tab */
     alwaysOpenCalendarInNewTab: boolean;
 
+    /** whether animations and transitions should be reduced for accessibility */
+    enableReducedMotion: boolean;
+
     /** whether the calendar sidebar should be shown when the calendar is opened */
     showCalendarSidebar: boolean;
 
@@ -34,6 +37,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>(
         enableScrollToLoad: true,
         enableDataRefreshing: false,
         alwaysOpenCalendarInNewTab: false,
+        enableReducedMotion: false,
         showCalendarSidebar: true,
         allowMoreSchedules: false,
     },
