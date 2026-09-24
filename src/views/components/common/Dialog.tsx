@@ -7,14 +7,11 @@ import {
     Transition,
     TransitionChild,
 } from '@headlessui/react';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import clsx from 'clsx';
 import type { JSX, PropsWithChildren } from 'react';
 import { Fragment } from 'react';
-TEST TEST
-import ExtensionRoot from './ExtensionRoot/ExtensionRoot';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { OptionsStore } from 'src/shared/storage/OptionsStore';
+
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 
 /**
@@ -36,16 +33,7 @@ export type DialogProps = _DialogProps & Omit<TransitionRootProps<typeof HDialog
  */
 export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Element {
     const { children, className, open, title, description, ...rest } = props;
-    const [reducedMotion, setReducedMotion] = useState(false);
-
-    useEffect(() => {
-        OptionsStore.get('enableReducedMotion').then(val => {
-            setReducedMotion(val);
-        });
-        const listener = OptionsStore.listen('enableReducedMotion', ({ newValue }) => {
-            setReducedMotion(newValue);
-        });
-    }, []);
+    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
 
     return (
         <Transition show={open} as={HDialog} {...rest}>

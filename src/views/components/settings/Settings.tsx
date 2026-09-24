@@ -66,17 +66,6 @@ const getContributorPriority = (member: { role: string[] }) => {
  *
  * @returns The Settings component.
  */
-TEST TEST
-export default function Settings(): JSX.Element {
-    const [_enableCourseStatusChips, setEnableCourseStatusChips] = useState<boolean>(false);
-    // const [_showTimeLocation, setShowTimeLocation] = useState<boolean>(false);
-    const [highlightConflicts, setHighlightConflicts] = useState<boolean>(false);
-    const [loadAllCourses, setLoadAllCourses] = useState<boolean>(false);
-    const [_enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
-    const [calendarNewTab, setCalendarNewTab] = useState<boolean>(false);
-    const [reducedMotion, setReducedMotion] = useState<boolean>(false);
-
-    const showMigrationDialog = useMigrationDialog();
 export default function Settings(): React.JSX.Element {
     const gitHubStatsService = useMemo(() => new GitHubStatsService(), []);
     const calendarPageUrl = chrome.runtime.getURL(CRX_PAGES.CALENDAR);
@@ -128,21 +117,6 @@ export default function Settings(): React.JSX.Element {
         window.addEventListener('keydown', handleKeyPress);
 
         fetchGitHubStats();
-TEST TEST
-        const l6 = OptionsStore.listen('enableReducedMotion', async ({ newValue }) => {
-            setReducedMotion(newValue);
-        });
-
-        // Remove listeners when the component is unmounted
-        return () => {
-            OptionsStore.removeListener(l1);
-            OptionsStore.removeListener(l2);
-            OptionsStore.removeListener(l3);
-            OptionsStore.removeListener(l4);
-            OptionsStore.removeListener(l5);
-            OptionsStore.removeListener(l6);
-
-            DevStore.removeListener(ds_l1);
 
         return () => {
             window.removeEventListener('keydown', handleKeyPress);
@@ -292,244 +266,14 @@ TEST TEST
             </header>
 
             <div className='p-6 lg:flex'>
-                <div className='mr-4 lg:w-1/2 xl:w-xl TEST TEST
-                    {/* <section className='mb-8'>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>CUSTOMIZATION OPTIONS</h2>
-                        <div className='flex space-x-4'>
-                            <div className='w-1/2 space-y-4'>
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>Show Course Status</h3>
-                                        <p className='text-sm text-gray-600'>
-                                            Shows an indicator for waitlisted, cancelled, and closed courses.
-                                        </p>
-                                    </div>
-                                    <SwitchButton
-                                        isChecked={enableCourseStatusChips}
-                                        onChange={() => {
-                                            setEnableCourseStatusChips(!enableCourseStatusChips);
-                                            OptionsStore.set('enableCourseStatusChips', !enableCourseStatusChips);
-                                        }}
-                                    />
-                                </div>
-
-                                <Divider size='auto' orientation='horizontal' />
-
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>
-                                            Show Time & Location in Popup
-                                        </h3>
-                                        <p className='text-sm text-gray-600'>
-                                            Shows the course&apos;s time and location in the extension&apos;s popup.
-                                        </p>
-                                    </div>
-                                    <SwitchButton
-                                        isChecked={showTimeLocation}
-                                        onChange={() => {
-                                            setShowTimeLocation(!showTimeLocation);
-                                            OptionsStore.set('enableTimeAndLocationInPopup', !showTimeLocation);
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                            {DISPLAY_PREVIEWS && (
-                                <Preview>
-                                    <CalendarCourseCell
-                                        colors={getCourseColors('orange')}
-                                        courseDeptAndInstr={ExampleCourse.department}
-                                        className={ExampleCourse.number}
-                                        status={ExampleCourse.status}
-                                        timeAndLocation={ExampleCourse.schedule.meetings[0]!.getTimeString({
-                                            separator: '-',
-                                        })}
-                                    />
-                                    <PopupCourseBlock colors={getCourseColors('orange')} course={ExampleCourse} />
-                                </Preview>
-                            )}
-                        </div>
-                    </section>
-
-                    <Divider size='auto' orientation='horizontal' /> */}
-
-                    <section className='mb-8'>
-                        <h2 className='mb-4 text-xl text-ut-black font-semibold'>ADVANCED SETTINGS</h2>
-                        <div className='flex space-x-4'>
-                            <div className={PREVIEW_SECTION_DIV_CLASSNAME}>
-                                {/* <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <h3 className='text-ut-burntorange font-semibold'>Refresh Data</h3>
-                                        <p className='text-sm text-gray-600'>
-                                            Refreshes waitlist, course status, and other info with the latest data from
-                                            UT&apos;s site.
-                                        </p>
-                                    </div>
-                                    <Button
-                                        variant='outline'
-                                        color='ut-black'
-                                        icon={RefreshIcon}
-                                        onClick={() => console.log('Refresh clicked')}
-                                        disabled={!enableDataRefreshing}
-                                    >
-                                        Refresh
-                                    </Button>
-                                </div>
-
-                                <Divider size='auto' orientation='horizontal' /> */}
-
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                                            Export Current Schedule
-                                        </Text>
-                                        <p className='text-sm text-gray-600'>
-                                            Backup your active schedule to a portable file
-                                        </p>
-                                    </div>
-                                    <Button
-                                        variant='outline'
-                                        color='ut-burntorange'
-                                        onClick={() => handleExportClick(activeSchedule.id)}
-                                    >
-                                        Export
-                                    </Button>
-                                </div>
-
-                                <Divider size='auto' orientation='horizontal' />
-
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                                            Import Schedule
-                                        </Text>
-                                        <p className='text-sm text-gray-600'>Import from a schedule file</p>
-                                    </div>
-                                    <FileUpload
-                                        variant='filled'
-                                        color='ut-burntorange'
-                                        onChange={handleImportClick}
-                                        accept={MIMEType.JSON}
-                                    >
-                                        Import Schedule
-                                    </FileUpload>
-                                </div>
-
-                                <Divider size='auto' orientation='horizontal' />
-
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                                            Course Conflict Highlight
-                                        </Text>
-                                        <p className='text-sm text-gray-600'>
-                                            Adds a red strikethrough to courses that have conflicting times.
-                                        </p>
-                                    </div>
-                                    <SwitchButton
-                                        isChecked={highlightConflicts}
-                                        onChange={() => {
-                                            setHighlightConflicts(!highlightConflicts);
-                                            OptionsStore.set('enableHighlightConflicts', !highlightConflicts);
-                                        }}
-                                    />
-                                </div>
-
-                                <Divider size='auto' orientation='horizontal' />
-
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                                            Load All Courses in Course Schedule
-                                        </Text>
-                                        <p className='text-sm text-gray-600'>
-                                            Loads all courses in the Course Schedule site by scrolling, instead of using
-                                            next/prev page buttons.
-                                        </p>
-                                    </div>
-                                    <SwitchButton
-                                        isChecked={loadAllCourses}
-                                        onChange={() => {
-                                            setLoadAllCourses(!loadAllCourses);
-                                            OptionsStore.set('enableScrollToLoad', !loadAllCourses);
-                                        }}
-                                    />
-                                </div>
-
-                                <Divider size='auto' orientation='horizontal' />
-
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                                            Always Open Calendar in New Tab
-                                        </Text>
-                                        <p className='text-sm text-gray-600'>
-                                            Always opens the calendar view in a new tab when navigating to the calendar
-                                            page. May prevent issues where the calendar refuses to open.
-                                        </p>
-                                    </div>
-                                    <SwitchButton
-                                        isChecked={calendarNewTab}
-                                        onChange={() => {
-                                            setCalendarNewTab(!calendarNewTab);
-                                            OptionsStore.set('alwaysOpenCalendarInNewTab', !calendarNewTab);
-                                        }}
-                                    />
-                                </div>
-
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                                            Reduced Motion
-                                        </Text>
-                                        <p className='text-sm text-gray-600'>
-                                            Disable animations and transitions for users who prefer reduced motion.
-                                        </p>
-                                    </div>
-                                    <SwitchButton
-                                        isChecked={reducedMotion}
-                                        onChange={() => {
-                                            setReducedMotion(!reducedMotion);
-                                            OptionsStore.set('enableReducedMotion', !reducedMotion);
-                                        }}
-                                    />
-                                </div>
-
-                                <Divider size='auto' orientation='horizontal' />
-
-                                <div className='flex items-center justify-between'>
-                                    <div className='max-w-xs'>
-                                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                                            Reset All Data
-                                        </Text>
-                                        <p className='text-sm text-gray-600'>
-                                            Erases all schedules and courses you have.
-                                        </p>
-                                    </div>
-                                    <Button variant='outline' color='theme-red' icon={Trash} onClick={handleEraseAll}>
-                                        Erase All
-                                    </Button>
-                                </div>
-                            </div>
-                            {DISPLAY_PREVIEWS && (
-                                <Preview>
-                                    <Text
-                                        variant='h2-course'
-                                        className={clsx('text-center text-theme-red !font-normal', {
-                                            'line-through': highlightConflicts,
-                                        })}
-                                    >
-                                        01234 MWF 10:00 AM - 11:00 AM UTC 1.234
-                                    </Text>
-                                </Preview>
-                            )}
-                        </div>
-                    </section>
+                <div className='mr-4 lg:w-1/2 xl:w-xl'>
                     {options && (
                         <AdvancedSettings
                             highlightConflicts={options.enableHighlightConflicts}
                             loadAllCourses={options.enableScrollToLoad}
                             increaseScheduleLimit={options.allowMoreSchedules}
                             calendarNewTab={options.alwaysOpenCalendarInNewTab}
+                            enableReducedMotion={options.enableReducedMotion}
                             enableDataRefreshing={enableDataRefreshing}
                             enableCourseStatusChips={enableCourseStatusChips}
                             activeSchedule={activeSchedule}

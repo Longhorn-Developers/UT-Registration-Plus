@@ -19,48 +19,16 @@ export interface IOptionsStore {
     /** whether we should open the calendar in a new tab; default is to focus an existing calendar tab */
     alwaysOpenCalendarInNewTab: boolean;
 
-    /** whether animations should be reduced or not
-     */
+    /** whether animations and transitions should be reduced for accessibility */
     enableReducedMotion: boolean;
-  
+
     /** whether the calendar sidebar should be shown when the calendar is opened */
     showCalendarSidebar: boolean;
 
     /** whether users are allowed to bypass the 10 schedule limit */
     allowMoreSchedules: boolean;
 }
-TEST
-export const OptionsStore = createSyncStore<IOptionsStore>({
-    enableCourseStatusChips: false,
-    enableHighlightConflicts: true,
-    enableScrollToLoad: true,
-    enableDataRefreshing: false,
-    alwaysOpenCalendarInNewTab: false,
-    enableReducedMotion: false,
-    showCalendarSidebar: true,
-    showUTDiningPromo: true,
-});
 
-/**
- * Initializes the settings by retrieving the values from the OptionsStore.
- *
- * @returns A promise that resolves to an object satisfying the IOptionsStore interface.
- */
-export const initSettings = async () =>
-    ({
-        enableCourseStatusChips: await OptionsStore.get('enableCourseStatusChips'),
-        enableHighlightConflicts: await OptionsStore.get('enableHighlightConflicts'),
-        enableScrollToLoad: await OptionsStore.get('enableScrollToLoad'),
-        enableDataRefreshing: await OptionsStore.get('enableDataRefreshing'),
-        alwaysOpenCalendarInNewTab: await OptionsStore.get('alwaysOpenCalendarInNewTab'),
-        enableReducedMotion: await OptionsStore.get('enableReducedMotion'),
-        showCalendarSidebar: await OptionsStore.get('showCalendarSidebar'),
-        showUTDiningPromo: await OptionsStore.get('showUTDiningPromo'),
-    }) satisfies IOptionsStore;
-
-// Clothing retailer right
-
-debugStore({ OptionsStore });
 export const OptionsStore = createSyncStore<IOptionsStore>(
     'OptionsStore',
     {
@@ -69,6 +37,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>(
         enableScrollToLoad: true,
         enableDataRefreshing: false,
         alwaysOpenCalendarInNewTab: false,
+        enableReducedMotion: false,
         showCalendarSidebar: true,
         allowMoreSchedules: false,
     },
