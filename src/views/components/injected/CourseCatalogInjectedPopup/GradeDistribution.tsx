@@ -1,3 +1,4 @@
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import type { Distribution, LetterGrade } from '@shared/types/Distribution';
 import { extendedColors } from '@shared/types/ThemeColors';
@@ -67,6 +68,7 @@ const semesterOrdering = new Map([
  * @returns The grade distribution chart component.
  */
 export default function GradeDistribution({ course }: GradeDistributionProps): JSX.Element {
+    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
     const [semester, setSemester] = useState('Aggregate');
     type Distributions = Record<string, { data: Distribution; instructorIncluded: boolean }>;
     const [distributions, setDistributions] = useState<Distributions>({});
@@ -234,7 +236,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
         },
         plotOptions: {
             bar: { pointPadding: 0.2, borderWidth: 0 },
-            series: { animation: { duration: 700 } },
+            series: { animation: reducedMotion ? false : { duration: 700 } },
         },
         series: [
             {
@@ -247,7 +249,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
 
     return (
         <div className='pt-3'>
-            {status === DataStatus.LOADING && <Skeleton height={300} />}
+            {status === DataStatus.LOADING && <Skeleton height={300} enableAnimation={!reducedMotion} />}
             {status === DataStatus.NOT_FOUND && (
                 <HighchartsReact
                     ref={ref}
