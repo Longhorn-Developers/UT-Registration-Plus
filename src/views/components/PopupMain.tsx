@@ -9,7 +9,7 @@ import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import type { JSX } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import CalendarDotsFillIcon from '~icons/ph/calendar-dots-fill';
 import FlagIcon from '~icons/ph/flag';
 import GearSixIcon from '~icons/ph/gear-six';
@@ -32,6 +32,10 @@ export default function PopupMain(): JSX.Element {
     // const [enableDataRefreshing, setEnableDataRefreshing] = useState<boolean>(false);
 
     const [activeSchedule, schedules] = useSchedules();
+    const courseDraggables = useMemo(
+        () => activeSchedule.courses.map(course => ({ id: course.uniqueId, course })),
+        [activeSchedule]
+    );
 
     // const [isRefreshing, setIsRefreshing] = useState(false);
     const [funny, setFunny] = useState<string>('');
@@ -145,10 +149,7 @@ export default function PopupMain(): JSX.Element {
             >
                 {activeSchedule?.courses?.length > 0 && (
                     <SortableList
-                        draggables={activeSchedule.courses.map(course => ({
-                            id: course.uniqueId,
-                            course,
-                        }))}
+                        draggables={courseDraggables}
                         onChange={reordered => {
                             activeSchedule.courses = reordered.map(({ course }) => course);
                             replaceSchedule(getActiveSchedule(), activeSchedule);
