@@ -17,6 +17,7 @@ export class UserSchedule {
     lastCheckedAt?: number | null;
     /** Unix timestamp of the last failed silent refresh attempt — gates a 60s cooldown before retry */
     lastAttemptedAt?: number | null;
+    hiddenCourseIds?: number[];
 
     constructor(schedule: Serialized<UserSchedule>) {
         this.courses = schedule.courses.map(c => new Course(c));
@@ -26,9 +27,22 @@ export class UserSchedule {
         this.updatedAt = schedule.updatedAt ?? 0;
         this.lastCheckedAt = schedule.lastCheckedAt ?? null;
         this.lastAttemptedAt = schedule.lastAttemptedAt ?? null;
+        this.hiddenCourseIds = schedule.hiddenCourseIds ?? [];
     }
 
     containsCourse(course: Course): boolean {
         return this.courses.some(c => c.uniqueId === course.uniqueId);
+    }
+
+    isCourseHidden(uniqueId: number): boolean {
+        return this.hiddenCourseIds?.includes(uniqueId) ?? false;
+    }
+
+    getVisibleCourses(): Course[] {
+        return this.courses.filter(c => !this.isCourseHidden(c.uniqueId));
+    }
+
+    getVisibleHours(): number {
+        return this.getVisibleCourses().reduce((acc, c) => acc + c.creditHours, 0);
     }
 }

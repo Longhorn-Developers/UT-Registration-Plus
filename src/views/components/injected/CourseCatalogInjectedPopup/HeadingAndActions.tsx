@@ -20,6 +20,8 @@ import CalendarDotsIcon from '~icons/ph/calendar-dots';
 import ChatTextIcon from '~icons/ph/chat-text';
 import CheckIcon from '~icons/ph/check';
 import CopyIcon from '~icons/ph/copy';
+import EyeIcon from '~icons/ph/eye';
+import EyeSlashIcon from '~icons/ph/eye-slash';
 import FileTextIcon from '~icons/ph/file-text';
 import MinusIcon from '~icons/ph/minus';
 import PlusIcon from '~icons/ph/plus';
@@ -28,7 +30,7 @@ import XIcon from '~icons/ph/x';
 
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
-const { openNewTab, addCourse, removeCourse, openCESPage } = background;
+const { openNewTab, addCourse, removeCourse, openCESPage, toggleCourseVisibility } = background;
 
 /**
  * Capitalizes the first letter of a string and converts the rest of the letters to lowercase.
@@ -62,6 +64,7 @@ export default function HeadingAndActions({
 }: HeadingAndActionProps): React.JSX.Element {
     const { courseName, department, number: courseNumber, uniqueId, instructors, flags, core } = course;
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
+    const isHidden = activeSchedule.isCourseHidden(uniqueId);
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
     const isInCalendar = useCalendar();
 
@@ -308,6 +311,17 @@ export default function HeadingAndActions({
                 <Button variant='outline' color='ut-orange' icon={FileTextIcon} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
                 </Button>
+                {courseAdded && (
+                    <Button
+                        className='whitespace-nowrap'
+                        variant='outline'
+                        color='ut-gray'
+                        icon={isHidden ? EyeSlashIcon : EyeIcon}
+                        onClick={() => toggleCourseVisibility({ scheduleId: activeSchedule.id, uniqueId })}
+                    >
+                        {isHidden ? 'Show' : 'Hide'}
+                    </Button>
+                )}
                 <Button
                     variant='filled'
                     color={!courseAdded ? 'ut-green' : 'theme-red'}
