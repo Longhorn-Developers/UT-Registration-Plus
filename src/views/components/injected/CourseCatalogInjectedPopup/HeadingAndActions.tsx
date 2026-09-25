@@ -23,9 +23,9 @@ import CopyIcon from '~icons/ph/copy';
 import FileTextIcon from '~icons/ph/file-text';
 import MinusIcon from '~icons/ph/minus';
 import PlusIcon from '~icons/ph/plus';
+import RedditLogoIcon from '~icons/ph/reddit-logo';
 import SmileyIcon from '~icons/ph/smiley';
 import XIcon from '~icons/ph/x';
-
 import DisplayMeetingInfo from './DisplayMeetingInfo';
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
@@ -120,6 +120,56 @@ export default function HeadingAndActions({
             const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${courseNumber}&course_title=&unique=&instructor_first=&instructor_last=&course_type=In+Residence&search=Search`;
             openNewTab({ url });
         }
+    };
+
+    /**
+     * Function that generates a reddit search query on Google Search for the provided Course, and opens it in a new tab using the `site:reddit.com/r/UTAustin` operator
+     *
+     */
+    const handleOpenReddit = async () => {
+        // list for course IDs that have multiple subcourses, feel free to modify. Maybe we should export this to a thing if it's needed elsewhere lol
+        const exceptions = new Set(['UGS302', 'UGS303', 'CS378']);
+
+        const normalizedDepartment = department.replace(/\s+/g, ' ').trim().toUpperCase();
+        const departmentNoSpace = normalizedDepartment.replace(/\s+/g, '');
+
+        const normalizedCourseNumber = courseNumber.replace(/\s+/g, '').toUpperCase();
+        const numericCourseNumber = normalizedCourseNumber.match(/\d+/)?.[0] ?? '';
+
+        const normalizedCourseName = courseName
+            .replace(/[^\w\s]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        const courseNameNoSpace = normalizedCourseName.replace(/\s+/g, '');
+
+        const courseCodeKey = `${departmentNoSpace}${normalizedCourseNumber}`;
+        const isExceptionCourse = exceptions.has(courseCodeKey);
+
+        // make search variations
+        const strictTerms = [
+            !isExceptionCourse ? `"${normalizedDepartment} ${normalizedCourseNumber}"` : null,
+            !isExceptionCourse ? `"${departmentNoSpace}${normalizedCourseNumber}"` : null,
+            normalizedCourseName ? `"${normalizedDepartment} ${normalizedCourseNumber} ${normalizedCourseName}"` : null,
+            normalizedCourseName ? `"${departmentNoSpace}${normalizedCourseNumber} ${normalizedCourseName}"` : null,
+        ];
+
+        const looseTerms = !isExceptionCourse && numericCourseNumber
+            ? [`("${departmentNoSpace}${numericCourseNumber}")`]
+            : [];
+
+        const nameTerms = [
+            normalizedCourseName ? `"${normalizedCourseName}"` : null,
+            courseNameNoSpace ? `"${courseNameNoSpace}"` : null,
+        ];
+
+        // de-duplicate terms and execute the Google search with 'site:' operator for UT subreddit
+        const queryTerms = [
+            ...new Set([...strictTerms, ...looseTerms, ...nameTerms].filter((v): v is string => Boolean(v))),
+        ];
+
+        const searchQuery = `site:reddit.com/r/UTAustin (${queryTerms.join(' OR ')})`;
+        const url = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+        await openNewTab({ url });
     };
 
     const handleAddToNewSchedule = async (close: () => void) => {
@@ -304,6 +354,15 @@ export default function HeadingAndActions({
                     disabled={instructors.length === 0}
                 >
                     CES
+                </Button>
+                <Button
+                    variant='outline'
+                    color='ut-orange'
+                    icon={RedditLogoIcon}
+                    onClick={handleOpenReddit}
+                    title='Search r/UTAustin posts about this course'
+                >
+                    r/UTAustin
                 </Button>
                 <Button variant='outline' color='ut-orange' icon={FileTextIcon} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
