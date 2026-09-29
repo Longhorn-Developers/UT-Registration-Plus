@@ -104,21 +104,41 @@ export type LD_SWE_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_HARDCODED)[num
  */
 export type LD_ADMIN_GITHUB_USERNAMES = (typeof LONGHORN_DEVELOPERS_ADMINS)[number]['githubUsername'];
 
-export const UTRP_LEADS = [
-    {
-        name: 'Hannah Ha',
-        role: ['UTRP Product Lead'],
-        githubUsername: 'songhannahha-hub',
-    },
+export const UTRP_TEAM = [
     {
         name: 'Leslie Looi',
-        role: ['UTRP UX Design Lead'],
+        role: ['UX Design Lead'],
         githubUsername: 'lesliewlooi',
         personalWebsite: 'https://leslielooi.super.site/',
     },
+    {
+        name: 'Akshitha Venkataraman',
+        role: ['UX Design Fellow'],
+        githubUsername: '',
+    },
+    {
+        name: 'Arun Bagavathiannan',
+        role: ['Technical Lead'],
+        githubUsername: 'arunbagavathiannan',
+    },
+    {
+        name: 'Margaret Cartee',
+        role: ['Product Lead'],
+        githubUsername: 'margaret-ca',
+    },
+    {
+        name: 'Hannah Ha',
+        role: ['Product Lead'],
+        githubUsername: 'songhannahha-hub',
+    },
+    {
+        name: 'Marie Cho',
+        role: ['Product Fellow'],
+        githubUsername: 'mariehyc',
+    },
 ] as const satisfies TeamMember[];
 
-export type UTRP_LEAD_GITHUB_USERNAMES = (typeof UTRP_LEADS)[number]['githubUsername'];
+export type UTRP_TEAM_GITHUB_USERNAMES = (typeof UTRP_TEAM)[number]['githubUsername'];
 
 export const UTRP_ALUMNI = [
     {
