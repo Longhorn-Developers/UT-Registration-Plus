@@ -23,7 +23,7 @@ import {
     LONGHORN_DEVELOPERS_ADMINS,
     LONGHORN_DEVELOPERS_HARDCODED,
     UTRP_ALUMNI,
-    UTRP_LEADS,
+    UTRP_TEAM,
 } from '@views/lib/getGitHubStats';
 // Misc
 import type React from 'react';
@@ -172,7 +172,7 @@ export default function Settings(): React.JSX.Element {
     }, []);
 
     const sortedContributors = useMemo(() => {
-        const base = [...LONGHORN_DEVELOPERS_HARDCODED, ...UTRP_LEADS, ...UTRP_ALUMNI];
+        const base = [...LONGHORN_DEVELOPERS_HARDCODED, ...UTRP_ALUMNI];
         if (!githubStats) return base;
 
         return [...base].sort((a, b) => {
@@ -191,7 +191,7 @@ export default function Settings(): React.JSX.Element {
         const knownUsernames = new Set<string>([
             ...LONGHORN_DEVELOPERS_ADMINS.map(a => a.githubUsername),
             ...LONGHORN_DEVELOPERS_HARDCODED.map(s => s.githubUsername),
-            ...UTRP_LEADS.map(l => l.githubUsername),
+            ...UTRP_TEAM.map(m => m.githubUsername),
             ...UTRP_ALUMNI.map(a => a.githubUsername),
         ]);
         return Object.keys(githubStats.userGitHubStats)
@@ -389,6 +389,23 @@ export default function Settings(): React.JSX.Element {
                                     personalWebsite={getPersonalWebsite(admin)}
                                     roles={admin.role}
                                     stats={githubStats?.adminGitHubStats[admin.githubUsername]}
+                                    showStats={showGitHubStats}
+                                    includeMergedPRs={INCLUDE_MERGED_PRS}
+                                />
+                            ))}
+                        </div>
+                    </section>
+                    <section className='my-8'>
+                        <h2 className='mb-4 text-xl text-content font-semibold'>UTRP CURRENT TEAM</h2>
+                        <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3 xl:grid-cols-3'>
+                            {UTRP_TEAM.map(member => (
+                                <ContributorCard
+                                    key={member.name}
+                                    name={member.name}
+                                    githubUsername={member.githubUsername}
+                                    personalWebsite={getPersonalWebsite(member)}
+                                    roles={member.role}
+                                    stats={githubStats?.userGitHubStats[member.githubUsername]}
                                     showStats={showGitHubStats}
                                     includeMergedPRs={INCLUDE_MERGED_PRS}
                                 />
