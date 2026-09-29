@@ -188,6 +188,8 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     />
                 </div>
 
+                <Divider size='auto' orientation='horizontal' />
+
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
