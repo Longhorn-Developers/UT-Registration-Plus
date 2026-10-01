@@ -76,7 +76,8 @@ export default function Dropdown({
                 anchor='bottom start'
                 className={clsx(
                     styleResetClass,
-                    'flex flex-col p-spacing-1 w-[var(--button-width)] z-40',
+                    // above Dialog (z-50), so dropdowns also work inside one
+                    'flex flex-col p-spacing-1 w-[var(--button-width)] z-60',
                     'origin-top-right rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
                     'data-[closed]:(opacity-0 scale-95)',
                     'data-[enter]:(ease-out-expo duration-150)',
