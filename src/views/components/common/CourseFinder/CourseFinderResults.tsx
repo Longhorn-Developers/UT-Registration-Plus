@@ -5,6 +5,7 @@ import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import { Button } from '@views/components/common/Button';
 import { Chip, coreMap, flagMap } from '@views/components/common/Chip';
 import CourseStatus from '@views/components/common/CourseStatus';
+import ExpandableText from '@views/components/common/ExpandableText';
 import Link from '@views/components/common/Link';
 import Spinner from '@views/components/common/Spinner';
 import Text from '@views/components/common/Text/Text';
@@ -259,10 +260,10 @@ function SectionRow({ course, activeSchedule, onOpenStats }: SectionRowProps) {
                 ) : (
                     <Text variant='small'>No meeting times</Text>
                 )}
-                <Text variant='mini' className='truncate text-ut-black/70'>
+                <ExpandableText lines={1} variant='mini' className='text-ut-black/70'>
                     {instructors || 'Instructor TBA'}
                     {course.instructionMode !== 'In Person' && ` · ${course.instructionMode}`}
-                </Text>
+                </ExpandableText>
                 {conflicts.length > 0 && (
                     <Text variant='mini' className='text-theme-red'>
                         Conflicts with {conflicts.map(c => `${c.department} ${c.number}`).join(', ')}
