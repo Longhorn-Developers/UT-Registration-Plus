@@ -8,11 +8,13 @@ import CourseStatus from '@views/components/common/CourseStatus';
 import Link from '@views/components/common/Link';
 import Spinner from '@views/components/common/Spinner';
 import Text from '@views/components/common/Text/Text';
+import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import type { UseCourseFinderReturn } from '@views/hooks/useCourseFinder';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
 import type { CourseFinderGroup } from '@views/lib/courseFinder';
 import type { JSX } from 'react';
 import { useState } from 'react';
+import ChartBarFillIcon from '~icons/ph/chart-bar-fill';
 import MinusIcon from '~icons/ph/minus';
 import PlusIcon from '~icons/ph/plus';
 
@@ -27,12 +29,19 @@ export interface CourseFinderResultsProps {
 }
 
 /**
- * The results of a Course Finder search, grouped by course, with a button to add or remove each section
- * from the active schedule.
+ * The results of a Course Finder search, grouped by course, with buttons to see each section's stats
+ * (grade distribution, RateMyProf, CES, ...) and to add or remove it from the active schedule.
  */
 export default function CourseFinderResults({ finder }: CourseFinderResultsProps): JSX.Element {
     const { status, query, results, groups, matchCount, hasMore, loadMore } = finder;
     const activeSchedule = useActiveSchedule();
+    const [statsCourse, setStatsCourse] = useState<Course | null>(null);
+    const [isStatsOpen, setIsStatsOpen] = useState(false);
+
+    const openStats = (course: Course) => {
+        setStatsCourse(course);
+        setIsStatsOpen(true);
+    };
 
     if (status === 'logged_out') {
         return (
@@ -86,7 +95,12 @@ export default function CourseFinderResults({ finder }: CourseFinderResultsProps
             ) : (
                 <ul className='m-0 flex list-none flex-col gap-spacing-4 p-0'>
                     {groups.map(group => (
-                        <CourseGroup key={group.fullName} group={group} activeSchedule={activeSchedule} />
+                        <CourseGroup
+                            key={group.fullName}
+                            group={group}
+                            activeSchedule={activeSchedule}
+                            onOpenStats={openStats}
+                        />
                     ))}
                 </ul>
             )}
@@ -102,6 +116,14 @@ export default function CourseFinderResults({ finder }: CourseFinderResultsProps
                         {status === 'loading' ? 'Loading more results...' : 'Load more results'}
                     </Button>
                 </div>
+            )}
+            {statsCourse && (
+                <CourseCatalogInjectedPopup
+                    course={statsCourse}
+                    open={isStatsOpen}
+                    onClose={() => setIsStatsOpen(false)}
+                    afterLeave={() => setStatsCourse(null)}
+                />
             )}
         </div>
     );
@@ -119,7 +141,13 @@ function pluralize(count: number, noun: string): string {
     return `${count} ${noun}${count === 1 ? '' : 's'}`;
 }
 
-function CourseGroup({ group, activeSchedule }: { group: CourseFinderGroup; activeSchedule: UserSchedule }) {
+interface CourseGroupProps {
+    group: CourseFinderGroup;
+    activeSchedule: UserSchedule;
+    onOpenStats: (course: Course) => void;
+}
+
+function CourseGroup({ group, activeSchedule, onOpenStats }: CourseGroupProps) {
     // biome-ignore lint/style/noNonNullAssertion: groups always have at least one section
     const { department, number, courseName, creditHours, core } = group.sections[0]!;
     const coreChips = core.flatMap(c => (c in coreMap ? [coreMap[c as keyof typeof coreMap]] : []));
@@ -144,14 +172,25 @@ function CourseGroup({ group, activeSchedule }: { group: CourseFinderGroup; acti
             </div>
             <ul className='m-0 list-none p-0'>
                 {group.sections.map(course => (
-                    <SectionRow key={course.uniqueId} course={course} activeSchedule={activeSchedule} />
+                    <SectionRow
+                        key={course.uniqueId}
+                        course={course}
+                        activeSchedule={activeSchedule}
+                        onOpenStats={onOpenStats}
+                    />
                 ))}
             </ul>
         </li>
     );
 }
 
-function SectionRow({ course, activeSchedule }: { course: Course; activeSchedule: UserSchedule }) {
+interface SectionRowProps {
+    course: Course;
+    activeSchedule: UserSchedule;
+    onOpenStats: (course: Course) => void;
+}
+
+function SectionRow({ course, activeSchedule, onOpenStats }: SectionRowProps) {
     const [isUpdating, setIsUpdating] = useState(false);
     const isAdded = activeSchedule.containsCourse(course);
     const conflicts = activeSchedule.courses.filter(
@@ -209,6 +248,16 @@ function SectionRow({ course, activeSchedule }: { course: Course; activeSchedule
             <div className='w-28 flex-shrink-0'>
                 <CourseStatus status={course.status} size='mini' />
             </div>
+            <Button
+                className='flex-shrink-0'
+                color='ut-burntorange'
+                size='small'
+                variant='filled'
+                icon={ChartBarFillIcon}
+                onClick={() => onOpenStats(course)}
+                title='Grade distribution, RateMyProf, and more'
+                aria-label={`Stats for ${course.department} ${course.number} (${course.uniqueId})`}
+            />
             <Button
                 className='w-26 flex-shrink-0'
                 color={isAdded ? 'theme-red' : 'ut-green'}
