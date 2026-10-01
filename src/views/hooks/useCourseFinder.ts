@@ -63,6 +63,10 @@ export interface UseCourseFinderReturn {
     filters: CourseFinderFilters;
     /** Updates the filters applied to the results. */
     setFilters: Dispatch<SetStateAction<CourseFinderFilters>>;
+    /** The courses (by full name) whose sections are collapsed in the results. */
+    collapsedGroups: ReadonlySet<string>;
+    /** Collapses or expands a course's sections in the results. */
+    toggleGroup: (fullName: string) => void;
 }
 
 /**
@@ -83,6 +87,7 @@ export function useCourseFinder(): UseCourseFinderReturn {
     const [results, setResults] = useState<Course[]>([]);
     const [pendingURLs, setPendingURLs] = useState<string[]>([]);
     const [filters, setFilters] = useState<CourseFinderFilters>(DEFAULT_COURSE_FINDER_FILTERS);
+    const [collapsedGroups, setCollapsedGroups] = useState<ReadonlySet<string>>(new Set());
 
     // Incremented on every search, so pages from an older search are dropped once they arrive
     const searchId = useRef(0);
@@ -160,9 +165,9 @@ export function useCourseFinder(): UseCourseFinderReturn {
             setQuery(newQuery);
             setResults([]);
             setPendingURLs([]);
-            // Flags differ between searches, so a flag from the last search could hide every result.
-            // The core area is part of the search, so the search form sets it again if it needs one.
-            setFilters(prev => ({ ...prev, flags: [], coreCode: null }));
+            setCollapsedGroups(new Set());
+            // Flags differ between searches, so a flag from the last search could hide every result
+            setFilters(prev => ({ ...prev, flags: [] }));
             setStatus('loading');
 
             const isLoggedIn = await background.validateLoginStatus();
@@ -184,9 +189,18 @@ export function useCourseFinder(): UseCourseFinderReturn {
 
     const filteredResults = useMemo(() => {
         // When searching by core, make sure every result actually satisfies that core area
-        const effectiveFilters = query?.searchBy === 'core' ? { ...filters, coreCode: query.coreCode } : filters;
+        const effectiveFilters =
+            query?.searchBy === 'core' ? { ...filters, coreCode: filters.coreCode ?? query.coreCode } : filters;
         return filterCourses(results, effectiveFilters, activeSchedule.courses);
     }, [results, filters, query, activeSchedule.courses]);
+
+    const toggleGroup = useCallback((fullName: string) => {
+        setCollapsedGroups(prev => {
+            const next = new Set(prev);
+            if (!next.delete(fullName)) next.add(fullName);
+            return next;
+        });
+    }, []);
 
     const groups = useMemo(() => groupCourses(filteredResults), [filteredResults]);
 
@@ -206,5 +220,7 @@ export function useCourseFinder(): UseCourseFinderReturn {
         availableFlags,
         filters,
         setFilters,
+        collapsedGroups,
+        toggleGroup,
     };
 }

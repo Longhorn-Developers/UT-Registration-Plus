@@ -55,10 +55,10 @@ export default function FieldOfStudyCombobox({
             >
                 <CaretDownIcon className='h-5 w-5' />
             </ComboboxButton>
-            {/* Rendered in place rather than anchored: an anchored list is portalled out of the Dialog, which takes focus away from the input */}
+            {/* Rendered in place rather than anchored (an anchored list is portalled out of the Dialog, which takes focus away from the input), and above the Dropdowns around it */}
             <ComboboxOptions
                 className={clsx(
-                    'absolute left-0 top-full mt-spacing-1 flex flex-col p-spacing-1 w-full min-w-80 max-h-[240px] overflow-y-auto z-20',
+                    'absolute left-0 top-full mt-spacing-1 flex flex-col p-spacing-1 w-full min-w-80 max-h-[240px] overflow-y-auto z-50',
                     'origin-top rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
                     'data-[closed]:(opacity-0 scale-95)',
                     'data-[enter]:(ease-out-expo duration-150)',

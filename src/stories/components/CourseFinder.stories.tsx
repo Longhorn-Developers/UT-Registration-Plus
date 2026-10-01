@@ -5,6 +5,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CourseFinder } from '@views/components/common/CourseFinder/CourseFinderDialog';
 import Dialog from '@views/components/common/Dialog';
 import type { CourseFinderStatus, UseCourseFinderReturn } from '@views/hooks/useCourseFinder';
+import { useCourseFinderForm } from '@views/hooks/useCourseFinderForm';
 import { useDropdown } from '@views/hooks/useDropdown';
 import {
     type CourseFinderFilters,
@@ -61,6 +62,8 @@ function MockCourseFinder({ status, results }: MockCourseFinderProps) {
         getLabel: s => `${s.season} ${s.year}`,
         defaultKey: '20269',
     });
+    const [collapsedGroups, setCollapsedGroups] = useState<ReadonlySet<string>>(new Set());
+    const form = useCourseFinderForm();
     const filtered = useMemo(() => filterCourses(results, filters, []), [results, filters]);
 
     const finder: UseCourseFinderReturn = {
@@ -78,11 +81,18 @@ function MockCourseFinder({ status, results }: MockCourseFinderProps) {
         availableFlags: [...new Set(results.flatMap(c => c.flags))].sort(),
         filters,
         setFilters,
+        collapsedGroups,
+        toggleGroup: fullName =>
+            setCollapsedGroups(prev => {
+                const next = new Set(prev);
+                if (!next.delete(fullName)) next.add(fullName);
+                return next;
+            }),
     };
 
     return (
         <Dialog className='h-[85vh] w-[780px] max-w-[calc(100vw-1rem)] overflow-y-hidden' open onClose={() => {}}>
-            <CourseFinder finder={finder} onClose={() => {}} />
+            <CourseFinder finder={finder} form={form} onClose={() => {}} />
         </Dialog>
     );
 }

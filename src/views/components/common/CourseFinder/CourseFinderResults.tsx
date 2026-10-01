@@ -12,8 +12,10 @@ import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalog
 import type { UseCourseFinderReturn } from '@views/hooks/useCourseFinder';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
 import type { CourseFinderGroup } from '@views/lib/courseFinder';
+import clsx from 'clsx';
 import type { JSX } from 'react';
 import { useState } from 'react';
+import CaretDownIcon from '~icons/ph/caret-down';
 import ChartBarFillIcon from '~icons/ph/chart-bar-fill';
 import MinusIcon from '~icons/ph/minus';
 import PlusIcon from '~icons/ph/plus';
@@ -24,7 +26,15 @@ import PlusIcon from '~icons/ph/plus';
 export interface CourseFinderResultsProps {
     finder: Pick<
         UseCourseFinderReturn,
-        'status' | 'query' | 'results' | 'groups' | 'matchCount' | 'hasMore' | 'loadMore'
+        | 'status'
+        | 'query'
+        | 'results'
+        | 'groups'
+        | 'matchCount'
+        | 'hasMore'
+        | 'loadMore'
+        | 'collapsedGroups'
+        | 'toggleGroup'
     >;
 }
 
@@ -33,7 +43,7 @@ export interface CourseFinderResultsProps {
  * (grade distribution, RateMyProf, CES, ...) and to add or remove it from the active schedule.
  */
 export default function CourseFinderResults({ finder }: CourseFinderResultsProps): JSX.Element {
-    const { status, query, results, groups, matchCount, hasMore, loadMore } = finder;
+    const { status, query, results, groups, matchCount, hasMore, loadMore, collapsedGroups, toggleGroup } = finder;
     const activeSchedule = useActiveSchedule();
     const [statsCourse, setStatsCourse] = useState<Course | null>(null);
     const [isStatsOpen, setIsStatsOpen] = useState(false);
@@ -69,9 +79,7 @@ export default function CourseFinderResults({ finder }: CourseFinderResultsProps
         }
 
         if (status === 'idle') {
-            return (
-                <EmptyState>Search by major, core curriculum, or course number to see what UT is offering.</EmptyState>
-            );
+            return <EmptyState>Pick a field of study or a core curriculum area to see what UT is offering.</EmptyState>;
         }
 
         return (
@@ -100,6 +108,8 @@ export default function CourseFinderResults({ finder }: CourseFinderResultsProps
                             group={group}
                             activeSchedule={activeSchedule}
                             onOpenStats={openStats}
+                            isCollapsed={collapsedGroups.has(group.fullName)}
+                            onToggle={() => toggleGroup(group.fullName)}
                         />
                     ))}
                 </ul>
@@ -145,16 +155,29 @@ interface CourseGroupProps {
     group: CourseFinderGroup;
     activeSchedule: UserSchedule;
     onOpenStats: (course: Course) => void;
+    isCollapsed: boolean;
+    onToggle: () => void;
 }
 
-function CourseGroup({ group, activeSchedule, onOpenStats }: CourseGroupProps) {
+function CourseGroup({ group, activeSchedule, onOpenStats, isCollapsed, onToggle }: CourseGroupProps) {
     // biome-ignore lint/style/noNonNullAssertion: groups always have at least one section
     const { department, number, courseName, creditHours, core } = group.sections[0]!;
     const coreChips = core.flatMap(c => (c in coreMap ? [coreMap[c as keyof typeof coreMap]] : []));
 
     return (
         <li className='overflow-hidden border border-ut-offwhite/50 rounded'>
-            <div className='flex flex-row items-center gap-spacing-3 bg-ut-offwhite/15 px-spacing-5 py-spacing-3'>
+            <button
+                type='button'
+                className='w-full flex flex-row cursor-pointer items-center gap-spacing-3 border-none bg-ut-offwhite/15 px-spacing-5 py-spacing-3 text-left hover:bg-ut-offwhite/25 focusable'
+                onClick={onToggle}
+                aria-expanded={!isCollapsed}
+                title={isCollapsed ? 'Show sections' : 'Hide sections'}
+            >
+                <CaretDownIcon
+                    className={clsx('h-4 w-4 flex-shrink-0 text-ut-black/70 transition-transform duration-150', {
+                        '-rotate-90': isCollapsed,
+                    })}
+                />
                 <Text variant='h4' className='flex-shrink-0 text-ut-black font-bold!'>
                     {department} {number}
                 </Text>
@@ -166,11 +189,12 @@ function CourseGroup({ group, activeSchedule, onOpenStats }: CourseGroupProps) {
                         <Chip key={chip} variant='core' label={chip} />
                     ))}
                     <Text variant='small' className='whitespace-nowrap text-ut-black/70'>
+                        {isCollapsed && `${pluralize(group.sections.length, 'section')} · `}
                         {pluralize(creditHours, 'hr')}
                     </Text>
                 </div>
-            </div>
-            <ul className='m-0 list-none p-0'>
+            </button>
+            <ul className={clsx('m-0 list-none p-0', { hidden: isCollapsed })}>
                 {group.sections.map(course => (
                     <SectionRow
                         key={course.uniqueId}
