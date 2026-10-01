@@ -5,6 +5,7 @@ import { LEVEL_OPTIONS, type LevelOptionId, type UseCourseFinderFormReturn } fro
 import type { CourseFinderQuery } from '@views/lib/courseFinder';
 import clsx from 'clsx';
 import type { JSX } from 'react';
+import { useEffect, useMemo } from 'react';
 import MagnifyingGlassIcon from '~icons/ph/magnifying-glass';
 
 import FieldOfStudyCombobox from './FieldOfStudyCombobox';
@@ -13,13 +14,14 @@ import FieldOfStudyCombobox from './FieldOfStudyCombobox';
  * Props for the CourseFinderSearch component
  */
 export interface CourseFinderSearchProps {
-    finder: Pick<UseCourseFinderReturn, 'semester' | 'fieldsOfStudy' | 'search' | 'status' | 'filters'>;
+    finder: Pick<UseCourseFinderReturn, 'semester' | 'fieldsOfStudy' | 'search' | 'status' | 'filters' | 'query'>;
     form: UseCourseFinderFormReturn;
 }
 
 /**
  * The search form of the Course Finder. Searches UT's course schedule by field of study and level, or by the
  * core curriculum area picked in the filters when no field of study is picked.
+ * After the first search, changing what to search searches again right away.
  */
 export default function CourseFinderSearch({ finder, form }: CourseFinderSearchProps): JSX.Element {
     const { semester, fieldsOfStudy, search, status, filters } = finder;
@@ -28,7 +30,7 @@ export default function CourseFinderSearch({ finder, form }: CourseFinderSearchP
     const level = LEVEL_OPTIONS.find(l => l.id === levelId) ?? LEVEL_OPTIONS[0];
     const semesterCode = semester.selectedItem?.code;
 
-    const getQuery = (): CourseFinderQuery | null => {
+    const query = useMemo((): CourseFinderQuery | null => {
         if (!semesterCode) return null;
         if (department) {
             return { searchBy: 'major', semesterCode, department: department.code, levels: [...level.levels] };
@@ -37,9 +39,13 @@ export default function CourseFinderSearch({ finder, form }: CourseFinderSearchP
             return { searchBy: 'core', semesterCode, coreCode: filters.coreCode };
         }
         return null;
-    };
+    }, [semesterCode, department, level, filters.coreCode]);
 
-    const query = getQuery();
+    // Once there are results, keep them in sync with the form instead of waiting for another click on Search
+    useEffect(() => {
+        if (!query || !finder.query || JSON.stringify(query) === JSON.stringify(finder.query)) return;
+        void search(query);
+    }, [query, finder.query, search]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
