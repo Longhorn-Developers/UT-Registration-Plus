@@ -34,7 +34,7 @@ export function CourseFinder({ finder, form, onClose }: CourseFinderProps): JSX.
                             Find a Course
                         </DialogTitle>
                         <Text variant='small' className='text-ut-black/70'>
-                            Search UT's course schedule by major or core curriculum, then narrow down the results.
+                            Search UT's course schedule, then narrow down the results.
                         </Text>
                     </div>
                     <Button

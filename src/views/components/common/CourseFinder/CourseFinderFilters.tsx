@@ -54,16 +54,16 @@ export default function CourseFinderFilters({ finder }: CourseFinderFiltersProps
         <div className='flex flex-col gap-spacing-3'>
             <div className='flex flex-row flex-wrap items-center gap-spacing-3'>
                 <Input
-                    className='min-w-0 flex-[2_1_14rem]'
+                    className='min-w-0 flex-[3_1_16rem]'
                     icon={MagnifyingGlassIcon}
                     iconProps={{ className: 'text-ut-black/50' }}
                     value={filters.keyword}
                     onChange={e => update({ keyword: e.target.value })}
-                    placeholder='Filter by title, instructor, or unique'
+                    placeholder='Filter by title, instructor, or unique #'
                     aria-label='Filter results'
                 />
                 <Dropdown
-                    className='flex-[1_1_11rem]'
+                    className='flex-[1_1_9rem]'
                     selectedOption={CORE_OPTIONS.find(o => o.id === (filters.coreCode ?? ANY_ID)) ?? null}
                     options={CORE_OPTIONS}
                     onOptionChange={option =>
