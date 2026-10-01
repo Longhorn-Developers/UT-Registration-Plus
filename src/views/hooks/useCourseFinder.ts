@@ -160,8 +160,9 @@ export function useCourseFinder(): UseCourseFinderReturn {
             setQuery(newQuery);
             setResults([]);
             setPendingURLs([]);
-            // Flags differ between searches, so a flag from the last search could hide every result
-            setFilters(prev => ({ ...prev, flags: [] }));
+            // Flags differ between searches, so a flag from the last search could hide every result.
+            // The core area is part of the search, so the search form sets it again if it needs one.
+            setFilters(prev => ({ ...prev, flags: [], coreCode: null }));
             setStatus('loading');
 
             const isLoggedIn = await background.validateLoginStatus();

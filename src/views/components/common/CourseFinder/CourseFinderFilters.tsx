@@ -6,8 +6,6 @@ import Input from '@views/components/common/Input';
 import Text from '@views/components/common/Text/Text';
 import type { UseCourseFinderReturn } from '@views/hooks/useCourseFinder';
 import {
-    CORE_CURRICULUM,
-    type CoreCode,
     CREDIT_HOURS_OPTIONS,
     DEFAULT_COURSE_FINDER_FILTERS,
     type CourseFinderFilters as Filters,
@@ -17,11 +15,6 @@ import type { JSX } from 'react';
 import MagnifyingGlassIcon from '~icons/ph/magnifying-glass';
 
 const ANY_ID = 'any';
-
-const CORE_OPTIONS: DropdownOption[] = [
-    { id: ANY_ID, label: 'Any core' },
-    ...CORE_CURRICULUM.map(core => ({ id: core.code, label: core.label })),
-];
 
 const INSTRUCTION_MODE_OPTIONS = [
     { id: ANY_ID, label: 'Any mode' },
@@ -34,20 +27,21 @@ const INSTRUCTION_MODE_OPTIONS = [
  * Props for the CourseFinderFilters component
  */
 export interface CourseFinderFiltersProps {
-    finder: Pick<UseCourseFinderReturn, 'filters' | 'setFilters' | 'availableFlags' | 'query'>;
+    finder: Pick<UseCourseFinderReturn, 'filters' | 'setFilters' | 'availableFlags'>;
 }
 
 /**
- * Filters for narrowing down the Course Finder's results by keyword, credit hours, core curriculum,
- * flags, instruction mode, status, and time conflicts with the active schedule.
+ * Filters for narrowing down the Course Finder's results by keyword, credit hours, flags, instruction mode,
+ * status, and time conflicts with the active schedule. The core curriculum area is picked in the search form.
  */
 export default function CourseFinderFilters({ finder }: CourseFinderFiltersProps): JSX.Element {
-    const { filters, setFilters, availableFlags, query } = finder;
+    const { filters, setFilters, availableFlags } = finder;
 
     const update = (changes: Partial<Filters>) => setFilters(prev => ({ ...prev, ...changes }));
     const toggle = <T,>(list: T[], item: T) => (list.includes(item) ? list.filter(i => i !== item) : [...list, item]);
 
-    const isFiltered = JSON.stringify(filters) !== JSON.stringify(DEFAULT_COURSE_FINDER_FILTERS);
+    // The core area belongs to the search form, so clearing the filters leaves it alone
+    const isFiltered = JSON.stringify({ ...filters, coreCode: null }) !== JSON.stringify(DEFAULT_COURSE_FINDER_FILTERS);
 
     return (
         <div className='flex flex-col gap-spacing-3'>
@@ -61,17 +55,6 @@ export default function CourseFinderFilters({ finder }: CourseFinderFiltersProps
                     placeholder='Filter by title, instructor, or unique'
                     aria-label='Filter results'
                 />
-                {/* Core searches are already narrowed down to one core area */}
-                {query?.searchBy !== 'core' && (
-                    <Dropdown
-                        className='flex-[1_1_11rem]'
-                        selectedOption={CORE_OPTIONS.find(o => o.id === (filters.coreCode ?? ANY_ID)) ?? null}
-                        options={CORE_OPTIONS}
-                        onOptionChange={option =>
-                            update({ coreCode: option.id === ANY_ID ? null : (option.id as CoreCode) })
-                        }
-                    />
-                )}
                 <Dropdown
                     className='flex-[1_1_8rem]'
                     selectedOption={
@@ -159,7 +142,9 @@ export default function CourseFinderFilters({ finder }: CourseFinderFiltersProps
                         color='ut-burntorange'
                         size='mini'
                         variant='minimal'
-                        onClick={() => setFilters(DEFAULT_COURSE_FINDER_FILTERS)}
+                        onClick={() =>
+                            setFilters(prev => ({ ...DEFAULT_COURSE_FINDER_FILTERS, coreCode: prev.coreCode }))
+                        }
                     >
                         Clear filters
                     </Button>

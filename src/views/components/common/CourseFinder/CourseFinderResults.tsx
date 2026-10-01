@@ -77,7 +77,7 @@ export default function CourseFinderResults({ finder }: CourseFinderResultsProps
         return (
             <EmptyState>
                 {query?.searchBy === 'core'
-                    ? 'No courses were found for this core area. You can also search a major and filter it by core.'
+                    ? 'No courses were found for this core area. Try picking a field of study along with it.'
                     : 'No courses were found for this search.'}
             </EmptyState>
         );
