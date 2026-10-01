@@ -59,7 +59,7 @@ export default function CourseFinderResults({ finder }: CourseFinderResultsProps
                 <Link href={UTRP_LOGIN_URL} variant='p' className='text-ut-burntorange!'>
                     Log in to UT
                 </Link>{' '}
-                to search the course schedule, then search again.
+                to search the course schedule. Your search will run as soon as you're back.
             </EmptyState>
         );
     }

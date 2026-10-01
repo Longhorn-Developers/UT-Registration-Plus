@@ -184,6 +184,26 @@ export function useCourseFinder(): UseCourseFinderReturn {
         [loadPages]
     );
 
+    // A search that found the user logged out runs again once they're back from logging in,
+    // usually in the tab the "Log in to UT" link opens, which closes itself after logging in
+    useEffect(() => {
+        if (status !== 'logged_out' || !query) return undefined;
+
+        const retry = async () => {
+            if (document.visibilityState !== 'visible') return;
+            if (await background.validateLoginStatus()) {
+                void search(query);
+            }
+        };
+
+        document.addEventListener('visibilitychange', retry);
+        window.addEventListener('focus', retry);
+        return () => {
+            document.removeEventListener('visibilitychange', retry);
+            window.removeEventListener('focus', retry);
+        };
+    }, [status, query, search]);
+
     const loadMore = useCallback(() => {
         if (status === 'loading' || pendingURLs.length === 0) return;
         void loadPages(pendingURLs, searchId.current);
