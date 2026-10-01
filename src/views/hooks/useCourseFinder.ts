@@ -18,9 +18,11 @@ import {
 import { type Dispatch, type SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 /**
- * How many pages of results to load per search (and per "load more"), so a huge department doesn't flood UT with requests
+ * The most pages of results to load for a search (and per "load more") before stopping to ask for more.
+ * Searches load every page by default, so the filters cover all of the results, but a huge search shouldn't
+ * flood UT with requests.
  */
-const PAGES_PER_LOAD = 5;
+const MAX_PAGES_PER_LOAD = 30;
 
 /**
  * Represents the state of the course search.
@@ -123,7 +125,7 @@ export function useCourseFinder(): UseCourseFinderReturn {
         setStatus('loading');
 
         try {
-            for (let i = 0; i < PAGES_PER_LOAD; i++) {
+            for (let i = 0; i < MAX_PAGES_PER_LOAD; i++) {
                 const url = remaining.shift();
                 if (!url) break;
 

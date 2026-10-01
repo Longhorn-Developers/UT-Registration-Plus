@@ -99,7 +99,11 @@ export default function CourseFinderResults({ finder }: CourseFinderResultsProps
                     : `${pluralize(matchCount, 'section')} of ${results.length} match your filters`}
             </Text>
             {groups.length === 0 ? (
-                <EmptyState>No sections match your filters.</EmptyState>
+                <EmptyState>
+                    {status === 'loading'
+                        ? 'No sections match your filters yet, still loading the rest of the results...'
+                        : 'No sections match your filters.'}
+                </EmptyState>
             ) : (
                 <ul className='m-0 flex list-none flex-col gap-spacing-4 p-0'>
                     {groups.map(group => (
@@ -114,16 +118,19 @@ export default function CourseFinderResults({ finder }: CourseFinderResultsProps
                     ))}
                 </ul>
             )}
-            {(hasMore || status === 'loading') && (
+            {status === 'loading' && groups.length > 0 && (
+                <div className='flex flex-row items-center justify-center gap-spacing-3'>
+                    <Spinner className='h-5! w-5!' />
+                    <Text variant='small' className='text-ut-black/70'>
+                        Loading the rest of the results...
+                    </Text>
+                </div>
+            )}
+            {/* Only after a huge search, which stops loading partway */}
+            {hasMore && status !== 'loading' && (
                 <div className='flex justify-center'>
-                    <Button
-                        color='ut-burntorange'
-                        size='small'
-                        variant='outline'
-                        onClick={loadMore}
-                        disabled={status === 'loading'}
-                    >
-                        {status === 'loading' ? 'Loading more results...' : 'Load more results'}
+                    <Button color='ut-burntorange' size='small' variant='outline' onClick={loadMore}>
+                        Load more results
                     </Button>
                 </div>
             )}
