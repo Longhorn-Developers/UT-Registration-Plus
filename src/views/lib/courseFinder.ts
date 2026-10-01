@@ -186,6 +186,11 @@ export function searchFieldsOfStudy(fieldsOfStudy: readonly FieldOfStudy[], sear
 }
 
 /**
+ * How long to wait for a page of results, since the background fetch proxy never responds if the request fails
+ */
+const PAGE_TIMEOUT_MS = 20_000;
+
+/**
  * Fetches and parses a page of course schedule search results through the background fetch proxy.
  *
  * This must be called from an extension page or content script (not the background service worker),
@@ -193,13 +198,20 @@ export function searchFieldsOfStudy(fieldsOfStudy: readonly FieldOfStudy[], sear
  *
  * @param url - the URL of the results page
  * @returns the parsed page
+ * @throws if UT doesn't respond within {@link PAGE_TIMEOUT_MS}
  */
 export async function fetchCourseFinderPage(url: string): Promise<CourseFinderPage> {
-    const html = await background.fetchFromUrl({
-        url,
-        method: 'GET',
-        response: 'text',
-    });
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    const html = await Promise.race([
+        background.fetchFromUrl({
+            url,
+            method: 'GET',
+            response: 'text',
+        }),
+        new Promise<never>((_, reject) => {
+            timeout = setTimeout(() => reject(new Error(`Timed out fetching ${url}`)), PAGE_TIMEOUT_MS);
+        }),
+    ]).finally(() => clearTimeout(timeout));
 
     if (!html) {
         return { courses: [], fieldsOfStudy: [] };

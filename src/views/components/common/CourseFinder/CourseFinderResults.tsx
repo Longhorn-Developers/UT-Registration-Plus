@@ -22,7 +22,7 @@ import PlusIcon from '~icons/ph/plus';
 export interface CourseFinderResultsProps {
     finder: Pick<
         UseCourseFinderReturn,
-        'status' | 'results' | 'groups' | 'matchCount' | 'hasMore' | 'loadMore' | 'setFilters'
+        'status' | 'query' | 'results' | 'groups' | 'matchCount' | 'hasMore' | 'loadMore'
     >;
 }
 
@@ -31,7 +31,7 @@ export interface CourseFinderResultsProps {
  * from the active schedule.
  */
 export default function CourseFinderResults({ finder }: CourseFinderResultsProps): JSX.Element {
-    const { status, results, groups, matchCount, hasMore, loadMore } = finder;
+    const { status, query, results, groups, matchCount, hasMore, loadMore } = finder;
     const activeSchedule = useActiveSchedule();
 
     if (status === 'logged_out') {
@@ -59,10 +59,16 @@ export default function CourseFinderResults({ finder }: CourseFinderResultsProps
             );
         }
 
+        if (status === 'idle') {
+            return (
+                <EmptyState>Search by major, core curriculum, or course number to see what UT is offering.</EmptyState>
+            );
+        }
+
         return (
             <EmptyState>
-                {status === 'idle'
-                    ? 'Search by major, core curriculum, or course number to see what UT is offering.'
+                {query?.searchBy === 'core'
+                    ? 'No courses were found for this core area. You can also search a major and filter it by core.'
                     : 'No courses were found for this search.'}
             </EmptyState>
         );

@@ -1,10 +1,11 @@
 import { Course, Status } from '@shared/types/Course';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
     type CourseFinderFilters,
     conflictsWithSchedule,
     DEFAULT_COURSE_FINDER_FILTERS,
+    fetchCourseFinderPage,
     filterCourses,
     getCourseFinderURLs,
     getCreditHoursOption,
@@ -14,6 +15,9 @@ import {
     satisfiesCore,
     searchFieldsOfStudy,
 } from './courseFinder';
+
+const fetchFromUrl = vi.hoisted(() => vi.fn());
+vi.mock('@shared/messages', () => ({ background: { fetchFromUrl } }));
 
 const RESULTS_URL =
     'https://utdirect.utexas.edu/apps/registrar/course_schedule/20269/results/?ccyys=20269&search_type_main=FIELD&fos_fl=E&level=L';
@@ -161,6 +165,27 @@ describe('courseFinder::parseCourseFinderPage', () => {
         const empty = parseCourseFinderPage('<html><body><form id="login"></form></body></html>', RESULTS_URL);
 
         expect(empty).toEqual({ courses: [], nextPageURL: undefined, fieldsOfStudy: [] });
+    });
+});
+
+describe('courseFinder::fetchCourseFinderPage', () => {
+    it('parses the page from the background fetch proxy', async () => {
+        fetchFromUrl.mockResolvedValueOnce(RESULTS_HTML);
+        const fetched = await fetchCourseFinderPage(RESULTS_URL);
+
+        expect(fetched.courses.map(c => c.uniqueId)).toEqual([33870, 33875, 33880]);
+    });
+
+    it('gives up when UT never responds', async () => {
+        vi.useFakeTimers();
+        try {
+            fetchFromUrl.mockReturnValueOnce(new Promise(() => {}));
+            const assertion = expect(fetchCourseFinderPage(RESULTS_URL)).rejects.toThrow('Timed out');
+            await vi.advanceTimersByTimeAsync(20_000);
+            await assertion;
+        } finally {
+            vi.useRealTimers();
+        }
     });
 });
 
