@@ -1,16 +1,11 @@
 import { defineManifest } from '@crxjs/vite-plugin';
-
 import packageJson from '../package.json';
 
 // Convert from Semver (example: 0.1.0-beta6)
-const [major, minor, patch, label = '0'] = packageJson.version
-    // can only contain digits, dots, or dash
-    .replace(/[^\d.-]+/g, '')
-    // split into version parts
-    .split(/[.-]/);
+const [major, minor, patch, label = '0'] = packageJson.version.replace(/[^\d.-]+/g, '').split(/[.-]/);
 
 const isBeta = !!process.env.BETA;
-
+const isFirefox = process.env.BROWSER_TARGET === 'firefox';
 if (isBeta && process.env.NODE_ENV !== 'production') throw new Error('Cannot have beta non-production build');
 
 const HOST_PERMISSIONS: string[] = [
@@ -24,6 +19,14 @@ const HOST_PERMISSIONS: string[] = [
     '*://my.utexas.edu/student/*',
 ];
 
+const iconPath = (name: string) => `icons/icon_${name}_`;
+const getIconSet = (name: string) => ({
+    '16': `${iconPath(name)}16.png`,
+    '32': `${iconPath(name)}32.png`,
+    '48': `${iconPath(name)}48.png`,
+    '128': `${iconPath(name)}128.png`,
+});
+
 const manifest = defineManifest(async env => {
     const isDev = env.mode === 'development';
     const mode = isBeta ? 'beta' : isDev ? 'development' : 'production';
@@ -35,11 +38,24 @@ const manifest = defineManifest(async env => {
         version: `${major}.${minor}.${patch}.${label}`,
         description: packageJson.description,
         options_page: 'src/pages/options/index.html',
-        background: { service_worker: 'src/pages/background/background.ts' },
+        background: isFirefox
+            ? { scripts: ['src/pages/background/background.ts'] }
+            : { service_worker: 'src/pages/background/background.ts' },
+        ...(isFirefox
+            ? {
+                  browser_specific_settings: {
+                      gecko: {
+                          id: 'ut-registration-plus@example.com',
+                          strict_min_version: '140.0',
+                          data_collection_permissions: { required: ['none'] },
+                      },
+                  },
+              }
+            : {}),
         permissions: [
             'storage',
             'unlimitedStorage',
-            'background',
+            ...(isFirefox ? [] : (['background'] as const)),
             'scripting',
             ...(isDev ? (['declarativeNetRequest', 'declarativeNetRequestWithHostAccess'] as const) : []),
         ],
@@ -48,12 +64,7 @@ const manifest = defineManifest(async env => {
             default_popup: 'src/pages/popup/index.html',
             default_icon: `icons/icon_${mode}_32.png`,
         },
-        icons: {
-            '16': `icons/icon_${mode}_16.png`,
-            '32': `icons/icon_${mode}_32.png`,
-            '48': `icons/icon_${mode}_48.png`,
-            '128': `icons/icon_${mode}_128.png`,
-        },
+        icons: getIconSet(mode),
         content_scripts: [
             {
                 matches: HOST_PERMISSIONS,

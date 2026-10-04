@@ -38,7 +38,15 @@ export function ensureShadowStyles(shadowRoot: ShadowRoot) {
         return;
     }
 
-    shadowRoot.adoptedStyleSheets = [globalStyleSheet];
+    // Firefox: assigning a content-script array to adoptedStyleSheets fails with
+    // "Accessing from Xray wrapper is not supported" (https://bugzilla.mozilla.org/show_bug.cgi?id=1751346).
+    // Mutating the page's underlying array via wrappedJSObject works in both browsers.
+    const adopted =
+        // biome-ignore lint/suspicious/noExplicitAny: wrappedJSObject is Firefox-only and untyped
+        ((shadowRoot.adoptedStyleSheets as Record<string, any>).wrappedJSObject as CSSStyleSheet[]) ||
+        shadowRoot.adoptedStyleSheets;
+    adopted.length = 0;
+    adopted.push(globalStyleSheet);
     styledShadowRoots.add(shadowRoot);
 }
 

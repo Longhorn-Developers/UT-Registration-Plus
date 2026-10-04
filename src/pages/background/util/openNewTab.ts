@@ -1,7 +1,9 @@
+import browser from 'webextension-polyfill';
+
 /**
  * Represents a tab with an additional `id` property
  */
-export type TabWithId = Omit<chrome.tabs.Tab, 'id'> & { id: number };
+export type TabWithId = browser.Tabs.Tab & { id: number; windowId: number };
 
 interface OpenNewTabOptions {
     tabIndex?: number;
@@ -15,12 +17,13 @@ interface OpenNewTabOptions {
  */
 export default async function openNewTab(url: string, options: OpenNewTabOptions = {}): Promise<TabWithId> {
     const { tabIndex, windowId } = options;
-    const tab = (await chrome.tabs.create({
+    const tab = (await browser.tabs.create({
         url,
         index: tabIndex,
         windowId,
         active: true,
     })) as TabWithId;
-    await chrome.windows.update(tab.windowId, { focused: true });
+
+    await browser.windows.update(tab.windowId, { focused: true });
     return tab;
 }
