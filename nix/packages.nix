@@ -29,12 +29,23 @@
           buildScript = "build:dev";
         }
       );
+
+      # Firefox variant
+      ut-registration-plus-firefox = pkgs.callPackage ./package.nix (
+        commonArgs
+        // {
+          version = "${baseVersion}+git.${gitRev}";
+          buildScript = "build";
+          browserTarget = "firefox";
+        }
+      );
     in
     {
       packages = {
-        inherit ut-registration-plus ut-registration-plus-dev;
+        inherit ut-registration-plus ut-registration-plus-dev ut-registration-plus-firefox;
         default = ut-registration-plus;
         dev = ut-registration-plus-dev;
+        firefox = ut-registration-plus-firefox;
       };
     };
 }
