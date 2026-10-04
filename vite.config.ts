@@ -17,6 +17,7 @@ const BROWSER_TARGET = process.env.BROWSER_TARGET || 'chrome';
 
 // Set browser target environment variable default
 process.env.BROWSER_TARGET = BROWSER_TARGET;
+const EXTENSION_URL_SCHEME = BROWSER_TARGET === 'firefox' ? 'moz-extension' : 'chrome-extension';
 
 const root = resolve(__dirname, 'src');
 const pagesDir = resolve(root, 'pages');
@@ -203,9 +204,11 @@ export default defineConfig({
             // enforce: 'post',
             transform(code, id) {
                 if (id.replace(/\?used$/, '').endsWith('.scss')) {
+                    // Content-script CSS can reference extension assets via the __MSG_@@extension_id__
+                    // placeholder, but the URL scheme differs per browser.
                     const transformedCode = code.replace(
                         /(__VITE_ASSET__.*?__)/g,
-                        (_, path) => `chrome-extension://__MSG_@@extension_id__${path}`
+                        (_, path) => `${EXTENSION_URL_SCHEME}://__MSG_@@extension_id__${path}`
                     );
                     return { code: transformedCode, map: null };
                 }
