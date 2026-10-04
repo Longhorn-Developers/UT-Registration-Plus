@@ -34,8 +34,6 @@ const CalendarSidebar = memo(function CalendarSidebar() {
     const showReportIssueDialog = useReportIssueDialog();
     const sidebarRef = useRef<HTMLDivElement>(null);
 
-    const settings = OptionsStore.useStore();
-    useThemeSync(settings.enableThemesBeta ? settings.theme : 'light');
 
     // TODO: Replace with JSX `inert={!showSidebar}` once React supports the inert attribute natively.
     useEffect(() => {
@@ -52,7 +50,7 @@ const CalendarSidebar = memo(function CalendarSidebar() {
         <div
             ref={sidebarRef}
             className={clsx(
-                'py-spacing-5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
+                'py-spacing-5 bg-surface relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
                 {
                     'max-w-[20.3125rem] ': showSidebar,
                     'max-w-0 pointer-events-none': !showSidebar,
@@ -113,6 +111,9 @@ export default function Calendar(): ReactNode {
 
     const activeScheduleRef = useRef(activeSchedule);
     activeScheduleRef.current = activeSchedule;
+
+    const settings = OptionsStore.useStore();
+    useThemeSync(settings.enableThemesBeta ? settings.theme : 'light');
 
     // silently refreshes course data when the calendar opens or the active schedule changes
     // biome-ignore lint/correctness/useExhaustiveDependencies: id is a trigger, not a value read
@@ -268,7 +269,7 @@ export default function Calendar(): ReactNode {
                                 // scrollbarGutter: 'stable',
                             }
                         }
-                        className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5'
+                        className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5 bg-surface'
                     >
                         <CalendarHeader sidebarOpen={showSidebar} onSidebarToggle={toggleSidebar} />
                         <div

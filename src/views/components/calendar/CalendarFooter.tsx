@@ -78,7 +78,7 @@ const handleOpenOptions = async (): Promise<void> => {
  */
 export default function CalendarFooter(): React.JSX.Element {
     return (
-        <footer className='min-w-full w-0 flex items-center justify-between bg-white pl-spacing-5 pr-spacing-8 pt-spacing-4'>
+        <footer className='min-w-full w-0 flex items-center justify-between pl-spacing-5 pr-spacing-8 pt-spacing-4'>
             <div className='flex'>
                 {socialLinks.map(({ icon: Icon, url, name }) => (
                     <Link className='linkanimate p-2' href={url} key={url} title={name}>
