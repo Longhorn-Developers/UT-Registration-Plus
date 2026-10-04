@@ -319,8 +319,7 @@ export default defineConfig({
     },
     build: {
         target: ['chrome120', 'edge120', 'firefox120'],
-        // NOTE: Eventually we will add this back once we support multiple browsers
-        // outDir: `dist/${process.env.BROWSER_TARGET || 'chrome'}`,
+        outDir: `dist/${BROWSER_TARGET}`,
         emptyOutDir: true,
         reportCompressedSize: false,
         chunkSizeWarningLimit: 2000, // we're a extension
