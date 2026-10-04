@@ -14,6 +14,9 @@ const publicDir = resolve(__dirname, '../public');
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    define: {
+        __BROWSER__: JSON.stringify(process.env.BROWSER_TARGET ?? 'chrome'),
+    },
     plugins: [
         react(),
         UnoCSS(),
