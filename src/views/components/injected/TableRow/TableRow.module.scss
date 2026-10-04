@@ -11,6 +11,10 @@
         padding-right: 12px !important;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
+        // The page's CSS reset gives every cell `vertical-align: baseline`. Our injected cell has
+        // no text, so browsers synthesize its baseline differently (Firefox uses the bottom of the
+        // button), which drags the whole row's text down. Opt this cell out of baseline alignment.
+        vertical-align: middle !important;
     }
 
     > * {
