@@ -80,7 +80,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
                             Enable Course Refresh
-                            <BetaChip />
                         </Text>
                         <p className='text-sm text-content-muted'>
                             Show a refresh button in the calendar to re-scrape course data from UT&apos;s site.
@@ -98,7 +97,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
                             Course Status Indicators
-                            <BetaChip />
                         </Text>
                         <p className='text-sm text-content-muted'>
                             Show waitlisted, cancelled, and closed status on courses.
