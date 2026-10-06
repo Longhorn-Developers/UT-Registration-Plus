@@ -76,7 +76,7 @@ export default function ShadowRootContainer({
         [ref]
     );
 
-        return (
+    return (
         <div
             className={clsx(className, 'shadow-root-container', reducedMotion && 'reduced-motion')}
             {...props}
@@ -84,10 +84,7 @@ export default function ShadowRootContainer({
         >
             {shadowRoot &&
                 createPortal(
-                    <div
-                        className={clsx(styleResetClass, reducedMotion && styles.reducedMotion)}
-                        data-theme={theme}
-                    >
+                    <div className={clsx(styleResetClass, reducedMotion && styles.reducedMotion)} data-theme={theme}>
                         {children}
                     </div>,
                     shadowRoot
