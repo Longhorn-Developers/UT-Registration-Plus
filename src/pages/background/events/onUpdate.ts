@@ -1,8 +1,8 @@
 import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-
-import createSchedule from '../lib/createSchedule';
+import { MigrationStore } from 'src/shared/storage/hasMigrated';
 import { OptionsStore } from 'src/shared/storage/OptionsStore';
+import createSchedule from '../lib/createSchedule';
 
 /**
  * Called when the extension is updated (or when the extension is reloaded in development mode)
@@ -20,7 +20,7 @@ export default async function onUpdate() {
         createSchedule('Schedule 1');
     }
 
-    const migrationCompleted = await ExtensionStore.get('courseSettingsMigrationCompleted');
+    const migrationCompleted = await MigrationStore.get('courseSettingsMigrationCompleted');
 
     // Set data refreshing and course status indicators to on by default, since they were previously in-beta and disabled
     if (!migrationCompleted) {
@@ -29,6 +29,6 @@ export default async function onUpdate() {
             enableCourseStatusChips: true,
         });
 
-        await ExtensionStore.set('courseSettingsMigrationCompleted', true);
+        await MigrationStore.set('courseSettingsMigrationCompleted', true);
     }
 }
