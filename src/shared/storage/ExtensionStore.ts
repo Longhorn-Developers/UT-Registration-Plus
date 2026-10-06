@@ -13,6 +13,8 @@ interface IExtensionStore {
     lastWhatsNewPopupVersion: number;
     /** Stable anonymous ID for Sentry user correlation (no PII) */
     anonymousId: string;
+    /** True if settings have been successfully migrated after updating to the new version, false otherwise */
+    courseSettingsMigrationCompleted: boolean;
 }
 
 export const ExtensionStore = createLocalStore<IExtensionStore>(
@@ -22,6 +24,7 @@ export const ExtensionStore = createLocalStore<IExtensionStore>(
         lastUpdate: Date.now(),
         lastWhatsNewPopupVersion: 0,
         anonymousId: generateRandomId(),
+        courseSettingsMigrationCompleted: false,
     },
     {
         usePrefix: false,
