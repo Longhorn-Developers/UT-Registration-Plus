@@ -1,7 +1,7 @@
 import { createSyncStore } from '@chrome-extension-toolkit';
 
 export interface MigrationState {
-    /** Tracks which settings updates have already been applied; used to run pending migrations in order */
+    /** Tracks the last applied settings migration so pending migrations run in order */
     schemaVersion: number;
 }
 

@@ -22,7 +22,7 @@ export default async function onUpdate() {
 
     const schemaVersion = await MigrationStore.get('schemaVersion');
 
-    // Set data refreshing and course status indicators to on after updating to v2.4.1, since they were previously in-beta and disabled
+    // Enable data refreshing and course status indicators by default, since they were previously disabled during beta
     if (schemaVersion < 1) {
         await OptionsStore.set({
             enableDataRefreshing: true,
