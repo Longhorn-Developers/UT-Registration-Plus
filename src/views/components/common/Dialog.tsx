@@ -40,11 +40,7 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
             <ExtensionRootWrapper>
                 <TransitionChild
                     as={Fragment}
-                    enter={
-                        reducedMotion
-                            ? 'duration-0'
-                            : 'transition duration-300 motion-reduce:duration-150 ease-out'
-                    }
+                    enter={reducedMotion ? 'duration-0' : 'transition duration-300 motion-reduce:duration-150 ease-out'}
                     enterFrom={reducedMotion ? '' : 'opacity-0'}
                     enterTo={reducedMotion ? '' : 'opacity-100'}
                     leave={reducedMotion ? 'duration-0' : 'transition duration-150 ease-in delay-25'}
