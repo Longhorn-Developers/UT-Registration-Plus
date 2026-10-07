@@ -3,7 +3,6 @@ import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import { background } from '@shared/messages';
-import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
@@ -40,7 +39,6 @@ const teamMembers = [...LONGHORN_DEVELOPERS_ADMINS, ...LONGHORN_DEVELOPERS_HARDC
  * This is a reusable dropdown component that can be used to toggle the visiblity of information
  */
 export default function ScheduleListItem({ schedule, onClick }: ScheduleListItemProps): React.JSX.Element {
-    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
     const isActive = useIsActiveSchedule(schedule.id);
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
@@ -226,15 +224,12 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                             as={ExtensionRootWrapper}
                             className={clsx([
                                 styleResetClass,
-                                'w-fit origin-top-right rounded bg-white p-1 text-black shadow-lg border border-ut-offwhite/50 outline-none!',
-                                !reducedMotion && [
-                                    'transition',
-                                    'data-[closed]:(opacity-0 scale-95)',
-                                    'data-[enter]:(ease-out-expo duration-150)',
-                                    'data-[leave]:(ease-out duration-50)',
-                                ],
+                                'w-fit origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 outline-none!',
+                                'data-[closed]:(opacity-0 scale-95)',
+                                'data-[enter]:(ease-out-expo duration-150)',
+                                'data-[leave]:(ease-out duration-50)',
                             ])}
-                            transition={!reducedMotion}
+                            transition
                             anchor='bottom end'
                         >
                             <MenuItem

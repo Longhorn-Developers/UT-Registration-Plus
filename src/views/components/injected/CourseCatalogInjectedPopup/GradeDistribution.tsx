@@ -75,6 +75,16 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
     const [status, setStatus] = useState<DataStatusType>(DataStatus.LOADING);
     const ref = useRef<HighchartsReactRefObject>(null);
 
+    useEffect(() => {
+        Highcharts.setOptions({
+            chart: { animation: reducedMotion ? false : { duration: 700 } },
+            plotOptions: {
+                series: { animation: reducedMotion ? false : { duration: 700 } },
+                column: { animation: reducedMotion ? false : { duration: 700 } },
+            },
+        });
+    }, [reducedMotion]);
+
     const chartData = useMemo(() => {
         if (status === DataStatus.FOUND && distributions[semester]) {
             return Object.entries(distributions[semester]?.data).map(([grade, count]) => ({

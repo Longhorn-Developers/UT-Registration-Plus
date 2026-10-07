@@ -1,5 +1,4 @@
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
-import { OptionsStore } from '@shared/storage/OptionsStore';
 import { ellipsify } from '@shared/util/string';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
@@ -43,7 +42,6 @@ export default function Dropdown({
     iconProps,
     disabled,
 }: React.PropsWithChildren<Props>): React.JSX.Element {
-    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
     const Icon = icon;
     return (
         <Listbox
@@ -76,17 +74,13 @@ export default function Dropdown({
             <ListboxOptions
                 as={ExtensionRootWrapper}
                 anchor='bottom start'
-                transition={!reducedMotion}
                 className={clsx(
                     styleResetClass,
                     'flex flex-col p-spacing-1 w-[var(--button-width)] z-40',
-                    'origin-top-right rounded bg-white text-black shadow-lg border border-ut-offwhite/50 focus:outline-none',
-                    !reducedMotion && [
-                        'transition',
-                        'data-[closed]:(opacity-0 scale-95)',
-                        'data-[enter]:(ease-out-expo duration-150)',
-                        'data-[leave]:(ease-out duration-50)',
-                    ],
+                    'origin-top-right rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
+                    'data-[closed]:(opacity-0 scale-95)',
+                    'data-[enter]:(ease-out-expo duration-150)',
+                    'data-[leave]:(ease-out duration-50)',
                     {
                         'h-fit': !options || options?.length < 5,
                         'h-[200px] overflow-y-auto': options && options?.length >= 5,
