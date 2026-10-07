@@ -225,7 +225,7 @@ export default function Calendar(): ReactNode {
 
     return (
         <CalendarContext.Provider value>
-            <CourseClipboardProvider>
+            <CourseClipboardProvider activeModalCourse={isPopupOpen ? course : null}>
                 <div className='relative h-full w-full flex flex-col'>
                     <a
                         href='#calendar-content'

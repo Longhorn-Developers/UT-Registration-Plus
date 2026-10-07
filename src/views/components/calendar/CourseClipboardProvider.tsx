@@ -11,7 +11,12 @@ interface ToastState {
     type: ToastType;
 }
 
-export function CourseClipboardProvider({ children }: { children: ReactNode }) {
+interface CourseClipboardProviderProps {
+    children: ReactNode;
+    activeModalCourse: Course | null;
+}
+
+export function CourseClipboardProvider({ children, activeModalCourse }: CourseClipboardProviderProps) {
     const [copiedCourse, setCopiedCourseState] = useState<Course | null>(null);
     const [hoveredCourse, setHoveredCourse] = useState<Course | null>(null);
     const [toast, setToast] = useState<ToastState | null>(null);
@@ -66,10 +71,10 @@ export function CourseClipboardProvider({ children }: { children: ReactNode }) {
             }
 
             if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C')) {
-                const currentHovered = hoveredCourseRef.current;
-                if (currentHovered) {
+                const courseToCopy = activeModalCourse ?? hoveredCourseRef.current;
+                if (courseToCopy) {
                     e.preventDefault();
-                    setCopiedCourse(currentHovered);
+                    setCopiedCourse(courseToCopy);
                 }
                 return;
             }
@@ -112,7 +117,7 @@ export function CourseClipboardProvider({ children }: { children: ReactNode }) {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [clearClipboard, setCopiedCourse, showToast]);
+    }, [activeModalCourse, clearClipboard, setCopiedCourse, showToast]);
 
     return (
         <CourseClipboardContext.Provider
