@@ -26,6 +26,7 @@ import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
+import { CourseClipboardProvider } from './CourseClipboardProvider';
 
 const CalendarSidebar = memo(function CalendarSidebar() {
     const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
@@ -224,74 +225,79 @@ export default function Calendar(): ReactNode {
 
     return (
         <CalendarContext.Provider value>
-            <div className='relative h-full w-full flex flex-col'>
-                <a
-                    href='#calendar-content'
-                    className='sr-only focus:not-sr-only focus:absolute focus:z-100 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-ut-burntorange focus:shadow-lg'
-                >
-                    Skip to calendar
-                </a>
-                {/* Orange drag overlay indicator */}
-                {isDraggingFile && isValidFileType && (
-                    <div
-                        className='pointer-events-none absolute inset-0 z-50 flex items-center justify-center border-4 border-ut-burntorange border-dashed bg-ut-burntorange/20'
-                        style={{
-                            backgroundColor: 'rgba(191, 87, 0, 0.1)',
-                        }}
+            <CourseClipboardProvider activeModalCourse={isPopupOpen ? course : null}>
+                <div className='relative h-full w-full flex flex-col'>
+                    <a
+                        href='#calendar-content'
+                        className='sr-only focus:not-sr-only focus:absolute focus:z-100 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-ut-burntorange focus:shadow-lg'
                     >
-                        <div className='border-2 border-ut-burntorange rounded-lg bg-white/90 px-8 py-4 shadow-lg'>
-                            <Text variant='h2' className='text-center text-ut-burntorange font-semibold'>
-                                Drop schedule file here
-                            </Text>
-                        </div>
-                    </div>
-                )}
-
-                {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
-                <div
-                    className='screenshot:calendar-target h-screen flex overflow-auto'
-                    onDragEnter={handleDragEnter}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                >
-                    <CalendarSidebar />
-
-                    <div
-                        id='calendar-content'
-                        style={
-                            {
-                                // scrollbarGutter: 'stable',
-                            }
-                        }
-                        className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5'
-                    >
-                        <CalendarHeader sidebarOpen={showSidebar} onSidebarToggle={toggleSidebar} />
+                        Skip to calendar
+                    </a>
+                    {/* Orange drag overlay indicator */}
+                    {isDraggingFile && isValidFileType && (
                         <div
-                            className={clsx('min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl', {
-                                'screenshot:flex-grow-0': bottomBar !== null, // html-to-image seems to have a bug with flex-grow
-                            })}
+                            className='pointer-events-none absolute inset-0 z-50 flex items-center justify-center border-4 border-ut-burntorange border-dashed bg-ut-burntorange/20'
+                            style={{
+                                backgroundColor: 'rgba(191, 87, 0, 0.1)',
+                            }}
                         >
-                            <CalendarGrid
-                                courseCells={courseCells}
-                                setCourse={openCourse}
-                                startMinutes={startMinutes}
-                                endMinutes={endMinutes}
-                            />
+                            <div className='border-2 border-ut-burntorange rounded-lg bg-white/90 px-8 py-4 shadow-lg'>
+                                <Text variant='h2' className='text-center text-ut-burntorange font-semibold'>
+                                    Drop schedule file here
+                                </Text>
+                            </div>
                         </div>
-                        {bottomBar}
-                    </div>
-                </div>
+                    )}
 
-                {course && (
-                    <CourseCatalogInjectedPopup
-                        course={course}
-                        onClose={() => setIsPopupOpen(false)}
-                        open={isPopupOpen}
-                        afterLeave={() => setCourse(null)}
-                    />
-                )}
-            </div>
+                    {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
+                    <div
+                        className='screenshot:calendar-target h-screen flex overflow-auto'
+                        onDragEnter={handleDragEnter}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                    >
+                        <CalendarSidebar />
+
+                        <div
+                            id='calendar-content'
+                            style={
+                                {
+                                    // scrollbarGutter: 'stable',
+                                }
+                            }
+                            className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5'
+                        >
+                            <CalendarHeader sidebarOpen={showSidebar} onSidebarToggle={toggleSidebar} />
+                            <div
+                                className={clsx(
+                                    'min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl',
+                                    {
+                                        'screenshot:flex-grow-0': bottomBar !== null, // html-to-image seems to have a bug with flex-grow
+                                    }
+                                )}
+                            >
+                                <CalendarGrid
+                                    courseCells={courseCells}
+                                    setCourse={openCourse}
+                                    startMinutes={startMinutes}
+                                    endMinutes={endMinutes}
+                                />
+                            </div>
+                            {bottomBar}
+                        </div>
+                    </div>
+
+                    {course && (
+                        <CourseCatalogInjectedPopup
+                            course={course}
+                            onClose={() => setIsPopupOpen(false)}
+                            open={isPopupOpen}
+                            afterLeave={() => setCourse(null)}
+                        />
+                    )}
+                </div>
+            </CourseClipboardProvider>
         </CalendarContext.Provider>
     );
 }

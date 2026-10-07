@@ -4,6 +4,7 @@ import { Status } from '@shared/types/Course';
 import { hexToRGB, pickFontColor } from '@shared/util/colors';
 import Text from '@views/components/common/Text/Text';
 import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
+import { useCourseClipboard } from '@views/contexts/CourseClipboardContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
 import type React from 'react';
@@ -50,8 +51,10 @@ export default function CalendarCourseCell({
     const colorPickerRef = useRef<HTMLDivElement>(null);
     const { selectedColor, setSelectedCourse, handleCloseColorPicker, isSelectedBlock, isSelectedCourse } =
         useColorPickerContext();
+    const { copiedCourse, setHoveredCourse } = useCourseClipboard();
 
     const { colors, uniqueId: courseID } = blockData.course;
+    const isCopied = copiedCourse?.uniqueId === courseID;
     const { dayIndex, startIndex } = blockData.calendarGridPoint;
 
     let selectedCourse = false;
@@ -111,10 +114,21 @@ export default function CalendarCourseCell({
             )}
             style={{
                 backgroundColor: colors.primaryColor,
+                outline: isCopied ? '3px solid #f0883e' : undefined,
+                outlineOffset: isCopied ? '-1px' : undefined,
             }}
             onClick={onClick}
+            onMouseEnter={() => setHoveredCourse(blockData.course)}
+            onMouseLeave={() => setHoveredCourse(null)}
+            onFocus={() => setHoveredCourse(blockData.course)}
+            onBlur={() => setHoveredCourse(null)}
             aria-label={`${courseDeptAndInstr}${timeAndLocation ? `, ${timeAndLocation}` : ''}`}
         >
+            {isCopied && (
+                <div className='pointer-events-none absolute -top-2 right-1 z-30 rounded bg-[#f0883e] px-1.5 py-0.5 text-[10px] text-black font-bold shadow leading-none'>
+                    COPIED
+                </div>
+            )}
             <div className={clsx('flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full')}>
                 <Text
                     variant='h1-course'
