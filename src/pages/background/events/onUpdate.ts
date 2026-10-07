@@ -20,15 +20,15 @@ export default async function onUpdate() {
         createSchedule('Schedule 1');
     }
 
-    const migrationCompleted = await MigrationStore.get('courseSettingsMigrationCompleted');
+    const schemaVersion = await MigrationStore.get('schemaVersion');
 
-    // Set data refreshing and course status indicators to on by default, since they were previously in-beta and disabled
-    if (!migrationCompleted) {
+    // Set data refreshing and course status indicators to on after updating to v2.4.1, since they were previously in-beta and disabled
+    if (schemaVersion < 1) {
         await OptionsStore.set({
             enableDataRefreshing: true,
             enableCourseStatusChips: true,
         });
 
-        await MigrationStore.set('courseSettingsMigrationCompleted', true);
+        await MigrationStore.set('schemaVersion', 1);
     }
 }

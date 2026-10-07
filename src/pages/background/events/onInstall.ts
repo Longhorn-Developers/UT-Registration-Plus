@@ -6,5 +6,5 @@ import { MigrationStore } from 'src/shared/storage/hasMigrated';
  */
 export default async function onInstall() {
     await ExtensionStore.set({ version: chrome.runtime.getManifest().version });
-    await MigrationStore.set({ courseSettingsMigrationCompleted: true });
+    await MigrationStore.set({ schemaVersion: 1 });
 }
