@@ -35,24 +35,24 @@ function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialo
             <Dialog as='div' onClose={onClose} className='relative z-50'>
                 <TransitionChild
                     as={React.Fragment}
-                    enter={reducedMotion ? 'transition-none' : 'ease-out duration-200'}
-                    enterFrom='opacity-0'
-                    enterTo='opacity-100'
-                    leave={reducedMotion ? 'transition-none' : 'ease-in duration-200'}
-                    leaveFrom='opacity-100'
-                    leaveTo='opacity-0'
+                    enter={reducedMotion ? 'duration-0' : 'ease-out duration-200'}
+                    enterFrom={reducedMotion ? '' : 'opacity-0'}
+                    enterTo={reducedMotion ? '' : 'opacity-100'}
+                    leave={reducedMotion ? 'duration-0' : 'ease-in duration-200'}
+                    leaveFrom={reducedMotion ? '' : 'opacity-100'}
+                    leaveTo={reducedMotion ? '' : 'opacity-0'}
                 >
                     <div className='fixed inset-0 bg-black bg-opacity-50' aria-hidden='true' />
                 </TransitionChild>
 
                 <TransitionChild
                     as={React.Fragment}
-                    enter={reducedMotion ? 'transition-none' : 'ease-out duration-200'}
-                    enterFrom='opacity-0 scale-95'
-                    enterTo='opacity-100 scale-100'
-                    leave={reducedMotion ? 'transition-none' : 'ease-in duration-200'}
-                    leaveFrom='opacity-100 scale-100'
-                    leaveTo='opacity-0 scale-95'
+                    enter={reducedMotion ? 'duration-0' : 'ease-out duration-200'}
+                    enterFrom={reducedMotion ? '' : 'opacity-0 scale-95'}
+                    enterTo={reducedMotion ? '' : 'opacity-100 scale-100'}
+                    leave={reducedMotion ? 'duration-0' : 'ease-in duration-200'}
+                    leaveFrom={reducedMotion ? '' : 'opacity-100 scale-100'}
+                    leaveTo={reducedMotion ? '' : 'opacity-0 scale-95'}
                 >
                     <div className='fixed inset-0 w-screen flex items-center justify-center'>
                         <DialogPanel className='h-[200] w-[431px] flex flex-col rounded bg-white p-6'>

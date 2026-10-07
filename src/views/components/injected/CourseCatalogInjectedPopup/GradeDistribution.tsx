@@ -203,6 +203,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             },
         },
         chart: {
+            animation: reducedMotion ? false : { duration: 700 },
             style: {
                 fontFamily: 'Roboto Flex, Roboto Flex Local',
                 fontWeight: '600',
@@ -233,16 +234,19 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                 offsetY: 1,
                 color: 'rgba(51, 63, 72, 0.30)',
             },
+            animation: !reducedMotion,
         },
         plotOptions: {
             bar: { pointPadding: 0.2, borderWidth: 0 },
             series: { animation: reducedMotion ? false : { duration: 700 } },
+            column: { animation: reducedMotion ? false : { duration: 700 } },
         },
         series: [
             {
                 type: 'column',
                 name: 'Grades',
                 data: chartData,
+                animation: reducedMotion ? false : { duration: 700 },
             },
         ],
     };
@@ -261,6 +265,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                         },
                         tooltip: { enabled: false },
                     }}
+                    updateArgs={[true, true, !reducedMotion]}
                 />
             )}
             {status === DataStatus.ERROR && (
@@ -321,7 +326,12 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                             </Text>
                         </div>
                     )}
-                    <HighchartsReact ref={ref} highcharts={Highcharts} options={chartOptions} />
+                    <HighchartsReact
+                        ref={ref}
+                        highcharts={Highcharts}
+                        options={chartOptions}
+                        updateArgs={[true, true, !reducedMotion]}
+                    />
                 </>
             )}
         </div>

@@ -43,6 +43,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     // track per-schedule cooldowns so switching schedules allows immediate refresh
     const [cooldownIds, setCooldownIds] = useState<Set<string>>(new Set());
     const enableDataRefreshing = OptionsStore.useStore(store => store.enableDataRefreshing);
+    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
 
     const isCooldown = cooldownIds.has(activeSchedule.id);
     const hasRightHandSide = enableDataRefreshing;
@@ -136,12 +137,15 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             className={clsx([
                                 styleResetClass,
                                 'mt-spacing-3',
-                                'min-w-max origin-top rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 outline-none! z-20',
-                                'data-[closed]:(opacity-0 scale-95)',
-                                'data-[enter]:(ease-out-expo duration-150)',
-                                'data-[leave]:(ease-out duration-50)',
+                                'min-w-max origin-top rounded bg-white p-1 text-black shadow-lg border border-ut-offwhite/50 outline-none! z-20',
+                                !reducedMotion && [
+                                    'transition',
+                                    'data-[closed]:(opacity-0 scale-95)',
+                                    'data-[enter]:(ease-out-expo duration-150)',
+                                    'data-[leave]:(ease-out duration-50)',
+                                ],
                             ])}
-                            transition
+                            transition={!reducedMotion}
                             anchor='bottom start'
                         >
                             <MenuItem
