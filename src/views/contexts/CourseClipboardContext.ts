@@ -5,15 +5,10 @@ import { createContext, useContext } from 'react';
  * State representing course copy/paste clipboard operations.
  */
 export interface CourseClipboardState {
-    /** The course currently copied to the clipboard */
     copiedCourse: Course | null;
-    /** Sets the course currently copied to the clipboard */
     setCopiedCourse: (course: Course | null) => void;
-    /** The course cell that is currently hovered or focused */
     hoveredCourse: Course | null;
-    /** Sets the currently hovered or focused course */
     setHoveredCourse: (course: Course | null) => void;
-    /** Clears the copied course from the clipboard */
     clearClipboard: () => void;
 }
 
