@@ -1,5 +1,6 @@
-// Must be first import — sets up globalThis.chrome before any other module evaluates
+// Must be first imports — set up globalThis.chrome/fetch before any other module evaluates
 import './chrome-mock';
+import './fetch-mock';
 
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Preview } from '@storybook/react-vite';

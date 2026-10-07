@@ -1,5 +1,7 @@
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import MIMEType from '@shared/types/MIMEType';
+import type { ThemeName } from '@shared/types/Theme';
+import { themeLabels, themes } from '@shared/types/Theme';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { handleExportJson } from '@views/components/calendar/utils';
 import { Button } from '@views/components/common/Button';
@@ -21,6 +23,8 @@ interface AdvancedSettingsProps {
     calendarNewTab: boolean;
     enableDataRefreshing: boolean;
     enableCourseStatusChips: boolean;
+    enableThemesBeta: boolean;
+    theme: ThemeName;
     activeSchedule: UserSchedule;
     handleEraseAll: () => void;
     handleImportClick: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
@@ -34,6 +38,24 @@ function BetaChip() {
     );
 }
 
+function ThemePicker({ theme }: { theme: ThemeName }) {
+    return (
+        <div className='flex gap-2'>
+            {themes.map(option => (
+                <Button
+                    key={option}
+                    variant={option === theme ? 'filled' : 'outline'}
+                    color='ut-burntorange'
+                    size='small'
+                    onClick={() => void OptionsStore.set('theme', option)}
+                >
+                    {themeLabels[option]}
+                </Button>
+            ))}
+        </div>
+    );
+}
+
 /**
  * Settings section component for advanced settings
  */
@@ -44,12 +66,14 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     calendarNewTab,
     enableDataRefreshing,
     enableCourseStatusChips,
+    enableThemesBeta,
+    theme,
     activeSchedule,
     handleEraseAll,
     handleImportClick,
 }) => (
     <section className='mb-8'>
-        <h2 className='mb-4 text-xl text-ut-black font-semibold'>ADVANCED SETTINGS</h2>
+        <h2 className='mb-4 text-xl text-content font-semibold'>ADVANCED SETTINGS</h2>
         <div className='flex space-x-4'>
             <div className={PREVIEW_SECTION_DIV_CLASSNAME}>
                 <div className='flex items-center justify-between'>
@@ -58,7 +82,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                             Enable Course Refresh
                             <BetaChip />
                         </Text>
-                        <p className='text-sm text-gray-600'>
+                        <p className='text-sm text-content-muted'>
                             Show a refresh button in the calendar to re-scrape course data from UT&apos;s site.
                         </p>
                     </div>
@@ -76,7 +100,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                             Course Status Indicators
                             <BetaChip />
                         </Text>
-                        <p className='text-sm text-gray-600'>
+                        <p className='text-sm text-content-muted'>
                             Show waitlisted, cancelled, and closed status on courses.
                         </p>
                     </div>
@@ -93,9 +117,34 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                            Enable Themes
+                            <BetaChip />
+                        </Text>
+                        <p className='text-sm text-content-muted'>
+                            Try out dark mode and other color themes for the extension.
+                        </p>
+                        {enableThemesBeta && (
+                            <div className='mt-2'>
+                                <ThemePicker theme={theme} />
+                            </div>
+                        )}
+                    </div>
+                    <SwitchButton
+                        isChecked={enableThemesBeta}
+                        onChange={() => {
+                            void OptionsStore.set('enableThemesBeta', !enableThemesBeta);
+                        }}
+                    />
+                </div>
+
+                <Divider size='auto' orientation='horizontal' />
+
+                <div className='flex items-center justify-between'>
+                    <div className='max-w-xs'>
+                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
                             Course Conflict Highlight
                         </Text>
-                        <p className='text-sm text-gray-600'>
+                        <p className='text-sm text-content-muted'>
                             Adds a red strikethrough to courses that have conflicting times.
                         </p>
                     </div>
@@ -114,7 +163,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
                             Load Courses Automatically on Scroll
                         </Text>
-                        <p className='text-sm text-gray-600'>
+                        <p className='text-sm text-content-muted'>
                             Loads all courses in the Course Schedule site by scrolling, instead of using next/prev page
                             buttons.
                         </p>
@@ -134,7 +183,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
                             Always Open Calendar in New Tab
                         </Text>
-                        <p className='text-sm text-gray-600'>
+                        <p className='text-sm text-content-muted'>
                             Always opens the calendar view in a new tab when navigating to the calendar page. May
                             prevent issues where the calendar refuses to open.
                         </p>
@@ -154,7 +203,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
                             Allow more than 10 schedules
                         </Text>
-                        <p className='text-sm text-gray-600'>
+                        <p className='text-sm text-content-muted'>
                             Allow bypassing the 10-schedule limit. Intended for advisors or staff who need to create
                             many schedules on behalf of students.
                         </p>
@@ -172,7 +221,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
                             Export Current Schedule
                         </Text>
-                        <p className='text-sm text-gray-600'>Backup your active schedule to a portable file</p>
+                        <p className='text-sm text-content-muted'>Backup your active schedule to a portable file</p>
                     </div>
                     <Button
                         variant='outline'
@@ -188,7 +237,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
                             Import Schedule
                         </Text>
-                        <p className='text-sm text-gray-600'>Import from a schedule file</p>
+                        <p className='text-sm text-content-muted'>Import from a schedule file</p>
                     </div>
                     <FileUpload
                         variant='outline'
@@ -207,7 +256,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
                             Reset All Data
                         </Text>
-                        <p className='text-sm text-gray-600'>Erases all schedules and courses you have.</p>
+                        <p className='text-sm text-content-muted'>Erases all schedules and courses you have.</p>
                     </div>
                     <Button variant='outline' color='theme-red' icon={TrashIcon} onClick={handleEraseAll}>
                         Erase All

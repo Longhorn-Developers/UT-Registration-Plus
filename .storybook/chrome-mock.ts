@@ -1,5 +1,6 @@
 /// <reference types="chrome" />
 import { version } from '../package.json';
+import deepEqual from 'fast-deep-equal/es6';
 
 type ListenerFunction = (
     changes: { [key: string]: chrome.storage.StorageChange },
@@ -18,13 +19,13 @@ function createMockStorageArea(areaName: chrome.storage.AreaName) {
             if (Array.isArray(keys)) {
                 return keys.reduce(
                     (acc, key) => {
-                        acc[key] = data[key];
+                        acc[key] = structuredClone(data[key]);
                         return acc;
                     },
                     {} as Record<string, any>
                 );
             }
-            if (typeof keys === 'string') return { [keys]: data[keys] };
+            if (typeof keys === 'string') return { [keys]: structuredClone(data[keys]) };
             return keys;
         },
         async getBytesInUse() {
@@ -40,11 +41,20 @@ function createMockStorageArea(areaName: chrome.storage.AreaName) {
             }
         },
         async set(items: { [key: string]: any }) {
-            for (const key in items) {
+            let hasUpdates = false;
+            const updates: Record<string, chrome.storage.StorageChange> = {};
+            for (const [key, newValue] of Object.entries(items)) {
                 const oldValue = data[key];
-                data[key] = JSON.parse(JSON.stringify(items[key]));
+                if (!deepEqual(newValue, oldValue)) {
+                    hasUpdates = true;
+                    data[key] = structuredClone(newValue);
+                    updates[key] = { oldValue, newValue };
+                }
+            }
+
+            if (hasUpdates) {
                 for (const listener of allListeners.values()) {
-                    listener({ [key]: { oldValue, newValue: data[key] } }, areaName);
+                    listener(structuredClone(updates), areaName);
                 }
             }
         },

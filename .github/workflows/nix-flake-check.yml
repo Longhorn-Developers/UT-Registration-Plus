@@ -1,5 +1,9 @@
 name: Nix Flake Check
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 jobs:
   nix-flake:
     name: Nix Flake Check

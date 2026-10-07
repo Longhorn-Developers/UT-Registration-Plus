@@ -14,7 +14,23 @@
 
     .extensionRoot {
         @apply font-sans;
-        color: #303030;
+
+        // Theme-dependent semantic tokens, consumed via UnoCSS (bg-surface, text-content, border-divider, ...)
+        --color-bg: #ffffff;
+        --color-surface: #fdfdfc;
+        --color-text: #040506;
+        --color-text-muted: #3c4145;
+        --color-border: #eae8e1;
+
+        &[data-theme='dark'] {
+            --color-bg: #09090b;
+            --color-surface: #101011;
+            --color-text: #ffffff;
+            --color-text-muted: #9f9faa;
+            --color-border: #27272a;
+        }
+
+        color: var(--color-text);
 
         // fix font-family on injected pages
         * {
@@ -45,6 +61,7 @@
             height: 14px;
             background: transparent;
         }
+
         ::-webkit-scrollbar-thumb {
             border: 3px solid #fff;
             border-radius: 7px;
@@ -52,6 +69,7 @@
             box-shadow: none;
             background: rgb(218, 220, 224);
         }
+
         :hover::-webkit-scrollbar-thumb,
         ::-webkit-scrollbar-thumb:hover {
             background: rgb(189, 193, 198);

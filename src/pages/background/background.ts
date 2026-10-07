@@ -3,6 +3,7 @@ import { captureException, continueTrace, getTraceData, init, startSpan } from '
 import type { BACKGROUND_MESSAGES } from '@shared/messages';
 import { SENTRY_OPTIONS } from '@shared/sentry';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { UNINSTALL_REVIEW_URL } from '@shared/urls';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import updateBadgeText from '@shared/util/updateBadgeText';
 
@@ -128,6 +129,10 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
 });
 
 messageListener.listen({ onError: error => captureException(error) });
+
+void chrome.runtime.setUninstallURL(UNINSTALL_REVIEW_URL).catch(e => {
+    console.error('Error setting uninstall URL:', e);
+});
 
 UserScheduleStore.subscribe('schedules', async schedules => {
     const index = await UserScheduleStore.get('activeIndex');

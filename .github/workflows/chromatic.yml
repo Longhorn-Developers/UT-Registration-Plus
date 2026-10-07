@@ -1,5 +1,9 @@
 name: 'Chromatic'
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 jobs:
   chromatic:
     runs-on: ubuntu-latest
