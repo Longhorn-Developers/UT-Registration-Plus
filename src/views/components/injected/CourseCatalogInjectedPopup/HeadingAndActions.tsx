@@ -201,12 +201,12 @@ export default function HeadingAndActions({
 
     return (
         <div className='w-full px-2 pb-3 pt-5 text-ut-black'>
-            <div className='flex flex-col'>
+            <div className='flex flex-col text-content'>
                 <div className='flex items-center gap-1'>
-                    <Text variant='h1' className='truncate text-theme-black'>
+                    <Text variant='h1' className='truncate'>
                         {courseName}
                     </Text>
-                    <Text variant='h1' className='flex-1 whitespace-nowrap text-theme-black'>
+                    <Text variant='h1' className='flex-1 whitespace-nowrap'>
                         ({department} {courseNumber})
                     </Text>
                     <Button color='ut-burntorange' variant='minimal' onClick={handleCopy}>
@@ -226,7 +226,7 @@ export default function HeadingAndActions({
                         </div>
                         {formattedUniqueId}
                     </Button>
-                    <button type='button' className='bg-transparent p-0 text-ut-black btn' onClick={onClose}>
+                    <button type='button' className='bg-transparent p-0 btn' onClick={onClose}>
                         <XIcon className='h-6 w-6' />
                     </button>
                 </div>

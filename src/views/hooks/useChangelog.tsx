@@ -18,11 +18,11 @@ export default function useChangelog(): () => void {
     const handleOnClick = () => {
         showDialog(close => ({
             title: (
-                <div className='sticky top-0 flex items-center justify-between bg-white p-4'>
-                    <Text variant='h1' className='text-theme-black'>
+                <div className='sticky top-0 flex items-center justify-between p-4'>
+                    <Text variant='h1' className='text-content'>
                         Changelog
                     </Text>
-                    <Button variant='minimal' onClick={close} color='theme-black' className='p-1 text-gray-700'>
+                    <Button variant='minimal' onClick={close} color='theme-black' className='p-1 !text-content-muted'>
                         <XIcon className='h-6 w-6' />
                     </Button>
                 </div>

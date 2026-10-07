@@ -93,6 +93,7 @@ export default function CalendarFooter(): React.JSX.Element {
                     icon={GearSixIcon}
                     title='Settings'
                     color='ut-black'
+                    className="!text-content"
                     onClick={handleOpenOptions}
                 />
             </div>

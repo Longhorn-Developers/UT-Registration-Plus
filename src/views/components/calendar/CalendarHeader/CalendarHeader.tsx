@@ -127,7 +127,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             size='small'
                             variant='minimal'
                             icon={ExportIcon}
-                            className='bg-transparent'
+                            className='bg-transparent !text-content'
                         >
                             Export
                         </MenuButton>

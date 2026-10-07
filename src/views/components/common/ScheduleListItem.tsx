@@ -180,9 +180,9 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         {isActive ? (
-                            <RadioButtonFillIcon className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
+                            <RadioButtonFillIcon className='inline-block h-7.5 w-7.5 dark:text-content shrink-0 btn-transition group-active/circle:scale-95' />
                         ) : (
-                            <CircleIcon className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
+                            <CircleIcon className='inline-block h-7.5 w-7.5 dark:text-content shrink-0 btn-transition group-active/circle:scale-95' />
                         )}
                         {isEditing && (
                             <Text
@@ -207,7 +207,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         {!isEditing && (
                             <Text
                                 variant='p'
-                                className='select-none flex-1 min-w-0 truncate'
+                                className='select-none flex-1 min-w-0 truncate dark:text-content'
                                 onDoubleClick={() => setIsEditing(true)}
                                 aria-label={`${schedule.name} (F2 to rename)`}
                             >
@@ -227,7 +227,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                             as={ExtensionRootWrapper}
                             className={clsx([
                                 styleResetClass,
-                                'w-fit origin-top-right rounded bg-surface p-1 text-black shadow-lg transition border border-ut-offwhite/50 outline-none!',
+                                'w-fit origin-top-right rounded bg-surface-raised p-1 text-black shadow-lg transition border border-ut-offwhite/50 outline-none!',
                                 'data-[closed]:(opacity-0 scale-95)',
                                 'data-[enter]:(ease-out-expo duration-150)',
                                 'data-[leave]:(ease-out duration-50)',
@@ -238,7 +238,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         >
                             <MenuItem
                                 as={Button}
-                                className='w-full flex justify-start'
+                                className='w-full flex justify-start !text-content'
                                 onClick={() => setIsEditing(true)}
                                 color='ut-black'
                                 size='small'
@@ -249,7 +249,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                             </MenuItem>
                             <MenuItem
                                 as={Button}
-                                className='w-full flex justify-start'
+                                className='w-full flex justify-start !text-content'
                                 onClick={() => handleDuplicateSchedule(schedule.id)}
                                 color='ut-black'
                                 size='small'

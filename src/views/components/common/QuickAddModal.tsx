@@ -54,7 +54,7 @@ export default function QuickAddModal(): JSX.Element {
                 variant='minimal'
                 icon={PlusCircleIcon}
                 onClick={handleQuickAdd}
-                className='bg-transparent'
+                className='bg-transparent !text-content'
             >
                 Quick Add
             </PopoverButton>

@@ -41,7 +41,7 @@ export default function Divider({ className, testId, size, orientation }: Divide
         <div
             style={style}
             data-testid={testId}
-            className={clsx('border-solid border-ut-offwhite/50 w-0 h-0', className)}
+            className={clsx('border-solid border-divider w-0 h-0', className)}
         />
     );
 }
