@@ -40,6 +40,7 @@ const manifest = defineManifest(async env => {
             'storage',
             'unlimitedStorage',
             'background',
+            'notifications',
             'scripting',
             ...(isDev ? (['declarativeNetRequest', 'declarativeNetRequestWithHostAccess'] as const) : []),
         ],
