@@ -13,6 +13,8 @@ interface IExtensionStore {
     lastWhatsNewPopupVersion: number;
     /** Stable anonymous ID for Sentry user correlation (no PII) */
     anonymousId: string;
+    /** Google Calendar ID created for each exported schedule, keyed by schedule ID, so re-exporting replaces instead of duplicating */
+    googleCalendarIds: Record<string, string>;
 }
 
 export const ExtensionStore = createLocalStore<IExtensionStore>(
@@ -22,6 +24,7 @@ export const ExtensionStore = createLocalStore<IExtensionStore>(
         lastUpdate: Date.now(),
         lastWhatsNewPopupVersion: 0,
         anonymousId: generateRandomId(),
+        googleCalendarIds: {},
     },
     {
         usePrefix: false,

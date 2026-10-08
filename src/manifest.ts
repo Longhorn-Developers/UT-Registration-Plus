@@ -24,6 +24,13 @@ const HOST_PERMISSIONS: string[] = [
     '*://my.utexas.edu/student/*',
 ];
 
+// OAuth client for "Add to Google Calendar". It must be a "Chrome Extension" client registered to this
+// build's extension ID; builds without one simply don't offer the option.
+const GOOGLE_OAUTH_CLIENT_ID = process.env.GOOGLE_OAUTH_CLIENT_ID;
+
+// Only lets the extension manage calendars it creates, not the user's existing calendars
+const GOOGLE_OAUTH_SCOPES = ['https://www.googleapis.com/auth/calendar.app.created'];
+
 const manifest = defineManifest(async env => {
     const isDev = env.mode === 'development';
     const mode = isBeta ? 'beta' : isDev ? 'development' : 'production';
@@ -41,8 +48,15 @@ const manifest = defineManifest(async env => {
             'unlimitedStorage',
             'background',
             'scripting',
+            ...(GOOGLE_OAUTH_CLIENT_ID ? (['identity'] as const) : []),
             ...(isDev ? (['declarativeNetRequest', 'declarativeNetRequestWithHostAccess'] as const) : []),
         ],
+        ...(GOOGLE_OAUTH_CLIENT_ID && {
+            oauth2: {
+                client_id: GOOGLE_OAUTH_CLIENT_ID,
+                scopes: GOOGLE_OAUTH_SCOPES,
+            },
+        }),
         host_permissions: isDev ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
         action: {
             default_popup: 'src/pages/popup/index.html',

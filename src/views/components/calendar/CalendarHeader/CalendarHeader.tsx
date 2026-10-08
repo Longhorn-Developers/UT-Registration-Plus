@@ -4,6 +4,7 @@ import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import styles from '@views/components/calendar/CalendarHeader/CalendarHeader.module.scss';
 import { Button } from '@views/components/common/Button';
+import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import Divider from '@views/components/common/Divider';
 import { ExtensionRootWrapper, styleResetClass } from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { LargeLogo } from '@views/components/common/LogoIcon';
@@ -12,6 +13,11 @@ import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotal
 import Text from '@views/components/common/Text/Text';
 import useRelativeTime from '@views/hooks/useRelativeTime';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
+import {
+    addScheduleToGoogleCalendar,
+    isGoogleAuthCancelled,
+    isGoogleCalendarExportAvailable,
+} from '@views/lib/googleCalendar';
 import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
 import type { JSX } from 'react';
@@ -22,7 +28,9 @@ import ExportIcon from '~icons/ph/export';
 import FileCodeIcon from '~icons/ph/file-code';
 import FilePngIcon from '~icons/ph/file-png';
 import FileTextIcon from '~icons/ph/file-text';
+import GoogleLogoIcon from '~icons/ph/google-logo';
 import SidebarIcon from '~icons/ph/sidebar';
+import SpinnerGapIcon from '~icons/ph/spinner-gap';
 
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
 
@@ -71,6 +79,45 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
             }, 3000);
         }
     }, [activeSchedule, isRefreshing]);
+
+    const showDialog = usePrompt();
+    const [isAddingToGoogleCalendar, setIsAddingToGoogleCalendar] = useState(false);
+
+    const handleAddToGoogleCalendar = async () => {
+        if (isAddingToGoogleCalendar) return;
+        setIsAddingToGoogleCalendar(true);
+        try {
+            const calendarUrl = await addScheduleToGoogleCalendar(activeSchedule.id);
+            if (calendarUrl) {
+                // Not window.open: this runs after awaiting sign-in, so it's no longer a user gesture
+                await chrome.tabs.create({ url: calendarUrl });
+            } else {
+                showDialog({
+                    title: 'Nothing to add',
+                    description: 'None of the courses in this schedule have class meetings to put on a calendar.',
+                    buttons: close => (
+                        <Button variant='minimal' color='ut-black' onClick={close}>
+                            Close
+                        </Button>
+                    ),
+                });
+            }
+        } catch (error) {
+            if (isGoogleAuthCancelled(error)) return;
+            console.error('Failed to add schedule to Google Calendar:', error);
+            showDialog({
+                title: "Couldn't add to Google Calendar",
+                description: 'Something went wrong while adding your schedule. Please try again.',
+                buttons: close => (
+                    <Button variant='minimal' color='ut-black' onClick={close}>
+                        Close
+                    </Button>
+                ),
+            });
+        } finally {
+            setIsAddingToGoogleCalendar(false);
+        }
+    };
 
     const handleRefreshRef = useRef(handleRefresh);
     handleRefreshRef.current = handleRefresh;
@@ -126,7 +173,10 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             color='ut-black'
                             size='small'
                             variant='minimal'
-                            icon={ExportIcon}
+                            icon={isAddingToGoogleCalendar ? SpinnerGapIcon : ExportIcon}
+                            iconProps={{
+                                className: clsx({ 'animate-spin': isAddingToGoogleCalendar }),
+                            }}
                             className='bg-transparent'
                         >
                             Export
@@ -166,6 +216,20 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             >
                                 Save as .cal
                             </MenuItem>
+                            {isGoogleCalendarExportAvailable() && (
+                                <MenuItem
+                                    as={Button}
+                                    className='w-full flex justify-start'
+                                    onClick={handleAddToGoogleCalendar}
+                                    disabled={isAddingToGoogleCalendar}
+                                    color='ut-black'
+                                    size='small'
+                                    variant='minimal'
+                                    icon={GoogleLogoIcon}
+                                >
+                                    Add to Google Calendar
+                                </MenuItem>
+                            )}
                             <MenuItem
                                 as={Button}
                                 className='w-full flex justify-start'
