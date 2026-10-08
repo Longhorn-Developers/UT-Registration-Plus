@@ -1,3 +1,4 @@
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import type { Distribution, LetterGrade } from '@shared/types/Distribution';
 import { extendedColors } from '@shared/types/ThemeColors';
@@ -67,11 +68,22 @@ const semesterOrdering = new Map([
  * @returns The grade distribution chart component.
  */
 export default function GradeDistribution({ course }: GradeDistributionProps): JSX.Element {
+    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
     const [semester, setSemester] = useState('Aggregate');
     type Distributions = Record<string, { data: Distribution; instructorIncluded: boolean }>;
     const [distributions, setDistributions] = useState<Distributions>({});
     const [status, setStatus] = useState<DataStatusType>(DataStatus.LOADING);
     const ref = useRef<HighchartsReactRefObject>(null);
+
+    useEffect(() => {
+        Highcharts.setOptions({
+            chart: { animation: reducedMotion ? false : { duration: 700 } },
+            plotOptions: {
+                series: { animation: reducedMotion ? false : { duration: 700 } },
+                column: { animation: reducedMotion ? false : { duration: 700 } },
+            },
+        });
+    }, [reducedMotion]);
 
     const chartData = useMemo(() => {
         if (status === DataStatus.FOUND && distributions[semester]) {
@@ -201,6 +213,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             },
         },
         chart: {
+            animation: reducedMotion ? false : { duration: 700 },
             style: {
                 fontFamily: 'Roboto Flex, Roboto Flex Local',
                 fontWeight: '600',
@@ -231,23 +244,26 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                 offsetY: 1,
                 color: 'rgba(51, 63, 72, 0.30)',
             },
+            animation: !reducedMotion,
         },
         plotOptions: {
             bar: { pointPadding: 0.2, borderWidth: 0 },
-            series: { animation: { duration: 700 } },
+            series: { animation: reducedMotion ? false : { duration: 700 } },
+            column: { animation: reducedMotion ? false : { duration: 700 } },
         },
         series: [
             {
                 type: 'column',
                 name: 'Grades',
                 data: chartData,
+                animation: reducedMotion ? false : { duration: 700 },
             },
         ],
     };
 
     return (
         <div className='pt-3'>
-            {status === DataStatus.LOADING && <Skeleton height={300} />}
+            {status === DataStatus.LOADING && <Skeleton height={300} enableAnimation={!reducedMotion} />}
             {status === DataStatus.NOT_FOUND && (
                 <HighchartsReact
                     ref={ref}
@@ -259,6 +275,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                         },
                         tooltip: { enabled: false },
                     }}
+                    updateArgs={[true, true, !reducedMotion]}
                 />
             )}
             {status === DataStatus.ERROR && (
@@ -319,7 +336,12 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                             </Text>
                         </div>
                     )}
-                    <HighchartsReact ref={ref} highcharts={Highcharts} options={chartOptions} />
+                    <HighchartsReact
+                        ref={ref}
+                        highcharts={Highcharts}
+                        options={chartOptions}
+                        updateArgs={[true, true, !reducedMotion]}
+                    />
                 </>
             )}
         </div>

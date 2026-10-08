@@ -21,6 +21,7 @@ interface AdvancedSettingsProps {
     loadAllCourses: boolean;
     increaseScheduleLimit: boolean;
     calendarNewTab: boolean;
+    enableReducedMotion: boolean;
     enableDataRefreshing: boolean;
     enableCourseStatusChips: boolean;
     enableThemesBeta: boolean;
@@ -64,6 +65,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     loadAllCourses,
     increaseScheduleLimit,
     calendarNewTab,
+    enableReducedMotion,
     enableDataRefreshing,
     enableCourseStatusChips,
     enableThemesBeta,
@@ -215,6 +217,27 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         }}
                     />
                 </div>
+
+                <Divider size='auto' orientation='horizontal' />
+
+                <div className='flex items-center justify-between'>
+                    <div className='max-w-xs'>
+                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                            Reduced Motion
+                        </Text>
+                        <p className='text-sm text-gray-600'>
+                            Disable animations and transitions for users who prefer reduced motion.
+                        </p>
+                    </div>
+                    <SwitchButton
+                        isChecked={enableReducedMotion}
+                        onChange={() => {
+                            void OptionsStore.set('enableReducedMotion', !enableReducedMotion);
+                        }}
+                    />
+                </div>
+
+                <Divider size='auto' orientation='horizontal' />
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
