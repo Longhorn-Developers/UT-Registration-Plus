@@ -1,0 +1,41 @@
+name: Build
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+jobs:
+  build:
+    name: build (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build extension
+        run: pnpm build
+        env:
+          BROWSER_TARGET: ${{ matrix.browser }}
+      - name: Lint Firefox add-on
+        if: matrix.browser == 'firefox'
+        run: pnpm lint:firefox
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ut-registration-plus-${{ matrix.browser }}
+          path: dist/${{ matrix.browser }}
+          if-no-files-found: error
