@@ -75,7 +75,7 @@ export default function ShadowRootContainer({
     );
 
     return (
-        <div className={clsx(className, 'shadow-root-container')} {...props} ref={setHostRef}>
+        <div className={clsx(className, styleResetClass, 'shadow-root-container')} {...props} ref={setHostRef}>
             {shadowRoot &&
                 createPortal(
                     <div className={styleResetClass} data-theme={theme}>

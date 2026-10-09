@@ -34,8 +34,8 @@ export function SmallLogo({ className }: LogoIconProps): JSX.Element {
         <div className={clsx('flex items-center gap-2', className)}>
             <LogoIcon />
             <div className='mt-1 flex flex-col text-lg font-medium leading-[1em]'>
-                <p className='text-nowrap text-ut-burntorange'>UT Registration</p>
-                <p className='text-ut-burntorange'>
+                <p className='text-nowrap text-ut-burntorange dark:text-content'>UT Registration</p>
+                <p className='text-ut-burntorange dark:text-content'>
                     Plus{' '}
                     <span className='text-xs'>
                         {import.meta.env.VITE_BETA_BUILD ? `(${import.meta.env.VITE_PACKAGE_VERSION})` : ''}

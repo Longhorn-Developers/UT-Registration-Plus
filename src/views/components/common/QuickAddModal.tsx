@@ -12,6 +12,7 @@ import { Button } from './Button';
 import Dropdown from './Dropdown';
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 import Input from './Input';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 
 const STATUS_MESSAGES: Partial<Record<CourseResult['status'], string>> = {
     idle: 'Enter the unique number of the course you want.',
@@ -29,6 +30,8 @@ const STATUS_MESSAGES: Partial<Record<CourseResult['status'], string>> = {
 export default function QuickAddModal(): JSX.Element {
     const { semester, uniqueNumber, courseResult } = useQuickAdd();
     const statusMessage = STATUS_MESSAGES[courseResult.status];
+
+    const { theme } = useTheme();
 
     const handleQuickAdd = () => {
         background.validateLoginStatus();
@@ -60,9 +63,10 @@ export default function QuickAddModal(): JSX.Element {
             </PopoverButton>
             <PopoverPanel
                 as={ExtensionRootWrapper}
+                data-theme={theme}
                 className={clsx([
                     'mt-spacing-3',
-                    'origin-top rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
+                    'origin-top rounded bg-surface-raised text-content shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
                     'data-[closed]:(opacity-0 scale-95)',
                     'data-[enter]:(ease-out-expo duration-150)',
                     'data-[leave]:(ease-out duration-50)',
@@ -92,7 +96,7 @@ export default function QuickAddModal(): JSX.Element {
                         />
                     </div>
                     {statusMessage && (
-                        <Text variant='small' className='text-ut-black' aria-live='polite' aria-atomic='true'>
+                        <Text variant='small' className='text-content' aria-live='polite' aria-atomic='true'>
                             {statusMessage}
                         </Text>
                     )}

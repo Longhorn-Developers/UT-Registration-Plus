@@ -4,6 +4,8 @@ import React from 'react';
 
 import type { Button } from './Button';
 import type Text from './Text/Text';
+import { useTheme } from 'src/views/contexts/ThemeContext';
+import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 
 /**
  * Props for the PromptDialog component.
@@ -27,8 +29,10 @@ export interface PromptDialogProps {
  * @returns The rendered PromptDialog component.
  */
 function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialogProps): React.JSX.Element {
+    const { theme } = useTheme();
+
     return (
-        <Transition appear show={isOpen} as={React.Fragment}>
+        <Transition appear data-theme={theme} show={isOpen} as={React.Fragment}>
             <Dialog as='div' onClose={onClose} className='relative z-50'>
                 <TransitionChild
                     as={React.Fragment}
@@ -43,7 +47,7 @@ function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialo
                 </TransitionChild>
 
                 <TransitionChild
-                    as={React.Fragment}
+                    as={ExtensionRootWrapper}
                     enter='ease-out duration-200'
                     enterFrom='opacity-0 scale-95'
                     enterTo='opacity-100 scale-100'
@@ -52,7 +56,7 @@ function PromptDialog({ isOpen, onClose, title, content, children }: PromptDialo
                     leaveTo='opacity-0 scale-95'
                 >
                     <div className='fixed inset-0 w-screen flex items-center justify-center'>
-                        <DialogPanel className='h-[200] w-[431px] flex flex-col rounded bg-white p-6'>
+                        <DialogPanel className='h-[200] w-[431px] flex flex-col rounded bg-surface-raised p-6'>
                             <DialogTitle className='mb-[10px]'>{title}</DialogTitle>
                             <Description className='mb-[13px]'>{content}</Description>
                             <div className='flex items-center justify-end gap-2'>{children}</div>

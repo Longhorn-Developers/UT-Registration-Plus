@@ -27,6 +27,7 @@ import SmileyIcon from '~icons/ph/smiley';
 import XIcon from '~icons/ph/x';
 
 import DisplayMeetingInfo from './DisplayMeetingInfo';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
@@ -64,6 +65,7 @@ export default function HeadingAndActions({
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
     const isInCalendar = useCalendar();
+    const { theme } = useTheme();
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
@@ -288,7 +290,7 @@ export default function HeadingAndActions({
                 />
                 <Divider size='1.75rem' orientation='vertical' />
                 <Button
-                    variant='outline'
+                    variant={theme === 'dark' ? 'filled' : 'outline'}
                     color='ut-blue'
                     icon={ChatTextIcon}
                     onClick={handleOpenRateMyProf}
@@ -297,7 +299,7 @@ export default function HeadingAndActions({
                     RateMyProf
                 </Button>
                 <Button
-                    variant='outline'
+                    variant={theme === 'dark' ? 'filled' : 'outline'}
                     color='ut-teal'
                     icon={SmileyIcon}
                     onClick={handleOpenCES}
@@ -305,7 +307,7 @@ export default function HeadingAndActions({
                 >
                     CES
                 </Button>
-                <Button variant='outline' color='ut-orange' icon={FileTextIcon} onClick={handleOpenPastSyllabi}>
+                <Button variant={theme === 'dark' ? 'filled' : 'outline'} color='ut-orange' icon={FileTextIcon} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
                 </Button>
                 <Button

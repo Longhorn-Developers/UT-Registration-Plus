@@ -50,12 +50,12 @@ const links: LinkItem[] = [
 export default function ImportantLinks({ className }: Props): JSX.Element {
     return (
         <article className={clsx(className, 'flex flex-col gap-2')}>
-            <Text variant='h3'>Useful Links</Text>
+            <Text className='text-content-muted' variant='h3'>Useful Links</Text>
             {links.map(link => (
                 <a
                     key={link.text}
                     href={link.url}
-                    className='flex items-center gap-0.5 text-ut-burntorange underline-offset-2 hover:underline'
+                    className='flex items-center gap-0.5 text-ut-burntorange dark:text-content underline-offset-2 hover:underline'
                     target='_blank'
                     rel='noreferrer'
                 >

@@ -26,7 +26,7 @@ export default function useWhatsNewPopUp(): (options?: WhatsNewPopupOptions) => 
             title: (
                 <div className='flex items-center justify-between gap-4'>
                     <LogoIcon width='48' height='48' />
-                    <Text variant='h1' className='text-theme-black'>
+                    <Text variant='h1' className='text-content'>
                         What&apos;s New in UT Registration Plus
                     </Text>
                 </div>
@@ -34,7 +34,7 @@ export default function useWhatsNewPopUp(): (options?: WhatsNewPopupOptions) => 
             description: <WhatsNewPopupContent />,
             buttons: (
                 <div className='flex flex-row items-end gap-spacing-4'>
-                    <Button onClick={showChangeLog} variant='minimal' color='theme-black'>
+                    <Button onClick={showChangeLog} variant='minimal' color='theme-black' className='!text-content'>
                         Read Changelog for v{version}
                     </Button>
                     <Button onClick={close} color='ut-burntorange'>

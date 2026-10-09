@@ -71,9 +71,9 @@ export default function PopupMain(): JSX.Element {
     };
 
     return (
-        <div className='h-screen max-h-full flex flex-col bg-white'>
+        <div className='h-screen max-h-full flex flex-col bg-surface-raised'>
             <div className='px-spacing-6 py-spacing-5'>
-                <div className='flex items-center justify-between bg-white'>
+                <div className='flex items-center justify-between bg-surface-raised'>
                     <SmallLogo />
                     <div className='flex items-center gap-1.5'>
                         <Button
@@ -91,19 +91,21 @@ export default function PopupMain(): JSX.Element {
                             color='ut-black'
                             icon={FlagIcon}
                             title='Send feedback'
+                            className="!text-content-muted"
                             onClick={showReportIssueDialog}
                         />
                         <Button
                             variant='minimal'
                             size='small'
                             color='ut-black'
+                            className="!text-content-muted"
                             onClick={handleOpenOptions}
                             icon={GearSixIcon}
                         />
                     </div>
                 </div>
             </div>
-            <Divider className='bg-ut-offwhite/50' orientation='horizontal' size='100%' />
+            <Divider className='bg-divider/50' orientation='horizontal' size='100%' />
             <div className='px-5 pb-2.5 pt-3.75'>
                 <ScheduleDropdown>
                     <SortableList
