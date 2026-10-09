@@ -308,7 +308,12 @@ export default function HeadingAndActions({
                 >
                     CES
                 </Button>
-                <Button variant={theme.includes('dark') ? 'filled' : 'outline'} color='ut-orange' icon={FileTextIcon} onClick={handleOpenPastSyllabi}>
+                <Button
+                    variant={theme.includes('dark') ? 'filled' : 'outline'}
+                    color='ut-orange'
+                    icon={FileTextIcon}
+                    onClick={handleOpenPastSyllabi}
+                >
                     Past Syllabi
                 </Button>
                 <Button

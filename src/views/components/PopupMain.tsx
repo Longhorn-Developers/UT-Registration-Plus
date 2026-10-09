@@ -91,14 +91,14 @@ export default function PopupMain(): JSX.Element {
                             color='ut-black'
                             icon={FlagIcon}
                             title='Send feedback'
-                            className="!text-content-muted"
+                            className='!text-content-muted'
                             onClick={showReportIssueDialog}
                         />
                         <Button
                             variant='minimal'
                             size='small'
                             color='ut-black'
-                            className="!text-content-muted"
+                            className='!text-content-muted'
                             onClick={handleOpenOptions}
                             icon={GearSixIcon}
                         />

@@ -29,7 +29,7 @@ export default function ExtensionRoot(props: React.HTMLProps<HTMLDivElement>): R
             <SentryProvider>
                 <QueryClientProvider client={queryClient}>
                     <ThemeContext.Provider value={{ theme, setTheme }}>
-                        <ExtensionRootWrapper {...props}/>
+                        <ExtensionRootWrapper {...props} />
                     </ThemeContext.Provider>
                 </QueryClientProvider>
             </SentryProvider>

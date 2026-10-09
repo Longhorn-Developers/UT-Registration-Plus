@@ -90,7 +90,11 @@ export default function CalendarGrid({
                     <div className='h-4 w-full flex items-end border-b border-r border-divider'>
                         {/* Alignment for text */}
                         <div className='h-[calc(1.75rem_-_1px)] w-full flex items-center justify-center'>
-                            <Text variant='small' className='text-center text-ut-burntorange dark:text-content' as='div'>
+                            <Text
+                                variant='small'
+                                className='text-center text-ut-burntorange dark:text-content'
+                                as='div'
+                            >
                                 {day}
                             </Text>
                         </div>

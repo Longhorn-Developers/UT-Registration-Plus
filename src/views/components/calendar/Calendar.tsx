@@ -34,7 +34,6 @@ const CalendarSidebar = memo(function CalendarSidebar() {
     const showReportIssueDialog = useReportIssueDialog();
     const sidebarRef = useRef<HTMLDivElement>(null);
 
-
     // TODO: Replace with JSX `inert={!showSidebar}` once React supports the inert attribute natively.
     useEffect(() => {
         if (sidebarRef.current) {

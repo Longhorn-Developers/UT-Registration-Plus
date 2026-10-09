@@ -38,10 +38,6 @@ export default function Divider({ className, testId, size, orientation }: Divide
             : { height: size, borderRightWidth: '1px' };
 
     return (
-        <div
-            style={style}
-            data-testid={testId}
-            className={clsx('border-solid border-divider w-0 h-0', className)}
-        />
+        <div style={style} data-testid={testId} className={clsx('border-solid border-divider w-0 h-0', className)} />
     );
 }
