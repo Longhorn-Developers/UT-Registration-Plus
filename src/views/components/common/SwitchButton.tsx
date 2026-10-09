@@ -32,7 +32,7 @@ const SwitchButton = ({ isChecked = true, onChange }: ToggleSwitchProps): JSX.El
         <Switch
             checked={enabled}
             onChange={handleChange}
-            className={`${enabled ? 'bg-[#579D42]' : 'bg-gray-400'}
+            className={`${enabled ? 'bg-[#579D42]' : 'bg-surface-hover'}
           relative inline-flex items-center h-8 w-13 rounded-full transition-colors ease-in-out duration-200 min-w-[52px] cursor-pointer`}
         >
             <span

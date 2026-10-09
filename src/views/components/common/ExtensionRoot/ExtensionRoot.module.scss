@@ -18,6 +18,7 @@
         // Theme-dependent semantic tokens, consumed via UnoCSS (bg-surface, text-content, border-divider, ...)
         --color-bg: #ffffff;
         --color-surface: #ffffff;
+        --color-surface-hover: #edeeee;
         --color-text: #040506;
         --color-text-muted: #3c4145;
         --color-border: #eae8e1;
@@ -25,6 +26,7 @@
         &[data-theme='dark'] {
             --color-bg: #070708;
             --color-surface: #101011;
+            --color-surface-hover: #1a1a1b;
             --color-text: #ffffff;
             --color-text-muted: #757989;
             --color-border: #21232c;

@@ -102,7 +102,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                     size='small'
                     color='theme-black'
                     onClick={onSidebarToggle}
-                    className='screenshot:hidden !text-content'
+                    className='screenshot:hidden'
                     icon={SidebarIcon}
                 />
             )}
@@ -220,7 +220,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             </Text>
                         ) : (
                             lastCheckedText && (
-                                <Text variant='mini' className='whitespace-nowrap text-theme-black/50 !font-normal'>
+                                <Text variant='mini' className='whitespace-nowrap text-content/50 !font-normal'>
                                     Last checked: {lastCheckedText}
                                 </Text>
                             )

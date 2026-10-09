@@ -35,7 +35,7 @@ export const CalendarSchedules = memo(function CalendarSchedules() {
                     variant='minimal'
                     size='small'
                     color='theme-black'
-                    className='!p-0 btn !text-content'
+                    className='!p-0 btn'
                     onClick={handleAddSchedule}
                     icon={PlusIcon}
                 />

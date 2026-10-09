@@ -22,7 +22,7 @@ export default function useChangelog(): () => void {
                     <Text variant='h1' className='text-content'>
                         Changelog
                     </Text>
-                    <Button variant='minimal' onClick={close} color='theme-black' className='p-1 !text-content-muted'>
+                    <Button variant='minimal' onClick={close} color='theme-black' className='p-1'>
                         <XIcon className='h-6 w-6' />
                     </Button>
                 </div>

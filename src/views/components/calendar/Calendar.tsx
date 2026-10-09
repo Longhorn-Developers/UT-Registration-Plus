@@ -65,7 +65,7 @@ const CalendarSidebar = memo(function CalendarSidebar() {
                     size='small'
                     color='theme-black'
                     onClick={toggleSidebar}
-                    className='screenshot:hidden !text-content'
+                    className='screenshot:hidden'
                     icon={SidebarIcon}
                 />
             </div>

@@ -118,7 +118,7 @@ export default function ReportIssueMain({ onClose }: Props): JSX.Element {
                         id='feedback'
                         value={feedback}
                         onChange={e => setFeedback(e.target.value)}
-                        className='min-h-30 w-full resize-none border border-divider/50 rounded px-spacing-4 py-spacing-3 text-[1rem] text-ut-black placeholder:text-gray focus:outline-none focus:ring-0'
+                        className='min-h-30 w-full resize-none border border-divider/50 rounded px-spacing-4 py-spacing-3 text-[1rem] text-content placeholder:text-gray focus:outline-none focus:ring-0'
                         placeholder='I wish UT Registration Plus could...'
                         required
                     />

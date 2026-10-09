@@ -34,7 +34,7 @@ export default function useWhatsNewPopUp(): (options?: WhatsNewPopupOptions) => 
             description: <WhatsNewPopupContent />,
             buttons: (
                 <div className='flex flex-row items-end gap-spacing-4'>
-                    <Button onClick={showChangeLog} variant='minimal' color='theme-black' className='!text-content'>
+                    <Button onClick={showChangeLog} variant='minimal' color='theme-black'>
                         Read Changelog for v{version}
                     </Button>
                     <Button onClick={close} color='ut-burntorange'>
