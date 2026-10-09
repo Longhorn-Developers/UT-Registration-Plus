@@ -22,14 +22,14 @@ if (import.meta.env.DEV)
  * A wrapper component for the extension elements that adds some basic styling to them
  */
 export default function ExtensionRoot(props: React.HTMLProps<HTMLDivElement>): React.JSX.Element {
-    const [theme, setTheme] = React.useState<ThemeName>('light');
+    const [theme, setTheme] = React.useState<ThemeName>('dark');
 
     return (
         <React.StrictMode>
             <SentryProvider>
                 <QueryClientProvider client={queryClient}>
                     <ThemeContext.Provider value={{ theme, setTheme }}>
-                        <ShadowRootContainer {...props} theme={theme} />
+                        <ExtensionRootWrapper {...props}/>
                     </ThemeContext.Provider>
                 </QueryClientProvider>
             </SentryProvider>
