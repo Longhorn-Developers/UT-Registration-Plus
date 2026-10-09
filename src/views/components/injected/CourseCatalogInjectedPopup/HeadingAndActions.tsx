@@ -289,8 +289,9 @@ export default function HeadingAndActions({
                     }}
                 />
                 <Divider size='1.75rem' orientation='vertical' />
+                {/* Use includes so that alterantive dark themes can still have filled buttons */}
                 <Button
-                    variant={theme === 'dark' ? 'filled' : 'outline'}
+                    variant={theme.includes('dark') ? 'filled' : 'outline'}
                     color='ut-blue'
                     icon={ChatTextIcon}
                     onClick={handleOpenRateMyProf}
@@ -299,7 +300,7 @@ export default function HeadingAndActions({
                     RateMyProf
                 </Button>
                 <Button
-                    variant={theme === 'dark' ? 'filled' : 'outline'}
+                    variant={theme.includes('dark') ? 'filled' : 'outline'}
                     color='ut-teal'
                     icon={SmileyIcon}
                     onClick={handleOpenCES}
@@ -307,7 +308,7 @@ export default function HeadingAndActions({
                 >
                     CES
                 </Button>
-                <Button variant={theme === 'dark' ? 'filled' : 'outline'} color='ut-orange' icon={FileTextIcon} onClick={handleOpenPastSyllabi}>
+                <Button variant={theme.includes('dark') ? 'filled' : 'outline'} color='ut-orange' icon={FileTextIcon} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
                 </Button>
                 <Button
