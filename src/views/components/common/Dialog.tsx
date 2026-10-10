@@ -13,6 +13,7 @@ import type { JSX, PropsWithChildren } from 'react';
 import { Fragment } from 'react';
 
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 
 /**
  * Represents the props for the _Dialog component
@@ -33,6 +34,7 @@ export type DialogProps = _DialogProps & Omit<TransitionRootProps<typeof HDialog
  */
 export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Element {
     const { children, className, open, title, description, ...rest } = props;
+    const { theme } = useTheme();
     const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
 
     return (
@@ -69,9 +71,10 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                     >
                         <DialogPanel
                             className={clsx(
-                                'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-solid border-ut-offwhite rounded bg-white shadow-xl ml-[calc(100vw-100%-1rem)]',
+                                'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-solid border-divider rounded bg-surface-raised shadow-xl ml-[calc(100vw-100%-1rem)]',
                                 className
                             )}
+                            data-theme={theme}
                         >
                             {title && <DialogTitle>{title}</DialogTitle>}
                             {description && <Description as='div'>{description}</Description>}

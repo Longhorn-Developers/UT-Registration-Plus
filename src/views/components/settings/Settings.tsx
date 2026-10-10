@@ -271,7 +271,7 @@ export default function Settings(): React.JSX.Element {
             </header>
 
             <div className='p-6 lg:flex'>
-                <div className='mr-4 lg:w-1/2 xl:w-xl'>
+                <div className='mr-4 lg:w-1/2 xl:w-xl bg-surface-raised p-4'>
                     {options && (
                         <AdvancedSettings
                             highlightConflicts={options.enableHighlightConflicts}
@@ -304,7 +304,7 @@ export default function Settings(): React.JSX.Element {
 
                         <div className='flex items-center justify-between'>
                             <div className='max-w-xs'>
-                                <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                <Text variant='h4' className='text-ut-burntorange text-content font-semibold'>
                                     UTRP Map
                                 </Text>
                                 <span className='mx-2 border border-ut-burntorange rounded px-2 py-0.5 text-xs text-ut-burntorange font-medium'>
@@ -376,7 +376,7 @@ export default function Settings(): React.JSX.Element {
 
                 <Divider className='lg:hidden' size='auto' orientation='horizontal' />
 
-                <section className='my-8 lg:my-0 lg:ml-4 lg:w-1/2'>
+                <section className='my-8 mt-4 lg:mb-0 lg:ml-4 lg:w-1/2'>
                     <section>
                         <h2 className='mb-4 text-xl text-content font-semibold'>
                             LONGHORN DEVELOPERS (LHD) EXECUTIVE BOARD

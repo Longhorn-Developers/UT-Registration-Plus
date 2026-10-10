@@ -155,6 +155,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     letterSpacing: '0',
                     lineHeight: 'normal',
                     fontStyle: 'normal',
+                    color: 'var(--color-text)',
                 },
                 useHTML: true,
                 formatter() {
@@ -178,7 +179,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             title: {
                 text: 'Grades',
                 style: {
-                    color: '#333F48',
+                    color: 'var(--color-text)',
                     fontSize: '0.80rem',
                     fontWeight: '400',
                 },
@@ -188,25 +189,26 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             tickInterval: 1,
             tickWidth: 1,
             tickLength: 10,
-            tickColor: '#9CADB7',
+            tickColor: 'var(--color-border)',
             crosshair: { color: `${extendedColors.theme.offwhite}50` },
-            lineColor: '#9CADB7',
+            lineColor: 'var(--color-border)',
         },
         yAxis: {
             labels: {
                 style: {
                     fontSize: '0.80rem',
                     fontWeight: '400',
-                    color: '#333F48',
+                    color: 'var(--color-text)',
                     lineHeight: '100%',
                     fontStyle: 'normal',
                 },
             },
             min: 0,
+            gridLineColor: 'var(--color-border)',
             title: {
                 text: 'Students',
                 style: {
-                    color: '#333F48',
+                    color: 'var(--color-text)',
                     fontSize: '0.80rem',
                     fontWeight: '400',
                 },
@@ -218,6 +220,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                 fontFamily: 'Roboto Flex, Roboto Flex Local',
                 fontWeight: '600',
             },
+            backgroundColor: 'transparent',
             spacingBottom: 25,
             spacingTop: 25,
             spacingLeft: 1.5,
@@ -231,13 +234,13 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             shared: true,
             useHTML: true,
             style: {
-                color: 'var(--Other-Colors-UTRP-Black, #1A2024)',
+                color: 'var(--color-text)',
                 textAlign: 'center',
                 fontFamily: 'Roboto Flex, Roboto Flex Local',
                 fontSize: '0.88875rem',
                 lineHeight: 'normal',
             },
-            backgroundColor: 'white',
+            backgroundColor: 'var(--color-bg)',
             borderRadius: 4,
             shadow: {
                 offsetX: 0,
@@ -249,7 +252,11 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
         plotOptions: {
             bar: { pointPadding: 0.2, borderWidth: 0 },
             series: { animation: reducedMotion ? false : { duration: 700 } },
-            column: { animation: reducedMotion ? false : { duration: 700 } },
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0,
+                animation: reducedMotion ? false : { duration: 700 }
+            },
         },
         series: [
             {
@@ -286,14 +293,14 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             {status === DataStatus.FOUND && (
                 <>
                     <div className='flex flex-wrap content-center items-center self-stretch justify-center gap-3'>
-                        <Text variant='small' className='text-ut-black'>
+                        <Text variant='small' className='text-content'>
                             Grade Distribution for{' '}
                             <Text variant='small' className='font-extrabold!' as='strong'>
                                 {course.department} {course.getNumberWithoutTerm()}
                             </Text>
                         </Text>
                         <select
-                            className='border border rounded border-solid px-3 py-2'
+                            className='border border-divider bg-surface-raised text-content rounded border-solid px-3 py-2'
                             onChange={handleSelectSemester}
                         >
                             {Object.keys(distributions)

@@ -4,6 +4,8 @@ import GearSixIcon from '~icons/ph/gear-six';
 import GithubIcon from '~icons/ph/github-logo';
 import InstagramIcon from '~icons/ph/instagram-logo';
 import LinkedinIcon from '~icons/ph/linkedin-logo';
+import MoonIcon from '~icons/ph/moon';
+import SunIcon from '~icons/ph/sun';
 
 export function DiscordIcon(props: SVGProps<SVGSVGElement>) {
     return (
@@ -33,6 +35,8 @@ export function DiscordIcon(props: SVGProps<SVGSVGElement>) {
 import type { SVGProps } from 'react';
 import { Button } from '../common/Button';
 import Link from '../common/Link';
+import { useTheme } from 'src/views/contexts/ThemeContext';
+import { OptionsStore } from 'src/shared/storage/OptionsStore';
 
 interface SocialLink {
     icon: React.FC<React.SVGProps<SVGSVGElement>>;
@@ -77,22 +81,34 @@ const handleOpenOptions = async (): Promise<void> => {
  * @returns
  */
 export default function CalendarFooter(): React.JSX.Element {
+    const { theme } = useTheme();
+
     return (
-        <footer className='min-w-full w-0 flex items-center justify-between bg-white pl-spacing-5 pr-spacing-8 pt-spacing-4'>
+        <footer className='min-w-full w-0 flex items-center justify-between pl-spacing-5 pr-spacing-8 pt-spacing-4'>
             <div className='flex'>
                 {socialLinks.map(({ icon: Icon, url, name }) => (
-                    <Link className='linkanimate p-2' href={url} key={url} title={name}>
+                    <Link className='linkanimate p-2 !text-content-muted' href={url} key={url} title={name}>
                         <Icon className='size-6' />
                     </Link>
                 ))}
             </div>
-            <div>
+            <div className='flex'>
+                <Button
+                    variant='minimal'
+                    size='small'
+                    icon={theme === 'dark' ? MoonIcon : SunIcon}
+                    title='Switch Theme'
+                    color='ut-black'
+                    className='!text-content-muted'
+                    onClick={() => void OptionsStore.set('theme', theme === 'dark' ? 'light' : 'dark')}
+                />
                 <Button
                     variant='minimal'
                     size='small'
                     icon={GearSixIcon}
                     title='Settings'
                     color='ut-black'
+                    className='!text-content-muted'
                     onClick={handleOpenOptions}
                 />
             </div>

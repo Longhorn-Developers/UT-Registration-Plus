@@ -23,6 +23,7 @@ import { usePrompt } from './DialogProvider/DialogProvider';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 import Link from './Link';
 import { SortableListDragHandle } from './SortableListDragHandle';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 
 /**
  * Props for the ScheduleListItem component.
@@ -43,6 +44,8 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
     const [isEditing, setIsEditing] = useState(false);
     const [editorValue, setEditorValue] = useState(schedule.name);
     const teamMember = teamMembers[Math.floor(Math.random() * teamMembers.length)];
+
+    const { theme } = useTheme();
 
     const showDialog = usePrompt();
     const enforceScheduleLimit = useEnforceScheduleLimit();
@@ -159,7 +162,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
 
     return (
         // biome-ignore lint/a11y/noStaticElementInteractions: TODO:
-        <div className='h-7.5 rounded bg-white' tabIndex={-1} onKeyDown={handleKeyDown}>
+        <div className='h-7.5 rounded' tabIndex={-1} onKeyDown={handleKeyDown}>
             <div className='h-full w-full flex cursor-pointer items-center gap-[1px] text-ut-burntorange'>
                 {IS_STORYBOOK ? (
                     <DotsSixVerticalBoldIcon className='h-6 w-6 cursor-move text-zinc-300 btn-transition -ml-1.5 hover:text-zinc-400' />
@@ -177,9 +180,9 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         onClick={(...e) => !isEditing && onClick?.(...e)}
                     >
                         {isActive ? (
-                            <RadioButtonFillIcon className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
+                            <RadioButtonFillIcon className='inline-block h-7.5 w-7.5 dark:text-content shrink-0 btn-transition group-active/circle:scale-95' />
                         ) : (
-                            <CircleIcon className='inline-block h-7.5 w-7.5 shrink-0 btn-transition group-active/circle:scale-95' />
+                            <CircleIcon className='inline-block h-7.5 w-7.5 dark:text-content shrink-0 btn-transition group-active/circle:scale-95' />
                         )}
                         {isEditing && (
                             <Text
@@ -204,7 +207,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                         {!isEditing && (
                             <Text
                                 variant='p'
-                                className='select-none flex-1 min-w-0 truncate'
+                                className='select-none flex-1 min-w-0 truncate dark:text-content'
                                 onDoubleClick={() => setIsEditing(true)}
                                 aria-label={`${schedule.name} (F2 to rename)`}
                             >
@@ -224,17 +227,18 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                             as={ExtensionRootWrapper}
                             className={clsx([
                                 styleResetClass,
-                                'w-fit origin-top-right rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 outline-none!',
+                                'w-fit origin-top-right rounded bg-surface-raised p-1 text-black shadow-lg transition border border-ut-offwhite/50 outline-none!',
                                 'data-[closed]:(opacity-0 scale-95)',
                                 'data-[enter]:(ease-out-expo duration-150)',
                                 'data-[leave]:(ease-out duration-50)',
                             ])}
+                            data-theme={theme}
                             transition
                             anchor='bottom end'
                         >
                             <MenuItem
                                 as={Button}
-                                className='w-full flex justify-start'
+                                className='w-full flex justify-start !text-content'
                                 onClick={() => setIsEditing(true)}
                                 color='ut-black'
                                 size='small'
@@ -245,7 +249,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                             </MenuItem>
                             <MenuItem
                                 as={Button}
-                                className='w-full flex justify-start'
+                                className='w-full flex justify-start !text-content'
                                 onClick={() => handleDuplicateSchedule(schedule.id)}
                                 color='ut-black'
                                 size='small'

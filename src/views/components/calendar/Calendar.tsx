@@ -26,6 +26,7 @@ import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
+import { useThemeSync } from 'src/views/hooks/useThemeSync';
 
 const CalendarSidebar = memo(function CalendarSidebar() {
     const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
@@ -48,7 +49,7 @@ const CalendarSidebar = memo(function CalendarSidebar() {
         <div
             ref={sidebarRef}
             className={clsx(
-                'py-spacing-5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
+                'py-spacing-5 bg-surface-raised relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-divider shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
                 {
                     'max-w-[20.3125rem] ': showSidebar,
                     'max-w-0 pointer-events-none': !showSidebar,
@@ -82,7 +83,7 @@ const CalendarSidebar = memo(function CalendarSidebar() {
                 <button
                     type='button'
                     onClick={showReportIssueDialog}
-                    className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
+                    className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange dark:text-content underline-offset-2 hover:underline'
                 >
                     <Text variant='p'>Send us Feedback!</Text>
                     <OutwardArrowIcon className='h-4 w-4' />
@@ -109,6 +110,9 @@ export default function Calendar(): ReactNode {
 
     const activeScheduleRef = useRef(activeSchedule);
     activeScheduleRef.current = activeSchedule;
+
+    const settings = OptionsStore.useStore();
+    useThemeSync(settings.enableThemesBeta ? settings.theme : 'light');
 
     // silently refreshes course data when the calendar opens or the active schedule changes
     // biome-ignore lint/correctness/useExhaustiveDependencies: id is a trigger, not a value read
@@ -264,7 +268,7 @@ export default function Calendar(): ReactNode {
                                 // scrollbarGutter: 'stable',
                             }
                         }
-                        className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5'
+                        className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5 bg-surface'
                     >
                         <CalendarHeader sidebarOpen={showSidebar} onSidebarToggle={toggleSidebar} />
                         <div

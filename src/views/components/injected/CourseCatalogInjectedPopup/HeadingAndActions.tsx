@@ -27,6 +27,7 @@ import SmileyIcon from '~icons/ph/smiley';
 import XIcon from '~icons/ph/x';
 
 import DisplayMeetingInfo from './DisplayMeetingInfo';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 
@@ -64,6 +65,7 @@ export default function HeadingAndActions({
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
     const isInCalendar = useCalendar();
+    const { theme } = useTheme();
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
@@ -201,12 +203,12 @@ export default function HeadingAndActions({
 
     return (
         <div className='w-full px-2 pb-3 pt-5 text-ut-black'>
-            <div className='flex flex-col'>
+            <div className='flex flex-col text-content'>
                 <div className='flex items-center gap-1'>
-                    <Text variant='h1' className='truncate text-theme-black'>
+                    <Text variant='h1' className='truncate'>
                         {courseName}
                     </Text>
-                    <Text variant='h1' className='flex-1 whitespace-nowrap text-theme-black'>
+                    <Text variant='h1' className='flex-1 whitespace-nowrap'>
                         ({department} {courseNumber})
                     </Text>
                     <Button color='ut-burntorange' variant='minimal' onClick={handleCopy}>
@@ -226,7 +228,7 @@ export default function HeadingAndActions({
                         </div>
                         {formattedUniqueId}
                     </Button>
-                    <button type='button' className='bg-transparent p-0 text-ut-black btn' onClick={onClose}>
+                    <button type='button' className='bg-transparent p-0 btn' onClick={onClose}>
                         <XIcon className='h-6 w-6' />
                     </button>
                 </div>
@@ -287,8 +289,9 @@ export default function HeadingAndActions({
                     }}
                 />
                 <Divider size='1.75rem' orientation='vertical' />
+                {/* Use includes so that alterantive dark themes can still have filled buttons */}
                 <Button
-                    variant='outline'
+                    variant={theme.includes('dark') ? 'filled' : 'outline'}
                     color='ut-blue'
                     icon={ChatTextIcon}
                     onClick={handleOpenRateMyProf}
@@ -297,7 +300,7 @@ export default function HeadingAndActions({
                     RateMyProf
                 </Button>
                 <Button
-                    variant='outline'
+                    variant={theme.includes('dark') ? 'filled' : 'outline'}
                     color='ut-teal'
                     icon={SmileyIcon}
                     onClick={handleOpenCES}
@@ -305,7 +308,12 @@ export default function HeadingAndActions({
                 >
                     CES
                 </Button>
-                <Button variant='outline' color='ut-orange' icon={FileTextIcon} onClick={handleOpenPastSyllabi}>
+                <Button
+                    variant={theme.includes('dark') ? 'filled' : 'outline'}
+                    color='ut-orange'
+                    icon={FileTextIcon}
+                    onClick={handleOpenPastSyllabi}
+                >
                     Past Syllabi
                 </Button>
                 <Button
