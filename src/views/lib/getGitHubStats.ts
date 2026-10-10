@@ -117,9 +117,34 @@ export const UTRP_TEAM = [
         githubUsername: '',
     },
     {
+        name: 'Jesse Chen',
+        role: ['UX Design Fellow'],
+        githubUsername: '',
+    },
+    {
         name: 'Arun Bagavathiannan',
         role: ['Technical Lead'],
         githubUsername: 'arunbagavathiannan',
+    },
+    {
+        name: 'Saketh Sripada',
+        role: ['Developer Fellow'],
+        githubUsername: 'SakethSripada',
+    },
+    {
+        name: 'Valerius Petrini',
+        role: ['Developer Fellow'],
+        githubUsername: 'Villy-P',
+    },
+    {
+        name: 'Akhil Jarabandi',
+        role: ['Developer Fellow'],
+        githubUsername: 'AkhilJar',
+    },
+    {
+        name: 'Jonathan Phung',
+        role: ['Developer Fellow'],
+        githubUsername: 'jonathanphung',
     },
     {
         name: 'Margaret Cartee',
