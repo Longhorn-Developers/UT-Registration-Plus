@@ -8,6 +8,7 @@
 
 import 'virtual:uno.css';
 import globalStyleSheet from 'virtual:inline-styles';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { ThemeName } from '@shared/types/Theme';
 import clsx from 'clsx';
 import type { Ref } from 'react';
@@ -57,6 +58,7 @@ export default function ShadowRootContainer({
     theme?: ThemeName;
 }): React.JSX.Element {
     const [shadowRoot, setShadowRoot] = React.useState<ShadowRoot | null>(null);
+    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
 
     const setHostRef = React.useCallback(
         (node: HTMLDivElement | null) => {
@@ -75,10 +77,14 @@ export default function ShadowRootContainer({
     );
 
     return (
-        <div className={clsx(className, styleResetClass, 'shadow-root-container')} {...props} ref={setHostRef}>
+        <div
+            className={clsx(className, styleResetClass, 'shadow-root-container', reducedMotion && 'reduced-motion')}
+            {...props}
+            ref={setHostRef}
+        >
             {shadowRoot &&
                 createPortal(
-                    <div className={styleResetClass} data-theme={theme}>
+                    <div className={clsx(styleResetClass, reducedMotion && styles.reducedMotion)} data-theme={theme}>
                         {children}
                     </div>,
                     shadowRoot
