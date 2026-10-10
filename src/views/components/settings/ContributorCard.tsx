@@ -46,7 +46,7 @@ export const ContributorCard: React.FC<ContributorCardProps> = ({
                 </Text>
             </button>
             {roles.map(role => (
-                <p key={`${githubUsername}-${role}`} className='text-sm text-gray-600'>
+                <p key={`${githubUsername}-${role}`} className='text-sm text-content-muted'>
                     {role}
                 </p>
             ))}

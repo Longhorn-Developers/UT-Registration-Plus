@@ -81,7 +81,7 @@ export default function CalendarFooter(): React.JSX.Element {
         <footer className='min-w-full w-0 flex items-center justify-between pl-spacing-5 pr-spacing-8 pt-spacing-4'>
             <div className='flex'>
                 {socialLinks.map(({ icon: Icon, url, name }) => (
-                    <Link className='linkanimate p-2' href={url} key={url} title={name}>
+                    <Link className='linkanimate p-2 !text-content-muted' href={url} key={url} title={name}>
                         <Icon className='size-6' />
                     </Link>
                 ))}
@@ -93,7 +93,7 @@ export default function CalendarFooter(): React.JSX.Element {
                     icon={GearSixIcon}
                     title='Settings'
                     color='ut-black'
-                    className='!text-content'
+                    className='!text-content-muted'
                     onClick={handleOpenOptions}
                 />
             </div>
