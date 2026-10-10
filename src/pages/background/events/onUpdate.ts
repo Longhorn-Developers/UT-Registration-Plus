@@ -1,6 +1,6 @@
 import { ExtensionStore } from '@shared/storage/ExtensionStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import { MigrationStore } from 'src/shared/storage/hasMigrated';
+import { MigrationStore } from 'src/shared/storage/MigrationStore';
 import { OptionsStore } from 'src/shared/storage/OptionsStore';
 import createSchedule from '../lib/createSchedule';
 
