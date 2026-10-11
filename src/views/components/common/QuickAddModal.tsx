@@ -31,9 +31,9 @@ const STATUS_MESSAGES: Partial<Record<CourseResult['status'], string>> = {
  */
 export default function QuickAddModal(): JSX.Element {
     const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
-    const { semester, uniqueNumber, courseResult } = useQuickAdd();
-    const statusMessage = STATUS_MESSAGES[courseResult.status];
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
+    const { semester, uniqueNumber, courseResult } = useQuickAdd(isLoggedIn);
+    const statusMessage = STATUS_MESSAGES[courseResult.status];
 
     const handleQuickAdd = async () => {
         setIsLoggedIn(await background.validateLoginStatus());
