@@ -2,10 +2,12 @@ import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/
 import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
+import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import Text from '@views/components/common/Text/Text';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
 import type { JSX } from 'react';
+import { useState } from 'react';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
 import PlusIcon from '~icons/ph/plus';
 import PlusCircleIcon from '~icons/ph/plus-circle';
@@ -31,9 +33,10 @@ export default function QuickAddModal(): JSX.Element {
     const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
     const { semester, uniqueNumber, courseResult } = useQuickAdd();
     const statusMessage = STATUS_MESSAGES[courseResult.status];
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
 
-    const handleQuickAdd = () => {
-        background.validateLoginStatus();
+    const handleQuickAdd = async () => {
+        setIsLoggedIn(await background.validateLoginStatus());
     };
 
     const handleAddCourse = async (e?: React.FormEvent) => {
