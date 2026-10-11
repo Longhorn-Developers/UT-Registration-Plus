@@ -17,8 +17,10 @@ import {
     allDatesInRanges,
     calculateCourseCellColumns,
     formatToHHMMSS,
+    meetingToGoogleCalendarEvent,
     meetingToIcsString,
     nextDayInclusive,
+    scheduleToGoogleCalendarEvents,
     scheduleToIcsString,
 } from './utils';
 
@@ -324,6 +326,63 @@ describe('meetingToIcsString', () => {
 
     afterEach(() => {
         vi.restoreAllMocks();
+    });
+});
+
+describe('meetingToGoogleCalendarEvent', () => {
+    it('should handle a multi-day meeting with multiple instructors', () => {
+        const course = serde(multiMeetingMultiInstructorCourse);
+        const meeting = course.schedule.meetings[0]!;
+        const result = meetingToGoogleCalendarEvent(course, meeting);
+        expect(result).toEqual({
+            summary: 'J 395 – 44-REPORTING TEXAS',
+            location: 'CMA 6.146',
+            description: 'Unique number: 10335\nTaught by John Schwartz and John Bridges',
+            start: { dateTime: '2025-08-26T09:30:00', timeZone: 'America/Chicago' },
+            end: { dateTime: '2025-08-26T11:00:00', timeZone: 'America/Chicago' },
+            recurrence: [
+                'RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20251209T060000Z',
+                'EXDATE;TZID=America/Chicago:20251125T093000,20251127T093000',
+            ],
+        });
+    });
+
+    it('should omit location and EXDATE when there are none', () => {
+        const course = serde(multiMeetingMultiInstructorCourse);
+        course.instructors = [];
+        const meeting = course.schedule.meetings[1]!;
+        // No 2025 fall break falls on a Sunday
+        meeting.days = ['Sunday'];
+        meeting.location = undefined;
+        const result = meetingToGoogleCalendarEvent(course, meeting);
+        expect(result?.location).toBeUndefined();
+        expect(result?.description).toBe('Unique number: 10335');
+        expect(result?.recurrence).toEqual(['RRULE:FREQ=WEEKLY;BYDAY=SU;UNTIL=20251209T060000Z']);
+    });
+
+    it('should gracefully error on an out of range semester code', () => {
+        const course = serde(multiMeetingMultiInstructorCourse);
+        vi.spyOn(console, 'error').mockReturnValue(undefined);
+        course.semester = { season: 'Fall', year: 2010, code: '20109' };
+        expect(meetingToGoogleCalendarEvent(course, course.schedule.meetings[0]!)).toBeNull();
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+});
+
+describe('scheduleToGoogleCalendarEvents', () => {
+    it('should create one event per meeting', () => {
+        const schedule = serde(multiMeetingMultiInstructorSchedule);
+        schedule.courses.push(chatterjeeCS429Course);
+        const result = scheduleToGoogleCalendarEvents(schedule);
+        expect(result.map(event => [event.summary, event.start.dateTime])).toEqual([
+            ['J 395 – 44-REPORTING TEXAS', '2025-08-26T09:30:00'],
+            ['J 395 – 44-REPORTING TEXAS', '2025-08-29T13:00:00'],
+            ['C S 429 – COMP ORGANIZATN AND ARCH', '2025-08-25T16:00:00'],
+            ['C S 429 – COMP ORGANIZATN AND ARCH', '2025-08-29T09:00:00'],
+        ]);
     });
 });
 
