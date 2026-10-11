@@ -10,6 +10,7 @@ import { useIsActiveSchedule } from '@views/hooks/useSchedules';
 import { LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_HARDCODED } from '@views/lib/getGitHubStats';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 import CircleIcon from '~icons/ph/circle';
 import CopySimpleIcon from '~icons/ph/copy-simple';
 import DotsSixVerticalBoldIcon from '~icons/ph/dots-six-vertical-bold';
@@ -17,13 +18,11 @@ import DotsThreeBoldIcon from '~icons/ph/dots-three-bold';
 import PencilSimpleLineIcon from '~icons/ph/pencil-simple-line';
 import RadioButtonFillIcon from '~icons/ph/radio-button-fill';
 import TrashIcon from '~icons/ph/trash';
-
 import { Button } from './Button';
 import { usePrompt } from './DialogProvider/DialogProvider';
 import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
 import Link from './Link';
 import { SortableListDragHandle } from './SortableListDragHandle';
-import { useTheme } from 'src/views/contexts/ThemeContext';
 
 /**
  * Props for the ScheduleListItem component.

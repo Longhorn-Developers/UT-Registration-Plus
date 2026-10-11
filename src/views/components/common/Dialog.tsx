@@ -11,9 +11,8 @@ import { OptionsStore } from '@shared/storage/OptionsStore';
 import clsx from 'clsx';
 import type { JSX, PropsWithChildren } from 'react';
 import { Fragment } from 'react';
-
-import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 import { useTheme } from 'src/views/contexts/ThemeContext';
+import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 
 /**
  * Represents the props for the _Dialog component

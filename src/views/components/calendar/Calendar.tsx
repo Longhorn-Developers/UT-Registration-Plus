@@ -19,14 +19,13 @@ import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
 import { memo, useEffect, useRef, useState } from 'react';
+import { useThemeSync } from 'src/views/hooks/useThemeSync';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 import SidebarIcon from '~icons/ph/sidebar';
-
 import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
-import { useThemeSync } from 'src/views/hooks/useThemeSync';
 
 const CalendarSidebar = memo(function CalendarSidebar() {
     const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);

@@ -6,6 +6,7 @@ import Text from '@views/components/common/Text/Text';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
 import type { JSX } from 'react';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
 import PlusIcon from '~icons/ph/plus';
 import PlusCircleIcon from '~icons/ph/plus-circle';
@@ -13,7 +14,6 @@ import { Button } from './Button';
 import Dropdown from './Dropdown';
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 import Input from './Input';
-import { useTheme } from 'src/views/contexts/ThemeContext';
 
 const STATUS_MESSAGES: Partial<Record<CourseResult['status'], string>> = {
     idle: 'Enter the unique number of the course you want.',

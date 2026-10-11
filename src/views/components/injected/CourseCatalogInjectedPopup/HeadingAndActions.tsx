@@ -15,6 +15,7 @@ import { useCalendar } from '@views/contexts/CalendarContext';
 import clsx from 'clsx';
 import type React from 'react';
 import { useRef, useState } from 'react';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 import ArrowUpRightIcon from '~icons/ph/arrow-up-right';
 import CalendarDotsIcon from '~icons/ph/calendar-dots';
 import ChatTextIcon from '~icons/ph/chat-text';
@@ -25,9 +26,7 @@ import MinusIcon from '~icons/ph/minus';
 import PlusIcon from '~icons/ph/plus';
 import SmileyIcon from '~icons/ph/smiley';
 import XIcon from '~icons/ph/x';
-
 import DisplayMeetingInfo from './DisplayMeetingInfo';
-import { useTheme } from 'src/views/contexts/ThemeContext';
 
 const { openNewTab, addCourse, removeCourse, openCESPage } = background;
 

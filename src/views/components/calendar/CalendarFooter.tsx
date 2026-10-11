@@ -33,10 +33,10 @@ export function DiscordIcon(props: SVGProps<SVGSVGElement>) {
 }
 
 import type { SVGProps } from 'react';
+import { OptionsStore } from 'src/shared/storage/OptionsStore';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 import { Button } from '../common/Button';
 import Link from '../common/Link';
-import { useTheme } from 'src/views/contexts/ThemeContext';
-import { OptionsStore } from 'src/shared/storage/OptionsStore';
 
 interface SocialLink {
     icon: React.FC<React.SVGProps<SVGSVGElement>>;

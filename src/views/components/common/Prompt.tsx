@@ -2,11 +2,10 @@ import { Description, Dialog, DialogPanel, DialogTitle, Transition, TransitionCh
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { ReactElement } from 'react';
 import React from 'react';
-
-import type { Button } from './Button';
-import type Text from './Text/Text';
 import { useTheme } from 'src/views/contexts/ThemeContext';
+import type { Button } from './Button';
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
+import type Text from './Text/Text';
 
 /**
  * Props for the PromptDialog component.

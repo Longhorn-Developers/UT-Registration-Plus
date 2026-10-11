@@ -255,7 +255,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
             column: {
                 pointPadding: 0.2,
                 borderWidth: 0,
-                animation: reducedMotion ? false : { duration: 700 }
+                animation: reducedMotion ? false : { duration: 700 },
             },
         },
         series: [

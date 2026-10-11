@@ -48,7 +48,11 @@ export default defineConfig({
         colors: {
             ...colors,
             // Theme-dependent semantic tokens, see ExtensionRoot.module.scss for values
-            surface: { DEFAULT: 'var(--color-bg)', raised: 'var(--color-surface)', hover: 'var(--color-surface-hover)' },
+            surface: {
+                DEFAULT: 'var(--color-bg)',
+                raised: 'var(--color-surface)',
+                hover: 'var(--color-surface-hover)',
+            },
             content: { DEFAULT: 'var(--color-text)', muted: 'var(--color-text-muted)' },
             divider: 'rgb(from var(--color-border) r g b / %alpha)',
         },
@@ -66,11 +70,11 @@ export default defineConfig({
     ],
     presets: [
         presetUno({
-    		dark: {
-	    		dark: '[data-theme="dark"]',
-	    		light: '[data-theme="light"]',
-	    	},
-	    }),
+            dark: {
+                dark: '[data-theme="dark"]',
+                light: '[data-theme="light"]',
+            },
+        }),
         presetWebFonts({
             provider: 'none',
             fonts: {

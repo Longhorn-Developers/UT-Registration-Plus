@@ -16,6 +16,7 @@ import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
 import type { JSX } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 import ArrowsClockwiseIcon from '~icons/ph/arrows-clockwise';
 import CalendarDotsIcon from '~icons/ph/calendar-dots';
 import ExportIcon from '~icons/ph/export';
@@ -23,9 +24,7 @@ import FileCodeIcon from '~icons/ph/file-code';
 import FilePngIcon from '~icons/ph/file-png';
 import FileTextIcon from '~icons/ph/file-text';
 import SidebarIcon from '~icons/ph/sidebar';
-
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
-import { useTheme } from 'src/views/contexts/ThemeContext';
 
 export interface CalendarHeaderProps {
     sidebarOpen?: boolean;
