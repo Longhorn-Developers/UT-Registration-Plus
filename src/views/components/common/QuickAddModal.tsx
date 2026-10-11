@@ -6,6 +6,7 @@ import Text from '@views/components/common/Text/Text';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
 import type { JSX } from 'react';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
 import PlusIcon from '~icons/ph/plus';
 import PlusCircleIcon from '~icons/ph/plus-circle';
@@ -32,6 +33,8 @@ export default function QuickAddModal(): JSX.Element {
     const { semester, uniqueNumber, courseResult } = useQuickAdd();
     const statusMessage = STATUS_MESSAGES[courseResult.status];
 
+    const { theme } = useTheme();
+
     const handleQuickAdd = () => {
         background.validateLoginStatus();
     };
@@ -56,15 +59,16 @@ export default function QuickAddModal(): JSX.Element {
                 variant='minimal'
                 icon={PlusCircleIcon}
                 onClick={handleQuickAdd}
-                className='bg-transparent'
+                className='bg-transparent !text-content'
             >
                 Quick Add
             </PopoverButton>
             <PopoverPanel
                 as={ExtensionRootWrapper}
+                data-theme={theme}
                 className={clsx([
                     'mt-spacing-3',
-                    'origin-top rounded bg-white text-black shadow-lg border border-ut-offwhite/50 focus:outline-none',
+                    'origin-top rounded bg-surface-raised text-content shadow-lg border border-ut-offwhite/50 focus:outline-none',
                     !reducedMotion && [
                         'transition',
                         'data-[closed]:(opacity-0 scale-95)',
@@ -97,7 +101,7 @@ export default function QuickAddModal(): JSX.Element {
                         />
                     </div>
                     {statusMessage && (
-                        <Text variant='small' className='text-ut-black' aria-live='polite' aria-atomic='true'>
+                        <Text variant='small' className='text-content' aria-live='polite' aria-atomic='true'>
                             {statusMessage}
                         </Text>
                     )}

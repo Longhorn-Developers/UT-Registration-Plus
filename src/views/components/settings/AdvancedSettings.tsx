@@ -80,7 +80,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             <div className={PREVIEW_SECTION_DIV_CLASSNAME}>
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Enable Course Refresh
                             <BetaChip />
                         </Text>
@@ -98,7 +98,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Course Status Indicators
                             <BetaChip />
                         </Text>
@@ -118,7 +118,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Enable Themes
                             <BetaChip />
                         </Text>
@@ -143,7 +143,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Course Conflict Highlight
                         </Text>
                         <p className='text-sm text-content-muted'>
@@ -162,7 +162,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Load Courses Automatically on Scroll
                         </Text>
                         <p className='text-sm text-content-muted'>
@@ -182,7 +182,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Always Open Calendar in New Tab
                         </Text>
                         <p className='text-sm text-content-muted'>
@@ -202,7 +202,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Allow more than 10 schedules
                         </Text>
                         <p className='text-sm text-content-muted'>
@@ -241,7 +241,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Export Current Schedule
                         </Text>
                         <p className='text-sm text-content-muted'>Backup your active schedule to a portable file</p>
@@ -257,7 +257,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Import Schedule
                         </Text>
                         <p className='text-sm text-content-muted'>Import from a schedule file</p>
@@ -276,7 +276,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Reset All Data
                         </Text>
                         <p className='text-sm text-content-muted'>Erases all schedules and courses you have.</p>

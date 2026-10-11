@@ -48,7 +48,7 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
             >
                 <HashIcon className={clsx('h-5 w-5 text-color-white', tagColor)} />
             </div>
-            <div className='h-6.5 w-[53px] flex flex-1 items-center justify-center border-b border-r border-t rounded-br rounded-tr p-1.25'>
+            <div className='h-6.5 w-[53px] flex flex-1 items-center justify-center border-b border-r border-t border-divider rounded-br rounded-tr p-1.25'>
                 <input
                     type='text'
                     maxLength={6}

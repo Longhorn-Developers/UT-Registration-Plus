@@ -106,7 +106,7 @@ export default function CourseCellColorPicker({ defaultColor }: CourseCellColorP
 
     return (
         <div
-            className='inline-flex flex-col border border-ut-offwhite rounded-1 bg-white p-1.25'
+            className='inline-flex flex-col border border-divider rounded-1 bg-surface-raised p-1.25'
             role='dialog'
             aria-label='Color picker'
             onKeyDown={e => {
