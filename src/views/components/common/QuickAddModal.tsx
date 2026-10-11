@@ -7,7 +7,7 @@ import Text from '@views/components/common/Text/Text';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
 import type { JSX } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
 import PlusIcon from '~icons/ph/plus';
 import PlusCircleIcon from '~icons/ph/plus-circle';
@@ -38,6 +38,25 @@ export default function QuickAddModal(): JSX.Element {
     const handleQuickAdd = async () => {
         setIsLoggedIn(await background.validateLoginStatus());
     };
+
+    // Re-check login status whenever a full unique number is entered
+    useEffect(() => {
+        if (uniqueNumber.value.length !== UNIQUE_ID_LENGTH) return;
+        background.validateLoginStatus().then(setIsLoggedIn);
+    }, [uniqueNumber.value]);
+
+    // While logged out, re-check login status when the user returns to this tab (e.g. after logging in elsewhere)
+    useEffect(() => {
+        if (isLoggedIn !== false) return undefined;
+
+        const onVisibilityChange = () => {
+            if (document.visibilityState !== 'visible') return;
+            background.validateLoginStatus().then(setIsLoggedIn);
+        };
+
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+    }, [isLoggedIn]);
 
     const handleAddCourse = async (e?: React.FormEvent) => {
         e?.preventDefault();
@@ -83,7 +102,7 @@ export default function QuickAddModal(): JSX.Element {
                     <div className='flex flex-row gap-spacing-3'>
                         <Input
                             className='min-w-0 flex-1'
-                            value={isLoggedIn === false ? '' : uniqueNumber.value}
+                            value={uniqueNumber.value}
                             onChange={uniqueNumber.handleChange}
                             maxLength={UNIQUE_ID_LENGTH}
                             placeholder='Enter unique number'
