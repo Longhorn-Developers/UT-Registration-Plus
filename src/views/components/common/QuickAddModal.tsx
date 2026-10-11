@@ -100,8 +100,12 @@ export default function QuickAddModal(): JSX.Element {
                         />
                     </div>
                     {isLoggedIn === false ? (
-                        <Text variant='mini' className='self-center whitespace-nowrap 
-                            text-theme-black/50 !font-normal' aria-live='polite' aria-atomic='true'>
+                        <Text 
+                            variant='mini'
+                            className='self-center whitespace-nowrap text-theme-black/50 !font-normal'
+                            aria-live='polite'
+                            aria-atomic='true'
+                        >
                             <a
                                 href={UTRP_LOGIN_URL}
                                 target='_blank'
