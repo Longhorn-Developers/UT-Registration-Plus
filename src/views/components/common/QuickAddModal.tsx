@@ -96,10 +96,25 @@ export default function QuickAddModal(): JSX.Element {
                             options={semester.dropdownOptions}
                         />
                     </div>
-                    {statusMessage && (
-                        <Text variant='small' className='text-ut-black' aria-live='polite' aria-atomic='true'>
-                            {statusMessage}
+                    {isLoggedIn === false ? (
+                        <Text variant='mini' className='self-center whitespace-nowrap 
+                            text-theme-black/50 !font-normal' aria-live='polite' aria-atomic='true'>
+                            <a
+                                href={UTRP_LOGIN_URL}
+                                target='_blank'
+                                rel='noreferrer'
+                                className='text-ut-burntorange underline'
+                            >
+                                Log in
+                            </a>
+                            {' to refresh course data'}
                         </Text>
+                    ) : (
+                        statusMessage && (
+                            <Text variant='small' className='text-ut-black' aria-live='polite' aria-atomic='true'>
+                                {statusMessage}
+                            </Text>
+                        )
                     )}
                     {courseResult.status === 'found' && (
                         <div className='flex flex-col gap-0.5 border border-ut-offwhite/50 rounded px-spacing-5 py-spacing-3 shadow-md'>
