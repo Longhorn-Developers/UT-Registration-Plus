@@ -83,7 +83,7 @@ export default function QuickAddModal(): JSX.Element {
                     <div className='flex flex-row gap-spacing-3'>
                         <Input
                             className='min-w-0 flex-1'
-                            value={uniqueNumber.value}
+                            value={isLoggedIn === false ? '' : uniqueNumber.value}
                             onChange={uniqueNumber.handleChange}
                             maxLength={UNIQUE_ID_LENGTH}
                             placeholder='Enter unique number'
@@ -100,7 +100,7 @@ export default function QuickAddModal(): JSX.Element {
                         />
                     </div>
                     {isLoggedIn === false ? (
-                        <Text 
+                        <Text
                             variant='mini'
                             className='self-center whitespace-nowrap text-theme-black/50 !font-normal'
                             aria-live='polite'
@@ -123,7 +123,7 @@ export default function QuickAddModal(): JSX.Element {
                             </Text>
                         )
                     )}
-                    {courseResult.status === 'found' && (
+                    {isLoggedIn !== false && courseResult.status === 'found' && (
                         <div className='flex flex-col gap-0.5 border border-ut-offwhite/50 rounded px-spacing-5 py-spacing-3 shadow-md'>
                             <Text variant='h4' className='text-black font-bold!'>
                                 {courseResult.course.department} {courseResult.course.number}
@@ -159,12 +159,12 @@ export default function QuickAddModal(): JSX.Element {
                             )}
                         </PopoverPanel>
                         <Button
-                            color={courseResult.status === 'found' ? 'ut-green' : 'ut-gray'}
+                            color={isLoggedIn !== false && courseResult.status === 'found' ? 'ut-green' : 'ut-gray'}
                             size='regular'
                             variant='filled'
                             icon={PlusIcon}
                             type='submit'
-                            disabled={courseResult.status !== 'found'}
+                            disabled={isLoggedIn === false || courseResult.status !== 'found'}
                         >
                             Add Course
                         </Button>
