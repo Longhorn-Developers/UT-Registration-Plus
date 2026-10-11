@@ -1,5 +1,6 @@
 import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react';
 import { background } from '@shared/messages';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
@@ -27,6 +28,7 @@ const STATUS_MESSAGES: Partial<Record<CourseResult['status'], string>> = {
  * current schedule by entering a unique number and selecting a semester.
  */
 export default function QuickAddModal(): JSX.Element {
+    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
     const { semester, uniqueNumber, courseResult } = useQuickAdd();
     const statusMessage = STATUS_MESSAGES[courseResult.status];
 
@@ -62,13 +64,16 @@ export default function QuickAddModal(): JSX.Element {
                 as={ExtensionRootWrapper}
                 className={clsx([
                     'mt-spacing-3',
-                    'origin-top rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
-                    'data-[closed]:(opacity-0 scale-95)',
-                    'data-[enter]:(ease-out-expo duration-150)',
-                    'data-[leave]:(ease-out duration-50)',
+                    'origin-top rounded bg-white text-black shadow-lg border border-ut-offwhite/50 focus:outline-none',
+                    !reducedMotion && [
+                        'transition',
+                        'data-[closed]:(opacity-0 scale-95)',
+                        'data-[enter]:(ease-out-expo duration-150)',
+                        'data-[leave]:(ease-out duration-50)',
+                    ],
                     'px-spacing-7 py-spacing-6 w-[400px] z-20',
                 ])}
-                transition
+                transition={!reducedMotion}
                 anchor='bottom start'
             >
                 <form className='flex flex-col gap-spacing-7' onSubmit={handleAddCourse}>

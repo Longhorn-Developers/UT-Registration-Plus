@@ -15,6 +15,10 @@
 
     > * {
         transition: background-color 0.1s ease-in-out;
+
+        @media (prefers-reduced-motion: reduce) {
+            transition: none;
+        }
     }
     .conflictTooltip {
         position: relative;
@@ -52,6 +56,10 @@
     margin: 0.25rem 0;
     &:active {
         transform: scale(0.92);
+
+        @media (prefers-reduced-motion: reduce) {
+            transform: none;
+        }
     }
     width: 32px;
     height: 32px;
