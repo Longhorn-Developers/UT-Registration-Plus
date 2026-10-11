@@ -78,6 +78,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                     <Text
                         variant={size === 'regular' ? 'h4' : 'small'}
                         className='inline-flex translate-y-0.08 items-center gap-2'
+                        style={{ whiteSpace: 'nowrap' }}
                     >
                         {children}
                     </Text>

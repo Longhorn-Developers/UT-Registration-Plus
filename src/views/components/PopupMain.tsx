@@ -154,7 +154,18 @@ export default function PopupMain(): JSX.Element {
                             replaceSchedule(getActiveSchedule(), activeSchedule);
                         }}
                         renderItem={({ id, course }) => (
-                            <PopupCourseBlock key={id} course={course} colors={course.colors} />
+                            <PopupCourseBlock
+                                key={id}
+                                course={course}
+                                colors={course.colors}
+                                isHidden={activeSchedule.isCourseHidden(course.uniqueId)}
+                                onToggleVisibility={() =>
+                                    background.toggleCourseVisibility({
+                                        scheduleId: activeSchedule.id,
+                                        uniqueId: course.uniqueId,
+                                    })
+                                }
+                            />
                         )}
                     />
                 )}

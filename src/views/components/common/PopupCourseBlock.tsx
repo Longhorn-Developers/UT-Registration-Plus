@@ -12,6 +12,8 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import CheckIcon from '~icons/ph/check';
 import CopyFillIcon from '~icons/ph/copy-fill';
 import DotsSixVerticalBoldIcon from '~icons/ph/dots-six-vertical-bold';
+import EyeIcon from '~icons/ph/eye';
+import EyeSlashIcon from '~icons/ph/eye-slash';
 
 import { Button } from './Button';
 import { SortableListDragHandle } from './SortableListDragHandle';
@@ -23,6 +25,8 @@ export interface PopupCourseBlockProps {
     className?: string;
     course: Course;
     colors: CourseColors;
+    isHidden?: boolean;
+    onToggleVisibility?: () => void;
 }
 
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
@@ -49,7 +53,13 @@ const CourseMeeting = memo(
  * @param dragHandleProps - The drag handle props for the course block.
  * @returns The rendered PopupCourseBlock component.
  */
-export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): React.JSX.Element {
+export default function PopupCourseBlock({
+    className,
+    course,
+    colors,
+    isHidden = false,
+    onToggleVisibility,
+}: PopupCourseBlockProps): React.JSX.Element {
     const enableCourseStatusChips = OptionsStore.useStore(store => store.enableCourseStatusChips);
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
@@ -76,6 +86,11 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
     const handleClick = async () => {
         await background.switchToCalendarTab({ uniqueId: course.uniqueId });
         window.close();
+    };
+
+    const handleToggleVisibility = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.stopPropagation();
+        onToggleVisibility?.();
     };
 
     const handleCopy = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -110,6 +125,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
             }}
             className={clsx(
                 'w-full inline-flex items-center justify-center gap-1 rounded cursor-pointer text-left hover:shadow-md ease-out group-[.is-dragging]:shadow-md min-h-[55px]',
+                isHidden && 'opacity-50 hover:opacity-80',
                 className
             )}
             ref={ref}
@@ -163,7 +179,23 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
                     </div>
                 )}
             </button>
-            <div className='flex flex-col justify-center pr-spacing-3'>
+            <div className='flex flex-col justify-center gap-spacing-2 pr-spacing-3'>
+                {onToggleVisibility && (
+                    <Button
+                        color='ut-gray'
+                        onClick={handleToggleVisibility}
+                        className='h-full max-h-[30px] max-w-fit rounded text-white px-spacing-2! py-spacing-2!'
+                        style={{
+                            backgroundColor: colors.secondaryColor,
+                        }}
+                    >
+                        {isHidden ? (
+                            <EyeSlashIcon className='size-5 text-white' />
+                        ) : (
+                            <EyeIcon className='size-5 text-white' />
+                        )}
+                    </Button>
+                )}
                 <Button
                     color='ut-gray'
                     onClick={handleCopy}
