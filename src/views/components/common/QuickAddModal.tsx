@@ -120,7 +120,7 @@ export default function QuickAddModal(): JSX.Element {
                     </div>
                     {isLoggedIn === false ? (
                         <Text
-                            variant='mini'
+                            variant='small'
                             className='self-center whitespace-nowrap text-theme-black/50 !font-normal'
                             aria-live='polite'
                             aria-atomic='true'
