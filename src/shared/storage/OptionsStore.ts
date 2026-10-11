@@ -1,4 +1,5 @@
 import { createSyncStore } from '@chrome-extension-toolkit';
+import type { ThemeName } from '@shared/types/Theme';
 
 /**
  * A store that is used for storing user options
@@ -19,11 +20,20 @@ export interface IOptionsStore {
     /** whether we should open the calendar in a new tab; default is to focus an existing calendar tab */
     alwaysOpenCalendarInNewTab: boolean;
 
+    /** whether animations and transitions should be reduced for accessibility */
+    enableReducedMotion: boolean;
+
     /** whether the calendar sidebar should be shown when the calendar is opened */
     showCalendarSidebar: boolean;
 
     /** whether users are allowed to bypass the 10 schedule limit */
     allowMoreSchedules: boolean;
+
+    /** BETA: whether experimental theme support (dark mode, alternate themes) is enabled */
+    enableThemesBeta: boolean;
+
+    /** BETA: the visual theme applied to the extension UI, when enableThemesBeta is on */
+    theme: ThemeName;
 }
 
 export const OptionsStore = createSyncStore<IOptionsStore>(
@@ -34,8 +44,11 @@ export const OptionsStore = createSyncStore<IOptionsStore>(
         enableScrollToLoad: true,
         enableDataRefreshing: false,
         alwaysOpenCalendarInNewTab: false,
+        enableReducedMotion: false,
         showCalendarSidebar: true,
         allowMoreSchedules: false,
+        enableThemesBeta: false,
+        theme: 'light',
     },
     {
         usePrefix: false,
