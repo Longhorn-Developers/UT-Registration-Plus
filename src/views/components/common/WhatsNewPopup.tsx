@@ -17,6 +17,9 @@ import PlusIcon from '~icons/ph/plus-circle';
  * It should be incremented every time the "What's New" popup is updated.
  */
 const WHATSNEW_POPUP_VERSION = 3;
+
+/** Disables the "What's New" popup until new content ships in v2.5.0; set to true to show it again */
+const SHOW_WHATS_NEW_POPUP = false;
 const ACTIVE_WHATSNEW_POPUP_VERSION_KEY = 'activeWhatsNewPopupVersion';
 
 const WHATSNEW_VIDEO_URL = 'https://cdn.longhorns.dev/quickaddhero.mp4';
@@ -140,6 +143,8 @@ export function WhatsNewDialog(): null {
     // biome-ignore lint/correctness/useExhaustiveDependencies: This is on purpose
     useEffect(() => {
         const checkUpdate = async () => {
+            if (!SHOW_WHATS_NEW_POPUP) return;
+
             const [version, sessionStorage] = await Promise.all([
                 ExtensionStore.get('lastWhatsNewPopupVersion'),
                 chrome.storage.session.get(ACTIVE_WHATSNEW_POPUP_VERSION_KEY),

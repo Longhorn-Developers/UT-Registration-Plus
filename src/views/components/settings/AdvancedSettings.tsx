@@ -31,6 +31,9 @@ interface AdvancedSettingsProps {
     handleImportClick: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
 }
 
+/** Hides the themes toggle until themes are ready to ship; set to true to show it again */
+const SHOW_THEMES_SETTING = false;
+
 function BetaChip() {
     return (
         <span className='mx-2 border border-ut-burntorange rounded px-2 py-0.5 text-xs text-ut-burntorange font-medium'>
@@ -84,7 +87,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                             Enable Course Refresh
                         </Text>
                         <p className='text-sm text-content-muted'>
-                            Show a refresh button in the calendar to re-scrape course data from UT&apos;s site.
+                            Show a refresh button in the calendar to update course info from UT&apos;s site.
                         </p>
                     </div>
                     <SwitchButton
@@ -114,30 +117,34 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <Divider size='auto' orientation='horizontal' />
 
-                <div className='flex items-center justify-between'>
-                    <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                            Enable Themes
-                            <BetaChip />
-                        </Text>
-                        <p className='text-sm text-content-muted'>
-                            Try out dark mode and other color themes for the extension.
-                        </p>
-                        {enableThemesBeta && (
-                            <div className='mt-2'>
-                                <ThemePicker theme={theme} />
+                {SHOW_THEMES_SETTING && (
+                    <>
+                        <div className='flex items-center justify-between'>
+                            <div className='max-w-xs'>
+                                <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                    Enable Themes
+                                    <BetaChip />
+                                </Text>
+                                <p className='text-sm text-content-muted'>
+                                    Try out dark mode and other color themes for the extension.
+                                </p>
+                                {enableThemesBeta && (
+                                    <div className='mt-2'>
+                                        <ThemePicker theme={theme} />
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
-                    <SwitchButton
-                        isChecked={enableThemesBeta}
-                        onChange={() => {
-                            void OptionsStore.set('enableThemesBeta', !enableThemesBeta);
-                        }}
-                    />
-                </div>
+                            <SwitchButton
+                                isChecked={enableThemesBeta}
+                                onChange={() => {
+                                    void OptionsStore.set('enableThemesBeta', !enableThemesBeta);
+                                }}
+                            />
+                        </div>
 
-                <Divider size='auto' orientation='horizontal' />
+                        <Divider size='auto' orientation='horizontal' />
+                    </>
+                )}
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
