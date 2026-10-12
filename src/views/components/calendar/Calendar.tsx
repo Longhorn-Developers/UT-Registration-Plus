@@ -1,16 +1,17 @@
 import { MessageListener } from '@chrome-extension-toolkit';
 import importSchedule from '@pages/background/lib/importSchedule';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
-import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
 import ResourceLinks from '@views/components/calendar/ResourceLinks';
+import CourseFinderPanel from '@views/components/common/CourseFinder/CourseFinderPanel';
 import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
+import { useCalendarSidebar, useCourseFinderControls, useCourseFinderState } from '@views/contexts/CourseFinderContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
@@ -20,6 +21,7 @@ import type React from 'react';
 import type { ReactNode } from 'react';
 import { memo, useEffect, useRef, useState } from 'react';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
+import MagnifyingGlassIcon from '~icons/ph/magnifying-glass';
 import SidebarIcon from '~icons/ph/sidebar';
 
 import { Button } from '../common/Button';
@@ -27,11 +29,32 @@ import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
 
+/**
+ * The Course Finder in the sidebar. It reads the Course Finder's state itself, so the rest of the sidebar doesn't
+ * re-render with every keystroke and page of results.
+ */
+function SidebarCourseFinder() {
+    const controls = useCourseFinderControls();
+    const state = useCourseFinderState();
+    if (!controls || !state) return null;
+
+    return (
+        <CourseFinderPanel
+            finder={state.finder}
+            form={state.form}
+            onClose={controls.close}
+            inputRef={controls.searchInputRef}
+        />
+    );
+}
+
 const CalendarSidebar = memo(function CalendarSidebar() {
-    const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
-    const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
+    const { isSidebarShown: showSidebar, toggleSidebar } = useCalendarSidebar();
     const showReportIssueDialog = useReportIssueDialog();
+    const courseFinder = useCourseFinderControls();
+    const isCourseFinderOpen = courseFinder?.isOpen ?? false;
     const sidebarRef = useRef<HTMLDivElement>(null);
+    const findCourseButtonRef = useRef<HTMLButtonElement>(null);
 
     // TODO: Replace with JSX `inert={!showSidebar}` once React supports the inert attribute natively.
     useEffect(() => {
@@ -69,24 +92,51 @@ const CalendarSidebar = memo(function CalendarSidebar() {
                 />
             </div>
 
+            {/* Outside the scrolling part of the sidebar, so it's always in reach. Hidden rather than removed while
+                the Course Finder is open, so focus can go back to it afterwards. */}
+            {courseFinder && (
+                <div className={clsx('px-spacing-7 mb-spacing-4', { hidden: isCourseFinderOpen })}>
+                    <Button
+                        ref={findCourseButtonRef}
+                        className='w-full'
+                        color='ut-burntorange'
+                        size='small'
+                        variant='outline'
+                        icon={MagnifyingGlassIcon}
+                        onClick={() => courseFinder.open(findCourseButtonRef.current)}
+                    >
+                        Find a course
+                    </Button>
+                </div>
+            )}
+
+            {/* Keyed, so each view starts scrolled to the top. The scroll padding keeps what's focused out from under the sticky titles. */}
             <div
+                key={isCourseFinderOpen ? 'course-finder' : 'schedules'}
                 style={{
                     scrollbarGutter: 'stable',
                 }}
-                className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-7 pr-2.75'
+                className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto scroll-pt-10 pb-spacing-6 pl-spacing-7 pr-2.75'
             >
-                <CalendarSchedules />
-                <Divider orientation='horizontal' size='100%' />
-                <ResourceLinks />
-                <Divider orientation='horizontal' size='100%' />
-                <button
-                    type='button'
-                    onClick={showReportIssueDialog}
-                    className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
-                >
-                    <Text variant='p'>Send us Feedback!</Text>
-                    <OutwardArrowIcon className='h-4 w-4' />
-                </button>
+                {/* The Course Finder takes the schedules' place in the sidebar while it's open */}
+                {isCourseFinderOpen ? (
+                    <SidebarCourseFinder />
+                ) : (
+                    <>
+                        <CalendarSchedules />
+                        <Divider orientation='horizontal' size='100%' />
+                        <ResourceLinks />
+                        <Divider orientation='horizontal' size='100%' />
+                        <button
+                            type='button'
+                            onClick={showReportIssueDialog}
+                            className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
+                        >
+                            <Text variant='p'>Send us Feedback!</Text>
+                            <OutwardArrowIcon className='h-4 w-4' />
+                        </button>
+                    </>
+                )}
             </div>
 
             <CalendarFooter />
@@ -104,8 +154,7 @@ export default function Calendar(): ReactNode {
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(initialCourse !== null);
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
     const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
-    const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
-    const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
+    const { isSidebarShown: showSidebar, toggleSidebar } = useCalendarSidebar();
 
     const activeScheduleRef = useRef(activeSchedule);
     activeScheduleRef.current = activeSchedule;

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import QuickAddModal from '@views/components/common/QuickAddModal';
+import { CourseFinderProvider } from '@views/contexts/CourseFinderContext';
 
 const meta = {
     title: 'Components/Common/QuickAddModal',
@@ -17,6 +18,15 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
     render: () => <InnerComponent />,
+};
+
+/** On the calendar page, where it also links to the Course Finder */
+export const OnCalendar: Story = {
+    render: () => (
+        <CourseFinderProvider>
+            <InnerComponent />
+        </CourseFinderProvider>
+    ),
 };
 
 const InnerComponent = () => <QuickAddModal />;

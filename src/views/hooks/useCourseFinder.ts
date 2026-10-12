@@ -27,7 +27,7 @@ const MAX_PAGES_PER_LOAD = 30;
 /**
  * Represents the state of the course search.
  *
- * - `idle`: No search has been made yet.
+ * - `idle`: There's no search, either because none has been made yet or because it was cleared.
  * - `loading`: Pages of results are being fetched.
  * - `done`: The search finished (there may still be more pages to load).
  * - `logged_out`: The user has to log in to UT before searching the course schedule.
@@ -41,16 +41,20 @@ export type CourseFinderStatus = 'idle' | 'loading' | 'done' | 'logged_out' | 'e
 export interface UseCourseFinderReturn {
     /** Semester dropdown state, ready to spread into a Dropdown component. */
     semester: UseDropdownReturn<Semester>;
+    /** Whether UT's semesters are still being fetched, so none can be picked yet. */
+    areSemestersLoading: boolean;
     /** The fields of study the user can search by. */
     fieldsOfStudy: readonly FieldOfStudy[];
     /** The current state of the search. */
     status: CourseFinderStatus;
-    /** The query of the latest search, or null before the first search. */
+    /** The query of the current search, or null when there's no search. */
     query: CourseFinderQuery | null;
     /** Starts a new search, replacing the current results. */
     search: (query: CourseFinderQuery) => Promise<void>;
     /** Loads the next pages of results for the current search. */
     loadMore: () => void;
+    /** Clears the current search and its results. */
+    reset: () => void;
     /** Whether the current search has more pages of results to load. */
     hasMore: boolean;
     /** Every course section loaded for the current search. */
@@ -65,9 +69,9 @@ export interface UseCourseFinderReturn {
     filters: CourseFinderFilters;
     /** Updates the filters applied to the results. */
     setFilters: Dispatch<SetStateAction<CourseFinderFilters>>;
-    /** The courses (by full name) whose sections are collapsed in the results. */
-    collapsedGroups: ReadonlySet<string>;
-    /** Collapses or expands a course's sections in the results. */
+    /** The courses (by full name) whose sections are shown in the results. Courses start collapsed. */
+    expandedGroups: ReadonlySet<string>;
+    /** Expands or collapses a course's sections in the results. */
     toggleGroup: (fullName: string) => void;
 }
 
@@ -75,43 +79,64 @@ export interface UseCourseFinderReturn {
  * Encapsulates the main logic for the Course Finder:
  * semester selection, searching UT's course schedule page by page, and filtering the results.
  *
+ * @param isOpen - Whether the Course Finder is shown. Its semester defaults to the one of the schedule that's active
+ * when it's first shown.
+ *
  * @example
  * ```tsx
- * const { semester, search, groups, filters, setFilters } = useCourseFinder();
+ * const { semester, search, groups, filters, setFilters } = useCourseFinder(isOpen);
  * ```
  */
-export function useCourseFinder(): UseCourseFinderReturn {
+export function useCourseFinder(isOpen: boolean): UseCourseFinderReturn {
     const activeSchedule = useActiveSchedule();
-    const [availableSemesters, setAvailableSemesters] = useState<Semester[]>([]);
+    // Null while they're being fetched
+    const [availableSemesters, setAvailableSemesters] = useState<Semester[] | null>(null);
     const [fieldsOfStudy, setFieldsOfStudy] = useState<readonly FieldOfStudy[]>(FIELDS_OF_STUDY);
     const [status, setStatus] = useState<CourseFinderStatus>('idle');
     const [query, setQuery] = useState<CourseFinderQuery | null>(null);
     const [results, setResults] = useState<Course[]>([]);
     const [pendingURLs, setPendingURLs] = useState<string[]>([]);
     const [filters, setFilters] = useState<CourseFinderFilters>(DEFAULT_COURSE_FINDER_FILTERS);
-    const [collapsedGroups, setCollapsedGroups] = useState<ReadonlySet<string>>(new Set());
+    const [expandedGroups, setExpandedGroups] = useState<ReadonlySet<string>>(new Set());
 
     // Incremented on every search, so pages from an older search are dropped once they arrive
     const searchId = useRef(0);
 
-    // Default to the semester of the schedule the courses are being added to
-    const scheduleSemesterCode = activeSchedule.courses.find(c => c.semester.code)?.semester.code;
+    // Default to the semester of the schedule the courses are being added to. It's picked once, the first time the
+    // Course Finder is shown with the semesters loaded: worked out on every render, it would change whenever the
+    // schedule's first course did, and the form would search the new semester on its own.
+    const defaultSemesterCode = useRef<string | undefined>(undefined);
+    const hasPickedDefaultSemester = useRef(false);
+    if (!hasPickedDefaultSemester.current && isOpen && availableSemesters?.length) {
+        hasPickedDefaultSemester.current = true;
+        const scheduleSemesterCode = activeSchedule.courses.find(c => c.semester.code)?.semester.code;
+        defaultSemesterCode.current =
+            availableSemesters.find(s => s.code === scheduleSemesterCode)?.code ?? availableSemesters[0]?.code;
+    }
     const semester = useDropdown<Semester>({
-        items: availableSemesters,
+        items: availableSemesters ?? [],
         // biome-ignore lint/style/noNonNullAssertion: TODO:
         getKey: s => s.code!,
         getLabel: s => `${s.season} ${s.year}`,
-        defaultKey: availableSemesters.find(s => s.code === scheduleSemesterCode)?.code ?? availableSemesters[0]?.code,
+        defaultKey: defaultSemesterCode.current,
     });
 
     // Fetch available semesters and the latest fields of study on mount.
     useEffect(() => {
-        fetchAvailableSemesters().then(setAvailableSemesters);
-        CacheStore.get('fieldsOfStudy').then(cached => {
-            if (cached?.data.length) {
-                setFieldsOfStudy(cached.data);
-            }
-        });
+        fetchAvailableSemesters()
+            .then(setAvailableSemesters)
+            .catch(error => {
+                console.error('Failed to load the semesters', error);
+                setAvailableSemesters([]);
+            });
+        // Without the cached list, the bundled one is still there to pick from
+        CacheStore.get('fieldsOfStudy')
+            .then(cached => {
+                if (cached?.data.length) {
+                    setFieldsOfStudy(cached.data);
+                }
+            })
+            .catch(error => console.error('Failed to load the cached fields of study', error));
 
         return () => {
             // Stop any search in progress from updating state after unmounting
@@ -167,7 +192,7 @@ export function useCourseFinder(): UseCourseFinderReturn {
             setQuery(newQuery);
             setResults([]);
             setPendingURLs([]);
-            setCollapsedGroups(new Set());
+            setExpandedGroups(new Set());
             // Flags differ between searches, so a flag from the last search could hide every result
             setFilters(prev => ({ ...prev, flags: [] }));
             setStatus('loading');
@@ -204,6 +229,17 @@ export function useCourseFinder(): UseCourseFinderReturn {
         };
     }, [status, query, search]);
 
+    const reset = useCallback(() => {
+        searchId.current += 1;
+        setQuery(null);
+        setResults([]);
+        setPendingURLs([]);
+        setExpandedGroups(new Set());
+        // Flags are only shown alongside results, so one left picked would be counted without being seen
+        setFilters(prev => ({ ...prev, flags: [] }));
+        setStatus('idle');
+    }, []);
+
     const loadMore = useCallback(() => {
         if (status === 'loading' || pendingURLs.length === 0) return;
         void loadPages(pendingURLs, searchId.current);
@@ -217,7 +253,7 @@ export function useCourseFinder(): UseCourseFinderReturn {
     }, [results, filters, query, activeSchedule.courses]);
 
     const toggleGroup = useCallback((fullName: string) => {
-        setCollapsedGroups(prev => {
+        setExpandedGroups(prev => {
             const next = new Set(prev);
             if (!next.delete(fullName)) next.add(fullName);
             return next;
@@ -230,11 +266,13 @@ export function useCourseFinder(): UseCourseFinderReturn {
 
     return {
         semester,
+        areSemestersLoading: availableSemesters === null,
         fieldsOfStudy,
         status,
         query,
         search,
         loadMore,
+        reset,
         hasMore: pendingURLs.length > 0,
         results,
         groups,
@@ -242,7 +280,7 @@ export function useCourseFinder(): UseCourseFinderReturn {
         availableFlags,
         filters,
         setFilters,
-        collapsedGroups,
+        expandedGroups,
         toggleGroup,
     };
 }

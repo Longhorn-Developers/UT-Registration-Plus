@@ -2,16 +2,16 @@ import { CloseButton, Popover, PopoverButton, PopoverGroup, PopoverPanel } from 
 import { background } from '@shared/messages';
 import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
+import { useCourseFinderControls } from '@views/contexts/CourseFinderContext';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
 import type { JSX } from 'react';
-import { useState } from 'react';
+import { useRef } from 'react';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
 import MagnifyingGlassIcon from '~icons/ph/magnifying-glass';
 import PlusIcon from '~icons/ph/plus';
 import PlusCircleIcon from '~icons/ph/plus-circle';
 import { Button } from './Button';
-import CourseFinderDialog from './CourseFinder/CourseFinderDialog';
 import Dropdown from './Dropdown';
 import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
 import Input from './Input';
@@ -28,11 +28,12 @@ const STATUS_MESSAGES: Partial<Record<CourseResult['status'], string>> = {
  *
  * Renders a popover that allows users to quickly add courses to their
  * current schedule by entering a unique number and selecting a semester,
- * or open the Course Finder to look courses up by major, core curriculum, or course number.
+ * or open the Course Finder in the calendar sidebar to look courses up by field of study or core curriculum.
  */
 export default function QuickAddModal(): JSX.Element {
     const { semester, uniqueNumber, courseResult } = useQuickAdd();
-    const [isCourseFinderOpen, setIsCourseFinderOpen] = useState(false);
+    const courseFinder = useCourseFinderControls();
+    const quickAddButtonRef = useRef<HTMLButtonElement>(null);
     const statusMessage = STATUS_MESSAGES[courseResult.status];
 
     const handleQuickAdd = () => {
@@ -51,103 +52,105 @@ export default function QuickAddModal(): JSX.Element {
     };
 
     return (
-        <>
-            <Popover>
-                <PopoverButton
-                    as={Button}
-                    color='ut-black'
-                    size='small'
-                    variant='minimal'
-                    icon={PlusCircleIcon}
-                    onClick={handleQuickAdd}
-                    className='bg-transparent'
-                >
-                    Quick Add
-                </PopoverButton>
-                <PopoverPanel
-                    as={ExtensionRootWrapper}
-                    className={clsx([
-                        'mt-spacing-3',
-                        'origin-top rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
-                        'data-[closed]:(opacity-0 scale-95)',
-                        'data-[enter]:(ease-out-expo duration-150)',
-                        'data-[leave]:(ease-out duration-50)',
-                        'px-spacing-7 py-spacing-6 w-[400px] z-20',
-                    ])}
-                    transition
-                    anchor='bottom start'
-                >
-                    <form className='flex flex-col gap-spacing-7' onSubmit={handleAddCourse}>
-                        <div className='flex flex-row gap-spacing-3'>
-                            <Input
-                                className='min-w-0 flex-1'
-                                value={uniqueNumber.value}
-                                onChange={uniqueNumber.handleChange}
-                                maxLength={UNIQUE_ID_LENGTH}
-                                placeholder='Enter unique number'
-                                aria-label='Course unique number'
-                                autoFocus
-                            />
-                            <Dropdown
-                                className='w-40 flex-shrink-0'
-                                selectedOption={semester.selectedOption}
-                                placeholderText='Semester'
-                                noOptionsText='No semesters found'
-                                onOptionChange={semester.onOptionChange}
-                                options={semester.dropdownOptions}
-                            />
-                        </div>
-                        {statusMessage && (
-                            <Text variant='small' className='text-ut-black' aria-live='polite' aria-atomic='true'>
-                                {statusMessage}
+        <Popover>
+            <PopoverButton
+                ref={quickAddButtonRef}
+                as={Button}
+                color='ut-black'
+                size='small'
+                variant='minimal'
+                icon={PlusCircleIcon}
+                onClick={handleQuickAdd}
+                className='bg-transparent'
+            >
+                Quick Add
+            </PopoverButton>
+            <PopoverPanel
+                as={ExtensionRootWrapper}
+                className={clsx([
+                    'mt-spacing-3',
+                    'origin-top rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
+                    'data-[closed]:(opacity-0 scale-95)',
+                    'data-[enter]:(ease-out-expo duration-150)',
+                    'data-[leave]:(ease-out duration-50)',
+                    'px-spacing-7 py-spacing-6 w-[400px] z-20',
+                ])}
+                transition
+                anchor='bottom start'
+            >
+                <form className='flex flex-col gap-spacing-7' onSubmit={handleAddCourse}>
+                    <div className='flex flex-row gap-spacing-3'>
+                        <Input
+                            className='min-w-0 flex-1'
+                            value={uniqueNumber.value}
+                            onChange={uniqueNumber.handleChange}
+                            maxLength={UNIQUE_ID_LENGTH}
+                            placeholder='Enter unique number'
+                            aria-label='Course unique number'
+                            autoFocus
+                        />
+                        <Dropdown
+                            className='w-40 flex-shrink-0'
+                            selectedOption={semester.selectedOption}
+                            placeholderText='Semester'
+                            noOptionsText='No semesters found'
+                            onOptionChange={semester.onOptionChange}
+                            options={semester.dropdownOptions}
+                        />
+                    </div>
+                    {statusMessage && (
+                        <Text variant='small' className='text-ut-black' aria-live='polite' aria-atomic='true'>
+                            {statusMessage}
+                        </Text>
+                    )}
+                    {courseResult.status === 'found' && (
+                        <div className='flex flex-col gap-0.5 border border-ut-offwhite/50 rounded px-spacing-5 py-spacing-3 shadow-md'>
+                            <Text variant='h4' className='text-black font-bold!'>
+                                {courseResult.course.department} {courseResult.course.number}
+                                {' \u2013 '}
+                                {courseResult.course.courseName}
                             </Text>
-                        )}
-                        {courseResult.status === 'found' && (
-                            <div className='flex flex-col gap-0.5 border border-ut-offwhite/50 rounded px-spacing-5 py-spacing-3 shadow-md'>
-                                <Text variant='h4' className='text-black font-bold!'>
-                                    {courseResult.course.department} {courseResult.course.number}
-                                    {' \u2013 '}
-                                    {courseResult.course.courseName}
+                            {courseResult.course.schedule.meetings.map((m, i) => (
+                                // biome-ignore lint/suspicious/noArrayIndexKey: TODO:
+                                <Text key={i} variant='small' className='text-ut-black'>
+                                    {m.getDaysString({ format: 'short' })}{' '}
+                                    {m.getTimeString({
+                                        separator: '\u2013',
+                                    })}
+                                    {m.location ? `, ${m.location.building} ${m.location.room}` : ''}
                                 </Text>
-                                {courseResult.course.schedule.meetings.map((m, i) => (
-                                    // biome-ignore lint/suspicious/noArrayIndexKey: TODO:
-                                    <Text key={i} variant='small' className='text-ut-black'>
-                                        {m.getDaysString({ format: 'short' })}{' '}
-                                        {m.getTimeString({
-                                            separator: '\u2013',
-                                        })}
-                                        {m.location ? `, ${m.location.building} ${m.location.room}` : ''}
-                                    </Text>
-                                ))}
-                            </div>
-                        )}
-                        <PopoverGroup className='w-full flex flex-row justify-end gap-spacing-5'>
-                            <PopoverPanel>
-                                {({ close }) => (
-                                    <Button
-                                        color='ut-burntorange'
-                                        size='regular'
-                                        variant='minimal'
-                                        onClick={() => {
-                                            uniqueNumber.reset();
-                                            close();
-                                        }}
-                                    >
-                                        Cancel
-                                    </Button>
-                                )}
-                            </PopoverPanel>
-                            <Button
-                                color={courseResult.status === 'found' ? 'ut-green' : 'ut-gray'}
-                                size='regular'
-                                variant='filled'
-                                icon={PlusIcon}
-                                type='submit'
-                                disabled={courseResult.status !== 'found'}
-                            >
-                                Add Course
-                            </Button>
-                        </PopoverGroup>
+                            ))}
+                        </div>
+                    )}
+                    <PopoverGroup className='w-full flex flex-row justify-end gap-spacing-5'>
+                        <PopoverPanel>
+                            {({ close }) => (
+                                <Button
+                                    color='ut-burntorange'
+                                    size='regular'
+                                    variant='minimal'
+                                    onClick={() => {
+                                        uniqueNumber.reset();
+                                        close();
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                            )}
+                        </PopoverPanel>
+                        <Button
+                            color={courseResult.status === 'found' ? 'ut-green' : 'ut-gray'}
+                            size='regular'
+                            variant='filled'
+                            icon={PlusIcon}
+                            type='submit'
+                            disabled={courseResult.status !== 'found'}
+                        >
+                            Add Course
+                        </Button>
+                    </PopoverGroup>
+                    {/* The Course Finder lives in the calendar sidebar, so it's only offered on the calendar page */}
+                    {courseFinder && (
                         <div className='flex flex-row items-center justify-between gap-spacing-3 border-t border-ut-offwhite/50 pt-spacing-5'>
                             <Text variant='small' className='text-ut-black'>
                                 Don't know the unique number?
@@ -158,15 +161,14 @@ export default function QuickAddModal(): JSX.Element {
                                 size='small'
                                 variant='minimal'
                                 icon={MagnifyingGlassIcon}
-                                onClick={() => setIsCourseFinderOpen(true)}
+                                onClick={() => courseFinder.open(quickAddButtonRef.current)}
                             >
                                 Find a course
                             </CloseButton>
                         </div>
-                    </form>
-                </PopoverPanel>
-            </Popover>
-            <CourseFinderDialog open={isCourseFinderOpen} onClose={() => setIsCourseFinderOpen(false)} />
-        </>
+                    )}
+                </form>
+            </PopoverPanel>
+        </Popover>
     );
 }
