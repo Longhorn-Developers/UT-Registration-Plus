@@ -136,7 +136,7 @@ export default function PopupMain(): JSX.Element {
                     <Text variant='p' className='text-center text-ut-gray !font-normal'>
                         {funny}
                     </Text>
-                    <Text variant='small' className='text-center text-black'>
+                    <Text variant='small' className='text-center text-content'>
                         (No courses added)
                     </Text>
                 </div>
