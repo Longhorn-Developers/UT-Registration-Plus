@@ -13,7 +13,7 @@ import type React from 'react';
 import TrashIcon from '~icons/ph/trash';
 
 import FileUpload from '../common/FileUpload';
-import { DISPLAY_PREVIEWS, PREVIEW_SECTION_DIV_CLASSNAME } from './constants';
+import { DISPLAY_PREVIEWS, PREVIEW_SECTION_DIV_CLASSNAME, SHOW_THEMES_SETTING } from './constants';
 import Preview from './Preview';
 
 interface AdvancedSettingsProps {
@@ -30,9 +30,6 @@ interface AdvancedSettingsProps {
     handleEraseAll: () => void;
     handleImportClick: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
 }
-
-/** Hides the themes toggle until themes are ready to ship; set to true to show it again */
-const SHOW_THEMES_SETTING = false;
 
 function BetaChip() {
     return (

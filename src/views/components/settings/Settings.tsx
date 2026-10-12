@@ -36,7 +36,7 @@ import { useMigrationDialog } from '../common/MigrationDialog';
 import { AdvancedSettings } from './AdvancedSettings';
 import { ContributorCard } from './ContributorCard';
 import { ContributorCardSkeleton } from './ContributorCardSkeleton';
-import { DEV_MODE_CLICK_TARGET, INCLUDE_MERGED_PRS, STATS_TOGGLE_KEY } from './constants';
+import { DEV_MODE_CLICK_TARGET, INCLUDE_MERGED_PRS, SHOW_THEMES_SETTING, STATS_TOGGLE_KEY } from './constants';
 import DevMode from './DevMode';
 import { useBirthdayCelebration } from './useBirthdayCelebration';
 import { useDevMode } from './useDevMode';
@@ -87,7 +87,7 @@ export default function Settings(): React.JSX.Element {
     const enableCourseStatusChips = options.enableCourseStatusChips;
     const isDeveloper = DevStore.useStore(store => store.isDeveloper);
 
-    useThemeSync(options.enableThemesBeta ? options.theme : 'light');
+    useThemeSync(SHOW_THEMES_SETTING && options.enableThemesBeta ? options.theme : 'light');
 
     const activeSchedule = useActiveSchedule();
     const showDialog = usePrompt();
@@ -384,7 +384,7 @@ export default function Settings(): React.JSX.Element {
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3'>
                             {LONGHORN_DEVELOPERS_ADMINS.map(admin => (
                                 <ContributorCard
-                                    key={admin.githubUsername}
+                                    key={admin.name}
                                     name={admin.name}
                                     githubUsername={admin.githubUsername}
                                     personalWebsite={getPersonalWebsite(admin)}

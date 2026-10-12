@@ -1,4 +1,6 @@
 export const DISPLAY_PREVIEWS = false;
+/** Hides the themes toggle and forces the light theme until themes are ready to ship; set to true to show it again */
+export const SHOW_THEMES_SETTING = false;
 export const PREVIEW_SECTION_DIV_CLASSNAME = DISPLAY_PREVIEWS ? 'w-1/2 space-y-4' : 'flex-grow space-y-4';
 
 export const STATS_TOGGLE_KEY = 's';
