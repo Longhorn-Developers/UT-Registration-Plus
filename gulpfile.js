@@ -5,7 +5,8 @@ import { dest, series, src } from 'gulp';
 import { exec } from 'gulp-execa';
 import zip from 'gulp-zip';
 
-const DIST_DIR = 'dist';
+const BROWSER_TARGET = process.env.BROWSER_TARGET || 'chrome';
+const DIST_DIR = path.join('dist', BROWSER_TARGET);
 const PACKAGE_DIR = 'package';
 const DATABASE_DIR = path.join(DIST_DIR, 'database');
 
@@ -49,7 +50,9 @@ async function instrumentWithSentry(cb) {
 // Zip the dist folder
 function zipDist() {
     const packageInfo = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
-    const zipFileName = `${packageInfo.name.replace(/ /g, '-')}-${packageInfo.version}.zip`;
+    // Chrome keeps the historical file name; other targets get a suffix.
+    const targetSuffix = BROWSER_TARGET === 'chrome' ? '' : `-${BROWSER_TARGET}`;
+    const zipFileName = `${packageInfo.name.replace(/ /g, '-')}-${packageInfo.version}${targetSuffix}.zip`;
 
     return src(`${DIST_DIR}/**`, {
         base: DIST_DIR,
