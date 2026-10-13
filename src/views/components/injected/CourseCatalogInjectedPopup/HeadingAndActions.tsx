@@ -12,7 +12,6 @@ import Divider from '@views/components/common/Divider';
 import Link from '@views/components/common/Link';
 import Text from '@views/components/common/Text/Text';
 import { useCalendar } from '@views/contexts/CalendarContext';
-import { useCourseClipboard } from '@views/contexts/CourseClipboardContext';
 import clsx from 'clsx';
 import type React from 'react';
 import { useRef, useState } from 'react';
@@ -65,8 +64,6 @@ export default function HeadingAndActions({
     const courseAdded = activeSchedule.courses.some(ourCourse => ourCourse.uniqueId === uniqueId);
     const formattedUniqueId = uniqueId.toString().padStart(5, '0');
     const isInCalendar = useCalendar();
-    const { copiedCourse, setCopiedCourse } = useCourseClipboard();
-    const isCourseCopied = copiedCourse?.uniqueId === uniqueId;
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
     const lastCopyTime = useRef<number>(0);
@@ -310,14 +307,6 @@ export default function HeadingAndActions({
                 </Button>
                 <Button variant='outline' color='ut-orange' icon={FileTextIcon} onClick={handleOpenPastSyllabi}>
                     Past Syllabi
-                </Button>
-                <Button
-                    variant='outline'
-                    color={isCourseCopied ? 'ut-orange' : 'ut-blue'}
-                    icon={isCourseCopied ? CheckIcon : CopyIcon}
-                    onClick={() => setCopiedCourse(course)}
-                >
-                    {isCourseCopied ? 'Copied!' : 'Copy Course'}
                 </Button>
                 <Button
                     variant='filled'
