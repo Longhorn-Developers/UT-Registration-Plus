@@ -52,6 +52,7 @@ export default defineConfig({
                 DEFAULT: 'var(--color-bg)',
                 raised: 'var(--color-surface)',
                 hover: 'var(--color-surface-hover)',
+                switch: 'var(--color-switch-bg)',
             },
             content: { DEFAULT: 'var(--color-text)', muted: 'var(--color-text-muted)' },
             divider: 'rgb(from var(--color-border) r g b / %alpha)',

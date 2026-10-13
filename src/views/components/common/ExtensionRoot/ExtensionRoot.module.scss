@@ -22,6 +22,7 @@
         --color-text: #040506;
         --color-text-muted: #3c4145;
         --color-border: #eae8e1;
+        --color-switch-bg: #9da3ae;
 
         &[data-theme='dark'] {
             --color-bg: #070708;
@@ -30,6 +31,7 @@
             --color-text: #ffffff;
             --color-text-muted: #808080;
             --color-border: #21232c;
+            --color-switch-bg: #afb3ba;
         }
 
         color: var(--color-text);
