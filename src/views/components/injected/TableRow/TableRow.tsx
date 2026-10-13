@@ -1,8 +1,10 @@
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course, ScrapedRow } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { hasCustomBlockConflict } from '@shared/util/customBlocks';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import useCustomBlocks from '@views/hooks/useCustomBlocks';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -27,6 +29,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
     // the courses in the active schedule that conflict with the course for this row
     const [conflicts, setConflicts] = useState<Course[]>([]);
     const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
+    const blocks = useCustomBlocks(activeSchedule?.id);
 
     const { element, course } = row;
 
@@ -72,6 +75,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         }
 
         const conflicts: Course[] = [];
+        const blockConflict = hasCustomBlockConflict(course.schedule.meetings, blocks);
 
         for (const c of activeSchedule.courses) {
             if (c.uniqueId !== course.uniqueId && course.getConflicts(c).length > 0) {
@@ -87,10 +91,10 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
         if (highlightConflicts) {
             // biome-ignore lint/style/noNonNullAssertion: TODO:
-            element.classList[conflicts.length ? 'add' : 'remove'](styles.isConflict!);
+            element.classList[conflicts.length || blockConflict ? 'add' : 'remove'](styles.isConflict!);
         } else {
             // biome-ignore lint/style/noNonNullAssertion: TODO:
-            element.classList[conflicts.length ? 'add' : 'remove'](styles.isConflictNoLineThrough!);
+            element.classList[conflicts.length || blockConflict ? 'add' : 'remove'](styles.isConflictNoLineThrough!);
         }
 
         setConflicts(conflicts);
@@ -98,9 +102,10 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         return () => {
             // biome-ignore lint/style/noNonNullAssertion: TODO:
             element.classList.remove(styles.isConflict!);
+            if (styles.isConflictNoLineThrough) element.classList.remove(styles.isConflictNoLineThrough);
             setConflicts([]);
         };
-    }, [activeSchedule, course, element.classList, highlightConflicts]);
+    }, [activeSchedule, course, element.classList, highlightConflicts, blocks]);
 
     if (!container) {
         return null;

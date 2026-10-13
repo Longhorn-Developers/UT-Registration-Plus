@@ -1,20 +1,34 @@
+import { Popover, PopoverButton } from '@headlessui/react';
 import type { Course } from '@shared/types/Course';
+import { DAY_MAP } from '@shared/types/CourseMeeting';
+import type { CustomBlock, CustomBlockDraft } from '@shared/types/CustomBlock';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import { useSentryScope } from '@views/contexts/SentryContext';
-import { type CalendarGridCourse, GRID_DEFAULT_END, GRID_DEFAULT_START } from '@views/hooks/useFlattenedCourseSchedule';
+import {
+    type CalendarGridCourse,
+    type CalendarLayoutCell,
+    convertMinutesToIndex,
+    GRID_DEFAULT_END,
+    GRID_DEFAULT_START,
+} from '@views/hooks/useFlattenedCourseSchedule';
 import type React from 'react';
-import { Fragment } from 'react';
-
+import { Fragment, useRef } from 'react';
+import CalendarBlockCreator from './CalendarBlockCreator';
+import CalendarCustomBlockCell from './CalendarCustomBlockCell';
+import { CalendarGridBounds } from './CalendarGridBounds';
 import CalendarCell from './CalendarGridCell';
-import { calculateCourseCellColumns } from './utils';
+import { calculateCourseCellColumns, calendarCellPosition } from './utils';
 
 const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
 const _DEFAULT_START_HOUR = GRID_DEFAULT_START / 60; // 8 AM
 
 interface Props {
+    onCreateBlock?: (draft: CustomBlockDraft) => void | Promise<void>;
+    customBlocks?: CustomBlock[];
+    renderBlockEditor?: (block: CustomBlock, close: () => void) => React.ReactNode;
     courseCells?: CalendarGridCourse[];
     startMinutes?: number;
     endMinutes?: number;
@@ -56,12 +70,16 @@ function makeGridRow(row: number, cols: number, hoursOfDay: number[]): React.JSX
  * @returns The CalendarGrid component
  */
 export default function CalendarGrid({
+    onCreateBlock,
+    customBlocks = [],
+    renderBlockEditor,
     courseCells,
     saturdayClass: _saturdayClass,
     setCourse,
     startMinutes,
     endMinutes,
 }: React.PropsWithChildren<Props>): React.JSX.Element {
+    const gridRef = useRef<HTMLDivElement>(null);
     // there was a huge mishap with 6 am start time calc here and now it is smoothly done
     // let's try to keep our codebase organized and not so all over the place
     const visualStartHour = Math.floor((startMinutes ?? GRID_DEFAULT_START) / 60);
@@ -69,18 +87,40 @@ export default function CalendarGrid({
     const visualEndHour = Math.ceil((endMinutes ?? GRID_DEFAULT_END) / 60);
     const hoursOfDay = Array.from({ length: visualEndHour - visualStartHour }, (_, i) => i + visualStartHour);
     const totalRows = (visualEndHour - visualStartHour) * 2;
+    const days = [...daysOfWeek];
+    if (customBlocks.some(block => block.days.includes('Saturday') || block.days.includes('Sunday'))) days.push('SAT');
+    if (customBlocks.some(block => block.days.includes('Sunday'))) days.push('SUN');
+    const blockCells = customBlocks.flatMap(block =>
+        block.days.map(day => ({
+            block,
+            async: false,
+            calendarGridPoint: {
+                dayIndex: Object.values(DAY_MAP).indexOf(day),
+                startIndex: convertMinutesToIndex(
+                    block.allDay ? visualStartHour * 60 : block.startTime,
+                    visualStartHour * 60
+                ),
+                endIndex: convertMinutesToIndex(
+                    block.allDay ? visualEndHour * 60 : block.endTime,
+                    visualStartHour * 60
+                ),
+            },
+        }))
+    );
 
     return (
         <div
-            className='grid grid-cols-[auto_auto_repeat(5,1fr)] h-full'
+            ref={gridRef}
+            className='grid h-full'
             style={{
+                gridTemplateColumns: `auto auto repeat(${days.length}, minmax(0, 1fr))`,
                 gridTemplateRows: `auto auto repeat(${totalRows}, 1fr)`,
             }}
         >
             {/* Cover top left corner of grid, so time gets cut off at the top of the partial border */}
             <div className='sticky top-[75px] z-10 col-span-2 h-3 bg-white' />
 
-            {daysOfWeek.map(day => (
+            {days.map(day => (
                 <div
                     // Full height with background to prevent grid lines from showing behind
                     className='sticky top-[75px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end bg-white'
@@ -102,23 +142,56 @@ export default function CalendarGrid({
             {/* time tick for the first hour */}
             <div className='h-4 w-4 self-end border-b border-r border-gray-300' />
 
-            {hoursOfDay.map((_, i) => makeGridRow(i, 5, hoursOfDay))}
+            {hoursOfDay.map((_, i) => makeGridRow(i, days.length, hoursOfDay))}
+            <CalendarGridBounds.Provider value={gridRef}>
+                {onCreateBlock &&
+                    days.map((_, index) => {
+                        const day = Object.values(DAY_MAP)[index];
+                        return (
+                            day && (
+                                <CalendarBlockCreator
+                                    key={day}
+                                    day={day}
+                                    dayIndex={index}
+                                    start={visualStartHour * 60}
+                                    end={visualEndHour * 60}
+                                    onCreate={onCreateBlock}
+                                />
+                            )
+                        );
+                    })}
 
-            <ColorPickerProvider>
-                {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
-            </ColorPickerProvider>
+                <ColorPickerProvider>
+                    <AccountForCourseConflicts
+                        courseCells={courseCells ?? []}
+                        blockCells={blockCells}
+                        totalRows={totalRows}
+                        setCourse={setCourse}
+                        renderBlockEditor={renderBlockEditor}
+                    />
+                </ColorPickerProvider>
+            </CalendarGridBounds.Provider>
         </div>
     );
 }
 
 interface AccountForCourseConflictsProps {
+    blockCells: (CalendarLayoutCell & { block: CustomBlock })[];
+    totalRows: number;
+    renderBlockEditor?: Props['renderBlockEditor'];
     courseCells: CalendarGridCourse[];
     setCourse: (course: Course) => void;
 }
 
 // TODO: Possibly refactor to be more concise
 // TODO: Deal with react strict mode (wacky movements)
-function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): React.JSX.Element[] {
+function AccountForCourseConflicts({
+    courseCells,
+    blockCells,
+    totalRows,
+    setCourse,
+    renderBlockEditor,
+}: AccountForCourseConflictsProps): React.JSX.Element {
     // Sentry is not defined in storybook.
     // This is a valid use case for a condition hook, since IS_STORYBOOK is determined at build time,
     // it doesn't change between renders.
@@ -126,8 +199,8 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
     const sentryScope = IS_STORYBOOK ? undefined : useSentryScope();
 
     //  Groups by dayIndex to identify overlaps
-    const days = courseCells.reduce(
-        (acc, cell: CalendarGridCourse) => {
+    const days = [...courseCells, ...blockCells].reduce(
+        (acc, cell) => {
             const { dayIndex } = cell.calendarGridPoint;
             if (acc[dayIndex] === undefined) {
                 acc[dayIndex] = [];
@@ -135,10 +208,10 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
             acc[dayIndex]?.push(cell);
             return acc;
         },
-        {} as Record<number, CalendarGridCourse[]>
+        {} as Record<number, CalendarLayoutCell[]>
     );
     // Check for overlaps within each day and adjust gridColumnIndex and totalColumns
-    Object.values(days).forEach((dayCells: CalendarGridCourse[], _idx) => {
+    Object.values(days).forEach(dayCells => {
         try {
             calculateCourseCellColumns(dayCells);
         } catch (error) {
@@ -149,30 +222,62 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
         }
     });
 
-    return courseCells
-        .filter(block => !block.async)
-        .map(block => {
-            const { courseDeptAndInstr, timeAndLocation, status } = block.componentProps;
+    return (
+        <>
+            {courseCells
+                .filter(block => !block.async)
+                .map(block => {
+                    const { courseDeptAndInstr, timeAndLocation, status } = block.componentProps;
 
-            return (
-                <div
-                    key={`${JSON.stringify(block)}`}
-                    style={{
-                        gridColumn: `${block.calendarGridPoint.dayIndex + 3}`,
-                        gridRow: `${block.calendarGridPoint.startIndex} / ${block.calendarGridPoint.endIndex}`,
-                        width: `calc(100% / ${block.totalColumns ?? 1})`,
-                        marginLeft: `calc(100% * ${((block.gridColumnStart ?? 0) - 1) / (block.totalColumns ?? 1)})`,
-                    }}
-                    className='pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5'
+                    return (
+                        <CalendarGridItem cell={block} totalRows={totalRows} course key={`${JSON.stringify(block)}`}>
+                            <CalendarCourseCell
+                                courseDeptAndInstr={courseDeptAndInstr}
+                                timeAndLocation={timeAndLocation}
+                                status={status}
+                                onClick={() => setCourse(block.course)}
+                                blockData={block}
+                            />
+                        </CalendarGridItem>
+                    );
+                })}
+            {blockCells.map(cell => (
+                <CalendarGridItem
+                    key={`${cell.block.id}-${cell.calendarGridPoint.dayIndex}`}
+                    cell={cell}
+                    totalRows={totalRows}
                 >
-                    <CalendarCourseCell
-                        courseDeptAndInstr={courseDeptAndInstr}
-                        timeAndLocation={timeAndLocation}
-                        status={status}
-                        onClick={() => setCourse(block.course)}
-                        blockData={block}
-                    />
-                </div>
-            );
-        });
+                    <Popover className='h-full'>
+                        {({ close }) => (
+                            <>
+                                <PopoverButton as={CalendarCustomBlockCell} block={cell.block} />
+                                {renderBlockEditor?.(cell.block, close)}
+                            </>
+                        )}
+                    </Popover>
+                </CalendarGridItem>
+            ))}
+        </>
+    );
+}
+
+function CalendarGridItem({
+    cell,
+    totalRows,
+    course = false,
+    children,
+}: React.PropsWithChildren<{ cell: CalendarLayoutCell; totalRows: number; course?: boolean }>) {
+    return (
+        <div
+            className='relative min-h-0 min-w-0 pointer-events-none'
+            style={{ gridColumn: cell.calendarGridPoint.dayIndex + 3, gridRow: '3 / -1' }}
+        >
+            <div
+                className={`absolute box-border pointer-events-auto pb-1 ${course ? 'pr-2.5' : 'pr-2'} screenshot:pb-0.5 screenshot:pr-0.5`}
+                style={calendarCellPosition(cell, totalRows)}
+            >
+                {children}
+            </div>
+        </div>
+    );
 }
