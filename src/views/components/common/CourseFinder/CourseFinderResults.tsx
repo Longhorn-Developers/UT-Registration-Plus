@@ -1,6 +1,7 @@
 import createSchedule from '@pages/background/lib/createSchedule';
 import switchSchedule from '@pages/background/lib/switchSchedule';
 import { background } from '@shared/messages';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import { type Course, Status, type StatusType } from '@shared/types/Course';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
@@ -15,10 +16,17 @@ import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalog
 import type { UseCourseFinderReturn } from '@views/hooks/useCourseFinder';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
-import type { CourseFinderGroup } from '@views/lib/courseFinder';
+import {
+    type CourseFinderGroup,
+    type CourseFinderQuery,
+    CourseLevel,
+    type CourseLevelType,
+    getCourseFinderURLs,
+} from '@views/lib/courseFinder';
 import clsx from 'clsx';
-import type { JSX } from 'react';
-import { useState } from 'react';
+import type { Dispatch, JSX, SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
+import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 import CaretDownIcon from '~icons/ph/caret-down';
 import ChartBarFillIcon from '~icons/ph/chart-bar-fill';
 import MinusIcon from '~icons/ph/minus';
@@ -48,13 +56,16 @@ export interface CourseFinderResultsProps {
         | 'expandedGroups'
         | 'toggleGroup'
     >;
+    /** Sets the section to preview on the calendar, as sections are hovered over or focused */
+    onPreviewChange?: Dispatch<SetStateAction<Course | null>>;
 }
 
 /**
  * The results of a Course Finder search, as one card per course. Clicking a card shows its sections, each with
  * buttons to see its stats (grade distribution, RateMyProf, CES, ...) and to add or remove it from the schedule.
+ * Hovering over a section (or focusing in it) previews it on the calendar.
  */
-export default function CourseFinderResults({ finder }: CourseFinderResultsProps): JSX.Element {
+export default function CourseFinderResults({ finder, onPreviewChange }: CourseFinderResultsProps): JSX.Element {
     const { status, query, results, groups, matchCount, hasMore, loadMore, expandedGroups, toggleGroup } = finder;
     const activeSchedule = useActiveSchedule();
     const enforceScheduleLimit = useEnforceScheduleLimit();
@@ -110,11 +121,14 @@ export default function CourseFinderResults({ finder }: CourseFinderResultsProps
 
     return (
         <div className='flex flex-col gap-spacing-3'>
-            <Text variant='mini' className='text-ut-black/80' aria-live='polite'>
-                {matchCount === results.length
-                    ? pluralize(groups.length, 'course')
-                    : `${pluralize(groups.length, 'course')} ${groups.length === 1 ? 'matches' : 'match'} your filters`}
-            </Text>
+            <div className='flex flex-row flex-wrap items-baseline justify-between gap-x-spacing-3 gap-y-spacing-1'>
+                <Text variant='mini' className='text-ut-black/80' aria-live='polite'>
+                    {matchCount === results.length
+                        ? pluralize(groups.length, 'course')
+                        : `${pluralize(groups.length, 'course')} ${groups.length === 1 ? 'matches' : 'match'} your filters`}
+                </Text>
+                {query && <SourceLinks query={query} />}
+            </div>
             {groups.length === 0 ? (
                 <EmptyState>
                     {status === 'loading'
@@ -132,6 +146,7 @@ export default function CourseFinderResults({ finder }: CourseFinderResultsProps
                             enforceScheduleLimit={enforceScheduleLimit}
                             isExpanded={expandedGroups.has(group.fullName)}
                             onToggle={() => toggleGroup(group.fullName)}
+                            onPreviewChange={onPreviewChange}
                         />
                     ))}
                 </ul>
@@ -174,6 +189,50 @@ function pluralize(count: number, noun: string): string {
     return `${count} ${noun}${count === 1 ? '' : 's'}`;
 }
 
+const LEVEL_NAMES: Record<CourseLevelType, { label: string; description: string }> = {
+    [CourseLevel.LOWER]: { label: 'Lower', description: 'Lower division' },
+    [CourseLevel.UPPER]: { label: 'Upper', description: 'Upper division' },
+    [CourseLevel.GRADUATE]: { label: 'Graduate', description: 'Graduate' },
+};
+
+/**
+ * Links to the search on UT's course schedule, where the results come from. A search of more than one level is a
+ * separate search on UT's site for each, so it gets a link for each.
+ */
+function SourceLinks({ query }: { query: CourseFinderQuery }): JSX.Element {
+    const urls = getCourseFinderURLs(query);
+    const links = urls.map((url, i) => {
+        const level = query.searchBy === 'major' ? query.levels[i] : undefined;
+        const name = urls.length > 1 && level ? LEVEL_NAMES[level] : undefined;
+        return {
+            url,
+            label: name?.label ?? 'View on UT',
+            // Starting with the text shown, so it's what voice control users can say to click it
+            description: name ? `${name.description} results on UT's course schedule` : "View on UT's course schedule",
+        };
+    });
+
+    return (
+        <Text variant='mini' className='flex flex-row items-baseline gap-spacing-3 text-ut-black/80'>
+            {links.length > 1 && 'View on UT:'}
+            {links.map(link => (
+                <a
+                    key={link.url}
+                    href={link.url}
+                    target='_blank'
+                    rel='noreferrer'
+                    title={link.description}
+                    aria-label={link.description}
+                    className='inline-flex items-center gap-0.5 text-ut-burntorange underline-offset-2 hover:underline focusable'
+                >
+                    {link.label}
+                    <OutwardArrowIcon className='h-3 w-3' />
+                </a>
+            ))}
+        </Text>
+    );
+}
+
 interface CourseCardProps {
     group: CourseFinderGroup;
     activeSchedule: UserSchedule;
@@ -181,6 +240,7 @@ interface CourseCardProps {
     enforceScheduleLimit: () => boolean;
     isExpanded: boolean;
     onToggle: () => void;
+    onPreviewChange?: Dispatch<SetStateAction<Course | null>>;
 }
 
 function CourseCard({
@@ -190,9 +250,10 @@ function CourseCard({
     enforceScheduleLimit,
     isExpanded,
     onToggle,
+    onPreviewChange,
 }: CourseCardProps) {
     // biome-ignore lint/style/noNonNullAssertion: groups always have at least one section
-    const { department, number, courseName, creditHours } = group.sections[0]!;
+    const { department, number, courseName } = group.sections[0]!;
     const openCount = group.sections.filter(c => c.status === Status.OPEN).length;
 
     return (
@@ -205,14 +266,9 @@ function CourseCard({
                 title={isExpanded ? 'Hide sections' : 'Show sections'}
             >
                 <div className='min-w-0 flex flex-1 flex-col gap-0.5'>
-                    <div className='flex flex-row items-baseline gap-spacing-2'>
-                        <Text variant='h4' className='whitespace-nowrap text-ut-black font-bold!'>
-                            {department} {number}
-                        </Text>
-                        <Text variant='mini' className='whitespace-nowrap text-ut-black/80'>
-                            {pluralize(creditHours, 'hr')}
-                        </Text>
-                    </div>
+                    <Text variant='h4' className='whitespace-nowrap text-ut-black font-bold!'>
+                        {department} {number}
+                    </Text>
                     <Text variant='small' className='truncate text-ut-black' title={courseName}>
                         {courseName}
                     </Text>
@@ -235,6 +291,7 @@ function CourseCard({
                             activeSchedule={activeSchedule}
                             onOpenStats={onOpenStats}
                             enforceScheduleLimit={enforceScheduleLimit}
+                            onPreviewChange={onPreviewChange}
                         />
                     ))}
                 </ul>
@@ -249,14 +306,28 @@ interface SectionRowProps {
     onOpenStats: (course: Course) => void;
     /** Checks that another schedule can be made, explaining why not if it can't */
     enforceScheduleLimit: () => boolean;
+    onPreviewChange?: Dispatch<SetStateAction<Course | null>>;
 }
 
-function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit }: SectionRowProps) {
+function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit, onPreviewChange }: SectionRowProps) {
     const [isUpdating, setIsUpdating] = useState(false);
     const showDialog = usePrompt();
+    const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
     const isAdded = activeSchedule.containsCourse(course);
     const conflicts = activeSchedule.courses.filter(
         c => c.uniqueId !== course.uniqueId && course.getConflicts(c).length > 0
+    );
+
+    // Only stops previewing this section, so moving straight from one section to the next keeps the next one
+    const { uniqueId } = course;
+    const showPreview = () => onPreviewChange?.(course);
+    const hidePreview = () => onPreviewChange?.(previewed => (previewed?.uniqueId === uniqueId ? null : previewed));
+
+    // A section can go away while it's previewed (its card collapsing, a filter, a new search), without the mouse
+    // ever leaving it
+    useEffect(
+        () => () => onPreviewChange?.(previewed => (previewed?.uniqueId === uniqueId ? null : previewed)),
+        [uniqueId, onPreviewChange]
     );
     const instructors = course.instructors.map(i => i.toString({ format: 'last' })).join(', ');
     const status = STATUS_LABELS[course.status];
@@ -339,14 +410,35 @@ function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit 
     };
 
     return (
-        <li className='flex flex-row items-center gap-spacing-2 border-t border-ut-offwhite/50 px-spacing-4 py-spacing-2'>
+        // The row previews its section on the calendar while it's hovered over or has focus
+        <li
+            className='flex flex-row items-center gap-spacing-2 border-t border-ut-offwhite/50 px-spacing-4 py-spacing-2 hover:bg-ut-offwhite/15'
+            onMouseEnter={showPreview}
+            onMouseLeave={hidePreview}
+            onFocus={showPreview}
+            onBlur={e => {
+                // Not while focus is only moving between the row's buttons
+                if (!e.currentTarget.contains(e.relatedTarget as Node | null)) hidePreview();
+            }}
+        >
             <div className='min-w-0 flex flex-1 flex-col'>
                 {course.schedule.meetings.length > 0 ? (
-                    course.schedule.meetings.map(m => (
-                        <Text key={`${m.getDaysString({ format: 'short' })}-${m.startTime}`} variant='small'>
-                            {m.getDaysString({ format: 'short' })} {m.getTimeString({ separator: '–' })}
-                        </Text>
-                    ))
+                    course.schedule.meetings.map(m => {
+                        const isConflicting = conflicts.some(c => c.schedule.meetings.some(o => m.isConflicting(o)));
+                        return (
+                            <Text
+                                key={`${m.getDaysString({ format: 'short' })}-${m.startTime}-${m.location?.building}-${m.location?.room}`}
+                                variant='small'
+                                // Struck through when it conflicts, like on UT's course schedule (if that's turned on)
+                                className={clsx({
+                                    'text-theme-red': isConflicting,
+                                    'line-through': isConflicting && highlightConflicts,
+                                })}
+                            >
+                                {m.getDaysString({ format: 'short' })} {m.getTimeString({ separator: '–' })}
+                            </Text>
+                        );
+                    })
                 ) : (
                     <Text variant='small'>No meeting times</Text>
                 )}

@@ -11,7 +11,13 @@ import CourseFinderPanel from '@views/components/common/CourseFinder/CourseFinde
 import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
-import { useCalendarSidebar, useCourseFinderControls, useCourseFinderState } from '@views/contexts/CourseFinderContext';
+import {
+    useCalendarSidebar,
+    useCourseFinderControls,
+    useCourseFinderPreview,
+    useCourseFinderState,
+    useSetCourseFinderPreview,
+} from '@views/contexts/CourseFinderContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
@@ -36,6 +42,7 @@ import CalendarFooter from './CalendarFooter';
 function SidebarCourseFinder() {
     const controls = useCourseFinderControls();
     const state = useCourseFinderState();
+    const setPreviewCourse = useSetCourseFinderPreview();
     if (!controls || !state) return null;
 
     return (
@@ -44,6 +51,7 @@ function SidebarCourseFinder() {
             form={state.form}
             onClose={controls.close}
             inputRef={controls.searchInputRef}
+            onPreviewChange={setPreviewCourse ?? undefined}
         />
     );
 }
@@ -92,21 +100,20 @@ const CalendarSidebar = memo(function CalendarSidebar() {
                 />
             </div>
 
-            {/* Outside the scrolling part of the sidebar, so it's always in reach. Hidden rather than removed while
-                the Course Finder is open, so focus can go back to it afterwards. */}
+            {/* Looks like the search it opens, styled like the Input component. Outside the scrolling part of the
+                sidebar, so it's always in reach. Hidden rather than removed while the Course Finder is open, so focus
+                can go back to it afterwards. */}
             {courseFinder && (
-                <div className={clsx('px-spacing-7 mb-spacing-4', { hidden: isCourseFinderOpen })}>
-                    <Button
+                <div className={clsx('px-spacing-7 mt-spacing-5 mb-spacing-4', { hidden: isCourseFinderOpen })}>
+                    <button
                         ref={findCourseButtonRef}
-                        className='w-full'
-                        color='ut-burntorange'
-                        size='small'
-                        variant='outline'
-                        icon={MagnifyingGlassIcon}
+                        type='button'
+                        className='h-9 w-full flex items-center gap-spacing-4 border border-ut-offwhite/50 border-rounded bg-transparent px-spacing-3 text-ut-black/80 btn-transition hover:border-ut-black/30 focusable'
                         onClick={() => courseFinder.open(findCourseButtonRef.current)}
                     >
-                        Find a course
-                    </Button>
+                        <MagnifyingGlassIcon className='h-5 w-5 text-ut-black/50' />
+                        <Text variant='p'>Find a course</Text>
+                    </button>
                 </div>
             )}
 
@@ -148,7 +155,14 @@ const CalendarSidebar = memo(function CalendarSidebar() {
  * Calendar page component
  */
 export default function Calendar(): ReactNode {
-    const { courseCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
+    // The section hovered over in the Course Finder, drawn over the schedule. The calendar's hours stay stretched to fit
+    // the sections previewed while the Course Finder is open.
+    const previewCourse = useCourseFinderPreview();
+    const isCourseFinderOpen = useCourseFinderControls()?.isOpen ?? false;
+    const { courseCells, previewCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule(
+        previewCourse,
+        isCourseFinderOpen
+    );
     const initialCourse = useCourseFromUrl();
     const [course, setCourse] = useState<Course | null>(initialCourse);
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(initialCourse !== null);
@@ -323,6 +337,7 @@ export default function Calendar(): ReactNode {
                         >
                             <CalendarGrid
                                 courseCells={courseCells}
+                                previewCells={previewCells}
                                 setCourse={openCourse}
                                 startMinutes={startMinutes}
                                 endMinutes={endMinutes}

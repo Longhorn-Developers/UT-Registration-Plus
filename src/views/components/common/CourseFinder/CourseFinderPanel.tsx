@@ -1,8 +1,9 @@
+import type { Course } from '@shared/types/Course';
 import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
 import type { UseCourseFinderReturn } from '@views/hooks/useCourseFinder';
 import type { UseCourseFinderFormReturn } from '@views/hooks/useCourseFinderForm';
-import type { JSX, Ref } from 'react';
+import type { Dispatch, JSX, Ref, SetStateAction } from 'react';
 import { useId } from 'react';
 import XIcon from '~icons/ph/x';
 
@@ -20,6 +21,8 @@ export interface CourseFinderPanelProps {
     onClose: () => void;
     /** The field of study input, which opening the Course Finder focuses */
     inputRef?: Ref<HTMLInputElement>;
+    /** Sets the section to preview on the calendar, as sections are hovered over or focused */
+    onPreviewChange?: Dispatch<SetStateAction<Course | null>>;
 }
 
 /**
@@ -27,7 +30,13 @@ export interface CourseFinderPanelProps {
  * filters that stay hidden until they're needed, and the results. It scrolls with the sidebar, with its title
  * staying at the top like the schedules' does. Takes its state as props so it can be rendered with mocked data.
  */
-export default function CourseFinderPanel({ finder, form, onClose, inputRef }: CourseFinderPanelProps): JSX.Element {
+export default function CourseFinderPanel({
+    finder,
+    form,
+    onClose,
+    inputRef,
+    onPreviewChange,
+}: CourseFinderPanelProps): JSX.Element {
     const titleId = useId();
 
     return (
@@ -62,7 +71,7 @@ export default function CourseFinderPanel({ finder, form, onClose, inputRef }: C
             </div>
             <CourseFinderSearch finder={finder} form={form} inputRef={inputRef} />
             <CourseFinderFilters finder={finder} isOpen={form.areFiltersOpen} onOpenChange={form.setAreFiltersOpen} />
-            <CourseFinderResults finder={finder} />
+            <CourseFinderResults finder={finder} onPreviewChange={onPreviewChange} />
         </section>
     );
 }

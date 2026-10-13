@@ -1,9 +1,16 @@
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 import Text from '@views/components/common/Text/Text';
 import { ColorPickerProvider } from '@views/contexts/ColorPickerContext';
 import { useSentryScope } from '@views/contexts/SentryContext';
-import { type CalendarGridCourse, GRID_DEFAULT_END, GRID_DEFAULT_START } from '@views/hooks/useFlattenedCourseSchedule';
+import {
+    type CalendarGridCourse,
+    type CalendarPreviewCell,
+    GRID_DEFAULT_END,
+    GRID_DEFAULT_START,
+} from '@views/hooks/useFlattenedCourseSchedule';
+import clsx from 'clsx';
 import type React from 'react';
 import { Fragment } from 'react';
 
@@ -16,6 +23,8 @@ const _DEFAULT_START_HOUR = GRID_DEFAULT_START / 60; // 8 AM
 
 interface Props {
     courseCells?: CalendarGridCourse[];
+    /** A course's meetings to draw faintly over the schedule, like a section hovered over in the Course Finder */
+    previewCells?: CalendarPreviewCell[];
     startMinutes?: number;
     endMinutes?: number;
     saturdayClass?: boolean;
@@ -51,12 +60,14 @@ function makeGridRow(row: number, cols: number, hoursOfDay: number[]): React.JSX
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  *
  * @param courseCells - The courses to display on the calendar
+ * @param previewCells - The meetings of a course to preview over the calendar, without adding it
  * @param saturdayClass - Whether the user has a Saturday class
  * @param setCourse - Function to set the course to display in the course details panel
  * @returns The CalendarGrid component
  */
 export default function CalendarGrid({
     courseCells,
+    previewCells,
     saturdayClass: _saturdayClass,
     setCourse,
     startMinutes,
@@ -107,6 +118,65 @@ export default function CalendarGrid({
             <ColorPickerProvider>
                 {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
             </ColorPickerProvider>
+
+            {previewCells?.map((cell, i) => (
+                // Over the course cells at the full width of the day, rather than splitting it with them, so the
+                // schedule doesn't shift around while sections are previewed. Keyed by position, since two of a
+                // course's meetings can start in the same half hour.
+                <div
+                    // biome-ignore lint/suspicious/noArrayIndexKey: the cells have nothing else unique to them
+                    key={i}
+                    aria-hidden
+                    style={{
+                        gridColumn: `${cell.calendarGridPoint.dayIndex + 3}`,
+                        gridRow: `${cell.calendarGridPoint.startIndex} / ${cell.calendarGridPoint.endIndex}`,
+                    }}
+                    className='pointer-events-none z-1 pb-1 pr-2.5 screenshot:hidden'
+                >
+                    <PreviewCourseCell cell={cell} />
+                </div>
+            ))}
+        </div>
+    );
+}
+
+// Hatched, so a conflict reads as one even where the colors are hard to tell apart. Light enough that the red text
+// over it keeps its contrast.
+const CONFLICT_HATCHING = 'repeating-linear-gradient(135deg, rgb(209 0 0 / 0.07) 0 6px, transparent 6px 12px)';
+
+/**
+ * A faint, dashed outline of a course meeting that isn't in the schedule. One that conflicts with the schedule is
+ * red and hatched instead, says what it conflicts with, and has a strikethrough if conflicts are highlighted elsewhere.
+ */
+function PreviewCourseCell({ cell }: { cell: CalendarPreviewCell }): React.JSX.Element {
+    const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
+    const { courseDeptAndInstr, timeAndLocation } = cell.componentProps;
+    const isConflicting = cell.conflicts.length > 0;
+
+    return (
+        <div
+            className={clsx(
+                'h-full w-full flex flex-col gap-0.25 overflow-hidden rounded border-2 border-dashed px-2 py-1',
+                isConflicting
+                    ? 'border-theme-red bg-white text-theme-red'
+                    : 'border-ut-burntorange/70 bg-ut-burntorange/10 text-ut-black/80'
+            )}
+            style={isConflicting ? { backgroundImage: CONFLICT_HATCHING } : undefined}
+        >
+            <Text
+                variant='h1-course'
+                as='p'
+                className={clsx('leading-tight! truncate overflow-clip!', {
+                    'line-through': isConflicting && highlightConflicts,
+                })}
+            >
+                {courseDeptAndInstr}
+            </Text>
+            <Text variant='h3-course' as='p' className='whitespace-pre-line'>
+                {isConflicting
+                    ? `Conflicts with ${cell.conflicts.map(c => `${c.department} ${c.number}`).join(', ')}`
+                    : timeAndLocation}
+            </Text>
         </div>
     );
 }

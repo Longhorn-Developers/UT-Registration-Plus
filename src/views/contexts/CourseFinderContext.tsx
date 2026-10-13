@@ -1,10 +1,13 @@
 import { OptionsStore } from '@shared/storage/OptionsStore';
+import type { Course } from '@shared/types/Course';
 import { type UseCourseFinderReturn, useCourseFinder } from '@views/hooks/useCourseFinder';
 import { type UseCourseFinderFormReturn, useCourseFinderForm } from '@views/hooks/useCourseFinderForm';
 import {
     createContext,
+    type Dispatch,
     type ReactNode,
     type RefObject,
+    type SetStateAction,
     useCallback,
     useContext,
     useMemo,
@@ -39,6 +42,22 @@ export interface CourseFinderState {
 
 const CourseFinderControlsContext = createContext<CourseFinderControls | null>(null);
 const CourseFinderStateContext = createContext<CourseFinderState | null>(null);
+const CourseFinderPreviewContext = createContext<Course | null>(null);
+const SetCourseFinderPreviewContext = createContext<Dispatch<SetStateAction<Course | null>> | null>(null);
+
+/**
+ * Holds the section being previewed on the calendar, apart from the rest of the Course Finder, so hovering over
+ * sections only re-renders the calendar that draws the preview (its children keep their element identity).
+ */
+function CourseFinderPreviewProvider({ children }: { children: ReactNode }): ReactNode {
+    const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
+
+    return (
+        <SetCourseFinderPreviewContext.Provider value={setPreviewCourse}>
+            <CourseFinderPreviewContext.Provider value={previewCourse}>{children}</CourseFinderPreviewContext.Provider>
+        </SetCourseFinderPreviewContext.Provider>
+    );
+}
 
 /**
  * Holds the Course Finder for the calendar page, so its search, filters, and results are still there
@@ -75,7 +94,9 @@ export function CourseFinderProvider({ children }: { children: ReactNode }): Rea
 
     return (
         <CourseFinderControlsContext.Provider value={controls}>
-            <CourseFinderStateContext.Provider value={{ finder, form }}>{children}</CourseFinderStateContext.Provider>
+            <CourseFinderStateContext.Provider value={{ finder, form }}>
+                <CourseFinderPreviewProvider>{children}</CourseFinderPreviewProvider>
+            </CourseFinderStateContext.Provider>
         </CourseFinderControlsContext.Provider>
     );
 }
@@ -89,6 +110,18 @@ export const useCourseFinderControls = (): CourseFinderControls | null => useCon
  * @returns the Course Finder's search, filters, and results, or null outside of the calendar page
  */
 export const useCourseFinderState = (): CourseFinderState | null => useContext(CourseFinderStateContext);
+
+/**
+ * @returns the section the Course Finder is previewing on the calendar (the one hovered over or focused in its
+ * results), or null when there's none
+ */
+export const useCourseFinderPreview = (): Course | null => useContext(CourseFinderPreviewContext);
+
+/**
+ * @returns what sets the section the Course Finder previews on the calendar, or null outside of the calendar page
+ */
+export const useSetCourseFinderPreview = (): Dispatch<SetStateAction<Course | null>> | null =>
+    useContext(SetCourseFinderPreviewContext);
 
 /**
  * Whether the calendar sidebar is shown. The Course Finder keeps it shown while it's open, without changing the

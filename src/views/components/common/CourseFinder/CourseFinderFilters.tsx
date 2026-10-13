@@ -3,6 +3,7 @@ import { Button } from '@views/components/common/Button';
 import { flagMap } from '@views/components/common/Chip';
 import Dropdown, { type DropdownOption } from '@views/components/common/Dropdown';
 import Input from '@views/components/common/Input';
+import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
 import type { UseCourseFinderReturn } from '@views/hooks/useCourseFinder';
 import {
@@ -13,7 +14,10 @@ import {
     type CourseFinderFilters as Filters,
     MAX_CREDIT_HOURS_OPTION,
 } from '@views/lib/courseFinder';
+import clsx from 'clsx';
 import type { JSX } from 'react';
+import { useRef } from 'react';
+import CaretDownIcon from '~icons/ph/caret-down';
 import FunnelIcon from '~icons/ph/funnel';
 
 const ANY_ID = 'any';
@@ -47,6 +51,7 @@ export interface CourseFinderFiltersProps {
  */
 export default function CourseFinderFilters({ finder, isOpen, onOpenChange }: CourseFinderFiltersProps): JSX.Element {
     const { filters, setFilters, availableFlags } = finder;
+    const toggleRef = useRef<HTMLButtonElement>(null);
 
     const update = (changes: Partial<Filters>) => setFilters(prev => ({ ...prev, ...changes }));
     const toggle = <T,>(list: T[], item: T) => (list.includes(item) ? list.filter(i => i !== item) : [...list, item]);
@@ -63,25 +68,34 @@ export default function CourseFinderFilters({ finder, isOpen, onOpenChange }: Co
 
     return (
         <div className='flex flex-col gap-spacing-3'>
-            <div className='flex flex-row items-center gap-spacing-3'>
+            {/* Minimal buttons, like the calendar header's, pulled out by their padding so their icon and text line
+                up with the fields above */}
+            <div className='flex flex-row items-center justify-between gap-spacing-3'>
                 <Button
-                    className='flex-1'
+                    ref={toggleRef}
+                    className='-ml-spacing-3'
                     color='ut-black'
                     size='small'
-                    variant='outline'
+                    variant='minimal'
                     icon={FunnelIcon}
                     onClick={() => onOpenChange(!isOpen)}
                     aria-expanded={isOpen}
                 >
-                    {isOpen ? 'Hide filters' : 'Filters'}
-                    {activeCount > 0 && ` (${activeCount})`}
+                    Filters{activeCount > 0 && ` (${activeCount})`}
+                    <CaretDownIcon className={clsx('h-4 w-4 transition-transform', { 'rotate-180': isOpen })} />
                 </Button>
                 {activeCount > 0 && (
                     <Button
+                        className='-mr-spacing-3'
                         color='ut-burntorange'
                         size='small'
                         variant='minimal'
-                        onClick={() => setFilters(DEFAULT_COURSE_FINDER_FILTERS)}
+                        onClick={() => {
+                            setFilters(DEFAULT_COURSE_FINDER_FILTERS);
+                            // Clear goes away with nothing left to clear, which would drop focus
+                            toggleRef.current?.focus();
+                        }}
+                        aria-label='Clear filters'
                     >
                         Clear
                     </Button>
@@ -158,27 +172,24 @@ export default function CourseFinderFilters({ finder, isOpen, onOpenChange }: Co
                             })}
                         </fieldset>
                     )}
-                    <label className='flex cursor-pointer items-center gap-spacing-2'>
-                        <input
-                            type='checkbox'
-                            className='size-4 cursor-pointer accent-ut-burntorange'
-                            checked={filters.openOnly}
-                            onChange={e => update({ openOnly: e.target.checked })}
-                        />
+                    {/* Switches, like the settings' on/off options. Each is wrapped in a plain label, which names it and
+                        flips it when its text is clicked: Headless UI's Label can't find its switch in a shadow root. */}
+                    {/** biome-ignore lint/a11y/noLabelWithoutControl: the switch inside is a button, which a label can hold */}
+                    <label className='flex cursor-pointer items-center justify-between gap-spacing-3'>
                         <Text variant='small' className='text-ut-black'>
                             Open sections only
                         </Text>
+                        <SwitchButton isChecked={filters.openOnly} onChange={openOnly => update({ openOnly })} />
                     </label>
-                    <label className='flex cursor-pointer items-center gap-spacing-2'>
-                        <input
-                            type='checkbox'
-                            className='size-4 cursor-pointer accent-ut-burntorange'
-                            checked={filters.hideConflicts}
-                            onChange={e => update({ hideConflicts: e.target.checked })}
-                        />
+                    {/** biome-ignore lint/a11y/noLabelWithoutControl: the switch inside is a button, which a label can hold */}
+                    <label className='flex cursor-pointer items-center justify-between gap-spacing-3'>
                         <Text variant='small' className='text-ut-black'>
                             Hide time conflicts
                         </Text>
+                        <SwitchButton
+                            isChecked={filters.hideConflicts}
+                            onChange={hideConflicts => update({ hideConflicts })}
+                        />
                     </label>
                 </div>
             )}
