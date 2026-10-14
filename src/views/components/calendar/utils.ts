@@ -9,7 +9,7 @@ import type { UserSchedule } from '@shared/types/UserSchedule';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import { englishStringifyList } from '@shared/util/string';
 import { ensureShadowStyles } from '@views/components/common/ExtensionRoot/ShadowRootContainer';
-import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
+import type { CalendarLayoutCell } from '@views/hooks/useFlattenedCourseSchedule';
 import type { DateArg, Day } from 'date-fns';
 import {
     addDays,
@@ -403,8 +403,8 @@ export const saveCalAsPng = () => {
  * @example [[8am, 9am), [8:30am, 10am), [9:30am, 11am)] // is all one connected component
  * @example [[8am, 9am), [8:30am, 10am), [10am, 11am)] // has two connected components, [[8am, 9am), [8:30am, 10am)] and [[10am, 11am)]]
  */
-const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCourse[][] => {
-    const connectedComponents: CalendarGridCourse[][] = [];
+const findConnectedComponents = (cells: CalendarLayoutCell[]): CalendarLayoutCell[][] => {
+    const connectedComponents: CalendarLayoutCell[][] = [];
 
     for (let i = 0; i < cells.length; i++) {
         // biome-ignore lint/style/noNonNullAssertion: TODO:
@@ -450,7 +450,7 @@ const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCours
  * The minimum number of columns needed is the maximum number of events that happen concurrently.
  * Research Interval Graphs for more info https://en.wikipedia.org/wiki/Interval_graph
  */
-const assignColumns = (cells: CalendarGridCourse[]) => {
+const assignColumns = (cells: CalendarLayoutCell[]) => {
     const availableColumns = [true];
 
     for (const cell of cells) {
@@ -489,7 +489,7 @@ const assignColumns = (cells: CalendarGridCourse[]) => {
  *
  * @param dayCells - An array of calendar grid course cells for a specific day
  */
-export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
+export const calculateCourseCellColumns = (dayCells: CalendarLayoutCell[]) => {
     // Sort by start time, increasing
     // This is necessary for the correctness of the column assignment
     const cells = dayCells
@@ -523,3 +523,13 @@ export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
         delete cell.concurrentCells;
     }
 };
+
+export function calendarCellPosition(cell: CalendarLayoutCell, totalRows: number) {
+    const { startIndex, endIndex } = cell.calendarGridPoint;
+    return {
+        top: `${((startIndex - 3) / totalRows) * 100}%`,
+        height: `${((endIndex - startIndex) / totalRows) * 100}%`,
+        left: `${(((cell.gridColumnStart ?? 1) - 1) / (cell.totalColumns ?? 1)) * 100}%`,
+        width: `${100 / (cell.totalColumns ?? 1)}%`,
+    };
+}

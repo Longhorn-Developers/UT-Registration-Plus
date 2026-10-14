@@ -1,5 +1,6 @@
 import { MessageListener } from '@chrome-extension-toolkit';
 import importSchedule from '@pages/background/lib/importSchedule';
+import { background } from '@shared/messages';
 import type { CalendarTabMessages } from '@shared/messages/CalendarMessages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
@@ -26,6 +27,7 @@ import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
+import CustomBlockPopover from './CustomBlockPopover';
 
 const CalendarSidebar = memo(function CalendarSidebar() {
     const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
@@ -98,7 +100,7 @@ const CalendarSidebar = memo(function CalendarSidebar() {
  * Calendar page component
  */
 export default function Calendar(): ReactNode {
-    const { courseCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
+    const { courseCells, blocks, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
     const initialCourse = useCourseFromUrl();
     const [course, setCourse] = useState<Course | null>(initialCourse);
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(initialCourse !== null);
@@ -273,6 +275,33 @@ export default function Calendar(): ReactNode {
                             })}
                         >
                             <CalendarGrid
+                                onCreateBlock={async draft => {
+                                    const result = await background.createCustomBlock({
+                                        draft,
+                                        scheduleId: activeSchedule.id,
+                                    });
+                                    if ('error' in result) throw new Error(result.error);
+                                }}
+                                key={activeSchedule.id}
+                                customBlocks={blocks}
+                                renderBlockEditor={(block, close) => (
+                                    <CustomBlockPopover
+                                        block={block}
+                                        onClose={close}
+                                        onSave={async draft => {
+                                            const result = await background.updateCustomBlock({
+                                                id: block.id,
+                                                draft,
+                                                scheduleId: activeSchedule.id,
+                                            });
+                                            if ('error' in result) throw new Error(result.error);
+                                        }}
+                                        onDelete={async () => {
+                                            const result = await background.deleteCustomBlock({ id: block.id });
+                                            if ('error' in result) throw new Error(result.error);
+                                        }}
+                                    />
+                                )}
                                 courseCells={courseCells}
                                 setCourse={openCourse}
                                 startMinutes={startMinutes}
