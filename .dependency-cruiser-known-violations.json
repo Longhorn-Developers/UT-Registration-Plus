@@ -1,0 +1,300 @@
+[
+    {
+        "type": "cycle",
+        "from": "src/shared/types/Course.ts",
+        "to": "src/shared/util/colors.ts",
+        "unresolvedTo": "@shared/util/colors",
+        "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "import"],
+        "rule": {
+            "severity": "error",
+            "name": "no-circular"
+        },
+        "cycle": [
+            {
+                "name": "src/shared/util/colors.ts",
+                "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "import"]
+            },
+            {
+                "name": "src/shared/types/Course.ts",
+                "dependencyTypes": ["local", "type-only", "import"]
+            }
+        ]
+    },
+    {
+        "type": "cycle",
+        "from": "src/shared/types/UserSchedule.ts",
+        "to": "src/shared/types/Course.ts",
+        "unresolvedTo": "./Course",
+        "dependencyTypes": ["local", "import"],
+        "rule": {
+            "severity": "error",
+            "name": "no-circular"
+        },
+        "cycle": [
+            {
+                "name": "src/shared/types/Course.ts",
+                "dependencyTypes": ["local", "import"]
+            },
+            {
+                "name": "src/shared/util/colors.ts",
+                "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "import"]
+            },
+            {
+                "name": "src/shared/types/UserSchedule.ts",
+                "dependencyTypes": ["local", "type-only", "import"]
+            }
+        ]
+    },
+    {
+        "type": "cycle",
+        "from": "src/views/components/calendar/CalendarCourseCell.tsx",
+        "to": "src/views/hooks/useFlattenedCourseSchedule.ts",
+        "unresolvedTo": "@views/hooks/useFlattenedCourseSchedule",
+        "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "type-only", "import"],
+        "rule": {
+            "severity": "error",
+            "name": "no-circular"
+        },
+        "cycle": [
+            {
+                "name": "src/views/hooks/useFlattenedCourseSchedule.ts",
+                "dependencyTypes": [
+                    "aliased",
+                    "aliased-tsconfig",
+                    "aliased-tsconfig-paths",
+                    "local",
+                    "type-only",
+                    "import"
+                ]
+            },
+            {
+                "name": "src/views/components/calendar/CalendarCourseCell.tsx",
+                "dependencyTypes": [
+                    "aliased",
+                    "aliased-tsconfig",
+                    "aliased-tsconfig-paths",
+                    "local",
+                    "type-only",
+                    "import"
+                ]
+            }
+        ]
+    },
+    {
+        "type": "cycle",
+        "from": "src/views/components/common/WhatsNewPopup.tsx",
+        "to": "src/views/hooks/useWhatsNew.tsx",
+        "unresolvedTo": "@views/hooks/useWhatsNew",
+        "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "import"],
+        "rule": {
+            "severity": "error",
+            "name": "no-circular"
+        },
+        "cycle": [
+            {
+                "name": "src/views/hooks/useWhatsNew.tsx",
+                "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "import"]
+            },
+            {
+                "name": "src/views/components/common/WhatsNewPopup.tsx",
+                "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "import"]
+            }
+        ]
+    },
+    {
+        "type": "cycle",
+        "from": "src/views/components/map/CampusMap.tsx",
+        "to": "src/views/components/map/Map.tsx",
+        "unresolvedTo": "./Map",
+        "dependencyTypes": ["local", "type-only", "import"],
+        "rule": {
+            "severity": "error",
+            "name": "no-circular"
+        },
+        "cycle": [
+            {
+                "name": "src/views/components/map/Map.tsx",
+                "dependencyTypes": ["local", "type-only", "import"]
+            },
+            {
+                "name": "src/views/components/map/CampusMap.tsx",
+                "dependencyTypes": ["local", "import"]
+            }
+        ]
+    },
+    {
+        "type": "module",
+        "from": "src/lib/chrome-extension-toolkit/types/Test.ts",
+        "to": "src/lib/chrome-extension-toolkit/types/Test.ts",
+        "rule": {
+            "severity": "error",
+            "name": "no-orphans"
+        }
+    },
+    {
+        "type": "module",
+        "from": "src/lib/chrome-extension-toolkit/utils/Console.ts",
+        "to": "src/lib/chrome-extension-toolkit/utils/Console.ts",
+        "rule": {
+            "severity": "error",
+            "name": "no-orphans"
+        }
+    },
+    {
+        "type": "module",
+        "from": "src/lib/chrome-extension-toolkit/utils/string.ts",
+        "to": "src/lib/chrome-extension-toolkit/utils/string.ts",
+        "rule": {
+            "severity": "error",
+            "name": "no-orphans"
+        }
+    },
+    {
+        "type": "module",
+        "from": "src/shared/types/MainCampusBuildings.ts",
+        "to": "src/shared/types/MainCampusBuildings.ts",
+        "rule": {
+            "severity": "error",
+            "name": "no-orphans"
+        }
+    },
+    {
+        "type": "module",
+        "from": "src/shared/types/Spacing.ts",
+        "to": "src/shared/types/Spacing.ts",
+        "rule": {
+            "severity": "error",
+            "name": "no-orphans"
+        }
+    },
+    {
+        "type": "module",
+        "from": "src/views/lib/getUpdatedAtDateTimeString.ts",
+        "to": "src/views/lib/getUpdatedAtDateTimeString.ts",
+        "rule": {
+            "severity": "error",
+            "name": "no-orphans"
+        }
+    },
+    {
+        "type": "dependency",
+        "from": "src/manifest.ts",
+        "to": "node_modules/.pnpm/@crxjs+vite-plugin@2.4.0_patch_hash=6de6a8d684fada76f0b8494bfd24b561539ec9ce9580400ff3aa920155173c28_vite@8.0.7/node_modules/@crxjs/vite-plugin/dist/index.d.ts",
+        "unresolvedTo": "@crxjs/vite-plugin",
+        "dependencyTypes": ["npm-dev", "import"],
+        "rule": {
+            "severity": "error",
+            "name": "not-to-dev-dep"
+        }
+    },
+    {
+        "type": "dependency",
+        "from": "src/shared/util/colors.ts",
+        "to": "node_modules/.pnpm/unocss@66.6.8_@emnapi+core@1.11.2_@emnapi+runtime@1.11.2_@unocss+postcss@66.6.8_postcss@8.5.9__vite@8.0.7/node_modules/unocss/dist/preset-mini.mjs",
+        "unresolvedTo": "unocss/preset-mini",
+        "dependencyTypes": ["npm-dev", "import"],
+        "rule": {
+            "severity": "error",
+            "name": "not-to-dev-dep"
+        }
+    },
+    {
+        "type": "dependency",
+        "from": "src/stories/components/ReportIssueMain.stories.tsx",
+        "to": "node_modules/.pnpm/storybook@10.5.8_@types+react@19.2.14_prettier@3.6.2_react@19.2.4/node_modules/storybook/dist/test/index.d.ts",
+        "unresolvedTo": "storybook/test",
+        "dependencyTypes": ["npm-dev", "import"],
+        "rule": {
+            "severity": "error",
+            "name": "not-to-dev-dep"
+        }
+    },
+    {
+        "type": "dependency",
+        "from": "src/views/components/calendar/CalendarCourseCellColorPicker/CourseCellColorPicker.tsx",
+        "to": "node_modules/.pnpm/unocss@66.6.8_@emnapi+core@1.11.2_@emnapi+runtime@1.11.2_@unocss+postcss@66.6.8_postcss@8.5.9__vite@8.0.7/node_modules/unocss/dist/preset-mini.mjs",
+        "unresolvedTo": "unocss/preset-mini",
+        "dependencyTypes": ["npm-dev", "import"],
+        "rule": {
+            "severity": "error",
+            "name": "not-to-dev-dep"
+        }
+    },
+    {
+        "type": "dependency",
+        "from": "src/views/components/common/ExtensionRoot/ExtensionRoot.tsx",
+        "to": "node_modules/.pnpm/react-scan@0.5.3_react-dom@19.2.4_react@19.2.4__react@19.2.4_rollup@4.60.1/node_modules/react-scan/dist/index.d.mts",
+        "unresolvedTo": "react-scan",
+        "dependencyTypes": ["npm-dev", "import"],
+        "rule": {
+            "severity": "error",
+            "name": "not-to-dev-dep"
+        }
+    },
+    {
+        "type": "dependency",
+        "from": "src/views/contexts/SentryContext.tsx",
+        "to": "node_modules/.pnpm/@sentry+toolbar@1.0.0-beta.11_react@19.2.4/node_modules/@sentry/toolbar/dist/index.d.ts",
+        "unresolvedTo": "@sentry/toolbar",
+        "dependencyTypes": ["npm-dev", "import"],
+        "rule": {
+            "severity": "error",
+            "name": "not-to-dev-dep"
+        }
+    },
+    {
+        "type": "dependency",
+        "from": "src/vite-env.d.ts",
+        "to": "node_modules/.pnpm/unplugin-icons@23.0.1_@svgr+core@8.1.0_typescript@6.0.2__@vue+compiler-sfc@3.5.32/node_modules/unplugin-icons/types/react.d.ts",
+        "unresolvedTo": "unplugin-icons/types/react",
+        "dependencyTypes": ["npm-dev", "triple-slash-directive", "triple-slash-type-reference"],
+        "rule": {
+            "severity": "error",
+            "name": "not-to-dev-dep"
+        }
+    },
+    {
+        "type": "dependency",
+        "from": "src/vite-env.d.ts",
+        "to": "node_modules/.pnpm/vite@8.0.7_@types+node@25.5.2_@vitejs+devtools@0.1.13_esbuild@0.27.7_jiti@2.6.1_sass@1.99.0_terser@5.46.0/node_modules/vite/client.d.ts",
+        "unresolvedTo": "vite/client",
+        "dependencyTypes": ["npm-dev", "triple-slash-directive", "triple-slash-type-reference"],
+        "rule": {
+            "severity": "error",
+            "name": "not-to-dev-dep"
+        }
+    },
+    {
+        "type": "dependency",
+        "from": "src/views/components/common/ExtensionRoot/ShadowRootContainer.tsx",
+        "to": "virtual:inline-styles",
+        "unresolvedTo": "virtual:inline-styles",
+        "dependencyTypes": ["unknown"],
+        "rule": {
+            "severity": "error",
+            "name": "not-to-unresolvable"
+        }
+    },
+    {
+        "type": "dependency",
+        "from": "src/views/components/common/ExtensionRoot/ShadowRootContainer.tsx",
+        "to": "virtual:uno.css",
+        "unresolvedTo": "virtual:uno.css",
+        "dependencyTypes": ["unknown"],
+        "rule": {
+            "severity": "error",
+            "name": "not-to-unresolvable"
+        }
+    },
+    {
+        "type": "dependency",
+        "from": "src/views/components/ReportIssueMain.tsx",
+        "to": "uno.css",
+        "unresolvedTo": "uno.css",
+        "dependencyTypes": ["unknown"],
+        "rule": {
+            "severity": "error",
+            "name": "not-to-unresolvable"
+        }
+    }
+]
