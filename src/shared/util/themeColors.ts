@@ -1,7 +1,7 @@
 import type { HexColor } from '../types/Color';
 import type { ThemeColor } from '../types/ThemeColors';
 import { colors } from '../types/ThemeColors';
-import { hexToRGB } from './colors';
+import { hexToRGB } from './colors/base';
 
 /**
  * Flattened colors object.

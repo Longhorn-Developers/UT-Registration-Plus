@@ -1,4 +1,4 @@
-import { isValidHexColor, pickFontColor } from '@shared/util/colors';
+import { isValidHexColor, pickFontColor } from '@shared/util/colors/base';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import { useDebounce } from '@views/hooks/useDebounce';
 import clsx from 'clsx';
