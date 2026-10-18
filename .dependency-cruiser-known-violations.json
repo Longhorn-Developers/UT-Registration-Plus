@@ -143,28 +143,6 @@
     },
     {
         "type": "dependency",
-        "from": "src/stories/components/calendar/CalendarCourseCell.stories.tsx",
-        "to": "src/stories/components/PopupCourseBlock.stories.tsx",
-        "unresolvedTo": "../PopupCourseBlock.stories",
-        "dependencyTypes": ["local", "import"],
-        "rule": {
-            "severity": "error",
-            "name": "not-to-spec"
-        }
-    },
-    {
-        "type": "dependency",
-        "from": "src/stories/components/calendar/CalendarGrid.stories.tsx",
-        "to": "src/stories/components/PopupCourseBlock.stories.tsx",
-        "unresolvedTo": "../PopupCourseBlock.stories",
-        "dependencyTypes": ["local", "import"],
-        "rule": {
-            "severity": "error",
-            "name": "not-to-spec"
-        }
-    },
-    {
-        "type": "dependency",
         "from": "src/views/components/common/ExtensionRoot/ShadowRootContainer.tsx",
         "to": "virtual:inline-styles",
         "unresolvedTo": "virtual:inline-styles",
