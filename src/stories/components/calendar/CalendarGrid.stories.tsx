@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
 
-import { ExampleCourse } from '../PopupCourseBlock.stories';
+import { exampleCourse } from '../../injected/mocked';
 
 const meta = {
     title: 'Components/Calendar/CalendarGrid',
@@ -26,7 +26,7 @@ const testData: CalendarGridCourse[] = [
             startIndex: 10,
             endIndex: 11,
         },
-        course: ExampleCourse,
+        course: exampleCourse,
         timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
         async: false,
     },
@@ -36,7 +36,7 @@ const testData: CalendarGridCourse[] = [
             startIndex: 5,
             endIndex: 6,
         },
-        course: ExampleCourse,
+        course: exampleCourse,
         timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
         async: false,
     },
@@ -46,7 +46,7 @@ const testData: CalendarGridCourse[] = [
             startIndex: 10,
             endIndex: 12,
         },
-        course: ExampleCourse,
+        course: exampleCourse,
         timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
         async: false,
     },
@@ -56,7 +56,7 @@ const testData: CalendarGridCourse[] = [
             startIndex: 10,
             endIndex: 11,
         },
-        course: ExampleCourse,
+        course: exampleCourse,
         timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
         async: false,
     },
@@ -66,7 +66,7 @@ const testData: CalendarGridCourse[] = [
             startIndex: 10,
             endIndex: 12,
         },
-        course: ExampleCourse,
+        course: exampleCourse,
         timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
         async: false,
     },
@@ -76,7 +76,7 @@ const testData: CalendarGridCourse[] = [
             startIndex: 10,
             endIndex: 12,
         },
-        course: ExampleCourse,
+        course: exampleCourse,
         timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
         async: false,
     },
@@ -86,7 +86,7 @@ const testData: CalendarGridCourse[] = [
             startIndex: 10,
             endIndex: 12,
         },
-        course: ExampleCourse,
+        course: exampleCourse,
         timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
         async: false,
     },
