@@ -1,4 +1,3 @@
-import { Status } from '@shared/types/Course';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
@@ -27,27 +26,8 @@ const testData: CalendarGridCourse[] = [
             startIndex: 10,
             endIndex: 11,
         },
-        componentProps: {
-            courseDeptAndInstr: 'Course 1',
-            timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
-            status: Status.OPEN,
-            blockData: {
-                calendarGridPoint: {
-                    dayIndex: 4,
-                    startIndex: 10,
-                    endIndex: 11,
-                },
-                componentProps: {
-                    courseDeptAndInstr: 'Course 1',
-                    timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
-                    status: Status.OPEN,
-                    blockData: {} as CalendarGridCourse,
-                },
-                course: ExampleCourse,
-                async: false,
-            },
-        },
         course: ExampleCourse,
+        timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
         async: false,
     },
     {
@@ -56,27 +36,8 @@ const testData: CalendarGridCourse[] = [
             startIndex: 5,
             endIndex: 6,
         },
-        componentProps: {
-            courseDeptAndInstr: 'Course 1',
-            timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
-            status: Status.OPEN,
-            blockData: {
-                calendarGridPoint: {
-                    dayIndex: 2,
-                    startIndex: 5,
-                    endIndex: 6,
-                },
-                componentProps: {
-                    courseDeptAndInstr: 'Course 1',
-                    timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
-                    status: Status.OPEN,
-                    blockData: {} as CalendarGridCourse,
-                },
-                course: ExampleCourse,
-                async: false,
-            },
-        },
         course: ExampleCourse,
+        timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
         async: false,
     },
     {
@@ -85,27 +46,8 @@ const testData: CalendarGridCourse[] = [
             startIndex: 10,
             endIndex: 12,
         },
-        componentProps: {
-            courseDeptAndInstr: 'Course 2',
-            timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
-            status: Status.CLOSED,
-            blockData: {
-                calendarGridPoint: {
-                    dayIndex: 1,
-                    startIndex: 10,
-                    endIndex: 12,
-                },
-                componentProps: {
-                    courseDeptAndInstr: 'Course 2',
-                    timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
-                    status: Status.CLOSED,
-                    blockData: {} as CalendarGridCourse,
-                },
-                course: ExampleCourse,
-                async: false,
-            },
-        },
         course: ExampleCourse,
+        timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
         async: false,
     },
     {
@@ -114,27 +56,8 @@ const testData: CalendarGridCourse[] = [
             startIndex: 10,
             endIndex: 11,
         },
-        componentProps: {
-            courseDeptAndInstr: 'Course 1',
-            timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
-            status: Status.OPEN,
-            blockData: {
-                calendarGridPoint: {
-                    dayIndex: 4,
-                    startIndex: 10,
-                    endIndex: 11,
-                },
-                componentProps: {
-                    courseDeptAndInstr: 'Course 1',
-                    timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
-                    status: Status.OPEN,
-                    blockData: {} as CalendarGridCourse,
-                },
-                course: ExampleCourse,
-                async: false,
-            },
-        },
         course: ExampleCourse,
+        timeAndLocation: '9:00 AM - 10:00 AM, Room 101',
         async: false,
     },
     {
@@ -143,27 +66,8 @@ const testData: CalendarGridCourse[] = [
             startIndex: 10,
             endIndex: 12,
         },
-        componentProps: {
-            courseDeptAndInstr: 'Course 2',
-            timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
-            status: Status.CLOSED,
-            blockData: {
-                calendarGridPoint: {
-                    dayIndex: 1,
-                    startIndex: 10,
-                    endIndex: 12,
-                },
-                componentProps: {
-                    courseDeptAndInstr: 'Course 2',
-                    timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
-                    status: Status.CLOSED,
-                    blockData: {} as CalendarGridCourse,
-                },
-                course: ExampleCourse,
-                async: false,
-            },
-        },
         course: ExampleCourse,
+        timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
         async: false,
     },
     {
@@ -172,27 +76,8 @@ const testData: CalendarGridCourse[] = [
             startIndex: 10,
             endIndex: 12,
         },
-        componentProps: {
-            courseDeptAndInstr: 'Course 3',
-            timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
-            status: Status.CLOSED,
-            blockData: {
-                calendarGridPoint: {
-                    dayIndex: 1,
-                    startIndex: 10,
-                    endIndex: 12,
-                },
-                componentProps: {
-                    courseDeptAndInstr: 'Course 3',
-                    timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
-                    status: Status.CLOSED,
-                    blockData: {} as CalendarGridCourse,
-                },
-                course: ExampleCourse,
-                async: false,
-            },
-        },
         course: ExampleCourse,
+        timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
         async: false,
     },
     {
@@ -201,27 +86,8 @@ const testData: CalendarGridCourse[] = [
             startIndex: 10,
             endIndex: 12,
         },
-        componentProps: {
-            courseDeptAndInstr: 'Course 4',
-            timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
-            status: Status.CLOSED,
-            blockData: {
-                calendarGridPoint: {
-                    dayIndex: 1,
-                    startIndex: 10,
-                    endIndex: 12,
-                },
-                componentProps: {
-                    courseDeptAndInstr: 'Course 4',
-                    timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
-                    status: Status.CLOSED,
-                    blockData: {} as CalendarGridCourse,
-                },
-                course: ExampleCourse,
-                async: false,
-            },
-        },
         course: ExampleCourse,
+        timeAndLocation: '10:00 AM - 11:00 AM, Room 102',
         async: false,
     },
 ];

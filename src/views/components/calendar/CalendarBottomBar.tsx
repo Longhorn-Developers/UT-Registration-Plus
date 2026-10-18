@@ -44,13 +44,10 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
                     <div className='inline-flex gap-2.5'>
                         <ColorPickerProvider>
                             {asyncCourseCells?.map(block => {
-                                const { courseDeptAndInstr, status, className } = block.componentProps;
                                 return (
                                     <CalendarCourseBlock
                                         key={block.course.uniqueId}
-                                        courseDeptAndInstr={courseDeptAndInstr}
-                                        status={status}
-                                        className={clsx(className, 'w-35! h-12.5! items-center')}
+                                        className={'w-35! h-12.5! items-center'}
                                         onClick={() => setCourse(block.course)}
                                         blockData={block}
                                     />

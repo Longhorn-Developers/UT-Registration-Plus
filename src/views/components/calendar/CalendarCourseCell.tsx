@@ -1,5 +1,4 @@
 import { OptionsStore } from '@shared/storage/OptionsStore';
-import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
 import { hexToRGB, pickFontColor } from '@shared/util/colors/base';
 import Text from '@views/components/common/Text/Text';
@@ -20,9 +19,6 @@ import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellCol
  * Props for the CalendarCourseCell component.
  */
 export interface CalendarCourseCellProps {
-    courseDeptAndInstr: string;
-    timeAndLocation?: string;
-    status: StatusType;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     blockData: CalendarGridCourse;
     className?: string;
@@ -32,16 +28,12 @@ export interface CalendarCourseCellProps {
  * Renders a cell for a calendar course.
  *
  * @param courseDeptAndInstr - The course department and instructor.
- * @param timeAndLocation - The time and location of the course.
  * @param status - The status of the course.
  * @param colors - The colors for styling the cell.
  * @param className - Additional CSS class name for the cell.
  * @returns The rendered component.
  */
 export default function CalendarCourseCell({
-    courseDeptAndInstr,
-    timeAndLocation,
-    status,
     onClick,
     blockData,
     className,
@@ -51,8 +43,15 @@ export default function CalendarCourseCell({
     const { selectedColor, setSelectedCourse, handleCloseColorPicker, isSelectedBlock, isSelectedCourse } =
         useColorPickerContext();
 
-    const { colors, uniqueId: courseID } = blockData.course;
+    const { timeAndLocation } = blockData;
+    const { colors, uniqueId: courseID, status, department, instructors, number: courseNumber } = blockData.course;
     const { dayIndex, startIndex } = blockData.calendarGridPoint;
+
+    let courseDeptAndInstr = `${department} ${courseNumber}`;
+    if (instructors.length > 0) {
+        courseDeptAndInstr += ' \u2013 ';
+        courseDeptAndInstr += instructors.map(instructor => instructor.toString({ format: 'last' })).join('; ');
+    }
 
     let selectedCourse = false;
     let selectedBlock = false;
