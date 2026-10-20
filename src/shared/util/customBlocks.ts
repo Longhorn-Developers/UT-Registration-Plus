@@ -1,7 +1,7 @@
 import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { CustomBlock, CustomBlockDraft } from '@shared/types/CustomBlock';
 
-const validTime = (time: number) => Number.isInteger(time) && time >= 0 && time < 1440;
+const validTime = (time: number) => Number.isInteger(time) && time >= 480 && time <= 1260 && time % 15 === 0;
 
 export function customBlockFromDraft(draft: CustomBlockDraft, scheduleId: string, id: string): CustomBlock {
     const { syncAcrossAllSchedules, ...values } = draft;

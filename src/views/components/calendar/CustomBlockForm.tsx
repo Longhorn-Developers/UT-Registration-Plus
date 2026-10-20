@@ -132,8 +132,8 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
     if (!draft.name.trim()) validationErrors.push('Enter a block name.');
     if (!draft.days.length) validationErrors.push('Select at least one day.');
     if (!draft.allDay) {
-        if (startMinutes === null) validationErrors.push('Enter a valid start time, such as 8:03am.');
-        if (endMinutes === null) validationErrors.push('Enter a valid end time, such as 1:09pm.');
+        if (startMinutes === null) validationErrors.push('Enter a valid start time, such as 8:00am.');
+        if (endMinutes === null) validationErrors.push('Enter a valid end time, such as 1:15pm.');
         if (startMinutes !== null && endMinutes !== null && startMinutes >= endMinutes) {
             validationErrors.push('End time must be after start time.');
         }
@@ -172,6 +172,8 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
             onSave({
                 ...draft,
                 name: draft.name.trim(),
+                startTime: startMinutes ?? draft.startTime,
+                endTime: endMinutes ?? draft.endTime,
                 days: Object.values(DAY_MAP).filter(day => draft.days.includes(day)),
             })
         );

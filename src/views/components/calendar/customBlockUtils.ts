@@ -3,7 +3,7 @@ import type { CustomBlockDraft } from '@shared/types/CustomBlock';
 
 export function minuteAtPosition(offset: number, height: number, start: number, end: number): number {
     const minutes = start + (offset / height) * (end - start);
-    return Math.min(end, 1440 - 15, Math.max(start, Math.round(minutes / 15) * 15));
+    return Math.min(end, 1260, Math.max(start, 480, Math.round(minutes / 15) * 15));
 }
 
 export const BLOCK_DAYS = [
@@ -32,7 +32,8 @@ export function parseBlockTime(value: string): number | null {
     const minutes = Number(match[2]);
     const period = match[3]?.toLowerCase();
     if (period ? hours < 1 || hours > 12 : hours > 23) return null;
-    return (period ? (hours % 12) + (period === 'pm' ? 12 : 0) : hours) * 60 + minutes;
+    const total = (period ? (hours % 12) + (period === 'pm' ? 12 : 0) : hours) * 60 + minutes;
+    return Math.min(1260, Math.max(480, Math.round(total / 15) * 15));
 }
 
 export function formatBlockTime(minutes: number): string {
