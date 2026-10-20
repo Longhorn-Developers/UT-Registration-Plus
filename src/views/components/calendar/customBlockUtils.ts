@@ -12,7 +12,6 @@ export const BLOCK_DAYS = [
     'Wednesday',
     'Thursday',
     'Friday',
-    'Saturday',
 ] as const satisfies readonly Day[];
 
 export const DEFAULT_BLOCK = {

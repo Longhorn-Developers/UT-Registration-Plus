@@ -270,12 +270,9 @@ export default function Calendar(): ReactNode {
                     >
                         <CalendarHeader sidebarOpen={showSidebar} onSidebarToggle={toggleSidebar} />
                         <div
-                            className={clsx(
-                                'grid min-h-2xl min-w-5xl flex-grow shrink-0 gap-0 pl-spacing-3 screenshot:min-h-xl',
-                                {
-                                    'screenshot:flex-grow-0': bottomBar !== null, // html-to-image seems to have a bug with flex-grow
-                                }
-                            )}
+                            className={clsx('min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl', {
+                                'screenshot:flex-grow-0': bottomBar !== null, // html-to-image seems to have a bug with flex-grow
+                            })}
                         >
                             <CalendarGrid
                                 onCreateBlock={async draft => {

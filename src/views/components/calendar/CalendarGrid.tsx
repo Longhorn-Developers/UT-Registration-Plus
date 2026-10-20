@@ -113,7 +113,6 @@ export default function CalendarGrid({
             ref={gridRef}
             className='grid h-full'
             style={{
-                minHeight: totalRows * 36 + 28,
                 gridTemplateColumns: `auto auto repeat(${days.length}, minmax(0, 1fr))`,
                 gridTemplateRows: `auto auto repeat(${totalRows}, 1fr)`,
             }}
