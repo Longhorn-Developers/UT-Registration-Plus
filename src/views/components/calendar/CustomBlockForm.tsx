@@ -142,7 +142,7 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
     const daysText = Object.entries(DAY_MAP)
         .filter(([, day]) => draft.days.includes(day))
         .map(([short]) => short)
-        .join('');
+        .join(', ');
 
     const update = (value: Partial<CustomBlockDraft>) => setDraft(previous => ({ ...previous, ...value }));
     const changeTime = (field: 'startTime' | 'endTime', value: string) => {
