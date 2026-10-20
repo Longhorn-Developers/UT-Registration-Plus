@@ -1,7 +1,7 @@
 import { CustomBlockStore } from '@shared/storage/CustomBlockStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { CustomBlock, CustomBlockDraft } from '@shared/types/CustomBlock';
-import { customBlockFromDraft } from '@shared/util/customBlocks';
+import { customBlockFromDraft, customBlockToDraft } from '@shared/util/customBlocks';
 import { generateRandomId } from '@shared/util/random';
 
 let pending: Promise<void> = Promise.resolve();
@@ -51,6 +51,21 @@ export function deleteCustomBlock(id: string): Promise<void> {
     return writeBlocks(async blocks => {
         if (!blocks.some(block => block.id === id)) throw new Error('Custom block does not exist');
         return { blocks: blocks.filter(block => block.id !== id), result: undefined };
+    });
+}
+
+export function copyCustomBlocks(blocks: CustomBlock[], scheduleId: string): Promise<void> {
+    if (!blocks.length) return Promise.resolve();
+    return writeBlocks(async existing => {
+        await requireSchedule(scheduleId);
+        const copies = blocks.map(block =>
+            customBlockFromDraft(
+                { ...customBlockToDraft(block), syncAcrossAllSchedules: false },
+                scheduleId,
+                generateRandomId()
+            )
+        );
+        return { blocks: [...existing, ...copies], result: undefined };
     });
 }
 

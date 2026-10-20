@@ -1,11 +1,14 @@
 import type { Serialized } from '@chrome-extension-toolkit';
 import { TZDate, tz } from '@date-fns/tz';
 import exportSchedule from '@pages/background/lib/exportSchedule';
+import { CustomBlockStore } from '@shared/storage/CustomBlockStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { type Course, UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
+import type { CustomBlock } from '@shared/types/CustomBlock';
 import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { selectCustomBlocks } from '@shared/util/customBlocks';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import { englishStringifyList } from '@shared/util/string';
 import { ensureShadowStyles } from '@views/components/common/ExtensionRoot/ShadowRootContainer';
@@ -23,6 +26,7 @@ import {
 } from 'date-fns';
 import { toBlob } from 'html-to-image';
 import { academicCalendars } from './academic-calendars';
+import { formatBlockTime } from './customBlockUtils';
 
 // Do all timezone calculations relative to UT's timezone
 const TIMEZONE_ID = 'America/Chicago';
@@ -58,12 +62,14 @@ const DAY_NAME_TO_NUMBER = {
  * Retrieves the schedule from the UserScheduleStore based on the active index.
  * @returns A promise that resolves to the retrieved schedule.
  */
-const getSchedule = async (): Promise<Serialized<UserSchedule> | undefined> => {
+const getSchedule = async () => {
     const schedules = await UserScheduleStore.get('schedules');
     const activeIndex = await UserScheduleStore.get('activeIndex');
     const schedule = schedules[activeIndex];
 
-    return schedule;
+    if (!schedule) return undefined;
+    const blocks = await CustomBlockStore.get('blocks');
+    return { ...schedule, customBlocks: selectCustomBlocks(blocks, schedule.id) };
 };
 
 /**
@@ -231,16 +237,55 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
     return icsString;
 };
 
+function blockToIcsString(block: CustomBlock, firstDate: Date, lastDate?: Date): string | null {
+    const startDate = block.days
+        .map(day => nextDayInclusive(firstDate, DAY_NAME_TO_NUMBER[day]))
+        .sort((a, b) => a.getTime() - b.getTime())[0];
+    if (!startDate) return null;
+    const dateAt = (minutes: number) =>
+        iCalDateFormat(
+            setMultiple(
+                startDate,
+                { hours: Math.floor(minutes / 60), minutes: minutes % 60, seconds: 0, milliseconds: 0 },
+                { in: TZ }
+            )
+        );
+    const name = block.name.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n').replace(/[,;]/g, '\\$&');
+    let event = `BEGIN:VEVENT\nUID:${block.id}@ut-registration-plus\n`;
+    event += `DTSTAMP:${formatDate(new Date(), ISO_BASIC_DATETIME_FORMAT, { in: tz('utc') })}Z\n`;
+    event += block.allDay
+        ? `DTSTART;VALUE=DATE:${formatDate(startDate, 'yyyyMMdd')}\nDTEND;VALUE=DATE:${formatDate(addDays(startDate, 1), 'yyyyMMdd')}\n`
+        : `DTSTART;TZID=${TIMEZONE_ID}:${dateAt(block.startTime)}\nDTEND;TZID=${TIMEZONE_ID}:${dateAt(block.endTime)}\n`;
+    event += `RRULE:FREQ=WEEKLY;BYDAY=${block.days.map(day => CAL_MAP[day]).join(',')}`;
+    if (lastDate) {
+        const until = block.allDay
+            ? formatDate(lastDate, 'yyyyMMdd', { in: TZ })
+            : formatISO(addDays(lastDate, 1), { format: 'basic', in: tz('utc') });
+        event += `;UNTIL=${until}`;
+    }
+    return `${event}\nSUMMARY:${name}\nEND:VEVENT`;
+}
+
 /**
  * Creates a VCALENDAR string for a schedule of a user.
  * @param schedule - The schedule object
  * @returns A string representation of the schedule in the iCalendar format (ICS)
  */
-export const scheduleToIcsString = (schedule: Serialized<UserSchedule>) => {
+export const scheduleToIcsString = (schedule: Serialized<UserSchedule>, blocks: CustomBlock[] = []) => {
     let icsString = 'BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nX-WR-CALNAME:My Schedule\n';
 
-    const vevents = schedule.courses
-        .flatMap(course => course.schedule.meetings.map(meeting => meetingToIcsString(course, meeting)))
+    const semester = schedule.courses.find(
+        course => course.semester.code && Object.hasOwn(academicCalendars, course.semester.code)
+    )?.semester.code;
+    const calendar = semester ? academicCalendars[semester as keyof typeof academicCalendars] : undefined;
+    const firstDate = calendar ? parseISO(calendar.firstClassDate, { in: TZ }) : new TZDate(Date.now(), TIMEZONE_ID);
+    const lastDate = calendar ? parseISO(calendar.lastClassDate, { in: TZ }) : undefined;
+    const vevents = [
+        ...schedule.courses.flatMap(course =>
+            course.schedule.meetings.map(meeting => meetingToIcsString(course, meeting))
+        ),
+        ...blocks.map(block => blockToIcsString(block, firstDate, lastDate)),
+    ]
         .filter(event => event !== null)
         .join('\n');
 
@@ -258,7 +303,7 @@ export const scheduleToIcsString = (schedule: Serialized<UserSchedule>) => {
  * @param schedule - The schedule object
  * @returns
  */
-export const scheduleToText = (schedule: Serialized<UserSchedule>) => {
+export const scheduleToText = (schedule: Serialized<UserSchedule>, blocks: CustomBlock[] = []) => {
     const lines: string[] = [];
 
     lines.push(`Schedule: ${schedule.name}`);
@@ -271,6 +316,14 @@ export const scheduleToText = (schedule: Serialized<UserSchedule>) => {
         lines.push('');
     }
 
+    for (const block of blocks) {
+        lines.push(block.name);
+        lines.push(block.days.join(', '));
+        lines.push(
+            block.allDay ? 'All day' : `${formatBlockTime(block.startTime)} – ${formatBlockTime(block.endTime)}`
+        );
+        lines.push('');
+    }
     return lines.join('\n');
 };
 
@@ -286,7 +339,7 @@ export const saveAsCal = async () => {
         throw new Error('No schedule found');
     }
 
-    const icsString = scheduleToIcsString(schedule);
+    const icsString = scheduleToIcsString(schedule, schedule.customBlocks);
 
     downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
 };
@@ -306,7 +359,7 @@ export const saveAsText = async () => {
         throw new Error('No schedule found');
     }
 
-    const scheduleText = scheduleToText(schedule);
+    const scheduleText = scheduleToText(schedule, schedule.customBlocks);
     downloadBlob(scheduleText, 'TEXT', 'schedule.txt');
 };
 
