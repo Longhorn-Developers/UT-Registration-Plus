@@ -25,7 +25,7 @@ function PopupBootstrap() {
 
     const enableThemesBeta = OptionsStore.useStore(store => store.enableThemesBeta);
     const theme = OptionsStore.useStore(store => store.theme);
-    useThemeSync(enableThemesBeta ? theme : 'light');
+    useThemeSync(theme);
 
     return <PopupMain />;
 }

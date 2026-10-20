@@ -111,7 +111,7 @@ export default function Calendar(): ReactNode {
     activeScheduleRef.current = activeSchedule;
 
     const settings = OptionsStore.useStore();
-    useThemeSync(settings.enableThemesBeta ? settings.theme : 'light');
+    useThemeSync(settings.theme);
 
     // silently refreshes course data when the calendar opens or the active schedule changes
     // biome-ignore lint/correctness/useExhaustiveDependencies: id is a trigger, not a value read

@@ -87,7 +87,7 @@ export default function Settings(): React.JSX.Element {
     const enableCourseStatusChips = options.enableCourseStatusChips;
     const isDeveloper = DevStore.useStore(store => store.isDeveloper);
 
-    useThemeSync(options.enableThemesBeta ? options.theme : 'light');
+    useThemeSync(options.theme);
 
     const activeSchedule = useActiveSchedule();
     const showDialog = usePrompt();
