@@ -81,6 +81,21 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
+                            Theme
+                            <BetaChip />
+                        </Text>
+                        <p className='text-sm text-content-muted'>
+                            Try out dark mode and other color themes for the extension.
+                        </p>
+                    </div>
+                    <ThemePicker theme={theme} />
+                </div>
+
+                <Divider size='auto' orientation='horizontal' />
+
+                <div className='flex items-center justify-between'>
+                    <div className='max-w-xs'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Enable Course Refresh
                             <BetaChip />
                         </Text>
@@ -112,21 +127,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                             void OptionsStore.set('enableCourseStatusChips', !enableCourseStatusChips);
                         }}
                     />
-                </div>
-
-                <Divider size='auto' orientation='horizontal' />
-
-                <div className='flex items-center justify-between'>
-                    <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
-                            Theme
-                            <BetaChip />
-                        </Text>
-                        <p className='text-sm text-content-muted'>
-                            Try out dark mode and other color themes for the extension.
-                        </p>
-                    </div>
-                    <ThemePicker theme={theme} />
                 </div>
 
                 <Divider size='auto' orientation='horizontal' />
