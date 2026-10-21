@@ -9,10 +9,9 @@ on:
   pull_request:
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   check:
-    name: Best Practices
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -27,7 +26,6 @@ jobs:
         run: pnpm run check
 
   type-check:
-    name: Type Check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -42,7 +40,6 @@ jobs:
         run: pnpm run check-types
 
   test:
-    name: Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -74,10 +71,14 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build extension
         run: pnpm build
+        env:
+          VITE_GIT_BRANCH: ${{ github.head_ref || github.ref_name }}
+          VITE_GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Set artifact name
         id: name
         run: |
-          SHORT_SHA="${GITHUB_SHA::7}"
+          SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          SHORT_SHA="${SHA::7}"
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             echo "value=utrp-pr-${{ github.event.pull_request.number }}-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
           else
