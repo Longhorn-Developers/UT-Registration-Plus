@@ -9,6 +9,22 @@ import React, { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { suspendUntilStoresReady } from 'src/lib/chrome-extension-toolkit/storage/createStore';
 
+// Firefox content scripts run behind Xray wrappers, so an unbound reference to
+// requestAnimationFrame (e.g. `const raf = window.requestAnimationFrame; raf(cb)`)
+// throws "'requestAnimationFrame' called on an object that does not implement interface Window".
+// Some dependencies call it unbound, so bind both functions to window up front.
+// See https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts
+if (typeof window !== 'undefined') {
+    const raf = window.requestAnimationFrame;
+    if (raf) {
+        window.requestAnimationFrame = raf.bind(window);
+    }
+    const caf = window.cancelAnimationFrame;
+    if (caf) {
+        window.cancelAnimationFrame = caf.bind(window);
+    }
+}
+
 const support = getSiteSupport(window.location.href);
 
 const renderComponent = (Component: React.ComponentType) => {
