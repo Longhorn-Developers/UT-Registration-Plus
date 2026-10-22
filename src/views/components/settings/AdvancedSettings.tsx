@@ -212,7 +212,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-content font-semibold'>
                             Reduced Motion
                         </Text>
                         <p className='text-sm text-gray-600'>
