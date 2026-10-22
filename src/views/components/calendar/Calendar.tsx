@@ -48,7 +48,7 @@ const CalendarSidebar = memo(function CalendarSidebar() {
         <div
             ref={sidebarRef}
             className={clsx(
-                'py-spacing-5 bg-surface-raised relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-divider shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
+                'py-spacing-5 bg-surface relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-divider shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
                 {
                     'max-w-[20.3125rem] ': showSidebar,
                     'max-w-0 pointer-events-none': !showSidebar,
@@ -252,7 +252,7 @@ export default function Calendar(): ReactNode {
 
                 {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
                 <div
-                    className='screenshot:calendar-target h-screen flex overflow-auto'
+                    className='screenshot:calendar-target bg-surface h-screen flex overflow-auto'
                     onDragEnter={handleDragEnter}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
@@ -267,13 +267,16 @@ export default function Calendar(): ReactNode {
                                 // scrollbarGutter: 'stable',
                             }
                         }
-                        className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5 bg-surface'
+                        className='z-1 h-full flex flex-grow flex-col overflow-x-scroll [&>*]:px-spacing-5'
                     >
                         <CalendarHeader sidebarOpen={showSidebar} onSidebarToggle={toggleSidebar} />
                         <div
-                            className={clsx('min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl', {
-                                'screenshot:flex-grow-0': bottomBar !== null, // html-to-image seems to have a bug with flex-grow
-                            })}
+                            className={clsx(
+                                'min-h-2xl bg-surface-raised min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl',
+                                {
+                                    'screenshot:flex-grow-0': bottomBar !== null, // html-to-image seems to have a bug with flex-grow
+                                }
+                            )}
                         >
                             <CalendarGrid
                                 courseCells={courseCells}
