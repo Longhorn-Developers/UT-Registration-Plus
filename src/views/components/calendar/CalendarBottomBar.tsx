@@ -73,4 +73,4 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
             )}
         </div>
     );
-
+}
