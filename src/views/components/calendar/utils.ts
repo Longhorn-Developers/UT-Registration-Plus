@@ -567,8 +567,9 @@ export const calculateCourseCellColumns = (dayCells: CalendarLayoutCell[]) => {
     const connectedComponents = findConnectedComponents(cells);
 
     // Assign columns for each connectedComponents
+    // Custom time blocks are given left-most column priority over course blocks
     for (const cc of connectedComponents) {
-        assignColumns(cc);
+        assignColumns([...cc].sort((a, b) => Number('course' in a) - Number('course' in b)));
     }
 
     // Clean up

@@ -198,8 +198,12 @@ function AccountForCourseConflicts({
     // biome-ignore lint/correctness/useHookAtTopLevel: See above
     const sentryScope = IS_STORYBOOK ? undefined : useSentryScope();
 
-    //  Groups by dayIndex to identify overlaps
-    const days = [...courseCells, ...blockCells].reduce(
+    //  Groups by dayIndex to identify overlaps, gives left-most column priority to all day blocks, then regular time blocks, and finally course cells
+    const days = [
+        ...blockCells.filter(cell => cell.block.allDay),
+        ...blockCells.filter(cell => !cell.block.allDay),
+        ...courseCells,
+    ].reduce(
         (acc, cell) => {
             const { dayIndex } = cell.calendarGridPoint;
             if (acc[dayIndex] === undefined) {
