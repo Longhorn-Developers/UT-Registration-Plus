@@ -7,7 +7,6 @@ import { MigrationDialog } from '@views/components/common/MigrationDialog';
 import PopupMain from '@views/components/PopupMain';
 import { Suspense } from 'react';
 import { suspendUntilStoresReady } from 'src/lib/chrome-extension-toolkit/storage/createStore';
-import { useThemeSync } from 'src/views/hooks/useThemeSync';
 
 renderRoot(
     <ExtensionRoot>
@@ -23,9 +22,6 @@ renderRoot(
 function PopupBootstrap() {
     suspendUntilStoresReady([UserScheduleStore, OptionsStore]);
 
-    const enableThemesBeta = OptionsStore.useStore(store => store.enableThemesBeta);
-    const theme = OptionsStore.useStore(store => store.theme);
-    useThemeSync(theme);
-
+    // The toolbar popup intentionally keeps its original light colors on every site, so it doesn't sync the theme
     return <PopupMain />;
 }
