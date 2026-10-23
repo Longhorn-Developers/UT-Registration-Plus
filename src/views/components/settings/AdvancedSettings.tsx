@@ -84,7 +84,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                             Enable Course Refresh
                         </Text>
                         <p className='text-sm text-content-muted'>
-                            Show a refresh button in the calendar to re-scrape course data from UT&apos;s site.
+                            Show a refresh button in the calendar to update course info from UT&apos;s site.
                         </p>
                     </div>
                     <SwitchButton

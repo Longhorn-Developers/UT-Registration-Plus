@@ -1,3 +1,33 @@
+## [2.4.2](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.4.1...v2.4.2) (2026-10-11)
+
+### Features
+
+* add double-click edit for header title like sidebar and calendar rerender triggers ([#838](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/838)) ([40a08af](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/40a08afc0bd0d6c8a9d759bc73feb31969666e85))
+* on uninstall go to a thank you page that prompts user to leave a review ([#871](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/871)) ([d1c57ac](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/d1c57ac4f25edfbf947bd62f58665611cab187ba))
+* reduced motion mode ([#911](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/911)) ([eb99b0e](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/eb99b0e10ba387a8dabd099d7429ea9e9d9ab6fa))
+* refresh course schedule content daily ([#789](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/789)) ([5f9b34c](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/5f9b34cd4c002f86072aa12d4eee2073c9b4b37f))
+* **settings:** add current UTRP fellows ([#938](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/938)) ([1caa84a](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/1caa84ac72cd281f44c727abff01a155158c049f))
+* spring 2026 grades ([#883](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/883)) ([aa6d9eb](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/aa6d9eb2bed35ebea60bcb5d9038d9c829a77fb8))
+
+### Bug Fixes
+
+* accessibility improvements ([#836](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/836)) ([5115ae8](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/5115ae89089f9c2bf1b1bcbda972f634243711e2))
+* calendar screenshot shadow root and remove padding ([#865](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/865)) ([f407494](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/f407494e92c0e535d9cae9d21078a3a22122d789))
+* entire app was blocked because of a single top level await ([#876](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/876)) ([19f5d58](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/19f5d582b0100b0dc57f404aae36dff03ba6a074))
+* **links:** change summer 26 link to spring 27 ([#937](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/937)) ([2aa9926](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/2aa9926bdb03db40874be2894f61d75a507db0a7))
+* move set isDeveloper out of React rendering pathway ([#888](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/888)) ([500d6c4](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/500d6c45fd728f309cbdcd09ec6489222c12b7fc))
+* order summer semester grades between fall and spring of same calendar year ([#882](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/882)) ([5cf6934](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/5cf6934a5edf71caaecf8c97445d57c1b47bcf01))
+* **quick-add:** keep semester dropdown open on click ([#933](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/933)) ([07470e2](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/07470e29abca08f70fa53f4d469180acf57ec9b3))
+* **quick-add:** show login prompt instead of "No courses found" when logged out ([#940](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/940)) ([1f6fdb0](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/1f6fdb01f030658946a6b8f1e44a6cf1e6716ee9))
+* refresh upon user login ([#894](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/894)) ([a3e632d](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/a3e632db3804d72dd7fc89817d59f30adf25b21e))
+* replace forced-login redirect with inline login prompt on refresh ([#863](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/863)) ([a70ad43](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/a70ad4385a16a4213b1a7383d6a18c2cb19d2b56))
+* **settings:** remove beta tag & enable certain settings ([#920](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/920)) ([c308f48](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/c308f4839648322e618c65fd6df8265b0ae3c914))
+* storybook rendering ([#885](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/885)) ([3e118d6](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/3e118d6e6826e4813104ab34bf9c3d915c150e09))
+
+### Performance Improvements
+
+* faster commit checks ([#893](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/893)) ([78711de](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/78711de47cd55b262592af696d85d81a02cf937f))
+
 ## [2.4.1](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.4.0...v2.4.1) (2026-04-06)
 
 ### Features

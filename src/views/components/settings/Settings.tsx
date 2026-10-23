@@ -384,7 +384,7 @@ export default function Settings(): React.JSX.Element {
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3'>
                             {LONGHORN_DEVELOPERS_ADMINS.map(admin => (
                                 <ContributorCard
-                                    key={admin.githubUsername}
+                                    key={admin.name}
                                     name={admin.name}
                                     githubUsername={admin.githubUsername}
                                     personalWebsite={getPersonalWebsite(admin)}
