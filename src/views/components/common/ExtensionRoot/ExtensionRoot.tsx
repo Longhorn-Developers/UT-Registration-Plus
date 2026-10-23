@@ -37,12 +37,16 @@ export default function ExtensionRoot(props: React.HTMLProps<HTMLDivElement>): R
     );
 }
 
-export const ExtensionRootWrapper = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
-    ({ className, ...props }, ref) => {
+export interface ExtensionRootWrapperProps extends React.HTMLProps<HTMLDivElement> {
+    themeOverride?: ThemeName | null;
+}
+
+export const ExtensionRootWrapper = React.forwardRef<HTMLDivElement, ExtensionRootWrapperProps>(
+    ({ className, themeOverride, ...props }, ref) => {
         // inherits the theme from the nearest ExtensionRoot, since this renders into its own
         // (nested) shadow root for portals like Dialog/Dropdown/QuickAddModal
         const { theme } = useTheme();
-        return <ShadowRootContainer {...props} className={className} theme={theme} ref={ref} />;
+        return <ShadowRootContainer {...props} className={className} theme={themeOverride ?? theme} ref={ref} />;
     }
 );
 

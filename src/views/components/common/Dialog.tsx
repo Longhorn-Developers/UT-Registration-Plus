@@ -19,6 +19,7 @@ import { ExtensionRootWrapper } from './ExtensionRoot/ExtensionRoot';
  */
 export interface _DialogProps {
     className?: string;
+    themeOverride?: string | null;
     title?: JSX.Element;
     description?: JSX.Element;
 }
@@ -32,13 +33,13 @@ export type DialogProps = _DialogProps & Omit<TransitionRootProps<typeof HDialog
  * A reusable popup component that can be used to display content on the page
  */
 export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Element {
-    const { children, className, open, title, description, ...rest } = props;
+    const { children, className, open, title, themeOverride, description, ...rest } = props;
     const { theme } = useTheme();
     const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
 
     return (
         <Transition show={open} as={HDialog} {...rest}>
-            <ExtensionRootWrapper>
+            <ExtensionRootWrapper themeOverride={themeOverride}>
                 <TransitionChild
                     as={Fragment}
                     enter={reducedMotion ? 'duration-0' : 'transition duration-300 motion-reduce:duration-150 ease-out'}
@@ -73,7 +74,7 @@ export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Eleme
                                 'z-99 max-h-[90vh] flex flex-col overflow-y-auto border border-solid border-divider rounded bg-surface-raised shadow-xl ml-[calc(100vw-100%-1rem)]',
                                 className
                             )}
-                            data-theme={theme}
+                            data-theme={themeOverride || theme}
                         >
                             {title && <DialogTitle>{title}</DialogTitle>}
                             {description && <Description as='div'>{description}</Description>}

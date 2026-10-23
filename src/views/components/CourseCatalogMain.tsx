@@ -18,12 +18,13 @@ import DialogProvider from './common/DialogProvider/DialogProvider';
 
 interface Props {
     support: Extract<SiteSupportType, 'COURSE_CATALOG_DETAILS' | 'COURSE_CATALOG_LIST'>;
+    theme?: string | null;
 }
 
 /**
  * This is the top level react component orchestrating the course catalog page.
  */
-export default function CourseCatalogMain({ support }: Props): React.JSX.Element | null {
+export default function CourseCatalogMain({ support, theme }: Props): React.JSX.Element | null {
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
     const [course, setCourse] = useState<Course | null>(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -94,6 +95,7 @@ export default function CourseCatalogMain({ support }: Props): React.JSX.Element
                 {course && (
                     <CourseCatalogInjectedPopup
                         course={course}
+                        theme={theme}
                         open={isPopupOpen}
                         onClose={() => setIsPopupOpen(false)}
                         afterLeave={() => setCourse(null)}

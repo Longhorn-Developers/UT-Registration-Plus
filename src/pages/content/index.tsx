@@ -8,6 +8,7 @@ import getSiteSupport, { SiteSupport } from '@views/lib/getSiteSupport';
 import React, { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { suspendUntilStoresReady } from 'src/lib/chrome-extension-toolkit/storage/createStore';
+import { isDark } from 'src/shared/util/colors';
 
 const support = getSiteSupport(window.location.href);
 
@@ -35,7 +36,10 @@ if (support === SiteSupport.COURSE_CATALOG_DETAILS || support === SiteSupport.CO
     renderComponent(() => {
         suspendUntilStoresReady([UserScheduleStore, OptionsStore]);
 
-        return <CourseCatalogMain support={support} />;
+        const colorElement = document.querySelector('#search_area');
+        const theme: string | null = isDark(colorElement) ? 'dark' : 'light';
+
+        return <CourseCatalogMain support={support} theme={theme} />;
     });
 }
 
