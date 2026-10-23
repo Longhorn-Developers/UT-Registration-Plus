@@ -277,10 +277,11 @@ function CalendarGridItem({
             style={{ gridColumn: cell.calendarGridPoint.dayIndex + 3, gridRow: '3 / -1' }}
         >
             <div
-                className={`absolute box-border pointer-events-auto pb-1 ${course ? 'pr-2.5' : 'pr-2'} screenshot:pb-0.5 screenshot:pr-0.5`}
+                className={`absolute box-border pb-1 ${course ? 'pr-2.5' : 'pr-2'} screenshot:pb-0.5 screenshot:pr-0.5`}
                 style={calendarCellPosition(cell, totalRows)}
             >
-                {children}
+                {/* Only the cell is interactive, so the padding gap can still be dragged to create a block */}
+                <div className='h-full pointer-events-auto'>{children}</div>
             </div>
         </div>
     );
