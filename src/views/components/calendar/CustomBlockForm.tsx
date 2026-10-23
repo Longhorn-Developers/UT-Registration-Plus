@@ -79,12 +79,10 @@ function BlockTimeInput({
     label,
     value,
     onChange,
-    disabled,
 }: {
     label: string;
     value: string;
     onChange: (value: string) => void;
-    disabled: boolean;
 }) {
     return (
         <div className='relative h-[35px] min-w-[65px] inline-flex items-center'>
@@ -95,7 +93,6 @@ function BlockTimeInput({
                 className={clsx(styles.textInput, styles.timeInput, 'absolute inset-0 h-[35px]! w-full')}
                 aria-label={label}
                 value={value}
-                disabled={disabled}
                 spellCheck={false}
                 onChange={event => onChange(event.target.value)}
                 onBlur={() => {
@@ -271,24 +268,24 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
                                     autoFocus
                                 />
                             )}
-                            <div className='flex items-center gap-spacing-5'>
-                                <ClockIcon className='h-6 w-6 shrink-0' aria-hidden />
-                                <div className='min-w-0 flex items-center gap-spacing-4'>
-                                    <BlockTimeInput
-                                        label='Start time'
-                                        value={startTime}
-                                        onChange={value => changeTime('startTime', value)}
-                                        disabled={draft.allDay}
-                                    />
-                                    <MinusIcon className='h-6 w-6 shrink-0' aria-hidden />
-                                    <BlockTimeInput
-                                        label='End time'
-                                        value={endTime}
-                                        onChange={value => changeTime('endTime', value)}
-                                        disabled={draft.allDay}
-                                    />
+                            {!draft.allDay && (
+                                <div className='flex items-center gap-spacing-5'>
+                                    <ClockIcon className='h-6 w-6 shrink-0' aria-hidden />
+                                    <div className='min-w-0 flex items-center gap-spacing-4'>
+                                        <BlockTimeInput
+                                            label='Start time'
+                                            value={startTime}
+                                            onChange={value => changeTime('startTime', value)}
+                                        />
+                                        <MinusIcon className='h-6 w-6 shrink-0' aria-hidden />
+                                        <BlockTimeInput
+                                            label='End time'
+                                            value={endTime}
+                                            onChange={value => changeTime('endTime', value)}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                             <BlockOption
                                 label='All day'
                                 checked={draft.allDay}
