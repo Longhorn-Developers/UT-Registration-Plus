@@ -133,7 +133,7 @@ export default function QuickAddModal(): JSX.Element {
                             >
                                 Log in
                             </a>
-                            {' to refresh course data'}
+                            {' to add courses'}
                         </Text>
                     ) : (
                         statusMessage && (
