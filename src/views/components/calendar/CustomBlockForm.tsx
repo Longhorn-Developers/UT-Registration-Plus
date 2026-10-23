@@ -20,7 +20,7 @@ import ProhibitIcon from '~icons/ph/prohibit';
 import TrashIcon from '~icons/ph/trash';
 import XIcon from '~icons/ph/x';
 import styles from './CustomBlockForm.module.scss';
-import { BLOCK_DAYS, DEFAULT_BLOCK, formatBlockTime, parseBlockTime } from './customBlockUtils';
+import { BLOCK_DAYS, DEFAULT_BLOCK, formatBlockTime, isBlockTimeInRange, parseBlockTime } from './customBlockUtils';
 
 interface Props {
     block?: CustomBlock;
@@ -131,6 +131,12 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
     if (!draft.allDay) {
         if (startMinutes === null) validationErrors.push('Enter a valid start time, such as 8:00am.');
         if (endMinutes === null) validationErrors.push('Enter a valid end time, such as 1:15pm.');
+        if (startMinutes !== null && !isBlockTimeInRange(startMinutes)) {
+            validationErrors.push('Start time is outside 8:00am – 9:00pm.');
+        }
+        if (endMinutes !== null && !isBlockTimeInRange(endMinutes)) {
+            validationErrors.push('End time is outside 8:00am – 9:00pm.');
+        }
         if (startMinutes !== null && endMinutes !== null && startMinutes >= endMinutes) {
             validationErrors.push('End time must be after start time.');
         }

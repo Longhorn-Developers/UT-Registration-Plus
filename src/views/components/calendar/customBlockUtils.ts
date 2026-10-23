@@ -26,7 +26,12 @@ export function parseBlockTime(value: string): number | null {
     const period = match[3]?.toLowerCase();
     if (period ? hours < 1 || hours > 12 : hours > 23) return null;
     const total = (period ? (hours % 12) + (period === 'pm' ? 12 : 0) : hours) * 60 + minutes;
-    return Math.min(1260, Math.max(480, Math.round(total / 15) * 15));
+    // Not clamped to the 8am–9pm grid so the form can report out-of-range times instead of silently correcting them
+    return Math.min(1425, Math.round(total / 15) * 15);
+}
+
+export function isBlockTimeInRange(minutes: number): boolean {
+    return minutes >= 480 && minutes <= 1260;
 }
 
 export function formatBlockTime(minutes: number): string {
