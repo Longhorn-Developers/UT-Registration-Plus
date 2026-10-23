@@ -1,0 +1,59 @@
+name: PR Build Comment
+# After CI passes on a PR, post one comment with a direct download link to that run's build ZIP,
+# and edit the same comment on later pushes. Uses workflow_run so the token can comment on fork PRs
+# too; no PR code is checked out or run.
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+permissions:
+  actions: read
+  pull-requests: write
+jobs:
+  comment:
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post or update download link
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          MARKER: <!-- utrp-build-zip -->
+        run: |
+          # workflow_run doesn't list fork PRs, so find the open PR whose head is this run's commit
+          PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --limit 200 --json number,headRefOid \
+            --jq ".[] | select(.headRefOid == \"${HEAD_SHA}\") | .number" | head -n 1)
+          if [ -z "$PR" ]; then
+            echo "No open PR has head ${HEAD_SHA}; it was likely closed or pushed to again."
+            exit 0
+          fi
+          ARTIFACT=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts" \
+            --jq '.artifacts[] | select(.name | startswith("utrp-pr-")) | "\(.id) \(.name)"' | head -n 1)
+          if [ -z "$ARTIFACT" ]; then
+            echo "Run ${RUN_ID} uploaded no utrp-pr-* artifact."
+            exit 0
+          fi
+          read -r ID NAME <<< "$ARTIFACT"
+          URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts/${ID}"
+          BODY=$(cat <<EOF
+          ${MARKER}
+          ### Test this PR
+          **[Download ${NAME}.zip](${URL})** (commit \`${HEAD_SHA::7}\`)
+
+          1. Unzip it.
+          2. Open \`chrome://extensions\`, turn on **Developer mode**, and drag the unzipped folder onto the page.
+          3. If the store version of UTRP is installed, turn it off first so the two don't conflict.
+
+          This comment updates each time CI passes on a new commit. Downloading requires being signed in to GitHub.
+          EOF
+          )
+          EXISTING=$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | contains(\"${MARKER}\"))) | .id" | head -n 1)
+          if [ -n "$EXISTING" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING}" -f body="$BODY"
+          else
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" -f body="$BODY"
+          fi
