@@ -361,7 +361,7 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
                             role='alert'
                             className='rounded border border-theme-red/20 bg-theme-red/5 px-spacing-5 py-spacing-4 text-theme-red'
                         >
-                            <ul className='m-0 list-disc space-y-1 pl-4'>
+                            <ul className='m-0 list-none space-y-1 p-0'>
                                 {validationErrors.map(message => (
                                     <li key={message}>{message}</li>
                                 ))}
