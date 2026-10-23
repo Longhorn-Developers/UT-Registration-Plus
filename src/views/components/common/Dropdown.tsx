@@ -3,6 +3,7 @@ import { ellipsify } from '@shared/util/string';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import type React from 'react';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 import CaretDownIcon from '~icons/ph/caret-down';
 
 import { styleResetClass } from './ExtensionRoot/ExtensionRoot';
@@ -43,6 +44,7 @@ export default function Dropdown({
     disabled,
 }: React.PropsWithChildren<Props>): React.JSX.Element {
     const Icon = icon;
+    const { theme } = useTheme();
     return (
         <Listbox
             as='div'
@@ -72,6 +74,8 @@ export default function Dropdown({
                 </div>
             </ListboxButton>
             <ListboxOptions
+                // styleResetClass resets the theme colors to light, so re-apply the active theme on the same element
+                data-theme={theme}
                 className={clsx(
                     styleResetClass,
                     'absolute left-0 top-full mt-spacing-1 flex flex-col p-spacing-1 w-full z-40',
