@@ -6,13 +6,7 @@ export function minuteAtPosition(offset: number, height: number, start: number, 
     return Math.min(end, 1260, Math.max(start, 480, Math.round(minutes / 15) * 15));
 }
 
-export const BLOCK_DAYS = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-] as const satisfies readonly Day[];
+export const BLOCK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as const satisfies readonly Day[];
 
 export const DEFAULT_BLOCK = {
     name: '',
