@@ -399,28 +399,6 @@ export function getUnusedColor(
     return getCourseColors('emerald', index, offset);
 }
 
-/**
- * Detects if an HTML element has a dark background color based on its computed style.
- * It calculates the brightness of the background color using the formula:
- * brightness = (r * 299 + g * 587 + b * 114) / 1000. If the brightness is less
- * than 128, it is considered dark.
- */
-export function isDark(el: Element | null) {
-    if (!el) {
-        return false;
-    }
-
-    const bg = getComputedStyle(el).backgroundColor;
-    const [r, g, b] = bg.match(/\d+(\.\d+)?/g)!.map(Number);
-
-    if (!r || !g || !b) {
-        return false;
-    }
-
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    return brightness < 128;
-}
-
 // OKLab helper functions (https://github.com/bottosson/bottosson.github.io/blob/master/misc/colorpicker/colorconversion.js)
 // function srgbTransferFunction(a: number): number {
 //     return a <= 0.0031308 ? 12.92 * a : 1.055 * a ** 0.4166666666666667 - 0.055;

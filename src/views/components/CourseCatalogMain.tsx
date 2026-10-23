@@ -7,7 +7,9 @@ import NewSearchLink from '@views/components/injected/NewSearchLink';
 import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from '@views/components/injected/TableHead';
 import TableRow from '@views/components/injected/TableRow/TableRow';
+import { usePageTheme } from '@views/hooks/usePageTheme';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
+import { useThemeSync } from '@views/hooks/useThemeSync';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import type { SiteSupportType } from '@views/lib/getSiteSupport';
@@ -18,13 +20,12 @@ import DialogProvider from './common/DialogProvider/DialogProvider';
 
 interface Props {
     support: Extract<SiteSupportType, 'COURSE_CATALOG_DETAILS' | 'COURSE_CATALOG_LIST'>;
-    theme?: string | null;
 }
 
 /**
  * This is the top level react component orchestrating the course catalog page.
  */
-export default function CourseCatalogMain({ support, theme }: Props): React.JSX.Element | null {
+export default function CourseCatalogMain({ support }: Props): React.JSX.Element | null {
     const [rows, setRows] = React.useState<ScrapedRow[]>([]);
     const [course, setCourse] = useState<Course | null>(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -76,6 +77,7 @@ export default function CourseCatalogMain({ support, theme }: Props): React.JSX.
 
     return (
         <ExtensionRoot>
+            <PageThemeSync />
             <DialogProvider>
                 <NewSearchLink />
                 <RecruitmentBanner />
@@ -95,7 +97,6 @@ export default function CourseCatalogMain({ support, theme }: Props): React.JSX.
                 {course && (
                     <CourseCatalogInjectedPopup
                         course={course}
-                        theme={theme}
                         open={isPopupOpen}
                         onClose={() => setIsPopupOpen(false)}
                         afterLeave={() => setCourse(null)}
@@ -105,4 +106,13 @@ export default function CourseCatalogMain({ support, theme }: Props): React.JSX.
             </DialogProvider>
         </ExtensionRoot>
     );
+}
+
+/**
+ * Matches the injected UI to the Registrar page's rendered theme, independent of the calendar's theme setting.
+ * Rendered inside {@link ExtensionRoot} so it drives that root's theme.
+ */
+function PageThemeSync(): null {
+    useThemeSync(usePageTheme());
+    return null;
 }

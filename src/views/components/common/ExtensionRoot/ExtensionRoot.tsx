@@ -22,7 +22,8 @@ if (import.meta.env.DEV)
  * A wrapper component for the extension elements that adds some basic styling to them
  */
 export default function ExtensionRoot(props: React.HTMLProps<HTMLDivElement>): React.JSX.Element {
-    const [theme, setTheme] = React.useState<ThemeName>('dark');
+    // roots that never sync a theme (e.g. the toolbar popup) stay in light mode
+    const [theme, setTheme] = React.useState<ThemeName>('light');
 
     return (
         <React.StrictMode>
@@ -37,16 +38,12 @@ export default function ExtensionRoot(props: React.HTMLProps<HTMLDivElement>): R
     );
 }
 
-export interface ExtensionRootWrapperProps extends React.HTMLProps<HTMLDivElement> {
-    themeOverride?: ThemeName | null;
-}
-
-export const ExtensionRootWrapper = React.forwardRef<HTMLDivElement, ExtensionRootWrapperProps>(
-    ({ className, themeOverride, ...props }, ref) => {
+export const ExtensionRootWrapper = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
+    ({ className, ...props }, ref) => {
         // inherits the theme from the nearest ExtensionRoot, since this renders into its own
         // (nested) shadow root for portals like Dialog/Dropdown/QuickAddModal
         const { theme } = useTheme();
-        return <ShadowRootContainer {...props} className={className} theme={themeOverride ?? theme} ref={ref} />;
+        return <ShadowRootContainer {...props} className={className} theme={theme} ref={ref} />;
     }
 );
 
