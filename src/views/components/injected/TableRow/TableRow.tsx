@@ -25,18 +25,32 @@ interface Props {
  */
 export default function TableRow({ row, isSelected, activeSchedule, onClick }: Props): JSX.Element | null {
     const [container, setContainer] = useState<HTMLTableCellElement | null>(null);
+    const [isHovered, setIsHovered] = useState(false);
+
+    const { element, course } = row;
+
+    // Show the tooltip when the mouse is over the course row
+    useEffect(() => {
+        const handleMouseEnter = () => setIsHovered(true);
+        const handleMouseLeave = () => setIsHovered(false);
+
+        element.addEventListener('mouseenter', handleMouseEnter);
+        element.addEventListener('mouseleave', handleMouseLeave);
+
+        return () => {
+            element.removeEventListener('mouseenter', handleMouseEnter);
+            element.removeEventListener('mouseleave', handleMouseLeave);
+        };
+    }, [element]);
 
     // the courses in the active schedule that conflict with the course for this row
     const [conflicts, setConflicts] = useState<Course[]>([]);
     const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
     const blocks = useCustomBlocks(activeSchedule?.id);
 
-    const { element, course } = row;
-
     useEffect(() => {
         // biome-ignore lint/style/noNonNullAssertion: TODO:
         element.classList.add(styles.row!);
-        element.classList.add('group');
         const portalContainer = document.createElement('td');
         // portalContainer.style.textAlign = 'right';
         const lastTableCell = element.querySelector('td:last-child');
@@ -123,7 +137,9 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
                 </button>
                 {conflicts.length > 0 && (
                     <ConflictsWithWarning
-                        className='opacity-0 absolute left-13 top--3 text-white group-hover:opacity-100'
+                        className={`absolute left-13 top--3 text-white ${
+                            isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                        }`}
                         conflicts={conflicts}
                     />
                 )}
