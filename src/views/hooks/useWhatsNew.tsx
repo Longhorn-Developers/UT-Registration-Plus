@@ -1,7 +1,7 @@
 import { Button } from '@views/components/common/Button';
 import { LogoIcon } from '@views/components/common/LogoIcon';
 import Text from '@views/components/common/Text/Text';
-import WhatsNewPopupContent from '@views/components/common/WhatsNewPopup';
+import { WhatsNewPopupContent } from '@views/components/common/WhatsNewPopupContent';
 import { useDialog } from '@views/contexts/DialogContext';
 
 import useChangelog from './useChangelog';
