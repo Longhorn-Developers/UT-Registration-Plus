@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 import CalendarCourseCell from '@views/components/calendar/CalendarCourseCell';
 
-import { ExampleCourse } from '../PopupCourseBlock.stories';
+import { bevoCourse } from '../../injected/mocked';
 
 const meta = {
     title: 'Components/Calendar/CalendarCourseCell',
@@ -20,7 +20,7 @@ const meta = {
         </div>
     ),
     args: {
-        className: ExampleCourse.number,
+        className: bevoCourse.number,
     },
 } satisfies Meta<typeof CalendarCourseCell>;
 export default meta;
@@ -29,15 +29,15 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        className: ExampleCourse.number,
+        className: bevoCourse.number,
         blockData: {
             calendarGridPoint: {
                 dayIndex: 4,
                 startIndex: 10,
                 endIndex: 11,
             },
-            course: ExampleCourse,
-            timeAndLocation: ExampleCourse.schedule.meetings[0]?.getTimeString({
+            course: bevoCourse,
+            timeAndLocation: bevoCourse.schedule.meetings[0]?.getTimeString({
                 separator: '–',
             }),
             async: false,
@@ -47,15 +47,15 @@ export const Default: Story = {
 
 export const Variants: Story = {
     args: {
-        className: ExampleCourse.number,
+        className: bevoCourse.number,
         blockData: {
             calendarGridPoint: {
                 dayIndex: 4,
                 startIndex: 10,
                 endIndex: 11,
             },
-            course: ExampleCourse,
-            timeAndLocation: ExampleCourse.schedule.meetings[0]?.getTimeString({
+            course: bevoCourse,
+            timeAndLocation: bevoCourse.schedule.meetings[0]?.getTimeString({
                 separator: '–',
             }),
             async: false,
