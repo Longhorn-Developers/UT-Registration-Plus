@@ -1,15 +1,18 @@
 import type { Serialized } from '@chrome-extension-toolkit';
 import { TZDate, tz } from '@date-fns/tz';
 import exportSchedule from '@pages/background/lib/exportSchedule';
+import { CustomBlockStore } from '@shared/storage/CustomBlockStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { type Course, UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
+import type { CustomBlock } from '@shared/types/CustomBlock';
 import Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { selectCustomBlocks } from '@shared/util/customBlocks';
 import { downloadBlob } from '@shared/util/downloadBlob';
 import { englishStringifyList } from '@shared/util/string';
 import { ensureShadowStyles } from '@views/components/common/ExtensionRoot/ShadowRootContainer';
-import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
+import type { CalendarLayoutCell } from '@views/hooks/useFlattenedCourseSchedule';
 import type { DateArg, Day } from 'date-fns';
 import {
     addDays,
@@ -23,6 +26,7 @@ import {
 } from 'date-fns';
 import { toBlob } from 'html-to-image';
 import { academicCalendars } from './academic-calendars';
+import { formatBlockTime } from './customBlockUtils';
 
 // Do all timezone calculations relative to UT's timezone
 const TIMEZONE_ID = 'America/Chicago';
@@ -58,12 +62,14 @@ const DAY_NAME_TO_NUMBER = {
  * Retrieves the schedule from the UserScheduleStore based on the active index.
  * @returns A promise that resolves to the retrieved schedule.
  */
-const getSchedule = async (): Promise<Serialized<UserSchedule> | undefined> => {
+const getSchedule = async () => {
     const schedules = await UserScheduleStore.get('schedules');
     const activeIndex = await UserScheduleStore.get('activeIndex');
     const schedule = schedules[activeIndex];
 
-    return schedule;
+    if (!schedule) return undefined;
+    const blocks = await CustomBlockStore.get('blocks');
+    return { ...schedule, customBlocks: selectCustomBlocks(blocks, schedule.id) };
 };
 
 /**
@@ -231,16 +237,55 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
     return icsString;
 };
 
+function blockToIcsString(block: CustomBlock, firstDate: Date, lastDate?: Date): string | null {
+    const startDate = block.days
+        .map(day => nextDayInclusive(firstDate, DAY_NAME_TO_NUMBER[day]))
+        .sort((a, b) => a.getTime() - b.getTime())[0];
+    if (!startDate) return null;
+    const dateAt = (minutes: number) =>
+        iCalDateFormat(
+            setMultiple(
+                startDate,
+                { hours: Math.floor(minutes / 60), minutes: minutes % 60, seconds: 0, milliseconds: 0 },
+                { in: TZ }
+            )
+        );
+    const name = block.name.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n').replace(/[,;]/g, '\\$&');
+    let event = `BEGIN:VEVENT\nUID:${block.id}@ut-registration-plus\n`;
+    event += `DTSTAMP:${formatDate(new Date(), ISO_BASIC_DATETIME_FORMAT, { in: tz('utc') })}Z\n`;
+    event += block.allDay
+        ? `DTSTART;VALUE=DATE:${formatDate(startDate, 'yyyyMMdd')}\nDTEND;VALUE=DATE:${formatDate(addDays(startDate, 1), 'yyyyMMdd')}\n`
+        : `DTSTART;TZID=${TIMEZONE_ID}:${dateAt(block.startTime)}\nDTEND;TZID=${TIMEZONE_ID}:${dateAt(block.endTime)}\n`;
+    event += `RRULE:FREQ=WEEKLY;BYDAY=${block.days.map(day => CAL_MAP[day]).join(',')}`;
+    if (lastDate) {
+        const until = block.allDay
+            ? formatDate(lastDate, 'yyyyMMdd', { in: TZ })
+            : formatISO(addDays(lastDate, 1), { format: 'basic', in: tz('utc') });
+        event += `;UNTIL=${until}`;
+    }
+    return `${event}\nSUMMARY:${name}\nEND:VEVENT`;
+}
+
 /**
  * Creates a VCALENDAR string for a schedule of a user.
  * @param schedule - The schedule object
  * @returns A string representation of the schedule in the iCalendar format (ICS)
  */
-export const scheduleToIcsString = (schedule: Serialized<UserSchedule>) => {
+export const scheduleToIcsString = (schedule: Serialized<UserSchedule>, blocks: CustomBlock[] = []) => {
     let icsString = 'BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nX-WR-CALNAME:My Schedule\n';
 
-    const vevents = schedule.courses
-        .flatMap(course => course.schedule.meetings.map(meeting => meetingToIcsString(course, meeting)))
+    const semester = schedule.courses.find(
+        course => course.semester.code && Object.hasOwn(academicCalendars, course.semester.code)
+    )?.semester.code;
+    const calendar = semester ? academicCalendars[semester as keyof typeof academicCalendars] : undefined;
+    const firstDate = calendar ? parseISO(calendar.firstClassDate, { in: TZ }) : new TZDate(Date.now(), TIMEZONE_ID);
+    const lastDate = calendar ? parseISO(calendar.lastClassDate, { in: TZ }) : undefined;
+    const vevents = [
+        ...schedule.courses.flatMap(course =>
+            course.schedule.meetings.map(meeting => meetingToIcsString(course, meeting))
+        ),
+        ...blocks.map(block => blockToIcsString(block, firstDate, lastDate)),
+    ]
         .filter(event => event !== null)
         .join('\n');
 
@@ -258,7 +303,7 @@ export const scheduleToIcsString = (schedule: Serialized<UserSchedule>) => {
  * @param schedule - The schedule object
  * @returns
  */
-export const scheduleToText = (schedule: Serialized<UserSchedule>) => {
+export const scheduleToText = (schedule: Serialized<UserSchedule>, blocks: CustomBlock[] = []) => {
     const lines: string[] = [];
 
     lines.push(`Schedule: ${schedule.name}`);
@@ -271,6 +316,14 @@ export const scheduleToText = (schedule: Serialized<UserSchedule>) => {
         lines.push('');
     }
 
+    for (const block of blocks) {
+        lines.push(block.name);
+        lines.push(block.days.join(', '));
+        lines.push(
+            block.allDay ? 'All day' : `${formatBlockTime(block.startTime)} – ${formatBlockTime(block.endTime)}`
+        );
+        lines.push('');
+    }
     return lines.join('\n');
 };
 
@@ -286,7 +339,7 @@ export const saveAsCal = async () => {
         throw new Error('No schedule found');
     }
 
-    const icsString = scheduleToIcsString(schedule);
+    const icsString = scheduleToIcsString(schedule, schedule.customBlocks);
 
     downloadBlob(icsString, 'CALENDAR', 'schedule.ics');
 };
@@ -306,7 +359,7 @@ export const saveAsText = async () => {
         throw new Error('No schedule found');
     }
 
-    const scheduleText = scheduleToText(schedule);
+    const scheduleText = scheduleToText(schedule, schedule.customBlocks);
     downloadBlob(scheduleText, 'TEXT', 'schedule.txt');
 };
 
@@ -403,8 +456,8 @@ export const saveCalAsPng = () => {
  * @example [[8am, 9am), [8:30am, 10am), [9:30am, 11am)] // is all one connected component
  * @example [[8am, 9am), [8:30am, 10am), [10am, 11am)] // has two connected components, [[8am, 9am), [8:30am, 10am)] and [[10am, 11am)]]
  */
-const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCourse[][] => {
-    const connectedComponents: CalendarGridCourse[][] = [];
+const findConnectedComponents = (cells: CalendarLayoutCell[]): CalendarLayoutCell[][] => {
+    const connectedComponents: CalendarLayoutCell[][] = [];
 
     for (let i = 0; i < cells.length; i++) {
         // biome-ignore lint/style/noNonNullAssertion: TODO:
@@ -450,7 +503,7 @@ const findConnectedComponents = (cells: CalendarGridCourse[]): CalendarGridCours
  * The minimum number of columns needed is the maximum number of events that happen concurrently.
  * Research Interval Graphs for more info https://en.wikipedia.org/wiki/Interval_graph
  */
-const assignColumns = (cells: CalendarGridCourse[]) => {
+const assignColumns = (cells: CalendarLayoutCell[]) => {
     const availableColumns = [true];
 
     for (const cell of cells) {
@@ -489,7 +542,7 @@ const assignColumns = (cells: CalendarGridCourse[]) => {
  *
  * @param dayCells - An array of calendar grid course cells for a specific day
  */
-export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
+export const calculateCourseCellColumns = (dayCells: CalendarLayoutCell[]) => {
     // Sort by start time, increasing
     // This is necessary for the correctness of the column assignment
     const cells = dayCells
@@ -514,8 +567,9 @@ export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
     const connectedComponents = findConnectedComponents(cells);
 
     // Assign columns for each connectedComponents
+    // Custom time blocks are given left-most column priority over course blocks
     for (const cc of connectedComponents) {
-        assignColumns(cc);
+        assignColumns([...cc].sort((a, b) => Number('course' in a) - Number('course' in b)));
     }
 
     // Clean up
@@ -523,3 +577,13 @@ export const calculateCourseCellColumns = (dayCells: CalendarGridCourse[]) => {
         delete cell.concurrentCells;
     }
 };
+
+export function calendarCellPosition(cell: CalendarLayoutCell, totalRows: number) {
+    const { startIndex, endIndex } = cell.calendarGridPoint;
+    return {
+        top: `${((startIndex - 3) / totalRows) * 100}%`,
+        height: `${((endIndex - startIndex) / totalRows) * 100}%`,
+        left: `${(((cell.gridColumnStart ?? 1) - 1) / (cell.totalColumns ?? 1)) * 100}%`,
+        width: `${100 / (cell.totalColumns ?? 1)}%`,
+    };
+}

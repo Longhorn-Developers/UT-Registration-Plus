@@ -1,6 +1,7 @@
+import { CustomBlockStore } from '@shared/storage/CustomBlockStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { generateRandomId } from '@shared/util/random';
-
+import { copyCustomBlocks } from './customBlocks';
 import handleDuplicate from './handleDuplicate';
 
 /**
@@ -22,9 +23,10 @@ export default async function duplicateSchedule(scheduleId: string): Promise<str
 
     const copyOfName = `Copy of ${schedule.name}`;
     const updatedName = await handleDuplicate(copyOfName);
+    const copyId = generateRandomId();
 
     schedules.splice(scheduleIndex + 1, 0, {
-        id: generateRandomId(),
+        id: copyId,
         name: updatedName,
         courses: JSON.parse(JSON.stringify(schedule.courses)),
         hours: schedule.hours,
@@ -32,6 +34,11 @@ export default async function duplicateSchedule(scheduleId: string): Promise<str
     } satisfies typeof schedule);
 
     await UserScheduleStore.set('schedules', schedules);
+    const blocks = await CustomBlockStore.get('blocks');
+    await copyCustomBlocks(
+        blocks.filter(block => block.scheduleId === scheduleId),
+        copyId
+    );
 
     // Automatically switch to the duplicated schedule
     await UserScheduleStore.set('activeIndex', scheduleIndex + 1);
