@@ -1,27 +1,6 @@
 [
     {
         "type": "cycle",
-        "from": "src/views/components/common/WhatsNewPopup.tsx",
-        "to": "src/views/hooks/useWhatsNew.tsx",
-        "unresolvedTo": "@views/hooks/useWhatsNew",
-        "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "import"],
-        "rule": {
-            "severity": "error",
-            "name": "no-circular"
-        },
-        "cycle": [
-            {
-                "name": "src/views/hooks/useWhatsNew.tsx",
-                "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "import"]
-            },
-            {
-                "name": "src/views/components/common/WhatsNewPopup.tsx",
-                "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "import"]
-            }
-        ]
-    },
-    {
-        "type": "cycle",
         "from": "src/views/components/map/CampusMap.tsx",
         "to": "src/views/components/map/Map.tsx",
         "unresolvedTo": "./Map",
