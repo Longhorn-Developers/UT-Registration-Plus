@@ -15,7 +15,7 @@ const customBlockHandler: MessageHandler<CustomBlockMessages> = {
         await respond(createCustomBlock(data.draft, data.scheduleId), sendResponse);
     },
     async updateCustomBlock({ data, sendResponse }) {
-        await respond(updateCustomBlock(data.id, data.draft, data.scheduleId), sendResponse);
+        await respond(updateCustomBlock(data.id, data.draft, data.scheduleId, data.draftAtUnsync), sendResponse);
     },
     async deleteCustomBlock({ data, sendResponse }) {
         await respond(deleteCustomBlock(data.id), sendResponse);

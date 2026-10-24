@@ -25,7 +25,7 @@ import { BLOCK_DAYS, DEFAULT_BLOCK, formatBlockTime, isBlockTimeInRange, parseBl
 interface Props {
     block?: CustomBlock;
     initialDraft?: CustomBlockDraft;
-    onSave: (block: CustomBlockDraft) => void | Promise<void>;
+    onSave: (block: CustomBlockDraft, draftAtUnsync?: CustomBlockDraft) => void | Promise<void>;
     onClose: () => void;
     onDelete?: () => void | Promise<void>;
 }
@@ -108,6 +108,7 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
     const [draft, setDraft] = useState<CustomBlockDraft>(() =>
         block ? customBlockToDraft(block) : (initialDraft ?? DEFAULT_BLOCK)
     );
+    const [draftAtUnsync, setDraftAtUnsync] = useState<CustomBlockDraft>();
     const [startTime, setStartTime] = useState(formatBlockTime(draft.startTime));
     const [endTime, setEndTime] = useState(formatBlockTime(draft.endTime));
     const [renaming, setRenaming] = useState(false);
@@ -172,13 +173,16 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
         setSubmitted(true);
         if (validationErrors.length) return;
         void perform(() =>
-            onSave({
-                ...draft,
-                name: draft.name.trim(),
-                startTime: startMinutes ?? draft.startTime,
-                endTime: endMinutes ?? draft.endTime,
-                days: Object.values(DAY_MAP).filter(day => draft.days.includes(day)),
-            })
+            onSave(
+                {
+                    ...draft,
+                    name: draft.name.trim(),
+                    startTime: startMinutes ?? draft.startTime,
+                    endTime: endMinutes ?? draft.endTime,
+                    days: Object.values(DAY_MAP).filter(day => draft.days.includes(day)),
+                },
+                draftAtUnsync
+            )
         );
     };
 
@@ -338,7 +342,10 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
                                 icon={ArrowsCounterClockwiseIcon}
                                 label='Sync across all schedules'
                                 checked={draft.syncAcrossAllSchedules}
-                                onChange={syncAcrossAllSchedules => update({ syncAcrossAllSchedules })}
+                                onChange={syncAcrossAllSchedules => {
+                                    setDraftAtUnsync(syncAcrossAllSchedules ? undefined : draft);
+                                    update({ syncAcrossAllSchedules });
+                                }}
                             />
                             <BlockOption
                                 icon={ProhibitIcon}

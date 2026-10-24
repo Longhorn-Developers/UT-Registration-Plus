@@ -28,22 +28,81 @@ function writeBlocks<T>(change: (blocks: CustomBlock[]) => Promise<{ blocks: Cus
 async function requireSchedule(scheduleId: string) {
     const schedules = await UserScheduleStore.get('schedules');
     if (!schedules.some(schedule => schedule.id === scheduleId)) throw new Error('Schedule does not exist');
+    return schedules;
+}
+
+/**
+ * Checks if two blocks look the same on the calendar
+ *
+ * @param a - The first block
+ * @param b - The second block
+ * @returns True if the name, days, and times match
+ */
+function isSameBlock(a: CustomBlock, b: CustomBlock) {
+    return (
+        a.name === b.name &&
+        a.allDay === b.allDay &&
+        a.days.join() === b.days.join() &&
+        (a.allDay || (a.startTime === b.startTime && a.endTime === b.endTime))
+    );
+}
+
+/**
+ * Removes blocks that duplicate a synced block, so it isn't shown twice on a schedule
+ *
+ * @param blocks - The blocks to filter
+ * @param synced - The block to keep
+ * @returns The blocks without duplicates of the synced block
+ */
+function withoutDuplicates(blocks: CustomBlock[], synced: CustomBlock) {
+    if (synced.scheduleId !== null) return blocks;
+    return blocks.filter(block => block.id === synced.id || !isSameBlock(block, synced));
+}
+
+/**
+ * Gets the values the other schedules keep when a synced block is unsynced
+ *
+ * @param previous - The stored synced block
+ * @param draftAtUnsync - The draft when sync was turned off
+ * @returns The block from the draft, or the stored block if the draft is missing or invalid
+ */
+function valuesAtUnsync(previous: CustomBlock, draftAtUnsync?: CustomBlockDraft): CustomBlock {
+    if (!draftAtUnsync) return previous;
+    try {
+        return customBlockFromDraft(draftAtUnsync, '', previous.id);
+    } catch {
+        return previous;
+    }
 }
 
 export function createCustomBlock(draft: CustomBlockDraft, scheduleId: string): Promise<CustomBlock> {
     return writeBlocks(async blocks => {
         await requireSchedule(scheduleId);
         const block = customBlockFromDraft(draft, scheduleId, generateRandomId());
-        return { blocks: [...blocks, block], result: block };
+        return { blocks: [...withoutDuplicates(blocks, block), block], result: block };
     });
 }
 
-export function updateCustomBlock(id: string, draft: CustomBlockDraft, scheduleId: string): Promise<CustomBlock> {
+export function updateCustomBlock(
+    id: string,
+    draft: CustomBlockDraft,
+    scheduleId: string,
+    draftAtUnsync?: CustomBlockDraft
+): Promise<CustomBlock> {
     return writeBlocks(async blocks => {
-        await requireSchedule(scheduleId);
-        if (!blocks.some(block => block.id === id)) throw new Error('Custom block does not exist');
+        const schedules = await requireSchedule(scheduleId);
+        const previous = blocks.find(block => block.id === id);
+        if (!previous) throw new Error('Custom block does not exist');
         const updated = customBlockFromDraft(draft, scheduleId, id);
-        return { blocks: blocks.map(block => (block.id === id ? updated : block)), result: updated };
+        const next = blocks.map(block => (block.id === id ? updated : block));
+        if (previous.scheduleId === null && updated.scheduleId !== null) {
+            const values = valuesAtUnsync(previous, draftAtUnsync);
+            const copies = schedules
+                .filter(schedule => schedule.id !== scheduleId)
+                .map(schedule => ({ ...values, id: generateRandomId(), scheduleId: schedule.id }));
+            return { blocks: [...next, ...copies], result: updated };
+        }
+        return { blocks: withoutDuplicates(next, updated), result: updated };
     });
 }
 

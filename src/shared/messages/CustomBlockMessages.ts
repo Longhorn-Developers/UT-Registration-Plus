@@ -8,6 +8,7 @@ export interface CustomBlockMessages {
         id: string;
         draft: CustomBlockDraft;
         scheduleId: string;
+        draftAtUnsync?: CustomBlockDraft;
     }) => CustomBlockResult<CustomBlock>;
     deleteCustomBlock: (data: { id: string }) => CustomBlockResult<void>;
 }

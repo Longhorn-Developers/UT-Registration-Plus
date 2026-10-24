@@ -288,11 +288,12 @@ export default function Calendar(): ReactNode {
                                     <CustomBlockPopover
                                         block={block}
                                         onClose={close}
-                                        onSave={async draft => {
+                                        onSave={async (draft, draftAtUnsync) => {
                                             const result = await background.updateCustomBlock({
                                                 id: block.id,
                                                 draft,
                                                 scheduleId: activeSchedule.id,
+                                                draftAtUnsync,
                                             });
                                             if ('error' in result) throw new Error(result.error);
                                         }}

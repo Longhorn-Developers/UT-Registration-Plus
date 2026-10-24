@@ -14,7 +14,7 @@ export const DEFAULT_BLOCK = {
     startTime: 480,
     endTime: 540,
     allDay: false,
-    syncAcrossAllSchedules: false,
+    syncAcrossAllSchedules: true,
     conflictHighlight: true,
 } satisfies CustomBlockDraft;
 
