@@ -1,7 +1,7 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { HexColor } from '@shared/types/Color';
 import { UserSchedule } from '@shared/types/UserSchedule';
-import { getColorwayFromColor, getCourseColors, getDarkerShade, getLighterShade } from '@shared/util/colors';
+import { getColorwayFromColor, getCourseColors, getDarkerShade, getLighterShade } from '@shared/util/colors/base';
 import { useMemo } from 'react';
 import type { Serializable } from 'src/lib/chrome-extension-toolkit/types';
 
