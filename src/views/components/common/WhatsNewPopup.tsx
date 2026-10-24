@@ -79,7 +79,7 @@ export default function WhatsNewPopupContent(): JSX.Element {
                                 <Text variant='h4' as='h4' className='text-ut-burntorange dark:text-content font-bold!'>
                                     {title}
                                 </Text>
-                                <Text variant='p' as='p' className='text-ut-black'>
+                                <Text variant='p' as='p' className='text-content-muted'>
                                     {description}
                                 </Text>
                             </div>
@@ -90,8 +90,8 @@ export default function WhatsNewPopupContent(): JSX.Element {
                     {videoError ? (
                         <div className='h-full w-full flex items-center justify-center border border-ut-offwhite/50 rounded'>
                             <div className='flex flex-col items-center justify-center p-spacing-2'>
-                                <CloudXIcon width={52} height={52} className='text-ut-black/50' />
-                                <Text variant='h4' className='text-center text-ut-black/50'>
+                                <CloudXIcon width={52} height={52} className='text-content-muted' />
+                                <Text variant='h4' className='text-center text-content-muted'>
                                     Failed to load video. Please try again later.
                                 </Text>
                             </div>

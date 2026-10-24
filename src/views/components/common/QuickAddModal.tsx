@@ -148,14 +148,14 @@ export default function QuickAddModal(): JSX.Element {
                     )}
                     {isLoggedIn !== false && courseResult.status === 'found' && (
                         <div className='flex flex-col gap-0.5 border border-ut-offwhite/50 rounded px-spacing-5 py-spacing-3 shadow-md'>
-                            <Text variant='h4' className='text-black font-bold!'>
+                            <Text variant='h4' className='text-content font-bold!'>
                                 {courseResult.course.department} {courseResult.course.number}
                                 {' \u2013 '}
                                 {courseResult.course.courseName}
                             </Text>
                             {courseResult.course.schedule.meetings.map((m, i) => (
                                 // biome-ignore lint/suspicious/noArrayIndexKey: TODO:
-                                <Text key={i} variant='small' className='text-ut-black'>
+                                <Text key={i} variant='small' className='text-content-muted'>
                                     {m.getDaysString({ format: 'short' })}{' '}
                                     {m.getTimeString({
                                         separator: '\u2013',

@@ -213,7 +213,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         <Text variant='h4' className='text-content font-semibold'>
                             Reduced Motion
                         </Text>
-                        <p className='text-sm text-gray-600'>
+                        <p className='text-sm text-content-muted'>
                             Disable animations and transitions for users who prefer reduced motion.
                         </p>
                     </div>
