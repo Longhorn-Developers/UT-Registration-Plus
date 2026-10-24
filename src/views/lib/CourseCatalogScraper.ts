@@ -51,10 +51,14 @@ export class CourseCatalogScraper {
      * @param keepHeaders - whether to keep the header rows (which contain the course name) in the output
      * @returns an array of course row objects (which contain courses corresponding to the htmltable row)
      */
-    public scrape(rows: NodeListOf<HTMLTableRowElement> | HTMLTableRowElement[], keepHeaders = false): ScrapedRow[] {
+    public scrape(
+        rows: NodeListOf<HTMLTableRowElement> | HTMLTableRowElement[],
+        keepHeaders = false,
+        initialFullName = ''
+    ): ScrapedRow[] {
         const courses: ScrapedRow[] = [];
 
-        let fullName = this.getFullName();
+        let fullName = this.getFullName() || initialFullName;
 
         rows.forEach(row => {
             if (this.isHeaderRow(row)) {
@@ -70,7 +74,8 @@ export class CourseCatalogScraper {
             // we are now ready to build the course object
 
             if (!fullName) {
-                throw new Error('Course name not found');
+                // Paginated pages can start mid-course with no header row — skip until we see one
+                return;
             }
 
             fullName = fullName.replace(/\s\s+/g, ' ').trim();

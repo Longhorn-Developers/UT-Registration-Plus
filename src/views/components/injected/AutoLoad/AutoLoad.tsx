@@ -12,7 +12,7 @@ import {
     removePaginationButtons,
 } from '@views/lib/loadNextCourseCatalogPage';
 import type { JSX } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Skeleton from 'react-loading-skeleton';
 
@@ -30,6 +30,8 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const [status, setStatus] = useState<AutoLoadStatusType>(AutoLoadStatus.IDLE);
     const [isSinglePage, setIsSinglePage] = useState(false);
+    // Tracks the last course header seen so paginated pages that start mid-course still parse correctly
+    const lastFullNameRef = useRef<string>('');
 
     useEffect(() => {
         const table = document.querySelector('table');
@@ -59,9 +61,16 @@ export default function AutoLoad({ addRows }: Props): JSX.Element | null {
             console.log('AutoLoad: no more rows to load');
             return;
         }
-        // scrape the courses from the page
+        // scrape the courses from the page, passing the last known course name so pages
+        // that start mid-course (no header row at the top) are parsed correctly
         const ccs = new CourseCatalogScraper(SiteSupport.COURSE_CATALOG_LIST);
-        const scrapedRows = ccs.scrape(nextRows, true);
+        const scrapedRows = ccs.scrape(nextRows, true, lastFullNameRef.current);
+
+        // remember the last header seen for the next page
+        const lastHeader = scrapedRows.findLast(r => r.course === null);
+        if (lastHeader) {
+            lastFullNameRef.current = ccs.getFullName(lastHeader.element) || lastFullNameRef.current;
+        }
 
         // add the scraped courses to the current page
         addRows(scrapedRows);
