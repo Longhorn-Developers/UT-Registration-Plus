@@ -133,13 +133,37 @@ export const allDatesInRanges = (dateRanges: readonly (string | [string, string]
     });
 
 /**
- * Creates a VEVENT string for a meeting of a course.
+ * A format-agnostic description of a recurring course meeting, shared by the
+ * iCalendar (.ics) and Google Calendar exporters.
+ */
+export interface MeetingCalendarEvent {
+    /** When the first occurrence starts */
+    start: TZDate;
+    /** When the first occurrence ends */
+    end: TZDate;
+    /** iCal two-letter codes for the days the meeting repeats on, e.g. ['MO', 'WE', 'FR'] */
+    byDay: (typeof CAL_MAP)[keyof typeof CAL_MAP][];
+    /** The meeting repeats up to (but not including) this instant */
+    until: Date;
+    /** Start times of the occurrences that fall on academic breaks */
+    excludedDates: Date[];
+    summary: string;
+    location?: string;
+    /** Lines of the event description, to be joined with the target format's newline */
+    descriptionLines: string[];
+}
+
+/**
+ * Computes the recurring calendar event for a meeting of a course.
  *
  * @param course - The course object
  * @param meeting - The meeting object
- * @returns A string representation of the meeting in the iCalendar format (ICS)
+ * @returns The meeting as a recurring event, or null if it can't be placed on a calendar
  */
-export const meetingToIcsString = (course: Serialized<Course>, meeting: Serialized<CourseMeeting>): string | null => {
+export const meetingToCalendarEvent = (
+    course: Serialized<Course>,
+    meeting: Serialized<CourseMeeting>
+): MeetingCalendarEvent | null => {
     const { startTime, endTime, days, location } = meeting;
     if (!course.semester.code) {
         console.error(`No semester found for course uniqueId: ${course.uniqueId}`);
@@ -181,18 +205,6 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
         .filter(date => daysNumSet.has(getDay(date, { in: TZ }) as Day))
         .map(date => setMultiple(date, { hours: startTimeHours, minutes: startTimeMinutes }, { in: TZ }));
 
-    const startDateFormatted = iCalDateFormat(startTimeDate);
-    const endDateFormatted = iCalDateFormat(endTimeDate);
-    // Convert days to ICS compatible format, e.g. MO,WE,FR
-    const icsDays = days.map(day => CAL_MAP[day]).join(',');
-
-    // per spec, UNTIL must be in UTC
-    const untilDateFormatted = formatISO(untilDate, {
-        format: 'basic',
-        in: tz('utc'),
-    });
-    const excludedDatesFormatted = excludedDates.map(date => iCalDateFormat(date));
-
     const uniqueNumberFormatted = course.uniqueId.toString().padStart(UNIQUE_ID_LENGTH, '0');
 
     // The list part of "Taught by Michael Scott and Siddhartha Chatterjee Beasley"
@@ -206,30 +218,132 @@ export const meetingToIcsString = (course: Serialized<Course>, meeting: Serializ
             .filter(name => name !== '')
     );
 
+    const descriptionLines = [`Unique number: ${uniqueNumberFormatted}`];
+    if (instructorsFormatted) {
+        descriptionLines.push(`Taught by ${instructorsFormatted}`);
+    }
+
+    return {
+        start: startTimeDate,
+        end: endTimeDate,
+        byDay: days.map(day => CAL_MAP[day]),
+        until: untilDate,
+        excludedDates,
+        summary: `${course.department} ${course.number} \u2013 ${course.courseName}`,
+        location: location?.building ? `${location.building} ${location.room ?? ''}`.trim() : undefined,
+        descriptionLines,
+    };
+};
+
+/**
+ * Builds the RRULE value (without the "RRULE:" prefix) for a meeting's weekly recurrence.
+ *
+ * @param event - The meeting's calendar event
+ * @returns The recurrence rule, e.g. FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20251209T060000Z
+ */
+const recurrenceRule = (event: MeetingCalendarEvent): string => {
+    // per spec, UNTIL must be in UTC
+    const untilDateFormatted = formatISO(event.until, {
+        format: 'basic',
+        in: tz('utc'),
+    });
+
+    // Days are already in ICS compatible format, e.g. MO,WE,FR
+    return `FREQ=WEEKLY;BYDAY=${event.byDay.join(',')};UNTIL=${untilDateFormatted}`;
+};
+
+/**
+ * Creates a VEVENT string for a meeting of a course.
+ *
+ * @param course - The course object
+ * @param meeting - The meeting object
+ * @returns A string representation of the meeting in the iCalendar format (ICS)
+ */
+export const meetingToIcsString = (course: Serialized<Course>, meeting: Serialized<CourseMeeting>): string | null => {
+    const event = meetingToCalendarEvent(course, meeting);
+    if (!event) {
+        return null;
+    }
+
+    const excludedDatesFormatted = event.excludedDates.map(date => iCalDateFormat(date));
+
     // Construct event string
     let icsString = 'BEGIN:VEVENT\n';
-    icsString += `DTSTART;TZID=${TIMEZONE_ID}:${startDateFormatted}\n`;
-    icsString += `DTEND;TZID=${TIMEZONE_ID}:${endDateFormatted}\n`;
-    icsString += `RRULE:FREQ=WEEKLY;BYDAY=${icsDays};UNTIL=${untilDateFormatted}\n`;
+    icsString += `DTSTART;TZID=${TIMEZONE_ID}:${iCalDateFormat(event.start)}\n`;
+    icsString += `DTEND;TZID=${TIMEZONE_ID}:${iCalDateFormat(event.end)}\n`;
+    icsString += `RRULE:${recurrenceRule(event)}\n`;
     icsString += `EXDATE;TZID=${TIMEZONE_ID}:${excludedDatesFormatted.join(',')}\n`;
-    icsString += `SUMMARY:${course.department} ${course.number} \u2013 ${course.courseName}\n`;
+    icsString += `SUMMARY:${event.summary}\n`;
 
-    if (location?.building || location?.building) {
-        const locationFormatted = `${location?.building ?? ''} ${location?.room ?? ''}`.trim();
-        icsString += `LOCATION:${locationFormatted}\n`;
+    if (event.location) {
+        icsString += `LOCATION:${event.location}\n`;
     }
 
-    icsString += `DESCRIPTION:Unique number: ${uniqueNumberFormatted}`;
-    if (instructorsFormatted) {
-        // Newlines need to be double-escaped
-        icsString += `\\nTaught by ${instructorsFormatted}`;
-    }
-    icsString += '\n';
+    // Newlines need to be double-escaped
+    icsString += `DESCRIPTION:${event.descriptionLines.join('\\n')}\n`;
 
     icsString += 'END:VEVENT';
 
     return icsString;
 };
+
+/**
+ * An event resource for the Google Calendar API.
+ * @see https://developers.google.com/workspace/calendar/api/v3/reference/events#resource
+ */
+export interface GoogleCalendarEvent {
+    summary: string;
+    location?: string;
+    description: string;
+    start: { dateTime: string; timeZone: string };
+    end: { dateTime: string; timeZone: string };
+    recurrence: string[];
+}
+
+/**
+ * Creates a Google Calendar API event resource for a meeting of a course.
+ *
+ * @param course - The course object
+ * @param meeting - The meeting object
+ * @returns The meeting as a recurring Google Calendar event, or null if it can't be placed on a calendar
+ */
+export const meetingToGoogleCalendarEvent = (
+    course: Serialized<Course>,
+    meeting: Serialized<CourseMeeting>
+): GoogleCalendarEvent | null => {
+    const event = meetingToCalendarEvent(course, meeting);
+    if (!event) {
+        return null;
+    }
+
+    // Google wants RFC 3339 local times paired with an explicit timeZone
+    const googleDateTime = (date: Date) => formatDate(date, "yyyy-MM-dd'T'HH:mm:ss", { in: TZ });
+
+    const recurrence = [`RRULE:${recurrenceRule(event)}`];
+    if (event.excludedDates.length > 0) {
+        const excludedDatesFormatted = event.excludedDates.map(date => iCalDateFormat(date));
+        recurrence.push(`EXDATE;TZID=${TIMEZONE_ID}:${excludedDatesFormatted.join(',')}`);
+    }
+
+    return {
+        summary: event.summary,
+        ...(event.location && { location: event.location }),
+        description: event.descriptionLines.join('\n'),
+        start: { dateTime: googleDateTime(event.start), timeZone: TIMEZONE_ID },
+        end: { dateTime: googleDateTime(event.end), timeZone: TIMEZONE_ID },
+        recurrence,
+    };
+};
+
+/**
+ * Creates the Google Calendar API event resources for every meeting in a schedule.
+ * @param schedule - The schedule object
+ * @returns The events, skipping meetings that can't be placed on a calendar
+ */
+export const scheduleToGoogleCalendarEvents = (schedule: Serialized<UserSchedule>): GoogleCalendarEvent[] =>
+    schedule.courses
+        .flatMap(course => course.schedule.meetings.map(meeting => meetingToGoogleCalendarEvent(course, meeting)))
+        .filter(event => event !== null);
 
 /**
  * Creates a VCALENDAR string for a schedule of a user.
