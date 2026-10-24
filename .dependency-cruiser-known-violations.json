@@ -1,26 +1,5 @@
 [
     {
-        "type": "cycle",
-        "from": "src/views/components/map/CampusMap.tsx",
-        "to": "src/views/components/map/Map.tsx",
-        "unresolvedTo": "./Map",
-        "dependencyTypes": ["local", "type-only", "import"],
-        "rule": {
-            "severity": "error",
-            "name": "no-circular"
-        },
-        "cycle": [
-            {
-                "name": "src/views/components/map/Map.tsx",
-                "dependencyTypes": ["local", "type-only", "import"]
-            },
-            {
-                "name": "src/views/components/map/CampusMap.tsx",
-                "dependencyTypes": ["local", "import"]
-            }
-        ]
-    },
-    {
         "type": "module",
         "from": "src/lib/chrome-extension-toolkit/types/Test.ts",
         "to": "src/lib/chrome-extension-toolkit/types/Test.ts",
