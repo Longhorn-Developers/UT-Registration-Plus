@@ -1,4 +1,5 @@
 import type { Serialized } from '@chrome-extension-toolkit';
+import { MIDNIGHT_INDEX, NORMALIZING_TIME_FACTOR, ONE_HOUR_MINUTES } from '@shared/constants';
 
 /**
  * a map of the days of the week that a class is taught, and the corresponding abbreviation
@@ -123,6 +124,34 @@ export class CourseMeeting {
         endTimeString += endHour >= 12 ? 'pm' : 'am';
 
         return `${startTimeString} ${separator} ${endTimeString}`;
+    }
+
+    getNormalizedTimes() {
+        const { startTime, endTime } = this;
+        const normalizedStartTime = startTime >= MIDNIGHT_INDEX ? startTime - NORMALIZING_TIME_FACTOR : startTime;
+        const normalizedEndTime = endTime >= MIDNIGHT_INDEX ? endTime - NORMALIZING_TIME_FACTOR : endTime;
+        const courseDuration = normalizedEndTime - normalizedStartTime;
+
+        return {
+            normalizedStartTime,
+            normalizedEndTime,
+            courseDuration,
+        } as const;
+    }
+
+    getTimeAndLocationString() {
+        const { location } = this;
+        const time = this.getTimeString({ separator: '–' });
+        const { courseDuration } = this.getNormalizedTimes();
+        let timeAndLocation = `${time}`;
+        if (location) {
+            if (courseDuration > ONE_HOUR_MINUTES) {
+                timeAndLocation += `\n${location.building} ${location.room}`;
+            } else {
+                timeAndLocation += `, ${location.building} ${location.room}`;
+            }
+        }
+        return timeAndLocation;
     }
 }
 
