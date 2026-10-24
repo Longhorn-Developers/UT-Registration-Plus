@@ -78,7 +78,7 @@ export default function ShadowRootContainer({
 
     return (
         <div
-            className={clsx(className, 'shadow-root-container', reducedMotion && 'reduced-motion')}
+            className={clsx(className, styleResetClass, 'shadow-root-container', reducedMotion && 'reduced-motion')}
             {...props}
             ref={setHostRef}
         >

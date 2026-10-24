@@ -14,12 +14,12 @@ interface DiningAppPromoProps {
  */
 export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
     return (
-        <div className='relative min-w-[16.25rem] w-full flex items-center gap-spacing-3 border border-ut-offwhite/50 rounded p-spacing-4'>
+        <div className='relative min-w-[16.25rem] w-full flex items-center gap-spacing-3 border border-divider/50 rounded p-spacing-4'>
             <div className='flex items-center justify-center'>
-                <ForkKnifeIcon className='h-6 w-6 text-ut-black' />
+                <ForkKnifeIcon className='h-6 w-6 text-content' />
             </div>
             <div className='flex flex-col gap-spacing-1'>
-                <Text as='p' variant='small' className='whitespace-normal text-ut-black'>
+                <Text as='p' variant='small' className='whitespace-normal text-content'>
                     Download our new{' '}
                     <a
                         href={UT_DINING_APP_STORE_URL}
@@ -33,7 +33,7 @@ export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
                     to explore all dining options on campus!
                 </Text>
                 <div className='mt-spacing-2 flex items-center gap-spacing-2'>
-                    <Text variant='mini' className='text-ut-black'>
+                    <Text variant='mini' className='text-content-muted'>
                         Available on
                     </Text>
                     <a
@@ -41,7 +41,7 @@ export default function DiningAppPromo({ onClose }: DiningAppPromoProps) {
                         target='_blank'
                         rel='noreferrer'
                         aria-label='Download on App Store'
-                        className='text-theme-black transition-colors hover:text-ut-burntorange'
+                        className='text-content-muted transition-colors hover:text-ut-burntorange'
                     >
                         <AppStoreLogoIcon className='h-4.5 w-4.5' />
                     </a>

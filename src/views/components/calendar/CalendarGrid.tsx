@@ -39,7 +39,7 @@ function makeGridRow(row: number, cols: number, hoursOfDay: number[]): React.JSX
     return (
         <Fragment key={row}>
             <CalendarHour hour={hour} />
-            <div className='grid-row-span-2 w-4 border-b border-r border-gray-300' />
+            <div className='grid-row-span-2 w-4 border-b border-r border-divider' />
             {[...Array(cols).keys()].map(col => (
                 <CalendarCell key={`${row}${col}`} row={row} col={col} />
             ))}
@@ -78,19 +78,23 @@ export default function CalendarGrid({
             }}
         >
             {/* Cover top left corner of grid, so time gets cut off at the top of the partial border */}
-            <div className='sticky top-[75px] z-10 col-span-2 h-3 bg-white' />
+            <div className='sticky top-[75px] z-10 col-span-2 h-3' />
 
             {daysOfWeek.map(day => (
                 <div
                     // Full height with background to prevent grid lines from showing behind
-                    className='sticky top-[75px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end bg-white'
+                    className='sticky top-[75px] z-10 row-span-2 h-7 flex flex-col items-end self-start justify-end'
                     key={day}
                 >
                     {/* Partial border height because that's what Isaiah wants */}
-                    <div className='h-4 w-full flex items-end border-b border-r border-gray-300'>
+                    <div className='h-4 w-full flex items-end border-b border-r border-divider'>
                         {/* Alignment for text */}
                         <div className='h-[calc(1.75rem_-_1px)] w-full flex items-center justify-center'>
-                            <Text variant='small' className='text-center text-ut-burntorange' as='div'>
+                            <Text
+                                variant='small'
+                                className='text-center text-ut-burntorange dark:text-content'
+                                as='div'
+                            >
                                 {day}
                             </Text>
                         </div>
@@ -100,7 +104,7 @@ export default function CalendarGrid({
 
             <div />
             {/* time tick for the first hour */}
-            <div className='h-4 w-4 self-end border-b border-r border-gray-300' />
+            <div className='h-4 w-4 self-end border-b border-r border-divider' />
 
             {hoursOfDay.map((_, i) => makeGridRow(i, 5, hoursOfDay))}
 

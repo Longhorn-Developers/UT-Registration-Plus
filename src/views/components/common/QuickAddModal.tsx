@@ -8,6 +8,7 @@ import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
 import PlusIcon from '~icons/ph/plus';
 import PlusCircleIcon from '~icons/ph/plus-circle';
@@ -34,6 +35,8 @@ export default function QuickAddModal(): JSX.Element {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
     const { semester, uniqueNumber, courseResult } = useQuickAdd(isLoggedIn);
     const statusMessage = STATUS_MESSAGES[courseResult.status];
+
+    const { theme } = useTheme();
 
     const handleQuickAdd = async () => {
         setIsLoggedIn(await background.validateLoginStatus());
@@ -78,15 +81,16 @@ export default function QuickAddModal(): JSX.Element {
                 variant='minimal'
                 icon={PlusCircleIcon}
                 onClick={handleQuickAdd}
-                className='bg-transparent'
+                className='bg-transparent !text-content'
             >
                 Quick Add
             </PopoverButton>
             <PopoverPanel
                 as={ExtensionRootWrapper}
+                data-theme={theme}
                 className={clsx([
                     'mt-spacing-3',
-                    'origin-top rounded bg-white text-black shadow-lg border border-ut-offwhite/50 focus:outline-none',
+                    'origin-top rounded bg-surface-raised text-content shadow-lg border border-ut-offwhite/50 focus:outline-none',
                     !reducedMotion && [
                         'transition',
                         'data-[closed]:(opacity-0 scale-95)',
@@ -121,7 +125,7 @@ export default function QuickAddModal(): JSX.Element {
                     {isLoggedIn === false ? (
                         <Text
                             variant='small'
-                            className='self-center whitespace-nowrap text-theme-black/50 !font-normal'
+                            className='self-center whitespace-nowrap text-content/50 !font-normal'
                             aria-live='polite'
                             aria-atomic='true'
                         >
@@ -137,21 +141,21 @@ export default function QuickAddModal(): JSX.Element {
                         </Text>
                     ) : (
                         statusMessage && (
-                            <Text variant='small' className='text-ut-black' aria-live='polite' aria-atomic='true'>
+                            <Text variant='small' className='text-content' aria-live='polite' aria-atomic='true'>
                                 {statusMessage}
                             </Text>
                         )
                     )}
                     {isLoggedIn !== false && courseResult.status === 'found' && (
                         <div className='flex flex-col gap-0.5 border border-ut-offwhite/50 rounded px-spacing-5 py-spacing-3 shadow-md'>
-                            <Text variant='h4' className='text-black font-bold!'>
+                            <Text variant='h4' className='text-content font-bold!'>
                                 {courseResult.course.department} {courseResult.course.number}
                                 {' \u2013 '}
                                 {courseResult.course.courseName}
                             </Text>
                             {courseResult.course.schedule.meetings.map((m, i) => (
                                 // biome-ignore lint/suspicious/noArrayIndexKey: TODO:
-                                <Text key={i} variant='small' className='text-ut-black'>
+                                <Text key={i} variant='small' className='text-content-muted'>
                                     {m.getDaysString({ format: 'short' })}{' '}
                                     {m.getTimeString({
                                         separator: '\u2013',

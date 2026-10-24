@@ -58,7 +58,7 @@ const links: LinkItem[] = [
 export default function ResourceLinks({ className }: Props): JSX.Element {
     return (
         <article className={clsx(className, 'flex flex-col gap-spacing-3')}>
-            <Text className='text-theme-black uppercase' variant='h3'>
+            <Text className='text-content-muted uppercase' variant='h3'>
                 RESOURCES
             </Text>
             <div className='flex flex-col gap-spacing-3'>
@@ -66,7 +66,7 @@ export default function ResourceLinks({ className }: Props): JSX.Element {
                     <a
                         key={link.text}
                         href={link.url}
-                        className='flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
+                        className='flex items-center gap-spacing-2 text-ut-burntorange dark:text-content underline-offset-2 hover:underline'
                         target='_blank'
                         rel='noreferrer'
                     >
