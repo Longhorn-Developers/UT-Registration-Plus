@@ -12,7 +12,6 @@ import {
 } from 'src/stories/injected/mocked';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { CalendarCourseCellProps } from './CalendarCourseCell';
 import {
     allDatesInRanges,
     calculateCourseCellColumns,
@@ -502,7 +501,6 @@ describe('calculateCourseCellColumns', () => {
                 startIndex,
                 endIndex,
             },
-            componentProps: {} as unknown as CalendarCourseCellProps,
             course: {} as unknown as Course,
             async: false,
         } satisfies CalendarGridCourse;

@@ -1,41 +1,6 @@
 [
     {
         "type": "cycle",
-        "from": "src/views/components/calendar/CalendarCourseCell.tsx",
-        "to": "src/views/hooks/useFlattenedCourseSchedule.ts",
-        "unresolvedTo": "@views/hooks/useFlattenedCourseSchedule",
-        "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "type-only", "import"],
-        "rule": {
-            "severity": "error",
-            "name": "no-circular"
-        },
-        "cycle": [
-            {
-                "name": "src/views/hooks/useFlattenedCourseSchedule.ts",
-                "dependencyTypes": [
-                    "aliased",
-                    "aliased-tsconfig",
-                    "aliased-tsconfig-paths",
-                    "local",
-                    "type-only",
-                    "import"
-                ]
-            },
-            {
-                "name": "src/views/components/calendar/CalendarCourseCell.tsx",
-                "dependencyTypes": [
-                    "aliased",
-                    "aliased-tsconfig",
-                    "aliased-tsconfig-paths",
-                    "local",
-                    "type-only",
-                    "import"
-                ]
-            }
-        ]
-    },
-    {
-        "type": "cycle",
         "from": "src/views/components/common/WhatsNewPopup.tsx",
         "to": "src/views/hooks/useWhatsNew.tsx",
         "unresolvedTo": "@views/hooks/useWhatsNew",
