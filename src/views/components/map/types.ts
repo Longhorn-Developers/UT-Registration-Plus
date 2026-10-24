@@ -1,3 +1,6 @@
+import type { Course, StatusType } from '@shared/types/Course';
+import type { CourseMeeting } from '@shared/types/CourseMeeting';
+
 // Constants
 export const WALKING_SPEED = 246.4; // ~2.8 mph in feet per minute
 export const PIXELS_TO_FEET = 9.3895; // Approximate scale factor
@@ -122,3 +125,36 @@ export const DAY_MAPPING = {
     TH: 'Thursday',
     F: 'Friday',
 } as const satisfies DayMapping;
+
+/**
+ * Represents the details of an in-person meeting process.
+ *
+ * day - The day of the meeting.
+ * dayIndex - The index of the day in the week.
+ * fullName - The full name of the person.
+ * uid - The unique identifier of the person.
+ * time - The time of the meeting.
+ * normalizedStartTime - The normalized start time of the meeting.
+ * normalizedEndTime - The normalized end time of the meeting.
+ * startIndex - The start index of the meeting.
+ * endIndex - The end index of the meeting.
+ * location - The location of the meeting.
+ * status - The status of the meeting.
+ * colors - The colors associated with the course.
+ * course - The course details.
+ */
+export type ProcessInPersonMeetings = {
+    day: DAY;
+    dayIndex: number;
+    fullName: string;
+    uid: number;
+    time: string;
+    normalizedStartTime: number;
+    normalizedEndTime: number;
+    startIndex: number;
+    endIndex: number;
+    location: CourseMeeting['location'];
+    status: StatusType;
+    colors: Course['colors'];
+    course: Course;
+};
