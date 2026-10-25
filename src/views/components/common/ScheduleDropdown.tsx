@@ -19,8 +19,8 @@ export type ScheduleDropdownProps = {
 export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDropdownProps) {
     const activeSchedule = useActiveSchedule();
 
-    const totalHours = activeSchedule?.hours ?? 0;
-    const totalCourses = activeSchedule?.courses.length ?? 0;
+    const totalHours = activeSchedule?.getVisibleHours() ?? 0;
+    const totalCourses = activeSchedule?.getVisibleCourses().length ?? 0;
 
     return (
         <div className='max-h-[200px] flex flex-col border border-ut-offwhite/50 rounded bg-white'>
