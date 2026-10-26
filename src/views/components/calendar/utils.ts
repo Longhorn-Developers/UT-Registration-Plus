@@ -530,6 +530,16 @@ const assignColumns = (cells: CalendarLayoutCell[]) => {
 
     for (const cell of cells) {
         cell.totalColumns = availableColumns.length;
+
+        // Widen the cell into the free columns to its right, stopping at the first concurrent cell
+        const start = cell.gridColumnStart ?? 1;
+        cell.gridColumnEnd = cell.totalColumns + 1;
+        // biome-ignore lint/style/noNonNullAssertion: set by findConnectedComponents
+        for (const otherCell of cell.concurrentCells!) {
+            if (otherCell.gridColumnStart !== undefined && otherCell.gridColumnStart > start) {
+                cell.gridColumnEnd = Math.min(cell.gridColumnEnd, otherCell.gridColumnStart);
+            }
+        }
     }
 };
 
@@ -584,6 +594,6 @@ export function calendarCellPosition(cell: CalendarLayoutCell, totalRows: number
         top: `${((startIndex - 3) / totalRows) * 100}%`,
         height: `${((endIndex - startIndex) / totalRows) * 100}%`,
         left: `${(((cell.gridColumnStart ?? 1) - 1) / (cell.totalColumns ?? 1)) * 100}%`,
-        width: `${100 / (cell.totalColumns ?? 1)}%`,
+        width: `${(((cell.gridColumnEnd ?? (cell.gridColumnStart ?? 1) + 1) - (cell.gridColumnStart ?? 1)) / (cell.totalColumns ?? 1)) * 100}%`,
     };
 }
