@@ -9,7 +9,8 @@ export function customBlockFromDraft(draft: CustomBlockDraft, scheduleId: string
     if (
         !values.name.trim() ||
         values.days.length === 0 ||
-        values.days.some(day => !Object.values(DAY_MAP).includes(day)) ||
+        // Blocks are weekdays only, matching the form and the Mon–Fri calendar
+        values.days.some(day => !Object.values(DAY_MAP).includes(day) || day === DAY_MAP.S || day === DAY_MAP.SU) ||
         !validTime(values.startTime) ||
         !validTime(values.endTime) ||
         (!values.allDay && values.startTime >= values.endTime)

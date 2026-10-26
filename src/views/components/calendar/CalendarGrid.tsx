@@ -87,9 +87,7 @@ export default function CalendarGrid({
     const visualEndHour = Math.ceil((endMinutes ?? GRID_DEFAULT_END) / 60);
     const hoursOfDay = Array.from({ length: visualEndHour - visualStartHour }, (_, i) => i + visualStartHour);
     const totalRows = (visualEndHour - visualStartHour) * 2;
-    const days = [...daysOfWeek];
-    if (customBlocks.some(block => block.days.includes('Saturday') || block.days.includes('Sunday'))) days.push('SAT');
-    if (customBlocks.some(block => block.days.includes('Sunday'))) days.push('SUN');
+    const days = daysOfWeek;
     const blockCells = customBlocks.flatMap(block =>
         block.days.map(day => ({
             block,
