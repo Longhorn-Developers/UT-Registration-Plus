@@ -109,8 +109,8 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
         block ? customBlockToDraft(block) : (initialDraft ?? DEFAULT_BLOCK)
     );
     const [draftAtUnsync, setDraftAtUnsync] = useState<CustomBlockDraft>();
-    const [startTime, setStartTime] = useState(formatBlockTime(draft.startTime));
-    const [endTime, setEndTime] = useState(formatBlockTime(draft.endTime));
+    const [startTime, setStartTime] = useState(block || initialDraft ? formatBlockTime(draft.startTime) : '');
+    const [endTime, setEndTime] = useState(block || initialDraft ? formatBlockTime(draft.endTime) : '');
     const [renaming, setRenaming] = useState(false);
     const nameBeforeRename = useRef(draft.name);
     const [busy, setBusy] = useState(false);
