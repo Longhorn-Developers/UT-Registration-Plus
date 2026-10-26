@@ -36,11 +36,12 @@ async function requireSchedule(scheduleId: string) {
  *
  * @param a - The first block
  * @param b - The second block
- * @returns True if the name, days, and times match
+ * @returns True if the name, color, days, and times match
  */
 function isSameBlock(a: CustomBlock, b: CustomBlock) {
     return (
         a.name === b.name &&
+        a.color === b.color &&
         a.allDay === b.allDay &&
         a.days.join() === b.days.join() &&
         (a.allDay || (a.startTime === b.startTime && a.endTime === b.endTime))
@@ -94,13 +95,22 @@ export function updateCustomBlock(
         const previous = blocks.find(block => block.id === id);
         if (!previous) throw new Error('Custom block does not exist');
         const updated = customBlockFromDraft(draft, scheduleId, id);
+        // An edited copy is the user's own block now, so resyncing must not replace it
+        if (!isSameBlock(previous, updated) || previous.conflictHighlight !== updated.conflictHighlight) {
+            delete updated.unsyncedFrom;
+        }
         const next = blocks.map(block => (block.id === id ? updated : block));
         if (previous.scheduleId === null && updated.scheduleId !== null) {
             const values = valuesAtUnsync(previous, draftAtUnsync);
             const copies = schedules
                 .filter(schedule => schedule.id !== scheduleId)
-                .map(schedule => ({ ...values, id: generateRandomId(), scheduleId: schedule.id }));
+                .map(schedule => ({ ...values, id: generateRandomId(), scheduleId: schedule.id, unsyncedFrom: id }));
             return { blocks: [...next, ...copies], result: updated };
+        }
+        if (previous.scheduleId !== null && updated.scheduleId === null) {
+            // Resyncing replaces the copies nobody edited; edited copies stay beside it for the user to keep or delete
+            const resynced = next.filter(block => block.unsyncedFrom !== id);
+            return { blocks: withoutDuplicates(resynced, updated), result: updated };
         }
         return { blocks: withoutDuplicates(next, updated), result: updated };
     });
