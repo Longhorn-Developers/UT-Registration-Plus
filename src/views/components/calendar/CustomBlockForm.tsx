@@ -78,21 +78,26 @@ function BlockOption({
 
 function BlockTimeInput({
     label,
+    placeholder,
     value,
     onChange,
 }: {
     label: string;
+    placeholder: string;
     value: string;
     onChange: (value: string) => void;
 }) {
     return (
         <div className='relative h-[35px] min-w-[65px] inline-flex items-center'>
-            <Text variant='small' className='invisible whitespace-pre px-spacing-5' aria-hidden>
-                {value || '00:00am'}
+            {/* Sized to the wider of the value and placeholder, so it doesn't shrink once typing starts */}
+            <Text variant='small' className='invisible grid whitespace-pre px-spacing-5' aria-hidden>
+                <span className='[grid-area:1/1]'>{placeholder}</span>
+                <span className='[grid-area:1/1]'>{value}</span>
             </Text>
             <Input
                 className={clsx(styles.textInput, styles.timeInput, 'absolute inset-0 h-[35px]! w-full')}
                 aria-label={label}
+                placeholder={placeholder}
                 value={value}
                 spellCheck={false}
                 onChange={event => onChange(event.target.value)}
@@ -288,12 +293,14 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
                                     <div className='min-w-0 flex items-center gap-spacing-4'>
                                         <BlockTimeInput
                                             label='Start time'
+                                            placeholder='8:00am'
                                             value={startTime}
                                             onChange={value => changeTime('startTime', value)}
                                         />
                                         <MinusIcon className='h-6 w-6 shrink-0' aria-hidden />
                                         <BlockTimeInput
                                             label='End time'
+                                            placeholder='9:00am'
                                             value={endTime}
                                             onChange={value => changeTime('endTime', value)}
                                         />

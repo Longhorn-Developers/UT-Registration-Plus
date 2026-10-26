@@ -1,7 +1,8 @@
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course, ScrapedRow } from '@shared/types/Course';
+import type { CustomBlock } from '@shared/types/CustomBlock';
 import type { UserSchedule } from '@shared/types/UserSchedule';
-import { hasCustomBlockConflict } from '@shared/util/customBlocks';
+import { getCustomBlockConflicts } from '@shared/util/customBlocks';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import useCustomBlocks from '@views/hooks/useCustomBlocks';
@@ -45,6 +46,7 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
     // the courses in the active schedule that conflict with the course for this row
     const [conflicts, setConflicts] = useState<Course[]>([]);
+    const [blockConflicts, setBlockConflicts] = useState<CustomBlock[]>([]);
     const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
     const blocks = useCustomBlocks(activeSchedule?.id);
 
@@ -89,7 +91,8 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         }
 
         const conflicts: Course[] = [];
-        const blockConflict = hasCustomBlockConflict(course.schedule.meetings, blocks);
+        const conflictingBlocks = getCustomBlockConflicts(course.schedule.meetings, blocks);
+        const blockConflict = conflictingBlocks.length > 0;
 
         for (const c of activeSchedule.courses) {
             if (c.uniqueId !== course.uniqueId && course.getConflicts(c).length > 0) {
@@ -112,12 +115,14 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         }
 
         setConflicts(conflicts);
+        setBlockConflicts(conflictingBlocks);
 
         return () => {
             // biome-ignore lint/style/noNonNullAssertion: TODO:
             element.classList.remove(styles.isConflict!);
             if (styles.isConflictNoLineThrough) element.classList.remove(styles.isConflictNoLineThrough);
             setConflicts([]);
+            setBlockConflicts([]);
         };
     }, [activeSchedule, course, element.classList, highlightConflicts, blocks]);
 
@@ -135,12 +140,13 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
                 >
                     <ChartBarFillIcon className='text-ut-white h-4 w-4' />
                 </button>
-                {conflicts.length > 0 && (
+                {(conflicts.length > 0 || blockConflicts.length > 0) && (
                     <ConflictsWithWarning
                         className={`absolute left-13 top--3 text-white ${
                             isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
                         }`}
                         conflicts={conflicts}
+                        blockConflicts={blockConflicts}
                     />
                 )}
             </div>

@@ -35,11 +35,11 @@ export function selectCustomBlocks(blocks: CustomBlock[], scheduleId: string): C
     return blocks.filter(block => block.scheduleId === null || block.scheduleId === scheduleId);
 }
 
-export function hasCustomBlockConflict(
+export function getCustomBlockConflicts(
     meetings: Pick<CourseMeeting, 'days' | 'startTime' | 'endTime'>[],
     blocks: CustomBlock[]
-): boolean {
-    return blocks.some(
+): CustomBlock[] {
+    return blocks.filter(
         block =>
             block.conflictHighlight &&
             meetings.some(
