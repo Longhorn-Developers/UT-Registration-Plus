@@ -251,7 +251,7 @@ function AccountForCourseConflicts({
                     cell={cell}
                     totalRows={totalRows}
                 >
-                    <Popover className='h-full'>
+                    <Popover className='h-full rounded bg-white'>
                         {({ close }) => (
                             <>
                                 <PopoverButton as={CalendarCustomBlockCell} block={cell.block} />
