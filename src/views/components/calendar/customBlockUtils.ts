@@ -3,7 +3,7 @@ import type { CustomBlockDraft } from '@shared/types/CustomBlock';
 
 export function minuteAtPosition(offset: number, height: number, start: number, end: number): number {
     const minutes = start + (offset / height) * (end - start);
-    return Math.min(end, 1260, Math.max(start, 480, Math.round(minutes / 15) * 15));
+    return Math.min(end, Math.max(start, Math.round(minutes / 15) * 15));
 }
 
 export const BLOCK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as const satisfies readonly Day[];
@@ -26,12 +26,12 @@ export function parseBlockTime(value: string): number | null {
     const period = match[3]?.toLowerCase();
     if (period ? hours < 1 || hours > 12 : hours > 23) return null;
     const total = (period ? (hours % 12) + (period === 'pm' ? 12 : 0) : hours) * 60 + minutes;
-    // Not clamped to the 8am–9pm grid so the form can report out-of-range times instead of silently correcting them
+    // Not clamped to the visible grid so the form can report out-of-range times instead of silently correcting them
     return Math.min(1425, Math.round(total / 15) * 15);
 }
 
-export function isBlockTimeInRange(minutes: number): boolean {
-    return minutes >= 480 && minutes <= 1260;
+export function isBlockTimeInRange(minutes: number, start: number, end: number): boolean {
+    return minutes >= start && minutes <= end;
 }
 
 export function formatBlockTime(minutes: number): string {

@@ -6,6 +6,7 @@ import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
 import Input from '@views/components/common/Input';
 import Text from '@views/components/common/Text/Text';
+import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import clsx from 'clsx';
 import type { ComponentType, FormEvent, SVGProps } from 'react';
 import { useEffect, useId, useRef, useState } from 'react';
@@ -124,6 +125,9 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
             mounted.current = false;
         };
     }, []);
+    // Blocks may use any hour already visible on the grid, including hours extended for early or late courses
+    const { startMinutes: gridStart, endMinutes: gridEnd } = useFlattenedCourseSchedule();
+    const rangeText = `${formatBlockTime(gridStart)} – ${formatBlockTime(gridEnd)}`;
     const startMinutes = parseBlockTime(startTime);
     const endMinutes = parseBlockTime(endTime);
     const validationErrors: string[] = [];
@@ -132,11 +136,11 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
     if (!draft.allDay) {
         if (startMinutes === null) validationErrors.push('Enter a valid start time, such as 8:00am.');
         if (endMinutes === null) validationErrors.push('Enter a valid end time, such as 1:15pm.');
-        if (startMinutes !== null && !isBlockTimeInRange(startMinutes)) {
-            validationErrors.push('Start time is outside 8:00am – 9:00pm.');
+        if (startMinutes !== null && !isBlockTimeInRange(startMinutes, gridStart, gridEnd)) {
+            validationErrors.push(`Start time is outside ${rangeText}.`);
         }
-        if (endMinutes !== null && !isBlockTimeInRange(endMinutes)) {
-            validationErrors.push('End time is outside 8:00am – 9:00pm.');
+        if (endMinutes !== null && !isBlockTimeInRange(endMinutes, gridStart, gridEnd)) {
+            validationErrors.push(`End time is outside ${rangeText}.`);
         }
         if (startMinutes !== null && endMinutes !== null && startMinutes >= endMinutes) {
             validationErrors.push('End time must be after start time.');
