@@ -16,7 +16,7 @@ import {
 import type React from 'react';
 import { Fragment, useRef } from 'react';
 import CalendarBlockCreator from './CalendarBlockCreator';
-import CalendarCustomBlockCell from './CalendarCustomBlockCell';
+import CalendarCustomBlockCell, { CustomBlockColorPicker } from './CalendarCustomBlockCell';
 import { CalendarGridBounds } from './CalendarGridBounds';
 import CalendarCell from './CalendarGridCell';
 import { calculateCourseCellColumns, calendarCellPosition } from './utils';
@@ -249,14 +249,17 @@ function AccountForCourseConflicts({
                     cell={cell}
                     totalRows={totalRows}
                 >
-                    <Popover className='h-full rounded bg-white'>
-                        {({ close }) => (
-                            <>
-                                <PopoverButton as={CalendarCustomBlockCell} block={cell.block} />
-                                {renderBlockEditor?.(cell.block, close)}
-                            </>
-                        )}
-                    </Popover>
+                    <div className='group relative h-full'>
+                        <Popover className='h-full rounded bg-white'>
+                            {({ close }) => (
+                                <>
+                                    <PopoverButton as={CalendarCustomBlockCell} block={cell.block} />
+                                    {renderBlockEditor?.(cell.block, close)}
+                                </>
+                            )}
+                        </Popover>
+                        <CustomBlockColorPicker cell={cell} />
+                    </div>
                 </CalendarGridItem>
             ))}
         </>

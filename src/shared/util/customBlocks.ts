@@ -1,3 +1,4 @@
+import { isHexColor } from '@shared/types/Color';
 import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { CustomBlock, CustomBlockDraft } from '@shared/types/CustomBlock';
 
@@ -13,6 +14,7 @@ export function customBlockFromDraft(draft: CustomBlockDraft, scheduleId: string
         values.days.some(day => !Object.values(DAY_MAP).includes(day) || day === DAY_MAP.S || day === DAY_MAP.SU) ||
         !validTime(values.startTime) ||
         !validTime(values.endTime) ||
+        (values.color !== undefined && !isHexColor(values.color)) ||
         (!values.allDay && values.startTime >= values.endTime)
     ) {
         throw new Error('Invalid custom block');

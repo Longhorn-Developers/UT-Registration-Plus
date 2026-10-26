@@ -1,3 +1,4 @@
+import type { HexColor } from './Color';
 import type { Day } from './CourseMeeting';
 
 export interface CustomBlockDraft {
@@ -8,6 +9,7 @@ export interface CustomBlockDraft {
     allDay: boolean;
     syncAcrossAllSchedules: boolean;
     conflictHighlight: boolean;
+    color?: HexColor;
 }
 
 export interface CustomBlock extends Omit<CustomBlockDraft, 'syncAcrossAllSchedules'> {
