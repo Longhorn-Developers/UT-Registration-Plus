@@ -25,6 +25,8 @@ export default function CalendarCustomBlockCell({
 }: ComponentProps<'button'> & { block: CustomBlock }) {
     const time = block.allDay ? 'All day' : `${formatBlockTime(block.startTime)} – ${formatBlockTime(block.endTime)}`;
     const compact = !block.allDay && block.endTime - block.startTime <= 30;
+    // A 15-minute slot is only ~12px tall, so its text shrinks to fit
+    const tiny = !block.allDay && block.endTime - block.startTime <= 15;
     const color = block.color ?? DEFAULT_BLOCK_COLOR;
     return (
         <button
@@ -43,7 +45,8 @@ export default function CalendarCustomBlockCell({
                 variant='h1-course'
                 className={clsx(
                     'truncate font-bold!',
-                    compact ? 'min-w-0 flex-1 text-[12px]! leading-[14px]!' : 'w-full leading-[18px]!'
+                    compact ? 'min-w-0 flex-1' : 'w-full leading-[18px]!',
+                    compact && (tiny ? 'text-[10px]! leading-[10px]!' : 'text-[12px]! leading-[14px]!')
                 )}
             >
                 {block.name}
@@ -51,7 +54,11 @@ export default function CalendarCustomBlockCell({
             <Text
                 as='div'
                 variant='small'
-                className={clsx('text-[12px]! font-normal! leading-[14px]! truncate', compact ? 'shrink-0' : 'w-full')}
+                className={clsx(
+                    'font-normal! truncate',
+                    compact ? 'shrink-0' : 'w-full',
+                    tiny ? 'text-[10px]! leading-[10px]!' : 'text-[12px]! leading-[14px]!'
+                )}
             >
                 {compact ? formatBlockTime(block.startTime) : time}
             </Text>
@@ -77,8 +84,9 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
         const handleClickOutside = (event: MouseEvent) => {
             if (pickerRef.current && !event.composedPath().includes(pickerRef.current)) setOpen(false);
         };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        // pointerdown, not mousedown: the calendar's drag-to-add layer cancels mousedown for clicks in the grid
+        document.addEventListener('pointerdown', handleClickOutside);
+        return () => document.removeEventListener('pointerdown', handleClickOutside);
     }, [open]);
 
     // The course picker reads the context, so only the setter and close handler are needed for blocks

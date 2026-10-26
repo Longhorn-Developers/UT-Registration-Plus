@@ -13,6 +13,7 @@ import {
     GRID_DEFAULT_END,
     GRID_DEFAULT_START,
 } from '@views/hooks/useFlattenedCourseSchedule';
+import clsx from 'clsx';
 import type React from 'react';
 import { Fragment, useRef } from 'react';
 import CalendarBlockCreator from './CalendarBlockCreator';
@@ -278,7 +279,14 @@ function CalendarGridItem({
             style={{ gridColumn: cell.calendarGridPoint.dayIndex + 3, gridRow: '3 / -1' }}
         >
             <div
-                className={`absolute box-border pb-1 ${course ? 'pr-2.5' : 'pr-2'} screenshot:pb-0.5 screenshot:pr-0.5`}
+                className={clsx(
+                    'absolute box-border screenshot:pr-0.5',
+                    course ? 'pr-2.5' : 'pr-2',
+                    // 15-minute items need the bottom gap for their text
+                    cell.calendarGridPoint.endIndex - cell.calendarGridPoint.startIndex <= 0.5
+                        ? 'pb-px'
+                        : 'pb-1 screenshot:pb-0.5'
+                )}
                 style={calendarCellPosition(cell, totalRows)}
             >
                 {/* Only the cell is interactive, so the padding gap can still be dragged to create a block */}
