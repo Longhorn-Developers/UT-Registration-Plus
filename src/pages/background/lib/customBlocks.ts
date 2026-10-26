@@ -117,13 +117,19 @@ export function copyCustomBlocks(blocks: CustomBlock[], scheduleId: string): Pro
     if (!blocks.length) return Promise.resolve();
     return writeBlocks(async existing => {
         await requireSchedule(scheduleId);
-        const copies = blocks.map(block =>
-            customBlockFromDraft(
-                { ...customBlockToDraft(block), syncAcrossAllSchedules: false },
-                scheduleId,
-                generateRandomId()
-            )
-        );
+        // Skips invalid blocks from imported files, and blocks a synced block already shows
+        const copies = blocks.flatMap(block => {
+            try {
+                const copy = customBlockFromDraft(
+                    { ...customBlockToDraft(block), syncAcrossAllSchedules: false },
+                    scheduleId,
+                    generateRandomId()
+                );
+                return existing.some(other => other.scheduleId === null && isSameBlock(other, copy)) ? [] : [copy];
+            } catch {
+                return [];
+            }
+        });
         return { blocks: [...existing, ...copies], result: undefined };
     });
 }
