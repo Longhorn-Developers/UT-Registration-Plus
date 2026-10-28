@@ -48,7 +48,10 @@ const CourseFinderStateContext = createContext<CourseFinderState | null>(null);
  */
 export interface CourseFinderPreview {
     course: Course;
-    /** Whether the section's remove button is hovered over or focused, so the calendar shows what removing it does */
+    /**
+     * Whether the section's add/remove button is hovered over or focused. For a section in the schedule, that button
+     * removes it, so the calendar shows what removing it does.
+     */
     isRemoving: boolean;
 }
 

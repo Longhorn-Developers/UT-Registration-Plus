@@ -323,11 +323,14 @@ function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit,
     // Only stops previewing this section, so moving straight from one section to the next keeps the next one
     const { uniqueId } = course;
     const isThisSection = (previewed: CourseFinderPreview | null) => previewed?.course.uniqueId === uniqueId;
-    // Keeps a removal preview the remove button already started, since focus and the mouse reach the row after it
+    // Keeps what the add/remove button set, since focus reaches the row (bubbling up from the button) after it
     const showPreview = () =>
         onPreviewChange?.(previewed => (isThisSection(previewed) ? previewed : { course, isRemoving: false }));
     const hidePreview = () => onPreviewChange?.(previewed => (isThisSection(previewed) ? null : previewed));
-    const previewRemoving = (isRemoving: boolean) => onPreviewChange?.({ course, isRemoving: isAdded && isRemoving });
+    // Set as the pointer or focus reaches the add/remove button and cleared as either leaves it (whichever happened
+    // last), rather than from whether the button removes right now: clicking it turns + into − under the pointer, and
+    // the calendar shows a removal only for a section that's in the schedule
+    const previewRemoving = (isRemoving: boolean) => onPreviewChange?.({ course, isRemoving });
 
     // A section can go away while it's previewed (its card collapsing, a filter, a new search), without the mouse
     // ever leaving it
