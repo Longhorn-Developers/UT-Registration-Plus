@@ -31,6 +31,9 @@ import CalendarFooter from './CalendarFooter';
 import CustomBlockPopover from './CustomBlockPopover';
 import SidebarResizeHandle, { type SidebarDrag } from './SidebarResizeHandle';
 
+/** How long the sidebar's width has to stay the same before it's saved, in ms */
+const SIDEBAR_SAVE_DELAY_MS = 300;
+
 const CalendarSidebar = memo(function CalendarSidebar() {
     const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
     const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
@@ -42,7 +45,8 @@ const CalendarSidebar = memo(function CalendarSidebar() {
     const [drag, setDrag] = useState<SidebarDrag | null>(null);
     // A width just picked, shown until the store has it, so the sidebar doesn't jump back while it's saved
     const [pickedWidth, setPickedWidth] = useState<number | null>(null);
-    const width = drag && !drag.collapsed ? drag.width : clampSidebarWidth(pickedWidth ?? storedWidth);
+    const settledWidth = clampSidebarWidth(pickedWidth ?? storedWidth);
+    const width = drag && !drag.collapsed ? drag.width : settledWidth;
     const isCollapsing = drag?.collapsed === true;
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: the picked width is dropped whenever the stored one changes
@@ -53,9 +57,18 @@ const CalendarSidebar = memo(function CalendarSidebar() {
         if (!showSidebar) setDrag(null);
     }, [showSidebar]);
 
+    // Holding an arrow key changes the width many times a second, more often than chrome.storage.sync takes writes,
+    // so the width is saved once it stops changing
+    const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
     const resize = (newWidth: number) => {
+        if (newWidth === settledWidth) return;
         setPickedWidth(newWidth);
-        void OptionsStore.set('calendarSidebarWidth', newWidth);
+        clearTimeout(saveTimer.current);
+        saveTimer.current = setTimeout(() => {
+            OptionsStore.set('calendarSidebarWidth', newWidth).catch(error =>
+                console.error('Failed to save the calendar sidebar width', error)
+            );
+        }, SIDEBAR_SAVE_DELAY_MS);
     };
 
     // TODO: Replace with JSX `inert={!showSidebar}` once React supports the inert attribute natively.
@@ -85,20 +98,6 @@ const CalendarSidebar = memo(function CalendarSidebar() {
             tabIndex={-1}
             aria-hidden={!showSidebar}
         >
-            <SidebarResizeHandle
-                sidebarRef={sidebarRef}
-                width={width}
-                onDrag={setDrag}
-                onDragEnd={ended => {
-                    if (ended?.collapsed) {
-                        void OptionsStore.set('showCalendarSidebar', false);
-                        return;
-                    }
-                    setDrag(null);
-                    if (ended && ended.width !== clampSidebarWidth(storedWidth)) resize(ended.width);
-                }}
-                onResize={resize}
-            />
             <div className='flex items-center justify-between px-spacing-7 mb-spacing-2'>
                 <LargeLogo />
                 <Button
@@ -132,6 +131,21 @@ const CalendarSidebar = memo(function CalendarSidebar() {
             </div>
 
             <CalendarFooter />
+            {/* Last, so it comes after the sidebar's contents when tabbing, as it sits on their right */}
+            <SidebarResizeHandle
+                sidebarRef={sidebarRef}
+                width={width}
+                onDrag={setDrag}
+                onDragEnd={ended => {
+                    if (ended?.collapsed) {
+                        void OptionsStore.set('showCalendarSidebar', false);
+                        return;
+                    }
+                    setDrag(null);
+                    if (ended) resize(ended.width);
+                }}
+                onResize={resize}
+            />
         </div>
     );
 });
