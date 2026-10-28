@@ -109,7 +109,9 @@ export default function CourseFinderFilters({ finder, isOpen, onOpenChange }: Co
                         placeholder='Title, instructor, or unique #'
                         aria-label='Filter by title, instructor, or unique number'
                     />
+                    {/* Each Dropdown is its own z-30 layer, so the open one goes above the Dropdowns after it */}
                     <Dropdown
+                        className='data-[open]:z-35'
                         selectedOption={CORE_OPTIONS.find(o => o.id === (filters.coreCode ?? ANY_ID)) ?? null}
                         options={CORE_OPTIONS}
                         onOptionChange={option =>
@@ -117,6 +119,7 @@ export default function CourseFinderFilters({ finder, isOpen, onOpenChange }: Co
                         }
                     />
                     <Dropdown
+                        className='data-[open]:z-35'
                         selectedOption={
                             INSTRUCTION_MODE_OPTIONS.find(o => o.id === (filters.instructionMode ?? ANY_ID)) ?? null
                         }

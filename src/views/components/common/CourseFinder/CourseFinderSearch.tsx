@@ -82,13 +82,16 @@ export default function CourseFinderSearch({ finder, form, inputRef }: CourseFin
                 onSearchChange={setFieldOfStudySearch}
                 inputRef={inputRef}
             />
+            {/* Each Dropdown is its own z-30 layer, so the open one goes above the Dropdowns after it */}
             <Dropdown
+                className='data-[open]:z-35'
                 selectedOption={level}
                 options={LEVEL_OPTIONS}
                 onOptionChange={option => setLevelId(option.id as LevelOptionId)}
                 disabled={!department}
             />
             <Dropdown
+                className='data-[open]:z-35'
                 selectedOption={semester.selectedOption}
                 placeholderText='Semester'
                 noOptionsText={areSemestersLoading ? 'Loading semesters…' : 'No semesters found'}
