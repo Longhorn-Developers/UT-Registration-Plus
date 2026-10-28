@@ -16,6 +16,7 @@ import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import refreshCourses from '@views/lib/refreshCourses';
+import { clampSidebarWidth } from '@views/lib/sidebarWidth';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
@@ -28,12 +29,34 @@ import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
 import CustomBlockPopover from './CustomBlockPopover';
+import SidebarResizeHandle, { type SidebarDrag } from './SidebarResizeHandle';
 
 const CalendarSidebar = memo(function CalendarSidebar() {
     const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
     const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
     const showReportIssueDialog = useReportIssueDialog();
     const sidebarRef = useRef<HTMLDivElement>(null);
+
+    const storedWidth = OptionsStore.useStore(store => store.calendarSidebarWidth);
+    // While the edge is being dragged, what the drag has done so far
+    const [drag, setDrag] = useState<SidebarDrag | null>(null);
+    // A width just picked, shown until the store has it, so the sidebar doesn't jump back while it's saved
+    const [pickedWidth, setPickedWidth] = useState<number | null>(null);
+    const width = drag && !drag.collapsed ? drag.width : clampSidebarWidth(pickedWidth ?? storedWidth);
+    const isCollapsing = drag?.collapsed === true;
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: the picked width is dropped whenever the stored one changes
+    useEffect(() => setPickedWidth(null), [storedWidth]);
+
+    // A drag that collapsed the sidebar stays collapsed until the store says it's hidden
+    useEffect(() => {
+        if (!showSidebar) setDrag(null);
+    }, [showSidebar]);
+
+    const resize = (newWidth: number) => {
+        setPickedWidth(newWidth);
+        void OptionsStore.set('calendarSidebarWidth', newWidth);
+    };
 
     // TODO: Replace with JSX `inert={!showSidebar}` once React supports the inert attribute natively.
     useEffect(() => {
@@ -50,15 +73,32 @@ const CalendarSidebar = memo(function CalendarSidebar() {
         <div
             ref={sidebarRef}
             className={clsx(
-                'py-spacing-5 bg-surface relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-divider shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
+                'py-spacing-5 bg-surface relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-divider shadow-[2px_0_10px,rgba(214_210_196_/_.1)] screenshot:hidden',
                 {
-                    'max-w-[20.3125rem] ': showSidebar,
-                    'max-w-0 pointer-events-none': !showSidebar,
+                    // Following the pointer while dragging, rather than easing after it
+                    'motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width]':
+                        !drag || isCollapsing,
+                    'pointer-events-none': !showSidebar,
                 }
             )}
+            style={{ maxWidth: showSidebar && !isCollapsing ? width : 0 }}
             tabIndex={-1}
             aria-hidden={!showSidebar}
         >
+            <SidebarResizeHandle
+                sidebarRef={sidebarRef}
+                width={width}
+                onDrag={setDrag}
+                onDragEnd={ended => {
+                    if (ended?.collapsed) {
+                        void OptionsStore.set('showCalendarSidebar', false);
+                        return;
+                    }
+                    setDrag(null);
+                    if (ended && ended.width !== clampSidebarWidth(storedWidth)) resize(ended.width);
+                }}
+                onResize={resize}
+            />
             <div className='flex items-center justify-between px-spacing-7 mb-spacing-2'>
                 <LargeLogo />
                 <Button
