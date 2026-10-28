@@ -16,7 +16,7 @@ import {
 } from 'react';
 
 /**
- * Opens and closes the Course Finder. Used by the calendar (whose sidebar shows it) and Quick Add (which links to it).
+ * Opens and closes the Course Finder, which the calendar sidebar shows in place of the schedules.
  */
 export interface CourseFinderControls {
     /** Whether the sidebar is showing the Course Finder instead of the schedules */
