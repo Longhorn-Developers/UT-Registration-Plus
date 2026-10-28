@@ -158,7 +158,7 @@ function PreviewCourseCell({ cell }: { cell: CalendarPreviewCell }): React.JSX.E
             className={clsx(
                 'h-full w-full flex flex-col gap-0.25 overflow-hidden rounded border-2 border-dashed px-2 py-1',
                 isConflicting
-                    ? 'border-theme-red bg-white/80 text-theme-red'
+                    ? 'border-theme-red bg-white/90 text-theme-red'
                     : 'border-ut-burntorange/70 bg-ut-burntorange/10 text-ut-black/80'
             )}
             style={isConflicting ? { backgroundImage: CONFLICT_HATCHING } : undefined}

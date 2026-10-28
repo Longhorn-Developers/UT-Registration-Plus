@@ -262,11 +262,15 @@ export function useCourseFinder(isOpen: boolean): UseCourseFinderReturn {
 
     const groups = useMemo(() => groupCourses(filteredResults), [filteredResults]);
 
-    // A search for one course (i.e. "C S 314") shows its sections right away, rather than a card to open
+    // A search for one course (i.e. "C S 314") shows its sections right away, rather than a card to open. Only once per
+    // search, as its results come in, so a card closed afterwards stays closed when the filters or schedule change.
+    // Which search that was, by its ID, since running the same query again (i.e. after logging in) is a new search
+    const expandedSearchId = useRef(-1);
     useEffect(() => {
-        if (query?.searchBy !== 'course' || status !== 'done') return;
+        if (query?.searchBy !== 'course' || groups.length === 0 || expandedSearchId.current === searchId.current) return;
+        expandedSearchId.current = searchId.current;
         setExpandedGroups(new Set(groups.map(group => group.fullName)));
-    }, [query, status, groups]);
+    }, [query, groups]);
 
     const availableFlags = useMemo(() => [...new Set(results.flatMap(c => c.flags))].sort(), [results]);
 
