@@ -105,7 +105,8 @@ export default function CourseFinderResults({ finder, onPreviewChange }: CourseF
         if (status === 'idle') {
             return (
                 <EmptyState>
-                    Pick a field of study, or a core area in the filters, to see what UT is offering.
+                    Pick a field of study, type a course like {'C\u00a0S\u00a0314'}, or pick a core area in the filters to see
+                    what UT is offering.
                 </EmptyState>
             );
         }

@@ -186,6 +186,30 @@ export function searchFieldsOfStudy(fieldsOfStudy: readonly FieldOfStudy[], sear
 }
 
 /**
+ * Reads a course code typed into the field of study search, i.e. "cs 314", "C S 314H", "m408d", or
+ * "computer science 314"
+ *
+ * @param fieldsOfStudy - the fields of study to recognize by code or name
+ * @param search - what's typed
+ * @returns the field of study and the course number, or null if what's typed isn't a course code
+ */
+export function parseCourseCode(
+    fieldsOfStudy: readonly FieldOfStudy[],
+    search: string
+): { fieldOfStudy: FieldOfStudy; courseNumber: string } | null {
+    const [, department = '', courseNumber = ''] = search.trim().match(/^(.+?)\s*(\d{3}[a-z]{0,2})$/i) ?? [];
+    if (!department) return null;
+
+    const code = department.toLowerCase().replace(/\s+/g, '');
+    const name = department.toLowerCase().replace(/\s+/g, ' ').trim();
+    const fieldOfStudy =
+        fieldsOfStudy.find(field => field.code.toLowerCase().replace(/\s+/g, '') === code) ??
+        fieldsOfStudy.find(field => field.name.toLowerCase() === name);
+
+    return fieldOfStudy ? { fieldOfStudy, courseNumber: courseNumber.toUpperCase() } : null;
+}
+
+/**
  * How long to wait for a page of results, since the background fetch proxy never responds if the request fails
  */
 const PAGE_TIMEOUT_MS = 20_000;

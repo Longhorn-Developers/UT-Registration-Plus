@@ -25,6 +25,9 @@ export interface UseCourseFinderFormReturn {
     /** The field of study to search. */
     department: FieldOfStudy | null;
     setDepartment: (department: FieldOfStudy | null) => void;
+    /** The course number to search within the field of study, when a course code like "C S 314" was picked. */
+    courseNumber: string | null;
+    setCourseNumber: (courseNumber: string | null) => void;
     /** What's typed in the field of study input, while looking for a field of study to pick. */
     fieldOfStudySearch: string;
     setFieldOfStudySearch: (search: string) => void;
@@ -42,6 +45,7 @@ export interface UseCourseFinderFormReturn {
  */
 export function useCourseFinderForm(): UseCourseFinderFormReturn {
     const [department, setDepartment] = useState<FieldOfStudy | null>(null);
+    const [courseNumber, setCourseNumber] = useState<string | null>(null);
     const [fieldOfStudySearch, setFieldOfStudySearch] = useState('');
     const [levelId, setLevelId] = useState<LevelOptionId>('LU');
     const [areFiltersOpen, setAreFiltersOpen] = useState(false);
@@ -49,6 +53,8 @@ export function useCourseFinderForm(): UseCourseFinderFormReturn {
     return {
         department,
         setDepartment,
+        courseNumber,
+        setCourseNumber,
         fieldOfStudySearch,
         setFieldOfStudySearch,
         levelId,

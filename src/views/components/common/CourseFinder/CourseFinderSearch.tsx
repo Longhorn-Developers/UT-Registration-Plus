@@ -30,19 +30,31 @@ export interface CourseFinderSearchProps {
 
 /**
  * The search form of the Course Finder. The results follow the form: picking a field of study searches it at the
- * picked level, and with no field of study, picking a core curriculum area in the filters searches that instead.
+ * picked level, picking a course code like "C S 314" searches that course alone, and with no field of study, picking a core curriculum area in the filters searches that instead.
  * With neither picked, there's nothing to search, so the results are cleared. While a field of study is being typed,
  * the results stay as they are until one is picked.
  */
 export default function CourseFinderSearch({ finder, form, inputRef }: CourseFinderSearchProps): JSX.Element {
     const { semester, areSemestersLoading, fieldsOfStudy, search, reset, filters } = finder;
-    const { department, setDepartment, fieldOfStudySearch, setFieldOfStudySearch, levelId, setLevelId } = form;
+    const {
+        department,
+        setDepartment,
+        courseNumber,
+        setCourseNumber,
+        fieldOfStudySearch,
+        setFieldOfStudySearch,
+        levelId,
+        setLevelId,
+    } = form;
 
     const level = LEVEL_OPTIONS.find(l => l.id === levelId) ?? LEVEL_OPTIONS[0];
     const semesterCode = semester.selectedItem?.code;
 
     const query = useMemo((): CourseFinderQuery | null => {
         if (!semesterCode) return null;
+        if (department && courseNumber) {
+            return { searchBy: 'course', semesterCode, department: department.code, courseNumber };
+        }
         if (department) {
             return { searchBy: 'major', semesterCode, department: department.code, levels: [...level.levels] };
         }
@@ -50,7 +62,7 @@ export default function CourseFinderSearch({ finder, form, inputRef }: CourseFin
             return { searchBy: 'core', semesterCode, coreCode: filters.coreCode };
         }
         return null;
-    }, [semesterCode, department, level, filters.coreCode]);
+    }, [semesterCode, department, courseNumber, level, filters.coreCode]);
 
     const isPickingFieldOfStudy = !department && fieldOfStudySearch.trim() !== '';
 
@@ -77,7 +89,11 @@ export default function CourseFinderSearch({ finder, form, inputRef }: CourseFin
             <FieldOfStudyCombobox
                 fieldsOfStudy={fieldsOfStudy}
                 value={department}
-                onChange={setDepartment}
+                courseNumber={courseNumber}
+                onChange={(fieldOfStudy, number) => {
+                    setDepartment(fieldOfStudy);
+                    setCourseNumber(number);
+                }}
                 search={fieldOfStudySearch}
                 onSearchChange={setFieldOfStudySearch}
                 inputRef={inputRef}
@@ -88,7 +104,8 @@ export default function CourseFinderSearch({ finder, form, inputRef }: CourseFin
                 selectedOption={level}
                 options={LEVEL_OPTIONS}
                 onOptionChange={option => setLevelId(option.id as LevelOptionId)}
-                disabled={!department}
+                // A course is the same course at every level
+                disabled={!department || courseNumber !== null}
             />
             <Dropdown
                 className='data-[open]:z-35'

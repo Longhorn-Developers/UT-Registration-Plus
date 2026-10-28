@@ -11,6 +11,7 @@ import {
     getCreditHoursOption,
     groupCourses,
     matchesKeyword,
+    parseCourseCode,
     parseCourseFinderPage,
     satisfiesCore,
     searchFieldsOfStudy,
@@ -186,6 +187,38 @@ describe('courseFinder::fetchCourseFinderPage', () => {
         } finally {
             vi.useRealTimers();
         }
+    });
+});
+
+describe('courseFinder::parseCourseCode', () => {
+    const fields = [
+        { code: 'C S', name: 'Computer Science' },
+        { code: 'M', name: 'Mathematics' },
+        { code: 'E E', name: 'Electrical Engineering' },
+    ];
+    const parse = (search: string) => {
+        const parsed = parseCourseCode(fields, search);
+        return parsed && `${parsed.fieldOfStudy.code} ${parsed.courseNumber}`;
+    };
+
+    it('reads a code with or without spaces, in any case', () => {
+        expect(parse('cs 314')).toBe('C S 314');
+        expect(parse('CS314')).toBe('C S 314');
+        expect(parse(' C S 314h ')).toBe('C S 314H');
+        expect(parse('m408d')).toBe('M 408D');
+        expect(parse('e e 302')).toBe('E E 302');
+    });
+
+    it('reads a field of study by name', () => {
+        expect(parse('computer science 439')).toBe('C S 439');
+    });
+
+    it("isn't a course code without a known field of study and a full course number", () => {
+        expect(parse('cs')).toBeNull();
+        expect(parse('cs 31')).toBeNull();
+        expect(parse('314')).toBeNull();
+        expect(parse('xyz 314')).toBeNull();
+        expect(parse('computer 314')).toBeNull();
     });
 });
 

@@ -262,6 +262,12 @@ export function useCourseFinder(isOpen: boolean): UseCourseFinderReturn {
 
     const groups = useMemo(() => groupCourses(filteredResults), [filteredResults]);
 
+    // A search for one course (i.e. "C S 314") shows its sections right away, rather than a card to open
+    useEffect(() => {
+        if (query?.searchBy !== 'course' || status !== 'done') return;
+        setExpandedGroups(new Set(groups.map(group => group.fullName)));
+    }, [query, status, groups]);
+
     const availableFlags = useMemo(() => [...new Set(results.flatMap(c => c.flags))].sort(), [results]);
 
     return {
