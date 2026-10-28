@@ -6,6 +6,7 @@ import { UserSchedule } from '@shared/types/UserSchedule';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import CourseFinderPanel from '@views/components/common/CourseFinder/CourseFinderPanel';
+import type { CourseFinderPreview } from '@views/contexts/CourseFinderContext';
 import type { CourseFinderStatus, UseCourseFinderReturn } from '@views/hooks/useCourseFinder';
 import { useCourseFinderForm } from '@views/hooks/useCourseFinderForm';
 import { useDropdown } from '@views/hooks/useDropdown';
@@ -55,6 +56,7 @@ const scheduledCourse = new Course({
     department: 'M',
     number: '408D',
     courseName: 'SEQUENCES, SERIES, AND MULTIVARIABLE CALCULUS',
+    fullName: 'M 408D SEQUENCES, SERIES, AND MULTIVARIABLE CALCULUS',
     schedule: {
         meetings: [new CourseMeeting({ days: ['Tuesday', 'Thursday'], startTime: 870, endTime: 960 })],
     },
@@ -83,9 +85,12 @@ interface MockCourseFinderProps {
 /**
  * The calendar grid of the active schedule, with a section previewed over it
  */
-function PreviewCalendar({ previewCourse }: { previewCourse: Course | null }) {
+function PreviewCalendar({ preview }: { preview: CourseFinderPreview | null }) {
     // Holding the calendar's hours, like the calendar does while the Course Finder is open
-    const { courseCells, previewCells, startMinutes, endMinutes } = useFlattenedCourseSchedule(previewCourse, true);
+    const { courseCells, previewCells, startMinutes, endMinutes } = useFlattenedCourseSchedule(
+        preview?.course ?? null,
+        true
+    );
 
     return (
         <div className='h-screen min-w-5xl flex-1 overflow-auto px-spacing-5'>
@@ -94,6 +99,7 @@ function PreviewCalendar({ previewCourse }: { previewCourse: Course | null }) {
             <CalendarGrid
                 courseCells={courseCells}
                 previewCells={previewCells}
+                highlight={preview}
                 startMinutes={startMinutes}
                 endMinutes={endMinutes}
                 setCourse={() => {}}
@@ -114,7 +120,7 @@ function MockCourseFinder({
     withCalendar = false,
 }: MockCourseFinderProps) {
     const [filters, setFilters] = useState<CourseFinderFilters>(DEFAULT_COURSE_FINDER_FILTERS);
-    const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
+    const [preview, setPreview] = useState<CourseFinderPreview | null>(null);
     const [expandedGroups, setExpandedGroups] = useState<ReadonlySet<string>>(
         new Set(expandFirst && results[0] ? [results[0].fullName] : [])
     );
@@ -173,7 +179,7 @@ function MockCourseFinder({
                     finder={finder}
                     form={form}
                     onClose={() => {}}
-                    onPreviewChange={withCalendar ? setPreviewCourse : undefined}
+                    onPreviewChange={withCalendar ? setPreview : undefined}
                 />
             </div>
         </div>
@@ -184,7 +190,7 @@ function MockCourseFinder({
     return (
         <div className='flex flex-row'>
             {panel}
-            <PreviewCalendar previewCourse={previewCourse} />
+            <PreviewCalendar preview={preview} />
         </div>
     );
 }
@@ -250,11 +256,12 @@ export const NoResults: Story = {
 /**
  * Hovering over a section previews it on the calendar. The waitlisted C S 314 section (50250) conflicts with M 408D,
  * which is in the schedule, so it's previewed as a conflict. The Monday evening section (50260) stretches the
- * calendar to 10 PM, where it stays after the preview is gone.
+ * calendar to 10 PM, where it stays after the preview is gone. M 408D is in the results too: hovering over its section
+ * outlines its blocks, and hovering over its remove button marks them for removal.
  */
 export const PreviewOnCalendar: Story = {
     args: {
-        results: [...mockResults, eveningSection],
+        results: [...mockResults, eveningSection, scheduledCourse],
         expandFirst: true,
         withCalendar: true,
     },

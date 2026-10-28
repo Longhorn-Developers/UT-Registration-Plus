@@ -42,7 +42,7 @@ import CalendarFooter from './CalendarFooter';
 function SidebarCourseFinder() {
     const controls = useCourseFinderControls();
     const state = useCourseFinderState();
-    const setPreviewCourse = useSetCourseFinderPreview();
+    const setPreview = useSetCourseFinderPreview();
     if (!controls || !state) return null;
 
     return (
@@ -51,7 +51,7 @@ function SidebarCourseFinder() {
             form={state.form}
             onClose={controls.close}
             inputRef={controls.searchInputRef}
-            onPreviewChange={setPreviewCourse ?? undefined}
+            onPreviewChange={setPreview ?? undefined}
         />
     );
 }
@@ -157,10 +157,10 @@ const CalendarSidebar = memo(function CalendarSidebar() {
 export default function Calendar(): ReactNode {
     // The section hovered over in the Course Finder, drawn over the schedule. The calendar's hours stay stretched to fit
     // the sections previewed while the Course Finder is open.
-    const previewCourse = useCourseFinderPreview();
+    const preview = useCourseFinderPreview();
     const isCourseFinderOpen = useCourseFinderControls()?.isOpen ?? false;
     const { courseCells, previewCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule(
-        previewCourse,
+        preview?.course ?? null,
         isCourseFinderOpen
     );
     const initialCourse = useCourseFromUrl();
@@ -338,6 +338,7 @@ export default function Calendar(): ReactNode {
                             <CalendarGrid
                                 courseCells={courseCells}
                                 previewCells={previewCells}
+                                highlight={preview}
                                 setCourse={openCourse}
                                 startMinutes={startMinutes}
                                 endMinutes={endMinutes}

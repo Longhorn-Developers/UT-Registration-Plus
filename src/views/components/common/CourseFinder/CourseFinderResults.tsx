@@ -13,6 +13,7 @@ import Link from '@views/components/common/Link';
 import Spinner from '@views/components/common/Spinner';
 import Text from '@views/components/common/Text/Text';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
+import type { CourseFinderPreview } from '@views/contexts/CourseFinderContext';
 import type { UseCourseFinderReturn } from '@views/hooks/useCourseFinder';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
@@ -57,7 +58,7 @@ export interface CourseFinderResultsProps {
         | 'toggleGroup'
     >;
     /** Sets the section to preview on the calendar, as sections are hovered over or focused */
-    onPreviewChange?: Dispatch<SetStateAction<Course | null>>;
+    onPreviewChange?: Dispatch<SetStateAction<CourseFinderPreview | null>>;
 }
 
 /**
@@ -105,8 +106,8 @@ export default function CourseFinderResults({ finder, onPreviewChange }: CourseF
         if (status === 'idle') {
             return (
                 <EmptyState>
-                    Pick a field of study, type a course like {'C\u00a0S\u00a0314'}, or pick a core area in the filters to see
-                    what UT is offering.
+                    Pick a field of study, type a course like {'C\u00a0S\u00a0314'}, or pick a core area in the filters
+                    to see what UT is offering.
                 </EmptyState>
             );
         }
@@ -241,7 +242,7 @@ interface CourseCardProps {
     enforceScheduleLimit: () => boolean;
     isExpanded: boolean;
     onToggle: () => void;
-    onPreviewChange?: Dispatch<SetStateAction<Course | null>>;
+    onPreviewChange?: Dispatch<SetStateAction<CourseFinderPreview | null>>;
 }
 
 function CourseCard({
@@ -307,7 +308,7 @@ interface SectionRowProps {
     onOpenStats: (course: Course) => void;
     /** Checks that another schedule can be made, explaining why not if it can't */
     enforceScheduleLimit: () => boolean;
-    onPreviewChange?: Dispatch<SetStateAction<Course | null>>;
+    onPreviewChange?: Dispatch<SetStateAction<CourseFinderPreview | null>>;
 }
 
 function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit, onPreviewChange }: SectionRowProps) {
@@ -321,13 +322,17 @@ function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit,
 
     // Only stops previewing this section, so moving straight from one section to the next keeps the next one
     const { uniqueId } = course;
-    const showPreview = () => onPreviewChange?.(course);
-    const hidePreview = () => onPreviewChange?.(previewed => (previewed?.uniqueId === uniqueId ? null : previewed));
+    const isThisSection = (previewed: CourseFinderPreview | null) => previewed?.course.uniqueId === uniqueId;
+    // Keeps a removal preview the remove button already started, since focus and the mouse reach the row after it
+    const showPreview = () =>
+        onPreviewChange?.(previewed => (isThisSection(previewed) ? previewed : { course, isRemoving: false }));
+    const hidePreview = () => onPreviewChange?.(previewed => (isThisSection(previewed) ? null : previewed));
+    const previewRemoving = (isRemoving: boolean) => onPreviewChange?.({ course, isRemoving: isAdded && isRemoving });
 
     // A section can go away while it's previewed (its card collapsing, a filter, a new search), without the mouse
     // ever leaving it
     useEffect(
-        () => () => onPreviewChange?.(previewed => (previewed?.uniqueId === uniqueId ? null : previewed)),
+        () => () => onPreviewChange?.(previewed => (previewed?.course.uniqueId === uniqueId ? null : previewed)),
         [uniqueId, onPreviewChange]
     );
     const instructors = course.instructors.map(i => i.toString({ format: 'last' })).join(', ');
@@ -475,6 +480,11 @@ function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit,
                 variant='filled'
                 icon={isAdded ? MinusIcon : PlusIcon}
                 onClick={handleAddOrRemove}
+                // Shows on the calendar which blocks removing the section takes away
+                onMouseEnter={() => previewRemoving(true)}
+                onMouseLeave={() => previewRemoving(false)}
+                onFocus={() => previewRemoving(true)}
+                onBlur={() => previewRemoving(false)}
                 // Not disabled, which would drop focus from it while the schedule updates
                 aria-disabled={isUpdating}
                 title={isAdded ? 'Remove from your schedule' : 'Add to your schedule'}

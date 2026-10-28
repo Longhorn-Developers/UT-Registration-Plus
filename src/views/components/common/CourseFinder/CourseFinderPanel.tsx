@@ -1,6 +1,6 @@
-import type { Course } from '@shared/types/Course';
 import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
+import type { CourseFinderPreview } from '@views/contexts/CourseFinderContext';
 import type { UseCourseFinderReturn } from '@views/hooks/useCourseFinder';
 import type { UseCourseFinderFormReturn } from '@views/hooks/useCourseFinderForm';
 import type { Dispatch, JSX, Ref, SetStateAction } from 'react';
@@ -22,7 +22,7 @@ export interface CourseFinderPanelProps {
     /** The field of study input, which opening the Course Finder focuses */
     inputRef?: Ref<HTMLInputElement>;
     /** Sets the section to preview on the calendar, as sections are hovered over or focused */
-    onPreviewChange?: Dispatch<SetStateAction<Course | null>>;
+    onPreviewChange?: Dispatch<SetStateAction<CourseFinderPreview | null>>;
 }
 
 /**

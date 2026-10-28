@@ -42,19 +42,29 @@ export interface CourseFinderState {
 
 const CourseFinderControlsContext = createContext<CourseFinderControls | null>(null);
 const CourseFinderStateContext = createContext<CourseFinderState | null>(null);
-const CourseFinderPreviewContext = createContext<Course | null>(null);
-const SetCourseFinderPreviewContext = createContext<Dispatch<SetStateAction<Course | null>> | null>(null);
+/**
+ * A section the Course Finder is previewing on the calendar. One that isn't in the schedule is drawn over it; one that
+ * is gets its blocks outlined, or marked for removal while its remove button is hovered over or focused.
+ */
+export interface CourseFinderPreview {
+    course: Course;
+    /** Whether the section's remove button is hovered over or focused, so the calendar shows what removing it does */
+    isRemoving: boolean;
+}
+
+const CourseFinderPreviewContext = createContext<CourseFinderPreview | null>(null);
+const SetCourseFinderPreviewContext = createContext<Dispatch<SetStateAction<CourseFinderPreview | null>> | null>(null);
 
 /**
  * Holds the section being previewed on the calendar, apart from the rest of the Course Finder, so hovering over
  * sections only re-renders the calendar that draws the preview (its children keep their element identity).
  */
 function CourseFinderPreviewProvider({ children }: { children: ReactNode }): ReactNode {
-    const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
+    const [preview, setPreview] = useState<CourseFinderPreview | null>(null);
 
     return (
-        <SetCourseFinderPreviewContext.Provider value={setPreviewCourse}>
-            <CourseFinderPreviewContext.Provider value={previewCourse}>{children}</CourseFinderPreviewContext.Provider>
+        <SetCourseFinderPreviewContext.Provider value={setPreview}>
+            <CourseFinderPreviewContext.Provider value={preview}>{children}</CourseFinderPreviewContext.Provider>
         </SetCourseFinderPreviewContext.Provider>
     );
 }
@@ -115,12 +125,12 @@ export const useCourseFinderState = (): CourseFinderState | null => useContext(C
  * @returns the section the Course Finder is previewing on the calendar (the one hovered over or focused in its
  * results), or null when there's none
  */
-export const useCourseFinderPreview = (): Course | null => useContext(CourseFinderPreviewContext);
+export const useCourseFinderPreview = (): CourseFinderPreview | null => useContext(CourseFinderPreviewContext);
 
 /**
  * @returns what sets the section the Course Finder previews on the calendar, or null outside of the calendar page
  */
-export const useSetCourseFinderPreview = (): Dispatch<SetStateAction<Course | null>> | null =>
+export const useSetCourseFinderPreview = (): Dispatch<SetStateAction<CourseFinderPreview | null>> | null =>
     useContext(SetCourseFinderPreviewContext);
 
 /**

@@ -25,6 +25,11 @@ interface Props {
     courseCells?: CalendarGridCourse[];
     /** A course's meetings to draw faintly over the schedule, like a section hovered over in the Course Finder */
     previewCells?: CalendarPreviewCell[];
+    /**
+     * A course in the schedule to point out, like a section hovered over in the Course Finder that's already added:
+     * outlined, or marked for removal while its remove button is hovered over
+     */
+    highlight?: { course: Course; isRemoving: boolean } | null;
     startMinutes?: number;
     endMinutes?: number;
     saturdayClass?: boolean;
@@ -61,6 +66,7 @@ function makeGridRow(row: number, cols: number, hoursOfDay: number[]): React.JSX
  *
  * @param courseCells - The courses to display on the calendar
  * @param previewCells - The meetings of a course to preview over the calendar, without adding it
+ * @param highlight - A course in the schedule to outline, or to mark for removal
  * @param saturdayClass - Whether the user has a Saturday class
  * @param setCourse - Function to set the course to display in the course details panel
  * @returns The CalendarGrid component
@@ -68,6 +74,7 @@ function makeGridRow(row: number, cols: number, hoursOfDay: number[]): React.JSX
 export default function CalendarGrid({
     courseCells,
     previewCells,
+    highlight,
     saturdayClass: _saturdayClass,
     setCourse,
     startMinutes,
@@ -116,7 +123,9 @@ export default function CalendarGrid({
             {hoursOfDay.map((_, i) => makeGridRow(i, 5, hoursOfDay))}
 
             <ColorPickerProvider>
-                {courseCells && <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} />}
+                {courseCells && (
+                    <AccountForCourseConflicts courseCells={courseCells} setCourse={setCourse} highlight={highlight} />
+                )}
             </ColorPickerProvider>
 
             {previewCells?.map((cell, i) => (
@@ -187,11 +196,16 @@ function PreviewCourseCell({ cell }: { cell: CalendarPreviewCell }): React.JSX.E
 interface AccountForCourseConflictsProps {
     courseCells: CalendarGridCourse[];
     setCourse: (course: Course) => void;
+    highlight?: Props['highlight'];
 }
 
 // TODO: Possibly refactor to be more concise
 // TODO: Deal with react strict mode (wacky movements)
-function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseConflictsProps): React.JSX.Element[] {
+function AccountForCourseConflicts({
+    courseCells,
+    setCourse,
+    highlight,
+}: AccountForCourseConflictsProps): React.JSX.Element[] {
     // Sentry is not defined in storybook.
     // This is a valid use case for a condition hook, since IS_STORYBOOK is determined at build time,
     // it doesn't change between renders.
@@ -226,6 +240,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
         .filter(block => !block.async)
         .map(block => {
             const { courseDeptAndInstr, timeAndLocation, status } = block.componentProps;
+            const isHighlighted = highlight?.course.uniqueId === block.course.uniqueId;
 
             return (
                 <div
@@ -236,7 +251,7 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                         width: `calc(100% / ${block.totalColumns ?? 1})`,
                         marginLeft: `calc(100% * ${((block.gridColumnStart ?? 0) - 1) / (block.totalColumns ?? 1)})`,
                     }}
-                    className='pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5'
+                    className='relative pb-1 pl-0 pr-2.5 pt-0 screenshot:pb-0.5 screenshot:pr-0.5'
                 >
                     <CalendarCourseCell
                         courseDeptAndInstr={courseDeptAndInstr}
@@ -245,6 +260,18 @@ function AccountForCourseConflicts({ courseCells, setCourse }: AccountForCourseC
                         onClick={() => setCourse(block.course)}
                         blockData={block}
                     />
+                    {isHighlighted && (
+                        // Over the cell (inside the wrapper's padding), without catching its clicks
+                        <div
+                            aria-hidden
+                            className={clsx(
+                                'pointer-events-none absolute bottom-1 left-0 right-2.5 top-0 rounded screenshot:hidden',
+                                highlight.isRemoving
+                                    ? 'border-2 border-dashed border-theme-red bg-white/60'
+                                    : 'ring-2 ring-ut-burntorange ring-offset-2'
+                            )}
+                        />
+                    )}
                 </div>
             );
         });
