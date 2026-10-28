@@ -19,6 +19,6 @@ jobs:
       - name: Publish to Chromatic
         uses: chromaui/action@latest
         with:
-          projectToken: chpt_cc07511614f734c # bleh, but not really that a "secret", and necessary to expose for forks to build on chromatic
+          projectToken: chpt_473b096f047c856 # bleh, but not really that a "secret", and necessary to expose for forks to build on chromatic
           exitZeroOnChanges: true
           autoAcceptChanges: 'main'

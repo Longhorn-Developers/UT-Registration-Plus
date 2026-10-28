@@ -7,6 +7,7 @@ import {
     Transition,
     TransitionChild,
 } from '@headlessui/react';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import clsx from 'clsx';
 import type { JSX, PropsWithChildren } from 'react';
 import { Fragment } from 'react';
@@ -32,30 +33,39 @@ export type DialogProps = _DialogProps & Omit<TransitionRootProps<typeof HDialog
  */
 export default function Dialog(props: PropsWithChildren<DialogProps>): JSX.Element {
     const { children, className, open, title, description, ...rest } = props;
+    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
 
     return (
         <Transition show={open} as={HDialog} {...rest}>
             <ExtensionRootWrapper>
                 <TransitionChild
                     as={Fragment}
-                    enter='transition duration-300 motion-reduce:duration-150 ease-out'
-                    enterFrom='opacity-0'
-                    enterTo='opacity-100'
-                    leave='transition duration-150 ease-in delay-25'
-                    leaveFrom='opacity-100'
-                    leaveTo='opacity-0'
+                    enter={reducedMotion ? 'duration-0' : 'transition duration-300 motion-reduce:duration-150 ease-out'}
+                    enterFrom={reducedMotion ? '' : 'opacity-0'}
+                    enterTo={reducedMotion ? '' : 'opacity-100'}
+                    leave={reducedMotion ? 'duration-0' : 'transition duration-150 ease-in delay-25'}
+                    leaveFrom={reducedMotion ? '' : 'opacity-100'}
+                    leaveTo={reducedMotion ? '' : 'opacity-0'}
                 >
                     <div className={clsx('fixed inset-0 z-50 bg-slate-700/35')} />
                 </TransitionChild>
                 <div className='fixed inset-0 z-50 flex items-center justify-center p-2'>
                     <TransitionChild
                         as={Fragment}
-                        enter='transition duration-375 motion-reduce:duration-0 ease-[cubic-bezier(0.05,0.4,0.2,1)]'
-                        enterFrom='transform-gpu scale-95 opacity-0'
-                        enterTo='transform-gpu scale-100 opacity-100'
-                        leave='transition duration-250 motion-reduce:duration-0 ease-[cubic-bezier(0.23,0.01,0.92,0.72)]'
-                        leaveFrom='transform-gpu scale-100 opacity-100'
-                        leaveTo='transform-gpu scale-95 opacity-0'
+                        enter={
+                            reducedMotion
+                                ? 'duration-0'
+                                : 'transition duration-375 motion-reduce:duration-0 ease-[cubic-bezier(0.05,0.4,0.2,1)]'
+                        }
+                        enterFrom={reducedMotion ? '' : 'transform-gpu scale-95 opacity-0'}
+                        enterTo={reducedMotion ? '' : 'transform-gpu scale-100 opacity-100'}
+                        leave={
+                            reducedMotion
+                                ? 'duration-0'
+                                : 'transition duration-250 motion-reduce:duration-0 ease-[cubic-bezier(0.23,0.01,0.92,0.72)]'
+                        }
+                        leaveFrom={reducedMotion ? '' : 'transform-gpu scale-100 opacity-100'}
+                        leaveTo={reducedMotion ? '' : 'transform-gpu scale-95 opacity-0'}
                     >
                         <DialogPanel
                             className={clsx(

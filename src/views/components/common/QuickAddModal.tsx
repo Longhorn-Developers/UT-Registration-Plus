@@ -1,12 +1,14 @@
 import { CloseButton, Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react';
 import { background } from '@shared/messages';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
+import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import Text from '@views/components/common/Text/Text';
 import { useCourseFinderControls } from '@views/contexts/CourseFinderContext';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
 import type { JSX } from 'react';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
 import MagnifyingGlassIcon from '~icons/ph/magnifying-glass';
 import PlusIcon from '~icons/ph/plus';
@@ -31,14 +33,35 @@ const STATUS_MESSAGES: Partial<Record<CourseResult['status'], string>> = {
  * or open the Course Finder in the calendar sidebar to look courses up by field of study or core curriculum.
  */
 export default function QuickAddModal(): JSX.Element {
-    const { semester, uniqueNumber, courseResult } = useQuickAdd();
+    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
+    const { semester, uniqueNumber, courseResult } = useQuickAdd(isLoggedIn);
     const courseFinder = useCourseFinderControls();
     const quickAddButtonRef = useRef<HTMLButtonElement>(null);
     const statusMessage = STATUS_MESSAGES[courseResult.status];
 
-    const handleQuickAdd = () => {
-        background.validateLoginStatus();
+    const handleQuickAdd = async () => {
+        setIsLoggedIn(await background.validateLoginStatus());
     };
+
+    // Re-check login status whenever a full unique number is entered
+    useEffect(() => {
+        if (uniqueNumber.value.length !== UNIQUE_ID_LENGTH) return;
+        background.validateLoginStatus().then(setIsLoggedIn);
+    }, [uniqueNumber.value]);
+
+    // While logged out, re-check login status when the user returns to this tab (e.g. after logging in elsewhere)
+    useEffect(() => {
+        if (isLoggedIn !== false) return undefined;
+
+        const onVisibilityChange = () => {
+            if (document.visibilityState !== 'visible') return;
+            background.validateLoginStatus().then(setIsLoggedIn);
+        };
+
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+    }, [isLoggedIn]);
 
     const handleAddCourse = async (e?: React.FormEvent) => {
         e?.preventDefault();
@@ -69,13 +92,16 @@ export default function QuickAddModal(): JSX.Element {
                 as={ExtensionRootWrapper}
                 className={clsx([
                     'mt-spacing-3',
-                    'origin-top rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
-                    'data-[closed]:(opacity-0 scale-95)',
-                    'data-[enter]:(ease-out-expo duration-150)',
-                    'data-[leave]:(ease-out duration-50)',
+                    'origin-top rounded bg-white text-black shadow-lg border border-ut-offwhite/50 focus:outline-none',
+                    !reducedMotion && [
+                        'transition',
+                        'data-[closed]:(opacity-0 scale-95)',
+                        'data-[enter]:(ease-out-expo duration-150)',
+                        'data-[leave]:(ease-out duration-50)',
+                    ],
                     'px-spacing-7 py-spacing-6 w-[400px] z-20',
                 ])}
-                transition
+                transition={!reducedMotion}
                 anchor='bottom start'
             >
                 <form className='flex flex-col gap-spacing-7' onSubmit={handleAddCourse}>
@@ -98,12 +124,31 @@ export default function QuickAddModal(): JSX.Element {
                             options={semester.dropdownOptions}
                         />
                     </div>
-                    {statusMessage && (
-                        <Text variant='small' className='text-ut-black' aria-live='polite' aria-atomic='true'>
-                            {statusMessage}
+                    {isLoggedIn === false ? (
+                        <Text
+                            variant='small'
+                            className='self-center whitespace-nowrap text-theme-black/50 !font-normal'
+                            aria-live='polite'
+                            aria-atomic='true'
+                        >
+                            <a
+                                href={UTRP_LOGIN_URL}
+                                target='_blank'
+                                rel='noreferrer'
+                                className='text-ut-burntorange underline'
+                            >
+                                Log in
+                            </a>
+                            {' to add courses'}
                         </Text>
+                    ) : (
+                        statusMessage && (
+                            <Text variant='small' className='text-ut-black' aria-live='polite' aria-atomic='true'>
+                                {statusMessage}
+                            </Text>
+                        )
                     )}
-                    {courseResult.status === 'found' && (
+                    {isLoggedIn !== false && courseResult.status === 'found' && (
                         <div className='flex flex-col gap-0.5 border border-ut-offwhite/50 rounded px-spacing-5 py-spacing-3 shadow-md'>
                             <Text variant='h4' className='text-black font-bold!'>
                                 {courseResult.course.department} {courseResult.course.number}
@@ -139,12 +184,12 @@ export default function QuickAddModal(): JSX.Element {
                             )}
                         </PopoverPanel>
                         <Button
-                            color={courseResult.status === 'found' ? 'ut-green' : 'ut-gray'}
+                            color={isLoggedIn !== false && courseResult.status === 'found' ? 'ut-green' : 'ut-gray'}
                             size='regular'
                             variant='filled'
                             icon={PlusIcon}
                             type='submit'
-                            disabled={courseResult.status !== 'found'}
+                            disabled={isLoggedIn === false || courseResult.status !== 'found'}
                         >
                             Add Course
                         </Button>

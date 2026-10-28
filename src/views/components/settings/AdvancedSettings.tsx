@@ -21,6 +21,7 @@ interface AdvancedSettingsProps {
     loadAllCourses: boolean;
     increaseScheduleLimit: boolean;
     calendarNewTab: boolean;
+    enableReducedMotion: boolean;
     enableDataRefreshing: boolean;
     enableCourseStatusChips: boolean;
     enableThemesBeta: boolean;
@@ -64,6 +65,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     loadAllCourses,
     increaseScheduleLimit,
     calendarNewTab,
+    enableReducedMotion,
     enableDataRefreshing,
     enableCourseStatusChips,
     enableThemesBeta,
@@ -80,10 +82,9 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
                             Enable Course Refresh
-                            <BetaChip />
                         </Text>
                         <p className='text-sm text-content-muted'>
-                            Show a refresh button in the calendar to re-scrape course data from UT&apos;s site.
+                            Show a refresh button in the calendar to update course info from UT&apos;s site.
                         </p>
                     </div>
                     <SwitchButton
@@ -98,7 +99,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange font-semibold'>
                             Course Status Indicators
-                            <BetaChip />
                         </Text>
                         <p className='text-sm text-content-muted'>
                             Show waitlisted, cancelled, and closed status on courses.
@@ -215,6 +215,27 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         }}
                     />
                 </div>
+
+                <Divider size='auto' orientation='horizontal' />
+
+                <div className='flex items-center justify-between'>
+                    <div className='max-w-xs'>
+                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                            Reduced Motion
+                        </Text>
+                        <p className='text-sm text-gray-600'>
+                            Disable animations and transitions for users who prefer reduced motion.
+                        </p>
+                    </div>
+                    <SwitchButton
+                        isChecked={enableReducedMotion}
+                        onChange={() => {
+                            void OptionsStore.set('enableReducedMotion', !enableReducedMotion);
+                        }}
+                    />
+                </div>
+
+                <Divider size='auto' orientation='horizontal' />
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>

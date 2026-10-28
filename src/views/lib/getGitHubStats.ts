@@ -40,6 +40,11 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
         role: ['LHD Membership Director'],
         githubUsername: 'CMEONE',
     },
+    {
+        name: 'Claire Liu',
+        role: ['LHD Communications Director'],
+        githubUsername: '',
+    },
 ] as const satisfies TeamMember[];
 
 /**
@@ -112,11 +117,6 @@ export const UTRP_TEAM = [
         personalWebsite: 'https://leslielooi.super.site/',
     },
     {
-        name: 'Akshitha Venkataraman',
-        role: ['UX Design Fellow'],
-        githubUsername: '',
-    },
-    {
         name: 'Arun Bagavathiannan',
         role: ['Technical Lead'],
         githubUsername: 'arunbagavathiannan',
@@ -130,6 +130,36 @@ export const UTRP_TEAM = [
         name: 'Hannah Ha',
         role: ['Product Lead'],
         githubUsername: 'songhannahha-hub',
+    },
+    {
+        name: 'Akshitha Venkataraman',
+        role: ['UX Design Fellow'],
+        githubUsername: '',
+    },
+    {
+        name: 'Jesse Chen',
+        role: ['UX Design Fellow'],
+        githubUsername: '',
+    },
+    {
+        name: 'Saketh Sripada',
+        role: ['Developer Fellow'],
+        githubUsername: 'SakethSripada',
+    },
+    {
+        name: 'Valerius Petrini',
+        role: ['Developer Fellow'],
+        githubUsername: 'Villy-P',
+    },
+    {
+        name: 'Akhil Jarabandi',
+        role: ['Developer Fellow'],
+        githubUsername: 'AkhilJar',
+    },
+    {
+        name: 'Jonathan Phung',
+        role: ['Developer Fellow'],
+        githubUsername: 'jonathanphung',
     },
     {
         name: 'Marie Cho',

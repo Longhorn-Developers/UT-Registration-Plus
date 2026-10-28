@@ -40,12 +40,14 @@ export interface UseQuickAddReturn {
  * Encapsulates the main logic for the Quick Add flow:
  * semester selection, unique number input, and course lookup.
  *
+ * @param isLoggedIn - The user's UT login status. The lookup is skipped while `false` and re-runs when it changes.
+ *
  * @example
  * ```tsx
- * const { semester, uniqueNumber, courseResult } = useQuickAdd();
+ * const { semester, uniqueNumber, courseResult } = useQuickAdd(isLoggedIn);
  * ```
  */
-export function useQuickAdd(): UseQuickAddReturn {
+export function useQuickAdd(isLoggedIn?: boolean): UseQuickAddReturn {
     const [activeSchedule] = useSchedules();
     const uniqueNumber = useNumericInput('', UNIQUE_ID_LENGTH);
     const [availableSemesters, setAvailableSemesters] = useState<Semester[]>([]);
@@ -64,9 +66,9 @@ export function useQuickAdd(): UseQuickAddReturn {
         fetchAvailableSemesters().then(setAvailableSemesters);
     }, []);
 
-    // Look up the course whenever the unique number or semester changes.
+    // Look up the course whenever the unique number, semester, or login status changes.
     useEffect(() => {
-        if (uniqueNumber.value.length !== UNIQUE_ID_LENGTH || !semester.selectedItem?.code) {
+        if (isLoggedIn === false || uniqueNumber.value.length !== UNIQUE_ID_LENGTH || !semester.selectedItem?.code) {
             setCourseResult({ status: 'idle' });
             return;
         }
@@ -97,7 +99,7 @@ export function useQuickAdd(): UseQuickAddReturn {
         return () => {
             cancelled = true;
         };
-    }, [uniqueNumber.value, semester.selectedItem?.code, activeSchedule]);
+    }, [uniqueNumber.value, semester.selectedItem?.code, activeSchedule, isLoggedIn]);
 
     return {
         semester,

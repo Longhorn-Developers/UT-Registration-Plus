@@ -1,3 +1,4 @@
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Engine, ISourceOptions } from '@tsparticles/engine';
 import { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
@@ -9,6 +10,7 @@ import { BIRTHDAY_CELEBRATION_DEBOUNCE, BIRTHDAY_CELEBRATION_DURATION, LHD_BIRTH
  * Custom hook for birthday celebration particles
  */
 export const useBirthdayCelebration = () => {
+    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
     const [showParticles, setShowParticles] = useState(false);
     const [particlesInit, setParticlesInit] = useState(false);
     const [lastCelebration, setLastCelebration] = useState(0);
@@ -27,7 +29,7 @@ export const useBirthdayCelebration = () => {
     }, []);
 
     const triggerCelebration = useCallback(() => {
-        if (!isBirthday) return;
+        if (!isBirthday || reducedMotion) return;
 
         const now = Date.now();
         // Debounce: prevent triggering again within BIRTHDAY_CELEBRATION_DEBOUNCE ms
@@ -36,7 +38,7 @@ export const useBirthdayCelebration = () => {
         setLastCelebration(now);
         setShowParticles(true);
         setTimeout(() => setShowParticles(false), BIRTHDAY_CELEBRATION_DURATION);
-    }, [isBirthday, lastCelebration]);
+    }, [isBirthday, lastCelebration, reducedMotion]);
 
     const particlesOptions: ISourceOptions = useMemo(
         () => ({
