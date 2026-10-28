@@ -140,9 +140,11 @@ export default function CalendarGrid({
     );
 }
 
-// Hatched, so a conflict reads as one even where the colors are hard to tell apart. Light enough that the red text
-// over it keeps its contrast. The cell's background lets a little of the course it conflicts with show through.
+// Hatched, so a conflict reads as one even where the colors are hard to tell apart. The cell's background lets some
+// of the course it conflicts with show through, so the text has a near-white backing of its own (CONFLICT_TEXT) that
+// keeps the red at 4.5:1 contrast over any course color.
 const CONFLICT_HATCHING = 'repeating-linear-gradient(135deg, rgb(209 0 0 / 0.07) 0 6px, transparent 6px 12px)';
+const CONFLICT_TEXT = 'self-start max-w-full -mx-0.5 rounded-sm bg-white/90 px-0.5';
 
 /**
  * A faint, dashed outline of a course meeting that isn't in the schedule. One that conflicts with the schedule is
@@ -158,7 +160,7 @@ function PreviewCourseCell({ cell }: { cell: CalendarPreviewCell }): React.JSX.E
             className={clsx(
                 'h-full w-full flex flex-col gap-0.25 overflow-hidden rounded border-2 border-dashed px-2 py-1',
                 isConflicting
-                    ? 'border-theme-red bg-white/90 text-theme-red'
+                    ? 'border-theme-red bg-white/80 text-theme-red'
                     : 'border-ut-burntorange/70 bg-ut-burntorange/10 text-ut-black/80'
             )}
             style={isConflicting ? { backgroundImage: CONFLICT_HATCHING } : undefined}
@@ -168,11 +170,12 @@ function PreviewCourseCell({ cell }: { cell: CalendarPreviewCell }): React.JSX.E
                 as='p'
                 className={clsx('leading-tight! truncate overflow-clip!', {
                     'line-through': isConflicting && highlightConflicts,
+                    [CONFLICT_TEXT]: isConflicting,
                 })}
             >
                 {courseDeptAndInstr}
             </Text>
-            <Text variant='h3-course' as='p' className='whitespace-pre-line'>
+            <Text variant='h3-course' as='p' className={clsx('whitespace-pre-line', isConflicting && CONFLICT_TEXT)}>
                 {isConflicting
                     ? `Conflicts with ${cell.conflicts.map(c => `${c.department} ${c.number}`).join(', ')}`
                     : timeAndLocation}

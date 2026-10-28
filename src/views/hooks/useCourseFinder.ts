@@ -262,14 +262,21 @@ export function useCourseFinder(isOpen: boolean): UseCourseFinderReturn {
 
     const groups = useMemo(() => groupCourses(filteredResults), [filteredResults]);
 
-    // A search for one course (i.e. "C S 314") shows its sections right away, rather than a card to open. Only once per
-    // search, as its results come in, so a card closed afterwards stays closed when the filters or schedule change.
-    // Which search that was, by its ID, since running the same query again (i.e. after logging in) is a new search
-    const expandedSearchId = useRef(-1);
+    // A search for one course (i.e. "C S 314") shows its sections right away, rather than a card to open. Each card opens
+    // once, when it first shows up in the search (a topics course can have cards on several pages), so a card closed
+    // afterwards stays closed when the filters or schedule change. The search is told apart by its ID, since running
+    // the same query again (i.e. after logging in) is a new search.
+    const autoExpanded = useRef<{ searchId: number; names: Set<string> }>({ searchId: -1, names: new Set() });
     useEffect(() => {
-        if (query?.searchBy !== 'course' || groups.length === 0 || expandedSearchId.current === searchId.current) return;
-        expandedSearchId.current = searchId.current;
-        setExpandedGroups(new Set(groups.map(group => group.fullName)));
+        if (query?.searchBy !== 'course') return;
+        if (autoExpanded.current.searchId !== searchId.current) {
+            autoExpanded.current = { searchId: searchId.current, names: new Set() };
+        }
+        const { names } = autoExpanded.current;
+        const newNames = groups.map(group => group.fullName).filter(name => !names.has(name));
+        if (newNames.length === 0) return;
+        for (const name of newNames) names.add(name);
+        setExpandedGroups(prev => new Set([...prev, ...newNames]));
     }, [query, groups]);
 
     const availableFlags = useMemo(() => [...new Set(results.flatMap(c => c.flags))].sort(), [results]);
