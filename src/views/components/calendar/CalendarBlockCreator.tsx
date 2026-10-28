@@ -75,7 +75,7 @@ function DragSelection({ day, start, end, onCreate, open, close }: Props & { ope
                         ref={button}
                         tabIndex={-1}
                         aria-label={`Create block on ${day}, ${formatBlockTime(selection.startTime)} – ${formatBlockTime(selection.endTime)}`}
-                        className='absolute box-border w-[calc(100%_-_8px)] rounded border-0 border-l-3 border-solid border-sky-500 bg-sky-500/15 pointer-events-none transition-[top,height] duration-100 ease-out'
+                        className='absolute z-1 box-border w-[calc(100%_-_8px)] rounded border-0 border-l-3 border-solid border-sky-500 bg-sky-500/15 pointer-events-none transition-[top,height] duration-100 ease-out'
                         style={{
                             top: `${((selection.startTime - start) / (end - start)) * 100}%`,
                             height: `${((selection.endTime - selection.startTime) / (end - start)) * 100}%`,
