@@ -141,7 +141,7 @@ export default function CalendarGrid({
 }
 
 // Hatched, so a conflict reads as one even where the colors are hard to tell apart. Light enough that the red text
-// over it keeps its contrast.
+// over it keeps its contrast. The cell's background lets a little of the course it conflicts with show through.
 const CONFLICT_HATCHING = 'repeating-linear-gradient(135deg, rgb(209 0 0 / 0.07) 0 6px, transparent 6px 12px)';
 
 /**
@@ -158,7 +158,7 @@ function PreviewCourseCell({ cell }: { cell: CalendarPreviewCell }): React.JSX.E
             className={clsx(
                 'h-full w-full flex flex-col gap-0.25 overflow-hidden rounded border-2 border-dashed px-2 py-1',
                 isConflicting
-                    ? 'border-theme-red bg-white text-theme-red'
+                    ? 'border-theme-red bg-white/80 text-theme-red'
                     : 'border-ut-burntorange/70 bg-ut-burntorange/10 text-ut-black/80'
             )}
             style={isConflicting ? { backgroundImage: CONFLICT_HATCHING } : undefined}
