@@ -147,7 +147,7 @@ export default function QuickAddModal(): JSX.Element {
                         )
                     )}
                     {isLoggedIn !== false && courseResult.status === 'found' && (
-                        <div className='flex flex-col gap-0.5 border border-ut-offwhite/50 rounded px-spacing-5 py-spacing-3 shadow-md'>
+                        <div className='flex flex-col gap-0.5 border border-divider rounded px-spacing-5 py-spacing-3 shadow-md'>
                             <Text variant='h4' className='text-content font-bold!'>
                                 {courseResult.course.department} {courseResult.course.number}
                                 {' \u2013 '}
