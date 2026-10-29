@@ -12,6 +12,16 @@ import CourseFinderResults from './CourseFinderResults';
 import CourseFinderSearch from './CourseFinderSearch';
 
 /**
+ * Whether a modal dialog is open, in the page or the shadow root the element is in. Headless UI's dialogs are modal only
+ * while open (not while closing), and a calendar cell's color picker, also a dialog, isn't modal.
+ */
+function isDialogOpen(element: Element): boolean {
+    const selector = '[role="dialog"][aria-modal="true"]';
+    const root = element.getRootNode() as Document | ShadowRoot;
+    return !!(root.querySelector(selector) ?? element.ownerDocument.querySelector(selector));
+}
+
+/**
  * Props for the CourseFinderPanel component
  */
 export interface CourseFinderPanelProps {
@@ -47,10 +57,11 @@ export default function CourseFinderPanel({
             onKeyDown={e => {
                 // Dropdowns and the field of study list handle (and prevent) Escape themselves while they're open.
                 // Dialogs opened from here (like a section's stats) are rendered elsewhere in the page, but React still
-                // passes their key presses up through here, so those are left to the dialog.
-                if (e.key === 'Escape' && !e.defaultPrevented && e.currentTarget.contains(e.target as Node)) {
-                    onClose();
-                }
+                // passes their key presses up through here, so those are left to the dialog. A dialog can also leave
+                // focus on the button that opened it (the stats popup does), so Escape is the dialog's while one is open.
+                if (e.key !== 'Escape' || e.defaultPrevented || !e.currentTarget.contains(e.target as Node)) return;
+                if (isDialogOpen(e.currentTarget)) return;
+                onClose();
             }}
         >
             {/* Above the Dropdowns (z-30) as they scroll under it, but below the field of study list (z-50) */}
