@@ -108,7 +108,7 @@ const CalendarSidebar = memo(function CalendarSidebar() {
                     <button
                         ref={findCourseButtonRef}
                         type='button'
-                        className='h-9 w-full flex items-center gap-spacing-4 border border-ut-offwhite/50 border-rounded bg-transparent px-spacing-3 text-ut-black/80 btn-transition hover:border-ut-black/30 focusable'
+                        className='h-9 w-full flex items-center gap-spacing-4 border border-ut-offwhite/50 border-rounded bg-transparent px-spacing-3 text-ut-black/80 btn-transition hover:border-ut-black/30 active:scale-98 focusable'
                         onClick={() => courseFinder.open(findCourseButtonRef.current)}
                     >
                         <MagnifyingGlassIcon className='h-5 w-5 text-ut-black/50' />

@@ -227,7 +227,7 @@ function SourceLinks({ query }: { query: CourseFinderQuery }): JSX.Element {
                     rel='noreferrer'
                     title={link.description}
                     aria-label={link.description}
-                    className='inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-ut-burntorange btn-transition hover:bg-ut-burntorange/10 focusable'
+                    className='inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-ut-burntorange btn-transition hover:bg-ut-burntorange/10 active:scale-95 focusable'
                 >
                     {link.label}
                     <OutwardArrowIcon className='h-3 w-3' />
@@ -261,7 +261,10 @@ function CourseCard({
     const openCount = group.sections.filter(c => c.status === Status.OPEN).length;
 
     return (
-        <li className='border border-ut-offwhite/50 rounded'>
+        // Pressed in a little as its header is clicked, like the app's buttons (which shrink to 96%, too much for a card).
+        // Toward the top, so the header stays under the pointer: shrinking toward the middle of a long, expanded card
+        // would slide the header out from under it, and the click would miss.
+        <li className='origin-top border border-ut-offwhite/50 rounded transition-transform duration-100 ease-out has-[>button:active]:scale-98'>
             <button
                 type='button'
                 className='w-full flex flex-row cursor-pointer items-start gap-spacing-2 border-none rounded bg-transparent px-spacing-4 py-spacing-3 text-left btn-transition hover:bg-ut-offwhite/15 focusable'
