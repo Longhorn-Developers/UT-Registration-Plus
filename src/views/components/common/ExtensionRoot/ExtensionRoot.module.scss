@@ -23,6 +23,15 @@
         --color-text-muted: #3c4145;
         --color-border: #eae8e1;
         --color-switch-bg: #9da3ae;
+        // The same colors as RGB channels, for UnoCSS tokens with opacity (text-content/50).
+        // rgb(r g b / a) works in every Chrome, unlike rgb(from ...) which needs Chrome 119+.
+        --color-bg-rgb: 255 255 255;
+        --color-surface-rgb: 255 255 255;
+        --color-surface-hover-rgb: 237 238 238;
+        --color-text-rgb: 4 5 6;
+        --color-text-muted-rgb: 60 65 69;
+        --color-border-rgb: 234 232 225;
+        --color-switch-bg-rgb: 157 163 174;
         --color-scrollbar: rgb(218, 220, 224);
         --color-scrollbar-hover: rgb(189, 193, 198);
         --color-scrollbar-active: rgb(128, 134, 139);
@@ -35,6 +44,13 @@
             --color-text-muted: #808080;
             --color-border: #21232c;
             --color-switch-bg: #3b3e42;
+            --color-bg-rgb: 7 7 8;
+            --color-surface-rgb: 16 16 17;
+            --color-surface-hover-rgb: 26 26 27;
+            --color-text-rgb: 205 205 205;
+            --color-text-muted-rgb: 128 128 128;
+            --color-border-rgb: 33 35 44;
+            --color-switch-bg-rgb: 59 62 66;
             --color-scrollbar: #2c2e33;
             --color-scrollbar-hover: #3d4047;
             --color-scrollbar-active: #5a5e66;
