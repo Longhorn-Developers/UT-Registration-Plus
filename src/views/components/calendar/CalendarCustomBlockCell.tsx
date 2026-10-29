@@ -36,7 +36,7 @@ export default function CalendarCustomBlockCell({
             aria-label={`${block.name}, ${time}`}
             title={`${block.name}, ${time}`}
             className={clsx(
-                'box-border h-full w-full flex overflow-hidden rounded border-0 border-l-3 border-solid border-[var(--block-color)] bg-[color-mix(in_srgb,var(--block-color)_5%,transparent)] hover:bg-[color-mix(in_srgb,var(--block-color)_15%,transparent)] text-theme-black text-left pl-[5px] pr-2 focusable',
+                'box-border h-full w-full flex overflow-hidden rounded border-0 border-l-3 border-solid border-[var(--block-color)] bg-[color-mix(in_srgb,var(--block-color)_5%,transparent)] hover:bg-[color-mix(in_srgb,var(--block-color)_15%,transparent)] text-content text-left pl-[5px] pr-2 focusable',
                 compact ? 'items-center gap-spacing-2' : 'flex-col items-start pt-1'
             )}
         >
