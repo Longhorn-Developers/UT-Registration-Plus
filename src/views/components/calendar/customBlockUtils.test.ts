@@ -12,7 +12,15 @@ describe('parseBlockTime', () => {
     it('rejects malformed times', () => {
         expect(parseBlockTime('')).toBeNull();
         expect(parseBlockTime('13:00pm')).toBeNull();
-        expect(parseBlockTime('8am')).toBeNull();
+        expect(parseBlockTime('8')).toBeNull();
+        expect(parseBlockTime('830')).toBeNull();
+    });
+
+    it('parses hours with am or pm and no minutes, in any case', () => {
+        expect(parseBlockTime('5am')).toBe(300);
+        expect(parseBlockTime('9AM')).toBe(540);
+        expect(parseBlockTime('9Pm')).toBe(1260);
+        expect(parseBlockTime('12pm')).toBe(720);
     });
 
     it('does not clamp times outside the grid to its bounds', () => {

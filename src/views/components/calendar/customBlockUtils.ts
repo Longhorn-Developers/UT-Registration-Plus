@@ -19,10 +19,11 @@ export const DEFAULT_BLOCK = {
 } satisfies CustomBlockDraft;
 
 export function parseBlockTime(value: string): number | null {
-    const match = value.trim().match(/^(\d{1,2}):([0-5]\d)\s*(am|pm)?$/i);
-    if (!match) return null;
+    // 5:00am, or 5am when the minutes are left off
+    const match = value.trim().match(/^(\d{1,2})(?::([0-5]\d))?\s*(am|pm)?$/i);
+    if (!match || (match[2] === undefined && match[3] === undefined)) return null;
     const hours = Number(match[1]);
-    const minutes = Number(match[2]);
+    const minutes = Number(match[2] ?? 0);
     const period = match[3]?.toLowerCase();
     if (period ? hours < 1 || hours > 12 : hours > 23) return null;
     const total = (period ? (hours % 12) + (period === 'pm' ? 12 : 0) : hours) * 60 + minutes;
