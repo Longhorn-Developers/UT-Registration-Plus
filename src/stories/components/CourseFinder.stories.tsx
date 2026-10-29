@@ -13,6 +13,7 @@ import { useDropdown } from '@views/hooks/useDropdown';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import {
     type CourseFinderFilters,
+    type CourseFinderQuery,
     DEFAULT_COURSE_FINDER_FILTERS,
     filterCourses,
     groupCourses,
@@ -80,7 +81,19 @@ interface MockCourseFinderProps {
     filtersOpen?: boolean;
     /** Whether to show the calendar next to the Course Finder, to preview sections on as they're hovered over */
     withCalendar?: boolean;
+    /**
+     * Whether searching works, starting with no search: a search finds the results in its field of study (and course
+     * number), after a moment of loading
+     */
+    searchable?: boolean;
 }
+
+/** Whether a mocked result is one the query would find on UT's course schedule */
+const isFoundBy = (course: Course, query: CourseFinderQuery) => {
+    if (query.searchBy === 'core') return true;
+    if (course.department !== query.department) return false;
+    return query.searchBy !== 'course' || course.number === query.courseNumber;
+};
 
 /**
  * The calendar grid of the active schedule, with a section previewed over it
@@ -118,6 +131,7 @@ function MockCourseFinder({
     expandFirst = false,
     filtersOpen = false,
     withCalendar = false,
+    searchable = false,
 }: MockCourseFinderProps) {
     const [filters, setFilters] = useState<CourseFinderFilters>(DEFAULT_COURSE_FINDER_FILTERS);
     const [preview, setPreview] = useState<CourseFinderPreview | null>(null);
@@ -132,11 +146,28 @@ function MockCourseFinder({
         defaultKey: '20269',
     });
     const form = useCourseFinderForm();
-    const filtered = useMemo(() => filterCourses(results, filters, []), [results, filters]);
+    const [search, setSearch] = useState<{ status: CourseFinderStatus; query: CourseFinderQuery | null }>({
+        status: 'idle',
+        query: null,
+    });
+    const shown: { status: CourseFinderStatus; query: CourseFinderQuery | null; results: Course[] } = searchable
+        ? {
+              ...search,
+              results: search.status === 'done' ? results.filter(c => search.query && isFoundBy(c, search.query)) : [],
+          }
+        : {
+              status,
+              query:
+                  status === 'idle'
+                      ? null
+                      : { searchBy: 'major', semesterCode: '20269', department: 'C S', levels: ['L', 'U'] },
+              results,
+          };
+    const filtered = useMemo(() => filterCourses(shown.results, filters, []), [shown.results, filters]);
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: only set up the mocked form once
     useEffect(() => {
-        if (status !== 'idle') form.setDepartment(FIELDS_OF_STUDY.find(f => f.code === 'C S') ?? null);
+        if (status !== 'idle' && !searchable) form.setDepartment(FIELDS_OF_STUDY.find(f => f.code === 'C S') ?? null);
         form.setAreFiltersOpen(filtersOpen);
     }, []);
 
@@ -144,19 +175,25 @@ function MockCourseFinder({
         semester,
         areSemestersLoading: false,
         fieldsOfStudy: FIELDS_OF_STUDY,
-        status,
-        query:
-            status === 'idle'
-                ? null
-                : { searchBy: 'major', semesterCode: '20269', department: 'C S', levels: ['L', 'U'] },
-        search: async () => {},
+        status: shown.status,
+        query: shown.query,
+        search: async query => {
+            if (!searchable) return;
+            setSearch({ status: 'loading', query });
+            await new Promise(resolve => setTimeout(resolve, 900));
+            setSearch(prev => (prev.query === query ? { status: 'done', query } : prev));
+            // Like a real search for one course, which shows its sections right away
+            if (query.searchBy === 'course') {
+                setExpandedGroups(new Set(results.filter(c => isFoundBy(c, query)).map(c => c.fullName)));
+            }
+        },
         loadMore: () => {},
-        reset: () => {},
+        reset: () => setSearch({ status: 'idle', query: null }),
         hasMore: false,
-        results,
+        results: shown.results,
         groups: groupCourses(filtered),
         matchCount: filtered.length,
-        availableFlags: [...new Set(results.flatMap(c => c.flags))].sort(),
+        availableFlags: [...new Set(shown.results.flatMap(c => c.flags))].sort(),
         filters,
         setFilters,
         expandedGroups,
@@ -265,29 +302,46 @@ export const PreviewOnCalendar: Story = {
         expandFirst: true,
         withCalendar: true,
     },
-    beforeEach: async () => {
-        // Wait out the store's own first write of its defaults, which would replace this schedule otherwise
-        await UserScheduleStore.preload();
-        const [schedules, activeIndex] = await Promise.all([
-            UserScheduleStore.get('schedules'),
-            UserScheduleStore.get('activeIndex'),
-        ]);
-        await UserScheduleStore.set({
-            schedules: [
-                new UserSchedule({
-                    id: 'course-finder-preview',
-                    name: 'Fall 2026',
-                    courses: [scheduledCourse],
-                    hours: scheduledCourse.creditHours,
-                    updatedAt: Date.now(),
-                }),
-            ],
-            activeIndex: 0,
-        });
-
-        // Puts the schedules back afterwards, so the other stories don't show this one's conflict
-        return async () => {
-            await UserScheduleStore.set({ schedules, activeIndex });
-        };
-    },
+    beforeEach: withScheduledCourse,
 };
+
+/**
+ * Searching works here: type a course like "cs 314" and pick it to see its sections, then hover over them to preview
+ * them on the calendar (with M 408D in the schedule, as in PreviewOnCalendar)
+ */
+export const Search: Story = {
+    args: {
+        status: 'idle',
+        results: [...mockResults, eveningSection, scheduledCourse],
+        withCalendar: true,
+        searchable: true,
+    },
+    beforeEach: withScheduledCourse,
+};
+
+/** Makes the active schedule one with M 408D in it, for the stories that preview sections on the calendar */
+async function withScheduledCourse() {
+    // Wait out the store's own first write of its defaults, which would replace this schedule otherwise
+    await UserScheduleStore.preload();
+    const [schedules, activeIndex] = await Promise.all([
+        UserScheduleStore.get('schedules'),
+        UserScheduleStore.get('activeIndex'),
+    ]);
+    await UserScheduleStore.set({
+        schedules: [
+            new UserSchedule({
+                id: 'course-finder-preview',
+                name: 'Fall 2026',
+                courses: [scheduledCourse],
+                hours: scheduledCourse.creditHours,
+                updatedAt: Date.now(),
+            }),
+        ],
+        activeIndex: 0,
+    });
+
+    // Puts the schedules back afterwards, so the other stories don't show this one's conflict
+    return async () => {
+        await UserScheduleStore.set({ schedules, activeIndex });
+    };
+}
