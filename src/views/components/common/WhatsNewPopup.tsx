@@ -19,7 +19,8 @@ import SelectionPlusIcon from '~icons/ph/selection-plus';
 const WHATSNEW_POPUP_VERSION = 4;
 const ACTIVE_WHATSNEW_POPUP_VERSION_KEY = 'activeWhatsNewPopupVersion';
 
-const WHATSNEW_VIDEO_URL = 'https://cdn.longhorns.dev/quickaddhero.mp4';
+// Bundled with the extension (public/videos) so it plays offline and needs no CDN upload
+const WHATSNEW_VIDEO_URL = chrome.runtime.getURL('videos/whatsnew-v2.5.mp4');
 
 type Feature = {
     id: string;
