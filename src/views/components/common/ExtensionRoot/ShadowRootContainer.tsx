@@ -81,7 +81,6 @@ export default function ShadowRootContainer({
             assignRef(ref, node);
 
             if (!node) {
-                setShadowRoot(null);
                 return;
             }
 

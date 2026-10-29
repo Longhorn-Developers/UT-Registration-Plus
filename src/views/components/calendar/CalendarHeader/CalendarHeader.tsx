@@ -24,6 +24,8 @@ import FileCodeIcon from '~icons/ph/file-code';
 import FilePngIcon from '~icons/ph/file-png';
 import FileTextIcon from '~icons/ph/file-text';
 import SidebarIcon from '~icons/ph/sidebar';
+
+import AddCustomBlockPopover from '../AddCustomBlockPopover';
 import { handleExportJson, saveAsCal, saveAsText, saveCalAsPng } from '../utils';
 
 export interface CalendarHeaderProps {
@@ -122,6 +124,12 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
             <div className={clsx(styles.cqInline, 'flex grow shrink-0 gap-5 screenshot:hidden')}>
                 <div className={clsx(styles.primaryActions, 'flex min-w-max gap-5')}>
                     <QuickAddModal />
+                    <AddCustomBlockPopover
+                        onCreate={async draft => {
+                            const result = await background.createCustomBlock({ draft, scheduleId: activeSchedule.id });
+                            if ('error' in result) throw new Error(result.error);
+                        }}
+                    />
                     <Menu>
                         <MenuButton
                             as={Button}
@@ -198,9 +206,6 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             </MenuItem> */}
                         </MenuItems>
                     </Menu>
-                    {/* <Button className='invisible' color='ut-black' size='small' variant='minimal' icon={SelectionPlus}>
-                        Block
-                    </Button> */}
                 </div>
                 {hasRightHandSide && <Divider className='self-center' size='1.75rem' orientation='vertical' />}
                 <div className={clsx(styles.secondaryActions, 'flex items-center gap-3 ml-auto')}>

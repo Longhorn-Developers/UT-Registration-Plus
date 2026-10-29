@@ -132,8 +132,8 @@ export default function Settings(): React.JSX.Element {
             description: (
                 <>
                     <p>
-                        Are you sure you want to erase all schedules and courses you have? This action is permanent and
-                        cannot be undone.
+                        Are you sure you want to erase all schedules, courses, and custom blocks you have? This action
+                        is permanent and cannot be undone.
                     </p>
                     <br />
                     <p className='text-sm text-content-muted'>

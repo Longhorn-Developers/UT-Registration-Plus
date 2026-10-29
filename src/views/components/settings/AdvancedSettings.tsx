@@ -267,7 +267,9 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Reset All Data
                         </Text>
-                        <p className='text-sm text-content-muted'>Erases all schedules and courses you have.</p>
+                        <p className='text-sm text-content-muted'>
+                            Erases all schedules, courses, and custom blocks you have.
+                        </p>
                     </div>
                     <Button variant='outline' color='theme-red' icon={TrashIcon} onClick={handleEraseAll}>
                         Erase All
