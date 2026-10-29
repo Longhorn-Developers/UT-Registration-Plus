@@ -1,3 +1,17 @@
+## [2.5.0](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.4.2...v2.5.0) (2026-10-29)
+
+### Features
+
+* **calendar:** custom time blocks ([#965](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/965)) ([8e53e8b](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/8e53e8b))
+* **dark:** dark mode for the calendar, settings, and course schedule pages ([#935](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/935))
+* summer 2026 grades ([#968](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/968)) ([1e3f278](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/1e3f278))
+* **popup:** update What's New for v2.5
+
+### Bug Fixes
+
+* **injected:** add course conflict tooltip on injected view ([#982](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/982)) ([9cffd1f](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/9cffd1f))
+* fix typos in insideJokes ([#977](https://github.com/Longhorn-Developers/UT-Registration-Plus/issues/977)) ([861357b](https://github.com/Longhorn-Developers/UT-Registration-Plus/commit/861357b))
+
 ## [2.4.2](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.4.1...v2.4.2) (2026-10-11)
 
 ### Features

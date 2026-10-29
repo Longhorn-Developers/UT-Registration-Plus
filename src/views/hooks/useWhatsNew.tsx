@@ -18,7 +18,7 @@ type WhatsNewPopupOptions = {
 export default function useWhatsNewPopUp(): (options?: WhatsNewPopupOptions) => void {
     const showDialog = useDialog();
     const showChangeLog = useChangelog();
-    const { version } = chrome.runtime.getManifest();
+    const { version, version_name } = chrome.runtime.getManifest();
 
     const showPopUp = (options?: WhatsNewPopupOptions) => {
         showDialog(close => ({
@@ -35,7 +35,7 @@ export default function useWhatsNewPopUp(): (options?: WhatsNewPopupOptions) => 
             buttons: (
                 <div className='flex flex-row items-end gap-spacing-4'>
                     <Button onClick={showChangeLog} variant='minimal' color='theme-black'>
-                        Read Changelog for v{version}
+                        Read Changelog for v{version_name ?? version}
                     </Button>
                     <Button onClick={close} color='ut-burntorange'>
                         Get started
