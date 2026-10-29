@@ -10,6 +10,7 @@ import { LargeLogo } from '@views/components/common/LogoIcon';
 import QuickAddModal from '@views/components/common/QuickAddModal';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
 import Text from '@views/components/common/Text/Text';
+import useGoogleCalendarImport from '@views/hooks/useGoogleCalendarImport';
 import useRelativeTime from '@views/hooks/useRelativeTime';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
 import refreshCourses from '@views/lib/refreshCourses';
@@ -23,6 +24,7 @@ import ExportIcon from '~icons/ph/export';
 import FileCodeIcon from '~icons/ph/file-code';
 import FilePngIcon from '~icons/ph/file-png';
 import FileTextIcon from '~icons/ph/file-text';
+import GoogleLogoIcon from '~icons/ph/google-logo';
 import SidebarIcon from '~icons/ph/sidebar';
 
 import AddCustomBlockPopover from '../AddCustomBlockPopover';
@@ -40,6 +42,7 @@ export interface CalendarHeaderProps {
 export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: CalendarHeaderProps): JSX.Element {
     const activeSchedule = useActiveSchedule();
     const lastCheckedText = useRelativeTime(activeSchedule.lastCheckedAt);
+    const addToGoogleCalendar = useGoogleCalendarImport();
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     // track per-schedule cooldowns so switching schedules allows immediate refresh
@@ -176,6 +179,17 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                                 icon={CalendarDotsIcon}
                             >
                                 Save as .cal
+                            </MenuItem>
+                            <MenuItem
+                                as={Button}
+                                className='w-full flex justify-start !text-content'
+                                onClick={() => void addToGoogleCalendar()}
+                                color='ut-black'
+                                size='small'
+                                variant='minimal'
+                                icon={GoogleLogoIcon}
+                            >
+                                Add to Google Calendar
                             </MenuItem>
                             <MenuItem
                                 as={Button}
