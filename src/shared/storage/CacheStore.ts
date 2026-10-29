@@ -1,12 +1,14 @@
 import { createLocalStore } from '@chrome-extension-toolkit';
 import type { CachedData } from '@shared/types/CachedData';
 import type { Semester } from '@shared/types/Course';
+import type { FieldOfStudy } from '@shared/types/FieldOfStudy';
 import type { GitHubStats } from '@shared/types/GitHubStats';
 
 interface ICacheStore {
     githubStats: CachedData<Record<string, GitHubStats>> | null;
     githubNames: CachedData<Record<string, string>> | null;
     availableSemesters: CachedData<Semester[]> | null;
+    fieldsOfStudy: CachedData<FieldOfStudy[]> | null;
 }
 
 /**
@@ -18,6 +20,7 @@ export const CacheStore = createLocalStore<ICacheStore>(
         githubStats: null,
         githubNames: null,
         availableSemesters: null,
+        fieldsOfStudy: null,
     },
     {
         usePrefix: false,

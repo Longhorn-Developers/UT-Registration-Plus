@@ -1,14 +1,16 @@
-import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react';
+import { CloseButton, Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react';
 import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import Text from '@views/components/common/Text/Text';
+import { useCourseFinderControls } from '@views/contexts/CourseFinderContext';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
 import type { JSX } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
+import MagnifyingGlassIcon from '~icons/ph/magnifying-glass';
 import PlusIcon from '~icons/ph/plus';
 import PlusCircleIcon from '~icons/ph/plus-circle';
 import { Button } from './Button';
@@ -27,12 +29,15 @@ const STATUS_MESSAGES: Partial<Record<CourseResult['status'], string>> = {
  * QuickAddModal component
  *
  * Renders a popover that allows users to quickly add courses to their
- * current schedule by entering a unique number and selecting a semester.
+ * current schedule by entering a unique number and selecting a semester,
+ * or open the Course Finder in the calendar sidebar to look courses up by field of study or core curriculum.
  */
 export default function QuickAddModal(): JSX.Element {
     const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
     const { semester, uniqueNumber, courseResult } = useQuickAdd(isLoggedIn);
+    const courseFinder = useCourseFinderControls();
+    const quickAddButtonRef = useRef<HTMLButtonElement>(null);
     const statusMessage = STATUS_MESSAGES[courseResult.status];
 
     const handleQuickAdd = async () => {
@@ -72,6 +77,7 @@ export default function QuickAddModal(): JSX.Element {
     return (
         <Popover>
             <PopoverButton
+                ref={quickAddButtonRef}
                 as={Button}
                 color='ut-black'
                 size='small'
@@ -188,6 +194,24 @@ export default function QuickAddModal(): JSX.Element {
                             Add Course
                         </Button>
                     </PopoverGroup>
+                    {/* The Course Finder lives in the calendar sidebar, so it's only offered on the calendar page */}
+                    {courseFinder && (
+                        <div className='flex flex-row items-center justify-between gap-spacing-3 border-t border-ut-offwhite/50 pt-spacing-5'>
+                            <Text variant='small' className='text-ut-black'>
+                                Don't know the unique number?
+                            </Text>
+                            <CloseButton
+                                as={Button}
+                                color='ut-burntorange'
+                                size='small'
+                                variant='minimal'
+                                icon={MagnifyingGlassIcon}
+                                onClick={() => courseFinder.open(quickAddButtonRef.current)}
+                            >
+                                Find a course
+                            </CloseButton>
+                        </div>
+                    )}
                 </form>
             </PopoverPanel>
         </Popover>

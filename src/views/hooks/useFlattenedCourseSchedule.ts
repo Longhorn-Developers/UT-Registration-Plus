@@ -2,6 +2,7 @@ import type { Course, StatusType } from '@shared/types/Course';
 import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
+import { useEffect, useState } from 'react';
 
 import { useActiveSchedule } from './useSchedules';
 
@@ -40,10 +41,20 @@ export interface CalendarGridCourse {
 }
 
 /**
+ * A meeting of a course that's being previewed on the calendar, drawn over the schedule rather than added to it
+ */
+export interface CalendarPreviewCell extends CalendarGridCourse {
+    /** The courses in the schedule that meet at the same time on this day */
+    conflicts: Course[];
+}
+
+/**
  * Represents a flattened course schedule.
  */
 export interface FlattenedCourseSchedule {
     courseCells: CalendarGridCourse[];
+    /** The meetings of the course being previewed, on the days it meets in person */
+    previewCells: CalendarPreviewCell[];
     activeSchedule: UserSchedule;
     startMinutes: number;
     endMinutes: number;
@@ -72,11 +83,24 @@ export const convertMinutesToIndex = (minutes: number, gridStartMinutes = GRID_D
 
 /**
  * Get the active schedule, and convert it to be render-able into a calendar.
+ * @param previewCourse - A course to preview on the calendar without adding it, like one hovered over in the Course
+ * Finder. It's left out if it's already in the schedule. The calendar's hours stretch to fit it too.
+ * @param holdRange - Whether the calendar's hours only stretch, rather than shrinking back once the preview is gone,
+ * so previewing an early or late course moves the calendar's rows once instead of on every hover
  * @returns CalendarGridCourse
  */
-export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
+export function useFlattenedCourseSchedule(
+    previewCourse: Course | null = null,
+    holdRange = false
+): FlattenedCourseSchedule {
     const activeSchedule = useActiveSchedule();
-    const allMeetings = activeSchedule.courses.flatMap(c => c.schedule.meetings);
+    const [heldRange, setHeldRange] = useState<{
+        scheduleId: string;
+        startMinutes: number;
+        endMinutes: number;
+    } | null>(null);
+    const preview = previewCourse && !activeSchedule.containsCourse(previewCourse) ? previewCourse : null;
+    const allMeetings = [...activeSchedule.courses, ...(preview ? [preview] : [])].flatMap(c => c.schedule.meetings);
 
     // go through every meeting we have and finds minimum start time with starting best so far being GRID_DEFAULT_START_MINUTES
     // this variable will go on a journey through time and space to finally be delivered to the viewable calendar grid as the start hour of the entire grid
@@ -90,7 +114,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
         return Math.min(earliest, t);
     }, GRID_DEFAULT_START);
     // round down to closest hour (in minute units)
-    const gridStartMinutes = Math.floor(rawGridStartMinutes / 60) * 60;
+    const fittedStartMinutes = Math.floor(rawGridStartMinutes / 60) * 60;
 
     const rawGridEndMinutes = allMeetings.reduce((latest, current) => {
         if (current.days.includes(DAY_MAP.S) || current.endTime >= 1440) {
@@ -100,7 +124,22 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
         return Math.max(latest, t);
     }, GRID_DEFAULT_END);
     // round up to closest hour (in minute units)
-    const gridEndMinutes = Math.ceil(rawGridEndMinutes / 60) * 60;
+    const fittedEndMinutes = Math.ceil(rawGridEndMinutes / 60) * 60;
+
+    // Only for the schedule it was held for, so switching to another schedule starts from its own hours
+    const held = holdRange && heldRange?.scheduleId === activeSchedule.id ? heldRange : null;
+    const gridStartMinutes = Math.min(fittedStartMinutes, held?.startMinutes ?? fittedStartMinutes);
+    const gridEndMinutes = Math.max(fittedEndMinutes, held?.endMinutes ?? fittedEndMinutes);
+
+    useEffect(() => {
+        if (!holdRange) {
+            setHeldRange(null);
+            return;
+        }
+        if (!held || gridStartMinutes < held.startMinutes || gridEndMinutes > held.endMinutes) {
+            setHeldRange({ scheduleId: activeSchedule.id, startMinutes: gridStartMinutes, endMinutes: gridEndMinutes });
+        }
+    }, [holdRange, held, activeSchedule.id, gridStartMinutes, gridEndMinutes]);
 
     const processedCourses = activeSchedule.courses
         .flatMap(course => {
@@ -126,10 +165,42 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
 
     return {
         courseCells: processedCourses,
+        previewCells: preview ? processPreviewCourse(preview, activeSchedule.courses, gridStartMinutes) : [],
         activeSchedule,
         startMinutes: gridStartMinutes,
         endMinutes: gridEndMinutes,
     };
+}
+
+/**
+ * Function to process a previewed course into its in-person meetings, each with the scheduled courses it conflicts
+ * with on its day
+ */
+export function processPreviewCourse(
+    course: Course,
+    scheduledCourses: Course[],
+    gridStartMinutes: number
+): CalendarPreviewCell[] {
+    const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
+
+    return meetings
+        .filter(meeting => !meeting.days.includes(DAY_MAP.S))
+        .flatMap(meeting =>
+            // One cell per day, in the order of the meeting's days
+            processInPersonMeetings(meeting, courseDeptAndInstr, status, course, gridStartMinutes).map((cell, i) => {
+                const day = meeting.days[i];
+                const conflicts = scheduledCourses.filter(c =>
+                    c.schedule.meetings.some(
+                        m =>
+                            day !== undefined &&
+                            m.days.includes(day) &&
+                            meeting.startTime < m.endTime &&
+                            meeting.endTime > m.startTime
+                    )
+                );
+                return { ...cell, conflicts };
+            })
+        );
 }
 
 /**
