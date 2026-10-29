@@ -1,5 +1,6 @@
 import { CustomBlockStore } from '@shared/storage/CustomBlockStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { selectCustomBlocks } from '@shared/util/customBlocks';
 import { generateRandomId } from '@shared/util/random';
 import { copyCustomBlocks } from './customBlocks';
 import handleDuplicate from './handleDuplicate';
@@ -36,7 +37,7 @@ export default async function duplicateSchedule(scheduleId: string): Promise<str
     await UserScheduleStore.set('schedules', schedules);
     const blocks = await CustomBlockStore.get('blocks');
     await copyCustomBlocks(
-        blocks.filter(block => block.scheduleId === scheduleId),
+        selectCustomBlocks(blocks, scheduleId).filter(block => block.scheduleId === scheduleId),
         copyId
     );
 

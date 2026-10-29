@@ -15,6 +15,4 @@ export interface CustomBlockDraft {
 export interface CustomBlock extends Omit<CustomBlockDraft, 'syncAcrossAllSchedules'> {
     id: string;
     scheduleId: string | null;
-    /** The synced block this copy was split from when it was unsynced, until the copy is edited */
-    unsyncedFrom?: string;
 }

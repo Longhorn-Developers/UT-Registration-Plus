@@ -29,12 +29,43 @@ export function customBlockFromDraft(draft: CustomBlockDraft, scheduleId: string
 }
 
 export function customBlockToDraft(block: CustomBlock): CustomBlockDraft {
-    const { id: _id, scheduleId, ...values } = block;
-    return { ...values, syncAcrossAllSchedules: scheduleId === null };
+    const { name, days, startTime, endTime, allDay, conflictHighlight, color, scheduleId } = block;
+    return {
+        name,
+        days,
+        startTime,
+        endTime,
+        allDay,
+        conflictHighlight,
+        ...(color === undefined ? {} : { color }),
+        syncAcrossAllSchedules: scheduleId === null,
+    };
 }
 
-export function selectCustomBlocks(blocks: CustomBlock[], scheduleId: string): CustomBlock[] {
-    return blocks.filter(block => block.scheduleId === null || block.scheduleId === scheduleId);
+/**
+ * Checks a stored block, so a corrupt or hand-edited entry is skipped instead of breaking the calendar
+ *
+ * @param block - The stored value
+ * @returns True if it is a block the form could have saved
+ */
+export function isValidCustomBlock(block: unknown): block is CustomBlock {
+    if (typeof block !== 'object' || block === null) return false;
+    const { id, scheduleId } = block as Partial<CustomBlock>;
+    if (typeof id !== 'string' || (scheduleId !== null && typeof scheduleId !== 'string')) return false;
+    try {
+        customBlockFromDraft(customBlockToDraft(block as CustomBlock), scheduleId ?? '', id);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export function selectCustomBlocks(blocks: unknown, scheduleId: string): CustomBlock[] {
+    if (!Array.isArray(blocks)) return [];
+    return blocks.filter(
+        (block): block is CustomBlock =>
+            isValidCustomBlock(block) && (block.scheduleId === null || block.scheduleId === scheduleId)
+    );
 }
 
 export function getCustomBlockConflicts(

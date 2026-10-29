@@ -1,7 +1,7 @@
 import { CustomBlockStore } from '@shared/storage/CustomBlockStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { CustomBlock, CustomBlockDraft } from '@shared/types/CustomBlock';
-import { customBlockFromDraft, customBlockToDraft } from '@shared/util/customBlocks';
+import { customBlockFromDraft, customBlockToDraft, isValidCustomBlock } from '@shared/util/customBlocks';
 import { generateRandomId } from '@shared/util/random';
 
 let pending: Promise<void> = Promise.resolve();
@@ -9,9 +9,12 @@ let pending: Promise<void> = Promise.resolve();
 function writeBlocks<T>(change: (blocks: CustomBlock[]) => Promise<{ blocks: CustomBlock[]; result: T }>): Promise<T> {
     const operation = pending.then(async () => {
         const previous = await CustomBlockStore.get('blocks');
-        const { blocks, result } = await change(previous);
+        const stored: unknown[] = Array.isArray(previous) ? previous : [];
+        // Bad entries are left as they are, but kept out of every change so they can't break it
+        const invalid = stored.filter(block => !isValidCustomBlock(block));
+        const { blocks, result } = await change(stored.filter(isValidCustomBlock));
         try {
-            await CustomBlockStore.set('blocks', blocks);
+            await CustomBlockStore.set('blocks', [...blocks, ...(invalid as CustomBlock[])]);
         } catch (error) {
             await CustomBlockStore.set('blocks', previous).catch(() => undefined);
             throw error;
@@ -95,23 +98,16 @@ export function updateCustomBlock(
         const previous = blocks.find(block => block.id === id);
         if (!previous) throw new Error('Custom block does not exist');
         const updated = customBlockFromDraft(draft, scheduleId, id);
-        // An edited copy is the user's own block now, so resyncing must not replace it
-        if (!isSameBlock(previous, updated) || previous.conflictHighlight !== updated.conflictHighlight) {
-            delete updated.unsyncedFrom;
-        }
         const next = blocks.map(block => (block.id === id ? updated : block));
         if (previous.scheduleId === null && updated.scheduleId !== null) {
             const values = valuesAtUnsync(previous, draftAtUnsync);
             const copies = schedules
                 .filter(schedule => schedule.id !== scheduleId)
-                .map(schedule => ({ ...values, id: generateRandomId(), scheduleId: schedule.id, unsyncedFrom: id }));
+                .map(schedule => ({ ...values, id: generateRandomId(), scheduleId: schedule.id }));
             return { blocks: [...next, ...copies], result: updated };
         }
-        if (previous.scheduleId !== null && updated.scheduleId === null) {
-            // Resyncing replaces the copies nobody edited; edited copies stay beside it for the user to keep or delete
-            const resynced = next.filter(block => block.unsyncedFrom !== id);
-            return { blocks: withoutDuplicates(resynced, updated), result: updated };
-        }
+        // Resyncing never deletes the copies made at unsync: copies that still match merge into the synced block,
+        // and changed ones stay beside it for the user to keep or delete
         return { blocks: withoutDuplicates(next, updated), result: updated };
     });
 }
