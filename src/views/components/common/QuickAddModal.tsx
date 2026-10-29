@@ -90,7 +90,7 @@ export default function QuickAddModal(): JSX.Element {
                 data-theme={theme}
                 className={clsx([
                     'mt-spacing-3',
-                    'origin-top rounded bg-surface-raised text-content shadow-lg border border-divider focus:outline-none',
+                    'origin-top rounded bg-surface-raised text-content shadow-lg border-0 ring-1 ring-inset ring-divider focus:outline-none',
                     !reducedMotion && [
                         'transition',
                         'data-[closed]:(opacity-0 scale-95)',
