@@ -1,4 +1,5 @@
 import type { Course } from '@shared/types/Course';
+import type { CustomBlock } from '@shared/types/CustomBlock';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import type { JSX } from 'react';
@@ -9,6 +10,7 @@ import type { JSX } from 'react';
 export interface ConflictsWithWarningProps {
     className?: string;
     conflicts: Course[];
+    blockConflicts?: CustomBlock[];
 }
 
 /**
@@ -17,9 +19,14 @@ export interface ConflictsWithWarningProps {
  *
  * @param className - The class name for the component
  * @param conflicts - The courses that conflict with the current course
+ * @param blockConflicts - The custom blocks that conflict with the current course
  * @returns The ConflictsWithWarning component
  */
-export default function ConflictsWithWarning({ className, conflicts }: ConflictsWithWarningProps): JSX.Element {
+export default function ConflictsWithWarning({
+    className,
+    conflicts,
+    blockConflicts = [],
+}: ConflictsWithWarningProps): JSX.Element {
     return (
         <Text
             variant='mini'
@@ -37,6 +44,11 @@ export default function ConflictsWithWarning({ className, conflicts }: Conflicts
                     </Text>{' '}
                     ({course.uniqueId})
                 </div>
+            ))}
+            {blockConflicts.map(block => (
+                <Text key={block.id} as='strong' variant='mini' className='font-bold!'>
+                    {block.name}
+                </Text>
             ))}
         </Text>
     );

@@ -669,6 +669,20 @@ describe('calculateCourseCellColumns', () => {
         expect(cells).toEqual(expectedCells);
     });
 
+    it('should widen cells into free columns to their right', () => {
+        // Three columns are only needed at the start, so later cells take the free space
+        const [cells, expectedCells] = makeCellsTest([
+            [10, 20, 3, 1, 2], // spans the whole day
+            [10, 14, 3, 2, 3],
+            [10, 12, 3, 3, 4],
+            [16, 18, 3, 2, 4], // only concurrent with the first cell, so it fills the rest
+        ]);
+
+        calculateCourseCellColumns(cells);
+
+        expect(cells).toEqual(expectedCells);
+    });
+
     it("shouldn't crash on courses without times", () => {
         const cells = [makeCell(-1, -1), makeCell(-1, -1)];
         cells[1]!.async = true; // see if we can ignore async and non-async courses without times
