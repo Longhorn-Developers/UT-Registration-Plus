@@ -1,6 +1,7 @@
 import type { InstructionMode } from '@shared/types/Course';
 import { Button } from '@views/components/common/Button';
 import { flagMap } from '@views/components/common/Chip';
+import Collapse from '@views/components/common/CourseFinder/Collapse';
 import Dropdown, { type DropdownOption } from '@views/components/common/Dropdown';
 import Input from '@views/components/common/Input';
 import SwitchButton from '@views/components/common/SwitchButton';
@@ -33,6 +34,10 @@ const INSTRUCTION_MODE_OPTIONS = [
     { id: 'Online', label: 'Online' },
     { id: 'Hybrid', label: 'Hybrid' },
 ] as const satisfies DropdownOption[];
+
+// The hours and flags turn on and off. Outline buttons tint 8% on hover, which is hard to see on a chip this small.
+// A selected chip is filled, so it keeps its fill (and its white text readable) on hover.
+const toggleChipClassName = (selected: boolean) => clsx('min-w-8', !selected && 'hover:enabled:bg-opacity-15!');
 
 /**
  * Props for the CourseFinderFilters component
@@ -67,7 +72,7 @@ export default function CourseFinderFilters({ finder, isOpen, onOpenChange }: Co
     ].filter(Boolean).length;
 
     return (
-        <div className='flex flex-col gap-spacing-3'>
+        <div className='flex flex-col'>
             {/* Minimal buttons, like the calendar header's, pulled out by their padding so their icon and text line
                 up with the fields above */}
             <div className='flex flex-row items-center justify-between gap-spacing-3'>
@@ -101,101 +106,100 @@ export default function CourseFinderFilters({ finder, isOpen, onOpenChange }: Co
                     </Button>
                 )}
             </div>
-            {isOpen && (
-                <div className='flex flex-col gap-spacing-3'>
-                    <Input
-                        value={filters.keyword}
-                        onChange={e => update({ keyword: e.target.value })}
-                        placeholder='Title, instructor, or unique #'
-                        aria-label='Filter by title, instructor, or unique number'
-                    />
-                    {/* Each Dropdown is its own z-30 layer, so the open one goes above the Dropdowns after it */}
-                    <Dropdown
-                        className='data-[open]:z-35'
-                        selectedOption={CORE_OPTIONS.find(o => o.id === (filters.coreCode ?? ANY_ID)) ?? null}
-                        options={CORE_OPTIONS}
-                        onOptionChange={option =>
-                            update({ coreCode: option.id === ANY_ID ? null : (option.id as CoreCode) })
-                        }
-                    />
-                    <Dropdown
-                        className='data-[open]:z-35'
-                        selectedOption={
-                            INSTRUCTION_MODE_OPTIONS.find(o => o.id === (filters.instructionMode ?? ANY_ID)) ?? null
-                        }
-                        options={INSTRUCTION_MODE_OPTIONS}
-                        onOptionChange={option =>
-                            update({
-                                instructionMode: option.id === ANY_ID ? null : (option.id as InstructionMode),
-                            })
-                        }
-                    />
+            {/* The space above the filters is inside what opens and closes, so it doesn't jump in or out at the end */}
+            <Collapse show={isOpen} className='flex flex-col gap-spacing-3 pt-spacing-3'>
+                <Input
+                    value={filters.keyword}
+                    onChange={e => update({ keyword: e.target.value })}
+                    placeholder='Title, instructor, or unique #'
+                    aria-label='Filter by title, instructor, or unique number'
+                />
+                {/* Each Dropdown is its own z-30 layer, so the open one goes above the Dropdowns after it */}
+                <Dropdown
+                    className='data-[open]:z-35'
+                    selectedOption={CORE_OPTIONS.find(o => o.id === (filters.coreCode ?? ANY_ID)) ?? null}
+                    options={CORE_OPTIONS}
+                    onOptionChange={option =>
+                        update({ coreCode: option.id === ANY_ID ? null : (option.id as CoreCode) })
+                    }
+                />
+                <Dropdown
+                    className='data-[open]:z-35'
+                    selectedOption={
+                        INSTRUCTION_MODE_OPTIONS.find(o => o.id === (filters.instructionMode ?? ANY_ID)) ?? null
+                    }
+                    options={INSTRUCTION_MODE_OPTIONS}
+                    onOptionChange={option =>
+                        update({
+                            instructionMode: option.id === ANY_ID ? null : (option.id as InstructionMode),
+                        })
+                    }
+                />
+                <fieldset className='m-0 flex flex-wrap items-center gap-spacing-2 border-none p-0'>
+                    <Text as='legend' variant='small' className='float-left mr-spacing-2 text-ut-black'>
+                        Hours
+                    </Text>
+                    {CREDIT_HOURS_OPTIONS.map(hours => {
+                        const selected = filters.creditHours.includes(hours);
+                        return (
+                            <Button
+                                key={hours}
+                                aria-pressed={selected}
+                                color='ut-burntorange'
+                                size='mini'
+                                variant={selected ? 'filled' : 'outline'}
+                                className={toggleChipClassName(selected)}
+                                onClick={() => update({ creditHours: toggle(filters.creditHours, hours) })}
+                            >
+                                {hours === MAX_CREDIT_HOURS_OPTION ? `${hours}+` : hours}
+                            </Button>
+                        );
+                    })}
+                </fieldset>
+                {availableFlags.length > 0 && (
                     <fieldset className='m-0 flex flex-wrap items-center gap-spacing-2 border-none p-0'>
                         <Text as='legend' variant='small' className='float-left mr-spacing-2 text-ut-black'>
-                            Hours
+                            Flags
                         </Text>
-                        {CREDIT_HOURS_OPTIONS.map(hours => {
-                            const selected = filters.creditHours.includes(hours);
+                        {availableFlags.map(flag => {
+                            const selected = filters.flags.includes(flag);
                             return (
                                 <Button
-                                    key={hours}
+                                    key={flag}
                                     aria-pressed={selected}
+                                    title={`${flag} flag`}
                                     color='ut-burntorange'
                                     size='mini'
                                     variant={selected ? 'filled' : 'outline'}
-                                    className='min-w-8'
-                                    onClick={() => update({ creditHours: toggle(filters.creditHours, hours) })}
+                                    className={toggleChipClassName(selected)}
+                                    onClick={() => update({ flags: toggle(filters.flags, flag) })}
                                 >
-                                    {hours === MAX_CREDIT_HOURS_OPTION ? `${hours}+` : hours}
+                                    {flagMap[flag as keyof typeof flagMap] ?? flag}
                                 </Button>
                             );
                         })}
                     </fieldset>
-                    {availableFlags.length > 0 && (
-                        <fieldset className='m-0 flex flex-wrap items-center gap-spacing-2 border-none p-0'>
-                            <Text as='legend' variant='small' className='float-left mr-spacing-2 text-ut-black'>
-                                Flags
-                            </Text>
-                            {availableFlags.map(flag => {
-                                const selected = filters.flags.includes(flag);
-                                return (
-                                    <Button
-                                        key={flag}
-                                        aria-pressed={selected}
-                                        title={`${flag} flag`}
-                                        color='ut-burntorange'
-                                        size='mini'
-                                        variant={selected ? 'filled' : 'outline'}
-                                        className='min-w-8'
-                                        onClick={() => update({ flags: toggle(filters.flags, flag) })}
-                                    >
-                                        {flagMap[flag as keyof typeof flagMap] ?? flag}
-                                    </Button>
-                                );
-                            })}
-                        </fieldset>
-                    )}
-                    {/* Switches, like the settings' on/off options. Each is wrapped in a plain label, which names it and
+                )}
+                {/* Switches, like the settings' on/off options. Each is wrapped in a plain label, which names it and
                         flips it when its text is clicked: Headless UI's Label can't find its switch in a shadow root. */}
-                    {/** biome-ignore lint/a11y/noLabelWithoutControl: the switch inside is a button, which a label can hold */}
-                    <label className='flex cursor-pointer items-center justify-between gap-spacing-3'>
-                        <Text variant='small' className='text-ut-black'>
-                            Open sections only
-                        </Text>
-                        <SwitchButton isChecked={filters.openOnly} onChange={openOnly => update({ openOnly })} />
-                    </label>
-                    {/** biome-ignore lint/a11y/noLabelWithoutControl: the switch inside is a button, which a label can hold */}
-                    <label className='flex cursor-pointer items-center justify-between gap-spacing-3'>
-                        <Text variant='small' className='text-ut-black'>
-                            Hide time conflicts
-                        </Text>
-                        <SwitchButton
-                            isChecked={filters.hideConflicts}
-                            onChange={hideConflicts => update({ hideConflicts })}
-                        />
-                    </label>
-                </div>
-            )}
+                {/** biome-ignore lint/a11y/noLabelWithoutControl: the switch inside is a button, which a label can hold */}
+                <label className='flex cursor-pointer items-center justify-between gap-spacing-3'>
+                    <Text variant='small' className='text-ut-black'>
+                        Open sections only
+                    </Text>
+                    <SwitchButton isChecked={filters.openOnly} onChange={openOnly => update({ openOnly })} />
+                </label>
+                {/** biome-ignore lint/a11y/noLabelWithoutControl: the switch inside is a button, which a label can hold */}
+                <label className='flex cursor-pointer items-center justify-between gap-spacing-3'>
+                    <Text variant='small' className='text-ut-black'>
+                        Hide time conflicts
+                    </Text>
+                    <SwitchButton
+                        isChecked={filters.hideConflicts}
+                        onChange={hideConflicts => update({ hideConflicts })}
+                    />
+                </label>
+            </Collapse>
         </div>
     );
 }

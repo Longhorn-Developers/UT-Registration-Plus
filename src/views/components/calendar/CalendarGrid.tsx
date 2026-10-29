@@ -130,17 +130,17 @@ export default function CalendarGrid({
 
             {previewCells?.map((cell, i) => (
                 // Over the course cells at the full width of the day, rather than splitting it with them, so the
-                // schedule doesn't shift around while sections are previewed. Keyed by position, since two of a
-                // course's meetings can start in the same half hour.
+                // schedule doesn't shift around while sections are previewed. Keyed by section, so moving to another
+                // one fades it in, and by position, since two of a course's meetings can start in the same half hour.
                 <div
-                    // biome-ignore lint/suspicious/noArrayIndexKey: the cells have nothing else unique to them
-                    key={i}
+                    // biome-ignore lint/suspicious/noArrayIndexKey: the position tells apart meetings that start together
+                    key={`${cell.course.uniqueId}-${i}`}
                     aria-hidden
                     style={{
                         gridColumn: `${cell.calendarGridPoint.dayIndex + 3}`,
                         gridRow: `${cell.calendarGridPoint.startIndex} / ${cell.calendarGridPoint.endIndex}`,
                     }}
-                    className='pointer-events-none z-1 pb-1 pr-2.5 screenshot:hidden'
+                    className='pointer-events-none z-1 pb-1 pr-2.5 motion-safe:(animate-fade-in animate-duration-150) screenshot:hidden'
                 >
                     <PreviewCourseCell cell={cell} />
                 </div>
@@ -265,7 +265,7 @@ function AccountForCourseConflicts({
                         <div
                             aria-hidden
                             className={clsx(
-                                'pointer-events-none absolute bottom-1 left-0 right-2.5 top-0 rounded screenshot:hidden',
+                                'pointer-events-none absolute bottom-1 left-0 right-2.5 top-0 rounded motion-safe:(animate-fade-in animate-duration-150) screenshot:hidden',
                                 highlight.isRemoving
                                     ? 'border-2 border-dashed border-theme-red bg-white/60'
                                     : 'ring-2 ring-ut-burntorange ring-offset-2'

@@ -7,6 +7,7 @@ import type { UserSchedule } from '@shared/types/UserSchedule';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import { englishStringifyList } from '@shared/util/string';
 import { Button } from '@views/components/common/Button';
+import Collapse from '@views/components/common/CourseFinder/Collapse';
 import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
 import ExpandableText from '@views/components/common/ExpandableText';
 import Link from '@views/components/common/Link';
@@ -215,7 +216,8 @@ function SourceLinks({ query }: { query: CourseFinderQuery }): JSX.Element {
     });
 
     return (
-        <Text variant='mini' className='flex flex-row items-baseline gap-spacing-3 text-ut-black/80'>
+        // Pulled out by the links' padding, so the last one lines up with the cards' edge
+        <Text variant='mini' className='-mr-1.5 flex flex-row items-baseline gap-spacing-3 text-ut-black/80'>
             {links.length > 1 && 'View on UT:'}
             {links.map(link => (
                 <a
@@ -225,7 +227,7 @@ function SourceLinks({ query }: { query: CourseFinderQuery }): JSX.Element {
                     rel='noreferrer'
                     title={link.description}
                     aria-label={link.description}
-                    className='inline-flex items-center gap-0.5 text-ut-burntorange underline-offset-2 hover:underline focusable'
+                    className='inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-ut-burntorange btn-transition hover:bg-ut-burntorange/10 focusable'
                 >
                     {link.label}
                     <OutwardArrowIcon className='h-3 w-3' />
@@ -262,7 +264,7 @@ function CourseCard({
         <li className='border border-ut-offwhite/50 rounded'>
             <button
                 type='button'
-                className='w-full flex flex-row cursor-pointer items-start gap-spacing-2 border-none rounded bg-transparent px-spacing-4 py-spacing-3 text-left hover:bg-ut-offwhite/15 focusable'
+                className='w-full flex flex-row cursor-pointer items-start gap-spacing-2 border-none rounded bg-transparent px-spacing-4 py-spacing-3 text-left btn-transition hover:bg-ut-offwhite/15 focusable'
                 onClick={onToggle}
                 aria-expanded={isExpanded}
                 title={isExpanded ? 'Hide sections' : 'Show sections'}
@@ -284,7 +286,7 @@ function CourseCard({
                     })}
                 />
             </button>
-            {isExpanded && (
+            <Collapse show={isExpanded}>
                 <ul className='m-0 list-none p-0'>
                     {group.sections.map(course => (
                         <SectionRow
@@ -297,7 +299,7 @@ function CourseCard({
                         />
                     ))}
                 </ul>
-            )}
+            </Collapse>
         </li>
     );
 }
@@ -421,7 +423,7 @@ function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit,
     return (
         // The row previews its section on the calendar while it's hovered over or has focus
         <li
-            className='flex flex-row items-center gap-spacing-2 border-t border-ut-offwhite/50 px-spacing-4 py-spacing-2 hover:bg-ut-offwhite/15'
+            className='flex flex-row items-center gap-spacing-2 border-t border-ut-offwhite/50 px-spacing-4 py-spacing-2 btn-transition hover:bg-ut-offwhite/15'
             onMouseEnter={showPreview}
             onMouseLeave={hidePreview}
             onFocus={showPreview}

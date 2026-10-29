@@ -117,13 +117,13 @@ const CalendarSidebar = memo(function CalendarSidebar() {
                 </div>
             )}
 
-            {/* Keyed, so each view starts scrolled to the top. The scroll padding keeps what's focused out from under the sticky titles. */}
+            {/* Keyed, so each view starts scrolled to the top (and fades in). The scroll padding keeps what's focused out from under the sticky titles. */}
             <div
                 key={isCourseFinderOpen ? 'course-finder' : 'schedules'}
                 style={{
                     scrollbarGutter: 'stable',
                 }}
-                className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto scroll-pt-10 pb-spacing-6 pl-spacing-7 pr-2.75'
+                className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto scroll-pt-10 pb-spacing-6 pl-spacing-7 pr-2.75 motion-safe:(animate-fade-in animate-duration-200)'
             >
                 {/* The Course Finder takes the schedules' place in the sidebar while it's open */}
                 {isCourseFinderOpen ? (
