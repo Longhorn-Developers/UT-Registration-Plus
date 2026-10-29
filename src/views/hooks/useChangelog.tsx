@@ -18,7 +18,7 @@ export default function useChangelog(): () => void {
     const handleOnClick = () => {
         showDialog(close => ({
             title: (
-                <div className='sticky top-0 flex items-center justify-between p-4'>
+                <div className='sticky top-0 flex items-center justify-between bg-surface-raised p-4'>
                     <Text variant='h1' className='text-content'>
                         Changelog
                     </Text>

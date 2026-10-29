@@ -95,7 +95,7 @@ export default function Dropdown({
                         value={option}
                         className={clsx(
                             'cursor-pointer bg-surface select-none rounded p-spacing-3 text-content/80 z-40',
-                            'data-[focus]:bg-surface-raised/20',
+                            'data-[focus]:bg-divider/40',
                             'data-[disabled]:text-content/50',
                             'data-[disabled]:cursor-not-allowed'
                         )}

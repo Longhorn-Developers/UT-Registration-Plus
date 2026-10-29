@@ -47,14 +47,18 @@ export default defineConfig({
         },
         colors: {
             ...colors,
-            // Theme-dependent semantic tokens, see ExtensionRoot.module.scss for values
+            // Theme-dependent semantic tokens, see ExtensionRoot.module.scss for values.
+            // The rgb(from ...) form lets opacity modifiers like text-content/50 work on CSS variables.
             surface: {
-                DEFAULT: 'var(--color-bg)',
-                raised: 'var(--color-surface)',
-                hover: 'var(--color-surface-hover)',
-                switch: 'var(--color-switch-bg)',
+                DEFAULT: 'rgb(from var(--color-bg) r g b / %alpha)',
+                raised: 'rgb(from var(--color-surface) r g b / %alpha)',
+                hover: 'rgb(from var(--color-surface-hover) r g b / %alpha)',
+                switch: 'rgb(from var(--color-switch-bg) r g b / %alpha)',
             },
-            content: { DEFAULT: 'var(--color-text)', muted: 'var(--color-text-muted)' },
+            content: {
+                DEFAULT: 'rgb(from var(--color-text) r g b / %alpha)',
+                muted: 'rgb(from var(--color-text-muted) r g b / %alpha)',
+            },
             divider: 'rgb(from var(--color-border) r g b / %alpha)',
         },
         spacing,
