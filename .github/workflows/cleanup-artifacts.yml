@@ -1,0 +1,24 @@
+name: Cleanup PR Artifacts
+# When a PR closes (merged or not), delete the ZIP artifacts its CI runs uploaded.
+# Uses pull_request_target so the token has write access for fork PRs too; no PR code is checked out.
+on:
+  pull_request_target:
+    types:
+      - closed
+permissions:
+  actions: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete utrp-pr-${{ github.event.pull_request.number }}-* artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PREFIX: utrp-pr-${{ github.event.pull_request.number }}-
+        run: |
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/artifacts?per_page=100" \
+            --jq ".artifacts[] | select(.name | startswith(\"${PREFIX}\")) | .id" |
+          while read -r id; do
+            echo "Deleting artifact ${id}"
+            gh api -X DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}"
+          done
