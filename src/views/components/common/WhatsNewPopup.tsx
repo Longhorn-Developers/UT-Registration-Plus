@@ -6,8 +6,8 @@ import type { ComponentType, JSX, SVGProps } from 'react';
 import { useEffect, useState } from 'react';
 import ChartBarIcon from '~icons/ph/chart-bar';
 import CloudXIcon from '~icons/ph/cloud-x';
-import ListMagnifyingGlassIcon from '~icons/ph/lock';
-import PlusIcon from '~icons/ph/plus-circle';
+import MoonIcon from '~icons/ph/moon';
+import SelectionPlusIcon from '~icons/ph/selection-plus';
 
 /**
  * This is the version of the 'What's New' features popup.
@@ -16,7 +16,7 @@ import PlusIcon from '~icons/ph/plus-circle';
  *
  * It should be incremented every time the "What's New" popup is updated.
  */
-const WHATSNEW_POPUP_VERSION = 3;
+const WHATSNEW_POPUP_VERSION = 4;
 const ACTIVE_WHATSNEW_POPUP_VERSION_KEY = 'activeWhatsNewPopupVersion';
 
 const WHATSNEW_VIDEO_URL = 'https://cdn.longhorns.dev/quickaddhero.mp4';
@@ -30,29 +30,22 @@ type Feature = {
 
 const NEW_FEATURES = [
     {
-        id: 'quick-add',
-        icon: PlusIcon,
-        title: 'Quick Add',
-        description: 'Add courses by unique number without leaving the extension.',
+        id: 'dark-mode',
+        icon: MoonIcon,
+        title: 'Dark Mode',
+        description: 'Give the calendar and settings a darker look. Switch themes in settings.',
+    },
+    {
+        id: 'custom-time-blocks',
+        icon: SelectionPlusIcon,
+        title: 'Custom Time Blocks',
+        description: 'Block off time for work, practice, or anything else, and see when courses conflict with it.',
     },
     {
         id: 'grade-distributions',
         icon: ChartBarIcon,
         title: 'Updated Grade Distributions',
-        description: 'Now includes Summer and Fall 2025 grade distribution data.',
-    },
-    {
-        id: 'course-status-checker',
-        icon: ListMagnifyingGlassIcon,
-        title: (
-            <>
-                Course Statuses
-                <span className='mx-2 border border-ut-burntorange dark:border-divider rounded px-2 py-0.5 text-xs text-ut-burntorange dark:text-content-muted font-medium'>
-                    BETA
-                </span>
-            </>
-        ),
-        description: 'See open, closed, and waitlisted statuses for your courses at a glance. (Enable in settings)',
+        description: 'Now includes Spring and Summer 2026 grade distribution data.',
     },
 ] as const satisfies readonly Feature[];
 
