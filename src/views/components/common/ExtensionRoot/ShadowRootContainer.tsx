@@ -19,6 +19,8 @@ import styles from './ExtensionRoot.module.scss';
 /** CSS module class that applies the extension's base font, color, and scrollbar resets. */
 export const styleResetClass = styles.extensionRoot;
 
+const THEME_FADE_MS = 600;
+
 const styledShadowRoots = new WeakSet<ShadowRoot>();
 
 function assignRef<T>(ref: Ref<T> | undefined, value: T | null) {
@@ -60,6 +62,20 @@ export default function ShadowRootContainer({
     const [shadowRoot, setShadowRoot] = React.useState<ShadowRoot | null>(null);
     const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
 
+    // Fade into a new theme instead of flashing. Set during render so the transition and the
+    // new colors land in the same commit, which is what lets the browser animate between them.
+    const [shownTheme, setShownTheme] = React.useState(theme);
+    const [fading, setFading] = React.useState(false);
+    if (theme !== shownTheme) {
+        setShownTheme(theme);
+        setFading(!reducedMotion);
+    }
+    React.useEffect(() => {
+        if (!fading) return;
+        const timer = setTimeout(() => setFading(false), THEME_FADE_MS);
+        return () => clearTimeout(timer);
+    }, [fading]);
+
     const setHostRef = React.useCallback(
         (node: HTMLDivElement | null) => {
             assignRef(ref, node);
@@ -84,7 +100,14 @@ export default function ShadowRootContainer({
         >
             {shadowRoot &&
                 createPortal(
-                    <div className={clsx(styleResetClass, reducedMotion && styles.reducedMotion)} data-theme={theme}>
+                    <div
+                        className={clsx(
+                            styleResetClass,
+                            reducedMotion && styles.reducedMotion,
+                            fading && styles.themeFade
+                        )}
+                        data-theme={theme}
+                    >
                         {children}
                     </div>,
                     shadowRoot

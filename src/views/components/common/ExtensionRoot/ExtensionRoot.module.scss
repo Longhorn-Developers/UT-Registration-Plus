@@ -23,6 +23,9 @@
         --color-text-muted: #3c4145;
         --color-border: #eae8e1;
         --color-switch-bg: #9da3ae;
+        --color-scrollbar: rgb(218, 220, 224);
+        --color-scrollbar-hover: rgb(189, 193, 198);
+        --color-scrollbar-active: rgb(128, 134, 139);
 
         &[data-theme='dark'] {
             --color-bg: #070708;
@@ -32,6 +35,21 @@
             --color-text-muted: #808080;
             --color-border: #21232c;
             --color-switch-bg: #3b3e42;
+            --color-scrollbar: #2c2e33;
+            --color-scrollbar-hover: #3d4047;
+            --color-scrollbar-active: #5a5e66;
+        }
+
+        // Fades colors between themes instead of switching them in one frame
+        &.themeFade,
+        &.themeFade * {
+            transition:
+                background-color 600ms ease-in-out,
+                color 600ms ease-in-out,
+                border-color 600ms ease-in-out,
+                fill 600ms ease-in-out,
+                stroke 600ms ease-in-out,
+                box-shadow 600ms ease-in-out !important;
         }
 
         color: var(--color-text);
@@ -71,16 +89,16 @@
             border-radius: 7px;
             min-height: 40px;
             box-shadow: none;
-            background: var(--color-border);
+            background: var(--color-scrollbar);
         }
 
         :hover::-webkit-scrollbar-thumb,
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--color-surface);
+            background: var(--color-scrollbar-hover);
         }
 
         ::-webkit-scrollbar-thumb:active {
-            background: var(--color-border);
+            background: var(--color-scrollbar-active);
         }
     }
 
