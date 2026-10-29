@@ -16,6 +16,7 @@ import refreshCourses from '@views/lib/refreshCourses';
 import clsx from 'clsx';
 import type { JSX } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 import ArrowsClockwiseIcon from '~icons/ph/arrows-clockwise';
 import CalendarDotsIcon from '~icons/ph/calendar-dots';
 import ExportIcon from '~icons/ph/export';
@@ -47,6 +48,8 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
 
     const isCooldown = cooldownIds.has(activeSchedule.id);
     const hasRightHandSide = enableDataRefreshing;
+
+    const { theme } = useTheme();
 
     const handleRefresh = useCallback(async () => {
         if (isRefreshing) return;
@@ -92,7 +95,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     return (
         <div
             style={{ scrollbarGutter: 'auto' }}
-            className='sticky left-0 right-0 top-0 z-10 min-h-[75px] flex items-center gap-5 oveflow-x-auto overflow-y-hidden bg-white pl-spacing-7 pt-spacing-5 pb-1'
+            className='sticky left-0 right-0 top-0 z-10 min-h-[75px] flex items-center bg-surface-raised gap-5 oveflow-x-auto overflow-y-hidden pl-spacing-7 pt-spacing-5 pb-1'
         >
             {!sidebarOpen && (
                 <Button
@@ -134,16 +137,17 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             size='small'
                             variant='minimal'
                             icon={ExportIcon}
-                            className='bg-transparent'
+                            className='bg-transparent !text-content'
                         >
                             Export
                         </MenuButton>
                         <MenuItems
                             as={ExtensionRootWrapper}
+                            data-theme={theme}
                             className={clsx([
                                 styleResetClass,
                                 'mt-spacing-3',
-                                'min-w-max origin-top rounded bg-white p-1 text-black shadow-lg transition border border-ut-offwhite/50 outline-none! z-20',
+                                'min-w-max origin-top rounded bg-surface-raised p-1 shadow-lg transition border border-divider/50 outline-none! z-20',
                                 'data-[closed]:(opacity-0 scale-95)',
                                 'data-[enter]:(ease-out-expo duration-150)',
                                 'data-[leave]:(ease-out duration-50)',
@@ -153,7 +157,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                         >
                             <MenuItem
                                 as={Button}
-                                className='w-full flex justify-start'
+                                className='w-full flex justify-start !text-content'
                                 onClick={() => requestAnimationFrame(() => saveCalAsPng())}
                                 color='ut-black'
                                 size='small'
@@ -164,7 +168,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             </MenuItem>
                             <MenuItem
                                 as={Button}
-                                className='w-full flex justify-start'
+                                className='w-full flex justify-start !text-content'
                                 onClick={saveAsCal}
                                 color='ut-black'
                                 size='small'
@@ -175,7 +179,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             </MenuItem>
                             <MenuItem
                                 as={Button}
-                                className='w-full flex justify-start'
+                                className='w-full flex justify-start !text-content'
                                 onClick={() => handleExportJson(activeSchedule.id)}
                                 color='ut-black'
                                 size='small'
@@ -186,7 +190,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             </MenuItem>
                             <MenuItem
                                 as={Button}
-                                className='w-full flex justify-start'
+                                className='w-full flex justify-start !text-content'
                                 onClick={saveAsText}
                                 color='ut-black'
                                 size='small'
@@ -220,7 +224,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                             </Text>
                         ) : (
                             lastCheckedText && (
-                                <Text variant='mini' className='whitespace-nowrap text-theme-black/50 !font-normal'>
+                                <Text variant='mini' className='whitespace-nowrap text-content/50 !font-normal'>
                                     Last checked: {lastCheckedText}
                                 </Text>
                             )

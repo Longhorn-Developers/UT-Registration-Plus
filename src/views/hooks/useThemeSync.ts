@@ -1,6 +1,6 @@
 import type { ThemeName } from '@shared/types/Theme';
 import { useTheme } from '@views/contexts/ThemeContext';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
 /**
  * Applies `theme` to the nearest {@link ThemeContext}, e.g. so a page can drive the active theme
@@ -9,7 +9,8 @@ import { useEffect } from 'react';
 export function useThemeSync(theme: ThemeName): void {
     const { setTheme } = useTheme();
 
-    useEffect(() => {
+    // Layout effect, so the first paint already uses the page's theme instead of flashing light
+    useLayoutEffect(() => {
         setTheme(theme);
     }, [theme, setTheme]);
 }

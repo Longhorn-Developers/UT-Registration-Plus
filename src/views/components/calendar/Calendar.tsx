@@ -20,9 +20,9 @@ import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
 import { memo, useEffect, useRef, useState } from 'react';
+import { useThemeSync } from 'src/views/hooks/useThemeSync';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 import SidebarIcon from '~icons/ph/sidebar';
-
 import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
@@ -50,7 +50,7 @@ const CalendarSidebar = memo(function CalendarSidebar() {
         <div
             ref={sidebarRef}
             className={clsx(
-                'py-spacing-5 relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-ut-offwhite/50 shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
+                'py-spacing-5 bg-surface relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-divider shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
                 {
                     'max-w-[20.3125rem] ': showSidebar,
                     'max-w-0 pointer-events-none': !showSidebar,
@@ -84,7 +84,7 @@ const CalendarSidebar = memo(function CalendarSidebar() {
                 <button
                     type='button'
                     onClick={showReportIssueDialog}
-                    className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange underline-offset-2 hover:underline'
+                    className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange dark:text-content underline-offset-2 hover:underline'
                 >
                     <Text variant='p'>Send us Feedback!</Text>
                     <OutwardArrowIcon className='h-4 w-4' />
@@ -111,6 +111,9 @@ export default function Calendar(): ReactNode {
 
     const activeScheduleRef = useRef(activeSchedule);
     activeScheduleRef.current = activeSchedule;
+
+    const settings = OptionsStore.useStore();
+    useThemeSync(settings.theme);
 
     // silently refreshes course data when the calendar opens or the active schedule changes
     // biome-ignore lint/correctness/useExhaustiveDependencies: id is a trigger, not a value read
@@ -251,7 +254,7 @@ export default function Calendar(): ReactNode {
 
                 {/** biome-ignore lint/a11y/noStaticElementInteractions: TODO: */}
                 <div
-                    className='screenshot:calendar-target h-screen flex overflow-auto'
+                    className='screenshot:calendar-target bg-surface h-screen flex overflow-auto'
                     onDragEnter={handleDragEnter}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
@@ -270,9 +273,12 @@ export default function Calendar(): ReactNode {
                     >
                         <CalendarHeader sidebarOpen={showSidebar} onSidebarToggle={toggleSidebar} />
                         <div
-                            className={clsx('min-h-2xl min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl', {
-                                'screenshot:flex-grow-0': bottomBar !== null, // html-to-image seems to have a bug with flex-grow
-                            })}
+                            className={clsx(
+                                'min-h-2xl bg-surface-raised min-w-5xl flex-grow gap-0 pl-spacing-3 screenshot:min-h-xl',
+                                {
+                                    'screenshot:flex-grow-0': bottomBar !== null, // html-to-image seems to have a bug with flex-grow
+                                }
+                            )}
                         >
                             <CalendarGrid
                                 onCreateBlock={async draft => {
