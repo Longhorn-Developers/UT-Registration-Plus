@@ -360,7 +360,7 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
                             />
                             <BlockOption
                                 icon={ProhibitIcon}
-                                label='Conflict highlight'
+                                label='Highlight conflicts'
                                 checked={draft.conflictHighlight}
                                 onChange={conflictHighlight => update({ conflictHighlight })}
                             />
