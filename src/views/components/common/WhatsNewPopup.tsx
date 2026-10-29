@@ -30,16 +30,16 @@ type Feature = {
 
 const NEW_FEATURES = [
     {
-        id: 'dark-mode',
-        icon: MoonIcon,
-        title: 'Dark Mode',
-        description: 'Give the calendar and settings a darker look. Switch themes in settings.',
-    },
-    {
         id: 'custom-time-blocks',
         icon: SelectionPlusIcon,
         title: 'Custom Time Blocks',
         description: 'Block off time for work, practice, or anything else, and see when courses conflict with it.',
+    },
+    {
+        id: 'dark-mode',
+        icon: MoonIcon,
+        title: 'Dark Mode',
+        description: 'Give the calendar and settings a darker look. Switch themes in settings.',
     },
     {
         id: 'grade-distributions',
