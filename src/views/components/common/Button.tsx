@@ -65,8 +65,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                         'h-[35px] w-[35px] p-spacing-2': size === 'small' && isIconOnly,
                         'h-6 p-spacing-2': size === 'mini' && !isIconOnly,
                         'h-6 w-6 p-0': size === 'mini' && isIconOnly,
+                        // Filled black buttons keep their own colors; only text-style ones follow the theme
                         '!hover:enabled:bg-surface-hover !text-content':
-                            color === 'theme-black' || color === 'ut-black',
+                            (color === 'theme-black' || color === 'ut-black') && variant !== 'filled',
                     },
                     className
                 )}

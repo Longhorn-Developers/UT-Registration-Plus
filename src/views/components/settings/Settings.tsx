@@ -304,7 +304,7 @@ export default function Settings(): React.JSX.Element {
 
                         <div className='flex items-center justify-between'>
                             <div className='max-w-xs'>
-                                <Text variant='h4' className='text-content text-content font-semibold'>
+                                <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                                     UTRP Map
                                 </Text>
                                 <span className='mx-2 border border-ut-burntorange rounded px-2 py-0.5 text-xs text-ut-burntorange font-medium'>
