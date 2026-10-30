@@ -1,4 +1,4 @@
-## [2.5.0](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.4.2...v2.5.0) (2026-10-29)
+## [2.5.0](https://github.com/Longhorn-Developers/UT-Registration-Plus/compare/v2.4.2...v2.5.0) (2026-10-30)
 
 ### Features
 
