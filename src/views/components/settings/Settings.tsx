@@ -253,7 +253,7 @@ export default function Settings(): React.JSX.Element {
                     >
                         <GitMergeIcon className='h-6 w-6 text-ut-gray' />
                         <span className='text-content'>
-                            v{manifest.version}
+                            v{manifest.version_name ?? manifest.version}
                             {import.meta.env.DEV ? '-dev' : ''}
                         </span>
                     </Button>

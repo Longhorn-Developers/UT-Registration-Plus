@@ -1,6 +1,7 @@
 import { PopoverPanel } from '@headlessui/react';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { ExtensionRootWrapper } from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import { useTheme } from '@views/contexts/ThemeContext';
 import clsx from 'clsx';
 import { type ComponentProps, useContext } from 'react';
 import { CalendarGridBounds } from './CalendarGridBounds';
@@ -26,15 +27,17 @@ export default function CustomBlockPopover({
     ...props
 }: ComponentProps<typeof CustomBlockForm> & { toolbar?: boolean }) {
     const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
+    const { theme } = useTheme();
     return (
         <PopoverPanel
             as={BlockPanel}
+            data-theme={theme}
             anchor={toolbar ? 'bottom start' : { to: 'right start', gap: 8, padding: 16 }}
             transition={!reducedMotion}
             role='dialog'
             aria-label={props.block ? `Edit ${props.block.name}` : 'Add custom block'}
             className={clsx(
-                'box-border z-30 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] overflow-y-auto rounded border-0 ring-1 ring-inset ring-ut-offwhite/50 bg-white text-theme-black py-spacing-6 shadow-[5px_5px_8px_rgba(26,32,36,0.05)]',
+                'box-border z-30 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] overflow-y-auto rounded border-0 ring-1 ring-inset ring-divider bg-surface-raised text-content py-spacing-6 shadow-[5px_5px_8px_rgba(26,32,36,0.05)]',
                 props.block ? 'w-[455px] px-spacing-7' : 'w-[400px] px-spacing-6',
                 toolbar && 'mt-spacing-3',
                 !reducedMotion &&
