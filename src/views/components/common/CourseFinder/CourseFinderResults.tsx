@@ -437,22 +437,21 @@ function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit,
         >
             <div className='min-w-0 flex flex-1 flex-col'>
                 {course.schedule.meetings.length > 0 ? (
-                    course.schedule.meetings.map(m => {
-                        const isConflicting = conflicts.some(c => c.schedule.meetings.some(o => m.isConflicting(o)));
-                        return (
-                            <Text
-                                key={`${m.getDaysString({ format: 'short' })}-${m.startTime}-${m.location?.building}-${m.location?.room}`}
-                                variant='small'
-                                // Struck through when it conflicts, like on UT's course schedule (if that's turned on)
-                                className={clsx({
-                                    'text-theme-red': isConflicting,
-                                    'line-through': isConflicting && highlightConflicts,
-                                })}
-                            >
-                                {m.getDaysString({ format: 'short' })} {m.getTimeString({ separator: '–' })}
-                            </Text>
-                        );
-                    })
+                    course.schedule.meetings.map(m => (
+                        <Text
+                            key={`${m.getDaysString({ format: 'short' })}-${m.startTime}-${m.location?.building}-${m.location?.room}`}
+                            variant='small'
+                            // Every meeting is struck through when any of them conflicts, since the section can only
+                            // be taken whole, like the row on UT's course schedule (if that's turned on). Hovering
+                            // over the section shows on the calendar which meeting overlaps.
+                            className={clsx({
+                                'text-theme-red': conflicts.length > 0,
+                                'line-through': conflicts.length > 0 && highlightConflicts,
+                            })}
+                        >
+                            {m.getDaysString({ format: 'short' })} {m.getTimeString({ separator: '–' })}
+                        </Text>
+                    ))
                 ) : (
                     <Text variant='small'>No meeting times</Text>
                 )}
