@@ -150,10 +150,9 @@ export default function CalendarGrid({
 }
 
 // Hatched, so a conflict reads as one even where the colors are hard to tell apart. The cell's background lets some
-// of the course it conflicts with show through, so the text has a near-white backing of its own (CONFLICT_TEXT) that
-// keeps the red at 4.5:1 contrast over any course color.
+// of the course it conflicts with show through, so its text sits on a near-white band across the top that keeps the
+// red at 4.5:1 contrast over any course color.
 const CONFLICT_HATCHING = 'repeating-linear-gradient(135deg, rgb(209 0 0 / 0.07) 0 6px, transparent 6px 12px)';
-const CONFLICT_TEXT = 'self-start max-w-full -mx-0.5 rounded-sm bg-white/90 px-0.5';
 
 /**
  * A faint, dashed outline of a course meeting that isn't in the schedule. One that conflicts with the schedule is
@@ -174,21 +173,24 @@ function PreviewCourseCell({ cell }: { cell: CalendarPreviewCell }): React.JSX.E
             )}
             style={isConflicting ? { backgroundImage: CONFLICT_HATCHING } : undefined}
         >
-            <Text
-                variant='h1-course'
-                as='p'
-                className={clsx('leading-tight! truncate overflow-clip!', {
-                    'line-through': isConflicting && highlightConflicts,
-                    [CONFLICT_TEXT]: isConflicting,
-                })}
+            <div
+                className={clsx('flex flex-col gap-0.25', isConflicting && '-mx-2 -mt-1 bg-white/90 px-2 pb-0.5 pt-1')}
             >
-                {courseDeptAndInstr}
-            </Text>
-            <Text variant='h3-course' as='p' className={clsx('whitespace-pre-line', isConflicting && CONFLICT_TEXT)}>
-                {isConflicting
-                    ? `Conflicts with ${cell.conflicts.map(c => `${c.department} ${c.number}`).join(', ')}`
-                    : timeAndLocation}
-            </Text>
+                <Text
+                    variant='h1-course'
+                    as='p'
+                    className={clsx('leading-tight! truncate overflow-clip!', {
+                        'line-through': isConflicting && highlightConflicts,
+                    })}
+                >
+                    {courseDeptAndInstr}
+                </Text>
+                <Text variant='h3-course' as='p' className='whitespace-pre-line'>
+                    {isConflicting
+                        ? `Conflicts with ${cell.conflicts.map(c => `${c.department} ${c.number}`).join(', ')}`
+                        : timeAndLocation}
+                </Text>
+            </div>
         </div>
     );
 }
