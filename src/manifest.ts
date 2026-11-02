@@ -37,7 +37,8 @@ const manifest = defineManifest(async env => {
         name: `${packageJson.displayName ?? packageJson.name}${nameSuffix}`,
         version: `${major}.${minor}.${patch}.${label}`,
         // What users see, e.g. 2.5.0 instead of the four-part 2.5.0.0
-        version_name: packageJson.version,
+        // Firefox doesn't support version_name and warns about it on load.
+        ...(isFirefox ? {} : { version_name: packageJson.version }),
         description: packageJson.description,
         options_page: 'src/pages/options/index.html',
         background: isFirefox
