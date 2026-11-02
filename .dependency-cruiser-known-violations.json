@@ -1,52 +1,6 @@
 [
     {
         "type": "cycle",
-        "from": "src/shared/types/Course.ts",
-        "to": "src/shared/util/colors.ts",
-        "unresolvedTo": "@shared/util/colors",
-        "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "import"],
-        "rule": {
-            "severity": "error",
-            "name": "no-circular"
-        },
-        "cycle": [
-            {
-                "name": "src/shared/util/colors.ts",
-                "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "import"]
-            },
-            {
-                "name": "src/shared/types/Course.ts",
-                "dependencyTypes": ["local", "type-only", "import"]
-            }
-        ]
-    },
-    {
-        "type": "cycle",
-        "from": "src/shared/types/UserSchedule.ts",
-        "to": "src/shared/types/Course.ts",
-        "unresolvedTo": "./Course",
-        "dependencyTypes": ["local", "import"],
-        "rule": {
-            "severity": "error",
-            "name": "no-circular"
-        },
-        "cycle": [
-            {
-                "name": "src/shared/types/Course.ts",
-                "dependencyTypes": ["local", "import"]
-            },
-            {
-                "name": "src/shared/util/colors.ts",
-                "dependencyTypes": ["aliased", "aliased-tsconfig", "aliased-tsconfig-paths", "local", "import"]
-            },
-            {
-                "name": "src/shared/types/UserSchedule.ts",
-                "dependencyTypes": ["local", "type-only", "import"]
-            }
-        ]
-    },
-    {
-        "type": "cycle",
         "from": "src/views/components/calendar/CalendarCourseCell.tsx",
         "to": "src/views/hooks/useFlattenedCourseSchedule.ts",
         "unresolvedTo": "@views/hooks/useFlattenedCourseSchedule",
@@ -189,7 +143,7 @@
     },
     {
         "type": "dependency",
-        "from": "src/shared/util/colors.ts",
+        "from": "src/shared/util/colors/base.ts",
         "to": "node_modules/.pnpm/unocss@66.6.8_@emnapi+core@1.11.2_@emnapi+runtime@1.11.2_@unocss+postcss@66.6.8_postcss@8.5.9__vite@8.0.7/node_modules/unocss/dist/preset-mini.mjs",
         "unresolvedTo": "unocss/preset-mini",
         "dependencyTypes": ["npm-dev", "import"],

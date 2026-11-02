@@ -1,6 +1,6 @@
 import type { HexColor } from '@shared/types/Color';
 import type { ThemeColor } from '@shared/types/ThemeColors';
-import { isValidHexColor } from '@shared/util/colors';
+import { isValidHexColor } from '@shared/util/colors/base';
 import { useCallback, useEffect, useState } from 'react';
 
 import { updateCourseColors } from './useSchedules';

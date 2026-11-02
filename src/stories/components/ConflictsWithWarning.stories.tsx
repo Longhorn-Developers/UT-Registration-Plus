@@ -1,7 +1,7 @@
 import { Course, Status } from '@shared/types/Course';
 import { CourseMeeting } from '@shared/types/CourseMeeting';
 import Instructor from '@shared/types/Instructor';
-import { getCourseColors } from '@shared/util/colors';
+import { getCourseColors } from '@shared/util/colors/base';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
 
