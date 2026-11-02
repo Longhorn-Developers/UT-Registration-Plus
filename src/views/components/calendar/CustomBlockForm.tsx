@@ -45,7 +45,7 @@ function BlockCheckbox({
             checked={checked}
             onChange={onChange}
             aria-label={label}
-            className='h-[35px] w-[35px] flex shrink-0 items-center justify-center cursor-pointer rounded border border-ut-offwhite/50 bg-transparent focusable'
+            className='h-[35px] w-[35px] flex shrink-0 items-center justify-center cursor-pointer rounded border border-divider bg-transparent focusable'
         >
             <span className={clsx('h-[25.67px] w-[25.67px] rounded', checked && 'bg-ut-burntorange')} aria-hidden />
         </Checkbox>
@@ -197,7 +197,7 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
 
     return (
         <form
-            className='text-theme-black'
+            className='text-content'
             onSubmit={submit}
             aria-label={block ? 'Edit custom block' : 'Create custom block'}
             aria-describedby={showValidation ? validationId : undefined}
@@ -360,7 +360,7 @@ export default function CustomBlockForm({ block, initialDraft, onSave, onClose, 
                             />
                             <BlockOption
                                 icon={ProhibitIcon}
-                                label='Conflict highlight'
+                                label='Highlight conflicts'
                                 checked={draft.conflictHighlight}
                                 onChange={conflictHighlight => update({ conflictHighlight })}
                             />
