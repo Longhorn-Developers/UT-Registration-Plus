@@ -47,10 +47,19 @@ export default defineConfig({
         },
         colors: {
             ...colors,
-            // Theme-dependent semantic tokens, see ExtensionRoot.module.scss for values
-            surface: { DEFAULT: 'var(--color-bg)', raised: 'var(--color-surface)' },
-            content: { DEFAULT: 'var(--color-text)', muted: 'var(--color-text-muted)' },
-            divider: 'var(--color-border)',
+            // Theme-dependent semantic tokens, see ExtensionRoot.module.scss for values.
+            // RGB channel variables let opacity modifiers like text-content/50 work on theme colors.
+            surface: {
+                DEFAULT: 'rgb(var(--color-bg-rgb) / %alpha)',
+                raised: 'rgb(var(--color-surface-rgb) / %alpha)',
+                hover: 'rgb(var(--color-surface-hover-rgb) / %alpha)',
+                switch: 'rgb(var(--color-switch-bg-rgb) / %alpha)',
+            },
+            content: {
+                DEFAULT: 'rgb(var(--color-text-rgb) / %alpha)',
+                muted: 'rgb(var(--color-text-muted-rgb) / %alpha)',
+            },
+            divider: 'rgb(var(--color-border-rgb) / %alpha)',
         },
         spacing,
     },
@@ -65,7 +74,12 @@ export default defineConfig({
         },
     ],
     presets: [
-        presetUno(),
+        presetUno({
+            dark: {
+                dark: '[data-theme="dark"]',
+                light: '[data-theme="light"]',
+            },
+        }),
         presetWebFonts({
             provider: 'none',
             fonts: {

@@ -26,7 +26,7 @@ export default function useWhatsNewPopUp(): (options?: WhatsNewPopupOptions) => 
             title: (
                 <div className='flex items-center justify-between gap-4'>
                     <LogoIcon width='48' height='48' />
-                    <Text variant='h1' className='text-theme-black'>
+                    <Text variant='h1' className='text-content'>
                         What&apos;s New in UT Registration Plus
                     </Text>
                 </div>
