@@ -88,7 +88,7 @@ export default function ScheduleTotalHoursAndCourses({
                 <Text
                     variant='h1'
                     as='input'
-                    className='block min-w-0 w-full text-theme-black flex-initial overflow-hidden border-0 bg-transparent px-0 outline-blue-500'
+                    className='block min-w-0 w-full text-content flex-initial overflow-hidden border-0 bg-transparent px-0 outline-blue-500'
                     value={editorValue}
                     onChange={e => setEditorValue(e.target.value)}
                     onBlur={handleBlur}

@@ -28,7 +28,7 @@ export const CalendarSchedules = memo(function CalendarSchedules() {
     return (
         <div className='min-w-full w-0 flex flex-col items-center gap-y-spacing-2'>
             <div className='m0 w-full flex items-center justify-between sticky top-0 z-10 bg-surface pt-1'>
-                <Text variant='h3' className='text-nowrap text-content-muted'>
+                <Text variant='h3' className='text-nowrap text-content'>
                     MY SCHEDULES
                 </Text>
                 <Button
