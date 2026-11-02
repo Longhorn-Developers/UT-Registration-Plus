@@ -1,7 +1,9 @@
 name: PR Build Comment
 # After CI passes on a PR, post one comment with a direct download link to that run's build ZIP,
 # and edit the same comment on later pushes. Uses workflow_run so the token can comment on fork PRs
-# too; no PR code is checked out or run.
+# too. This runs with a write token, so never check out or run PR code here, and pass PR-controlled
+# values (like the branch name) through env instead of writing them into a script.
+# GitHub only reads this file from the default branch, so edits take effect once merged to main.
 on:
   workflow_run:
     workflows:
@@ -16,44 +18,58 @@ jobs:
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
-      - name: Post or update download link
+      - name: Find PR and artifact
+        id: build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RUN_ID: ${{ github.event.workflow_run.id }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-          MARKER: <!-- utrp-build-zip -->
+          HEAD_OWNER: ${{ github.event.workflow_run.head_repository.owner.login }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
         run: |
-          # workflow_run doesn't list fork PRs, so find the open PR whose head is this run's commit
-          PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --limit 200 --json number,headRefOid \
-            --jq ".[] | select(.headRefOid == \"${HEAD_SHA}\") | .number" | head -n 1)
+          # workflow_run doesn't list fork PRs, so find the open PR by its head branch and commit
+          PR=$(gh api -X GET "repos/${GITHUB_REPOSITORY}/pulls" -f state=open -f "head=${HEAD_OWNER}:${HEAD_BRANCH}" \
+            --jq ".[] | select(.head.sha == \"${HEAD_SHA}\") | .number" | head -n 1)
           if [ -z "$PR" ]; then
             echo "No open PR has head ${HEAD_SHA}; it was likely closed or pushed to again."
             exit 0
           fi
-          ARTIFACT=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts" \
-            --jq '.artifacts[] | select(.name | startswith("utrp-pr-")) | "\(.id) \(.name)"' | head -n 1)
-          if [ -z "$ARTIFACT" ]; then
-            echo "Run ${RUN_ID} uploaded no utrp-pr-* artifact."
+          # Fork PRs can edit ci.yml, so only accept the artifact name ci.yml normally produces
+          NAME="utrp-pr-${PR}-${HEAD_SHA::7}"
+          ID=$(gh api -X GET "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts" -f "name=${NAME}" \
+            --jq '.artifacts[0].id // empty')
+          if [ -z "$ID" ]; then
+            echo "Run ${RUN_ID} uploaded no ${NAME} artifact."
             exit 0
           fi
-          read -r ID NAME <<< "$ARTIFACT"
-          URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts/${ID}"
-          BODY=$(cat <<EOF
-          ${MARKER}
-          ### Test this PR
-          **[Download ${NAME}.zip](${URL})** (commit \`${HEAD_SHA::7}\`)
+          {
+            echo "pr=${PR}"
+            echo "name=${NAME}"
+            # Same URL as upload-artifact's artifact-url output, which isn't readable from this workflow
+            echo "url=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts/${ID}"
+          } >> "$GITHUB_OUTPUT"
+      - name: Find existing comment
+        id: existing
+        if: steps.build.outputs.url != ''
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4.0.0
+        with:
+          issue-number: ${{ steps.build.outputs.pr }}
+          comment-author: github-actions[bot]
+          body-includes: <!-- utrp-build-zip -->
+      - name: Post or update comment
+        if: steps.build.outputs.url != ''
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
+        with:
+          issue-number: ${{ steps.build.outputs.pr }}
+          comment-id: ${{ steps.existing.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            <!-- utrp-build-zip -->
+            ### Test this PR
+            **[Download ${{ steps.build.outputs.name }}.zip](${{ steps.build.outputs.url }})** (sign in to GitHub first, or the link shows a 404)
 
-          1. Unzip it.
-          2. Open \`chrome://extensions\`, turn on **Developer mode**, and drag the unzipped folder onto the page.
-          3. If the store version of UTRP is installed, turn it off first so the two don't conflict.
+            1. Unzip it.
+            2. Open `chrome://extensions`, turn on **Developer mode**, and drag the unzipped folder onto the page.
+            3. If the store version of UTRP is installed, turn it off first so the two don't conflict.
 
-          This comment updates each time CI passes on a new commit. Downloading requires being signed in to GitHub.
-          EOF
-          )
-          EXISTING=$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" \
-            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | contains(\"${MARKER}\"))) | .id" | head -n 1)
-          if [ -n "$EXISTING" ]; then
-            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING}" -f body="$BODY"
-          else
-            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" -f body="$BODY"
-          fi
+            This build comes from this PR's code, which may not be reviewed yet, so only install it if you trust the PR. This comment updates each time CI passes on a new commit.
