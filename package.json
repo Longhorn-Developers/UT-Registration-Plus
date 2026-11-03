@@ -43,7 +43,7 @@
         "@tsparticles/engine": "^3.9.1",
         "@tsparticles/react": "^3.0.0",
         "@tsparticles/slim": "^3.9.1",
-        "@typescript/native-preview": "7.0.0-dev.20260408.1",
+        "@typescript/native-preview": "7.0.0-dev.20260707.2",
         "@unocss/vite": "^66.6.8",
         "clsx": "^2.1.1",
         "date-fns": "^4.1.0",
