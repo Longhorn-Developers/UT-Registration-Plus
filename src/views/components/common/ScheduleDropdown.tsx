@@ -23,7 +23,7 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
     const totalCourses = activeSchedule?.courses.length ?? 0;
 
     return (
-        <div className='max-h-[200px] flex flex-col border border-ut-offwhite/50 rounded bg-white'>
+        <div className='max-h-[200px] flex flex-col border border-divider/50 rounded bg-surface-raised'>
             <Disclosure defaultOpen={defaultOpen}>
                 {({ open }) => (
                     <>
@@ -32,11 +32,11 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
                                 <Text
                                     as='div'
                                     variant='h3'
-                                    className='w-full truncate whitespace-nowrap text-ut-burntorange normal-case!'
+                                    className='w-full truncate whitespace-nowrap text-ut-burntorange dark:text-content normal-case!'
                                 >
                                     {activeSchedule ? activeSchedule.name : 'Schedule'}
                                 </Text>
-                                <Text variant='h4' as='p' className='mt-0.5 text-theme-black inline-flex gap-3'>
+                                <Text variant='h4' as='p' className='mt-0.5 text-content-muted inline-flex gap-3'>
                                     <span>
                                         {totalHours}&nbsp;
                                         <span className='ml-0.5 uppercase'>{totalHours === 1 ? 'Hour' : 'Hours'}</span>
@@ -49,7 +49,7 @@ export default function ScheduleDropdown({ defaultOpen, children }: ScheduleDrop
                                     </span>
                                 </Text>
                             </div>
-                            <Text className='text-ut-burntorange text-2xl! font-normal!'>
+                            <Text className='text-ut-burntorange dark:text-content text-2xl! font-normal!'>
                                 {open ? <CaretDownFillIcon /> : <CaretUpFillIcon />}
                             </Text>
                         </DisclosureButton>

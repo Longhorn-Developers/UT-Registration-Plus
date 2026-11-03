@@ -1,4 +1,6 @@
+import { CustomBlockStore } from '@shared/storage/CustomBlockStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
+import { selectCustomBlocks } from '@shared/util/customBlocks';
 
 /**
  * Exports the provided schedule to a portable JSON
@@ -17,7 +19,8 @@ export default async function exportSchedule(scheduleId: string): Promise<string
         }
 
         console.log(selectedSchedule);
-        return JSON.stringify(selectedSchedule, null, 2);
+        const blocks = await CustomBlockStore.get('blocks');
+        return JSON.stringify({ ...selectedSchedule, customBlocks: selectCustomBlocks(blocks, scheduleId) }, null, 2);
     } catch (error) {
         console.error('Error getting storage data:', error);
     }

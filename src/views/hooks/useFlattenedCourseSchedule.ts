@@ -1,8 +1,10 @@
 import type { Course, StatusType } from '@shared/types/Course';
 import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
+import type { CustomBlock } from '@shared/types/CustomBlock';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 import { useEffect, useState } from 'react';
+import useCustomBlocks from './useCustomBlocks';
 
 import { useActiveSchedule } from './useSchedules';
 
@@ -29,15 +31,18 @@ interface CalendarGridPoint {
 /**
  * Return type of useFlattenedCourseSchedule
  */
-export interface CalendarGridCourse {
+export interface CalendarLayoutCell {
     calendarGridPoint: CalendarGridPoint;
-    componentProps: CalendarCourseCellProps;
-    course: Course;
     async: boolean;
     gridColumnStart?: number;
     gridColumnEnd?: number;
     totalColumns?: number;
-    concurrentCells?: CalendarGridCourse[];
+    concurrentCells?: CalendarLayoutCell[];
+}
+
+export interface CalendarGridCourse extends CalendarLayoutCell {
+    componentProps: CalendarCourseCellProps;
+    course: Course;
 }
 
 /**
@@ -52,6 +57,7 @@ export interface CalendarPreviewCell extends CalendarGridCourse {
  * Represents a flattened course schedule.
  */
 export interface FlattenedCourseSchedule {
+    blocks: CustomBlock[];
     courseCells: CalendarGridCourse[];
     /** The meetings of the course being previewed, on the days it meets in person */
     previewCells: CalendarPreviewCell[];
@@ -79,7 +85,7 @@ export const GRID_DEFAULT_END = 1260;
 export const convertMinutesToIndex = (minutes: number, gridStartMinutes = GRID_DEFAULT_START): number =>
     // 480 = 8 a.m., 30 = 30 minute slots, 2 header rows, and grid rows start at 1
     // ok so originally we had a hardcoded start of 6 am but now  we want start to be dynamic, with a max of 8 AM, oterhwise depending on the start of earliest class
-    Math.floor((minutes - gridStartMinutes) / 30) + 2 + 1;
+    (minutes - gridStartMinutes) / 30 + 2 + 1;
 
 /**
  * Get the active schedule, and convert it to be render-able into a calendar.
@@ -99,29 +105,33 @@ export function useFlattenedCourseSchedule(
         startMinutes: number;
         endMinutes: number;
     } | null>(null);
+    const blocks = useCustomBlocks(activeSchedule.id);
     const preview = previewCourse && !activeSchedule.containsCourse(previewCourse) ? previewCourse : null;
-    const allMeetings = [...activeSchedule.courses, ...(preview ? [preview] : [])].flatMap(c => c.schedule.meetings);
+    const allMeetings = [
+        ...[...activeSchedule.courses, ...(preview ? [preview] : [])]
+            .flatMap(c => c.schedule.meetings)
+            .filter(meeting => !meeting.days.includes(DAY_MAP.S)),
+        ...blocks.filter(block => !block.allDay),
+    ];
 
     // go through every meeting we have and finds minimum start time with starting best so far being GRID_DEFAULT_START_MINUTES
     // this variable will go on a journey through time and space to finally be delivered to the viewable calendar grid as the start hour of the entire grid
     const rawGridStartMinutes = allMeetings.reduce((earliest, current) => {
-        if (current.days.includes(DAY_MAP.S) || current.startTime >= 1440) {
+        if (current.startTime >= 1440) {
             // keep accumulator value unchanged, go to next iteration
             return earliest;
         }
 
-        const t = current.startTime >= 1440 ? current.startTime - 720 : current.startTime;
-        return Math.min(earliest, t);
+        return Math.min(earliest, current.startTime);
     }, GRID_DEFAULT_START);
     // round down to closest hour (in minute units)
     const fittedStartMinutes = Math.floor(rawGridStartMinutes / 60) * 60;
 
     const rawGridEndMinutes = allMeetings.reduce((latest, current) => {
-        if (current.days.includes(DAY_MAP.S) || current.endTime >= 1440) {
+        if (current.endTime >= 1440) {
             return latest;
         }
-        const t = current.endTime >= 1440 ? current.endTime - 720 : current.endTime;
-        return Math.max(latest, t);
+        return Math.max(latest, current.endTime);
     }, GRID_DEFAULT_END);
     // round up to closest hour (in minute units)
     const fittedEndMinutes = Math.ceil(rawGridEndMinutes / 60) * 60;
@@ -164,6 +174,7 @@ export function useFlattenedCourseSchedule(
         .sort(sortCourses);
 
     return {
+        blocks,
         courseCells: processedCourses,
         previewCells: preview ? processPreviewCourse(preview, activeSchedule.courses, gridStartMinutes) : [],
         activeSchedule,

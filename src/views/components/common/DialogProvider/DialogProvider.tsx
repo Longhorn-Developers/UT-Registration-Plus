@@ -37,16 +37,16 @@ export function usePrompt(): (info: PromptInfo, options?: DialogOptions) => void
             {
                 ...info,
                 title: (
-                    <Text variant='h2' as='h1' className='text-theme-black'>
+                    <Text variant='h2' as='h1' className='text-content'>
                         {info.title}
                     </Text>
                 ),
                 description: (
-                    <Text variant='p' as='p' className='text-ut-black'>
+                    <Text variant='p' as='p' className='text-content-muted'>
                         {info.description}
                     </Text>
                 ),
-                className: 'max-w-[415px] flex flex-col gap-2.5 p-6.25 border border-ut-offwhite/50',
+                className: 'max-w-[415px] flex flex-col gap-2.5 p-6.25 border border-divider/50',
             },
             options
         );

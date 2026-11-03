@@ -7,7 +7,9 @@ import NewSearchLink from '@views/components/injected/NewSearchLink';
 import RecruitmentBanner from '@views/components/injected/RecruitmentBanner/RecruitmentBanner';
 import TableHead from '@views/components/injected/TableHead';
 import TableRow from '@views/components/injected/TableRow/TableRow';
+import { usePageTheme } from '@views/hooks/usePageTheme';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
+import { useThemeSync } from '@views/hooks/useThemeSync';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import type { SiteSupportType } from '@views/lib/getSiteSupport';
@@ -75,6 +77,7 @@ export default function CourseCatalogMain({ support }: Props): React.JSX.Element
 
     return (
         <ExtensionRoot>
+            <PageThemeSync />
             <DialogProvider>
                 <NewSearchLink />
                 <RecruitmentBanner />
@@ -103,4 +106,13 @@ export default function CourseCatalogMain({ support }: Props): React.JSX.Element
             </DialogProvider>
         </ExtensionRoot>
     );
+}
+
+/**
+ * Matches the injected UI to the Registrar page's rendered theme, independent of the calendar's theme setting.
+ * Rendered inside {@link ExtensionRoot} so it drives that root's theme.
+ */
+function PageThemeSync(): null {
+    useThemeSync(usePageTheme());
+    return null;
 }

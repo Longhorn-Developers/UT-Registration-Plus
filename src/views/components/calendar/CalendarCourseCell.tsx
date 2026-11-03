@@ -76,9 +76,10 @@ export default function CalendarCourseCell({
             }
         }
 
-        document.addEventListener('mousedown', handleClickOutside);
+        // pointerdown, not mousedown: the calendar's drag-to-add layer cancels mousedown for clicks in the grid
+        document.addEventListener('pointerdown', handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('pointerdown', handleClickOutside);
         };
     }, [handleCloseColorPicker, selectedBlock]);
 

@@ -6,8 +6,8 @@ import type { ComponentType, JSX, SVGProps } from 'react';
 import { useEffect, useState } from 'react';
 import ChartBarIcon from '~icons/ph/chart-bar';
 import CloudXIcon from '~icons/ph/cloud-x';
-import ListMagnifyingGlassIcon from '~icons/ph/lock';
-import PlusIcon from '~icons/ph/plus-circle';
+import MoonIcon from '~icons/ph/moon';
+import SelectionPlusIcon from '~icons/ph/selection-plus';
 
 /**
  * This is the version of the 'What's New' features popup.
@@ -16,10 +16,11 @@ import PlusIcon from '~icons/ph/plus-circle';
  *
  * It should be incremented every time the "What's New" popup is updated.
  */
-const WHATSNEW_POPUP_VERSION = 3;
+const WHATSNEW_POPUP_VERSION = 4;
 const ACTIVE_WHATSNEW_POPUP_VERSION_KEY = 'activeWhatsNewPopupVersion';
 
-const WHATSNEW_VIDEO_URL = 'https://cdn.longhorns.dev/quickaddhero.mp4';
+// Bundled with the extension (public/videos) so it plays offline and needs no CDN upload
+const WHATSNEW_VIDEO_URL = chrome.runtime.getURL('videos/whatsnew-v2.5.mp4');
 
 type Feature = {
     id: string;
@@ -30,29 +31,22 @@ type Feature = {
 
 const NEW_FEATURES = [
     {
-        id: 'quick-add',
-        icon: PlusIcon,
-        title: 'Quick Add',
-        description: 'Add courses by unique number without leaving the extension.',
+        id: 'custom-time-blocks',
+        icon: SelectionPlusIcon,
+        title: 'Custom Time Blocks',
+        description: 'Block off time for work, practice, or anything else, and see when courses conflict with it.',
+    },
+    {
+        id: 'dark-mode',
+        icon: MoonIcon,
+        title: 'Dark Mode',
+        description: 'Give the calendar and settings a darker look. Switch themes in settings.',
     },
     {
         id: 'grade-distributions',
         icon: ChartBarIcon,
         title: 'Updated Grade Distributions',
-        description: 'Now includes Summer and Fall 2025 grade distribution data.',
-    },
-    {
-        id: 'course-status-checker',
-        icon: ListMagnifyingGlassIcon,
-        title: (
-            <>
-                Course Statuses
-                <span className='mx-2 border border-ut-burntorange rounded px-2 py-0.5 text-xs text-ut-burntorange font-medium'>
-                    BETA
-                </span>
-            </>
-        ),
-        description: 'See open, closed, and waitlisted statuses for your courses at a glance. (Enable in settings)',
+        description: 'Now includes Spring and Summer 2026 grade distribution data.',
     },
 ] as const satisfies readonly Feature[];
 
@@ -74,12 +68,12 @@ export default function WhatsNewPopupContent(): JSX.Element {
                 <div className='grid grid-cols-1 w-fit items-center gap-spacing-6 sm:grid-cols-2 md:w-lg md:flex md:flex-col md:flex-nowrap'>
                     {NEW_FEATURES.map(({ id, icon: Icon, title, description }) => (
                         <div key={id} className='w-full flex items-center justify-between gap-spacing-5'>
-                            <Icon width='40' height='40' className='text-ut-burntorange' />
+                            <Icon width='40' height='40' className='text-ut-burntorange dark:text-content' />
                             <div className='w-full flex flex-col gap-spacing-1'>
-                                <Text variant='h4' as='h4' className='text-ut-burntorange font-bold!'>
+                                <Text variant='h4' as='h4' className='text-ut-burntorange dark:text-content font-bold!'>
                                     {title}
                                 </Text>
-                                <Text variant='p' as='p' className='text-ut-black'>
+                                <Text variant='p' as='p' className='text-content-muted'>
                                     {description}
                                 </Text>
                             </div>
@@ -90,8 +84,8 @@ export default function WhatsNewPopupContent(): JSX.Element {
                     {videoError ? (
                         <div className='h-full w-full flex items-center justify-center border border-ut-offwhite/50 rounded'>
                             <div className='flex flex-col items-center justify-center p-spacing-2'>
-                                <CloudXIcon width={52} height={52} className='text-ut-black/50' />
-                                <Text variant='h4' className='text-center text-ut-black/50'>
+                                <CloudXIcon width={52} height={52} className='text-content-muted' />
+                                <Text variant='h4' className='text-center text-content-muted'>
                                     Failed to load video. Please try again later.
                                 </Text>
                             </div>
