@@ -48,7 +48,7 @@ const manifest = defineManifest(async env => {
             ? {
                   browser_specific_settings: {
                       gecko: {
-                          id: 'ut-registration-plus@example.com',
+                          id: 'ut-registration-plus@longhorns.dev',
                           strict_min_version: '140.0',
                           data_collection_permissions: { required: ['none'] },
                       },
