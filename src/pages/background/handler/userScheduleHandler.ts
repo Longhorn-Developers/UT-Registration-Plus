@@ -6,17 +6,42 @@ import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import exportSchedule from '@pages/background/lib/exportSchedule';
 import removeCourse from '@pages/background/lib/removeCourse';
 import renameSchedule from '@pages/background/lib/renameSchedule';
+import { changeSchedule, redoScheduleChange, undoScheduleChange } from '@pages/background/lib/scheduleHistory';
 import switchSchedule from '@pages/background/lib/switchSchedule';
 import type { UserScheduleMessages } from '@shared/messages/UserScheduleMessages';
 import { Course } from '@shared/types/Course';
 import { validateLoginStatus } from '@shared/util/checkLoginStatus';
 
 const userScheduleHandler: MessageHandler<UserScheduleMessages> = {
-    addCourse({ data, sendResponse }) {
-        addCourse(data.scheduleId, new Course(data.course), data.hasColor ?? false).then(sendResponse);
+    // Adding and removing courses can be undone. Courses added by importing or migrating a schedule don't go through
+    // here, so they can't be.
+    async addCourse({ data, sendResponse }) {
+        await changeSchedule(async () => {
+            const course = new Course(data.course);
+            const index = await addCourse(data.scheduleId, course, data.hasColor ?? false);
+            return { type: 'add', scheduleId: data.scheduleId, course, index };
+        });
+        sendResponse();
     },
-    removeCourse({ data, sendResponse }) {
-        removeCourse(data.scheduleId, new Course(data.course)).then(sendResponse);
+    async removeCourse({ data, sendResponse }) {
+        await changeSchedule(async () => {
+            const removed = await removeCourse(data.scheduleId, new Course(data.course));
+            return removed && { type: 'remove', scheduleId: data.scheduleId, ...removed };
+        });
+        sendResponse();
+    },
+    // Answer even when it fails, so the page can say so rather than wait
+    undoScheduleChange({ data, sendResponse }) {
+        undoScheduleChange(data.changeId).then(
+            change => sendResponse({ data: change }),
+            (error: unknown) => sendResponse({ error: error instanceof Error ? error.message : String(error) })
+        );
+    },
+    redoScheduleChange({ data, sendResponse }) {
+        redoScheduleChange(data.changeId).then(
+            change => sendResponse({ data: change }),
+            (error: unknown) => sendResponse({ error: error instanceof Error ? error.message : String(error) })
+        );
     },
     clearCourses({ data, sendResponse }) {
         clearCourses(data.scheduleId).then(sendResponse);
