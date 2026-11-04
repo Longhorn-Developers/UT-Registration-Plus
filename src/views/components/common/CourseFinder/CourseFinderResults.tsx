@@ -34,7 +34,6 @@ import type { Dispatch, JSX, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 import CaretDownIcon from '~icons/ph/caret-down';
-import InfoIcon from '~icons/ph/info';
 import MinusIcon from '~icons/ph/minus';
 import PlusIcon from '~icons/ph/plus';
 
@@ -288,14 +287,14 @@ function CourseRow({
             >
                 <div className='min-w-0 flex flex-1 flex-col gap-0.5'>
                     {/* How many of its sections are open, kept short and next to the course code, where there's room
-                        for it, so the course name below gets the whole width */}
+                        for it, so the course name below gets the whole width. Plain, so it doesn't look like a button. */}
                     <div className='flex flex-row items-center gap-spacing-3'>
                         <Text variant='h4' className='whitespace-nowrap text-content font-bold!'>
                             {department} {number}
                         </Text>
                         <Text
                             variant='mini'
-                            className='flex flex-shrink-0 items-center gap-1 whitespace-nowrap border border-divider rounded-full px-spacing-3 py-px text-content-muted'
+                            className='flex flex-shrink-0 items-center gap-1 whitespace-nowrap text-content-muted'
                         >
                             <span
                                 aria-hidden
@@ -473,7 +472,7 @@ function SectionRow({
     return (
         // The row previews its section on the calendar while it's hovered over or has focus
         <li
-            className='flex flex-row items-center gap-spacing-2 rounded-r py-spacing-2 pl-spacing-4 pr-0 btn-transition hover:bg-surface-hover'
+            className='flex flex-row items-center gap-spacing-2 rounded-r py-spacing-2 pl-spacing-4 pr-spacing-2 btn-transition hover:bg-surface-hover'
             onMouseEnter={showPreview}
             onMouseLeave={hidePreview}
             onFocus={showPreview}
@@ -483,7 +482,8 @@ function SectionRow({
             }}
         >
             {/* Opens the section's details, like a course on the calendar: its grade distribution, RateMyProf, CES, and
-                more. Only text and icons inside, since it's a button. */}
+                more. Its meeting times turn into a link as it's hovered over, to show it opens something. Only text and
+                icons inside, since it's a button. */}
             <button
                 type='button'
                 className='group/details min-w-0 flex flex-1 cursor-pointer flex-col border-none rounded bg-transparent p-0 text-left focusable'
@@ -499,11 +499,16 @@ function SectionRow({
                             variant='small'
                             // Every meeting is struck through when any of them conflicts, since the section can only
                             // be taken whole, like the row on UT's course schedule (if that's turned on). Hovering
-                            // over the section shows on the calendar which meeting overlaps.
-                            className={clsx('block text-content', {
-                                'text-theme-red!': conflicts.length > 0,
-                                'line-through': conflicts.length > 0 && highlightConflicts,
-                            })}
+                            // over the section shows on the calendar which meeting overlaps. Underlined (and orange,
+                            // like a link, unless it's red for a conflict) as it's hovered over or focused, keeping
+                            // the strike.
+                            className={clsx(
+                                'block text-content underline-offset-2 group-hover/details:text-ut-burntorange group-focus-visible/details:text-ut-burntorange',
+                                conflicts.length > 0 && 'text-theme-red!',
+                                conflicts.length > 0 && highlightConflicts
+                                    ? 'line-through group-hover/details:[text-decoration-line:underline_line-through] group-focus-visible/details:[text-decoration-line:underline_line-through]'
+                                    : 'group-hover/details:underline group-focus-visible/details:underline'
+                            )}
                         >
                             {m.getDaysString({ format: 'short' })} {m.getTimeString({ separator: '–' })}
                         </Text>
@@ -516,33 +521,21 @@ function SectionRow({
                 {/* A section that isn't open starts with its status icon, like on the calendar. The unique number comes
                     before the instructors, so a long list of them is what gets cut short (they're shown whole in the
                     details). */}
-                <span className='flex flex-row items-center gap-spacing-2'>
-                    <Text
-                        variant='mini'
-                        className='min-w-0 flex-1 truncate text-content-muted'
-                        title={instructors || undefined}
-                    >
-                        {course.status === Status.OPEN ? (
+                <Text variant='mini' className='block truncate text-content-muted' title={instructors || undefined}>
+                    {course.status === Status.OPEN ? (
+                        <span className='sr-only'>{status.label}, </span>
+                    ) : (
+                        <span
+                            title={status.label}
+                            className={clsx('mr-1 inline-flex align-[-2px]', status.iconClassName)}
+                        >
+                            <StatusIcon aria-hidden status={course.status} className='size-3.5' />
                             <span className='sr-only'>{status.label}, </span>
-                        ) : (
-                            <span
-                                title={status.label}
-                                className={clsx('mr-1 inline-flex align-[-2px]', status.iconClassName)}
-                            >
-                                <StatusIcon aria-hidden status={course.status} className='size-3.5' />
-                                <span className='sr-only'>{status.label}, </span>
-                            </span>
-                        )}
-                        {String(course.uniqueId).padStart(5, '0')} · {instructors || 'Instructor TBA'}
-                        {course.instructionMode !== 'In Person' && ` · ${course.instructionMode}`}
-                    </Text>
-                    {/* Shows that clicking opens the details, as the section's text is hovered over or focused. On
-                            this line, which has room for it, rather than beside the meeting times, which need the width. */}
-                    <InfoIcon
-                        aria-hidden
-                        className='size-3.5 flex-shrink-0 text-content-muted opacity-0 transition-opacity group-hover/details:opacity-100 group-focus-visible/details:opacity-100'
-                    />
-                </span>
+                        </span>
+                    )}
+                    {String(course.uniqueId).padStart(5, '0')} · {instructors || 'Instructor TBA'}
+                    {course.instructionMode !== 'In Person' && ` · ${course.instructionMode}`}
+                </Text>
                 {conflicts.length > 0 && (
                     <Text variant='mini' className='block text-theme-red'>
                         Conflicts with {conflicts.join(', ')}
@@ -550,8 +543,10 @@ function SectionRow({
                 )}
             </button>
             <Button
-                // As wide as "Remove", so it doesn't change size (and move the text beside it) as it's clicked
-                className='w-[5.25rem] flex-shrink-0 justify-center gap-spacing-1 aria-disabled:(cursor-wait opacity-50 scale-100 shadow-none!)'
+                // Just wide enough for "Remove", so it doesn't change size (and move the text beside it) as it's
+                // clicked. Filled in as it's hovered over, so it's clear which button the click goes to, but not while
+                // the schedule updates. Its outline, the color of its text, goes clear rather than white with it.
+                className='w-20 flex-shrink-0 justify-center gap-spacing-1 not-[[aria-disabled=true]]:hover:enabled:(bg-opacity-100! text-white! border-transparent!) aria-disabled:(cursor-wait opacity-50 scale-100 shadow-none!)'
                 color={isAdded ? 'theme-red' : 'ut-green'}
                 size='mini'
                 // Outlined rather than filled, so a long list of sections isn't a column of bright buttons
