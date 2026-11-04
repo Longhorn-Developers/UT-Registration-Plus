@@ -152,7 +152,6 @@ export function MigrationDialog(): JSX.Element {
         const checkMigration = async () => {
             // check if migration was already attempted
             if ((await chrome.storage.local.get('finishedMigration')).finishedMigration) return;
-
             if ((await getUTRPv1Courses()).length > 0) showMigrationDialog();
         };
 

@@ -17,6 +17,7 @@ const BROWSER_TARGET = process.env.BROWSER_TARGET || 'chrome';
 
 // Set browser target environment variable default
 process.env.BROWSER_TARGET = BROWSER_TARGET;
+const EXTENSION_URL_SCHEME = BROWSER_TARGET === 'firefox' ? 'moz-extension' : 'chrome-extension';
 
 const root = resolve(__dirname, 'src');
 const pagesDir = resolve(root, 'pages');
@@ -93,10 +94,9 @@ const fixManifestOptionsPage = (): Plugin => ({
                 if (!chunk) continue;
 
                 if (isOutputChunk(chunk)) {
-                    chunk.code = chunk.code.replace(
-                        /"options_page":"src\/pages\/options\/index.html"/,
-                        `"options_page":"options.html"`
-                    );
+                    chunk.code = chunk.code
+                        .replace(/"options_page":"src\/pages\/options\/index.html"/, `"options_page":"options.html"`)
+                        .replace(/"default_popup":"src\/pages\/popup\/index.html"/g, '"default_popup":"popup.html"');
                     return;
                 }
             }
@@ -134,11 +134,14 @@ let _server: ViteDevServer;
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    define: {
+        __BROWSER__: JSON.stringify(BROWSER_TARGET ?? 'chrome'),
+    },
     plugins: [
         react(),
         reactFallbackThrottlePlugin(0), // react 19 terrible defaults: https://github.com/facebook/react/issues/31819
         Icons({ compiler: 'jsx', jsx: 'react' }),
-        crx({ manifest }),
+        crx({ manifest, browser: BROWSER_TARGET as 'chrome' | 'firefox' }),
         fixManifestOptionsPage(),
         {
             name: 'public-transform',
@@ -201,9 +204,11 @@ export default defineConfig({
             // enforce: 'post',
             transform(code, id) {
                 if (id.replace(/\?used$/, '').endsWith('.scss')) {
+                    // Content-script CSS can reference extension assets via the __MSG_@@extension_id__
+                    // placeholder, but the URL scheme differs per browser.
                     const transformedCode = code.replace(
                         /(__VITE_ASSET__.*?__)/g,
-                        (_, path) => `chrome-extension://__MSG_@@extension_id__${path}`
+                        (_, path) => `${EXTENSION_URL_SCHEME}://__MSG_@@extension_id__${path}`
                     );
                     return { code: transformedCode, map: null };
                 }
@@ -236,6 +241,7 @@ export default defineConfig({
         // },
 
         renameFile('src/pages/debug/index.html', 'debug.html'),
+        renameFile('src/pages/popup/index.html', 'popup.html'),
         renameFile('src/pages/options/index.html', 'options.html'),
         renameFile('src/pages/calendar/index.html', 'calendar.html'),
         renameFile('src/pages/report/index.html', 'report.html'),
@@ -313,8 +319,7 @@ export default defineConfig({
     },
     build: {
         target: ['chrome120', 'edge120', 'firefox120'],
-        // NOTE: Eventually we will add this back once we support multiple browsers
-        // outDir: `dist/${process.env.BROWSER_TARGET || 'chrome'}`,
+        outDir: `dist/${BROWSER_TARGET}`,
         emptyOutDir: true,
         reportCompressedSize: false,
         chunkSizeWarningLimit: 2000, // we're a extension
@@ -344,5 +349,6 @@ export default defineConfig({
         coverage: {
             provider: 'v8',
         },
+        setupFiles: ['./test/setupTests.ts'],
     },
 });

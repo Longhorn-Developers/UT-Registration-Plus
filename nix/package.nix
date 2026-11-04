@@ -10,6 +10,7 @@
   gitRev ? "unknown",
   gitBranch ? "unknown",
   buildScript ? "build",
+  browserTarget ? "chrome",
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -34,6 +35,7 @@ stdenv.mkDerivation (finalAttrs: {
   # Pass git info to the build
   VITE_GIT_COMMIT = gitRev;
   VITE_GIT_BRANCH = gitBranch;
+  BROWSER_TARGET = browserTarget;
 
   buildPhase = ''
     pnpm run ${buildScript}
@@ -41,7 +43,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   installPhase = ''
     mkdir -p $out
-    cp -r dist/* $out/
+    cp -r dist/${browserTarget}/* $out/
   '';
 
   meta = {
