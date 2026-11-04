@@ -276,7 +276,7 @@ function CourseRow({
             {/* Its hover color reaches a little past the text on each side, which lines up with the fields above */}
             <button
                 type='button'
-                className='-mx-spacing-2 w-[calc(100%+1rem)] flex flex-row cursor-pointer items-center gap-spacing-3 border-none rounded bg-transparent px-spacing-2 py-spacing-3 text-left btn-transition hover:bg-surface-hover focusable'
+                className='-mx-spacing-2 w-[calc(100%+0.5rem)] flex flex-row cursor-pointer items-center gap-spacing-3 border-none rounded bg-transparent px-spacing-2 py-spacing-3 text-left btn-transition hover:bg-surface-hover focusable'
                 onClick={onToggle}
                 aria-expanded={isExpanded}
                 title={isExpanded ? 'Hide sections' : 'Show sections'}
@@ -458,7 +458,7 @@ function SectionRow({
     return (
         // The row previews its section on the calendar while it's hovered over or has focus
         <li
-            className='flex flex-row items-center gap-spacing-2 rounded-r py-spacing-2 pl-spacing-4 pr-spacing-1 btn-transition hover:bg-surface-hover'
+            className='flex flex-row items-center gap-spacing-2 rounded-r py-spacing-2 pl-spacing-4 pr-0 btn-transition hover:bg-surface-hover'
             onMouseEnter={showPreview}
             onMouseLeave={hidePreview}
             onFocus={showPreview}

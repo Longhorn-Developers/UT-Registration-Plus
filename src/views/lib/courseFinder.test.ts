@@ -353,6 +353,10 @@ describe('courseFinder::filterCourses', () => {
         ]);
         // A block can be set not to count as a conflict
         expect(conflictsWithSchedule(britLitOpen, [], [{ ...block, conflictHighlight: false }])).toBe(false);
+        // A section that's already in the schedule isn't hidden, so it can still be removed
+        expect(ids(filterCourses(page.courses, filtersWith({ hideConflicts: true }), [britLitOpen], [block]))).toEqual([
+            33870, 33875, 33880,
+        ]);
     });
 });
 

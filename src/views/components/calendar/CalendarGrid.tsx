@@ -200,7 +200,13 @@ export default function CalendarGrid({
                     className='pointer-events-none relative z-1 min-h-0 min-w-0 screenshot:hidden'
                 >
                     <div
-                        className='absolute box-border pb-1 pr-2.5 motion-safe:(animate-fade-in animate-duration-150)'
+                        className={clsx(
+                            'absolute box-border pr-2.5 motion-safe:(animate-fade-in animate-duration-150)',
+                            // Like the course cells, 15-minute meetings need the bottom gap for their text
+                            cell.calendarGridPoint.endIndex - cell.calendarGridPoint.startIndex <= 0.5
+                                ? 'pb-px'
+                                : 'pb-1'
+                        )}
                         style={calendarCellPosition(cell, totalRows)}
                     >
                         <PreviewCourseCell cell={cell} />

@@ -389,7 +389,9 @@ export function filterCourses(
         if (filters.openOnly && course.status !== Status.OPEN) {
             return false;
         }
-        if (filters.hideConflicts && conflictsWithSchedule(course, scheduledCourses, blocks)) {
+        // A section that's already in the schedule stays, so it can still be seen and removed from here
+        const isScheduled = scheduledCourses.some(c => c.uniqueId === course.uniqueId);
+        if (filters.hideConflicts && !isScheduled && conflictsWithSchedule(course, scheduledCourses, blocks)) {
             return false;
         }
         return matchesKeyword(course, filters.keyword);
