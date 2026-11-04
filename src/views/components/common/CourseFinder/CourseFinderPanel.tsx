@@ -36,8 +36,8 @@ export interface CourseFinderPanelProps {
 }
 
 /**
- * The Course Finder, shown in the calendar sidebar in place of the schedules: a search for a field of study,
- * filters that stay hidden until they're needed, and the results. It scrolls with the sidebar, with its title
+ * The Course Finder, shown in the calendar sidebar in place of the schedules: a search for a field of study, the
+ * semester, filters that stay hidden until they're needed, and the results. It scrolls with the sidebar, with its title
  * staying at the top like the schedules' does. Takes its state as props so it can be rendered with mocked data.
  */
 export default function CourseFinderPanel({
@@ -81,7 +81,12 @@ export default function CourseFinderPanel({
                 />
             </div>
             <CourseFinderSearch finder={finder} form={form} inputRef={inputRef} />
-            <CourseFinderFilters finder={finder} isOpen={form.areFiltersOpen} onOpenChange={form.setAreFiltersOpen} />
+            <CourseFinderFilters
+                finder={finder}
+                form={form}
+                isOpen={form.areFiltersOpen}
+                onOpenChange={form.setAreFiltersOpen}
+            />
             <CourseFinderResults finder={finder} onPreviewChange={onPreviewChange} />
         </section>
     );

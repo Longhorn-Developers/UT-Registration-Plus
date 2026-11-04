@@ -11,7 +11,7 @@ import { englishStringifyList } from '@shared/util/string';
 import { Button } from '@views/components/common/Button';
 import Collapse from '@views/components/common/CourseFinder/Collapse';
 import { usePrompt } from '@views/components/common/DialogProvider/DialogProvider';
-import ExpandableText from '@views/components/common/ExpandableText';
+import Divider from '@views/components/common/Divider';
 import Link from '@views/components/common/Link';
 import Spinner from '@views/components/common/Spinner';
 import Text from '@views/components/common/Text/Text';
@@ -33,7 +33,6 @@ import type { Dispatch, JSX, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 import CaretDownIcon from '~icons/ph/caret-down';
-import ChartBarFillIcon from '~icons/ph/chart-bar-fill';
 import MinusIcon from '~icons/ph/minus';
 import PlusIcon from '~icons/ph/plus';
 
@@ -128,13 +127,15 @@ export default function CourseFinderResults({ finder, onPreviewChange }: CourseF
 
     return (
         <div className='flex flex-col gap-spacing-3'>
-            <div className='flex flex-row flex-wrap items-baseline justify-between gap-x-spacing-3 gap-y-spacing-1'>
-                <Text variant='mini' className='text-content-muted' aria-live='polite'>
+            {/* A heading between lines, like the custom block form's "Advanced options" */}
+            <div className='flex flex-row items-center gap-spacing-3'>
+                <Divider className='flex-1' orientation='horizontal' size='100%' />
+                <Text variant='small' className='flex-shrink-0 uppercase' aria-live='polite'>
                     {matchCount === results.length
                         ? pluralize(groups.length, 'course')
-                        : `${pluralize(groups.length, 'course')} ${groups.length === 1 ? 'matches' : 'match'} your filters`}
+                        : `${groups.length} matching course${groups.length === 1 ? '' : 's'}`}
                 </Text>
-                {query && <SourceLinks query={query} />}
+                <Divider className='flex-1' orientation='horizontal' size='100%' />
             </div>
             {groups.length === 0 ? (
                 <EmptyState>
@@ -143,7 +144,7 @@ export default function CourseFinderResults({ finder, onPreviewChange }: CourseF
                         : 'No sections match your filters.'}
                 </EmptyState>
             ) : (
-                <ul className='m-0 flex list-none flex-col border-t border-divider p-0'>
+                <ul className='m-0 flex list-none flex-col p-0'>
                     {groups.map(group => (
                         <CourseRow
                             key={group.fullName}
@@ -173,6 +174,8 @@ export default function CourseFinderResults({ finder, onPreviewChange }: CourseF
                     Load more results
                 </Button>
             )}
+            {/* After the results, for looking further on UT's own site */}
+            {query && status !== 'loading' && <SourceLinks query={query} />}
             {statsCourse && (
                 <CourseCatalogInjectedPopup
                     course={statsCourse}
@@ -221,8 +224,7 @@ function SourceLinks({ query }: { query: CourseFinderQuery }): JSX.Element {
     });
 
     return (
-        // Pulled out by the links' padding, so the last one lines up with the cards' edge
-        <Text variant='mini' className='-mr-1.5 flex flex-row items-baseline gap-spacing-3 text-content-muted'>
+        <Text variant='mini' className='flex flex-row items-baseline justify-center gap-spacing-3 text-content-muted'>
             {links.length > 1 && 'View on UT:'}
             {links.map(link => (
                 <a
@@ -467,7 +469,16 @@ function SectionRow({
                 if (!e.currentTarget.contains(e.relatedTarget as Node | null)) hidePreview();
             }}
         >
-            <div className='min-w-0 flex flex-1 flex-col'>
+            {/* Opens the section's details, like a course on the calendar: its grade distribution, RateMyProf, CES, and
+                more. Only text inside, since it's a button. */}
+            <button
+                type='button'
+                className='min-w-0 flex flex-1 cursor-pointer flex-col border-none rounded bg-transparent p-0 text-left focusable'
+                onClick={() => onOpenStats(course)}
+                title='Details, grade distribution, and more'
+            >
+                {/* Says what the button does before the times and status it shows */}
+                <span className='sr-only'>Details for {name}: </span>
                 {course.schedule.meetings.length > 0 ? (
                     course.schedule.meetings.map(m => (
                         <Text
@@ -476,7 +487,7 @@ function SectionRow({
                             // Every meeting is struck through when any of them conflicts, since the section can only
                             // be taken whole, like the row on UT's course schedule (if that's turned on). Hovering
                             // over the section shows on the calendar which meeting overlaps.
-                            className={clsx('text-content', {
+                            className={clsx('block text-content', {
                                 'text-theme-red!': conflicts.length > 0,
                                 'line-through': conflicts.length > 0 && highlightConflicts,
                             })}
@@ -485,35 +496,26 @@ function SectionRow({
                         </Text>
                     ))
                 ) : (
-                    <Text variant='small' className='text-content'>
+                    <Text variant='small' className='block text-content'>
                         No meeting times
                     </Text>
                 )}
-                {/* The status sits on this line rather than its own column, so the meeting times get the width */}
-                <ExpandableText lines={1} variant='mini' className='text-content-muted'>
+                {/* The status sits on this line rather than its own column, so the meeting times get the width. A long
+                    list of instructors is cut short here, and shown whole in the details. */}
+                <Text variant='mini' className='block truncate text-content-muted' title={instructors || undefined}>
                     <span
                         aria-hidden
                         className={clsx('mr-1 inline-block size-2 rounded-full align-middle', status.dotClassName)}
                     />
                     {status.label} · {String(course.uniqueId).padStart(5, '0')} · {instructors || 'Instructor TBA'}
                     {course.instructionMode !== 'In Person' && ` · ${course.instructionMode}`}
-                </ExpandableText>
+                </Text>
                 {conflicts.length > 0 && (
-                    <Text variant='mini' className='text-theme-red'>
+                    <Text variant='mini' className='block text-theme-red'>
                         Conflicts with {conflicts.join(', ')}
                     </Text>
                 )}
-            </div>
-            <Button
-                className='flex-shrink-0 text-content-muted! hover:enabled:text-ut-burntorange!'
-                color='ut-burntorange'
-                size='mini'
-                variant='minimal'
-                icon={ChartBarFillIcon}
-                onClick={() => onOpenStats(course)}
-                title='Grade distribution, RateMyProf, and more'
-                aria-label={`Stats for ${name}`}
-            />
+            </button>
             <Button
                 className='flex-shrink-0 aria-disabled:(cursor-wait opacity-50 scale-100 shadow-none!)'
                 color={isAdded ? 'theme-red' : 'ut-green'}

@@ -1,7 +1,6 @@
-import Dropdown from '@views/components/common/Dropdown';
 import Text from '@views/components/common/Text/Text';
 import type { UseCourseFinderReturn } from '@views/hooks/useCourseFinder';
-import { LEVEL_OPTIONS, type LevelOptionId, type UseCourseFinderFormReturn } from '@views/hooks/useCourseFinderForm';
+import { sortLevels, type UseCourseFinderFormReturn } from '@views/hooks/useCourseFinderForm';
 import type { CourseFinderQuery } from '@views/lib/courseFinder';
 import type { JSX, Ref } from 'react';
 import { useEffect, useMemo } from 'react';
@@ -29,8 +28,10 @@ export interface CourseFinderSearchProps {
 }
 
 /**
- * The search form of the Course Finder. The results follow the form: picking a field of study searches it at the
- * picked level, picking a course code like "C S 314" searches that course alone, and with no field of study, picking a core curriculum area in the filters searches that instead.
+ * The search field of the Course Finder (the semester and the levels to search are with the filters). The results
+ * follow the form: picking a field of study searches it at the picked levels, picking a course code like "C S 314"
+ * searches that course alone, and with no field of study, picking a core curriculum area in the filters searches that
+ * instead.
  * With neither picked, there's nothing to search, so the results are cleared. While a field of study is being typed,
  * the results stay as they are until one is picked.
  */
@@ -43,11 +44,8 @@ export default function CourseFinderSearch({ finder, form, inputRef }: CourseFin
         setCourseNumber,
         fieldOfStudySearch,
         setFieldOfStudySearch,
-        levelId,
-        setLevelId,
+        levels,
     } = form;
-
-    const level = LEVEL_OPTIONS.find(l => l.id === levelId) ?? LEVEL_OPTIONS[0];
     const semesterCode = semester.selectedItem?.code;
 
     const query = useMemo((): CourseFinderQuery | null => {
@@ -56,13 +54,13 @@ export default function CourseFinderSearch({ finder, form, inputRef }: CourseFin
             return { searchBy: 'course', semesterCode, department: department.code, courseNumber };
         }
         if (department) {
-            return { searchBy: 'major', semesterCode, department: department.code, levels: [...level.levels] };
+            return { searchBy: 'major', semesterCode, department: department.code, levels: sortLevels(levels) };
         }
         if (filters.coreCode) {
             return { searchBy: 'core', semesterCode, coreCode: filters.coreCode };
         }
         return null;
-    }, [semesterCode, department, courseNumber, level, filters.coreCode]);
+    }, [semesterCode, department, courseNumber, levels, filters.coreCode]);
 
     const isPickingFieldOfStudy = !department && fieldOfStudySearch.trim() !== '';
 
@@ -97,25 +95,6 @@ export default function CourseFinderSearch({ finder, form, inputRef }: CourseFin
                 search={fieldOfStudySearch}
                 onSearchChange={setFieldOfStudySearch}
                 inputRef={inputRef}
-            />
-            {/* Each Dropdown is its own z-30 layer, so the open one goes above the Dropdowns after it. The level only
-                narrows down a field of study, so it's left out until there's one to narrow down (a course is the same
-                course at every level). */}
-            {department && courseNumber === null && (
-                <Dropdown
-                    className='data-[open]:z-35'
-                    selectedOption={level}
-                    options={LEVEL_OPTIONS}
-                    onOptionChange={option => setLevelId(option.id as LevelOptionId)}
-                />
-            )}
-            <Dropdown
-                className='data-[open]:z-35'
-                selectedOption={semester.selectedOption}
-                placeholderText='Semester'
-                noOptionsText={areSemestersLoading ? 'Loading semesters…' : 'No semesters found'}
-                onOptionChange={semester.onOptionChange}
-                options={semester.dropdownOptions}
             />
             {department && !semesterCode && !areSemestersLoading && (
                 <Text variant='mini' className='text-theme-red'>
