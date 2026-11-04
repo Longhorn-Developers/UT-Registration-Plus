@@ -2,6 +2,7 @@ import type { Course, StatusType } from '@shared/types/Course';
 import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { CustomBlock } from '@shared/types/CustomBlock';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { getCustomBlockConflicts } from '@shared/util/customBlocks';
 import type { CalendarCourseCellProps } from '@views/components/calendar/CalendarCourseCell';
 import { useEffect, useState } from 'react';
 import useCustomBlocks from './useCustomBlocks';
@@ -51,6 +52,8 @@ export interface CalendarGridCourse extends CalendarLayoutCell {
 export interface CalendarPreviewCell extends CalendarGridCourse {
     /** The courses in the schedule that meet at the same time on this day */
     conflicts: Course[];
+    /** The schedule's custom time blocks (set to highlight conflicts) at the same time on this day */
+    blockConflicts: CustomBlock[];
 }
 
 /**
@@ -176,7 +179,7 @@ export function useFlattenedCourseSchedule(
     return {
         blocks,
         courseCells: processedCourses,
-        previewCells: preview ? processPreviewCourse(preview, activeSchedule.courses, gridStartMinutes) : [],
+        previewCells: preview ? processPreviewCourse(preview, activeSchedule.courses, gridStartMinutes, blocks) : [],
         activeSchedule,
         startMinutes: gridStartMinutes,
         endMinutes: gridEndMinutes,
@@ -184,13 +187,14 @@ export function useFlattenedCourseSchedule(
 }
 
 /**
- * Function to process a previewed course into its in-person meetings, each with the scheduled courses it conflicts
- * with on its day
+ * Function to process a previewed course into its in-person meetings, each with the scheduled courses and custom time
+ * blocks it conflicts with on its day
  */
 export function processPreviewCourse(
     course: Course,
     scheduledCourses: Course[],
-    gridStartMinutes: number
+    gridStartMinutes: number,
+    blocks: CustomBlock[] = []
 ): CalendarPreviewCell[] {
     const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
 
@@ -209,7 +213,14 @@ export function processPreviewCourse(
                             meeting.endTime > m.startTime
                     )
                 );
-                return { ...cell, conflicts };
+                const blockConflicts =
+                    day === undefined
+                        ? []
+                        : getCustomBlockConflicts(
+                              [{ days: [day], startTime: meeting.startTime, endTime: meeting.endTime }],
+                              blocks
+                          );
+                return { ...cell, conflicts, blockConflicts };
             })
         );
 }

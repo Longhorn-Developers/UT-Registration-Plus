@@ -65,8 +65,8 @@ export default function CourseFinderPanel({
             }}
         >
             {/* Above the Dropdowns (z-30) as they scroll under it, but below the field of study list (z-50) */}
-            <div className='sticky top-0 z-40 flex flex-row items-center justify-between bg-white pt-1'>
-                <Text as='h2' id={titleId} variant='h3' className='text-nowrap text-theme-black'>
+            <div className='sticky top-0 z-40 flex flex-row items-center justify-between bg-surface pt-1'>
+                <Text as='h2' id={titleId} variant='h3' className='text-nowrap text-content'>
                     FIND A COURSE
                 </Text>
                 <Button

@@ -212,8 +212,8 @@ export default function CalendarGrid({
 }
 
 // Hatched, so a conflict reads as one even where the colors are hard to tell apart. The cell's background lets some
-// of the course it conflicts with show through, so its text sits on a near-white band across the top that keeps the
-// red at 4.5:1 contrast over any course color.
+// of the course it conflicts with show through, so its text sits on a band of the calendar's own color across the
+// top, which keeps the red readable over any course color.
 const CONFLICT_HATCHING = 'repeating-linear-gradient(135deg, rgb(209 0 0 / 0.07) 0 6px, transparent 6px 12px)';
 
 /**
@@ -223,20 +223,27 @@ const CONFLICT_HATCHING = 'repeating-linear-gradient(135deg, rgb(209 0 0 / 0.07)
 function PreviewCourseCell({ cell }: { cell: CalendarPreviewCell }): React.JSX.Element {
     const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
     const { courseDeptAndInstr, timeAndLocation } = cell.componentProps;
-    const isConflicting = cell.conflicts.length > 0;
+    const conflictNames = [
+        ...cell.conflicts.map(c => `${c.department} ${c.number}`),
+        ...cell.blockConflicts.map(block => block.name),
+    ];
+    const isConflicting = conflictNames.length > 0;
 
     return (
         <div
             className={clsx(
                 'h-full w-full flex flex-col gap-0.25 overflow-hidden rounded border-2 border-dashed px-2 py-1',
                 isConflicting
-                    ? 'border-theme-red bg-white/80 text-theme-red'
-                    : 'border-ut-burntorange/70 bg-ut-burntorange/10 text-ut-black/80'
+                    ? 'border-theme-red bg-surface-raised/80 text-theme-red'
+                    : 'border-ut-burntorange/70 bg-ut-burntorange/10 text-content'
             )}
             style={isConflicting ? { backgroundImage: CONFLICT_HATCHING } : undefined}
         >
             <div
-                className={clsx('flex flex-col gap-0.25', isConflicting && '-mx-2 -mt-1 bg-white/90 px-2 pb-0.5 pt-1')}
+                className={clsx(
+                    'flex flex-col gap-0.25',
+                    isConflicting && '-mx-2 -mt-1 bg-surface-raised/90 px-2 pb-0.5 pt-1'
+                )}
             >
                 <Text
                     variant='h1-course'
@@ -248,9 +255,7 @@ function PreviewCourseCell({ cell }: { cell: CalendarPreviewCell }): React.JSX.E
                     {courseDeptAndInstr}
                 </Text>
                 <Text variant='h3-course' as='p' className='whitespace-pre-line'>
-                    {isConflicting
-                        ? `Conflicts with ${cell.conflicts.map(c => `${c.department} ${c.number}`).join(', ')}`
-                        : timeAndLocation}
+                    {isConflicting ? `Conflicts with ${conflictNames.join(', ')}` : timeAndLocation}
                 </Text>
             </div>
         </div>

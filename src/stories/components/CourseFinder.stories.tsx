@@ -207,7 +207,7 @@ function MockCourseFinder({
 
     const panel = (
         // Matches the calendar sidebar's width, padding, and scrolling (see CalendarSidebar in Calendar.tsx)
-        <div className='h-screen w-[20.3125rem] flex flex-none flex-col border-r border-ut-offwhite/50 bg-white py-spacing-5'>
+        <div className='h-screen w-[20.3125rem] flex flex-none flex-col border-r border-divider bg-surface py-spacing-5'>
             <div
                 style={{ scrollbarGutter: 'stable' }}
                 className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto scroll-pt-10 pb-spacing-6 pl-spacing-7 pr-2.75'

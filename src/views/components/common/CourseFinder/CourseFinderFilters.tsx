@@ -78,8 +78,8 @@ export default function CourseFinderFilters({ finder, isOpen, onOpenChange }: Co
             <div className='flex flex-row items-center justify-between gap-spacing-3'>
                 <Button
                     ref={toggleRef}
-                    className='-ml-spacing-3'
                     color='ut-black'
+                    className='-ml-spacing-3'
                     size='small'
                     variant='minimal'
                     icon={FunnelIcon}
@@ -136,7 +136,7 @@ export default function CourseFinderFilters({ finder, isOpen, onOpenChange }: Co
                     }
                 />
                 <fieldset className='m-0 flex flex-wrap items-center gap-spacing-2 border-none p-0'>
-                    <Text as='legend' variant='small' className='float-left mr-spacing-2 text-ut-black'>
+                    <Text as='legend' variant='small' className='float-left mr-spacing-2 text-content'>
                         Hours
                     </Text>
                     {CREDIT_HOURS_OPTIONS.map(hours => {
@@ -158,7 +158,7 @@ export default function CourseFinderFilters({ finder, isOpen, onOpenChange }: Co
                 </fieldset>
                 {availableFlags.length > 0 && (
                     <fieldset className='m-0 flex flex-wrap items-center gap-spacing-2 border-none p-0'>
-                        <Text as='legend' variant='small' className='float-left mr-spacing-2 text-ut-black'>
+                        <Text as='legend' variant='small' className='float-left mr-spacing-2 text-content'>
                             Flags
                         </Text>
                         {availableFlags.map(flag => {
@@ -184,14 +184,14 @@ export default function CourseFinderFilters({ finder, isOpen, onOpenChange }: Co
                         flips it when its text is clicked: Headless UI's Label can't find its switch in a shadow root. */}
                 {/** biome-ignore lint/a11y/noLabelWithoutControl: the switch inside is a button, which a label can hold */}
                 <label className='flex cursor-pointer items-center justify-between gap-spacing-3'>
-                    <Text variant='small' className='text-ut-black'>
+                    <Text variant='small' className='text-content'>
                         Open sections only
                     </Text>
                     <SwitchButton isChecked={filters.openOnly} onChange={openOnly => update({ openOnly })} />
                 </label>
                 {/** biome-ignore lint/a11y/noLabelWithoutControl: the switch inside is a button, which a label can hold */}
                 <label className='flex cursor-pointer items-center justify-between gap-spacing-3'>
-                    <Text variant='small' className='text-ut-black'>
+                    <Text variant='small' className='text-content'>
                         Hide time conflicts
                     </Text>
                     <SwitchButton

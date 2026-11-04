@@ -3,6 +3,7 @@ import { background } from '@shared/messages';
 import { CacheStore } from '@shared/storage/CacheStore';
 import type { Course, Semester } from '@shared/types/Course';
 import { FIELDS_OF_STUDY, type FieldOfStudy } from '@shared/types/FieldOfStudy';
+import useCustomBlocks from '@views/hooks/useCustomBlocks';
 import { type UseDropdownReturn, useDropdown } from '@views/hooks/useDropdown';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
 import {
@@ -89,6 +90,7 @@ export interface UseCourseFinderReturn {
  */
 export function useCourseFinder(isOpen: boolean): UseCourseFinderReturn {
     const activeSchedule = useActiveSchedule();
+    const blocks = useCustomBlocks(activeSchedule.id);
     // Null while they're being fetched
     const [availableSemesters, setAvailableSemesters] = useState<Semester[] | null>(null);
     const [fieldsOfStudy, setFieldsOfStudy] = useState<readonly FieldOfStudy[]>(FIELDS_OF_STUDY);
@@ -249,8 +251,8 @@ export function useCourseFinder(isOpen: boolean): UseCourseFinderReturn {
         // When searching by core, make sure every result actually satisfies that core area
         const effectiveFilters =
             query?.searchBy === 'core' ? { ...filters, coreCode: filters.coreCode ?? query.coreCode } : filters;
-        return filterCourses(results, effectiveFilters, activeSchedule.courses);
-    }, [results, filters, query, activeSchedule.courses]);
+        return filterCourses(results, effectiveFilters, activeSchedule.courses, blocks);
+    }, [results, filters, query, activeSchedule.courses, blocks]);
 
     const toggleGroup = useCallback((fullName: string) => {
         setExpandedGroups(prev => {

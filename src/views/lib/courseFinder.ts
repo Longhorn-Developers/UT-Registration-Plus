@@ -1,6 +1,8 @@
 import { background } from '@shared/messages';
 import { type Course, type InstructionMode, Status } from '@shared/types/Course';
+import type { CustomBlock } from '@shared/types/CustomBlock';
 import type { FieldOfStudy } from '@shared/types/FieldOfStudy';
+import { getCustomBlockConflicts } from '@shared/util/customBlocks';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import getCourseTableRows from '@views/lib/getCourseTableRows';
 import { SiteSupport } from '@views/lib/getSiteSupport';
@@ -319,14 +321,19 @@ export function satisfiesCore(course: Course, coreCode: CoreCode): boolean {
 }
 
 /**
- * Checks whether any of a course's meetings overlap with a course in the schedule
+ * Checks whether any of a course's meetings overlap with a course in the schedule, or with one of its custom time
+ * blocks that's set to highlight conflicts
  *
  * @param course - the course to check
  * @param scheduledCourses - the courses in the schedule
- * @returns true if the course conflicts with a different course in the schedule
+ * @param blocks - the schedule's custom time blocks
+ * @returns true if the course conflicts with a different course in the schedule, or with a block
  */
-export function conflictsWithSchedule(course: Course, scheduledCourses: Course[]): boolean {
-    return scheduledCourses.some(c => c.uniqueId !== course.uniqueId && course.getConflicts(c).length > 0);
+export function conflictsWithSchedule(course: Course, scheduledCourses: Course[], blocks: CustomBlock[] = []): boolean {
+    return (
+        scheduledCourses.some(c => c.uniqueId !== course.uniqueId && course.getConflicts(c).length > 0) ||
+        getCustomBlockConflicts(course.schedule.meetings, blocks).length > 0
+    );
 }
 
 /**
@@ -357,9 +364,15 @@ export function matchesKeyword(course: Course, keyword: string): boolean {
  * @param courses - the courses to filter
  * @param filters - the filters to apply
  * @param scheduledCourses - the courses in the active schedule, used to hide time conflicts
+ * @param blocks - the active schedule's custom time blocks, also used to hide time conflicts
  * @returns the courses that match every filter, in their original order
  */
-export function filterCourses(courses: Course[], filters: CourseFinderFilters, scheduledCourses: Course[]): Course[] {
+export function filterCourses(
+    courses: Course[],
+    filters: CourseFinderFilters,
+    scheduledCourses: Course[],
+    blocks: CustomBlock[] = []
+): Course[] {
     return courses.filter(course => {
         if (filters.creditHours.length > 0 && !filters.creditHours.includes(getCreditHoursOption(course.creditHours))) {
             return false;
@@ -376,7 +389,7 @@ export function filterCourses(courses: Course[], filters: CourseFinderFilters, s
         if (filters.openOnly && course.status !== Status.OPEN) {
             return false;
         }
-        if (filters.hideConflicts && conflictsWithSchedule(course, scheduledCourses)) {
+        if (filters.hideConflicts && conflictsWithSchedule(course, scheduledCourses, blocks)) {
             return false;
         }
         return matchesKeyword(course, filters.keyword);

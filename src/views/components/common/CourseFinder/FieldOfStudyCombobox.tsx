@@ -72,7 +72,7 @@ export default function FieldOfStudyCombobox({
             by={(a, b) => optionKey(a) === optionKey(b)}
             className={clsx('relative h-9', className)}
         >
-            <MagnifyingGlassIcon className='pointer-events-none absolute left-spacing-3 top-1/2 h-5 w-5 -translate-y-1/2 text-ut-black/50' />
+            <MagnifyingGlassIcon className='pointer-events-none absolute left-spacing-3 top-1/2 h-5 w-5 -translate-y-1/2 text-content/50' />
             <ComboboxInput
                 ref={inputRef}
                 aria-label='Field of study or course'
@@ -85,13 +85,13 @@ export default function FieldOfStudyCombobox({
                 }}
                 onChange={e => onSearchChange(e.target.value)}
                 className={clsx(
-                    'h-full w-full pl-10 pr-9 bg-transparent text-[1rem] text-ut-black truncate',
-                    'border border-ut-offwhite/50 border-rounded outline-none! focus:border-blue-500'
+                    'h-full w-full pl-10 pr-9 bg-transparent text-[1rem] text-content truncate placeholder:text-content/50',
+                    'border border-divider/50 border-rounded outline-none! focus:border-blue-500'
                 )}
             />
             <ComboboxButton
                 aria-label='Show fields of study'
-                className='absolute inset-y-0 right-0 flex items-center bg-transparent px-spacing-3 text-ut-black'
+                className='absolute inset-y-0 right-0 flex items-center bg-transparent px-spacing-3 text-content'
             >
                 <CaretDownIcon className='h-5 w-5' />
             </ComboboxButton>
@@ -99,7 +99,7 @@ export default function FieldOfStudyCombobox({
             <ComboboxOptions
                 className={clsx(
                     'absolute left-0 top-full mt-spacing-1 flex flex-col p-spacing-1 w-full max-h-[240px] overflow-y-auto z-50',
-                    'origin-top rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
+                    'origin-top rounded bg-surface-raised text-content shadow-lg transition border border-divider focus:outline-none',
                     'data-[closed]:(opacity-0 scale-95)',
                     'data-[enter]:(ease-out-expo duration-150)',
                     'data-[leave]:(ease-out duration-50)'
@@ -108,7 +108,7 @@ export default function FieldOfStudyCombobox({
                 {/* Says so when nothing matches, rather than hiding the list, so it's clear what Escape closes.
                     Screen readers hear it from the status below, since a list of options can only hold options. */}
                 {!hasOptions && (
-                    <Text aria-hidden variant='small' className='p-spacing-3 text-ut-black/80'>
+                    <Text aria-hidden variant='small' className='p-spacing-3 text-content-muted'>
                         No fields of study match "{search}"
                     </Text>
                 )}
@@ -116,8 +116,8 @@ export default function FieldOfStudyCombobox({
                     <ComboboxOption
                         value={courseCode}
                         className={clsx(
-                            'flex cursor-pointer select-none items-baseline gap-spacing-3 rounded p-spacing-3 text-ut-black/80',
-                            'data-[focus]:bg-ut-offwhite/20 data-[selected]:text-ut-burntorange'
+                            'flex cursor-pointer select-none items-baseline gap-spacing-3 rounded p-spacing-3 text-content',
+                            'data-[focus]:bg-surface-hover data-[selected]:text-ut-burntorange'
                         )}
                     >
                         <Text className='flex-shrink-0 font-bold!'>
@@ -133,8 +133,8 @@ export default function FieldOfStudyCombobox({
                         key={field.code}
                         value={field}
                         className={clsx(
-                            'flex cursor-pointer select-none gap-spacing-3 rounded p-spacing-3 text-ut-black/80',
-                            'data-[focus]:bg-ut-offwhite/20 data-[selected]:text-ut-burntorange'
+                            'flex cursor-pointer select-none gap-spacing-3 rounded p-spacing-3 text-content',
+                            'data-[focus]:bg-surface-hover data-[selected]:text-ut-burntorange'
                         )}
                     >
                         <Text className='w-11 flex-shrink-0 font-bold!'>{field.code}</Text>

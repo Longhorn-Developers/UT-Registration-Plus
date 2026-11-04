@@ -98,15 +98,17 @@ export default function CourseFinderSearch({ finder, form, inputRef }: CourseFin
                 onSearchChange={setFieldOfStudySearch}
                 inputRef={inputRef}
             />
-            {/* Each Dropdown is its own z-30 layer, so the open one goes above the Dropdowns after it */}
-            <Dropdown
-                className='data-[open]:z-35'
-                selectedOption={level}
-                options={LEVEL_OPTIONS}
-                onOptionChange={option => setLevelId(option.id as LevelOptionId)}
-                // A course is the same course at every level
-                disabled={!department || courseNumber !== null}
-            />
+            {/* Each Dropdown is its own z-30 layer, so the open one goes above the Dropdowns after it. The level only
+                narrows down a field of study, so it's left out until there's one to narrow down (a course is the same
+                course at every level). */}
+            {department && courseNumber === null && (
+                <Dropdown
+                    className='data-[open]:z-35'
+                    selectedOption={level}
+                    options={LEVEL_OPTIONS}
+                    onOptionChange={option => setLevelId(option.id as LevelOptionId)}
+                />
+            )}
             <Dropdown
                 className='data-[open]:z-35'
                 selectedOption={semester.selectedOption}

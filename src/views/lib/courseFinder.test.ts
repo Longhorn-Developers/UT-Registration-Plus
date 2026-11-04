@@ -1,4 +1,5 @@
 import { Course, Status } from '@shared/types/Course';
+import type { CustomBlock } from '@shared/types/CustomBlock';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
@@ -331,6 +332,27 @@ describe('courseFinder::filterCourses', () => {
         expect(ids(filterCourses(page.courses, filtersWith({ hideConflicts: true }), [scheduled]))).toEqual([
             33875, 33880,
         ]);
+    });
+
+    it('hides sections that conflict with a custom time block set to highlight conflicts', () => {
+        // Monday 10:30-11:30 overlaps with E 316L (33870), which meets MWF 10-11
+        const block: CustomBlock = {
+            id: 'work',
+            scheduleId: null,
+            name: 'Work',
+            days: ['Monday'],
+            startTime: 630,
+            endTime: 690,
+            allDay: false,
+            conflictHighlight: true,
+        };
+
+        expect(conflictsWithSchedule(britLitOpen, [], [block])).toBe(true);
+        expect(ids(filterCourses(page.courses, filtersWith({ hideConflicts: true }), [], [block]))).toEqual([
+            33875, 33880,
+        ]);
+        // A block can be set not to count as a conflict
+        expect(conflictsWithSchedule(britLitOpen, [], [{ ...block, conflictHighlight: false }])).toBe(false);
     });
 });
 

@@ -1,6 +1,7 @@
 import type { Serialized } from '@chrome-extension-toolkit';
 import { Course, Status } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
+import type { CustomBlock } from '@shared/types/CustomBlock';
 import { describe, expect, it } from 'vitest';
 
 import { convertMinutesToIndex, GRID_DEFAULT_START, processPreviewCourse } from '../useFlattenedCourseSchedule';
@@ -68,6 +69,28 @@ describe('useFlattenedCourseSchedule', () => {
                 [2, []],
                 [4, [2]],
             ]);
+        });
+
+        it("should mark a conflict with a custom time block on the block's days, unless it's set not to", () => {
+            const preview = makeCourse(1, 'C S', [{ days: ['Monday', 'Wednesday'], startTime: 600, endTime: 650 }]);
+            const block: CustomBlock = {
+                id: 'gym',
+                scheduleId: null,
+                name: 'Gym',
+                days: ['Wednesday'],
+                startTime: 0,
+                endTime: 0,
+                allDay: true,
+                conflictHighlight: true,
+            };
+
+            const cells = processPreviewCourse(preview, [], GRID_DEFAULT_START, [block]);
+            expect(cells.map(c => c.blockConflicts.map(b => b.name))).toEqual([[], ['Gym']]);
+
+            const ignored = processPreviewCourse(preview, [], GRID_DEFAULT_START, [
+                { ...block, conflictHighlight: false },
+            ]);
+            expect(ignored.every(c => c.blockConflicts.length === 0)).toBe(true);
         });
 
         it('should not count back-to-back meetings as a conflict', () => {

@@ -3,8 +3,10 @@ import switchSchedule from '@pages/background/lib/switchSchedule';
 import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { type Course, Status, type StatusType } from '@shared/types/Course';
+import type { CustomBlock } from '@shared/types/CustomBlock';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
+import { getCustomBlockConflicts } from '@shared/util/customBlocks';
 import { englishStringifyList } from '@shared/util/string';
 import { Button } from '@views/components/common/Button';
 import Collapse from '@views/components/common/CourseFinder/Collapse';
@@ -16,6 +18,7 @@ import Text from '@views/components/common/Text/Text';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import type { CourseFinderPreview } from '@views/contexts/CourseFinderContext';
 import type { UseCourseFinderReturn } from '@views/hooks/useCourseFinder';
+import useCustomBlocks from '@views/hooks/useCustomBlocks';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
 import {
@@ -39,7 +42,7 @@ const STATUS_LABELS: Record<StatusType, { label: string; dotClassName: string }>
     [Status.OPEN]: { label: 'Open', dotClassName: 'bg-ut-green' },
     [Status.WAITLISTED]: { label: 'Waitlist', dotClassName: 'bg-ut-orange' },
     [Status.CLOSED]: { label: 'Closed', dotClassName: 'bg-theme-red' },
-    [Status.CANCELLED]: { label: 'Cancelled', dotClassName: 'bg-ut-gray' },
+    [Status.CANCELLED]: { label: 'Cancelled', dotClassName: 'bg-content-muted' },
 };
 
 /**
@@ -63,13 +66,14 @@ export interface CourseFinderResultsProps {
 }
 
 /**
- * The results of a Course Finder search, as one card per course. Clicking a card shows its sections, each with
- * buttons to see its stats (grade distribution, RateMyProf, CES, ...) and to add or remove it from the schedule.
- * Hovering over a section (or focusing in it) previews it on the calendar.
+ * The results of a Course Finder search, as a list with one row per course, like the schedules list. Clicking a course
+ * shows its sections under it, each with buttons to see its stats (grade distribution, RateMyProf, CES, ...) and to
+ * add or remove it from the schedule. Hovering over a section (or focusing in it) previews it on the calendar.
  */
 export default function CourseFinderResults({ finder, onPreviewChange }: CourseFinderResultsProps): JSX.Element {
     const { status, query, results, groups, matchCount, hasMore, loadMore, expandedGroups, toggleGroup } = finder;
     const activeSchedule = useActiveSchedule();
+    const blocks = useCustomBlocks(activeSchedule.id);
     const enforceScheduleLimit = useEnforceScheduleLimit();
     const [statsCourse, setStatsCourse] = useState<Course | null>(null);
     const [isStatsOpen, setIsStatsOpen] = useState(false);
@@ -125,7 +129,7 @@ export default function CourseFinderResults({ finder, onPreviewChange }: CourseF
     return (
         <div className='flex flex-col gap-spacing-3'>
             <div className='flex flex-row flex-wrap items-baseline justify-between gap-x-spacing-3 gap-y-spacing-1'>
-                <Text variant='mini' className='text-ut-black/80' aria-live='polite'>
+                <Text variant='mini' className='text-content-muted' aria-live='polite'>
                     {matchCount === results.length
                         ? pluralize(groups.length, 'course')
                         : `${pluralize(groups.length, 'course')} ${groups.length === 1 ? 'matches' : 'match'} your filters`}
@@ -139,12 +143,13 @@ export default function CourseFinderResults({ finder, onPreviewChange }: CourseF
                         : 'No sections match your filters.'}
                 </EmptyState>
             ) : (
-                <ul className='m-0 flex list-none flex-col gap-spacing-3 p-0'>
+                <ul className='m-0 flex list-none flex-col border-t border-divider p-0'>
                     {groups.map(group => (
-                        <CourseCard
+                        <CourseRow
                             key={group.fullName}
                             group={group}
                             activeSchedule={activeSchedule}
+                            blocks={blocks}
                             onOpenStats={openStats}
                             enforceScheduleLimit={enforceScheduleLimit}
                             isExpanded={expandedGroups.has(group.fullName)}
@@ -157,7 +162,7 @@ export default function CourseFinderResults({ finder, onPreviewChange }: CourseF
             {status === 'loading' && groups.length > 0 && (
                 <div className='flex flex-row items-center justify-center gap-spacing-2'>
                     <Spinner className='h-4! w-4!' />
-                    <Text variant='mini' className='text-ut-black/80'>
+                    <Text variant='mini' className='text-content-muted'>
                         Loading the rest of the results...
                     </Text>
                 </div>
@@ -182,7 +187,7 @@ export default function CourseFinderResults({ finder, onPreviewChange }: CourseF
 
 function EmptyState({ children }: { children: React.ReactNode }): JSX.Element {
     return (
-        <Text as='div' variant='small' className='py-spacing-6 text-center text-ut-black/80' aria-live='polite'>
+        <Text as='div' variant='small' className='py-spacing-6 text-center text-content-muted' aria-live='polite'>
             {children}
         </Text>
     );
@@ -217,7 +222,7 @@ function SourceLinks({ query }: { query: CourseFinderQuery }): JSX.Element {
 
     return (
         // Pulled out by the links' padding, so the last one lines up with the cards' edge
-        <Text variant='mini' className='-mr-1.5 flex flex-row items-baseline gap-spacing-3 text-ut-black/80'>
+        <Text variant='mini' className='-mr-1.5 flex flex-row items-baseline gap-spacing-3 text-content-muted'>
             {links.length > 1 && 'View on UT:'}
             {links.map(link => (
                 <a
@@ -237,9 +242,11 @@ function SourceLinks({ query }: { query: CourseFinderQuery }): JSX.Element {
     );
 }
 
-interface CourseCardProps {
+interface CourseRowProps {
     group: CourseFinderGroup;
     activeSchedule: UserSchedule;
+    /** The active schedule's custom time blocks, which a section can conflict with */
+    blocks: CustomBlock[];
     onOpenStats: (course: Course) => void;
     enforceScheduleLimit: () => boolean;
     isExpanded: boolean;
@@ -247,55 +254,68 @@ interface CourseCardProps {
     onPreviewChange?: Dispatch<SetStateAction<CourseFinderPreview | null>>;
 }
 
-function CourseCard({
+function CourseRow({
     group,
     activeSchedule,
+    blocks,
     onOpenStats,
     enforceScheduleLimit,
     isExpanded,
     onToggle,
     onPreviewChange,
-}: CourseCardProps) {
+}: CourseRowProps) {
     // biome-ignore lint/style/noNonNullAssertion: groups always have at least one section
     const { department, number, courseName } = group.sections[0]!;
     const openCount = group.sections.filter(c => c.status === Status.OPEN).length;
 
     return (
-        // Pressed in a little as its header is clicked, like the app's buttons (which shrink to 96%, too much for a card).
-        // Toward the top, so the header stays under the pointer: shrinking toward the middle of a long, expanded card
-        // would slide the header out from under it, and the click would miss.
-        <li className='origin-top border border-ut-offwhite/50 rounded transition-transform duration-100 ease-out has-[>button:active]:scale-98'>
+        // Pressed in a little as it's clicked, like the app's buttons (which shrink to 96%, too much for a wide row).
+        // Toward the top, so the course stays under the pointer: shrinking toward the middle of a long, expanded row
+        // would slide it out from under the pointer, and the click would miss.
+        <li className='origin-top border-b border-divider transition-transform duration-100 ease-out has-[>button:active]:scale-98'>
+            {/* Its hover color reaches a little past the text on each side, which lines up with the fields above */}
             <button
                 type='button'
-                className='w-full flex flex-row cursor-pointer items-start gap-spacing-2 border-none rounded bg-transparent px-spacing-4 py-spacing-3 text-left btn-transition hover:bg-ut-offwhite/15 focusable'
+                className='-mx-spacing-2 w-[calc(100%+1rem)] flex flex-row cursor-pointer items-center gap-spacing-3 border-none rounded bg-transparent px-spacing-2 py-spacing-3 text-left btn-transition hover:bg-surface-hover focusable'
                 onClick={onToggle}
                 aria-expanded={isExpanded}
                 title={isExpanded ? 'Hide sections' : 'Show sections'}
             >
                 <div className='min-w-0 flex flex-1 flex-col gap-0.5'>
-                    <Text variant='h4' className='whitespace-nowrap text-ut-black font-bold!'>
-                        {department} {number}
-                    </Text>
-                    <Text variant='small' className='truncate text-ut-black' title={courseName}>
+                    <div className='flex flex-row items-baseline justify-between gap-spacing-3'>
+                        <Text variant='h4' className='whitespace-nowrap text-content font-bold!'>
+                            {department} {number}
+                        </Text>
+                        <Text variant='mini' className='flex-shrink-0 whitespace-nowrap text-content-muted'>
+                            <span
+                                aria-hidden
+                                className={clsx(
+                                    'mr-1 inline-block size-2 rounded-full align-middle',
+                                    openCount > 0 ? 'bg-ut-green' : 'bg-content-muted'
+                                )}
+                            />
+                            {openCount} of {group.sections.length} open
+                        </Text>
+                    </div>
+                    <Text variant='small' className='truncate text-content-muted' title={courseName}>
                         {courseName}
-                    </Text>
-                    <Text variant='mini' className='text-ut-black/80'>
-                        {pluralize(group.sections.length, 'section')} · {openCount} open
                     </Text>
                 </div>
                 <CaretDownIcon
-                    className={clsx('mt-1 h-4 w-4 flex-shrink-0 text-ut-black/80 transition-transform duration-150', {
+                    className={clsx('h-4 w-4 flex-shrink-0 text-content-muted transition-transform duration-150', {
                         'rotate-180': isExpanded,
                     })}
                 />
             </button>
+            {/* Set in under the course by a rule down their side, like a list's sub-items */}
             <Collapse show={isExpanded}>
-                <ul className='m-0 list-none p-0'>
+                <ul className='m-0 mb-spacing-3 ml-0.5 list-none border-l-2 border-divider p-0'>
                     {group.sections.map(course => (
                         <SectionRow
                             key={course.uniqueId}
                             course={course}
                             activeSchedule={activeSchedule}
+                            blocks={blocks}
                             onOpenStats={onOpenStats}
                             enforceScheduleLimit={enforceScheduleLimit}
                             onPreviewChange={onPreviewChange}
@@ -310,20 +330,32 @@ function CourseCard({
 interface SectionRowProps {
     course: Course;
     activeSchedule: UserSchedule;
+    blocks: CustomBlock[];
     onOpenStats: (course: Course) => void;
     /** Checks that another schedule can be made, explaining why not if it can't */
     enforceScheduleLimit: () => boolean;
     onPreviewChange?: Dispatch<SetStateAction<CourseFinderPreview | null>>;
 }
 
-function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit, onPreviewChange }: SectionRowProps) {
+function SectionRow({
+    course,
+    activeSchedule,
+    blocks,
+    onOpenStats,
+    enforceScheduleLimit,
+    onPreviewChange,
+}: SectionRowProps) {
     const [isUpdating, setIsUpdating] = useState(false);
     const showDialog = usePrompt();
     const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
     const isAdded = activeSchedule.containsCourse(course);
-    const conflicts = activeSchedule.courses.filter(
-        c => c.uniqueId !== course.uniqueId && course.getConflicts(c).length > 0
-    );
+    // The courses and the custom time blocks (the ones set to highlight conflicts) it overlaps with
+    const conflicts = [
+        ...activeSchedule.courses
+            .filter(c => c.uniqueId !== course.uniqueId && course.getConflicts(c).length > 0)
+            .map(c => `${c.department} ${c.number}`),
+        ...getCustomBlockConflicts(course.schedule.meetings, blocks).map(block => block.name),
+    ];
 
     // Only stops previewing this section, so moving straight from one section to the next keeps the next one
     const { uniqueId } = course;
@@ -426,7 +458,7 @@ function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit,
     return (
         // The row previews its section on the calendar while it's hovered over or has focus
         <li
-            className='flex flex-row items-center gap-spacing-2 border-t border-ut-offwhite/50 px-spacing-4 py-spacing-2 btn-transition hover:bg-ut-offwhite/15'
+            className='flex flex-row items-center gap-spacing-2 rounded-r py-spacing-2 pl-spacing-4 pr-spacing-1 btn-transition hover:bg-surface-hover'
             onMouseEnter={showPreview}
             onMouseLeave={hidePreview}
             onFocus={showPreview}
@@ -444,8 +476,8 @@ function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit,
                             // Every meeting is struck through when any of them conflicts, since the section can only
                             // be taken whole, like the row on UT's course schedule (if that's turned on). Hovering
                             // over the section shows on the calendar which meeting overlaps.
-                            className={clsx({
-                                'text-theme-red': conflicts.length > 0,
+                            className={clsx('text-content', {
+                                'text-theme-red!': conflicts.length > 0,
                                 'line-through': conflicts.length > 0 && highlightConflicts,
                             })}
                         >
@@ -453,10 +485,12 @@ function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit,
                         </Text>
                     ))
                 ) : (
-                    <Text variant='small'>No meeting times</Text>
+                    <Text variant='small' className='text-content'>
+                        No meeting times
+                    </Text>
                 )}
                 {/* The status sits on this line rather than its own column, so the meeting times get the width */}
-                <ExpandableText lines={1} variant='mini' className='text-ut-black/80'>
+                <ExpandableText lines={1} variant='mini' className='text-content-muted'>
                     <span
                         aria-hidden
                         className={clsx('mr-1 inline-block size-2 rounded-full align-middle', status.dotClassName)}
@@ -466,12 +500,12 @@ function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit,
                 </ExpandableText>
                 {conflicts.length > 0 && (
                     <Text variant='mini' className='text-theme-red'>
-                        Conflicts with {conflicts.map(c => `${c.department} ${c.number}`).join(', ')}
+                        Conflicts with {conflicts.join(', ')}
                     </Text>
                 )}
             </div>
             <Button
-                className='flex-shrink-0'
+                className='flex-shrink-0 text-content-muted! hover:enabled:text-ut-burntorange!'
                 color='ut-burntorange'
                 size='mini'
                 variant='minimal'
@@ -484,7 +518,8 @@ function SectionRow({ course, activeSchedule, onOpenStats, enforceScheduleLimit,
                 className='flex-shrink-0 aria-disabled:(cursor-wait opacity-50 scale-100 shadow-none!)'
                 color={isAdded ? 'theme-red' : 'ut-green'}
                 size='mini'
-                variant='filled'
+                // Outlined rather than filled, so a long list of sections isn't a column of bright buttons
+                variant='outline'
                 icon={isAdded ? MinusIcon : PlusIcon}
                 onClick={handleAddOrRemove}
                 // Shows on the calendar which blocks removing the section takes away
