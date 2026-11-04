@@ -20,8 +20,9 @@ export default function Collapse({ show, className, children }: CollapseProps): 
     return (
         <Transition show={show}>
             <div className='grid grid-rows-[1fr] motion-safe:(transition-[grid-template-rows,opacity] duration-300 ease-in-out-expo) data-[closed]:(grid-rows-[0fr] overflow-hidden opacity-0) data-[enter]:overflow-hidden data-[leave]:overflow-hidden'>
-                {/* Bare, since a grid item's padding or border would keep it from closing all the way */}
-                <div className='min-h-0'>
+                {/* Bare, since a grid item's padding or border would keep it from closing all the way. Free to be
+                    narrower than its content, too, so long text inside is cut short rather than widening the panel. */}
+                <div className='min-h-0 min-w-0'>
                     <div className={className}>{children}</div>
                 </div>
             </div>

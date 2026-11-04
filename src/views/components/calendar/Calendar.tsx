@@ -115,7 +115,7 @@ const CalendarSidebar = memo(function CalendarSidebar() {
                         onClick={() => courseFinder.open(findCourseButtonRef.current)}
                     >
                         <MagnifyingGlassIcon className='h-5 w-5 text-content/50' />
-                        <Text variant='p'>Find a course</Text>
+                        <Text variant='p'>Find a course…</Text>
                     </button>
                 </div>
             )}

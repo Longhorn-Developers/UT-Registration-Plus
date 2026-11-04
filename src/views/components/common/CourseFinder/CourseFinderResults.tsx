@@ -7,6 +7,7 @@ import type { CustomBlock } from '@shared/types/CustomBlock';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import { getCustomBlockConflicts } from '@shared/util/customBlocks';
+import { StatusIcon } from '@shared/util/icons';
 import { englishStringifyList } from '@shared/util/string';
 import { Button } from '@views/components/common/Button';
 import Collapse from '@views/components/common/CourseFinder/Collapse';
@@ -33,15 +34,17 @@ import type { Dispatch, JSX, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 import CaretDownIcon from '~icons/ph/caret-down';
+import InfoIcon from '~icons/ph/info';
 import MinusIcon from '~icons/ph/minus';
 import PlusIcon from '~icons/ph/plus';
 
-// The colors go on a dot next to the label, since the text itself wouldn't have enough contrast in them
-const STATUS_LABELS: Record<StatusType, { label: string; dotClassName: string }> = {
-    [Status.OPEN]: { label: 'Open', dotClassName: 'bg-ut-green' },
-    [Status.WAITLISTED]: { label: 'Waitlist', dotClassName: 'bg-ut-orange' },
-    [Status.CLOSED]: { label: 'Closed', dotClassName: 'bg-theme-red' },
-    [Status.CANCELLED]: { label: 'Cancelled', dotClassName: 'bg-content-muted' },
+// A section that isn't open gets the icon the calendar shows for its status, colored so it stands out in the list (in
+// colors that are still clear against the background: UT's lighter orange isn't, so a waitlist is burnt orange)
+const STATUS_LABELS: Record<StatusType, { label: string; iconClassName: string }> = {
+    [Status.OPEN]: { label: 'Open', iconClassName: '' },
+    [Status.WAITLISTED]: { label: 'Waitlisted', iconClassName: 'text-ut-burntorange' },
+    [Status.CLOSED]: { label: 'Closed', iconClassName: 'text-theme-red' },
+    [Status.CANCELLED]: { label: 'Cancelled', iconClassName: 'text-content-muted' },
 };
 
 /**
@@ -66,8 +69,8 @@ export interface CourseFinderResultsProps {
 
 /**
  * The results of a Course Finder search, as a list with one row per course, like the schedules list. Clicking a course
- * shows its sections under it, each with buttons to see its stats (grade distribution, RateMyProf, CES, ...) and to
- * add or remove it from the schedule. Hovering over a section (or focusing in it) previews it on the calendar.
+ * shows its sections under it. Clicking a section shows its details (grade distribution, RateMyProf, CES, ...), and
+ * its button adds it to the schedule or removes it. Hovering over a section (or focusing in it) previews it on the calendar.
  */
 export default function CourseFinderResults({ finder, onPreviewChange }: CourseFinderResultsProps): JSX.Element {
     const { status, query, results, groups, matchCount, hasMore, loadMore, expandedGroups, toggleGroup } = finder;
@@ -284,19 +287,29 @@ function CourseRow({
                 title={isExpanded ? 'Hide sections' : 'Show sections'}
             >
                 <div className='min-w-0 flex flex-1 flex-col gap-0.5'>
-                    <div className='flex flex-row items-baseline justify-between gap-spacing-3'>
+                    {/* How many of its sections are open, kept short and next to the course code, where there's room
+                        for it, so the course name below gets the whole width */}
+                    <div className='flex flex-row items-center gap-spacing-3'>
                         <Text variant='h4' className='whitespace-nowrap text-content font-bold!'>
                             {department} {number}
                         </Text>
-                        <Text variant='mini' className='flex-shrink-0 whitespace-nowrap text-content-muted'>
+                        <Text
+                            variant='mini'
+                            className='flex flex-shrink-0 items-center gap-1 whitespace-nowrap border border-divider rounded-full px-spacing-3 py-px text-content-muted'
+                        >
                             <span
                                 aria-hidden
                                 className={clsx(
-                                    'mr-1 inline-block size-2 rounded-full align-middle',
+                                    'size-2 rounded-full',
                                     openCount > 0 ? 'bg-ut-green' : 'bg-content-muted'
                                 )}
                             />
-                            {openCount} of {group.sections.length} open
+                            <span aria-hidden>
+                                {openCount}/{group.sections.length} open
+                            </span>
+                            <span className='sr-only'>
+                                {openCount} of {pluralize(group.sections.length, 'section')} open
+                            </span>
                         </Text>
                     </div>
                     <Text variant='small' className='truncate text-content-muted' title={courseName}>
@@ -470,10 +483,10 @@ function SectionRow({
             }}
         >
             {/* Opens the section's details, like a course on the calendar: its grade distribution, RateMyProf, CES, and
-                more. Only text inside, since it's a button. */}
+                more. Only text and icons inside, since it's a button. */}
             <button
                 type='button'
-                className='min-w-0 flex flex-1 cursor-pointer flex-col border-none rounded bg-transparent p-0 text-left focusable'
+                className='group/details min-w-0 flex flex-1 cursor-pointer flex-col border-none rounded bg-transparent p-0 text-left focusable'
                 onClick={() => onOpenStats(course)}
                 title='Details, grade distribution, and more'
             >
@@ -500,16 +513,36 @@ function SectionRow({
                         No meeting times
                     </Text>
                 )}
-                {/* The status sits on this line rather than its own column, so the meeting times get the width. A long
-                    list of instructors is cut short here, and shown whole in the details. */}
-                <Text variant='mini' className='block truncate text-content-muted' title={instructors || undefined}>
-                    <span
+                {/* A section that isn't open starts with its status icon, like on the calendar. The unique number comes
+                    before the instructors, so a long list of them is what gets cut short (they're shown whole in the
+                    details). */}
+                <span className='flex flex-row items-center gap-spacing-2'>
+                    <Text
+                        variant='mini'
+                        className='min-w-0 flex-1 truncate text-content-muted'
+                        title={instructors || undefined}
+                    >
+                        {course.status === Status.OPEN ? (
+                            <span className='sr-only'>{status.label}, </span>
+                        ) : (
+                            <span
+                                title={status.label}
+                                className={clsx('mr-1 inline-flex align-[-2px]', status.iconClassName)}
+                            >
+                                <StatusIcon aria-hidden status={course.status} className='size-3.5' />
+                                <span className='sr-only'>{status.label}, </span>
+                            </span>
+                        )}
+                        {String(course.uniqueId).padStart(5, '0')} · {instructors || 'Instructor TBA'}
+                        {course.instructionMode !== 'In Person' && ` · ${course.instructionMode}`}
+                    </Text>
+                    {/* Shows that clicking opens the details, as the section's text is hovered over or focused. On
+                            this line, which has room for it, rather than beside the meeting times, which need the width. */}
+                    <InfoIcon
                         aria-hidden
-                        className={clsx('mr-1 inline-block size-2 rounded-full align-middle', status.dotClassName)}
+                        className='size-3.5 flex-shrink-0 text-content-muted opacity-0 transition-opacity group-hover/details:opacity-100 group-focus-visible/details:opacity-100'
                     />
-                    {status.label} · {String(course.uniqueId).padStart(5, '0')} · {instructors || 'Instructor TBA'}
-                    {course.instructionMode !== 'In Person' && ` · ${course.instructionMode}`}
-                </Text>
+                </span>
                 {conflicts.length > 0 && (
                     <Text variant='mini' className='block text-theme-red'>
                         Conflicts with {conflicts.join(', ')}
@@ -517,12 +550,14 @@ function SectionRow({
                 )}
             </button>
             <Button
-                className='flex-shrink-0 aria-disabled:(cursor-wait opacity-50 scale-100 shadow-none!)'
+                // As wide as "Remove", so it doesn't change size (and move the text beside it) as it's clicked
+                className='w-[5.25rem] flex-shrink-0 justify-center gap-spacing-1 aria-disabled:(cursor-wait opacity-50 scale-100 shadow-none!)'
                 color={isAdded ? 'theme-red' : 'ut-green'}
                 size='mini'
                 // Outlined rather than filled, so a long list of sections isn't a column of bright buttons
                 variant='outline'
                 icon={isAdded ? MinusIcon : PlusIcon}
+                iconProps={{ className: 'h-4! w-4!' }}
                 onClick={handleAddOrRemove}
                 // Shows on the calendar which blocks removing the section takes away
                 onMouseEnter={() => previewRemoving(true)}
@@ -533,7 +568,9 @@ function SectionRow({
                 aria-disabled={isUpdating}
                 title={isAdded ? 'Remove from your schedule' : 'Add to your schedule'}
                 aria-label={isAdded ? `Remove ${name}` : `Add ${name}`}
-            />
+            >
+                {isAdded ? 'Remove' : 'Add'}
+            </Button>
         </li>
     );
 }
