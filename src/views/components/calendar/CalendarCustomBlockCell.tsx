@@ -12,7 +12,7 @@ import type { CalendarLayoutCell } from '@views/hooks/useFlattenedCourseSchedule
 import { useActiveSchedule } from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import type { ComponentProps, CSSProperties } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import PaletteFillIcon from '~icons/ph/palette-fill';
 import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellColorPicker';
 import { formatBlockTime } from './customBlockUtils';
@@ -77,17 +77,26 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
     const { id: scheduleId } = useActiveSchedule();
     const [open, setOpen] = useState(false);
     const pickerRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const color = block.color ?? DEFAULT_BLOCK_COLOR;
+
+    const closePicker = useCallback(() => {
+        setOpen(false);
+        buttonRef.current?.blur();
+    }, []);
 
     useEffect(() => {
         if (!open) return;
         const handleClickOutside = (event: MouseEvent) => {
-            if (pickerRef.current && !event.composedPath().includes(pickerRef.current)) setOpen(false);
+            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+                closePicker();
+            }
         };
         // pointerdown, not mousedown: the calendar's drag-to-add layer cancels mousedown for clicks in the grid
         document.addEventListener('pointerdown', handleClickOutside);
         return () => document.removeEventListener('pointerdown', handleClickOutside);
-    }, [open]);
+    }, [open, closePicker]);
 
     // The course picker reads the context, so only the setter and close handler are needed for blocks
     const context: ColorPickerInterface = {
@@ -100,7 +109,7 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
                 scheduleId,
             });
         },
-        handleCloseColorPicker: () => setOpen(false),
+        handleCloseColorPicker: closePicker,
         setSelectedCourse: () => {},
         isSelectedCourse: () => false,
         isSelectedBlock: () => false,
@@ -108,6 +117,7 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
 
     return (
         <div
+            ref={containerRef}
             className={clsx(
                 'absolute top-0 screenshot:opacity-0! text-black transition-all ease-in-out group-focus-within:pointer-events-auto group-hover:pointer-events-auto group-focus-within:opacity-100 group-hover:opacity-100',
                 calendarGridPoint.dayIndex === 4
@@ -118,7 +128,11 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
             style={{ zIndex: open ? 30 : 29 }}
         >
             <Button
-                onClick={() => setOpen(!open)}
+                ref={buttonRef}
+                onClick={() => {
+                    if (open) closePicker();
+                    else setOpen(true);
+                }}
                 icon={PaletteFillIcon}
                 iconProps={{ fill: getDarkerShade(color, 30) }}
                 variant='outline'
