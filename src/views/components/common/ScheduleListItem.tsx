@@ -187,7 +187,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                             <Text
                                 variant='p'
                                 as='input'
-                                className='mr-1 flex-1 px-0.5 rounded -ml-0.5'
+                                className='mr-1 flex-1 px-0.5 rounded -ml-0.5 dark:text-content'
                                 value={editorValue}
                                 onChange={e => setEditorValue(e.target.value)}
                                 onKeyDown={e => {
