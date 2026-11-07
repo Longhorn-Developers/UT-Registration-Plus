@@ -119,9 +119,7 @@ export default function CalendarCourseCell({
             onClick={onClick}
             aria-label={`${courseDeptAndInstr}${timeAndLocation ? `, ${timeAndLocation}` : ''}`}
         >
-            {blockData.course.wallpaper && (
-                <div className='absolute inset-0 rounded bg-black/35 pointer-events-none' />
-            )}
+            {blockData.course.wallpaper && <div className='absolute inset-0 rounded bg-black/35 pointer-events-none' />}
             <div className={clsx('relative z-1 flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full')}>
                 <Text
                     variant='h1-course'

@@ -153,10 +153,7 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
                     }
                 >
                     <ColorPickerContext.Provider value={context}>
-                        <CourseCellColorPicker
-                            defaultColor={color as ThemeColor}
-                            defaultWallpaper={block.wallpaper}
-                        />
+                        <CourseCellColorPicker defaultColor={color as ThemeColor} defaultWallpaper={block.wallpaper} />
                     </ColorPickerContext.Provider>
                 </div>
             )}

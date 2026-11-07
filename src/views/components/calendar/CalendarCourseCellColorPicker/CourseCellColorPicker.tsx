@@ -3,9 +3,9 @@ import { getThemeColorHexByName } from '@shared/util/themeColors';
 import Divider from '@views/components/common/Divider';
 import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import React from 'react';
+import { theme } from 'unocss/preset-mini';
 import ImageSquareIcon from '~icons/ph/image-square';
 import TrashIcon from '~icons/ph/trash';
-import { theme } from 'unocss/preset-mini';
 
 import ColorPatch from './ColorPatch';
 import HexColorEditor from './HexColorEditor';
