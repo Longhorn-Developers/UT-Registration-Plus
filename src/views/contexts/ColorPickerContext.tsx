@@ -12,7 +12,7 @@ const defaultContext: ColorPickerInterface = {
     isSelectedBlock: () => false,
 };
 
-const ColorPickerContext = createContext<ColorPickerInterface>(defaultContext);
+export const ColorPickerContext = createContext<ColorPickerInterface>(defaultContext);
 
 interface ColorPickerProviderProps {
     children: ReactNode;

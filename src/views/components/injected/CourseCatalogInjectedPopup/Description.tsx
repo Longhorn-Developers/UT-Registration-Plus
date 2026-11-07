@@ -69,7 +69,7 @@ export default function Description({ course }: DescriptionProps): React.JSX.Ele
                             <li
                                 key={line}
                                 className={clsx({
-                                    'children:font-bold! text-ut-burntorange marker:text-ut-burntorange':
+                                    'children:font-bold! text-ut-burntorange dark:text-red marker:text-ut-burntorange dark:marker:text-red':
                                         isKeywordPresent,
                                 })}
                             >

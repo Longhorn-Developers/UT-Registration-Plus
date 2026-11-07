@@ -18,7 +18,7 @@ type WhatsNewPopupOptions = {
 export default function useWhatsNewPopUp(): (options?: WhatsNewPopupOptions) => void {
     const showDialog = useDialog();
     const showChangeLog = useChangelog();
-    const { version } = chrome.runtime.getManifest();
+    const { version, version_name } = chrome.runtime.getManifest();
 
     const showPopUp = (options?: WhatsNewPopupOptions) => {
         showDialog(close => ({
@@ -26,7 +26,7 @@ export default function useWhatsNewPopUp(): (options?: WhatsNewPopupOptions) => 
             title: (
                 <div className='flex items-center justify-between gap-4'>
                     <LogoIcon width='48' height='48' />
-                    <Text variant='h1' className='text-theme-black'>
+                    <Text variant='h1' className='text-content'>
                         What&apos;s New in UT Registration Plus
                     </Text>
                 </div>
@@ -35,7 +35,7 @@ export default function useWhatsNewPopUp(): (options?: WhatsNewPopupOptions) => 
             buttons: (
                 <div className='flex flex-row items-end gap-spacing-4'>
                     <Button onClick={showChangeLog} variant='minimal' color='theme-black'>
-                        Read Changelog for v{version}
+                        Read Changelog for v{version_name ?? version}
                     </Button>
                     <Button onClick={close} color='ut-burntorange'>
                         Get started

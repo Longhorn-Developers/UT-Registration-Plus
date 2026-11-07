@@ -22,5 +22,6 @@ renderRoot(
 function PopupBootstrap() {
     suspendUntilStoresReady([UserScheduleStore, OptionsStore]);
 
+    // The toolbar popup intentionally keeps its original light colors on every site, so it doesn't sync the theme
     return <PopupMain />;
 }

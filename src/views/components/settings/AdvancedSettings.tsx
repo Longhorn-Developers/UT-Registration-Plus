@@ -80,12 +80,26 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             <div className={PREVIEW_SECTION_DIV_CLASSNAME}>
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                            Enable Course Refresh
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
+                            Theme
                             <BetaChip />
                         </Text>
                         <p className='text-sm text-content-muted'>
-                            Show a refresh button in the calendar to re-scrape course data from UT&apos;s site.
+                            Try out dark mode and other color themes for the extension.
+                        </p>
+                    </div>
+                    <ThemePicker theme={theme} />
+                </div>
+
+                <Divider size='auto' orientation='horizontal' />
+
+                <div className='flex items-center justify-between'>
+                    <div className='max-w-xs'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
+                            Enable Course Refresh
+                        </Text>
+                        <p className='text-sm text-content-muted'>
+                            Show a refresh button in the calendar to update course info from UT&apos;s site.
                         </p>
                     </div>
                     <SwitchButton
@@ -98,9 +112,8 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Course Status Indicators
-                            <BetaChip />
                         </Text>
                         <p className='text-sm text-content-muted'>
                             Show waitlisted, cancelled, and closed status on courses.
@@ -118,32 +131,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
-                            Enable Themes
-                            <BetaChip />
-                        </Text>
-                        <p className='text-sm text-content-muted'>
-                            Try out dark mode and other color themes for the extension.
-                        </p>
-                        {enableThemesBeta && (
-                            <div className='mt-2'>
-                                <ThemePicker theme={theme} />
-                            </div>
-                        )}
-                    </div>
-                    <SwitchButton
-                        isChecked={enableThemesBeta}
-                        onChange={() => {
-                            void OptionsStore.set('enableThemesBeta', !enableThemesBeta);
-                        }}
-                    />
-                </div>
-
-                <Divider size='auto' orientation='horizontal' />
-
-                <div className='flex items-center justify-between'>
-                    <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Course Conflict Highlight
                         </Text>
                         <p className='text-sm text-content-muted'>
@@ -162,7 +150,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Load Courses Automatically on Scroll
                         </Text>
                         <p className='text-sm text-content-muted'>
@@ -182,7 +170,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Always Open Calendar in New Tab
                         </Text>
                         <p className='text-sm text-content-muted'>
@@ -202,7 +190,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Allow more than 10 schedules
                         </Text>
                         <p className='text-sm text-content-muted'>
@@ -222,10 +210,10 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Reduced Motion
                         </Text>
-                        <p className='text-sm text-gray-600'>
+                        <p className='text-sm text-content-muted'>
                             Disable animations and transitions for users who prefer reduced motion.
                         </p>
                     </div>
@@ -241,7 +229,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Export Current Schedule
                         </Text>
                         <p className='text-sm text-content-muted'>Backup your active schedule to a portable file</p>
@@ -257,7 +245,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Import Schedule
                         </Text>
                         <p className='text-sm text-content-muted'>Import from a schedule file</p>
@@ -276,10 +264,12 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Reset All Data
                         </Text>
-                        <p className='text-sm text-content-muted'>Erases all schedules and courses you have.</p>
+                        <p className='text-sm text-content-muted'>
+                            Erases all schedules, courses, and custom blocks you have.
+                        </p>
                     </div>
                     <Button variant='outline' color='theme-red' icon={TrashIcon} onClick={handleEraseAll}>
                         Erase All

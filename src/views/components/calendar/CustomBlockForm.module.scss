@@ -1,0 +1,23 @@
+.textInput {
+    > div {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+
+        svg {
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    input {
+        font-size: 0.88875rem;
+        font-weight: 500;
+    }
+}
+
+.timeInput {
+    input {
+        padding-inline: calc(1rem - 1px);
+    }
+}

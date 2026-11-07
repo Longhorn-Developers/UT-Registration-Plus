@@ -3,9 +3,10 @@ import { ellipsify } from '@shared/util/string';
 import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import type React from 'react';
+import { useTheme } from 'src/views/contexts/ThemeContext';
 import CaretDownIcon from '~icons/ph/caret-down';
 
-import { ExtensionRootWrapper, styleResetClass } from './ExtensionRoot/ExtensionRoot';
+import { styleResetClass } from './ExtensionRoot/ExtensionRoot';
 
 /**
  * Type for the dropdown option.
@@ -43,12 +44,13 @@ export default function Dropdown({
     disabled,
 }: React.PropsWithChildren<Props>): React.JSX.Element {
     const Icon = icon;
+    const { theme } = useTheme();
     return (
         <Listbox
             as='div'
             value={selectedOption ?? undefined}
             onChange={onOptionChange}
-            className={clsx('h-9 flex flex-row items-center justify-between gap-spacing-5 z-30', className)}
+            className={clsx('relative h-9 flex flex-row items-center justify-between gap-spacing-5 z-30', className)}
         >
             {Icon && (
                 <div className='h-7 w-7'>
@@ -58,26 +60,26 @@ export default function Dropdown({
             <ListboxButton
                 className={clsx(
                     'flex h-full w-full flex-row items-center justify-between gap-spacing-3 px-spacing-4',
-                    'border border-ut-offwhite/50 border-rounded bg-transparent disabled:bg-ut-offwhite/20 z-40'
+                    'border border-divider/50 border-rounded bg-transparent disabled:bg-ut-offwhite/20 z-40'
                 )}
                 disabled={disabled}
             >
                 <div className='h-full w-full flex flex-row items-center justify-between gap-spacing-3'>
                     {selectedOption ? (
-                        <Text className='truncate text-ut-black'>{ellipsify(selectedOption.label, 27)}</Text>
+                        <Text className='truncate text-content'>{ellipsify(selectedOption.label, 27)}</Text>
                     ) : (
-                        placeholderText && <Text className='text-ut-black/50'>{placeholderText}</Text>
+                        placeholderText && <Text className='text-content/50'>{placeholderText}</Text>
                     )}
                     <CaretDownIcon className='h-5 w-5' />
                 </div>
             </ListboxButton>
             <ListboxOptions
-                as={ExtensionRootWrapper}
-                anchor='bottom start'
+                // styleResetClass resets the theme colors to light, so re-apply the active theme on the same element
+                data-theme={theme}
                 className={clsx(
                     styleResetClass,
-                    'flex flex-col p-spacing-1 w-[var(--button-width)] z-40',
-                    'origin-top-right rounded bg-white text-black shadow-lg transition border border-ut-offwhite/50 focus:outline-none',
+                    'absolute left-0 top-full mt-spacing-1 flex flex-col p-spacing-1 w-full z-40',
+                    'origin-top-right rounded bg-surface-raised text-content shadow-lg transition border border-divider/50 outline-none!',
                     'data-[closed]:(opacity-0 scale-95)',
                     'data-[enter]:(ease-out-expo duration-150)',
                     'data-[leave]:(ease-out duration-50)',
@@ -92,9 +94,9 @@ export default function Dropdown({
                         key={option.id}
                         value={option}
                         className={clsx(
-                            'cursor-pointer select-none rounded p-spacing-3 text-ut-black/80 z-40',
-                            'data-[focus]:bg-ut-offwhite/20',
-                            'data-[disabled]:text-ut-black/50',
+                            'cursor-pointer bg-surface select-none rounded p-spacing-3 text-content/80 z-40',
+                            'data-[focus]:bg-divider/40',
+                            'data-[disabled]:text-content/50',
                             'data-[disabled]:cursor-not-allowed'
                         )}
                     >
