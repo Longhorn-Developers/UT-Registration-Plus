@@ -95,7 +95,9 @@ export default function CalendarCourseCell({
     }
 
     // text-white or text-black based on secondaryColor
-    const fontColor = pickFontColor(colors.primaryColor);
+    const fontColor = blockData.course.wallpaper
+        ? 'text-white [text-shadow:_0_1px_3px_rgb(0_0_0_/_80%)]'
+        : pickFontColor(colors.primaryColor);
     // Note that overflow-hidden is the duct tape holding this all together
 
     return (
