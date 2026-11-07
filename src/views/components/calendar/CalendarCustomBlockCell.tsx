@@ -32,23 +32,24 @@ export default function CalendarCustomBlockCell({
         <button
             {...props}
             type='button'
-            style={
-                {
-                    '--block-color': color,
-                    backgroundImage: block.wallpaper ? `url(${block.wallpaper})` : undefined,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                } as CSSProperties
-            }
+            style={{ '--block-color': color } as CSSProperties}
             aria-label={`${block.name}, ${time}`}
             title={`${block.name}, ${time}`}
             className={clsx(
-                'relative box-border h-full w-full flex overflow-hidden rounded border-0 border-l-3 border-solid border-[var(--block-color)] bg-[color-mix(in_srgb,var(--block-color)_10%,transparent)] hover:bg-[color-mix(in_srgb,var(--block-color)_30%,transparent)] dark:bg-[color-mix(in_srgb,var(--block-color)_15%,transparent)] dark:hover:bg-[color-mix(in_srgb,var(--block-color)_25%,transparent)] text-left pl-[5px] pr-2 focusable',
-                block.wallpaper ? 'text-white' : 'text-content',
+                'relative box-border h-full w-full flex overflow-hidden rounded border-0 border-l-3 border-solid border-[var(--block-color)] bg-[color-mix(in_srgb,var(--block-color)_10%,transparent)] hover:bg-[color-mix(in_srgb,var(--block-color)_30%,transparent)] dark:bg-[color-mix(in_srgb,var(--block-color)_15%,transparent)] dark:hover:bg-[color-mix(in_srgb,var(--block-color)_25%,transparent)] text-left pl-[5px] pr-2 focusable text-content',
                 compact ? 'items-center gap-spacing-2' : 'flex-col items-start pt-1'
             )}
         >
-            {block.wallpaper && <div className='absolute inset-0 bg-black/40 pointer-events-none' />}
+            {block.wallpaper && (
+                <div
+                    className='absolute inset-0 bg-cover bg-center pointer-events-none'
+                    style={{
+                        backgroundImage: `url(${block.wallpaper})`,
+                        maskImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 1) 100%)',
+                        WebkitMaskImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 1) 100%)',
+                    }}
+                />
+            )}
             <Text
                 as='div'
                 variant='h1-course'

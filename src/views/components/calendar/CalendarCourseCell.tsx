@@ -95,14 +95,14 @@ export default function CalendarCourseCell({
     }
 
     // text-white or text-black based on secondaryColor
-    const fontColor = blockData.course.wallpaper ? 'text-white' : pickFontColor(colors.primaryColor);
+    const fontColor = pickFontColor(colors.primaryColor);
     // Note that overflow-hidden is the duct tape holding this all together
 
     return (
         <button
             type='button'
             className={clsx(
-                'h-full w-0 flex group relative justify-center rounded p-x-2 p-y-1.2 screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out border-none text-left',
+                'h-full w-0 flex group relative justify-center rounded p-x-2 p-y-1.2 screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out border-none text-left overflow-hidden',
                 {
                     'min-w-full': timeAndLocation,
                     'w-full': !timeAndLocation,
@@ -112,14 +112,20 @@ export default function CalendarCourseCell({
             )}
             style={{
                 backgroundColor: colors.primaryColor,
-                backgroundImage: blockData.course.wallpaper ? `url(${blockData.course.wallpaper})` : undefined,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
             }}
             onClick={onClick}
             aria-label={`${courseDeptAndInstr}${timeAndLocation ? `, ${timeAndLocation}` : ''}`}
         >
-            {blockData.course.wallpaper && <div className='absolute inset-0 rounded bg-black/35 pointer-events-none' />}
+            {blockData.course.wallpaper && (
+                <div
+                    className='absolute inset-0 bg-cover bg-center pointer-events-none'
+                    style={{
+                        backgroundImage: `url(${blockData.course.wallpaper})`,
+                        maskImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 1) 100%)',
+                        WebkitMaskImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 1) 100%)',
+                    }}
+                />
+            )}
             <div className={clsx('relative z-1 flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full')}>
                 <Text
                     variant='h1-course'
