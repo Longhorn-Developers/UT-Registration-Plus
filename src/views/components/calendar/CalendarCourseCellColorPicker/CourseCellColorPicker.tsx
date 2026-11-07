@@ -188,19 +188,19 @@ export default function CourseCellColorPicker({
             )}
             <Divider orientation='horizontal' size='100%' className='my-1' />
             <div className='flex items-center justify-between gap-1'>
-                <label className='h-6 flex flex-1 cursor-pointer items-center justify-center gap-1 rounded border border-divider px-1.5 text-2.5 text-content hover:bg-surface-hover'>
-                    <ImageSquareIcon className='h-3.5 w-3.5' />
+                <label className='h-6.5 flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded border border-divider px-2 text-2.75 font-medium text-content hover:bg-surface-hover transition-colors'>
+                    <ImageSquareIcon className='h-4 w-4' />
                     <span>{defaultWallpaper ? 'Change Wallpaper' : 'Add Wallpaper'}</span>
                     <input type='file' accept='image/*' className='hidden' onChange={handleWallpaperUpload} />
                 </label>
                 {defaultWallpaper && (
                     <button
                         type='button'
-                        className='h-6 w-6 flex items-center justify-center rounded border border-divider text-content hover:bg-surface-hover'
+                        className='size-6.5 flex shrink-0 items-center justify-center rounded border border-divider text-content hover:bg-surface-hover transition-colors'
                         onClick={() => setWallpaper?.(undefined)}
                         aria-label='Remove wallpaper'
                     >
-                        <TrashIcon className='h-3.5 w-3.5' />
+                        <TrashIcon className='h-4 w-4' />
                     </button>
                 )}
             </div>
