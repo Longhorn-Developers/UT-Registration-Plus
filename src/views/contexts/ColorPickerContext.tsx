@@ -10,6 +10,7 @@ const defaultContext: ColorPickerInterface = {
     setSelectedCourse: () => {},
     isSelectedCourse: () => false,
     isSelectedBlock: () => false,
+    setWallpaper: () => {},
 };
 
 export const ColorPickerContext = createContext<ColorPickerInterface>(defaultContext);

@@ -3,6 +3,8 @@ import { getThemeColorHexByName } from '@shared/util/themeColors';
 import Divider from '@views/components/common/Divider';
 import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import React from 'react';
+import ImageSquareIcon from '~icons/ph/image-square';
+import TrashIcon from '~icons/ph/trash';
 import { theme } from 'unocss/preset-mini';
 
 import ColorPatch from './ColorPatch';
@@ -54,6 +56,7 @@ const hexCodeToBaseColor = new Map<string, string>(
  */
 export interface CourseCellColorPickerProps {
     defaultColor: string;
+    defaultWallpaper?: string;
 }
 
 /**
@@ -82,13 +85,16 @@ export interface CourseCellColorPickerProps {
  *
  * @returns The color picker component that displays a color palette with a list of color patches.
  */
-export default function CourseCellColorPicker({ defaultColor }: CourseCellColorPickerProps): React.JSX.Element {
+export default function CourseCellColorPicker({
+    defaultColor,
+    defaultWallpaper,
+}: CourseCellColorPickerProps): React.JSX.Element {
     // hexCode mirrors contents of HexColorEditor which has no hash prefix
     const [hexCode, setHexCode] = React.useState<string>(
         defaultColor.slice(1).toLocaleLowerCase() || getThemeColorHexByName('ut-gray')
     );
 
-    const { setSelectedColor, handleCloseColorPicker } = useColorPickerContext();
+    const { setSelectedColor, handleCloseColorPicker, setWallpaper } = useColorPickerContext();
 
     const hexCodeWithHash = `#${hexCode}` as ThemeColor;
     const selectedBaseColor = hexCodeToBaseColor.get(hexCodeWithHash);
@@ -102,6 +108,40 @@ export default function CourseCellColorPicker({ defaultColor }: CourseCellColorP
 
         setHexCode(hexCode);
         setSelectedColor(`#${hexCode}` as ThemeColor);
+    };
+
+    const handleWallpaperUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const maxDim = 500;
+                let width = img.width;
+                let height = img.height;
+                if (width > maxDim || height > maxDim) {
+                    if (width > height) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    } else {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                    ctx.drawImage(img, 0, 0, width, height);
+                    setWallpaper?.(canvas.toDataURL('image/jpeg', 0.8));
+                }
+            };
+            img.src = reader.result as string;
+        };
+        reader.readAsDataURL(file);
+        event.target.value = '';
     };
 
     return (
@@ -146,6 +186,24 @@ export default function CourseCellColorPicker({ defaultColor }: CourseCellColorP
                     </div>
                 </>
             )}
+            <Divider orientation='horizontal' size='100%' className='my-1' />
+            <div className='flex items-center justify-between gap-1'>
+                <label className='h-6 flex flex-1 cursor-pointer items-center justify-center gap-1 rounded border border-divider px-1.5 text-2.5 text-content hover:bg-surface-hover'>
+                    <ImageSquareIcon className='h-3.5 w-3.5' />
+                    <span>{defaultWallpaper ? 'Change Wallpaper' : 'Add Wallpaper'}</span>
+                    <input type='file' accept='image/*' className='hidden' onChange={handleWallpaperUpload} />
+                </label>
+                {defaultWallpaper && (
+                    <button
+                        type='button'
+                        className='h-6 w-6 flex items-center justify-center rounded border border-divider text-content hover:bg-surface-hover'
+                        onClick={() => setWallpaper?.(undefined)}
+                        aria-label='Remove wallpaper'
+                    >
+                        <TrashIcon className='h-3.5 w-3.5' />
+                    </button>
+                )}
+            </div>
         </div>
     );
 }

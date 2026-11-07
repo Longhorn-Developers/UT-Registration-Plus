@@ -3,12 +3,13 @@ import type { ThemeColor } from '@shared/types/ThemeColors';
 import { isValidHexColor } from '@shared/util/colors';
 import { useCallback, useEffect, useState } from 'react';
 
-import { updateCourseColors } from './useSchedules';
+import { updateCourseColors, updateCourseWallpaper } from './useSchedules';
 
 /**
  * Interface for the color picker functionality.
  */
 export interface ColorPickerInterface {
+    setWallpaper?: (wallpaper?: string) => void;
     /**
      * The currently selected color.
      */
@@ -92,6 +93,15 @@ export function useColorPicker(): ColorPickerInterface {
         selectedBlock.dayIndex === dayIndex &&
         selectedBlock.startIndex === startIndex;
 
+    const setWallpaper = useCallback(
+        (wallpaper?: string) => {
+            if (selectedBlock.courseID) {
+                void updateCourseWallpaper(selectedBlock.courseID, wallpaper);
+            }
+        },
+        [selectedBlock.courseID]
+    );
+
     useEffect(() => {
         if (selectedBlock.courseID && selectedColor) {
             (async () => {
@@ -107,5 +117,6 @@ export function useColorPicker(): ColorPickerInterface {
         setSelectedCourse,
         isSelectedBlock,
         isSelectedCourse,
+        setWallpaper,
     };
 }

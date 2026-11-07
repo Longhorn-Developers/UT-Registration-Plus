@@ -29,7 +29,7 @@ export function customBlockFromDraft(draft: CustomBlockDraft, scheduleId: string
 }
 
 export function customBlockToDraft(block: CustomBlock): CustomBlockDraft {
-    const { name, days, startTime, endTime, allDay, conflictHighlight, color, scheduleId } = block;
+    const { name, days, startTime, endTime, allDay, conflictHighlight, color, scheduleId, wallpaper } = block;
     return {
         name,
         days,
@@ -38,6 +38,7 @@ export function customBlockToDraft(block: CustomBlock): CustomBlockDraft {
         allDay,
         conflictHighlight,
         ...(color === undefined ? {} : { color }),
+        ...(wallpaper === undefined ? {} : { wallpaper }),
         syncAcrossAllSchedules: scheduleId === null,
     };
 }

@@ -95,7 +95,7 @@ export default function CalendarCourseCell({
     }
 
     // text-white or text-black based on secondaryColor
-    const fontColor = pickFontColor(colors.primaryColor);
+    const fontColor = blockData.course.wallpaper ? 'text-white' : pickFontColor(colors.primaryColor);
     // Note that overflow-hidden is the duct tape holding this all together
 
     return (
@@ -112,11 +112,17 @@ export default function CalendarCourseCell({
             )}
             style={{
                 backgroundColor: colors.primaryColor,
+                backgroundImage: blockData.course.wallpaper ? `url(${blockData.course.wallpaper})` : undefined,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
             }}
             onClick={onClick}
             aria-label={`${courseDeptAndInstr}${timeAndLocation ? `, ${timeAndLocation}` : ''}`}
         >
-            <div className={clsx('flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full')}>
+            {blockData.course.wallpaper && (
+                <div className='absolute inset-0 rounded bg-black/35 pointer-events-none' />
+            )}
+            <div className={clsx('relative z-1 flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full')}>
                 <Text
                     variant='h1-course'
                     as='p'
@@ -135,7 +141,7 @@ export default function CalendarCourseCell({
             </div>
             {rightIcon && (
                 <div
-                    className='h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white screenshot:hidden'
+                    className='relative z-1 h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white screenshot:hidden'
                     style={{
                         backgroundColor: colors.secondaryColor,
                     }}
@@ -195,7 +201,10 @@ export default function CalendarCourseCell({
                                     : 'absolute bottom-full mb-0.75 w-max'
                             }
                         >
-                            <CourseCellColorPicker defaultColor={colors.primaryColor} />
+                            <CourseCellColorPicker
+                                defaultColor={colors.primaryColor}
+                                defaultWallpaper={blockData.course.wallpaper}
+                            />
                         </div>
                     )}
                 </div>
