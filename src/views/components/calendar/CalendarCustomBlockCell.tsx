@@ -42,7 +42,7 @@ export default function CalendarCustomBlockCell({
         >
             {block.wallpaper && (
                 <div
-                    className='absolute inset-0 bg-cover bg-center pointer-events-none'
+                    className='absolute inset-0 rounded bg-cover bg-center pointer-events-none'
                     style={{
                         backgroundImage: `url(${block.wallpaper})`,
                         maskImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 1) 100%)',

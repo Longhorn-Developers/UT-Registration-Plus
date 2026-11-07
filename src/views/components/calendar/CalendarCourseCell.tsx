@@ -102,7 +102,7 @@ export default function CalendarCourseCell({
         <button
             type='button'
             className={clsx(
-                'h-full w-0 flex group relative justify-center rounded p-x-2 p-y-1.2 screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out border-none text-left overflow-hidden',
+                'h-full w-0 flex group relative justify-center rounded p-x-2 p-y-1.2 screenshot:p-1.5 hover:shadow-md transition-shadow-100 ease-out border-none text-left',
                 {
                     'min-w-full': timeAndLocation,
                     'w-full': !timeAndLocation,
@@ -118,7 +118,7 @@ export default function CalendarCourseCell({
         >
             {blockData.course.wallpaper && (
                 <div
-                    className='absolute inset-0 bg-cover bg-center pointer-events-none'
+                    className='absolute inset-0 rounded bg-cover bg-center pointer-events-none'
                     style={{
                         backgroundImage: `url(${blockData.course.wallpaper})`,
                         maskImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 1) 100%)',
