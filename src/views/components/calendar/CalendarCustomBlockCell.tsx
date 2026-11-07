@@ -2,7 +2,7 @@ import { background } from '@shared/messages';
 import type { HexColor } from '@shared/types/Color';
 import type { CustomBlock } from '@shared/types/CustomBlock';
 import type { ThemeColor } from '@shared/types/ThemeColors';
-import { getDarkerShade, isValidHexColor } from '@shared/util/colors';
+import { getDarkerShade, isValidHexColor } from 'src/shared/util/colors/base';
 import { customBlockToDraft } from '@shared/util/customBlocks';
 import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
