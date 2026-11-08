@@ -7,7 +7,6 @@ import { createContext, useContext } from 'react';
 export interface CourseClipboardState {
     copiedCourse: Course | null;
     setCopiedCourse: (course: Course | null) => void;
-    hoveredCourse: Course | null;
     setHoveredCourse: (course: Course | null) => void;
     clearClipboard: () => void;
 }
@@ -15,7 +14,6 @@ export interface CourseClipboardState {
 const defaultContext: CourseClipboardState = {
     copiedCourse: null,
     setCopiedCourse: () => {},
-    hoveredCourse: null,
     setHoveredCourse: () => {},
     clearClipboard: () => {},
 };

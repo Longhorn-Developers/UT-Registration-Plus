@@ -35,20 +35,20 @@ export default function Toast({ message, type = 'info', onClose, className }: To
             role='status'
             aria-live='polite'
             className={clsx(
-                'pointer-events-auto flex items-center gap-2.5 rounded-r-md border border-gray-200 border-l-4 bg-white px-3.5 py-2.5 shadow-lg',
+                'pointer-events-auto flex items-center gap-2.5 rounded-r-md border border-divider border-l-4 bg-surface-raised px-3.5 py-2.5 shadow-lg',
                 borderColors[type],
                 className
             )}
         >
             <Icon className={clsx('h-4.5 w-4.5 shrink-0', iconColors[type])} />
-            <Text variant='small' className='text-ut-black font-medium'>
+            <Text variant='small' className='text-content font-medium'>
                 {message}
             </Text>
             {onClose && (
                 <button
                     type='button'
                     onClick={onClose}
-                    className='ml-1 text-gray-400 hover:text-ut-black transition-colors'
+                    className='ml-1 text-content-muted hover:text-content transition-colors'
                     aria-label='Close notification'
                 >
                     <XIcon className='h-3.5 w-3.5' />

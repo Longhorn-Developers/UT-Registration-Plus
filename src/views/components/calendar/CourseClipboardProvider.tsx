@@ -18,12 +18,14 @@ interface CourseClipboardProviderProps {
 
 export function CourseClipboardProvider({ children, activeModalCourse }: CourseClipboardProviderProps) {
     const [copiedCourse, setCopiedCourseState] = useState<Course | null>(null);
-    const [hoveredCourse, setHoveredCourse] = useState<Course | null>(null);
     const [toast, setToast] = useState<ToastState | null>(null);
 
     const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    // A ref, not state, so hovering a course doesn't re-render every cell that reads this context
     const hoveredCourseRef = useRef<Course | null>(null);
-    hoveredCourseRef.current = hoveredCourse;
+    const setHoveredCourse = useCallback((course: Course | null) => {
+        hoveredCourseRef.current = course;
+    }, []);
 
     const copiedCourseRef = useRef<Course | null>(null);
     copiedCourseRef.current = copiedCourse;
@@ -71,6 +73,9 @@ export function CourseClipboardProvider({ children, activeModalCourse }: CourseC
             }
 
             if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C')) {
+                // Let the browser copy any text the user has selected
+                if (window.getSelection()?.toString()) return;
+
                 const courseToCopy = activeModalCourse ?? hoveredCourseRef.current;
                 if (courseToCopy) {
                     e.preventDefault();
@@ -124,7 +129,6 @@ export function CourseClipboardProvider({ children, activeModalCourse }: CourseC
             value={{
                 copiedCourse,
                 setCopiedCourse,
-                hoveredCourse,
                 setHoveredCourse,
                 clearClipboard,
             }}
