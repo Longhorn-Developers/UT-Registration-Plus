@@ -24,6 +24,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Run Biome check
         run: pnpm run check
+      - name: Run dependency-cruiser
+        run: pnpm run dependencies:check
   type-check:
     runs-on: ubuntu-latest
     steps:

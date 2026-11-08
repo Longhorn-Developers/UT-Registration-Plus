@@ -1,6 +1,6 @@
 import { Course, Status } from '@shared/types/Course';
 import Instructor from '@shared/types/Instructor';
-import { getCourseColors } from '@shared/util/colors';
+import { getCourseColors } from '@shared/util/colors/base';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import CalendarBottomBar from '@views/components/calendar/CalendarBottomBar';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
