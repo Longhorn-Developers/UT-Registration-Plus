@@ -1,4 +1,4 @@
-import { getLighterShade, hexToHSL, isValidHexColor } from '@shared/util/colors';
+import { getLighterShade, hexToHSL, isValidHexColor } from '@shared/util/colors/base';
 import { describe, expect, it } from 'vitest';
 
 describe('hexToHSL', () => {
