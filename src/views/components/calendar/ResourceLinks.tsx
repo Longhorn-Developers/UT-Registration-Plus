@@ -34,6 +34,10 @@ const links: LinkItem[] = [
         url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20266/',
     },
     {
+        text: "Spring '26 Course Schedule",
+        url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20262/',
+    },
+    {
         text: 'Other Course Schedules',
         url: 'https://registrar.utexas.edu/schedules',
     },
