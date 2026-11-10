@@ -195,7 +195,7 @@ export default function Settings(): React.JSX.Element {
             ...UTRP_ALUMNI.map(a => a.githubUsername),
         ]);
         return Object.keys(githubStats.userGitHubStats)
-            .filter(username => !knownUsernames.has(username))
+            .filter(username => username !== 'claude' && !knownUsernames.has(username))
             .sort(
                 (a, b) =>
                     (githubStats.userGitHubStats[b]?.commits ?? 0) - (githubStats.userGitHubStats[a]?.commits ?? 0)
