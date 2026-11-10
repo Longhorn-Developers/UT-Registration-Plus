@@ -12,7 +12,7 @@ import { useActiveSchedule } from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import type { ComponentProps, CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { getDarkerShade, isValidHexColor } from 'src/shared/util/colors/base';
+import { getDarkerShade, isValidHexColor, pickFontColor } from 'src/shared/util/colors/base';
 import PaletteFillIcon from '~icons/ph/palette-fill';
 import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellColorPicker';
 import { formatBlockTime } from './customBlockUtils';
@@ -37,7 +37,7 @@ export default function CalendarCustomBlockCell({
             title={`${block.name}, ${time}`}
             className={clsx(
                 'relative box-border h-full w-full flex overflow-hidden rounded border-0 border-l-3 border-solid border-[var(--block-color)] bg-[color-mix(in_srgb,var(--block-color)_10%,transparent)] hover:bg-[color-mix(in_srgb,var(--block-color)_30%,transparent)] dark:bg-[color-mix(in_srgb,var(--block-color)_15%,transparent)] dark:hover:bg-[color-mix(in_srgb,var(--block-color)_25%,transparent)] text-left pl-[5px] pr-2 focusable',
-                block.wallpaper ? 'text-white [text-shadow:_0_1px_3px_rgb(0_0_0_/_80%)]' : 'text-content',
+                block.wallpaper ? pickFontColor(color) : 'text-content',
                 compact ? 'items-center gap-spacing-2' : 'flex-col items-start pt-1'
             )}
         >
