@@ -115,13 +115,13 @@ Once set up, the extension can be built to the `dist/chrome/` directory (or `dis
 
 ### Firefox Builds
 
-The same codebase builds a Firefox add-on. Set `BROWSER_TARGET=firefox`, or use the shortcuts:
+The same codebase builds a Firefox add-on for Firefox 140 or later. Set `BROWSER_TARGET=firefox`, or use the shortcuts:
 
 ```bash
 pnpm build:firefox        # production build to dist/firefox/
 pnpm build:watch:firefox  # development build with file watching
 pnpm lint:firefox         # validate the build with Mozilla's web-ext linter
-pnpm zip:firefox          # zip for submission to addons.mozilla.org
+pnpm zip:firefox          # Create a Firefox ZIP
 ```
 
 <details>
