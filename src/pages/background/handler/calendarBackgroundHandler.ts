@@ -83,7 +83,7 @@ const getMostRecentlyFocusedCalendarTab = async (): Promise<TabWithId | undefine
     return reusableTabs[0]?.tab;
 };
 
-const openCalendarTab = async (url: string, senderTab?: chrome.tabs.Tab): Promise<TabWithId> => {
+const openCalendarTab = async (url: string, senderTab?: browser.Tabs.Tab): Promise<TabWithId> => {
     const tab = await openNewTab(url, {
         tabIndex: senderTab?.index !== undefined ? senderTab.index + 1 : undefined,
         windowId: senderTab?.windowId,

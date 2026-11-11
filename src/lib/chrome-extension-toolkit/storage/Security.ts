@@ -62,7 +62,7 @@ export class Security {
             {
                 name: KEY_ALGO,
                 hash: HASH_ALGO,
-                salt: salt as BufferSource,
+                salt,
                 iterations: ITERATIONS,
             },
             passKey,
@@ -117,10 +117,10 @@ export class Security {
         const decryptedDataBuffer = await crypto.subtle.decrypt(
             {
                 name: CIPHER_MODE,
-                iv: iv.buffer as ArrayBuffer,
+                iv,
             },
             decryptionKey,
-            encryptedData.buffer as ArrayBuffer
+            encryptedData
         );
 
         // parse the decrypted data into a JSON object and return it
@@ -146,7 +146,7 @@ export class Security {
             await crypto.subtle.encrypt(
                 {
                     name: CIPHER_MODE,
-                    iv: iv.buffer as ArrayBuffer,
+                    iv,
                 },
                 encryptionKey,
                 this.encoder.encode(valueString)

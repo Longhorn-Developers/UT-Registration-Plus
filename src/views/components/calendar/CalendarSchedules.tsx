@@ -19,9 +19,9 @@ export const CalendarSchedules = memo(function CalendarSchedules() {
     const schedules = useAllSchedules();
 
     const enforceScheduleLimit = useEnforceScheduleLimit();
-    const handleAddSchedule = async () => {
+    const handleAddSchedule = () => {
         if (enforceScheduleLimit()) {
-            await createSchedule('New Schedule');
+            createSchedule('New Schedule');
         }
     };
 
