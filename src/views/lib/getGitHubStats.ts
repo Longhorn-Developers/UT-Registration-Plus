@@ -13,7 +13,7 @@ const REPO_OWNER = 'Longhorn-Developers';
 const REPO_NAME = 'UT-Registration-Plus';
 const CONTRIBUTORS_API_ROUTE = `/repos/${REPO_OWNER}/${REPO_NAME}/stats/contributors`;
 
-export const BAN_LIST = ['claude'];
+export const BAN_LIST = ['claude', 'dependabot[bot]', 'github-code-quality[bot]'];
 
 export const LONGHORN_DEVELOPERS_ADMINS = [
     {
