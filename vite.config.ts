@@ -14,6 +14,9 @@ import { buildLogger } from './utils/plugins/vite-build-logger';
 import { inlineStyles } from './utils/plugins/vite-inline-styles';
 
 const BROWSER_TARGET = process.env.BROWSER_TARGET || 'chrome';
+if (BROWSER_TARGET !== 'chrome' && BROWSER_TARGET !== 'firefox') {
+    throw new Error(`Invalid BROWSER_TARGET "${BROWSER_TARGET}". Expected "chrome" or "firefox".`);
+}
 
 // Set browser target environment variable default
 process.env.BROWSER_TARGET = BROWSER_TARGET;
@@ -135,13 +138,13 @@ let _server: ViteDevServer;
 // https://vitejs.dev/config/
 export default defineConfig({
     define: {
-        __BROWSER__: JSON.stringify(BROWSER_TARGET ?? 'chrome'),
+        __BROWSER__: JSON.stringify(BROWSER_TARGET),
     },
     plugins: [
         react(),
         reactFallbackThrottlePlugin(0), // react 19 terrible defaults: https://github.com/facebook/react/issues/31819
         Icons({ compiler: 'jsx', jsx: 'react' }),
-        crx({ manifest, browser: BROWSER_TARGET as 'chrome' | 'firefox' }),
+        crx({ manifest, browser: BROWSER_TARGET }),
         fixManifestOptionsPage(),
         {
             name: 'public-transform',
