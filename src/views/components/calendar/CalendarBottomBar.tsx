@@ -34,7 +34,12 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
     return (
         <div className='sticky bottom-0 z-50 bg-surface w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4'>
             {hasAsyncCourses && (
-                <div className='min-h-15 flex flex-grow items-center gap-1 text-nowrap'>
+                <div
+                    className={clsx('flex flex-grow items-center gap-1 text-nowrap', {
+                        // Firefox puts the async courses flush against the bottom edge of the page
+                        'min-h-15': __BROWSER__ === 'firefox',
+                    })}
+                >
                     <Text variant='p' className='text-content uppercase'>
                         Async / Other
                     </Text>

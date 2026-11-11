@@ -14,7 +14,7 @@ import { suspendUntilStoresReady } from 'src/lib/chrome-extension-toolkit/storag
 // throws "'requestAnimationFrame' called on an object that does not implement interface Window".
 // Some dependencies call it unbound, so bind both functions to window up front.
 // See https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts
-if (typeof window !== 'undefined') {
+if (__BROWSER__ === 'firefox') {
     const raf = window.requestAnimationFrame;
     if (raf) {
         window.requestAnimationFrame = raf.bind(window);

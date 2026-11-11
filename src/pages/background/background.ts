@@ -12,8 +12,7 @@ init(SENTRY_OPTIONS);
 // In dev, inject Referer header on Sentry toolbar iframe requests so Sentry
 // returns the correct frame-ancestors CSP (Chrome strips Referer from
 // chrome-extension:// pages on cross-origin iframe navigations).
-// declarativeNetRequest and scripting.registerContentScripts with world: 'MAIN' are not in the
-// Firefox manifest, so this dev-only Sentry toolbar setup is Chrome-only.
+// This workaround is left out of Firefox builds.
 if (import.meta.env.DEV && __BROWSER__ === 'chrome') {
     // Sentry toolbar: set Referer so backend accepts the request, then inject
     // a content script into the iframe to fix document.referrer so postMessage
