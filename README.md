@@ -124,6 +124,8 @@ pnpm lint:firefox         # validate the build with Mozilla's web-ext linter
 pnpm zip:firefox          # Create a Firefox ZIP
 ```
 
+For AMO source submission and reproducible reviewer builds, see [the Firefox reviewer build instructions](README.firefox-review.md).
+
 <details>
 <summary>Beta Builds</summary>
 
