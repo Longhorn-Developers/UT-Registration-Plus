@@ -136,7 +136,10 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                         // Check if we received an error from the background worker
                         if (!result.success) {
                             if (result.error !== 'NO_DATA') {
-                                console.error(`Failed to fetch ${semester} data:`, result.message);
+                                console.error(
+                                    `Failed to fetch ${semester.season} ${semester.year} data:`,
+                                    result.message
+                                );
                             }
                             return;
                         }

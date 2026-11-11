@@ -26,13 +26,13 @@ const gradeDistributionHandler: MessageHandler<GradeDistributionMessages> = {
                 sendResponse({
                     success: false,
                     error: 'NO_DATA',
-                    message: (error as Error).message,
+                    message: error.message,
                 });
             } else {
                 sendResponse({
                     success: false,
                     error: 'QUERY_ERROR',
-                    message: (error as Error).message,
+                    message: error instanceof Error ? error.message : String(error),
                 });
             }
         }
@@ -50,13 +50,13 @@ const gradeDistributionHandler: MessageHandler<GradeDistributionMessages> = {
                 sendResponse({
                     success: false,
                     error: 'NO_DATA',
-                    message: (error as Error).message,
+                    message: error.message,
                 });
             } else {
                 sendResponse({
                     success: false,
                     error: 'QUERY_ERROR',
-                    message: (error as Error).message,
+                    message: error instanceof Error ? error.message : String(error),
                 });
             }
         }
