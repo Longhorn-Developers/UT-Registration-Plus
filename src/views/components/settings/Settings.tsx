@@ -19,6 +19,7 @@ import useChangelog from '@views/hooks/useChangelog';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
 import { useThemeSync } from '@views/hooks/useThemeSync';
 import {
+    BAN_LIST,
     GitHubStatsService,
     LONGHORN_DEVELOPERS_ADMINS,
     LONGHORN_DEVELOPERS_HARDCODED,
@@ -195,7 +196,7 @@ export default function Settings(): React.JSX.Element {
             ...UTRP_ALUMNI.map(a => a.githubUsername),
         ]);
         return Object.keys(githubStats.userGitHubStats)
-            .filter(username => !knownUsernames.has(username))
+            .filter(username => !knownUsernames.has(username) && !BAN_LIST.includes(username))
             .sort(
                 (a, b) =>
                     (githubStats.userGitHubStats[b]?.commits ?? 0) - (githubStats.userGitHubStats[a]?.commits ?? 0)
