@@ -8,6 +8,7 @@ import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
+import clsx from 'clsx';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 import CalendarDotsFillIcon from '~icons/ph/calendar-dots-fill';
@@ -70,8 +71,6 @@ export default function PopupMain(): JSX.Element {
         await background.switchToCalendarTab({});
         window.close();
     };
-
-    const isFirefox = __BROWSER__ === 'firefox';
 
     return (
         <div className='h-screen max-h-full flex flex-col bg-surface-raised'>
@@ -145,12 +144,13 @@ export default function PopupMain(): JSX.Element {
                 </div>
             )}
             <div
-                style={{
-                    scrollbarGutter: 'stable',
-                    paddingLeft: '1.25rem',
-                    paddingRight: isFirefox ? '1.25rem' : '6px',
-                }}
-                className='flex-1 self-stretch overflow-y-scroll'
+                style={{ scrollbarGutter: 'stable' }}
+                className={clsx(
+                    'flex-1 self-stretch overflow-y-scroll pl-spacing-6',
+                    // Chrome's 14px scrollbar (ExtensionRoot.module.scss) plus 6px matches the left padding.
+                    // Firefox ignores that scrollbar style and macOS overlay scrollbars take no space, so it gets the full padding.
+                    __BROWSER__ === 'firefox' ? 'pr-spacing-6' : 'pr-[6px]'
+                )}
             >
                 {activeSchedule?.courses?.length > 0 && (
                     <SortableList
