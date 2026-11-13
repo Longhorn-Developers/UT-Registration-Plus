@@ -12,7 +12,7 @@ import { useActiveSchedule } from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import type { ComponentProps, CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { getDarkerShade, isValidHexColor } from 'src/shared/util/colors/base';
+import { getDarkerShade, isValidHexColor, pickFontColor } from 'src/shared/util/colors/base';
 import PaletteFillIcon from '~icons/ph/palette-fill';
 import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellColorPicker';
 import { formatBlockTime } from './customBlockUtils';
@@ -36,15 +36,26 @@ export default function CalendarCustomBlockCell({
             aria-label={`${block.name}, ${time}`}
             title={`${block.name}, ${time}`}
             className={clsx(
-                'box-border h-full w-full flex overflow-hidden rounded border-0 border-l-3 border-solid border-[var(--block-color)] bg-[color-mix(in_srgb,var(--block-color)_10%,transparent)] hover:bg-[color-mix(in_srgb,var(--block-color)_30%,transparent)] dark:bg-[color-mix(in_srgb,var(--block-color)_15%,transparent)] dark:hover:bg-[color-mix(in_srgb,var(--block-color)_25%,transparent)] text-content text-left pl-[5px] pr-2 focusable',
+                'relative box-border h-full w-full flex overflow-hidden rounded border-0 border-l-3 border-solid border-[var(--block-color)] bg-[color-mix(in_srgb,var(--block-color)_10%,transparent)] hover:bg-[color-mix(in_srgb,var(--block-color)_30%,transparent)] dark:bg-[color-mix(in_srgb,var(--block-color)_15%,transparent)] dark:hover:bg-[color-mix(in_srgb,var(--block-color)_25%,transparent)] text-left pl-[5px] pr-2 focusable',
+                block.wallpaper ? pickFontColor(color) : 'text-content',
                 compact ? 'items-center gap-spacing-2' : 'flex-col items-start pt-1'
             )}
         >
+            {block.wallpaper && (
+                <div
+                    className='absolute inset-0 rounded bg-cover bg-center pointer-events-none'
+                    style={{
+                        backgroundImage: `url(${block.wallpaper})`,
+                        maskImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 1) 100%)',
+                        WebkitMaskImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 1) 100%)',
+                    }}
+                />
+            )}
             <Text
                 as='div'
                 variant='h1-course'
                 className={clsx(
-                    'truncate font-bold!',
+                    'relative z-1 truncate font-bold!',
                     compact ? 'min-w-0 flex-1' : 'w-full leading-[18px]!',
                     compact && (tiny ? 'text-[10px]! leading-[10px]!' : 'text-[12px]! leading-[14px]!')
                 )}
@@ -55,7 +66,7 @@ export default function CalendarCustomBlockCell({
                 as='div'
                 variant='small'
                 className={clsx(
-                    'font-normal! truncate',
+                    'relative z-1 font-normal! truncate',
                     compact ? 'shrink-0' : 'w-full',
                     tiny ? 'text-[10px]! leading-[10px]!' : 'text-[12px]! leading-[14px]!'
                 )}
@@ -100,6 +111,13 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
                 scheduleId,
             });
         },
+        setWallpaper: wallpaper => {
+            void background.updateCustomBlock({
+                id: block.id,
+                draft: { ...customBlockToDraft(block), wallpaper },
+                scheduleId,
+            });
+        },
         handleCloseColorPicker: () => setOpen(false),
         setSelectedCourse: () => {},
         isSelectedCourse: () => false,
@@ -137,7 +155,7 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
                     }
                 >
                     <ColorPickerContext.Provider value={context}>
-                        <CourseCellColorPicker defaultColor={color as ThemeColor} />
+                        <CourseCellColorPicker defaultColor={color as ThemeColor} defaultWallpaper={block.wallpaper} />
                     </ColorPickerContext.Provider>
                 </div>
             )}

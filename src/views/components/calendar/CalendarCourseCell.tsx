@@ -116,7 +116,17 @@ export default function CalendarCourseCell({
             onClick={onClick}
             aria-label={`${courseDeptAndInstr}${timeAndLocation ? `, ${timeAndLocation}` : ''}`}
         >
-            <div className={clsx('flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full')}>
+            {blockData.course.wallpaper && (
+                <div
+                    className='absolute inset-0 rounded bg-cover bg-center pointer-events-none'
+                    style={{
+                        backgroundImage: `url(${blockData.course.wallpaper})`,
+                        maskImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 1) 100%)',
+                        WebkitMaskImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 1) 100%)',
+                    }}
+                />
+            )}
+            <div className={clsx('relative z-1 flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full')}>
                 <Text
                     variant='h1-course'
                     as='p'
@@ -135,7 +145,7 @@ export default function CalendarCourseCell({
             </div>
             {rightIcon && (
                 <div
-                    className='h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white screenshot:hidden'
+                    className='relative z-1 h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white screenshot:hidden'
                     style={{
                         backgroundColor: colors.secondaryColor,
                     }}
@@ -195,7 +205,10 @@ export default function CalendarCourseCell({
                                     : 'absolute bottom-full mb-0.75 w-max'
                             }
                         >
-                            <CourseCellColorPicker defaultColor={colors.primaryColor} />
+                            <CourseCellColorPicker
+                                defaultColor={colors.primaryColor}
+                                defaultWallpaper={blockData.course.wallpaper}
+                            />
                         </div>
                     )}
                 </div>

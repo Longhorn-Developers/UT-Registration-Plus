@@ -10,6 +10,7 @@ export interface CustomBlockDraft {
     syncAcrossAllSchedules: boolean;
     conflictHighlight: boolean;
     color?: HexColor;
+    wallpaper?: string;
 }
 
 export interface CustomBlock extends Omit<CustomBlockDraft, 'syncAcrossAllSchedules'> {
