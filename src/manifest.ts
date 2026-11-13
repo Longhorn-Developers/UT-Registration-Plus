@@ -16,6 +16,7 @@ if (isBeta && process.env.NODE_ENV !== 'production') throw new Error('Cannot hav
 const HOST_PERMISSIONS: string[] = [
     '*://*.utdirect.utexas.edu/apps/registrar/course_schedule/*',
     '*://*.utdirect.utexas.edu/registration/classlist/*',
+    '*://*.utdirect.utexas.edu/registration/registration.WBX*',
     '*://*.utexas.collegescheduler.com/*',
     '*://*.catalog.utexas.edu/ribbit/',
     '*://*.registrar.utexas.edu/schedules/*',
