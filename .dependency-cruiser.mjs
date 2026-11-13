@@ -139,7 +139,8 @@ export default {
                 'from.pathNot re of the not-to-dev-dep rule in the dependency-cruiser configuration',
             from: {
                 path: '^(src)',
-                pathNot: '[.](?:spec|test)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$',
+                // tests and Storybook stories (including their test helpers) never ship
+                pathNot: ['[.](?:spec|test)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$', '^src/stories/'],
             },
             to: {
                 dependencyTypes: ['npm-dev'],

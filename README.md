@@ -120,6 +120,18 @@ Use `BETA=true pnpm build` to generate a beta build.
 
 </details>
 
+### Tests
+
+- Unit tests (logic, runs in Node): `pnpm test`
+- Behavior tests (core user flows, runs in a real Chromium browser in both light and dark mode): `pnpm test:storybook`. The first time, install the browser with `pnpm exec playwright install chromium`.
+
+Behavior tests are Storybook stories with a `play` function and the `behavior` tag. See `src/stories/components/QuickAddModal.stories.tsx` for an example. When adding one:
+
+- **Cover a core flow, not edge cases.** Test the main things users do (e.g. Quick Add finds a course, the schedule plus button works). Edge cases stay in PR review.
+- **Find elements the way a user does**, by role and visible name (`queryByRole('button', { name: 'Add Course' })`), never by layout or CSS classes, so redesigns don't break tests that still describe working behavior. Extension UI lives in shadow roots, so use the helpers in `src/stories/testing/shadowQueries.ts`.
+- **Keep each flow's tests together** with that component's stories, so a redesign of one area only touches its own tests.
+- **Never hit the network.** Fake the background script's answers with `mockBackground` from `src/stories/testing/backgroundMock.ts`.
+
 ## Loading the Extension Manually
 
 To load the extension manually in Chrome:
