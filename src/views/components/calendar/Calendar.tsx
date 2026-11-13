@@ -16,7 +16,7 @@ import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import refreshCourses from '@views/lib/refreshCourses';
-import { clampSidebarWidth } from '@views/lib/sidebarWidth';
+import { clampSidebarWidth, getMaxSidebarWidth } from '@views/lib/sidebarWidth';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
@@ -45,12 +45,22 @@ const CalendarSidebar = memo(function CalendarSidebar() {
     const [drag, setDrag] = useState<SidebarDrag | null>(null);
     // A width just picked, shown until the store has it, so the sidebar doesn't jump back while it's saved
     const [pickedWidth, setPickedWidth] = useState<number | null>(null);
-    const settledWidth = clampSidebarWidth(pickedWidth ?? storedWidth);
+    // The widest the sidebar can be in the current window. The stored width is left alone when this caps it, so
+    // widening the window brings the chosen width back
+    const [maxWidth, setMaxWidth] = useState(() => getMaxSidebarWidth(window.innerWidth));
+    const settledWidth = clampSidebarWidth(pickedWidth ?? storedWidth, maxWidth);
     const width = drag && !drag.collapsed ? drag.width : settledWidth;
     const isCollapsing = drag?.collapsed === true;
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: the picked width is dropped whenever the stored one changes
     useEffect(() => setPickedWidth(null), [storedWidth]);
+
+    // React skips the re-render when the max hasn't changed, so this stays cheap while the window is resized
+    useEffect(() => {
+        const updateMaxWidth = () => setMaxWidth(getMaxSidebarWidth(window.innerWidth));
+        window.addEventListener('resize', updateMaxWidth);
+        return () => window.removeEventListener('resize', updateMaxWidth);
+    }, []);
 
     // A drag that collapsed the sidebar stays collapsed until the store says it's hidden
     useEffect(() => {
@@ -135,6 +145,7 @@ const CalendarSidebar = memo(function CalendarSidebar() {
             <SidebarResizeHandle
                 sidebarRef={sidebarRef}
                 width={width}
+                maxWidth={maxWidth}
                 onDrag={setDrag}
                 onDragEnd={ended => {
                     if (ended?.collapsed) {

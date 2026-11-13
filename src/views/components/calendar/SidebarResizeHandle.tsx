@@ -2,7 +2,6 @@ import {
     clampSidebarWidth,
     getDraggedSidebarWidth,
     SIDEBAR_DEFAULT_WIDTH,
-    SIDEBAR_MAX_WIDTH,
     SIDEBAR_MIN_WIDTH,
 } from '@views/lib/sidebarWidth';
 import type React from 'react';
@@ -24,6 +23,8 @@ export interface SidebarResizeHandleProps {
     sidebarRef: RefObject<HTMLElement | null>;
     /** The sidebar's current width, in px */
     width: number;
+    /** The widest the sidebar can be in the current window, in px */
+    maxWidth: number;
     /** Called as the edge is dragged, to show the new width (or the collapse) while dragging */
     onDrag: (drag: SidebarDrag) => void;
     /** Called once the drag ends, with where it ended, or null if it was cancelled */
@@ -34,13 +35,14 @@ export interface SidebarResizeHandleProps {
 
 /**
  * The draggable right edge of the calendar sidebar, like the edges between VS Code's panels. Dragging it resizes the
- * sidebar within its limits, and dragging it most of the way left collapses the sidebar. It can also be focused and
- * moved with the arrow keys (Home and End for the limits), and a double click puts the sidebar back to its default
- * width.
+ * sidebar within its limits, which shrink on narrow windows so the calendar keeps room, and dragging it most of the
+ * way left collapses the sidebar. It can also be focused and moved with the arrow keys (Home and End for the limits),
+ * and a double click puts the sidebar back to its default width.
  */
 export default function SidebarResizeHandle({
     sidebarRef,
     width,
+    maxWidth,
     onDrag,
     onDragEnd,
     onResize,
@@ -85,11 +87,11 @@ export default function SidebarResizeHandle({
             ArrowLeft: width - KEYBOARD_STEP,
             ArrowRight: width + KEYBOARD_STEP,
             Home: SIDEBAR_MIN_WIDTH,
-            End: SIDEBAR_MAX_WIDTH,
+            End: maxWidth,
         }[event.key];
         if (next === undefined) return;
         event.preventDefault();
-        onResize(clampSidebarWidth(next));
+        onResize(clampSidebarWidth(next, maxWidth));
     };
 
     return (
@@ -100,10 +102,10 @@ export default function SidebarResizeHandle({
             aria-label='Resize sidebar'
             aria-valuenow={width}
             aria-valuemin={SIDEBAR_MIN_WIDTH}
-            aria-valuemax={SIDEBAR_MAX_WIDTH}
+            aria-valuemax={maxWidth}
             tabIndex={0}
             title='Drag to resize, double-click to reset'
-            className='group absolute inset-y-0 right-0 z-10 w-1.5 flex cursor-col-resize touch-none justify-end outline-none screenshot:hidden'
+            className='group absolute inset-y-0 right-0 z-10 w-1.5 flex cursor-col-resize touch-none justify-end screenshot:hidden'
             onPointerDown={event => {
                 if (event.button !== 0) return;
                 // Stops the drag from selecting text, and keeps the pointer's events coming here while it's outside
@@ -119,7 +121,7 @@ export default function SidebarResizeHandle({
             onPointerMove={event => {
                 const sidebar = sidebarRef.current;
                 if (!drag.current || !sidebar) return;
-                const next = getDraggedSidebarWidth(event.clientX + grabOffset.current, sidebarLeft.current);
+                const next = getDraggedSidebarWidth(event.clientX + grabOffset.current, sidebarLeft.current, maxWidth);
                 drag.current = next;
                 if (reported.current?.collapsed !== next.collapsed) {
                     reported.current = next;
@@ -134,7 +136,7 @@ export default function SidebarResizeHandle({
             onKeyDown={handleKeyDown}
             onDoubleClick={() => onResize(SIDEBAR_DEFAULT_WIDTH)}
         >
-            <div className='h-full w-0.5 transition-colors group-hover:bg-ut-burntorange/30 group-focus-visible:bg-ut-burntorange group-active:bg-ut-burntorange/50' />
+            <div className='h-full w-0.5 transition-colors group-hover:bg-ut-burntorange/30 group-active:bg-ut-burntorange/50' />
             <div
                 ref={guide}
                 aria-hidden
