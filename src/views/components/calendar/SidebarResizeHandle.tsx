@@ -134,11 +134,11 @@ export default function SidebarResizeHandle({
             onKeyDown={handleKeyDown}
             onDoubleClick={() => onResize(SIDEBAR_DEFAULT_WIDTH)}
         >
-            <div className='h-full w-0.5 transition-colors group-hover:bg-ut-burntorange/50 group-focus-visible:bg-ut-burntorange group-active:bg-ut-burntorange' />
+            <div className='h-full w-0.5 transition-colors group-hover:bg-ut-burntorange/30 group-focus-visible:bg-ut-burntorange group-active:bg-ut-burntorange/50' />
             <div
                 ref={guide}
                 aria-hidden
-                className='pointer-events-none fixed inset-y-0 left-0 z-50 w-0.5 bg-ut-burntorange will-change-transform'
+                className='pointer-events-none fixed inset-y-0 left-0 z-50 w-0.5 bg-ut-burntorange/50 will-change-transform'
                 style={{ visibility: 'hidden' }}
             />
         </div>
