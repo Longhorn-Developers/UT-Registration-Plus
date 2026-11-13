@@ -97,7 +97,7 @@ _Note: Installing the wrong Node.js version can lead to setup and build errors._
 
 </details>
 
-Once set up, the extension can be built to the `dist/` directory using the following methods:
+Once set up, the extension can be built to the `dist/chrome/` directory (or `dist/firefox/` for the Firefox target) using the following methods:
 
 ### Development Builds
 
@@ -113,6 +113,19 @@ Once set up, the extension can be built to the `dist/` directory using the follo
     pnpm build
     ```
 
+### Firefox Builds
+
+The same codebase builds a Firefox add-on for Firefox 140 or later. Set `BROWSER_TARGET=firefox`, or use the shortcuts:
+
+```bash
+pnpm build:firefox        # production build to dist/firefox/
+pnpm build:watch:firefox  # development build with file watching
+pnpm lint:firefox         # validate the build with Mozilla's web-ext linter
+pnpm zip:firefox          # Create a Firefox ZIP
+```
+
+For AMO source submission and reproducible reviewer builds, see [the Firefox reviewer build instructions](README.firefox-review.md).
+
 <details>
 <summary>Beta Builds</summary>
 
@@ -127,7 +140,15 @@ To load the extension manually in Chrome:
 1. Open `chrome://extensions`.
 2. Enable 'Developer Mode'.
 3. Click 'Load unpacked'.
-4. Navigate to the `dist/` directory and select it.
+4. Navigate to the `dist/chrome/` directory and select it.
+
+To load the extension manually in Firefox:
+
+1. Open `about:debugging#/runtime/this-firefox`.
+2. Click 'Load Temporary Add-on…'.
+3. Select `dist/firefox/manifest.json`.
+
+Temporary add-ons are removed when Firefox restarts. Click 'Reload' on the same page after rebuilding.
 
 ## Bug Reporting
 

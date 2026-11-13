@@ -6,6 +6,7 @@ import type { CalendarBackgroundMessages, CalendarTabMessages } from './Calendar
 import type CESMessage from './CESMessage';
 import type { CustomBlockMessages } from './CustomBlockMessages';
 import type GitHubStatsMessages from './GitHubStatsMessages';
+import type GradeDistributionMessages from './GradeDistributionMessages';
 import type TabInfoMessages from './TabInfoMessages';
 import type TabManagementMessages from './TabManagementMessages';
 import type { UserScheduleMessages } from './UserScheduleMessages';
@@ -28,7 +29,8 @@ export type BACKGROUND_MESSAGES = BrowserActionMessages &
     UserScheduleMessages &
     CESMessage &
     CalendarBackgroundMessages &
-    GitHubStatsMessages;
+    GitHubStatsMessages &
+    GradeDistributionMessages;
 
 /**
  * This is a type with all the message definitions that can be sent TO specific tabs

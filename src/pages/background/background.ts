@@ -12,7 +12,8 @@ init(SENTRY_OPTIONS);
 // In dev, inject Referer header on Sentry toolbar iframe requests so Sentry
 // returns the correct frame-ancestors CSP (Chrome strips Referer from
 // chrome-extension:// pages on cross-origin iframe navigations).
-if (import.meta.env.DEV) {
+// This workaround is left out of Firefox builds.
+if (import.meta.env.DEV && __BROWSER__ === 'chrome') {
     // Sentry toolbar: set Referer so backend accepts the request, then inject
     // a content script into the iframe to fix document.referrer so postMessage
     // uses the real extension origin instead of the fake localhost one.
@@ -74,6 +75,7 @@ import CESHandler from './handler/CESHandler';
 import calendarBackgroundHandler from './handler/calendarBackgroundHandler';
 import customBlockHandler from './handler/customBlockHandler';
 import gitHubStatsHandler from './handler/gitHubStatsHandler';
+import gradeDistributionHandler from './handler/gradeDistributionHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
 import userScheduleHandler from './handler/userScheduleHandler';
 
@@ -128,6 +130,7 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...calendarBackgroundHandler,
     ...customBlockHandler,
     ...gitHubStatsHandler,
+    ...gradeDistributionHandler,
 });
 
 messageListener.listen({ onError: error => captureException(error) });

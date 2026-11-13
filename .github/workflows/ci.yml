@@ -1,7 +1,7 @@
 name: CI
 # Lint, type-check, and test on every PR and push to main. When all three pass, build the
-# extension and attach the dist folder as a downloadable artifact so testers can load it
-# unpacked without running pnpm locally.
+# extension for Chrome and Firefox and attach each dist folder as a downloadable artifact so
+# testers can load it unpacked without running pnpm locally.
 on:
   push:
     branches:
@@ -53,9 +53,13 @@ jobs:
       - name: Run tests
         run: pnpm test
   build:
-    name: Build ZIP
+    name: Build ZIP (${{ matrix.browser }})
     needs: [check, type-check, test]
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -71,26 +75,33 @@ jobs:
       - name: Build extension
         run: pnpm build
         env:
+          BROWSER_TARGET: ${{ matrix.browser }}
           VITE_GIT_BRANCH: ${{ github.head_ref || github.ref_name }}
           VITE_GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Lint Firefox add-on
+        if: matrix.browser == 'firefox'
+        run: pnpm lint:firefox
       - name: Set artifact name
         id: name
         run: |
           SHA="${{ github.event.pull_request.head.sha || github.sha }}"
           SHORT_SHA="${SHA::7}"
+          # The Chrome artifact has no suffix, because pr-build-comment.yml looks it up by this exact name
+          if [ "${{ matrix.browser }}" = "chrome" ]; then SUFFIX=""; else SUFFIX="-${{ matrix.browser }}"; fi
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "value=utrp-pr-${{ github.event.pull_request.number }}-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+            echo "value=utrp-pr-${{ github.event.pull_request.number }}-${SHORT_SHA}${SUFFIX}" >> "$GITHUB_OUTPUT"
           else
-            echo "value=utrp-main-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+            echo "value=utrp-main-${SHORT_SHA}${SUFFIX}" >> "$GITHUB_OUTPUT"
           fi
       - name: Upload ZIP
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.name.outputs.value }}
-          path: dist
+          path: dist/${{ matrix.browser }}
           if-no-files-found: error
           retention-days: 60
-      - name: Write tester instructions
+      - name: Write Chrome tester instructions
+        if: matrix.browser == 'chrome'
         run: |
           {
             echo "## Test this build"
@@ -100,4 +111,16 @@ jobs:
             echo "3. Open \`chrome://extensions\`, turn on Developer mode, click **Load unpacked**, and pick the extracted folder."
             echo
             echo "If a store version of UTRP is installed, disable it first so the two don't conflict."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Write Firefox tester instructions
+        if: matrix.browser == 'firefox'
+        run: |
+          {
+            echo "## Test this build in Firefox"
+            echo
+            echo "1. Download **${{ steps.name.outputs.value }}** from the Artifacts section at the bottom of this page."
+            echo "2. Extract the ZIP."
+            echo "3. Open \`about:debugging#/runtime/this-firefox\`, click **Load Temporary Add-on**, and pick \`manifest.json\` in the extracted folder."
+            echo
+            echo "Needs Firefox 140 or later. Firefox removes temporary add-ons when it restarts."
           } >> "$GITHUB_STEP_SUMMARY"
