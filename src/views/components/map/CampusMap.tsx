@@ -11,7 +11,7 @@ import { calcDirectPathStats, PathStats } from './PathStats';
 import TimeWarningLabel from './TimeWarningLabel';
 import type { DayCode, NodeId, NodeType } from './types';
 import { DAY_MAPPING } from './types';
-import { getMidpoint } from './utils';
+import { getMidpoint, resolveCourseBuilding } from './utils';
 import ZoomPanControls from './ZoomPanControls';
 
 // Image: 783x753
@@ -155,10 +155,13 @@ export default function CampusMap({ processedCourses }: CampusMapProps): React.J
             const currentCourse = sortedCourses[i];
             const nextCourse = sortedCourses[i + 1];
 
-            if (currentCourse && nextCourse && currentCourse.location?.building && nextCourse.location?.building) {
+            const start = resolveCourseBuilding(currentCourse?.location?.building);
+            const end = resolveCourseBuilding(nextCourse?.location?.building);
+
+            if (currentCourse && nextCourse && start && end) {
                 paths.push({
-                    start: currentCourse.location.building,
-                    end: nextCourse.location.building,
+                    start,
+                    end,
                     startTime: currentCourse.normalizedEndTime,
                     endTime: nextCourse.normalizedStartTime,
                     colors: currentCourse.colors,
