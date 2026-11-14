@@ -106,6 +106,19 @@ if (terms.size !== 1) {
     throw new Error(`Expected exactly one term in ${inputPath}, found: ${[...terms].join(', ') || 'none'}`);
 }
 
-const output = { term: [...terms][0], scrapedAt, costs };
-writeFileSync(OUTPUT_PATH, `${JSON.stringify(output)}\n`);
-console.log(`Wrote ${Object.keys(costs).length} course + professor pairs for ${output.term} to ${OUTPUT_PATH}`);
+// Written one entry per line, matching the repo's Biome formatting so the generated file passes CI as-is
+const costLines = Object.entries(costs).map(
+    ([key, [low, high]]) => `        ${JSON.stringify(key)}: [${low}, ${high}]`
+);
+const output = [
+    '{',
+    `    "term": ${JSON.stringify([...terms][0])},`,
+    `    "scrapedAt": ${JSON.stringify(scrapedAt)},`,
+    '    "costs": {',
+    costLines.join(',\n'),
+    '    }',
+    '}',
+    '',
+].join('\n');
+writeFileSync(OUTPUT_PATH, output);
+console.log(`Wrote ${costLines.length} course + professor pairs for ${[...terms][0]} to ${OUTPUT_PATH}`);
