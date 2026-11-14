@@ -8,6 +8,7 @@ import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot'
 import React from 'react';
 import { themeLabels, themes, type ThemeName } from '@shared/types/Theme';
 import { useThemeSync } from '@views/hooks/useThemeSync';
+import { resetBackgroundMock } from '../src/stories/testing/backgroundMock';
 
 function ThemeBridge({ theme, children }: { theme: ThemeName; children: React.ReactNode }) {
     useThemeSync(theme);
@@ -20,6 +21,8 @@ function ThemeBridge({ theme, children }: { theme: ThemeName; children: React.Re
 }
 
 const preview: Preview = {
+    // The behavior tests override this per Vitest project (see vitest.storybook.config.ts),
+    // so every tested story runs in both light and dark mode
     initialGlobals: { theme: 'light' },
     globalTypes: {
         theme: {
@@ -39,6 +42,10 @@ const preview: Preview = {
                 date: /Date$/i,
             },
         },
+    },
+    // Each story starts with no fake background handlers; stories register their own
+    beforeEach: () => {
+        resetBackgroundMock();
     },
     decorators: [
         (Story, context) => (

@@ -33,6 +33,7 @@
         "utils",
         "scripts",
         "vite.config.ts",
+        "vitest.storybook.config.ts",
         "@types",
         "node_modules/@types",
         "src/manifest.ts",
