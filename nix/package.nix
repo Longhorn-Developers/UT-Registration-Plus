@@ -27,7 +27,8 @@ stdenv.mkDerivation (finalAttrs: {
 
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
-    fetcherVersion = 2;
+    pnpm = pnpm_10;
+    fetcherVersion = 5;
     hash = lib.strings.trim (builtins.readFile ./pnpm-hash);
   };
 

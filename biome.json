@@ -1,12 +1,19 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.6.5/schema.json",
     "vcs": {
         "enabled": true,
         "clientKind": "git",
         "useIgnoreFile": true
     },
     "files": {
-        "includes": ["**", "!!**/dist", "!.storybook", "!src/lib/chrome-extension-toolkit"]
+        "includes": [
+            "**",
+            "!!**/dist",
+            "!.storybook",
+            "!src/lib/chrome-extension-toolkit",
+            "!**/*.svg",
+            "!CHANGELOG.md"
+        ]
     },
     "formatter": {
         "useEditorconfig": true,
@@ -16,7 +23,7 @@
     "linter": {
         "enabled": true,
         "rules": {
-            "recommended": true
+            "preset": "recommended"
         }
     },
     "overrides": [
@@ -26,6 +33,27 @@
                 "rules": {
                     "correctness": {
                         "useHookAtTopLevel": "off"
+                    }
+                }
+            }
+        },
+        {
+            "includes": ["src/views/styles/colors.module.scss", "src/views/styles/fonts.module.scss"],
+            "linter": {
+                "rules": {
+                    "correctness": {
+                        "noUnknownProperty": "off",
+                        "noUnknownPseudoClass": "off"
+                    }
+                }
+            }
+        },
+        {
+            "includes": ["src/views/components/common/ExtensionRoot/ExtensionRoot.module.scss"],
+            "linter": {
+                "rules": {
+                    "correctness": {
+                        "noUnknownUnit": "off"
                     }
                 }
             }
@@ -40,6 +68,19 @@
             "arrowParentheses": "asNeeded",
             "bracketSpacing": true,
             "bracketSameLine": false
+        }
+    },
+    "css": {
+        "parser": {
+            "tailwindDirectives": true
+        },
+        "formatter": {
+            "quoteStyle": "single"
+        }
+    },
+    "yaml": {
+        "formatter": {
+            "quoteStyle": "single"
         }
     },
     "assist": {
