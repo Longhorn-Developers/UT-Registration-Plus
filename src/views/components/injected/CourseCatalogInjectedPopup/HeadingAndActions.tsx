@@ -4,6 +4,7 @@ import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { getCourseSectionsUrl } from '@shared/util/courseUrls';
 import { englishStringifyList } from '@shared/util/string';
 import { Button } from '@views/components/common/Button';
 import { Chip, coreMap, flagMap } from '@views/components/common/Chip';
@@ -280,7 +281,7 @@ export default function HeadingAndActions({
                     onClick={() => {
                         if (isInCalendar) {
                             openNewTab({
-                                url: course.url,
+                                url: getCourseSectionsUrl(course),
                             });
                         } else {
                             background.switchToCalendarTab({});
