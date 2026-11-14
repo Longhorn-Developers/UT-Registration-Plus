@@ -25,6 +25,7 @@
         "coverage": "vitest run --coverage",
         "preview": "vite preview",
         "generate-changelog": "bun run scripts/generateChangelog.ts",
+        "generate-textbook-costs": "bun run scripts/generateTextbookCosts.ts",
         "preinstall": "npx only-allow pnpm",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
