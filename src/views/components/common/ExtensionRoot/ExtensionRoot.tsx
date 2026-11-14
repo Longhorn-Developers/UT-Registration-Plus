@@ -22,6 +22,7 @@ if (import.meta.env.DEV)
  * A wrapper component for the extension elements that adds some basic styling to them
  */
 export default function ExtensionRoot(props: React.HTMLProps<HTMLDivElement>): React.JSX.Element {
+    // roots that never sync a theme (e.g. the toolbar popup) stay in light mode
     const [theme, setTheme] = React.useState<ThemeName>('light');
 
     return (
@@ -29,7 +30,7 @@ export default function ExtensionRoot(props: React.HTMLProps<HTMLDivElement>): R
             <SentryProvider>
                 <QueryClientProvider client={queryClient}>
                     <ThemeContext.Provider value={{ theme, setTheme }}>
-                        <ShadowRootContainer {...props} theme={theme} />
+                        <ExtensionRootWrapper {...props} />
                     </ThemeContext.Provider>
                 </QueryClientProvider>
             </SentryProvider>

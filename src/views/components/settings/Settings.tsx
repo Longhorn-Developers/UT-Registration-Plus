@@ -19,6 +19,7 @@ import useChangelog from '@views/hooks/useChangelog';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
 import { useThemeSync } from '@views/hooks/useThemeSync';
 import {
+    BAN_LIST,
     GitHubStatsService,
     LONGHORN_DEVELOPERS_ADMINS,
     LONGHORN_DEVELOPERS_HARDCODED,
@@ -87,7 +88,7 @@ export default function Settings(): React.JSX.Element {
     const enableCourseStatusChips = options.enableCourseStatusChips;
     const isDeveloper = DevStore.useStore(store => store.isDeveloper);
 
-    useThemeSync(options.enableThemesBeta ? options.theme : 'light');
+    useThemeSync(options.theme);
 
     const activeSchedule = useActiveSchedule();
     const showDialog = usePrompt();
@@ -132,8 +133,8 @@ export default function Settings(): React.JSX.Element {
             description: (
                 <>
                     <p>
-                        Are you sure you want to erase all schedules and courses you have? This action is permanent and
-                        cannot be undone.
+                        Are you sure you want to erase all schedules, courses, and custom blocks you have? This action
+                        is permanent and cannot be undone.
                     </p>
                     <br />
                     <p className='text-sm text-content-muted'>
@@ -195,7 +196,7 @@ export default function Settings(): React.JSX.Element {
             ...UTRP_ALUMNI.map(a => a.githubUsername),
         ]);
         return Object.keys(githubStats.userGitHubStats)
-            .filter(username => !knownUsernames.has(username))
+            .filter(username => !knownUsernames.has(username) && !BAN_LIST.includes(username))
             .sort(
                 (a, b) =>
                     (githubStats.userGitHubStats[b]?.commits ?? 0) - (githubStats.userGitHubStats[a]?.commits ?? 0)
@@ -253,7 +254,7 @@ export default function Settings(): React.JSX.Element {
                     >
                         <GitMergeIcon className='h-6 w-6 text-ut-gray' />
                         <span className='text-content'>
-                            v{manifest.version}
+                            v{manifest.version_name ?? manifest.version}
                             {import.meta.env.DEV ? '-dev' : ''}
                         </span>
                     </Button>
@@ -271,7 +272,7 @@ export default function Settings(): React.JSX.Element {
             </header>
 
             <div className='p-6 lg:flex'>
-                <div className='mr-4 lg:w-1/2 xl:w-xl'>
+                <div className='mr-4 lg:w-1/2 xl:w-xl bg-surface-raised p-4'>
                     {options && (
                         <AdvancedSettings
                             highlightConflicts={options.enableHighlightConflicts}
@@ -304,7 +305,7 @@ export default function Settings(): React.JSX.Element {
 
                         <div className='flex items-center justify-between'>
                             <div className='max-w-xs'>
-                                <Text variant='h4' className='text-ut-burntorange font-semibold'>
+                                <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                                     UTRP Map
                                 </Text>
                                 <span className='mx-2 border border-ut-burntorange rounded px-2 py-0.5 text-xs text-ut-burntorange font-medium'>
@@ -376,7 +377,7 @@ export default function Settings(): React.JSX.Element {
 
                 <Divider className='lg:hidden' size='auto' orientation='horizontal' />
 
-                <section className='my-8 lg:my-0 lg:ml-4 lg:w-1/2'>
+                <section className='my-8 mt-4 lg:mb-0 lg:ml-4 lg:w-1/2'>
                     <section>
                         <h2 className='mb-4 text-xl text-content font-semibold'>
                             LONGHORN DEVELOPERS (LHD) EXECUTIVE BOARD
@@ -384,7 +385,7 @@ export default function Settings(): React.JSX.Element {
                         <div className='grid grid-cols-2 gap-4 2xl:grid-cols-4 md:grid-cols-3'>
                             {LONGHORN_DEVELOPERS_ADMINS.map(admin => (
                                 <ContributorCard
-                                    key={admin.githubUsername}
+                                    key={admin.name}
                                     name={admin.name}
                                     githubUsername={admin.githubUsername}
                                     personalWebsite={getPersonalWebsite(admin)}

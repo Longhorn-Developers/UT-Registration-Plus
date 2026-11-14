@@ -1,5 +1,6 @@
 {
     "onlyChanged": true,
     "projectId": "Project:65c5172964f36dcf207985bf",
+    "untraced": [".dependency-cruiser-known-violations.json", ".dependency-cruiser.mjs"],
     "zip": true
 }

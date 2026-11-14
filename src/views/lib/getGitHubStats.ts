@@ -13,6 +13,8 @@ const REPO_OWNER = 'Longhorn-Developers';
 const REPO_NAME = 'UT-Registration-Plus';
 const CONTRIBUTORS_API_ROUTE = `/repos/${REPO_OWNER}/${REPO_NAME}/stats/contributors`;
 
+export const BAN_LIST = ['claude', 'dependabot[bot]', 'github-code-quality[bot]'];
+
 export const LONGHORN_DEVELOPERS_ADMINS = [
     {
         name: 'Kamsi Elele',
@@ -39,6 +41,11 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
         name: 'Kabir Ramzan',
         role: ['LHD Membership Director'],
         githubUsername: 'CMEONE',
+    },
+    {
+        name: 'Claire Liu',
+        role: ['LHD Communications Director'],
+        githubUsername: '',
     },
 ] as const satisfies TeamMember[];
 
@@ -112,6 +119,21 @@ export const UTRP_TEAM = [
         personalWebsite: 'https://leslielooi.super.site/',
     },
     {
+        name: 'Arun Bagavathiannan',
+        role: ['Technical Lead'],
+        githubUsername: 'arunbagavathiannan',
+    },
+    {
+        name: 'Margaret Cartee',
+        role: ['Product Lead'],
+        githubUsername: 'margaret-ca',
+    },
+    {
+        name: 'Hannah Ha',
+        role: ['Product Lead'],
+        githubUsername: 'songhannahha-hub',
+    },
+    {
         name: 'Akshitha Venkataraman',
         role: ['UX Design Fellow'],
         githubUsername: '',
@@ -120,11 +142,6 @@ export const UTRP_TEAM = [
         name: 'Jesse Chen',
         role: ['UX Design Fellow'],
         githubUsername: '',
-    },
-    {
-        name: 'Arun Bagavathiannan',
-        role: ['Technical Lead'],
-        githubUsername: 'arunbagavathiannan',
     },
     {
         name: 'Saketh Sripada',
@@ -145,16 +162,6 @@ export const UTRP_TEAM = [
         name: 'Jonathan Phung',
         role: ['Developer Fellow'],
         githubUsername: 'jonathanphung',
-    },
-    {
-        name: 'Margaret Cartee',
-        role: ['Product Lead'],
-        githubUsername: 'margaret-ca',
-    },
-    {
-        name: 'Hannah Ha',
-        role: ['Product Lead'],
-        githubUsername: 'songhannahha-hub',
     },
     {
         name: 'Marie Cho',
