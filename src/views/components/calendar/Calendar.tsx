@@ -16,6 +16,7 @@ import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import refreshCourses from '@views/lib/refreshCourses';
+import { clampSidebarWidth, getMaxSidebarWidth } from '@views/lib/sidebarWidth';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
@@ -28,12 +29,57 @@ import { LargeLogo } from '../common/LogoIcon';
 import Text from '../common/Text/Text';
 import CalendarFooter from './CalendarFooter';
 import CustomBlockPopover from './CustomBlockPopover';
+import SidebarResizeHandle, { type SidebarDrag } from './SidebarResizeHandle';
+
+/** How long the sidebar's width has to stay the same before it's saved, in ms */
+const SIDEBAR_SAVE_DELAY_MS = 300;
 
 const CalendarSidebar = memo(function CalendarSidebar() {
     const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
     const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
     const showReportIssueDialog = useReportIssueDialog();
     const sidebarRef = useRef<HTMLDivElement>(null);
+
+    const storedWidth = OptionsStore.useStore(store => store.calendarSidebarWidth);
+    // While the edge is being dragged, what the drag has done so far
+    const [drag, setDrag] = useState<SidebarDrag | null>(null);
+    // A width just picked, shown until the store has it, so the sidebar doesn't jump back while it's saved
+    const [pickedWidth, setPickedWidth] = useState<number | null>(null);
+    // The widest the sidebar can be in the current window. The stored width is left alone when this caps it, so
+    // widening the window brings the chosen width back
+    const [maxWidth, setMaxWidth] = useState(() => getMaxSidebarWidth(window.innerWidth));
+    const settledWidth = clampSidebarWidth(pickedWidth ?? storedWidth, maxWidth);
+    const width = drag && !drag.collapsed ? drag.width : settledWidth;
+    const isCollapsing = drag?.collapsed === true;
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: the picked width is dropped whenever the stored one changes
+    useEffect(() => setPickedWidth(null), [storedWidth]);
+
+    // React skips the re-render when the max hasn't changed, so this stays cheap while the window is resized
+    useEffect(() => {
+        const updateMaxWidth = () => setMaxWidth(getMaxSidebarWidth(window.innerWidth));
+        window.addEventListener('resize', updateMaxWidth);
+        return () => window.removeEventListener('resize', updateMaxWidth);
+    }, []);
+
+    // A drag that collapsed the sidebar stays collapsed until the store says it's hidden
+    useEffect(() => {
+        if (!showSidebar) setDrag(null);
+    }, [showSidebar]);
+
+    // Holding an arrow key changes the width many times a second, more often than chrome.storage.sync takes writes,
+    // so the width is saved once it stops changing
+    const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+    const resize = (newWidth: number) => {
+        if (newWidth === settledWidth) return;
+        setPickedWidth(newWidth);
+        clearTimeout(saveTimer.current);
+        saveTimer.current = setTimeout(() => {
+            OptionsStore.set('calendarSidebarWidth', newWidth).catch(error =>
+                console.error('Failed to save the calendar sidebar width', error)
+            );
+        }, SIDEBAR_SAVE_DELAY_MS);
+    };
 
     // TODO: Replace with JSX `inert={!showSidebar}` once React supports the inert attribute natively.
     useEffect(() => {
@@ -50,12 +96,15 @@ const CalendarSidebar = memo(function CalendarSidebar() {
         <div
             ref={sidebarRef}
             className={clsx(
-                'py-spacing-5 bg-surface relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-divider shadow-[2px_0_10px,rgba(214_210_196_/_.1)] motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width] screenshot:hidden',
+                'py-spacing-5 bg-surface relative h-full min-h-screen w-full flex flex-none flex-col justify-between overflow-clip whitespace-nowrap border-r border-divider shadow-[2px_0_10px,rgba(214_210_196_/_.1)] screenshot:hidden',
                 {
-                    'max-w-[20.3125rem] ': showSidebar,
-                    'max-w-0 pointer-events-none': !showSidebar,
+                    // Following the pointer while dragging, rather than easing after it
+                    'motion-safe:duration-300 motion-safe:ease-out-expo motion-safe:transition-[max-width]':
+                        !drag || isCollapsing,
+                    'pointer-events-none': !showSidebar,
                 }
             )}
+            style={{ maxWidth: showSidebar && !isCollapsing ? width : 0 }}
             tabIndex={-1}
             aria-hidden={!showSidebar}
         >
@@ -92,6 +141,22 @@ const CalendarSidebar = memo(function CalendarSidebar() {
             </div>
 
             <CalendarFooter />
+            {/* Last, so it comes after the sidebar's contents when tabbing, as it sits on their right */}
+            <SidebarResizeHandle
+                sidebarRef={sidebarRef}
+                width={width}
+                maxWidth={maxWidth}
+                onDrag={setDrag}
+                onDragEnd={ended => {
+                    if (ended?.collapsed) {
+                        void OptionsStore.set('showCalendarSidebar', false);
+                        return;
+                    }
+                    setDrag(null);
+                    if (ended) resize(ended.width);
+                }}
+                onResize={resize}
+            />
         </div>
     );
 });
