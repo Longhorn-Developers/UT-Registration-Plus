@@ -41,6 +41,12 @@ describe('getTextbookCost', () => {
         expect(getTextbookCost(makeCourse(`${courseCode}|${messyName}`))).toBeDefined();
     });
 
+    it('matches the full catalog name against a name the data cut to 18 characters', () => {
+        const key = Object.keys(costs).find(key => key.split('|')[1]?.length === 18) ?? '';
+
+        expect(getTextbookCost(makeCourse(`${key} EXTRA NAMES`))).toBeDefined();
+    });
+
     it('returns undefined when a different professor teaches the course', () => {
         const [courseCode] = firstKey.split('|');
 
