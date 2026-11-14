@@ -4,6 +4,7 @@ import { background } from '@shared/messages';
 import type { Course } from '@shared/types/Course';
 import type Instructor from '@shared/types/Instructor';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { getCourseSectionsUrl } from '@shared/util/courseUrls';
 import { englishStringifyList } from '@shared/util/string';
 import { Button } from '@views/components/common/Button';
 import { Chip, coreMap, flagMap } from '@views/components/common/Chip';
@@ -200,15 +201,6 @@ export default function HeadingAndActions({
         }
     };
 
-    const getCourseSectionLink = () => {
-        const secondToLastIndex = course.url.lastIndexOf('/', course.url.length - 2);
-        const sanitizedDepartment = course.department.replaceAll(' ', '+');
-        const courseNumber = course.number;
-        const urlArgs = `?search_type_main=COURSE&fos_cn=${sanitizedDepartment}&course_number=${courseNumber}`;
-        const url = `${course.url.slice(0, secondToLastIndex)}/results/${urlArgs}`;
-        return url;
-    };
-
     return (
         <div className='w-full px-2 pb-3 pt-5 text-ut-black'>
             <div className='flex flex-col text-content'>
@@ -289,7 +281,7 @@ export default function HeadingAndActions({
                     onClick={() => {
                         if (isInCalendar) {
                             openNewTab({
-                                url: getCourseSectionLink(),
+                                url: getCourseSectionsUrl(course),
                             });
                         } else {
                             background.switchToCalendarTab({});
