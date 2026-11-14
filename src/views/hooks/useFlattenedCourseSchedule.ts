@@ -33,6 +33,7 @@ interface CalendarGridPoint {
 export interface CalendarLayoutCell {
     calendarGridPoint: CalendarGridPoint;
     async: boolean;
+    isHidden?: boolean;
     gridColumnStart?: number;
     gridColumnEnd?: number;
     totalColumns?: number;
@@ -114,6 +115,7 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
 
     const processedCourses = activeSchedule.courses
         .flatMap(course => {
+            const isHidden = activeSchedule.isCourseHidden(course.uniqueId);
             const { status, courseDeptAndInstr, meetings } = extractCourseInfo(course);
 
             if (meetings.length === 0) {
@@ -121,15 +123,17 @@ export function useFlattenedCourseSchedule(): FlattenedCourseSchedule {
                     courseDeptAndInstr,
                     status,
                     course,
-                });
+                }).map(c => ({ ...c, isHidden }));
             }
 
             return meetings.flatMap(meeting => {
                 if (meeting.days.includes(DAY_MAP.S)) {
-                    return processAsyncCourses({ courseDeptAndInstr, status, course });
+                    return processAsyncCourses({ courseDeptAndInstr, status, course }).map(c => ({ ...c, isHidden }));
                 }
 
-                return processInPersonMeetings(meeting, courseDeptAndInstr, status, course, gridStartMinutes);
+                return processInPersonMeetings(meeting, courseDeptAndInstr, status, course, gridStartMinutes).map(
+                    c => ({ ...c, isHidden })
+                );
             });
         })
         .sort(sortCourses);

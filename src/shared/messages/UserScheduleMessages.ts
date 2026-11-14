@@ -80,4 +80,11 @@ export interface UserScheduleMessages {
      * @returns
      */
     exportSchedule: (data: { scheduleId: string }) => string | undefined;
+
+    /**
+     * Toggles whether a course is hidden in the calendar view
+     *
+     * @param data - The schedule id and unique id of the course to toggle
+     */
+    toggleCourseVisibility: (data: { scheduleId: string; uniqueId: number }) => void;
 }
