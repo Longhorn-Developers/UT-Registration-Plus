@@ -9,6 +9,7 @@ import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
 import ResourceLinks from '@views/components/calendar/ResourceLinks';
+import ScheduleHistoryToast from '@views/components/calendar/ScheduleHistoryToast';
 import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
@@ -20,7 +21,7 @@ import { clampSidebarWidth, getMaxSidebarWidth } from '@views/lib/sidebarWidth';
 import clsx from 'clsx';
 import type React from 'react';
 import type { ReactNode } from 'react';
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, Suspense, useEffect, useRef, useState } from 'react';
 import { useThemeSync } from 'src/views/hooks/useThemeSync';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
 import SidebarIcon from '~icons/ph/sidebar';
@@ -392,6 +393,11 @@ export default function Calendar(): ReactNode {
                         afterLeave={() => setCourse(null)}
                     />
                 )}
+
+                {/* Waits for the undo history on its own, rather than holding up the calendar */}
+                <Suspense fallback={null}>
+                    <ScheduleHistoryToast />
+                </Suspense>
             </div>
         </CalendarContext.Provider>
     );
