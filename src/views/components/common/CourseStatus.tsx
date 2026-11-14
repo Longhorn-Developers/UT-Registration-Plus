@@ -22,7 +22,7 @@ export interface CourseStatusProps {
  */
 export default function CourseStatus({ status, size }: CourseStatusProps): JSX.Element {
     return (
-        <div className='inline-flex items-center gap-1.5'>
+        <div className='inline-flex items-center gap-1.5 text-content-muted'>
             <div className='flex items-center justify-center rounded'>
                 <StatusIcon status={status} className='size-5' />
             </div>

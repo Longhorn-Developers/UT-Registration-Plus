@@ -1,8 +1,11 @@
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course, ScrapedRow } from '@shared/types/Course';
+import type { CustomBlock } from '@shared/types/CustomBlock';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { getCustomBlockConflicts } from '@shared/util/customBlocks';
 import ConflictsWithWarning from '@views/components/common/ConflictsWithWarning';
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
+import useCustomBlocks from '@views/hooks/useCustomBlocks';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -23,17 +26,33 @@ interface Props {
  */
 export default function TableRow({ row, isSelected, activeSchedule, onClick }: Props): JSX.Element | null {
     const [container, setContainer] = useState<HTMLTableCellElement | null>(null);
+    const [isHovered, setIsHovered] = useState(false);
+
+    const { element, course } = row;
+
+    // Show the tooltip when the mouse is over the course row
+    useEffect(() => {
+        const handleMouseEnter = () => setIsHovered(true);
+        const handleMouseLeave = () => setIsHovered(false);
+
+        element.addEventListener('mouseenter', handleMouseEnter);
+        element.addEventListener('mouseleave', handleMouseLeave);
+
+        return () => {
+            element.removeEventListener('mouseenter', handleMouseEnter);
+            element.removeEventListener('mouseleave', handleMouseLeave);
+        };
+    }, [element]);
 
     // the courses in the active schedule that conflict with the course for this row
     const [conflicts, setConflicts] = useState<Course[]>([]);
+    const [blockConflicts, setBlockConflicts] = useState<CustomBlock[]>([]);
     const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
-
-    const { element, course } = row;
+    const blocks = useCustomBlocks(activeSchedule?.id);
 
     useEffect(() => {
         // biome-ignore lint/style/noNonNullAssertion: TODO:
         element.classList.add(styles.row!);
-        element.classList.add('group');
         const portalContainer = document.createElement('td');
         // portalContainer.style.textAlign = 'right';
         const lastTableCell = element.querySelector('td:last-child');
@@ -72,6 +91,8 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
         }
 
         const conflicts: Course[] = [];
+        const conflictingBlocks = getCustomBlockConflicts(course.schedule.meetings, blocks);
+        const blockConflict = conflictingBlocks.length > 0;
 
         for (const c of activeSchedule.courses) {
             if (c.uniqueId !== course.uniqueId && course.getConflicts(c).length > 0) {
@@ -87,20 +108,23 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
 
         if (highlightConflicts) {
             // biome-ignore lint/style/noNonNullAssertion: TODO:
-            element.classList[conflicts.length ? 'add' : 'remove'](styles.isConflict!);
+            element.classList[conflicts.length || blockConflict ? 'add' : 'remove'](styles.isConflict!);
         } else {
             // biome-ignore lint/style/noNonNullAssertion: TODO:
-            element.classList[conflicts.length ? 'add' : 'remove'](styles.isConflictNoLineThrough!);
+            element.classList[conflicts.length || blockConflict ? 'add' : 'remove'](styles.isConflictNoLineThrough!);
         }
 
         setConflicts(conflicts);
+        setBlockConflicts(conflictingBlocks);
 
         return () => {
             // biome-ignore lint/style/noNonNullAssertion: TODO:
             element.classList.remove(styles.isConflict!);
+            if (styles.isConflictNoLineThrough) element.classList.remove(styles.isConflictNoLineThrough);
             setConflicts([]);
+            setBlockConflicts([]);
         };
-    }, [activeSchedule, course, element.classList, highlightConflicts]);
+    }, [activeSchedule, course, element.classList, highlightConflicts, blocks]);
 
     if (!container) {
         return null;
@@ -116,10 +140,13 @@ export default function TableRow({ row, isSelected, activeSchedule, onClick }: P
                 >
                     <ChartBarFillIcon className='text-ut-white h-4 w-4' />
                 </button>
-                {conflicts.length > 0 && (
+                {(conflicts.length > 0 || blockConflicts.length > 0) && (
                     <ConflictsWithWarning
-                        className='opacity-0 absolute left-13 top--3 text-white group-hover:opacity-100'
+                        className={`absolute left-13 top--3 text-white ${
+                            isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                        }`}
                         conflicts={conflicts}
+                        blockConflicts={blockConflicts}
                     />
                 )}
             </div>

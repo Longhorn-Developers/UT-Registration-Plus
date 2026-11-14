@@ -1,7 +1,7 @@
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
-import { hexToRGB, pickFontColor } from '@shared/util/colors';
+import { hexToRGB, pickFontColor } from '@shared/util/colors/base';
 import Text from '@views/components/common/Text/Text';
 import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
@@ -76,9 +76,10 @@ export default function CalendarCourseCell({
             }
         }
 
-        document.addEventListener('mousedown', handleClickOutside);
+        // pointerdown, not mousedown: the calendar's drag-to-add layer cancels mousedown for clicks in the grid
+        document.addEventListener('pointerdown', handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('pointerdown', handleClickOutside);
         };
     }, [handleCloseColorPicker, selectedBlock]);
 

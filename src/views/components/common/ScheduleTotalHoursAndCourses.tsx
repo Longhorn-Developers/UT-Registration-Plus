@@ -88,7 +88,7 @@ export default function ScheduleTotalHoursAndCourses({
                 <Text
                     variant='h1'
                     as='input'
-                    className='block min-w-0 w-full text-theme-black flex-initial overflow-hidden border-0 bg-transparent px-0 outline-blue-500'
+                    className='block min-w-0 w-full text-content flex-initial overflow-hidden border-0 bg-transparent px-0 outline-blue-500'
                     value={editorValue}
                     onChange={e => setEditorValue(e.target.value)}
                     onBlur={handleBlur}
@@ -97,7 +97,7 @@ export default function ScheduleTotalHoursAndCourses({
                 />
             ) : (
                 <Text
-                    className={`block truncate text-theme-black flex-initial overflow-hidden ${
+                    className={`block truncate text-content flex-initial overflow-hidden ${
                         scheduleId ? 'cursor-pointer' : 'cursor-text'
                     }`}
                     variant='h1'
@@ -113,7 +113,7 @@ export default function ScheduleTotalHoursAndCourses({
                     {displayName}
                 </Text>
             )}
-            <Text variant='h4' as='p' className='text-ut-burntorange inline-flex gap-3'>
+            <Text variant='h4' as='p' className='text-ut-burntorange dark:text-content-muted inline-flex gap-3'>
                 <span>
                     {totalHours}&nbsp;
                     <span className='ml-0.5 uppercase'>{totalHours === 1 ? 'Hour' : 'Hours'}</span>

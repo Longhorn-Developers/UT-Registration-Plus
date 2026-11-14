@@ -33,6 +33,8 @@ const manifest = defineManifest(async env => {
         manifest_version: 3,
         name: `${packageJson.displayName ?? packageJson.name}${nameSuffix}`,
         version: `${major}.${minor}.${patch}.${label}`,
+        // What users see, e.g. 2.5.0 instead of the four-part 2.5.0.0
+        version_name: packageJson.version,
         description: packageJson.description,
         options_page: 'src/pages/options/index.html',
         background: { service_worker: 'src/pages/background/background.ts' },

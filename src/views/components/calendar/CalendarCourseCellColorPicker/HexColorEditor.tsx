@@ -1,4 +1,4 @@
-import { isValidHexColor, pickFontColor } from '@shared/util/colors';
+import { isValidHexColor, pickFontColor } from '@shared/util/colors/base';
 import { getThemeColorHexByName } from '@shared/util/themeColors';
 import { useDebounce } from '@views/hooks/useDebounce';
 import clsx from 'clsx';
@@ -48,12 +48,12 @@ export default function HexColorEditor({ hexCode, setHexCode }: HexColorEditorPr
             >
                 <HashIcon className={clsx('h-5 w-5 text-color-white', tagColor)} />
             </div>
-            <div className='h-6.5 w-[53px] flex flex-1 items-center justify-center border-b border-r border-t rounded-br rounded-tr p-1.25'>
+            <div className='h-6.5 w-[53px] flex flex-1 items-center justify-center border-b border-r border-t border-divider rounded-br rounded-tr p-1.25'>
                 <input
                     type='text'
                     maxLength={6}
                     aria-label='Hex color code'
-                    className='w-full border-none bg-transparent font-size-2.75 font-normal font-mono'
+                    className='w-full border-none text-content bg-transparent font-size-2.75 font-normal font-mono'
                     value={localHexCode}
                     onChange={e => setLocalHexCode(e.target.value)}
                 />
