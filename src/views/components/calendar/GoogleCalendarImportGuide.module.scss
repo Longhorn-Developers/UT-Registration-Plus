@@ -1,0 +1,211 @@
+// A loop of Google Calendar's import, drawn rather than recorded: the pointer clicks "Select file from your computer",
+// picks schedule.ics, and clicks Import. Every part runs on the same 9s timeline, so the percentages line up.
+$duration: 9s;
+
+.pointer,
+.selectButton,
+.picker,
+.fileRow,
+.fileName,
+.importButton,
+.done {
+    animation-duration: $duration;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+// The tip of the hand is near the icon's top left, so it's moved to where each click lands
+.pointer {
+    animation-name: pointer;
+}
+
+@keyframes pointer {
+    0% {
+        opacity: 0;
+        transform: translate(300px, 150px);
+    }
+    5% {
+        opacity: 1;
+        transform: translate(300px, 150px);
+    }
+    16% {
+        transform: translate(112px, 50px);
+    }
+    18% {
+        transform: translate(112px, 50px) scale(0.85);
+    }
+    20%,
+    22% {
+        transform: translate(112px, 50px);
+    }
+    34% {
+        transform: translate(206px, 63px);
+    }
+    36% {
+        transform: translate(206px, 63px) scale(0.85);
+    }
+    38%,
+    40% {
+        transform: translate(206px, 63px);
+    }
+    52% {
+        transform: translate(42px, 132px);
+    }
+    54% {
+        transform: translate(42px, 132px) scale(0.85);
+    }
+    56%,
+    86% {
+        opacity: 1;
+        transform: translate(42px, 132px);
+    }
+    92%,
+    100% {
+        opacity: 0;
+        transform: translate(42px, 132px);
+    }
+}
+
+.selectButton {
+    animation-name: select-button;
+}
+
+@keyframes select-button {
+    0%,
+    17%,
+    20%,
+    100% {
+        background-color: transparent;
+    }
+    18% {
+        background-color: rgb(26 115 232 / 0.12);
+    }
+}
+
+.picker {
+    animation-name: picker;
+}
+
+@keyframes picker {
+    0%,
+    20% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    23%,
+    38% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    40%,
+    100% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+.fileRow {
+    animation-name: file-row;
+}
+
+@keyframes file-row {
+    0%,
+    35%,
+    100% {
+        background-color: transparent;
+    }
+    36%,
+    39% {
+        background-color: rgb(26 115 232 / 0.15);
+    }
+}
+
+.fileName {
+    animation-name: file-name;
+}
+
+@keyframes file-name {
+    0%,
+    39% {
+        opacity: 0;
+    }
+    41%,
+    90% {
+        opacity: 1;
+    }
+    94%,
+    100% {
+        opacity: 0;
+    }
+}
+
+.importButton {
+    animation-name: import-button;
+}
+
+@keyframes import-button {
+    0%,
+    53%,
+    56%,
+    100% {
+        transform: scale(1);
+    }
+    54% {
+        transform: scale(0.94);
+    }
+}
+
+.done {
+    animation-name: done;
+}
+
+@keyframes done {
+    0%,
+    56% {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    60%,
+    88% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    93%,
+    100% {
+        opacity: 0;
+        transform: translateY(0);
+    }
+}
+
+// Without motion, it's one still frame: the file picked and the pointer on Import
+@mixin still-frame {
+    .pointer,
+    .selectButton,
+    .picker,
+    .fileRow,
+    .fileName,
+    .importButton,
+    .done {
+        animation: none;
+    }
+
+    .pointer {
+        transform: translate(42px, 132px);
+    }
+
+    .picker,
+    .done {
+        opacity: 0;
+    }
+}
+
+// Turned off in the extension's settings
+.still {
+    @include still-frame;
+}
+
+.demo {
+    @media (prefers-reduced-motion: reduce) {
+        @include still-frame;
+    }
+}
