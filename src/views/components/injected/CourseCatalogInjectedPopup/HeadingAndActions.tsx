@@ -200,6 +200,15 @@ export default function HeadingAndActions({
         }
     };
 
+    const getCourseSectionLink = () => {
+        const secondToLastIndex = course.url.lastIndexOf('/', course.url.length - 2);
+        const sanitizedDepartment = course.department.replaceAll(' ', '+');
+        const courseNumber = course.number;
+        const urlArgs = `?search_type_main=COURSE&fos_cn=${sanitizedDepartment}&course_number=${courseNumber}`;
+        const url = `${course.url.slice(0, secondToLastIndex)}/results/${urlArgs}`;
+        return url;
+    };
+
     return (
         <div className='w-full px-2 pb-3 pt-5 text-ut-black'>
             <div className='flex flex-col text-content'>
@@ -280,7 +289,7 @@ export default function HeadingAndActions({
                     onClick={() => {
                         if (isInCalendar) {
                             openNewTab({
-                                url: course.url,
+                                url: getCourseSectionLink(),
                             });
                         } else {
                             background.switchToCalendarTab({});
