@@ -4,7 +4,7 @@
  * Usage: bun run scripts/generateTextbookCosts.ts <path/to/sections.csv>
  *
  * Prices are keyed by course + professor (e.g. "ACC 311|SMITH, JOHN A"), since every section a professor
- * teaches of a course shares the same materials. Pairs with any flagged (unreliable) section are left out entirely.
+ * teaches of a course shares the same materials. Flagged (unreliable) sections never set a price themselves.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -75,9 +75,7 @@ const [termCol, uniqueCol, courseCol, instructorCol, lowCol, highCol, flagsCol, 
 ];
 
 const terms = new Set<string>();
-const prices = new Map<string, [low: number, high: number]>();
-// Course + professor pairs where any section's data is unreliable; these never get an estimate
-const flaggedKeys = new Set<string>();
+const costs: Record<string, [low: number, high: number]> = {};
 let scrapedAt = '';
 
 for (const line of lines) {
@@ -94,14 +92,13 @@ for (const line of lines) {
     terms.add(row[termCol] ?? '');
     scrapedAt = row[scrapedCol] ?? scrapedAt;
 
-    if (row[flagsCol]) {
-        flaggedKeys.add(key);
-    } else if (low !== '' && high !== '') {
-        const existing = prices.get(key);
+    // Flagged (unreliable) sections are ignored, so they take the price of the professor's clean sections, if any
+    if (!row[flagsCol] && low !== '' && high !== '') {
+        const existing = costs[key];
         if (existing && (existing[0] !== Number(low) || existing[1] !== Number(high))) {
             throw new Error(`Sections of ${key} disagree on price without being flagged`);
         }
-        prices.set(key, [Number(low), Number(high)]);
+        costs[key] = [Number(low), Number(high)];
     }
 }
 
@@ -109,7 +106,6 @@ if (terms.size !== 1) {
     throw new Error(`Expected exactly one term in ${inputPath}, found: ${[...terms].join(', ') || 'none'}`);
 }
 
-const costs = Object.fromEntries([...prices].filter(([key]) => !flaggedKeys.has(key)));
 const output = { term: [...terms][0], scrapedAt, costs };
 writeFileSync(OUTPUT_PATH, `${JSON.stringify(output)}\n`);
 console.log(`Wrote ${Object.keys(costs).length} course + professor pairs for ${output.term} to ${OUTPUT_PATH}`);
