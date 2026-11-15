@@ -26,19 +26,20 @@ import { type Dispatch, type SetStateAction, useCallback, useEffect, useMemo, us
 const MAX_PAGES_PER_LOAD = 30;
 
 /**
- * Fetches pages of search results one after another, following each page's link to the next, up to
- * {@link MAX_PAGES_PER_LOAD} pages.
+ * Fetches pages of search results one after another, following each page's link to the next.
  *
  * @param urls - the pages to start from
  * @param onPage - called with each page as it arrives; returning false stops fetching
+ * @param maxPages - the most pages to fetch
  * @returns the pages still left to load, or null if `onPage` stopped it
  */
 async function fetchResultPages(
     urls: string[],
-    onPage: (page: Awaited<ReturnType<typeof fetchCourseFinderPage>>) => boolean | Promise<boolean>
+    onPage: (page: Awaited<ReturnType<typeof fetchCourseFinderPage>>) => boolean | Promise<boolean>,
+    maxPages = MAX_PAGES_PER_LOAD
 ): Promise<string[] | null> {
     const remaining = [...urls];
-    for (let i = 0; i < MAX_PAGES_PER_LOAD; i++) {
+    for (let i = 0; i < maxPages; i++) {
         const url = remaining.shift();
         if (!url) break;
 
@@ -84,8 +85,8 @@ export interface UseCourseFinderReturn {
     reset: () => void;
     /**
      * Searches again for the current results, so their seats and statuses are up to date. The results stay shown (with
-     * the same courses expanded and the same filters) until the new ones replace them. Does nothing when there's no
-     * search, or one is still loading.
+     * the same courses expanded and the same filters) until the new ones replace them. Only refreshes a search that
+     * finished loading.
      */
     refresh: () => Promise<void>;
     /** Whether the current search has more pages of results to load. */
@@ -133,8 +134,22 @@ export function useCourseFinder(isOpen: boolean): UseCourseFinderReturn {
     const [filters, setFilters] = useState<CourseFinderFilters>(DEFAULT_COURSE_FINDER_FILTERS);
     const [expandedGroups, setExpandedGroups] = useState<ReadonlySet<string>>(new Set());
 
-    // Incremented on every search, so pages from an older search are dropped once they arrive
+    // Incremented on every search, load more, and refresh, so pages from an older one are dropped once they arrive
     const searchId = useRef(0);
+    // Incremented on every new search only, which is what opens the cards of a course search again
+    const searchCount = useRef(0);
+    // How many pages of results are shown, so a refresh loads as many again
+    const loadedPageCount = useRef(0);
+    // The query and status as they're set, for refresh to read: it keeps the same identity so the calendar header can
+    // hold it without re-rendering, and a search started just before it (and not rendered yet) has to stop it
+    const latest = useRef<{ query: CourseFinderQuery | null; status: CourseFinderStatus }>({
+        query: null,
+        status: 'idle',
+    });
+    const updateStatus = useCallback((newStatus: CourseFinderStatus) => {
+        latest.current.status = newStatus;
+        setStatus(newStatus);
+    }, []);
 
     // Default to the semester of the schedule the courses are being added to. It's picked once, the first time the
     // Course Finder is shown with the semesters loaded: worked out on every render, it would change whenever the
@@ -178,61 +193,68 @@ export function useCourseFinder(isOpen: boolean): UseCourseFinderReturn {
         };
     }, []);
 
-    const loadPages = useCallback(async (urls: string[], id: number) => {
-        let refreshedFieldsOfStudy = false;
-        setStatus('loading');
+    const loadPages = useCallback(
+        async (urls: string[], id: number) => {
+            let refreshedFieldsOfStudy = false;
+            updateStatus('loading');
 
-        try {
-            const remaining = await fetchResultPages(urls, async page => {
-                if (id !== searchId.current) return false;
+            try {
+                const remaining = await fetchResultPages(urls, async page => {
+                    if (id !== searchId.current) return false;
 
-                setResults(prev => {
-                    const loaded = new Set(prev.map(c => c.uniqueId));
-                    return [...prev, ...page.courses.filter(c => !loaded.has(c.uniqueId))];
+                    loadedPageCount.current += 1;
+                    setResults(prev => {
+                        const loaded = new Set(prev.map(c => c.uniqueId));
+                        return [...prev, ...page.courses.filter(c => !loaded.has(c.uniqueId))];
+                    });
+
+                    if (!refreshedFieldsOfStudy && page.fieldsOfStudy.length > 0) {
+                        refreshedFieldsOfStudy = true;
+                        setFieldsOfStudy(page.fieldsOfStudy);
+                        await CacheStore.set('fieldsOfStudy', { data: page.fieldsOfStudy, dataFetched: Date.now() });
+                    }
+                    return true;
                 });
 
-                if (!refreshedFieldsOfStudy && page.fieldsOfStudy.length > 0) {
-                    refreshedFieldsOfStudy = true;
-                    setFieldsOfStudy(page.fieldsOfStudy);
-                    await CacheStore.set('fieldsOfStudy', { data: page.fieldsOfStudy, dataFetched: Date.now() });
-                }
-                return true;
-            });
-
-            if (!remaining || id !== searchId.current) return;
-            setPendingURLs(remaining);
-            setStatus('done');
-        } catch (error) {
-            console.error('Failed to search the course schedule', error);
-            if (id !== searchId.current) return;
-            setPendingURLs([]);
-            setStatus('error');
-        }
-    }, []);
+                if (!remaining || id !== searchId.current) return;
+                setPendingURLs(remaining);
+                updateStatus('done');
+            } catch (error) {
+                console.error('Failed to search the course schedule', error);
+                if (id !== searchId.current) return;
+                setPendingURLs([]);
+                updateStatus('error');
+            }
+        },
+        [updateStatus]
+    );
 
     const search = useCallback(
         async (newQuery: CourseFinderQuery) => {
             searchId.current += 1;
+            searchCount.current += 1;
+            loadedPageCount.current = 0;
             const id = searchId.current;
 
+            latest.current.query = newQuery;
             setQuery(newQuery);
             setResults([]);
             setPendingURLs([]);
             setExpandedGroups(new Set());
             // Flags differ between searches, so a flag from the last search could hide every result
             setFilters(prev => ({ ...prev, flags: [] }));
-            setStatus('loading');
+            updateStatus('loading');
 
             const isLoggedIn = await background.validateLoginStatus();
             if (id !== searchId.current) return;
             if (!isLoggedIn) {
-                setStatus('logged_out');
+                updateStatus('logged_out');
                 return;
             }
 
             await loadPages(getCourseFinderURLs(newQuery), id);
         },
-        [loadPages]
+        [loadPages, updateStatus]
     );
 
     // A search that found the user logged out runs again once they're back from logging in,
@@ -257,22 +279,22 @@ export function useCourseFinder(isOpen: boolean): UseCourseFinderReturn {
 
     const reset = useCallback(() => {
         searchId.current += 1;
+        loadedPageCount.current = 0;
+        latest.current.query = null;
         setQuery(null);
         setResults([]);
         setPendingURLs([]);
         setExpandedGroups(new Set());
         // Flags are only shown alongside results, so one left picked would be counted without being seen
         setFilters(prev => ({ ...prev, flags: [] }));
-        setStatus('idle');
-    }, []);
-
-    // Read by refresh, which keeps the same identity so it can be handed to the calendar header without re-rendering it
-    const latest = useRef({ query, status });
-    latest.current = { query, status };
+        updateStatus('idle');
+    }, [updateStatus]);
 
     const refresh = useCallback(async () => {
+        // A search that's loading is fresh already, and one that's logged out runs again by itself after logging in. One
+        // that failed is tried again.
         const { query: currentQuery, status: currentStatus } = latest.current;
-        if (!currentQuery || currentStatus === 'idle' || currentStatus === 'loading') return;
+        if (!currentQuery || (currentStatus !== 'done' && currentStatus !== 'error')) return;
 
         searchId.current += 1;
         const id = searchId.current;
@@ -280,21 +302,28 @@ export function useCourseFinder(isOpen: boolean): UseCourseFinderReturn {
         const isLoggedIn = await background.validateLoginStatus();
         if (id !== searchId.current) return;
         if (!isLoggedIn) {
-            setStatus('logged_out');
+            updateStatus('logged_out');
             return;
         }
 
         // Collected before they're shown, so the results don't shrink to the first page while the rest reload
         const courses = new Map<number, Course>();
+        let pageCount = 0;
         let remaining: string[] | null;
         try {
-            remaining = await fetchResultPages(getCourseFinderURLs(currentQuery), page => {
-                if (id !== searchId.current) return false;
-                for (const course of page.courses) {
-                    if (!courses.has(course.uniqueId)) courses.set(course.uniqueId, course);
-                }
-                return true;
-            });
+            remaining = await fetchResultPages(
+                getCourseFinderURLs(currentQuery),
+                page => {
+                    if (id !== searchId.current) return false;
+                    pageCount += 1;
+                    for (const course of page.courses) {
+                        if (!courses.has(course.uniqueId)) courses.set(course.uniqueId, course);
+                    }
+                    return true;
+                },
+                // As many pages as were shown, including ones loaded with "load more"
+                Math.max(MAX_PAGES_PER_LOAD, loadedPageCount.current)
+            );
         } catch (error) {
             // The results from before stay up
             console.error('Failed to refresh the course search', error);
@@ -302,17 +331,19 @@ export function useCourseFinder(isOpen: boolean): UseCourseFinderReturn {
         }
 
         if (!remaining || id !== searchId.current) return;
+        loadedPageCount.current = pageCount;
         setResults([...courses.values()]);
         setPendingURLs(remaining);
-        setStatus('done');
-    }, []);
+        updateStatus('done');
+    }, [updateStatus]);
 
     const loadMore = useCallback(() => {
-        if (status === 'loading' || pendingURLs.length === 0) return;
+        // A search started since the last render is loading already, and these would be its predecessor's pages
+        if (latest.current.status === 'loading' || pendingURLs.length === 0) return;
         // Stops a refresh that's running, which would replace the pages this loads with the ones before them
         searchId.current += 1;
         void loadPages(pendingURLs, searchId.current);
-    }, [status, pendingURLs, loadPages]);
+    }, [pendingURLs, loadPages]);
 
     const filteredResults = useMemo(() => {
         // When searching by core, make sure every result actually satisfies that core area
@@ -333,13 +364,13 @@ export function useCourseFinder(isOpen: boolean): UseCourseFinderReturn {
 
     // A search for one course (i.e. "C S 314") shows its sections right away, rather than a card to open. Each card opens
     // once, when it first shows up in the search (a topics course can have cards on several pages), so a card closed
-    // afterwards stays closed when the filters or schedule change. The search is told apart by its ID, since running
-    // the same query again (i.e. after logging in) is a new search.
-    const autoExpanded = useRef<{ searchId: number; names: Set<string> }>({ searchId: -1, names: new Set() });
+    // afterwards stays closed when the filters or schedule change, more pages load, or the results are refreshed. The
+    // search is told apart by its count, since running the same query again (i.e. after logging in) is a new search.
+    const autoExpanded = useRef<{ search: number; names: Set<string> }>({ search: -1, names: new Set() });
     useEffect(() => {
         if (query?.searchBy !== 'course') return;
-        if (autoExpanded.current.searchId !== searchId.current) {
-            autoExpanded.current = { searchId: searchId.current, names: new Set() };
+        if (autoExpanded.current.search !== searchCount.current) {
+            autoExpanded.current = { search: searchCount.current, names: new Set() };
         }
         const { names } = autoExpanded.current;
         const newNames = groups.map(group => group.fullName).filter(name => !names.has(name));

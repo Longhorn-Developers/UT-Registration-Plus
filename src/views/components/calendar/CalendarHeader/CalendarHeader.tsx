@@ -63,7 +63,12 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
             const [success] = await Promise.all([
                 refreshCourses(),
                 minSpin,
-                courseFinder?.isOpen ? courseFinder.refreshResults() : undefined,
+                // Kept apart from the schedule's refresh, which decides whether to ask to log in
+                courseFinder?.isOpen
+                    ? courseFinder
+                          .refreshResults()
+                          .catch(error => console.error('Failed to refresh the Course Finder', error))
+                    : undefined,
             ]);
             setShowLoginPrompt(!success);
         } catch (error) {

@@ -53,7 +53,7 @@ export default function CourseFinderPanel({
         // A fixed minimum width, so the text doesn't re-wrap on every frame of the sidebar's open/close animation
         <section
             aria-labelledby={titleId}
-            className='w-full min-w-[17rem] flex flex-col gap-spacing-4 whitespace-normal'
+            className='w-full min-w-[15.5rem] flex flex-col gap-spacing-4 whitespace-normal'
             onKeyDown={e => {
                 // Dropdowns and the field of study list handle (and prevent) Escape themselves while they're open.
                 // Dialogs opened from here (like a section's stats) are rendered elsewhere in the page, but React still
