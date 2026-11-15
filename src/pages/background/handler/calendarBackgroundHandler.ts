@@ -10,7 +10,14 @@ const CALENDAR_TABS_KEY = 'calendarTabs';
 
 type CalendarTabRecord = {
     lastFocusedAt: number;
+    /** When the extension opened the tab, until its calendar registers */
+    openedAt?: number;
 };
+
+/**
+ * How long a tab the extension just opened counts as the calendar before its page has loaded
+ */
+const OPENING_CALENDAR_TAB_MS = 5000;
 
 type CalendarTabsState = Record<string, CalendarTabRecord>;
 
@@ -19,20 +26,57 @@ const getCalendarTabsState = async (): Promise<CalendarTabsState> => {
     return (storage[CALENDAR_TABS_KEY] as CalendarTabsState | undefined) ?? {};
 };
 
-const setCalendarTabRecord = async (tabId: number, record: CalendarTabRecord) => {
-    const calendarTabs = await getCalendarTabsState();
-    calendarTabs[tabId] = record;
-    await chrome.storage.session.set({ [CALENDAR_TABS_KEY]: calendarTabs });
+// Serialized, since a reloading calendar unregisters and registers its tab at about the same time
+let calendarTabsChanges: Promise<unknown> = Promise.resolve();
+
+const changeCalendarTabsState = (change: (calendarTabs: CalendarTabsState) => void): Promise<void> => {
+    const next = calendarTabsChanges.then(async () => {
+        const calendarTabs = await getCalendarTabsState();
+        change(calendarTabs);
+        await chrome.storage.session.set({ [CALENDAR_TABS_KEY]: calendarTabs });
+    });
+    calendarTabsChanges = next.catch(() => undefined);
+    return next;
 };
 
-const removeCalendarTabRecord = async (tabId: number) => {
-    const calendarTabs = await getCalendarTabsState();
-    delete calendarTabs[tabId];
-    await chrome.storage.session.set({ [CALENDAR_TABS_KEY]: calendarTabs });
-};
+const setCalendarTabRecord = (tabId: number, record: CalendarTabRecord) =>
+    changeCalendarTabsState(calendarTabs => {
+        calendarTabs[tabId] = record;
+    });
 
-const getTrackedCalendarTabs = async (): Promise<Array<{ record: CalendarTabRecord; tab: TabWithId }>> => {
+const removeCalendarTabRecord = (tabId: number) =>
+    changeCalendarTabsState(calendarTabs => {
+        delete calendarTabs[tabId];
+    });
+
+/**
+ * Finds the tabs showing the calendar. Tabs don't expose their URLs without the "tabs" permission, but the
+ * extension's contexts do.
+ */
+const getCalendarTabIds = async (): Promise<Set<number>> => {
     const calendarUrl = chrome.runtime.getURL(CRX_PAGES.CALENDAR);
+    try {
+        const contexts = await chrome.runtime.getContexts({ contextTypes: [chrome.runtime.ContextType.TAB] });
+        return new Set(
+            contexts
+                .filter(context => context.documentUrl?.split(/[?#]/)[0] === calendarUrl)
+                .map(context => context.tabId)
+        );
+    } catch (error) {
+        console.error('Failed to look for open calendar pages', error);
+        return new Set();
+    }
+};
+
+type TrackedCalendarTab = {
+    record: CalendarTabRecord;
+    tab: TabWithId;
+    /** Whether the calendar in the tab has loaded, so it can take messages */
+    isLoaded: boolean;
+};
+
+const getTrackedCalendarTabs = async (): Promise<TrackedCalendarTab[]> => {
+    const calendarTabIds = await getCalendarTabIds();
     const calendarTabs = await getCalendarTabsState();
     const trackedEntries = Object.entries(calendarTabs);
     const validatedTabs = await Promise.all(
@@ -40,9 +84,11 @@ const getTrackedCalendarTabs = async (): Promise<Array<{ record: CalendarTabReco
             const numericTabId = Number(tabId);
             try {
                 const tab = await chrome.tabs.get(numericTabId);
-                // The tab may still exist but have navigated away from the calendar
-                const currentUrl = tab.pendingUrl || tab.url;
-                if (tab.id === undefined || !currentUrl?.startsWith(calendarUrl)) {
+                // Discarded tabs and ones still opening have no calendar page to check, so they're kept
+                const isLoaded = calendarTabIds.has(numericTabId);
+                const isOpening =
+                    record.openedAt !== undefined && Date.now() - record.openedAt < OPENING_CALENDAR_TAB_MS;
+                if (tab.id === undefined || !(isLoaded || tab.discarded || isOpening)) {
                     await removeCalendarTabRecord(numericTabId);
                     return undefined;
                 }
@@ -50,6 +96,7 @@ const getTrackedCalendarTabs = async (): Promise<Array<{ record: CalendarTabReco
                 return {
                     record,
                     tab: tab as TabWithId,
+                    isLoaded,
                 };
             } catch {
                 await removeCalendarTabRecord(numericTabId);
@@ -70,7 +117,7 @@ const shouldReuseCalendarTab = async (tab: TabWithId): Promise<boolean> => {
     }
 };
 
-const getMostRecentlyFocusedCalendarTab = async (): Promise<TabWithId | undefined> => {
+const getMostRecentlyFocusedCalendarTab = async (): Promise<TrackedCalendarTab | undefined> => {
     const trackedTabs = await getTrackedCalendarTabs();
     const reusableTabs = (
         await Promise.all(
@@ -82,7 +129,7 @@ const getMostRecentlyFocusedCalendarTab = async (): Promise<TabWithId | undefine
     ).filter(trackedTab => trackedTab.isReusable);
 
     reusableTabs.sort((a, b) => b.record.lastFocusedAt - a.record.lastFocusedAt);
-    return reusableTabs[0]?.tab;
+    return reusableTabs[0];
 };
 
 const openCalendarTab = async (url: string, senderTab?: chrome.tabs.Tab): Promise<TabWithId> => {
@@ -90,7 +137,7 @@ const openCalendarTab = async (url: string, senderTab?: chrome.tabs.Tab): Promis
         tabIndex: senderTab?.index !== undefined ? senderTab.index + 1 : undefined,
         windowId: senderTab?.windowId,
     });
-    await setCalendarTabRecord(tab.id, { lastFocusedAt: Date.now() });
+    await setCalendarTabRecord(tab.id, { lastFocusedAt: Date.now(), openedAt: Date.now() });
     return tab;
 };
 
@@ -102,10 +149,18 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
         }
         sendResponse(undefined);
     },
+    async unregisterCalendarTab({ sender, sendResponse }) {
+        const tabId = sender.tab?.id;
+        if (tabId !== undefined) {
+            await removeCalendarTabRecord(tabId);
+        }
+        sendResponse(undefined);
+    },
     async switchToCalendarTab({ data, sender, sendResponse }) {
         const { uniqueId } = data;
         const calendarUrl = chrome.runtime.getURL(CRX_PAGES.CALENDAR);
-        const trackedCalendarTab = await getMostRecentlyFocusedCalendarTab();
+        const tracked = await getMostRecentlyFocusedCalendarTab();
+        const trackedCalendarTab = tracked?.tab;
 
         if (
             trackedCalendarTab !== undefined &&
@@ -119,8 +174,16 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
                 focused: true,
                 drawAttention: true,
             });
-            await setCalendarTabRecord(tabid, { lastFocusedAt: Date.now() });
-            if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, { tabId: tabid });
+            if (uniqueId === undefined) {
+                await setCalendarTabRecord(tabid, { lastFocusedAt: Date.now() });
+            } else if (tracked?.isLoaded) {
+                await setCalendarTabRecord(tabid, { lastFocusedAt: Date.now() });
+                await tabs.openCoursePopup({ uniqueId }, { tabId: tabid });
+            } else {
+                // It can't take the message yet, so load the calendar with the course instead
+                await chrome.tabs.update(tabid, { url: `${calendarUrl}?uniqueId=${uniqueId}` });
+                await setCalendarTabRecord(tabid, { lastFocusedAt: Date.now(), openedAt: Date.now() });
+            }
 
             sendResponse(trackedCalendarTab);
         } else {
