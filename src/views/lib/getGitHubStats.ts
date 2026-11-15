@@ -166,7 +166,7 @@ export const UTRP_TEAM = [
     {
         name: 'Marie Cho',
         role: ['Product Fellow'],
-        githubUsername: 'mariehyc',
+        githubUsername: '',
     },
 ] as const satisfies TeamMember[];
 
