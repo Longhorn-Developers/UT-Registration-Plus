@@ -137,11 +137,13 @@ export const UTRP_TEAM = [
         name: 'Akshitha Venkataraman',
         role: ['UX Design Fellow'],
         githubUsername: '',
+        personalWebsite: 'https://akshithavenkat.com/',
     },
     {
         name: 'Jesse Chen',
         role: ['UX Design Fellow'],
         githubUsername: '',
+        personalWebsite: 'https://chenjesse.com/',
     },
     {
         name: 'Saketh Sripada',
