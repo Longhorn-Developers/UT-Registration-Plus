@@ -10,6 +10,7 @@ import { LargeLogo } from '@views/components/common/LogoIcon';
 import QuickAddModal from '@views/components/common/QuickAddModal';
 import ScheduleTotalHoursAndCourses from '@views/components/common/ScheduleTotalHoursAndCourses';
 import Text from '@views/components/common/Text/Text';
+import { useCourseFinderControls } from '@views/contexts/CourseFinderContext';
 import useRelativeTime from '@views/hooks/useRelativeTime';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
 import refreshCourses from '@views/lib/refreshCourses';
@@ -50,6 +51,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
     const hasRightHandSide = enableDataRefreshing;
 
     const { theme } = useTheme();
+    const courseFinder = useCourseFinderControls();
 
     const handleRefresh = useCallback(async () => {
         if (isRefreshing) return;
@@ -57,7 +59,12 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
         // Ensure the spinner is visible long enough to provide visual feedback
         const minSpin = new Promise(resolve => setTimeout(resolve, 400));
         try {
-            const [success] = await Promise.all([refreshCourses(), minSpin]);
+            // The Course Finder's results show seats too, so they're checked again along with the schedule's courses
+            const [success] = await Promise.all([
+                refreshCourses(),
+                minSpin,
+                courseFinder?.isOpen ? courseFinder.refreshResults() : undefined,
+            ]);
             setShowLoginPrompt(!success);
         } catch (error) {
             console.error('Failed to refresh courses:', error);
@@ -74,7 +81,7 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
                 });
             }, 3000);
         }
-    }, [activeSchedule, isRefreshing]);
+    }, [activeSchedule, isRefreshing, courseFinder]);
 
     const handleRefreshRef = useRef(handleRefresh);
     handleRefreshRef.current = handleRefresh;

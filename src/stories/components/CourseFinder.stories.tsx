@@ -189,6 +189,7 @@ function MockCourseFinder({
         },
         loadMore: () => {},
         reset: () => setSearch({ status: 'idle', query: null }),
+        refresh: async () => {},
         hasMore: false,
         results: shown.results,
         groups: groupCourses(filtered),

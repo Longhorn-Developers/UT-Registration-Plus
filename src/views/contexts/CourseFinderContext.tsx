@@ -30,6 +30,8 @@ export interface CourseFinderControls {
     close: () => void;
     /** The Course Finder's field of study input, which opening it focuses */
     searchInputRef: RefObject<HTMLInputElement | null>;
+    /** Searches again for the results the Course Finder shows, so their seats are up to date */
+    refreshResults: () => Promise<void>;
 }
 
 /**
@@ -103,7 +105,12 @@ export function CourseFinderProvider({ children }: { children: ReactNode }): Rea
         requestAnimationFrame(() => opener?.focus());
     }, [setFieldOfStudySearch]);
 
-    const controls = useMemo(() => ({ isOpen, open, close, searchInputRef }), [isOpen, open, close]);
+    // Keeps its identity, so the controls only change when the Course Finder opens or closes
+    const refreshResults = finder.refresh;
+    const controls = useMemo(
+        () => ({ isOpen, open, close, searchInputRef, refreshResults }),
+        [isOpen, open, close, refreshResults]
+    );
 
     return (
         <CourseFinderControlsContext.Provider value={controls}>
