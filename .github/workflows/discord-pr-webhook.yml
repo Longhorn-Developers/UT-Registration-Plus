@@ -46,7 +46,7 @@ jobs:
     steps:
       - name: Sync Discord forum post
         env:
-          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          WEBHOOK_URL: ${{ secrets.DISCORD_PR_CHANNEL_WEBHOOK_URL }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
@@ -57,7 +57,7 @@ jobs:
           set -euo pipefail
 
           if [ -z "$WEBHOOK_URL" ]; then
-            echo "::notice::DISCORD_WEBHOOK_URL is not set, skipping Discord sync"
+            echo "::notice::DISCORD_PR_CHANNEL_WEBHOOK_URL is not set, skipping Discord sync"
             exit 0
           fi
           if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
