@@ -82,6 +82,16 @@ export default async function refreshCourses(options?: { silent?: boolean }): Pr
         return true;
     }
 
+    const updateSchedule = (changes: Partial<Serialized<UserSchedule>>) =>
+        UserScheduleStore.set(
+            'schedules',
+            UserScheduleStore.read().schedules.map(schedule =>
+                schedule.id === activeSchedule.id && schedule.courses === activeSchedule.courses
+                    ? { ...schedule, ...changes }
+                    : schedule
+            )
+        );
+
     if (silent && activeSchedule.lastAttemptedAt != null) {
         const sinceLastAttempt = Date.now() - activeSchedule.lastAttemptedAt;
         if (sinceLastAttempt < SILENT_RETRY_COOLDOWN_MS) {
@@ -92,27 +102,18 @@ export default async function refreshCourses(options?: { silent?: boolean }): Pr
     const loggedIn = await validateLoginStatus();
     if (!loggedIn) {
         if (silent) {
-            const updatedSchedules = [...schedules];
-            updatedSchedules[activeIndex] = {
-                ...activeSchedule,
-                lastAttemptedAt: Date.now(),
-            };
-            await UserScheduleStore.set('schedules', updatedSchedules);
+            await updateSchedule({ lastAttemptedAt: Date.now() });
         }
         return false;
     }
 
     const updatedCourses = await refreshScheduleCourses(activeSchedule);
 
-    const updatedSchedules = [...schedules];
-    updatedSchedules[activeIndex] = {
-        ...activeSchedule,
+    await updateSchedule({
         courses: updatedCourses,
         updatedAt: Date.now(),
         lastCheckedAt: Date.now(),
         lastAttemptedAt: null,
-    };
-
-    await UserScheduleStore.set('schedules', updatedSchedules);
+    });
     return true;
 }

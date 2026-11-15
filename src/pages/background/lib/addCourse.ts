@@ -1,6 +1,6 @@
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Course } from '@shared/types/Course';
-import { getUnusedColor } from '@shared/util/colors';
+import { getUnusedColor } from '@shared/util/colors/getUnusedColor';
 
 /**
  * Adds a course to a user's schedule.

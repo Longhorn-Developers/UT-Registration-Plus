@@ -32,6 +32,7 @@ const removeCalendarTabRecord = async (tabId: number) => {
 };
 
 const getTrackedCalendarTabs = async (): Promise<Array<{ record: CalendarTabRecord; tab: TabWithId }>> => {
+    const calendarUrl = chrome.runtime.getURL(CRX_PAGES.CALENDAR);
     const calendarTabs = await getCalendarTabsState();
     const trackedEntries = Object.entries(calendarTabs);
     const validatedTabs = await Promise.all(
@@ -39,7 +40,9 @@ const getTrackedCalendarTabs = async (): Promise<Array<{ record: CalendarTabReco
             const numericTabId = Number(tabId);
             try {
                 const tab = await chrome.tabs.get(numericTabId);
-                if (tab.id === undefined) {
+                // The tab may still exist but have navigated away from the calendar
+                const currentUrl = tab.pendingUrl || tab.url;
+                if (tab.id === undefined || !currentUrl?.startsWith(calendarUrl)) {
                     await removeCalendarTabRecord(numericTabId);
                     return undefined;
                 }
