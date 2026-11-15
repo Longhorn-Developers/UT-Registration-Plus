@@ -23,21 +23,19 @@ export default async function deleteSchedule(scheduleId: string): Promise<string
     // replaced the in-place splice function
     const nextSchedules = schedules.filter((_, index) => index !== scheduleIndex);
     await deleteScheduleCustomBlocks(scheduleId);
-    await UserScheduleStore.set('schedules', nextSchedules);
-
-    // By invariant, there must always be at least one schedule
-    // hah. algos - derek
-    if (nextSchedules.length === 0) {
-        await createSchedule('Schedule 1');
-    }
-
     let newActiveIndex = activeIndex;
     if (scheduleIndex < activeIndex) {
         newActiveIndex = activeIndex - 1;
     } else if (activeIndex >= nextSchedules.length) {
         newActiveIndex = Math.max(0, nextSchedules.length - 1);
     }
-    await UserScheduleStore.set('activeIndex', newActiveIndex);
+    await UserScheduleStore.set({ schedules: nextSchedules, activeIndex: newActiveIndex });
+
+    // By invariant, there must always be at least one schedule
+    // hah. algos - derek
+    if (nextSchedules.length === 0) {
+        await createSchedule('Schedule 1');
+    }
 
     return undefined;
 }

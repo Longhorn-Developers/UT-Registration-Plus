@@ -15,16 +15,14 @@ export function LogoIcon(props: SVGProps<SVGSVGElement>): JSX.Element {
     return (
         // biome-ignore lint/a11y/noSvgWithoutTitle: TODO:
         <svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg' {...props}>
-            <circle cx='20' cy='20' r='20' fill='#BF5700' />
-            <circle cx='20' cy='20' r='15.5' strokeWidth='3' className='stroke-surface-raised' />
-            <rect x='18' y='10' width='4' height='19.5489' className='fill-surface-raised' />
-            <rect
-                x='10'
-                y='22'
-                width='4'
-                height='19.5489'
-                transform='rotate(-90 10 22)'
-                className='fill-surface-raised'
+            <path
+                fillRule='evenodd'
+                clipRule='evenodd'
+                fill='#BF5700'
+                d='M20 0a20 20 0 1 0 0 40a20 20 0 1 0 0-40Z
+   M20 3a17 17 0 1 1 0 34a17 17 0 1 1 0-34Z
+   M20 6a14 14 0 1 0 0 28a14 14 0 1 0 0-28Z
+   M18 10H22V18H29.5489V22H22V29.5489H18V22H10V18H18Z'
             />
         </svg>
     );
