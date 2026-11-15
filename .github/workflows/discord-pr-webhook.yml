@@ -5,8 +5,9 @@ name: Sync PR to Discord Forum (Webhook)
 # check out or run PR code here, and pass PR-controlled values through env instead of writing them
 # into a script. GitHub only reads this file from the default branch, so edits take effect once
 # merged to main. Use the manual trigger to backfill PRs opened before this existed.
-# New threads ping the PR author and two other devs from the DISCORD_PR_REVIEWERS repo variable, which
-# holds one "github_login:discord_user_id" per line. The two devs rotate by PR number.
+# New threads ping the PR author if they're in the DISCORD_PR_REVIEWERS repo variable, which holds
+# one "github_login:discord_user_id" per line. If the author isn't listed, two random people from
+# the list are pinged instead.
 on:
   pull_request_target:
     types:
@@ -167,8 +168,9 @@ jobs:
             COMMENT_BODY="<!-- discord-pr-sync:${THREAD_ID}:${MESSAGE_ID} -->"$'\n'"This PR has a thread in the Longhorn Developers Discord. Status changes here are posted there automatically."
             gh api "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" -f body="$COMMENT_BODY" >/dev/null
 
-            # Ping the author plus two other devs in a reply, so status edits to the first message
-            # never touch the mentions. Only people on the DISCORD_PR_REVIEWERS list get pinged.
+            # Ping in a reply, so status edits to the first message never touch the mentions. If the
+            # author is on the DISCORD_PR_REVIEWERS list, ping only them. Otherwise ping two random
+            # people from the list.
             AUTHOR_ID=""
             POOL=()
             while IFS=: read -r login discord_id; do
@@ -177,34 +179,23 @@ jobs:
               if ! [[ "$discord_id" =~ ^[0-9]+$ ]]; then
                 continue
               fi
+              POOL+=("$discord_id")
               if [ "${login,,}" == "${GH_USER,,}" ]; then
                 AUTHOR_ID="$discord_id"
-              else
-                POOL+=("$discord_id")
               fi
             done < <(tr ',' '\n' <<<"$REVIEWERS")
 
-            PICKED=()
-            if [ "${#POOL[@]}" -gt 0 ]; then
-              START=$(((PR_NUMBER * 2) % ${#POOL[@]}))
-              for offset in 0 1; do
-                if [ "$offset" -lt "${#POOL[@]}" ]; then
-                  PICKED+=("${POOL[$(((START + offset) % ${#POOL[@]}))]}")
-                fi
-              done
-            fi
-
+            PING_IDS=()
             PING_TEXT=""
-            if [ "${#PICKED[@]}" -gt 0 ]; then
+            if [ -n "$AUTHOR_ID" ]; then
+              PING_IDS=("$AUTHOR_ID")
+              PING_TEXT="Author: <@$AUTHOR_ID>"
+            elif [ "${#POOL[@]}" -gt 0 ]; then
+              mapfile -t PING_IDS < <(printf '%s\n' "${POOL[@]}" | shuf -n 2)
               PING_TEXT="Reviewers:"
-              for id in "${PICKED[@]}"; do
+              for id in "${PING_IDS[@]}"; do
                 PING_TEXT="$PING_TEXT <@$id>"
               done
-            fi
-            PING_IDS=("${PICKED[@]}")
-            if [ -n "$AUTHOR_ID" ]; then
-              PING_TEXT="${PING_TEXT:+$PING_TEXT$'\n'}Author: <@$AUTHOR_ID>"
-              PING_IDS+=("$AUTHOR_ID")
             fi
 
             if [ -n "$PING_TEXT" ]; then
@@ -212,7 +203,7 @@ jobs:
                 '{content: $content, allowed_mentions: {parse: [], users: $ARGS.positional}}' \
                 --args "${PING_IDS[@]}")
               if ! discord POST "${WEBHOOK_URL}?thread_id=${THREAD_ID}" "$PING_PAYLOAD" >/dev/null; then
-                echo "::warning::Could not post the reviewer ping for PR #$PR_NUMBER"
+                echo "::warning::Could not post the ping for PR #$PR_NUMBER"
               fi
             fi
             exit 0
