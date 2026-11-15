@@ -1,0 +1,214 @@
+name: Sync PR to Discord Forum (Webhook)
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - closed
+      - labeled
+      - unlabeled
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to test"
+        required: true
+        type: string
+      action:
+        description: "Action to simulate"
+        required: true
+        type: choice
+        options:
+          - opened
+          - closed
+          - reopened
+          - labeled
+          - unlabeled
+        default: opened
+      label_name:
+        description: "Label name (if testing labeled/unlabeled)"
+        required: false
+        type: string
+
+concurrency:
+  group: discord-pr-sync-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}
+  cancel-in-progress: false
+
+permissions:
+  pull-requests: write
+
+env:
+  TAG_REPO: "1299960400053276712"
+  TAG_OPEN: "1340255735321464914"
+
+jobs:
+  discord-pr-sync:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Discord Forum Post
+        if: (github.event_name == 'pull_request_target' && github.event.action == 'opened') || (github.event_name == 'workflow_dispatch' && inputs.action == 'opened')
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          INPUT_PR_NUMBER: ${{ inputs.pr_number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          GH_USER: ${{ github.event.pull_request.user.login }}
+        run: |
+          if [ -n "$INPUT_PR_NUMBER" ]; then
+            PR_JSON=$(gh api "repos/${GH_REPO}/pulls/${INPUT_PR_NUMBER}")
+            PR_TITLE=$(echo "$PR_JSON" | jq -r '.title')
+            PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number')
+            PR_URL=$(echo "$PR_JSON" | jq -r '.html_url')
+            PR_BODY=$(echo "$PR_JSON" | jq -r '.body // empty')
+            GH_USER=$(echo "$PR_JSON" | jq -r '.user.login')
+          fi
+
+          FULL_NAME=$(gh api "users/${GH_USER}" --jq '.name // empty')
+
+          if [ -z "$FULL_NAME" ]; then
+            AUTHOR_LINE="Author: $GH_USER"
+          else
+            AUTHOR_LINE="Author: $FULL_NAME ($GH_USER)"
+          fi
+
+          STATUS_LINE="Status: OPEN"
+          POST_CONTENT="$AUTHOR_LINE"$'\n'"$STATUS_LINE"$'\n'"$PR_URL"
+
+          PAYLOAD=$(jq -n \
+            --arg title "$PR_TITLE - #$PR_NUMBER" \
+            --arg content "$POST_CONTENT" \
+            --arg tag_repo "$TAG_REPO" \
+            --arg tag_open "$TAG_OPEN" \
+            '{
+              thread_name: $title,
+              content: $content,
+              applied_tags: [$tag_repo, $tag_open]
+            }')
+
+          RESPONSE=$(curl -s -S -f -X POST \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            "$WEBHOOK_URL?wait=true")
+
+          NEW_THREAD_ID=$(echo "$RESPONSE" | jq -r '.channel_id')
+          NEW_MESSAGE_ID=$(echo "$RESPONSE" | jq -r '.id')
+
+          TAG_COMMENT="<!-- discord:${NEW_THREAD_ID}:${NEW_MESSAGE_ID} -->"
+          if [ -z "$PR_BODY" ]; then
+            UPDATED_BODY="$TAG_COMMENT"
+          else
+            UPDATED_BODY="${PR_BODY}"$'\n\n'"${TAG_COMMENT}"
+          fi
+
+          gh pr edit "$PR_NUMBER" --body "$UPDATED_BODY"
+
+      - name: Update Discord Forum Post
+        if: (github.event_name == 'pull_request_target' && github.event.action != 'opened') || (github.event_name == 'workflow_dispatch' && inputs.action != 'opened')
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          INPUT_PR_NUMBER: ${{ inputs.pr_number }}
+          INPUT_ACTION: ${{ inputs.action }}
+          INPUT_LABEL_NAME: ${{ inputs.label_name }}
+          ACTION: ${{ github.event.action }}
+          ACTOR: ${{ github.actor }}
+          PR_STATE: ${{ github.event.pull_request.state }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          GH_USER: ${{ github.event.pull_request.user.login }}
+          PR_LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
+          LABEL_NAME: ${{ github.event.label.name }}
+        run: |
+          if [ -n "$INPUT_PR_NUMBER" ]; then
+            PR_JSON=$(gh api "repos/${GH_REPO}/pulls/${INPUT_PR_NUMBER}")
+            PR_URL=$(echo "$PR_JSON" | jq -r '.html_url')
+            PR_BODY=$(echo "$PR_JSON" | jq -r '.body // empty')
+            GH_USER=$(echo "$PR_JSON" | jq -r '.user.login')
+            PR_STATE=$(echo "$PR_JSON" | jq -r '.state')
+            PR_MERGED=$(echo "$PR_JSON" | jq -r '.merged')
+            PR_LABELS=$(echo "$PR_JSON" | jq -c '[.labels[].name]')
+            ACTION="$INPUT_ACTION"
+            LABEL_NAME="$INPUT_LABEL_NAME"
+          fi
+
+          META=$(echo "$PR_BODY" | grep -oE '<!-- discord:[0-9]+:[0-9]+ -->' | head -n 1 || true)
+          THREAD_ID=$(echo "$META" | cut -d':' -f2)
+          MESSAGE_ID=$(echo "$META" | cut -d':' -f3 | tr -d ' ->')
+
+          if [ -z "$THREAD_ID" ] || [ -z "$MESSAGE_ID" ]; then
+            exit 0
+          fi
+
+          FULL_NAME=$(gh api "users/${GH_USER}" --jq '.name // empty')
+
+          if [ -z "$FULL_NAME" ]; then
+            AUTHOR_LINE="Author: $GH_USER"
+          else
+            AUTHOR_LINE="Author: $FULL_NAME ($GH_USER)"
+          fi
+
+          if [ "$PR_MERGED" == "true" ]; then
+            STATUS_LINE="Status: MERGED"
+          elif [ "$PR_STATE" == "closed" ]; then
+            STATUS_LINE="Status: CLOSED"
+          else
+            STATUS_LINE="Status: OPEN"
+            if echo "$PR_LABELS" | jq -e 'map(ascii_downcase) | index("blocked") != null' >/dev/null 2>&1; then
+              STATUS_LINE="$STATUS_LINE (blocked)"
+            fi
+            if echo "$PR_LABELS" | jq -e 'map(ascii_downcase) | index("stale") != null' >/dev/null 2>&1; then
+              STATUS_LINE="$STATUS_LINE (stale)"
+            fi
+          fi
+
+          POST_CONTENT="$AUTHOR_LINE"$'\n'"$STATUS_LINE"$'\n'"$PR_URL"
+
+          EDIT_PAYLOAD=$(jq -n --arg content "$POST_CONTENT" '{content: $content}')
+          curl -s -S -f -X PATCH \
+            -H "Content-Type: application/json" \
+            -d "$EDIT_PAYLOAD" \
+            "$WEBHOOK_URL/messages/$MESSAGE_ID?thread_id=$THREAD_ID" >/dev/null
+
+          REPLY_TEXT=""
+          LABEL_LOWER=$(echo "$LABEL_NAME" | tr '[:upper:]' '[:lower:]')
+          case "$ACTION" in
+            closed)
+              if [ "$PR_MERGED" == "true" ]; then
+                REPLY_TEXT="Merged by \`$ACTOR\`"
+              else
+                REPLY_TEXT="Closed by \`$ACTOR\`"
+              fi
+              ;;
+            reopened)
+              REPLY_TEXT="Reopened by \`$ACTOR\`"
+              ;;
+            labeled)
+              if [ "$LABEL_LOWER" == "blocked" ]; then
+                REPLY_TEXT="Marked as blocked by \`$ACTOR\`"
+              elif [ "$LABEL_LOWER" == "stale" ]; then
+                REPLY_TEXT="Marked as stale"
+              fi
+              ;;
+            unlabeled)
+              if [ "$LABEL_LOWER" == "blocked" ]; then
+                REPLY_TEXT="Unmarked as blocked by \`$ACTOR\`"
+              elif [ "$LABEL_LOWER" == "stale" ]; then
+                REPLY_TEXT="Unmarked as stale"
+              fi
+              ;;
+          esac
+
+          if [ -n "$REPLY_TEXT" ]; then
+            REPLY_PAYLOAD=$(jq -n --arg content "$REPLY_TEXT" '{content: $content}')
+            curl -s -S -f -X POST \
+              -H "Content-Type: application/json" \
+              -d "$REPLY_PAYLOAD" \
+              "$WEBHOOK_URL?thread_id=$THREAD_ID" >/dev/null
+          fi
