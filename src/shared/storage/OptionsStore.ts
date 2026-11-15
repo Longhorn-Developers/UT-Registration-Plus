@@ -26,6 +26,9 @@ export interface IOptionsStore {
     /** whether the calendar sidebar should be shown when the calendar is opened */
     showCalendarSidebar: boolean;
 
+    /** how wide the calendar sidebar is, in px, after dragging its edge */
+    calendarSidebarWidth: number;
+
     /** whether users are allowed to bypass the 10 schedule limit */
     allowMoreSchedules: boolean;
 
@@ -46,6 +49,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>(
         alwaysOpenCalendarInNewTab: false,
         enableReducedMotion: false,
         showCalendarSidebar: true,
+        calendarSidebarWidth: 325,
         allowMoreSchedules: false,
         enableThemesBeta: false,
         theme: 'light',
