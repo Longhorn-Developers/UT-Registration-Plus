@@ -59,11 +59,9 @@ export default function CalendarHeader({ sidebarOpen, onSidebarToggle }: Calenda
         // Ensure the spinner is visible long enough to provide visual feedback
         const minSpin = new Promise(resolve => setTimeout(resolve, 400));
         try {
-            // The Course Finder's results show seats too, so they're checked again along with the schedule's courses
             const [success] = await Promise.all([
                 refreshCourses(),
                 minSpin,
-                // Kept apart from the schedule's refresh, which decides whether to ask to log in
                 courseFinder?.isOpen
                     ? courseFinder
                           .refreshResults()
