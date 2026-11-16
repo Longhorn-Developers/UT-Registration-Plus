@@ -11,7 +11,7 @@ export function useWallpaperFontColor(
     const [fontColor, setFontColor] = useState(() => (wallpaper ? cache.get(wallpaper) : undefined));
 
     useEffect(() => {
-        if (!wallpaper || !wallpaper.trim()) return;
+        if (!wallpaper?.trim()) return;
         if (cache.has(wallpaper)) {
             setFontColor(cache.get(wallpaper));
             return;
@@ -30,7 +30,10 @@ export function useWallpaperFontColor(
             const { data } = ctx.getImageData(0, 0, 16, 16);
             let totalY = 0;
             for (let i = 0; i < data.length; i += 4) {
-                totalY += 0.2126 * data[i]! + 0.7152 * data[i + 1]! + 0.0722 * data[i + 2]!;
+                const r = data[i] ?? 0;
+                const g = data[i + 1] ?? 0;
+                const b = data[i + 2] ?? 0;
+                totalY += 0.2126 * r + 0.7152 * g + 0.0722 * b;
             }
 
             const result = totalY / (data.length / 4) > 120 ? 'text-theme-black' : 'text-white';
