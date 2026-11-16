@@ -12,7 +12,7 @@ import { useActiveSchedule } from '@views/hooks/useSchedules';
 import clsx from 'clsx';
 import type { ComponentProps, CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { getDarkerShade, isValidHexColor, pickFontColor } from 'src/shared/util/colors/base';
+import { getDarkerShade, isValidHexColor } from 'src/shared/util/colors/base';
 import { getWallpaperStyle, useWallpaperFontColor } from '@shared/util/colors/wallpaper';
 import PaletteFillIcon from '~icons/ph/palette-fill';
 import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellColorPicker';
