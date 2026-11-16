@@ -13,6 +13,7 @@ import clsx from 'clsx';
 import type { ComponentProps, CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { getDarkerShade, isValidHexColor, pickFontColor } from 'src/shared/util/colors/base';
+import { getWallpaperStyle, useWallpaperFontColor } from '@shared/util/colors/wallpaper';
 import PaletteFillIcon from '~icons/ph/palette-fill';
 import CourseCellColorPicker from './CalendarCourseCellColorPicker/CourseCellColorPicker';
 import { formatBlockTime } from './customBlockUtils';
@@ -28,6 +29,7 @@ export default function CalendarCustomBlockCell({
     // A 15-minute slot is only ~12px tall, so its text shrinks to fit
     const tiny = !block.allDay && block.endTime - block.startTime <= 15;
     const color = block.color ?? DEFAULT_BLOCK_COLOR;
+    const fontColor = useWallpaperFontColor(block.wallpaper, color);
     return (
         <button
             {...props}
@@ -37,18 +39,14 @@ export default function CalendarCustomBlockCell({
             title={`${block.name}, ${time}`}
             className={clsx(
                 'relative box-border h-full w-full flex overflow-hidden rounded border-0 border-l-3 border-solid border-[var(--block-color)] bg-[color-mix(in_srgb,var(--block-color)_10%,transparent)] hover:bg-[color-mix(in_srgb,var(--block-color)_30%,transparent)] dark:bg-[color-mix(in_srgb,var(--block-color)_15%,transparent)] dark:hover:bg-[color-mix(in_srgb,var(--block-color)_25%,transparent)] text-left pl-[5px] pr-2 focusable',
-                block.wallpaper ? pickFontColor(color) : 'text-content',
+                block.wallpaper ? fontColor : 'text-content',
                 compact ? 'items-center gap-spacing-2' : 'flex-col items-start pt-1'
             )}
         >
             {block.wallpaper && (
                 <div
                     className='absolute inset-0 rounded bg-cover bg-center pointer-events-none'
-                    style={{
-                        backgroundImage: `url(${block.wallpaper})`,
-                        maskImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 1) 100%)',
-                        WebkitMaskImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 1) 100%)',
-                    }}
+                    style={getWallpaperStyle(block.wallpaper, fontColor)}
                 />
             )}
             <Text
