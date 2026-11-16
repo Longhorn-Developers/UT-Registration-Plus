@@ -2,6 +2,7 @@ import { MessageListener, setTraceContextProvider, setTraceHandler } from '@chro
 import { captureException, continueTrace, getTraceData, init, startSpan } from '@sentry/react';
 import type { BACKGROUND_MESSAGES } from '@shared/messages';
 import { SENTRY_OPTIONS } from '@shared/sentry';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { UNINSTALL_REVIEW_URL } from '@shared/urls';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
@@ -76,8 +77,10 @@ import customBlockHandler from './handler/customBlockHandler';
 import gitHubStatsHandler from './handler/gitHubStatsHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
 import userScheduleHandler from './handler/userScheduleHandler';
+import { startScheduleSync } from './lib/scheduleSync';
 
 onServiceWorkerAlive();
+startScheduleSync(() => OptionsStore.get('enableScheduleSync'));
 
 chrome.tabs.onRemoved.addListener(async tabId => {
     const storage = await chrome.storage.session.get('calendarTabs');

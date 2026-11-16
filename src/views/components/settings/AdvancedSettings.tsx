@@ -1,3 +1,4 @@
+import type { ScheduleSyncProblem } from '@pages/background/lib/scheduleSync';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import MIMEType from '@shared/types/MIMEType';
 import type { ThemeName } from '@shared/types/Theme';
@@ -21,6 +22,8 @@ interface AdvancedSettingsProps {
     loadAllCourses: boolean;
     increaseScheduleLimit: boolean;
     calendarNewTab: boolean;
+    scheduleSync: boolean;
+    scheduleSyncProblem: ScheduleSyncProblem;
     enableReducedMotion: boolean;
     enableDataRefreshing: boolean;
     enableCourseStatusChips: boolean;
@@ -65,6 +68,8 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     loadAllCourses,
     increaseScheduleLimit,
     calendarNewTab,
+    scheduleSync,
+    scheduleSyncProblem,
     enableReducedMotion,
     enableDataRefreshing,
     enableCourseStatusChips,
@@ -182,6 +187,32 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         isChecked={calendarNewTab}
                         onChange={() => {
                             void OptionsStore.set('alwaysOpenCalendarInNewTab', !calendarNewTab);
+                        }}
+                    />
+                </div>
+
+                <Divider size='auto' orientation='horizontal' />
+
+                <div className='flex items-center justify-between'>
+                    <div className='max-w-xs'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
+                            Sync Schedules
+                        </Text>
+                        <p className='text-sm text-content-muted'>
+                            Keeps your schedules and custom blocks the same on every computer where Chrome is signed in
+                            to your Google account.
+                        </p>
+                        {scheduleSync && scheduleSyncProblem === 'storage-full' && (
+                            <p className='mt-1 text-sm text-theme-red'>
+                                Your schedules are too big to sync them all. Deleting schedules you don't need frees up
+                                space.
+                            </p>
+                        )}
+                    </div>
+                    <SwitchButton
+                        isChecked={scheduleSync}
+                        onChange={() => {
+                            void OptionsStore.set('enableScheduleSync', !scheduleSync);
                         }}
                     />
                 </div>

@@ -6,6 +6,7 @@ import importSchedule from '@pages/background/lib/importSchedule';
 import { background } from '@shared/messages';
 import { DevStore } from '@shared/storage/DevStore';
 import { OptionsStore } from '@shared/storage/OptionsStore';
+import { ScheduleSyncStore } from '@shared/storage/ScheduleSyncStore';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import Particles from '@tsparticles/react';
 import { Button } from '@views/components/common/Button';
@@ -87,6 +88,7 @@ export default function Settings(): React.JSX.Element {
     const enableDataRefreshing = options.enableDataRefreshing;
     const enableCourseStatusChips = options.enableCourseStatusChips;
     const isDeveloper = DevStore.useStore(store => store.isDeveloper);
+    const scheduleSyncProblem = ScheduleSyncStore.useStore(store => store.problem);
 
     useThemeSync(options.theme);
 
@@ -279,6 +281,8 @@ export default function Settings(): React.JSX.Element {
                             loadAllCourses={options.enableScrollToLoad}
                             increaseScheduleLimit={options.allowMoreSchedules}
                             calendarNewTab={options.alwaysOpenCalendarInNewTab}
+                            scheduleSync={options.enableScheduleSync}
+                            scheduleSyncProblem={scheduleSyncProblem}
                             enableReducedMotion={options.enableReducedMotion}
                             enableDataRefreshing={enableDataRefreshing}
                             enableCourseStatusChips={enableCourseStatusChips}
