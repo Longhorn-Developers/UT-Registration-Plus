@@ -119,6 +119,10 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                         instructorIncluded: instructorIncludedAggregate,
                     },
                 };
+                // Show the overall chart while the semester breakdowns load.
+                setDistributions({ ...initialDistributions });
+                setStatus(DataStatus.FOUND);
+
                 const semesterPromises = semesters.map(semester =>
                     background.getSemesterGradeDistribution({ course, semester })
                 );
@@ -152,7 +156,6 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                     }
                 });
                 setDistributions(initialDistributions);
-                setStatus(DataStatus.FOUND);
             } catch (e) {
                 console.error(e);
                 if (e instanceof NoDataError) {
