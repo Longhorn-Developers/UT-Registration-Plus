@@ -24,7 +24,7 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
     {
         name: 'Miles Fritzmather',
         role: ['LHD Software Engineering Director'],
-        githubUsername: 'miles-fritzmather',
+        githubUsername: 'Miles-Fritzmather',
         personalWebsite: 'https://milesfm.me/',
     },
     {
@@ -137,11 +137,13 @@ export const UTRP_TEAM = [
         name: 'Akshitha Venkataraman',
         role: ['UX Design Fellow'],
         githubUsername: '',
+        personalWebsite: 'https://akshithavenkat.com/',
     },
     {
         name: 'Jesse Chen',
         role: ['UX Design Fellow'],
         githubUsername: '',
+        personalWebsite: 'https://chenjesse.com/',
     },
     {
         name: 'Saketh Sripada',
@@ -166,7 +168,7 @@ export const UTRP_TEAM = [
     {
         name: 'Marie Cho',
         role: ['Product Fellow'],
-        githubUsername: 'mariehyc',
+        githubUsername: '',
     },
 ] as const satisfies TeamMember[];
 
