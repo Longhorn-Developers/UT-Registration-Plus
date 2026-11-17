@@ -142,10 +142,10 @@ export default function PopupCourseBlock({
             )}
             <button
                 type='button'
-                className='h-full flex flex-1 justify-center gap-spacing-3 p-spacing-3 bg-transparent border-none text-left'
+                className='h-full min-w-0 flex flex-1 justify-center gap-spacing-3 p-spacing-3 bg-transparent border-none text-left'
                 onClick={handleClick}
             >
-                <div className='flex flex-1 flex-col justify-center gap-spacing-1'>
+                <div className='min-w-0 flex flex-1 flex-col justify-center gap-spacing-1'>
                     <Text
                         className={clsx(
                             `truncate select-none justify-center ${meetings.length > 0 ? 'mb-auto' : 'my-auto'}`,
