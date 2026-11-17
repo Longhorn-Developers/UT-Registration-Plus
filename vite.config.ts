@@ -134,6 +134,7 @@ const gitInfo = getGitInfo();
 
 let _config: ResolvedConfig;
 let _server: ViteDevServer;
+let extensionIconMode = 'production';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -146,6 +147,30 @@ export default defineConfig({
         Icons({ compiler: 'jsx', jsx: 'react' }),
         crx({ manifest, browser: BROWSER_TARGET }),
         fixManifestOptionsPage(),
+        {
+            name: 'extension-page-favicon',
+            configResolved(config) {
+                extensionIconMode = isBeta ? 'beta' : config.mode === 'development' ? 'development' : 'production';
+            },
+            transformIndexHtml: {
+                order: 'post',
+                handler() {
+                    // Match the manifest icon, including development and beta builds.
+                    return [
+                        {
+                            tag: 'link',
+                            attrs: {
+                                rel: 'icon',
+                                type: 'image/png',
+                                sizes: '32x32',
+                                href: `/icons/icon_${extensionIconMode}_32.png`,
+                            },
+                            injectTo: 'head',
+                        },
+                    ];
+                },
+            },
+        },
         {
             name: 'public-transform',
             apply: 'serve',
