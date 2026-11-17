@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
 @each $weight in '100' '200' '300' '400' '500' '600' '700' '800' '900' {
     @font-face {
         font-family: 'Inter';
@@ -22,9 +25,6 @@
     font-display: swap;
     font-style: normal;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@100..1000&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 
 $medium_size: 16px;
 

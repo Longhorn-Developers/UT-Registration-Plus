@@ -145,7 +145,7 @@ describe('allDatesInRanges', () => {
         expect(result).toEqual(expected);
     });
 
-    it('should handle a single date', () => {
+    it('should handle a single date in a string-only array', () => {
         const dateRanges = ['2025-03-14'] satisfies string[];
         const result = allDatesInRanges(dateRanges);
         const expected = ['2025-03-14'].map(dateStr => parseISO(dateStr, { in: TZ })) satisfies Date[];

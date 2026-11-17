@@ -1,5 +1,4 @@
 import { ExtensionStore } from '@shared/storage/ExtensionStore';
-import { MigrationStore } from 'src/shared/storage/MigrationStore';
 import onUpdate from './onUpdate';
 
 /**
