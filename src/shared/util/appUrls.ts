@@ -23,3 +23,9 @@ export const UT_DINING_PROMO_IMAGE_URL = new URL('https://cdn.longhorns.dev/ut-d
  * A successful fetch (without redirect) indicates the user is authenticated.
  */
 export const UTRP_LOGIN_URL = 'https://utdirect.utexas.edu/apps/registrar/course_schedule/utrp_login/';
+
+/**
+ * Google Calendar's import settings, where a .ics file can be added to a calendar (it can't be opened with a file
+ * already picked). Google opens it for whichever of the user's accounts is signed in first.
+ */
+export const GOOGLE_CALENDAR_IMPORT_URL = 'https://calendar.google.com/calendar/r/settings/export';
