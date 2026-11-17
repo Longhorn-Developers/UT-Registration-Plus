@@ -8,6 +8,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
+        "dev:firefox": "BROWSER_TARGET=firefox pnpm dev",
         "build": "tsgo && vite build",
         "build:dev": "tsgo && NODE_ENV='development' vite build --mode development",
         "build:watch": "NODE_ENV='development' vite build --mode development -w",

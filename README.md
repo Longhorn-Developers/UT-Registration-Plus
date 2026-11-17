@@ -101,9 +101,14 @@ Once set up, the extension can be built to the `dist/chrome/` directory (or `dis
 
 ### Development Builds
 
-- Run the development server:
+- Run the Chrome development server:
     ```bash
     pnpm dev
+    ```
+
+- Run the Firefox development server:
+    ```bash
+    pnpm dev:firefox
     ```
 
 ### Production Builds
@@ -118,6 +123,7 @@ Once set up, the extension can be built to the `dist/chrome/` directory (or `dis
 The same codebase builds a Firefox add-on for Firefox 140 or later. Set `BROWSER_TARGET=firefox`, or use the shortcuts:
 
 ```bash
+pnpm dev:firefox          # development server for Firefox
 pnpm build:firefox        # production build to dist/firefox/
 pnpm build:watch:firefox  # development build with file watching
 pnpm lint:firefox         # validate the build with Mozilla's web-ext linter
