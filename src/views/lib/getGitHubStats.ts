@@ -24,7 +24,7 @@ export const LONGHORN_DEVELOPERS_ADMINS = [
     {
         name: 'Miles Fritzmather',
         role: ['LHD Software Engineering Director'],
-        githubUsername: 'miles-fritzmather',
+        githubUsername: 'Miles-Fritzmather',
         personalWebsite: 'https://milesfm.me/',
     },
     {
