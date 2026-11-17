@@ -16,6 +16,7 @@ export const SiteSupport = {
     COURSE_CATALOG_SEARCH: 'COURSE_CATALOG_SEARCH',
     CLASSLIST: 'CLASSLIST',
     COURSE_CATALOG_KWS: 'COURSE_CATALOG_KWS',
+    REGISTRATION: 'REGISTRATION',
 } as const;
 
 /**
@@ -52,6 +53,10 @@ export default function getSiteSupport(url: string): SiteSupportType | null {
             return SiteSupport.COURSE_CATALOG_DETAILS;
         }
         return SiteSupport.COURSE_CATALOG_SEARCH;
+    }
+    // Before WAITLIST: registration form submits can carry `s_waitlist_swap_unique` in the query string
+    if (url.includes('utdirect.utexas.edu/registration/registration.WBX')) {
+        return SiteSupport.REGISTRATION;
     }
     if (url.includes('utdirect.utexas.edu') && (url.includes('waitlist') || url.includes('classlist'))) {
         return SiteSupport.WAITLIST;
