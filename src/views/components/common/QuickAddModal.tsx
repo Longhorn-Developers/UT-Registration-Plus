@@ -1,12 +1,13 @@
 import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react';
 import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
-import { UNIQUE_ID_LENGTH } from '@shared/types/Course';
+import { type Semester, UNIQUE_ID_LENGTH } from '@shared/types/Course';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
+import { englishStringifyList } from '@shared/util/string';
 import Text from '@views/components/common/Text/Text';
 import { type CourseResult, useQuickAdd } from '@views/hooks/useQuickAdd';
 import clsx from 'clsx';
-import type { JSX } from 'react';
+import type { JSX, ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { useTheme } from 'src/views/contexts/ThemeContext';
 import { getActiveSchedule } from 'src/views/hooks/useSchedules';
@@ -24,6 +25,38 @@ const STATUS_MESSAGES: Partial<Record<CourseResult['status'], string>> = {
     already_added: 'This course is already in your schedule.',
 };
 
+const semesterName = (semester: Semester) => `${semester.season} ${semester.year}`;
+
+/** Explains why a section can't be added to the schedule */
+function getStatusMessage(courseResult: CourseResult): ReactNode {
+    if (courseResult.status === 'unique_taken') {
+        return (
+            <>
+                This schedule already has a section with this unique number from{' '}
+                <span className='whitespace-nowrap text-ut-burntorange'>
+                    {semesterName(courseResult.scheduledCourse.semester)}
+                </span>
+                .
+            </>
+        );
+    }
+    if (courseResult.status !== 'other_semester') {
+        return STATUS_MESSAGES[courseResult.status];
+    }
+
+    return (
+        <>
+            This section is for{' '}
+            <span className='whitespace-nowrap text-ut-burntorange'>{semesterName(courseResult.course.semester)}</span>,
+            but this schedule has sections in{' '}
+            <span className='whitespace-nowrap text-ut-burntorange'>
+                {englishStringifyList(courseResult.scheduleSemesters.map(semesterName))}
+            </span>
+            .
+        </>
+    );
+}
+
 /**
  * QuickAddModal component
  *
@@ -34,7 +67,7 @@ export default function QuickAddModal(): JSX.Element {
     const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
     const { semester, uniqueNumber, courseResult } = useQuickAdd(isLoggedIn);
-    const statusMessage = STATUS_MESSAGES[courseResult.status];
+    const statusMessage = getStatusMessage(courseResult);
 
     const { theme } = useTheme();
 
