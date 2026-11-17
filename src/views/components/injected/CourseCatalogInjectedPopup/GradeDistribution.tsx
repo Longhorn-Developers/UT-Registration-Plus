@@ -375,6 +375,7 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
                         ref={ref}
                         highcharts={Highcharts}
                         options={chartOptions}
+                        containerProps={{ style: { willChange: 'transform' } }}
                         updateArgs={[true, true, !reducedMotion]}
                     />
                 </>
