@@ -23,6 +23,7 @@ export interface PopupCourseBlockProps {
     className?: string;
     course: Course;
     colors: CourseColors;
+    onCalendarOpen?: () => void;
 }
 
 const IS_STORYBOOK = import.meta.env.STORYBOOK;
@@ -47,9 +48,15 @@ const CourseMeeting = memo(
  * @param course - The course object to display.
  * @param colors - The colors to use for the course block.
  * @param dragHandleProps - The drag handle props for the course block.
+ * @param onCalendarOpen - Called after the calendar tab is opened.
  * @returns The rendered PopupCourseBlock component.
  */
-export default function PopupCourseBlock({ className, course, colors }: PopupCourseBlockProps): React.JSX.Element {
+export default function PopupCourseBlock({
+    className,
+    course,
+    colors,
+    onCalendarOpen,
+}: PopupCourseBlockProps): React.JSX.Element {
     const enableCourseStatusChips = OptionsStore.useStore(store => store.enableCourseStatusChips);
 
     const [isCopied, setIsCopied] = useState<boolean>(false);
@@ -75,7 +82,7 @@ export default function PopupCourseBlock({ className, course, colors }: PopupCou
 
     const handleClick = async () => {
         await background.switchToCalendarTab({ uniqueId: course.uniqueId });
-        window.close();
+        onCalendarOpen?.();
     };
 
     const handleCopy = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

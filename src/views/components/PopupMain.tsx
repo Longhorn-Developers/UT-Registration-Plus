@@ -156,7 +156,12 @@ export default function PopupMain(): JSX.Element {
                             replaceSchedule(getActiveSchedule(), activeSchedule);
                         }}
                         renderItem={({ id, course }) => (
-                            <PopupCourseBlock key={id} course={course} colors={course.colors} />
+                            <PopupCourseBlock
+                                key={id}
+                                course={course}
+                                colors={course.colors}
+                                onCalendarOpen={() => window.close()}
+                            />
                         )}
                     />
                 )}
