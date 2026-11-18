@@ -13,7 +13,8 @@ import * as HighchartsReactModule from 'highcharts-react-official';
 import type { ChangeEvent, JSX } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import Skeleton from 'react-loading-skeleton';
+
+import styles from './GradeDistribution.module.scss';
 
 const UT_GRADE_DISTRIBUTION_URL = 'https://reports.utexas.edu/spotlight-data/ut-course-grade-distributions';
 const TOOLTIP_CONTENT =
@@ -301,7 +302,11 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
 
     return (
         <div className='pt-3'>
-            {status === DataStatus.LOADING && <Skeleton height={300} enableAnimation={!reducedMotion} />}
+            {status === DataStatus.LOADING && (
+                <div className={styles.loading} style={{ animation: reducedMotion ? 'none' : undefined }} role='status'>
+                    <span className='sr-only'>Loading grade distribution</span>
+                </div>
+            )}
             {status === DataStatus.NOT_FOUND && (
                 <HighchartsReact
                     ref={ref}
