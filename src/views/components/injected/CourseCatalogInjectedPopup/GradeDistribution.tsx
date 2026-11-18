@@ -301,7 +301,14 @@ export default function GradeDistribution({ course }: GradeDistributionProps): J
 
     return (
         <div className='pt-3'>
-            {status === DataStatus.LOADING && <Skeleton height={300} enableAnimation={!reducedMotion} />}
+            {status === DataStatus.LOADING && (
+                <Skeleton
+                    height={300}
+                    baseColor='var(--color-surface)'
+                    highlightColor='var(--color-surface-hover)'
+                    enableAnimation={!reducedMotion}
+                />
+            )}
             {status === DataStatus.NOT_FOUND && (
                 <HighchartsReact
                     ref={ref}
