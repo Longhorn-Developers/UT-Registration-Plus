@@ -13,11 +13,11 @@ export enum ScriptType {
 }
 
 /**
- * Chrome extension code can run in different contexts.
- * These different contexts have different capabilities and access to certain parts of the chrome extensions API.
- * For example, the chrome.tabs api is not readily available in the content scripts.
- * This function is used to identify the context in which the code is running.
- * @returns The context in which the code is running, or null if the code is not running in a chrome extension.
+ * Identifies whether code is running in a content script, background script,
+ * popup, or another extension page.
+ * These contexts have different extension API capabilities.
+ * For example, the tabs API is unavailable in content scripts.
+ * @returns The current script type, or null if no extension runtime is available.
  */
 export default function getScriptType(): ScriptType | null {
     if (!chrome?.runtime?.id) {
@@ -32,15 +32,15 @@ export default function getScriptType(): ScriptType | null {
         return ScriptType.BACKGROUND_SCRIPT;
     }
 
-    if (
-        window.location.href.startsWith(
-            `chrome-extension://${chrome.runtime.id}`,
-        )
-    ) {
-        if (
-            manifest.action?.default_popup &&
-            window.location.href.includes(manifest.action.default_popup)
-        ) {
+    const runtimeBase = chrome.runtime.getURL("");
+    if (window.location.href.startsWith(runtimeBase)) {
+        if (window.location.href.includes("_generated_background_page.html")) {
+            return ScriptType.BACKGROUND_SCRIPT;
+        }
+        const popupPath =
+            manifest.action?.default_popup ||
+            manifest.browser_action?.default_popup;
+        if (popupPath && window.location.href.includes(popupPath)) {
             return ScriptType.EXTENSION_POPUP;
         }
         return ScriptType.EXTENSION_PAGE;
