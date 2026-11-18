@@ -97,7 +97,14 @@ const calendarBackgroundHandler: MessageHandler<CalendarBackgroundMessages> = {
                 drawAttention: true,
             });
             await setCalendarTabRecord(tabid, { lastFocusedAt: Date.now() });
-            if (uniqueId !== undefined) await tabs.openCoursePopup({ uniqueId }, { tabId: tabid });
+            if (uniqueId !== undefined) {
+                // An unloaded tab (e.g. restored after a restart) isn't ready for messages, so load the course from the URL
+                if (trackedCalendarTab.discarded || trackedCalendarTab.status === 'unloaded') {
+                    await chrome.tabs.update(tabid, { url: `${calendarUrl}?uniqueId=${uniqueId}` });
+                } else {
+                    await tabs.openCoursePopup({ uniqueId }, { tabId: tabid });
+                }
+            }
 
             sendResponse(trackedCalendarTab);
         } else {
