@@ -1,4 +1,4 @@
-import type { HexColor } from '@shared/types/Color';
+import { type HexColor, isWallpaper } from '@shared/types/Color';
 import { useEffect, useState } from 'react';
 import { pickFontColor } from './base';
 
@@ -11,7 +11,7 @@ export function useWallpaperFontColor(
     const [fontColor, setFontColor] = useState(() => (wallpaper ? cache.get(wallpaper) : undefined));
 
     useEffect(() => {
-        if (!wallpaper?.trim()) return;
+        if (!isWallpaper(wallpaper)) return;
         if (cache.has(wallpaper)) {
             setFontColor(cache.get(wallpaper));
             return;
@@ -46,6 +46,8 @@ export function useWallpaperFontColor(
 }
 
 export function getWallpaperStyle(wallpaper: string, fontColor: string) {
+    // Imported schedules can carry any string, so only inline images reach the CSS url()
+    if (!isWallpaper(wallpaper)) return {};
     const scrim =
         fontColor === 'text-white'
             ? 'linear-gradient(to bottom, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.15) 50%, transparent 100%)'

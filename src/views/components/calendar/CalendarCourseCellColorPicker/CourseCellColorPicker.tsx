@@ -134,6 +134,9 @@ export default function CourseCellColorPicker({
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
                 if (ctx) {
+                    // JPEG has no alpha, so transparent pixels (like a logo's background) would turn black
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, width, height);
                     ctx.drawImage(img, 0, 0, width, height);
                     setWallpaper?.(canvas.toDataURL('image/jpeg', 0.8));
                 }

@@ -1,4 +1,4 @@
-import { isHexColor } from '@shared/types/Color';
+import { isHexColor, isWallpaper } from '@shared/types/Color';
 import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { CustomBlock, CustomBlockDraft } from '@shared/types/CustomBlock';
 
@@ -15,6 +15,7 @@ export function customBlockFromDraft(draft: CustomBlockDraft, scheduleId: string
         !validTime(values.startTime) ||
         !validTime(values.endTime) ||
         (values.color !== undefined && !isHexColor(values.color)) ||
+        (values.wallpaper !== undefined && !isWallpaper(values.wallpaper)) ||
         (!values.allDay && values.startTime >= values.endTime)
     ) {
         throw new Error('Invalid custom block');

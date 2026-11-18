@@ -87,6 +87,10 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
     const [open, setOpen] = useState(false);
     const pickerRef = useRef<HTMLDivElement>(null);
     const color = block.color ?? DEFAULT_BLOCK_COLOR;
+    // The picker's hex input calls its setter on a 500ms debounce, after newer renders, so read the block from a ref:
+    // a draft built from the old block would undo an image or color saved in the meantime
+    const latestBlock = useRef(block);
+    latestBlock.current = block;
 
     useEffect(() => {
         if (!open) return;
@@ -103,16 +107,20 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
         selectedColor: null,
         setSelectedColor: value => {
             if (typeof value !== 'string' || !isValidHexColor(value)) return;
+            const current = latestBlock.current;
+            // Opening the picker echoes the current color back; saving it would race an upload for nothing
+            if (value.toLowerCase() === (current.color ?? DEFAULT_BLOCK_COLOR).toLowerCase()) return;
             void background.updateCustomBlock({
-                id: block.id,
-                draft: { ...customBlockToDraft(block), color: value as HexColor },
+                id: current.id,
+                draft: { ...customBlockToDraft(current), color: value as HexColor },
                 scheduleId,
             });
         },
         setWallpaper: wallpaper => {
+            const current = latestBlock.current;
             void background.updateCustomBlock({
-                id: block.id,
-                draft: { ...customBlockToDraft(block), wallpaper },
+                id: current.id,
+                draft: { ...customBlockToDraft(current), wallpaper },
                 scheduleId,
             });
         },
