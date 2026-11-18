@@ -107,6 +107,7 @@ export default function CalendarCourseCell({
                     'min-w-full': timeAndLocation,
                     'w-full': !timeAndLocation,
                 },
+                blockData.isHidden && 'opacity-50 hover:opacity-75',
                 fontColor,
                 className
             )}
