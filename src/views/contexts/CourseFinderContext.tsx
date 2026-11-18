@@ -1,0 +1,164 @@
+import { OptionsStore } from '@shared/storage/OptionsStore';
+import type { Course } from '@shared/types/Course';
+import { type UseCourseFinderReturn, useCourseFinder } from '@views/hooks/useCourseFinder';
+import { type UseCourseFinderFormReturn, useCourseFinderForm } from '@views/hooks/useCourseFinderForm';
+import {
+    createContext,
+    type Dispatch,
+    type ReactNode,
+    type RefObject,
+    type SetStateAction,
+    useCallback,
+    useContext,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
+
+/**
+ * Opens and closes the Course Finder, which the calendar sidebar shows in place of the schedules.
+ */
+export interface CourseFinderControls {
+    /** Whether the sidebar is showing the Course Finder instead of the schedules */
+    isOpen: boolean;
+    /**
+     * Shows the Course Finder in the sidebar (keeping the sidebar shown while it's open) and puts focus in its search.
+     * @param returnFocusTo - What to focus once the Course Finder is closed, usually the button that opened it
+     */
+    open: (returnFocusTo?: HTMLElement | null) => void;
+    /** Goes back to the schedules, putting focus back on what opened the Course Finder */
+    close: () => void;
+    /** The Course Finder's field of study input, which opening it focuses */
+    searchInputRef: RefObject<HTMLInputElement | null>;
+    /** Searches again for the results the Course Finder shows, so their seats are up to date */
+    refreshResults: () => Promise<void>;
+}
+
+/**
+ * The Course Finder's search, filters, and results
+ */
+export interface CourseFinderState {
+    finder: UseCourseFinderReturn;
+    form: UseCourseFinderFormReturn;
+}
+
+const CourseFinderControlsContext = createContext<CourseFinderControls | null>(null);
+const CourseFinderStateContext = createContext<CourseFinderState | null>(null);
+/**
+ * A section the Course Finder is previewing on the calendar. One that isn't in the schedule is drawn over it; one that
+ * is gets its blocks outlined, or marked for removal while its remove button is hovered over or focused.
+ */
+export interface CourseFinderPreview {
+    course: Course;
+    /**
+     * Whether the section's add/remove button is hovered over or focused. For a section in the schedule, that button
+     * removes it, so the calendar shows what removing it does.
+     */
+    isRemoving: boolean;
+}
+
+const CourseFinderPreviewContext = createContext<CourseFinderPreview | null>(null);
+const SetCourseFinderPreviewContext = createContext<Dispatch<SetStateAction<CourseFinderPreview | null>> | null>(null);
+
+/**
+ * Holds the section being previewed on the calendar, apart from the rest of the Course Finder, so hovering over
+ * sections only re-renders the calendar that draws the preview (its children keep their element identity).
+ */
+function CourseFinderPreviewProvider({ children }: { children: ReactNode }): ReactNode {
+    const [preview, setPreview] = useState<CourseFinderPreview | null>(null);
+
+    return (
+        <SetCourseFinderPreviewContext.Provider value={setPreview}>
+            <CourseFinderPreviewContext.Provider value={preview}>{children}</CourseFinderPreviewContext.Provider>
+        </SetCourseFinderPreviewContext.Provider>
+    );
+}
+
+/**
+ * Holds the Course Finder for the calendar page, so its search, filters, and results are still there
+ * after going back to the schedules and opening it again.
+ *
+ * Its state changes with every keystroke and every page of results, so it's provided separately from the controls:
+ * only the Course Finder itself re-renders as it changes, not the whole calendar.
+ */
+export function CourseFinderProvider({ children }: { children: ReactNode }): ReactNode {
+    const [isOpen, setIsOpen] = useState(false);
+    const finder = useCourseFinder(isOpen);
+    const form = useCourseFinderForm();
+    const { setFieldOfStudySearch } = form;
+    const searchInputRef = useRef<HTMLInputElement>(null);
+    const returnFocusTo = useRef<HTMLElement | null>(null);
+
+    // Focus moves a frame later, once what's being focused is rendered (and the sidebar is no longer inert)
+    const open = useCallback((opener?: HTMLElement | null) => {
+        returnFocusTo.current = opener ?? null;
+        setIsOpen(true);
+        requestAnimationFrame(() => searchInputRef.current?.focus());
+    }, []);
+
+    const close = useCallback(() => {
+        setIsOpen(false);
+        // A field of study that was being typed but not picked is gone from the input once it's shown again
+        setFieldOfStudySearch('');
+        const opener = returnFocusTo.current;
+        returnFocusTo.current = null;
+        requestAnimationFrame(() => opener?.focus());
+    }, [setFieldOfStudySearch]);
+
+    // Keeps its identity, so the controls only change when the Course Finder opens or closes
+    const refreshResults = finder.refresh;
+    const controls = useMemo(
+        () => ({ isOpen, open, close, searchInputRef, refreshResults }),
+        [isOpen, open, close, refreshResults]
+    );
+
+    return (
+        <CourseFinderControlsContext.Provider value={controls}>
+            <CourseFinderStateContext.Provider value={{ finder, form }}>
+                <CourseFinderPreviewProvider>{children}</CourseFinderPreviewProvider>
+            </CourseFinderStateContext.Provider>
+        </CourseFinderControlsContext.Provider>
+    );
+}
+
+/**
+ * @returns what opens and closes the Course Finder, or null outside of the calendar page
+ */
+export const useCourseFinderControls = (): CourseFinderControls | null => useContext(CourseFinderControlsContext);
+
+/**
+ * @returns the Course Finder's search, filters, and results, or null outside of the calendar page
+ */
+export const useCourseFinderState = (): CourseFinderState | null => useContext(CourseFinderStateContext);
+
+/**
+ * @returns the section the Course Finder is previewing on the calendar (the one hovered over or focused in its
+ * results), or null when there's none
+ */
+export const useCourseFinderPreview = (): CourseFinderPreview | null => useContext(CourseFinderPreviewContext);
+
+/**
+ * @returns what sets the section the Course Finder previews on the calendar, or null outside of the calendar page
+ */
+export const useSetCourseFinderPreview = (): Dispatch<SetStateAction<CourseFinderPreview | null>> | null =>
+    useContext(SetCourseFinderPreviewContext);
+
+/**
+ * Whether the calendar sidebar is shown. The Course Finder keeps it shown while it's open, without changing the
+ * saved preference, so a collapsed sidebar collapses again once the Course Finder is closed.
+ *
+ * @returns whether the sidebar is shown, and a function that collapses it (closing the Course Finder) or shows it
+ */
+export function useCalendarSidebar(): { isSidebarShown: boolean; toggleSidebar: () => void } {
+    const courseFinder = useCourseFinderControls();
+    const isSidebarPreferred = OptionsStore.useStore(store => store.showCalendarSidebar);
+    const isCourseFinderOpen = courseFinder?.isOpen ?? false;
+    const isSidebarShown = isSidebarPreferred || isCourseFinderOpen;
+
+    const toggleSidebar = () => {
+        if (isCourseFinderOpen) courseFinder?.close();
+        void OptionsStore.set('showCalendarSidebar', !isSidebarShown);
+    };
+
+    return { isSidebarShown, toggleSidebar };
+}

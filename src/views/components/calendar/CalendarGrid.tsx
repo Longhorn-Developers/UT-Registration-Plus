@@ -1,4 +1,5 @@
 import { Popover, PopoverButton } from '@headlessui/react';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import { DAY_MAP } from '@shared/types/CourseMeeting';
 import type { CustomBlock, CustomBlockDraft } from '@shared/types/CustomBlock';
@@ -9,6 +10,7 @@ import { useSentryScope } from '@views/contexts/SentryContext';
 import {
     type CalendarGridCourse,
     type CalendarLayoutCell,
+    type CalendarPreviewCell,
     convertMinutesToIndex,
     GRID_DEFAULT_END,
     GRID_DEFAULT_START,
@@ -31,6 +33,13 @@ interface Props {
     customBlocks?: CustomBlock[];
     renderBlockEditor?: (block: CustomBlock, close: () => void) => React.ReactNode;
     courseCells?: CalendarGridCourse[];
+    /** A course's meetings to draw faintly over the schedule, like a section hovered over in the Course Finder */
+    previewCells?: CalendarPreviewCell[];
+    /**
+     * A course in the schedule to point out, like a section hovered over in the Course Finder that's already added:
+     * outlined, or marked for removal while its remove button is hovered over
+     */
+    highlight?: { course: Course; isRemoving: boolean } | null;
     startMinutes?: number;
     endMinutes?: number;
     saturdayClass?: boolean;
@@ -66,6 +75,8 @@ function makeGridRow(row: number, cols: number, hoursOfDay: number[]): React.JSX
  * Grid of CalendarGridCell components forming the user's course schedule calendar view
  *
  * @param courseCells - The courses to display on the calendar
+ * @param previewCells - The meetings of a course to preview over the calendar, without adding it
+ * @param highlight - A course in the schedule to outline, or to mark for removal
  * @param saturdayClass - Whether the user has a Saturday class
  * @param setCourse - Function to set the course to display in the course details panel
  * @returns The CalendarGrid component
@@ -75,6 +86,8 @@ export default function CalendarGrid({
     customBlocks = [],
     renderBlockEditor,
     courseCells,
+    previewCells,
+    highlight,
     saturdayClass: _saturdayClass,
     setCourse,
     startMinutes,
@@ -170,10 +183,87 @@ export default function CalendarGrid({
                         blockCells={blockCells}
                         totalRows={totalRows}
                         setCourse={setCourse}
+                        highlight={highlight}
                         renderBlockEditor={renderBlockEditor}
                     />
                 </ColorPickerProvider>
             </CalendarGridBounds.Provider>
+            {previewCells?.map((cell, i) => (
+                // Over the course cells at the full width of the day, rather than splitting it with them, so the
+                // schedule doesn't shift around while sections are previewed. Keyed by section, so moving to another
+                // one fades it in, and by position, since two of a course's meetings can start in the same half hour.
+                <div
+                    // biome-ignore lint/suspicious/noArrayIndexKey: the position tells apart meetings that start together
+                    key={`${cell.course.uniqueId}-${i}`}
+                    aria-hidden
+                    style={{ gridColumn: cell.calendarGridPoint.dayIndex + 3, gridRow: '3 / -1' }}
+                    className='pointer-events-none relative z-1 min-h-0 min-w-0 screenshot:hidden'
+                >
+                    <div
+                        className={clsx(
+                            'absolute box-border pr-2.5 motion-safe:(animate-fade-in animate-duration-150)',
+                            // Like the course cells, 15-minute meetings need the bottom gap for their text
+                            cell.calendarGridPoint.endIndex - cell.calendarGridPoint.startIndex <= 0.5
+                                ? 'pb-px'
+                                : 'pb-1'
+                        )}
+                        style={calendarCellPosition(cell, totalRows)}
+                    >
+                        <PreviewCourseCell cell={cell} />
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+// Hatched, so a conflict reads as one even where the colors are hard to tell apart. The cell's background lets some
+// of the course it conflicts with show through, so its text sits on a band of the calendar's own color across the
+// top, which keeps the red readable over any course color.
+const CONFLICT_HATCHING = 'repeating-linear-gradient(135deg, rgb(209 0 0 / 0.07) 0 6px, transparent 6px 12px)';
+
+/**
+ * A faint, dashed outline of a course meeting that isn't in the schedule. One that conflicts with the schedule is
+ * red and hatched instead, says what it conflicts with, and has a strikethrough if conflicts are highlighted elsewhere.
+ */
+function PreviewCourseCell({ cell }: { cell: CalendarPreviewCell }): React.JSX.Element {
+    const highlightConflicts = OptionsStore.useStore(store => store.enableHighlightConflicts);
+    const { courseDeptAndInstr, timeAndLocation } = cell.componentProps;
+    const conflictNames = [
+        ...cell.conflicts.map(c => `${c.department} ${c.number}`),
+        ...cell.blockConflicts.map(block => block.name),
+    ];
+    const isConflicting = conflictNames.length > 0;
+
+    return (
+        <div
+            className={clsx(
+                'h-full w-full flex flex-col gap-0.25 overflow-hidden rounded border-2 border-dashed px-2 py-1',
+                isConflicting
+                    ? 'border-theme-red bg-surface-raised/80 text-theme-red'
+                    : 'border-ut-burntorange/70 bg-ut-burntorange/10 text-content'
+            )}
+            style={isConflicting ? { backgroundImage: CONFLICT_HATCHING } : undefined}
+        >
+            <div
+                className={clsx(
+                    'flex flex-col gap-0.25',
+                    isConflicting && '-mx-2 -mt-1 bg-surface-raised/90 px-2 pb-0.5 pt-1'
+                )}
+            >
+                <Text
+                    variant='h1-course'
+                    as='p'
+                    className={clsx('leading-tight! truncate overflow-clip!', {
+                        'line-through': isConflicting && highlightConflicts,
+                    })}
+                >
+                    {courseDeptAndInstr}
+                </Text>
+                <Text variant='h3-course' as='p' className='whitespace-pre-line'>
+                    {isConflicting ? `Conflicts with ${conflictNames.join(', ')}` : timeAndLocation}
+                </Text>
+            </div>
         </div>
     );
 }
@@ -184,6 +274,7 @@ interface AccountForCourseConflictsProps {
     renderBlockEditor?: Props['renderBlockEditor'];
     courseCells: CalendarGridCourse[];
     setCourse: (course: Course) => void;
+    highlight?: Props['highlight'];
 }
 
 // TODO: Possibly refactor to be more concise
@@ -193,6 +284,7 @@ function AccountForCourseConflicts({
     blockCells,
     totalRows,
     setCourse,
+    highlight,
     renderBlockEditor,
 }: AccountForCourseConflictsProps): React.JSX.Element {
     // Sentry is not defined in storybook.
@@ -235,16 +327,31 @@ function AccountForCourseConflicts({
                 .filter(block => !block.async)
                 .map(block => {
                     const { courseDeptAndInstr, timeAndLocation, status } = block.componentProps;
+                    const isHighlighted = highlight?.course.uniqueId === block.course.uniqueId;
 
                     return (
                         <CalendarGridItem cell={block} totalRows={totalRows} course key={`${JSON.stringify(block)}`}>
-                            <CalendarCourseCell
-                                courseDeptAndInstr={courseDeptAndInstr}
-                                timeAndLocation={timeAndLocation}
-                                status={status}
-                                onClick={() => setCourse(block.course)}
-                                blockData={block}
-                            />
+                            <div className='relative h-full'>
+                                <CalendarCourseCell
+                                    courseDeptAndInstr={courseDeptAndInstr}
+                                    timeAndLocation={timeAndLocation}
+                                    status={status}
+                                    onClick={() => setCourse(block.course)}
+                                    blockData={block}
+                                />
+                                {isHighlighted && (
+                                    // Over the cell, without catching its clicks
+                                    <div
+                                        aria-hidden
+                                        className={clsx(
+                                            'pointer-events-none absolute inset-0 rounded motion-safe:(animate-fade-in animate-duration-150) screenshot:hidden',
+                                            highlight.isRemoving
+                                                ? 'border-2 border-dashed border-theme-red bg-surface/60'
+                                                : 'ring-2 ring-ut-burntorange ring-offset-2 ring-offset-surface-raised'
+                                        )}
+                                    />
+                                )}
+                            </div>
                         </CalendarGridItem>
                     );
                 })}

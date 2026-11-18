@@ -1,6 +1,6 @@
 import type { Course } from '@shared/types/Course';
 
-import { useFlattenedCourseSchedule } from './useFlattenedCourseSchedule';
+import { useActiveSchedule } from './useSchedules';
 
 /**
  * Custom hook that retrieves a course from the URL parameters.
@@ -13,7 +13,7 @@ import { useFlattenedCourseSchedule } from './useFlattenedCourseSchedule';
  * @returns The course corresponding to the `uniqueId` in the URL, or `null` if not found.
  */
 export default function useCourseFromUrl(): Course | null {
-    const { activeSchedule } = useFlattenedCourseSchedule();
+    const activeSchedule = useActiveSchedule();
 
     const getCourseFromUrl = (): Course | null => {
         const urlParams = new URLSearchParams(window.location.search);
