@@ -29,19 +29,12 @@ export default function CalendarMain() {
             }
         };
 
-        // Leaving the calendar stops the Calendar button from switching to this tab
-        const unregisterCalendarTab = () => {
-            void background.unregisterCalendarTab();
-        };
-
         window.addEventListener('focus', registerCalendarTab);
         document.addEventListener('visibilitychange', handleVisibilityChange);
-        window.addEventListener('pagehide', unregisterCalendarTab);
 
         return () => {
             window.removeEventListener('focus', registerCalendarTab);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
-            window.removeEventListener('pagehide', unregisterCalendarTab);
         };
     }, []);
 
