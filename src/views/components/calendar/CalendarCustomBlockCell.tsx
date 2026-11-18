@@ -2,6 +2,7 @@ import { background } from '@shared/messages';
 import type { HexColor } from '@shared/types/Color';
 import type { CustomBlock } from '@shared/types/CustomBlock';
 import type { ThemeColor } from '@shared/types/ThemeColors';
+import { getWallpaperStyle, useWallpaperFontColor } from '@shared/util/colors/wallpaper';
 import { customBlockToDraft } from '@shared/util/customBlocks';
 import { Button } from '@views/components/common/Button';
 import Text from '@views/components/common/Text/Text';
@@ -28,6 +29,7 @@ export default function CalendarCustomBlockCell({
     // A 15-minute slot is only ~12px tall, so its text shrinks to fit
     const tiny = !block.allDay && block.endTime - block.startTime <= 15;
     const color = block.color ?? DEFAULT_BLOCK_COLOR;
+    const fontColor = useWallpaperFontColor(block.wallpaper, color);
     return (
         <button
             {...props}
@@ -36,15 +38,22 @@ export default function CalendarCustomBlockCell({
             aria-label={`${block.name}, ${time}`}
             title={`${block.name}, ${time}`}
             className={clsx(
-                'box-border h-full w-full flex overflow-hidden rounded border-0 border-l-3 border-solid border-[var(--block-color)] bg-[color-mix(in_srgb,var(--block-color)_10%,transparent)] hover:bg-[color-mix(in_srgb,var(--block-color)_30%,transparent)] dark:bg-[color-mix(in_srgb,var(--block-color)_15%,transparent)] dark:hover:bg-[color-mix(in_srgb,var(--block-color)_25%,transparent)] text-content text-left pl-[5px] pr-2 focusable',
+                'relative box-border h-full w-full flex overflow-hidden rounded border-0 border-l-3 border-solid border-[var(--block-color)] bg-[color-mix(in_srgb,var(--block-color)_10%,transparent)] hover:bg-[color-mix(in_srgb,var(--block-color)_30%,transparent)] dark:bg-[color-mix(in_srgb,var(--block-color)_15%,transparent)] dark:hover:bg-[color-mix(in_srgb,var(--block-color)_25%,transparent)] text-left pl-[5px] pr-2 focusable',
+                block.wallpaper ? fontColor : 'text-content',
                 compact ? 'items-center gap-spacing-2' : 'flex-col items-start pt-1'
             )}
         >
+            {block.wallpaper && (
+                <div
+                    className='absolute inset-0 rounded bg-cover bg-center pointer-events-none'
+                    style={getWallpaperStyle(block.wallpaper, fontColor)}
+                />
+            )}
             <Text
                 as='div'
                 variant='h1-course'
                 className={clsx(
-                    'truncate font-bold!',
+                    'relative z-1 truncate font-bold!',
                     compact ? 'min-w-0 flex-1' : 'w-full leading-[18px]!',
                     compact && (tiny ? 'text-[10px]! leading-[10px]!' : 'text-[12px]! leading-[14px]!')
                 )}
@@ -55,7 +64,7 @@ export default function CalendarCustomBlockCell({
                 as='div'
                 variant='small'
                 className={clsx(
-                    'font-normal! truncate',
+                    'relative z-1 font-normal! truncate',
                     compact ? 'shrink-0' : 'w-full',
                     tiny ? 'text-[10px]! leading-[10px]!' : 'text-[12px]! leading-[14px]!'
                 )}
@@ -78,6 +87,10 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
     const [open, setOpen] = useState(false);
     const pickerRef = useRef<HTMLDivElement>(null);
     const color = block.color ?? DEFAULT_BLOCK_COLOR;
+    // The picker's hex input calls its setter on a 500ms debounce, after newer renders, so read the block from a ref:
+    // a draft built from the old block would undo an image or color saved in the meantime
+    const latestBlock = useRef(block);
+    latestBlock.current = block;
 
     useEffect(() => {
         if (!open) return;
@@ -94,9 +107,20 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
         selectedColor: null,
         setSelectedColor: value => {
             if (typeof value !== 'string' || !isValidHexColor(value)) return;
+            const current = latestBlock.current;
+            // Opening the picker echoes the current color back; saving it would race an upload for nothing
+            if (value.toLowerCase() === (current.color ?? DEFAULT_BLOCK_COLOR).toLowerCase()) return;
             void background.updateCustomBlock({
-                id: block.id,
-                draft: { ...customBlockToDraft(block), color: value as HexColor },
+                id: current.id,
+                draft: { ...customBlockToDraft(current), color: value as HexColor },
+                scheduleId,
+            });
+        },
+        setWallpaper: wallpaper => {
+            const current = latestBlock.current;
+            void background.updateCustomBlock({
+                id: current.id,
+                draft: { ...customBlockToDraft(current), wallpaper },
                 scheduleId,
             });
         },
@@ -137,7 +161,7 @@ export function CustomBlockColorPicker({ cell }: { cell: CalendarLayoutCell & { 
                     }
                 >
                     <ColorPickerContext.Provider value={context}>
-                        <CourseCellColorPicker defaultColor={color as ThemeColor} />
+                        <CourseCellColorPicker defaultColor={color as ThemeColor} defaultWallpaper={block.wallpaper} />
                     </ColorPickerContext.Provider>
                 </div>
             )}

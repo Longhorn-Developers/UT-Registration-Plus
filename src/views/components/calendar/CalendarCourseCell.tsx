@@ -1,7 +1,8 @@
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { StatusType } from '@shared/types/Course';
 import { Status } from '@shared/types/Course';
-import { hexToRGB, pickFontColor } from '@shared/util/colors/base';
+import { hexToRGB } from '@shared/util/colors/base';
+import { getWallpaperStyle, useWallpaperFontColor } from '@shared/util/colors/wallpaper';
 import Text from '@views/components/common/Text/Text';
 import { useColorPickerContext } from '@views/contexts/ColorPickerContext';
 import type { CalendarGridCourse } from '@views/hooks/useFlattenedCourseSchedule';
@@ -95,7 +96,7 @@ export default function CalendarCourseCell({
     }
 
     // text-white or text-black based on secondaryColor
-    const fontColor = pickFontColor(colors.primaryColor);
+    const fontColor = useWallpaperFontColor(blockData.course.wallpaper, colors.primaryColor);
     // Note that overflow-hidden is the duct tape holding this all together
 
     return (
@@ -116,7 +117,13 @@ export default function CalendarCourseCell({
             onClick={onClick}
             aria-label={`${courseDeptAndInstr}${timeAndLocation ? `, ${timeAndLocation}` : ''}`}
         >
-            <div className={clsx('flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full')}>
+            {blockData.course.wallpaper && (
+                <div
+                    className='absolute inset-0 rounded bg-cover bg-center pointer-events-none'
+                    style={getWallpaperStyle(blockData.course.wallpaper, fontColor)}
+                />
+            )}
+            <div className={clsx('relative z-1 flex flex-1 flex-col gap-0.25 overflow-hidden max-h-full')}>
                 <Text
                     variant='h1-course'
                     as='p'
@@ -135,7 +142,7 @@ export default function CalendarCourseCell({
             </div>
             {rightIcon && (
                 <div
-                    className='h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white screenshot:hidden'
+                    className='relative z-1 h-fit flex items-center justify-center justify-self-start rounded p-0.5 text-white screenshot:hidden'
                     style={{
                         backgroundColor: colors.secondaryColor,
                     }}
@@ -195,7 +202,10 @@ export default function CalendarCourseCell({
                                     : 'absolute bottom-full mb-0.75 w-max'
                             }
                         >
-                            <CourseCellColorPicker defaultColor={colors.primaryColor} />
+                            <CourseCellColorPicker
+                                defaultColor={colors.primaryColor}
+                                defaultWallpaper={blockData.course.wallpaper}
+                            />
                         </div>
                     )}
                 </div>
