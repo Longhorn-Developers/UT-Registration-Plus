@@ -8,8 +8,6 @@ import styles from './RecruitmentBanner.module.scss';
 
 const DISCORD_URL = 'https://discord.gg/7pQDBGdmb7';
 const GITHUB_URL = 'https://github.com/Longhorn-Developers/UT-Registration-Plus';
-const DESIGNER_APPLICATION_URL =
-    'https://docs.google.com/forms/d/e/1FAIpQLSdX1Bb37tW6s1bkdIW3GJoTGcM_Uc-2DzFOFMXxGdn1jZ3K1A/viewform';
 
 // The lists below _must_ be mutually exclusive
 const DEVELOPER_RECRUIT_FROM_DEPARTMENTS = new Set(['C S', 'ECE', 'MIS', 'CSE', 'EE', 'ITD']);
@@ -17,18 +15,24 @@ const DESIGNER_RECRUIT_FROM_DEPARTMENTS = new Set(['I', 'DES', 'AET']);
 
 type RecruitmentType = 'DEVELOPER' | 'DESIGNER' | 'NONE';
 
+const CommunityLinks = () => (
+    <>
+        Check out our{' '}
+        <Link className='text-ut-orange!' href={DISCORD_URL}>
+            Discord Server
+        </Link>{' '}
+        and{' '}
+        <Link className='text-ut-orange!' href={GITHUB_URL}>
+            GitHub
+        </Link>
+        !
+    </>
+);
+
 const DeveloperRecruitmentBanner = () => (
     <div className={styles.container}>
         <Text className='text-white'>
-            Interested in helping us develop UT Registration Plus? Check out our{' '}
-            <Link className='text-ut-orange!' href={DISCORD_URL}>
-                Discord Server
-            </Link>{' '}
-            and{' '}
-            <Link className='text-ut-orange!' href={GITHUB_URL}>
-                GitHub
-            </Link>
-            !
+            Interested in helping us develop UT Registration Plus? <CommunityLinks />
         </Text>
     </div>
 );
@@ -37,11 +41,7 @@ const DesignerRecruitmentBanner = () => (
     <div className={styles.container}>
         <Text className='text-white'>
             Design for thousands of UT students through Longhorn Developers on real-world projects like UT Reg.
-            Plus.—build your portfolio and collaborate in Figma. Apply{' '}
-            <Link className='text-ut-orange!' href={DESIGNER_APPLICATION_URL}>
-                here
-            </Link>
-            !
+            Plus.—build your portfolio and collaborate in Figma. <CommunityLinks />
         </Text>
     </div>
 );

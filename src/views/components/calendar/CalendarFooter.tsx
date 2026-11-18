@@ -1,4 +1,4 @@
-import { openTabFromContentScript } from '@views/lib/openNewTabFromContentScript';
+import { background } from '@shared/messages';
 import type React from 'react';
 import GearSixIcon from '~icons/ph/gear-six';
 import GithubIcon from '~icons/ph/github-logo';
@@ -68,12 +68,10 @@ const socialLinks: SocialLink[] = [
 ];
 
 /**
- * Opens the options page in a new tab.
- * @returns A promise that resolves when the options page is opened.
+ * Switches to the settings page, opening it if it isn't open yet
  */
-const handleOpenOptions = async (): Promise<void> => {
-    const url = chrome.runtime.getURL('/options.html');
-    await openTabFromContentScript(url);
+const handleOpenOptions = (): void => {
+    background.switchToSettingsTab().catch(error => console.error('Failed to open the settings page', error));
 };
 
 /**
