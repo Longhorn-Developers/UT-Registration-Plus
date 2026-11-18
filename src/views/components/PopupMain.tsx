@@ -60,9 +60,8 @@ export default function PopupMain(): JSX.Element {
         // Generate a new splash text every time the active schedule changes
     }, [activeSchedule.id]);
 
-    const handleOpenOptions = async () => {
-        const url = chrome.runtime.getURL('/options.html');
-        background.openNewTab({ url });
+    const handleOpenOptions = () => {
+        background.switchToSettingsTab().catch(error => console.error('Failed to open the settings page', error));
     };
 
     const handleCalendarOpenOnClick = async () => {
