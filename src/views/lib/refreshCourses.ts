@@ -25,7 +25,7 @@ function scrapeCourseFromHTML(htmlText: string, url: string): Course | null {
 
 /**
  * Re-scrapes every course in the given schedule and returns updated courses.
- * Preserves user-set properties (colors). Courses that fail to scrape keep their existing data,
+ * Preserves user-set properties (colors, wallpaper). Courses that fail to scrape keep their existing data,
  * so the returned array holds the same reference identity for each course that was not successfully scraped.
  *
  * Must be called from a page context (not the background service worker) as it relies on DOMParser.
@@ -54,6 +54,7 @@ export async function refreshScheduleCourses(schedule: Serialized<UserSchedule>)
         return {
             ...scraped,
             colors: existing.colors,
+            wallpaper: existing.wallpaper,
             scrapedAt: Date.now(),
         };
     });

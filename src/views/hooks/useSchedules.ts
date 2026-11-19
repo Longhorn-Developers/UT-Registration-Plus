@@ -174,3 +174,24 @@ export async function updateCourseColors(courseID: number, primaryColor: HexColo
 
     await replaceSchedule(activeSchedule, newSchedule);
 }
+
+export async function updateCourseWallpaper(courseID: number, wallpaper?: string) {
+    const activeSchedule = getActiveSchedule();
+    const updatedCourseIndex = activeSchedule.courses.findIndex(c => c.uniqueId === courseID);
+
+    if (updatedCourseIndex === -1) {
+        throw new Error(`Course with ID ${courseID} not found`);
+    }
+
+    const newSchedule = new UserSchedule(activeSchedule);
+    const updatedCourse = newSchedule.courses[updatedCourseIndex];
+
+    if (!updatedCourse) {
+        throw new Error(`Course with ID ${courseID} not found`);
+    }
+
+    updatedCourse.wallpaper = wallpaper;
+    newSchedule.courses[updatedCourseIndex] = updatedCourse;
+
+    await replaceSchedule(activeSchedule, newSchedule);
+}
