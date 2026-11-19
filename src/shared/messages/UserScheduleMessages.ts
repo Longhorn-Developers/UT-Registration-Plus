@@ -1,4 +1,11 @@
+import type { Serialized } from '@chrome-extension-toolkit';
 import type { Course } from '@shared/types/Course';
+import type { ScheduleChange } from '@shared/util/scheduleHistory';
+
+/**
+ * The change that was undone or redone (undefined if there wasn't one), or why it couldn't be
+ */
+export type ScheduleStepResult = { data: Serialized<ScheduleChange> | undefined } | { error: string };
 
 /**
  * Represents a collection of user schedule messages.
@@ -26,6 +33,22 @@ export interface UserScheduleMessages {
      * @param data - The schedule id and course to remove
      */
     removeCourse: (data: { scheduleId: string; course: Course }) => void;
+
+    /**
+     * Undoes the most recent course added to or removed from a schedule
+     *
+     * @param data - The change to undo, if it has to be that one (like the one a message offers to undo)
+     * @returns The change that was undone, or undefined if there was nothing to undo
+     */
+    undoScheduleChange: (data: { changeId?: string }) => ScheduleStepResult;
+
+    /**
+     * Redoes the most recently undone change
+     *
+     * @param data - The change to redo, if it has to be that one
+     * @returns The change that was redone, or undefined if there was nothing to redo
+     */
+    redoScheduleChange: (data: { changeId?: string }) => ScheduleStepResult;
 
     /**
      * Clears all courses from a schedule

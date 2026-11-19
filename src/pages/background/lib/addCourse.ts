@@ -8,10 +8,10 @@ import { getUnusedColor } from '@shared/util/colors/getUnusedColor';
  * @param scheduleId - The id of the schedule to add the course to.
  * @param course - The course to add.
  * @param hasColor - If the course block already has colors manually set
- * @returns A promise that resolves to void.
+ * @returns A promise that resolves to where the course is in the schedule's courses.
  * @throws An error if the schedule is not found.
  */
-export default async function addCourse(scheduleId: string, course: Course, hasColor = false): Promise<void> {
+export default async function addCourse(scheduleId: string, course: Course, hasColor = false): Promise<number> {
     const schedules = await UserScheduleStore.get('schedules');
     const activeSchedule = schedules.find(s => s.id === scheduleId);
     if (!activeSchedule) {
@@ -26,4 +26,5 @@ export default async function addCourse(scheduleId: string, course: Course, hasC
     activeSchedule.updatedAt = Date.now();
     await UserScheduleStore.set('schedules', schedules);
     console.log(`Course added: ${course.courseName} (ID: ${course.uniqueId})`);
+    return activeSchedule.courses.length - 1;
 }
