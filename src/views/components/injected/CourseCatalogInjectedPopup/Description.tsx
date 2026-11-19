@@ -2,6 +2,7 @@ import type { Course } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
 import { SiteSupport } from '@views/lib/getSiteSupport';
+import { getTextbookCost } from '@views/lib/getTextbookCost';
 import clsx from 'clsx';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
@@ -51,6 +52,7 @@ export default function Description({ course }: DescriptionProps): React.JSX.Ele
     }, [course]);
 
     const keywords = ['prerequisite', 'restricted'];
+    const textbookCost = getTextbookCost(course);
     return (
         <>
             {status === LoadStatus.ERROR && (
@@ -77,6 +79,11 @@ export default function Description({ course }: DescriptionProps): React.JSX.Ele
                             </li>
                         );
                     })}
+                    {textbookCost && (
+                        <li>
+                            <Text variant='p'>Textbook cost: {textbookCost}</Text>
+                        </li>
+                    )}
                 </ul>
             )}
         </>
