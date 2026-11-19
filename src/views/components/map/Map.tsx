@@ -16,7 +16,7 @@ import { CalendarSchedules } from '../calendar/CalendarSchedules';
 import ImportantLinks from '../calendar/ImportantLinks';
 import TeamLinks from '../calendar/TeamLinks';
 import CampusMap from './CampusMap';
-import { type DAY, DAYS } from './types';
+import { type DAY, DAYS, type ProcessInPersonMeetings } from './types';
 
 const manifest = chrome.runtime.getManifest();
 const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
@@ -30,39 +30,6 @@ const dayToNumber = {
     Saturday: 5,
     Sunday: 6,
 } as const satisfies Record<string, number>;
-
-/**
- * Represents the details of an in-person meeting process.
- *
- * day - The day of the meeting.
- * dayIndex - The index of the day in the week.
- * fullName - The full name of the person.
- * uid - The unique identifier of the person.
- * time - The time of the meeting.
- * normalizedStartTime - The normalized start time of the meeting.
- * normalizedEndTime - The normalized end time of the meeting.
- * startIndex - The start index of the meeting.
- * endIndex - The end index of the meeting.
- * location - The location of the meeting.
- * status - The status of the meeting.
- * colors - The colors associated with the course.
- * course - The course details.
- */
-export type ProcessInPersonMeetings = {
-    day: DAY;
-    dayIndex: number;
-    fullName: string;
-    uid: number;
-    time: string;
-    normalizedStartTime: number;
-    normalizedEndTime: number;
-    startIndex: number;
-    endIndex: number;
-    location: CourseMeeting['location'];
-    status: StatusType;
-    colors: Course['colors'];
-    course: Course;
-};
 
 /**
  * Converts minutes to an index value.

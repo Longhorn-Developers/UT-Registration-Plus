@@ -1,0 +1,226 @@
+name: Sync PR to Discord Forum (Webhook)
+# Opens a Discord forum thread for each new PR and keeps its status (open, merged, closed, blocked,
+# stale) up to date. The thread and message IDs live in a github-actions[bot] comment on the PR, so
+# PR authors can't edit or forge them. This runs with a write token and the webhook secret, so never
+# check out or run PR code here, and pass PR-controlled values through env instead of writing them
+# into a script. GitHub only reads this file from the default branch, so edits take effect once
+# merged to main. Use the manual trigger to backfill PRs opened before this existed.
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - closed
+      - labeled
+      - unlabeled
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to sync"
+        required: true
+        type: string
+      action:
+        description: "Action to simulate"
+        required: true
+        type: choice
+        options:
+          - opened
+          - closed
+          - reopened
+          - labeled
+          - unlabeled
+        default: opened
+      label_name:
+        description: "Label name (if simulating labeled/unlabeled)"
+        required: false
+        type: string
+permissions:
+  pull-requests: write
+env:
+  TAG_REPO: "1299960400053276712"
+  TAG_OPEN: "1340255735321464914"
+jobs:
+  discord-pr-sync:
+    if: github.repository == 'Longhorn-Developers/UT-Registration-Plus' && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync Discord forum post
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_PR_CHANNEL_WEBHOOK_URL }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+          ACTION: ${{ github.event.action || inputs.action }}
+          LABEL_NAME: ${{ github.event.label.name || inputs.label_name }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$WEBHOOK_URL" ]; then
+            echo "::notice::DISCORD_PR_CHANNEL_WEBHOOK_URL is not set, skipping Discord sync"
+            exit 0
+          fi
+          if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "::error::Invalid PR number: $PR_NUMBER"
+            exit 1
+          fi
+
+          MARKER_RE='<!-- discord-pr-sync:([0-9]+):([0-9]+) -->'
+          THREAD_ID=""
+          MESSAGE_ID=""
+
+          # Only trust markers written by this workflow's bot, never ones in user comments.
+          find_marker() {
+            local bodies
+            if ! bodies=$(gh api --paginate "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" \
+              --jq '.[] | select(.user.login == "github-actions[bot]") | .body'); then
+              echo "::error::Could not read comments on PR #$PR_NUMBER"
+              exit 1
+            fi
+            if [[ "$bodies" =~ $MARKER_RE ]]; then
+              THREAD_ID="${BASH_REMATCH[1]}"
+              MESSAGE_ID="${BASH_REMATCH[2]}"
+              return 0
+            fi
+            return 1
+          }
+
+          # Every payload sets allowed_mentions to nothing, so names like "@everyone" in PR data
+          # never ping anyone.
+          discord() {
+            local method="$1" url="$2" payload="$3"
+            curl -sS -f -X "$method" \
+              -H "Content-Type: application/json" \
+              -d "$payload" \
+              "$url"
+          }
+
+          # Read PR state fresh from the API, not the event payload, so each run posts current data
+          # even if it started late or waited for the thread.
+          load_pr() {
+            local pr_json labels state
+            pr_json=$(gh api "repos/${GH_REPO}/pulls/${PR_NUMBER}")
+            PR_TITLE=$(jq -r '.title' <<<"$pr_json")
+            PR_URL=$(jq -r '.html_url' <<<"$pr_json")
+            PR_CREATED=$(jq -r '.created_at' <<<"$pr_json")
+            PR_MERGED=$(jq -r '.merged' <<<"$pr_json")
+            GH_USER=$(jq -r '.user.login' <<<"$pr_json")
+            state=$(jq -r '.state' <<<"$pr_json")
+            labels=$(jq -c '[.labels[].name | ascii_downcase]' <<<"$pr_json")
+
+            if [ "$PR_MERGED" == "true" ]; then
+              STATUS_LINE="Status: MERGED"
+            elif [ "$state" == "closed" ]; then
+              STATUS_LINE="Status: CLOSED"
+            else
+              STATUS_LINE="Status: OPEN"
+              if jq -e 'index("blocked") != null' <<<"$labels" >/dev/null; then
+                STATUS_LINE="$STATUS_LINE (blocked)"
+              fi
+              if jq -e 'index("stale") != null' <<<"$labels" >/dev/null; then
+                STATUS_LINE="$STATUS_LINE (stale)"
+              fi
+            fi
+          }
+
+          load_pr
+          FULL_NAME=$(gh api "users/${GH_USER}" --jq '.name // empty')
+          if [ -z "$FULL_NAME" ]; then
+            AUTHOR_LINE="Author: $GH_USER"
+          else
+            AUTHOR_LINE="Author: $FULL_NAME ($GH_USER)"
+          fi
+
+          if [ "$ACTION" == "opened" ]; then
+            POST_CONTENT="$AUTHOR_LINE"$'\n'"$STATUS_LINE"$'\n'"$PR_URL"
+            if find_marker; then
+              echo "::notice::PR #$PR_NUMBER already has Discord thread $THREAD_ID, skipping"
+              exit 0
+            fi
+
+            # Discord rejects thread names over 100 characters, so shorten the title to fit.
+            PAYLOAD=$(jq -n \
+              --arg title "$PR_TITLE" \
+              --arg suffix " - #$PR_NUMBER" \
+              --arg content "$POST_CONTENT" \
+              --arg tag_repo "$TAG_REPO" \
+              --arg tag_open "$TAG_OPEN" \
+              '(100 - ($suffix | length)) as $max
+              | {
+                  thread_name: ((if ($title | length) > $max then ($title | .[:($max - 1)]) + "…" else $title end) + $suffix),
+                  content: $content,
+                  applied_tags: [$tag_repo, $tag_open],
+                  allowed_mentions: {parse: []}
+                }')
+
+            RESPONSE=$(discord POST "${WEBHOOK_URL}?wait=true" "$PAYLOAD")
+            THREAD_ID=$(jq -r '.channel_id // empty' <<<"$RESPONSE")
+            MESSAGE_ID=$(jq -r '.id // empty' <<<"$RESPONSE")
+            if [ -z "$THREAD_ID" ] || [ -z "$MESSAGE_ID" ]; then
+              echo "::error::Discord response had no thread or message ID"
+              exit 1
+            fi
+
+            COMMENT_BODY="<!-- discord-pr-sync:${THREAD_ID}:${MESSAGE_ID} -->"$'\n'"This PR has a thread in the Longhorn Developers Discord. Status changes here are posted there automatically."
+            gh api "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" -f body="$COMMENT_BODY" >/dev/null
+            exit 0
+          fi
+
+          # Events fired right after a PR opens (like labels) can run before the thread exists, so
+          # wait for it on new PRs. Older PRs without a marker were never synced, so skip them.
+          if ! find_marker; then
+            AGE=$(($(date +%s) - $(date -d "$PR_CREATED" +%s)))
+            if [ "$AGE" -gt 600 ]; then
+              echo "::notice::PR #$PR_NUMBER has no Discord thread, skipping"
+              exit 0
+            fi
+            for _ in $(seq 12); do
+              sleep 10
+              if find_marker; then
+                break
+              fi
+            done
+            if [ -z "$THREAD_ID" ]; then
+              echo "::notice::No Discord thread appeared for PR #$PR_NUMBER, skipping"
+              exit 0
+            fi
+            load_pr
+          fi
+
+          POST_CONTENT="$AUTHOR_LINE"$'\n'"$STATUS_LINE"$'\n'"$PR_URL"
+          EDIT_PAYLOAD=$(jq -n --arg content "$POST_CONTENT" '{content: $content, allowed_mentions: {parse: []}}')
+          discord PATCH "${WEBHOOK_URL}/messages/${MESSAGE_ID}?thread_id=${THREAD_ID}" "$EDIT_PAYLOAD" >/dev/null
+
+          REPLY_TEXT=""
+          LABEL_LOWER=$(tr '[:upper:]' '[:lower:]' <<<"$LABEL_NAME")
+          case "$ACTION" in
+            closed)
+              if [ "$PR_MERGED" == "true" ]; then
+                REPLY_TEXT="Merged by \`$ACTOR\`"
+              else
+                REPLY_TEXT="Closed by \`$ACTOR\`"
+              fi
+              ;;
+            reopened)
+              REPLY_TEXT="Reopened by \`$ACTOR\`"
+              ;;
+            labeled)
+              if [ "$LABEL_LOWER" == "blocked" ]; then
+                REPLY_TEXT="Marked as blocked by \`$ACTOR\`"
+              elif [ "$LABEL_LOWER" == "stale" ]; then
+                REPLY_TEXT="Marked as stale"
+              fi
+              ;;
+            unlabeled)
+              if [ "$LABEL_LOWER" == "blocked" ]; then
+                REPLY_TEXT="Unmarked as blocked by \`$ACTOR\`"
+              elif [ "$LABEL_LOWER" == "stale" ]; then
+                REPLY_TEXT="Unmarked as stale"
+              fi
+              ;;
+          esac
+
+          if [ -n "$REPLY_TEXT" ]; then
+            REPLY_PAYLOAD=$(jq -n --arg content "$REPLY_TEXT" '{content: $content, allowed_mentions: {parse: []}}')
+            discord POST "${WEBHOOK_URL}?thread_id=${THREAD_ID}" "$REPLY_PAYLOAD" >/dev/null
+          fi

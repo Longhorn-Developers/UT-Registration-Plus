@@ -86,6 +86,7 @@ export class Course {
     colors: CourseColors;
     /** The core curriculum requirements the course satisfies */
     core: string[];
+    wallpaper?: string;
 
     constructor(course: Serialized<Course>) {
         Object.assign(this, course);

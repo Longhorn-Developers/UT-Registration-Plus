@@ -1,4 +1,4 @@
-import { isHexColor } from '@shared/types/Color';
+import { isHexColor, isWallpaper } from '@shared/types/Color';
 import { type CourseMeeting, DAY_MAP } from '@shared/types/CourseMeeting';
 import type { CustomBlock, CustomBlockDraft } from '@shared/types/CustomBlock';
 
@@ -15,6 +15,7 @@ export function customBlockFromDraft(draft: CustomBlockDraft, scheduleId: string
         !validTime(values.startTime) ||
         !validTime(values.endTime) ||
         (values.color !== undefined && !isHexColor(values.color)) ||
+        (values.wallpaper !== undefined && !isWallpaper(values.wallpaper)) ||
         (!values.allDay && values.startTime >= values.endTime)
     ) {
         throw new Error('Invalid custom block');
@@ -29,7 +30,7 @@ export function customBlockFromDraft(draft: CustomBlockDraft, scheduleId: string
 }
 
 export function customBlockToDraft(block: CustomBlock): CustomBlockDraft {
-    const { name, days, startTime, endTime, allDay, conflictHighlight, color, scheduleId } = block;
+    const { name, days, startTime, endTime, allDay, conflictHighlight, color, scheduleId, wallpaper } = block;
     return {
         name,
         days,
@@ -38,6 +39,7 @@ export function customBlockToDraft(block: CustomBlock): CustomBlockDraft {
         allDay,
         conflictHighlight,
         ...(color === undefined ? {} : { color }),
+        ...(wallpaper === undefined ? {} : { wallpaper }),
         syncAcrossAllSchedules: scheduleId === null,
     };
 }
