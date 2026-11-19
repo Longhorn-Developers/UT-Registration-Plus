@@ -1,9 +1,14 @@
 import { createLocalStore } from '@chrome-extension-toolkit';
-import type { ScheduleSyncProblem } from '@pages/background/lib/scheduleSync';
+import type { ScheduleSyncProblem, ScheduleSyncState } from '@shared/types/ScheduleSync';
 
-/**
- * What went wrong with the last schedule sync on this device, if anything, for the settings page to show
- */
-export const ScheduleSyncStore = createLocalStore<{ problem: ScheduleSyncProblem }>('ScheduleSyncStore', {
+interface IScheduleSyncStore {
+    /** What went wrong with the last sync on this device, for the settings page to show */
+    problem: ScheduleSyncProblem;
+    /** What this device last synced, to tell its own changes from other computers' */
+    state: ScheduleSyncState | null;
+}
+
+export const ScheduleSyncStore = createLocalStore<IScheduleSyncStore>('ScheduleSyncStore', {
     problem: null,
+    state: null,
 });

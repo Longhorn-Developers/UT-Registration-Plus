@@ -4,7 +4,7 @@ import type { CustomBlock } from '@shared/types/CustomBlock';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { LOCAL_PROBLEM_KEY, SYNC_PREFIX, type SyncAreas, syncSchedules } from './scheduleSync';
+import { SYNC_PREFIX, type SyncStorage, syncSchedules } from './scheduleSync';
 
 type SerializedSchedule = Serialized<UserSchedule>;
 type SerializedCourse = Serialized<Course>;
@@ -13,6 +13,7 @@ type SerializedCourse = Serialized<Course>;
 const QUOTA_BYTES_PER_ITEM = 8192;
 const QUOTA_BYTES = 102400;
 const itemBytes = (key: string, value: unknown) => key.length + JSON.stringify(value).length;
+const PROBLEM_KEY = 'ScheduleSyncStore:problem';
 
 /** A storage area like chrome.storage's, optionally with the sync storage's limits */
 function createArea(limits?: { quotaBytes: number; maxItems?: number }) {
@@ -37,13 +38,13 @@ function createArea(limits?: { quotaBytes: number; maxItems?: number }) {
             if (limits) {
                 for (const [key, value] of Object.entries(items)) {
                     if (itemBytes(key, value) > QUOTA_BYTES_PER_ITEM) {
-                        throw new Error('Resource::kQuotaBytesPerItem quota exceeded: QUOTA_BYTES_PER_ITEM');
+                        throw new Error('Resource::kQuotaBytesPerItem quota exceeded');
                     }
                 }
                 const total = Object.entries(next).reduce((sum, [key, value]) => sum + itemBytes(key, value), 0);
-                if (total > limits.quotaBytes) throw new Error('Resource::kQuotaBytes quota exceeded: QUOTA_BYTES');
+                if (total > limits.quotaBytes) throw new Error('Resource::kQuotaBytes quota exceeded');
                 if (Object.keys(next).length > (limits.maxItems ?? 512)) {
-                    throw new Error('Resource::kMaxItems quota exceeded: MAX_ITEMS');
+                    throw new Error('Resource::kMaxItems quota exceeded');
                 }
             }
             data = next;
@@ -58,6 +59,17 @@ function createArea(limits?: { quotaBytes: number; maxItems?: number }) {
 
 type Area = ReturnType<typeof createArea>;
 
+/** A store like the extension's, over one computer's local storage. Like those, it hands out what it holds, not copies. */
+function createStore(area: Area, prefix: string) {
+    return {
+        get: async (key: string) => area.data[prefix + key],
+        set: async (key: string | Record<string, unknown>, value?: unknown) => {
+            const values = typeof key === 'string' ? { [key]: value } : key;
+            await area.set(Object.fromEntries(Object.entries(values).map(([k, v]) => [prefix + k, v])));
+        },
+    };
+}
+
 let cloud: Area;
 let clock: number;
 
@@ -66,16 +78,22 @@ function createDevice(schedules: SerializedSchedule[], blocks: CustomBlock[] = [
     const local = createArea();
     void local.set({ schedules, activeIndex: 0, 'CustomBlockStore:blocks': blocks });
     local.writes = 0;
-    const areas: SyncAreas = {
-        local: local as unknown as SyncAreas['local'],
-        sync: cloud as unknown as SyncAreas['sync'],
-        now: () => clock + clockOffset,
+    const stores = {
+        schedules: createStore(local, ''),
+        blocks: createStore(local, 'CustomBlockStore:'),
+        syncState: createStore(local, 'ScheduleSyncStore:'),
     };
+    const storage = {
+        ...stores,
+        sync: cloud,
+        now: () => clock + clockOffset,
+    } as unknown as SyncStorage;
     return {
         local,
+        stores,
         sync: async () => {
             clock += 1000;
-            return syncSchedules(areas);
+            return syncSchedules(storage);
         },
         get schedules() {
             return local.data.schedules as SerializedSchedule[];
@@ -368,16 +386,16 @@ describe('syncSchedules', () => {
             );
         const laptop = createDevice([big('a')]);
         await laptop.sync();
-        expect(laptop.local.data[LOCAL_PROBLEM_KEY]).toBeNull();
+        expect(laptop.local.data[PROBLEM_KEY]).toBeNull();
 
         laptop.change(schedules => [...schedules, big('b')]);
         await laptop.sync();
-        expect(laptop.local.data[LOCAL_PROBLEM_KEY]).toBe('storage-full');
+        expect(laptop.local.data[PROBLEM_KEY]).toBe('storage-full');
 
         // Deleting the first frees up enough for the second
         laptop.change(schedules => schedules.filter(s => s.id !== 'a'));
         await laptop.sync();
-        expect(laptop.local.data[LOCAL_PROBLEM_KEY]).toBeNull();
+        expect(laptop.local.data[PROBLEM_KEY]).toBeNull();
         const desktop = createDevice([]);
         await desktop.sync();
         expect(names(desktop)).toEqual(['b']);
@@ -539,7 +557,7 @@ describe('syncSchedules', () => {
         );
         laptop.change(([a]) => [{ ...(a as SerializedSchedule), courses: [course(1), course(2)] }, huge]);
         await laptop.sync();
-        expect(laptop.local.data[LOCAL_PROBLEM_KEY]).toBe('storage-full');
+        expect(laptop.local.data[PROBLEM_KEY]).toBe('storage-full');
         await desktop.sync();
         expect(names(desktop)).toEqual(['Plan']);
         expect(courseIds(desktop, 'Plan')).toEqual([1, 2]);
@@ -554,7 +572,7 @@ describe('syncSchedules', () => {
         cloud = createArea({ quotaBytes: QUOTA_BYTES, maxItems: 4 });
         const laptop = createDevice([schedule('a', 'A', [course(1)]), schedule('b', 'B', [course(2)])]);
         await laptop.sync();
-        expect(laptop.local.data[LOCAL_PROBLEM_KEY]).toBe('storage-full');
+        expect(laptop.local.data[PROBLEM_KEY]).toBe('storage-full');
     });
 
     it('stops writing once a change has reached the other computer', async () => {
@@ -802,5 +820,67 @@ describe('syncSchedules', () => {
         expect(await desktop.sync()).toBe('done');
         expect(names(desktop)).toEqual(['Plan', 'Desk']);
         expect(courseIds(desktop, 'Desk')).toEqual([2, 3]);
+    });
+
+    it('saves the active schedule only when it moves', async () => {
+        const laptop = createDevice([schedule('a', 'A', [course(1)]), schedule('b', 'B', [course(2)])]);
+        await laptop.sync();
+        const desktop = createDevice([]);
+        await desktop.sync();
+        laptop.change(([a, b]) => [{ ...(a as SerializedSchedule), name: 'A2' }, b as SerializedSchedule]);
+        await laptop.sync();
+
+        const set = vi.spyOn(desktop.stores.schedules, 'set');
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['A2', 'B']);
+        expect(set.mock.calls.map(([values]) => Object.keys(values as object))).toEqual([['schedules']]);
+
+        laptop.change(([a, b]) => [b as SerializedSchedule, a as SerializedSchedule]);
+        await laptop.sync();
+        set.mockClear();
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['B', 'A2']);
+        expect(desktop.activeIndex).toBe(1);
+        expect(set.mock.calls.map(([values]) => Object.keys(values as object))).toEqual([['schedules', 'activeIndex']]);
+    });
+
+    it('notices a change made in place to what the store handed out', async () => {
+        const laptop = createDevice([schedule('a', 'Plan', [course(1)])]);
+        await laptop.sync();
+        const desktop = createDevice([]);
+        await desktop.sync();
+        laptop.changeFirst(s => ({ ...s, name: 'Renamed' }));
+        await laptop.sync();
+
+        // Something on the desktop edits the stored schedule itself, just before the sync checks for changes
+        const get = desktop.stores.schedules.get;
+        let reads = 0;
+        vi.spyOn(desktop.stores.schedules, 'get').mockImplementation(async key => {
+            if (key === 'schedules' && ++reads === 2) {
+                (desktop.local.data.schedules as SerializedSchedule[])[0]?.courses.push(course(3));
+            }
+            return get(key);
+        });
+
+        expect(await desktop.sync()).toBe('retry');
+        expect(await desktop.sync()).toBe('done');
+        expect(names(desktop)).toEqual(['Renamed']);
+        expect(courseIds(desktop, 'Renamed')).toEqual([1, 3]);
+    });
+
+    it.each([
+        ['Resource::kQuotaBytes quota exceeded', 'storage-full'],
+        ['Resource::kQuotaBytesPerItem quota exceeded', 'storage-full'],
+        ['Resource::kMaxItems quota exceeded', 'storage-full'],
+        ['QUOTA_BYTES quota exceeded', 'storage-full'],
+        ['MAX_ITEMS quota exceeded', 'storage-full'],
+        ['This request exceeds the MAX_WRITE_OPERATIONS_PER_MINUTE quota.', null],
+        ['This request exceeds the MAX_WRITE_OPERATIONS_PER_HOUR quota.', null],
+        ['Resource::kMaxWriteOperationsPerMinute quota exceeded', null],
+    ])('tells "%s" apart from other errors', async (message, problem) => {
+        const laptop = createDevice([schedule('a', 'Plan', [course(1)])]);
+        vi.spyOn(cloud, 'set').mockRejectedValue(new Error(message));
+        expect(await laptop.sync()).toBe(problem ? 'done' : 'failed');
+        expect(laptop.local.data[PROBLEM_KEY]).toBe(problem);
     });
 });

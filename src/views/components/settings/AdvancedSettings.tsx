@@ -1,6 +1,6 @@
-import type { ScheduleSyncProblem } from '@pages/background/lib/scheduleSync';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import MIMEType from '@shared/types/MIMEType';
+import type { ScheduleSyncProblem } from '@shared/types/ScheduleSync';
 import type { ThemeName } from '@shared/types/Theme';
 import { themeLabels, themes } from '@shared/types/Theme';
 import type { UserSchedule } from '@shared/types/UserSchedule';

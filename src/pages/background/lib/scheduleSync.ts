@@ -1,6 +1,11 @@
 import type { Serialized } from '@chrome-extension-toolkit';
+import { CustomBlockStore } from '@shared/storage/CustomBlockStore';
+import { OptionsStore } from '@shared/storage/OptionsStore';
+import { ScheduleSyncStore } from '@shared/storage/ScheduleSyncStore';
+import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import type { Course } from '@shared/types/Course';
 import type { CustomBlock } from '@shared/types/CustomBlock';
+import type { ScheduleSyncDocEntry, ScheduleSyncProblem, ScheduleSyncState } from '@shared/types/ScheduleSync';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { generateRandomId } from '@shared/util/random';
 
@@ -14,20 +19,14 @@ import { generateRandomId } from '@shared/util/random';
 type SerializedSchedule = Serialized<UserSchedule>;
 type SerializedCourse = Serialized<Course>;
 
-/** The parts of chrome.storage the sync uses, so tests can give each device its own */
-export interface SyncAreas {
-    local: Pick<chrome.storage.StorageArea, 'get' | 'set'>;
+/** The stores and storage the sync uses, so tests can give each device its own */
+export interface SyncStorage {
+    schedules: Pick<typeof UserScheduleStore, 'get' | 'set'>;
+    blocks: Pick<typeof CustomBlockStore, 'get' | 'set'>;
+    syncState: Pick<typeof ScheduleSyncStore, 'get' | 'set'>;
     sync: Pick<chrome.storage.StorageArea, 'get' | 'set' | 'remove'>;
     now: () => number;
 }
-
-export type ScheduleSyncProblem = 'storage-full' | null;
-
-export const LOCAL_SCHEDULES_KEY = 'schedules';
-export const LOCAL_ACTIVE_INDEX_KEY = 'activeIndex';
-export const LOCAL_BLOCKS_KEY = 'CustomBlockStore:blocks';
-export const LOCAL_STATE_KEY = 'scheduleSyncState';
-export const LOCAL_PROBLEM_KEY = 'ScheduleSyncStore:problem';
 
 export const SYNC_PREFIX = 'scheduleSync:';
 const SYNC_ORDER_KEY = `${SYNC_PREFIX}order`;
@@ -68,22 +67,8 @@ interface DocContent {
     items: Record<string, string>;
 }
 
-/** A version of a document this device synced */
-interface DocEntry extends DocContent {
-    h: string;
-    m: number;
-    a: string[];
-    /** The items of the versions it came from, newest first, to merge against when another upload clashed with it */
-    bases?: { h: string; items: Record<string, string> }[];
-}
-
-interface SyncState {
-    v: number;
-    initialized: boolean;
-    docs: Record<string, DocEntry>;
-    orderFp: string;
-    orderAt: number;
-}
+type DocEntry = ScheduleSyncDocEntry;
+type SyncState = ScheduleSyncState;
 
 interface SchedulePayload {
     name: string;
@@ -250,8 +235,9 @@ const partsFrom = (name: string, remote: Record<string, unknown>, from: number) 
         );
     });
 
-// Writing too often is a different error, which a later retry gets past
-const isQuotaError = (error: unknown) => error instanceof Error && /QUOTA_BYTES|MAX_ITEMS/.test(error.message);
+// Chrome says e.g. "Resource::kQuotaBytes quota exceeded" (older versions "QUOTA_BYTES quota exceeded"). Writing too
+// often is a different error, which a later retry gets past.
+const isQuotaError = (error: unknown) => error instanceof Error && /quota_?bytes|max_?items/i.test(error.message);
 
 /**
  * Brings this device's schedules and the synced ones together. When nothing changed, it writes nothing.
@@ -259,12 +245,13 @@ const isQuotaError = (error: unknown) => error instanceof Error && /QUOTA_BYTES|
  * @returns 'retry' when the schedules changed here while it ran, so it saved nothing locally; 'failed' when the sync
  * storage couldn't be written for a reason other than being full
  */
-export async function syncSchedules({ local, sync, now }: SyncAreas): Promise<'done' | 'retry' | 'failed'> {
-    const localData = await local.get([LOCAL_SCHEDULES_KEY, LOCAL_ACTIVE_INDEX_KEY, LOCAL_BLOCKS_KEY, LOCAL_STATE_KEY]);
-    const schedules = (localData[LOCAL_SCHEDULES_KEY] as SerializedSchedule[] | undefined) ?? [];
-    const activeIndex = (localData[LOCAL_ACTIVE_INDEX_KEY] as number | undefined) ?? 0;
-    const blocks = (localData[LOCAL_BLOCKS_KEY] as CustomBlock[] | undefined) ?? [];
-    const savedState = localData[LOCAL_STATE_KEY] as SyncState | undefined;
+export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'retry' | 'failed'> {
+    const { sync, now } = storage;
+    // Copies, since the stores hand out their in-memory values, which a change elsewhere can edit in place
+    const schedules: SerializedSchedule[] = structuredClone((await storage.schedules.get('schedules')) ?? []);
+    const activeIndex = (await storage.schedules.get('activeIndex')) ?? 0;
+    const blocks: CustomBlock[] = structuredClone((await storage.blocks.get('blocks')) ?? []);
+    const savedState = await storage.syncState.get('state');
     const state = savedState?.v === SYNC_VERSION ? savedState : emptyState();
 
     const remote = await sync.get(null);
@@ -538,24 +525,28 @@ export async function syncSchedules({ local, sync, now }: SyncAreas): Promise<'d
     nextState.orderAt = isUploaded ? orderAt : state.orderAt;
 
     // The next run picks up changes made here while this ran
-    const latest = await local.get([LOCAL_SCHEDULES_KEY, LOCAL_BLOCKS_KEY]);
     if (
-        JSON.stringify(latest[LOCAL_SCHEDULES_KEY] ?? []) !== JSON.stringify(schedules) ||
-        JSON.stringify(latest[LOCAL_BLOCKS_KEY] ?? []) !== JSON.stringify(blocks)
+        JSON.stringify((await storage.schedules.get('schedules')) ?? []) !== JSON.stringify(schedules) ||
+        JSON.stringify((await storage.blocks.get('blocks')) ?? []) !== JSON.stringify(blocks)
     ) {
         return 'retry';
     }
 
-    const localUpdates: Record<string, unknown> = { [LOCAL_STATE_KEY]: nextState, [LOCAL_PROBLEM_KEY]: problem };
     if (JSON.stringify(nextSchedules) !== JSON.stringify(schedules)) {
         const activeId = schedules[activeIndex]?.id;
-        const nextActiveIndex = nextSchedules.findIndex(s => s.id === activeId);
-        localUpdates[LOCAL_SCHEDULES_KEY] = nextSchedules;
-        localUpdates[LOCAL_ACTIVE_INDEX_KEY] =
-            nextActiveIndex === -1 ? Math.min(activeIndex, nextSchedules.length - 1) : nextActiveIndex;
+        const foundIndex = nextSchedules.findIndex(s => s.id === activeId);
+        const nextActiveIndex = foundIndex === -1 ? Math.min(activeIndex, nextSchedules.length - 1) : foundIndex;
+        // Only what changed: the store skips the change event for a key it set, and Chrome sends none for a value
+        // that stayed the same, so the store would miss the next real change to it
+        await storage.schedules.set(
+            nextActiveIndex === activeIndex
+                ? { schedules: nextSchedules }
+                : { schedules: nextSchedules, activeIndex: nextActiveIndex }
+        );
     }
-    if (JSON.stringify(nextBlocks) !== JSON.stringify(blocks)) localUpdates[LOCAL_BLOCKS_KEY] = nextBlocks;
-    await local.set(localUpdates);
+    if (JSON.stringify(nextBlocks) !== JSON.stringify(blocks)) await storage.blocks.set('blocks', nextBlocks);
+    // Last, so a sync cut off before this merges again instead of taking this device's schedules as its own changes
+    await storage.syncState.set({ state: nextState, problem });
     return isUploaded || problem ? 'done' : 'failed';
 }
 
@@ -564,13 +555,20 @@ export async function syncSchedules({ local, sync, now }: SyncAreas): Promise<'d
  *
  * @param isEnabled - whether the user has syncing turned on
  */
-export function startScheduleSync(isEnabled: () => Promise<boolean>): void {
+export function startScheduleSync(): void {
     let timer: ReturnType<typeof setTimeout> | undefined;
     let running = Promise.resolve();
+    const storage: SyncStorage = {
+        schedules: UserScheduleStore,
+        blocks: CustomBlockStore,
+        syncState: ScheduleSyncStore,
+        sync: chrome.storage.sync,
+        now: Date.now,
+    };
 
     const run = async () => {
-        if (!(await isEnabled())) return;
-        const result = await syncSchedules({ local: chrome.storage.local, sync: chrome.storage.sync, now: Date.now });
+        if (!(await OptionsStore.get('enableScheduleSync'))) return;
+        const result = await syncSchedules(storage);
         if (result === 'retry') queueSync(500);
         if (result === 'failed') queueSync(60_000);
     };
@@ -582,16 +580,14 @@ export function startScheduleSync(isEnabled: () => Promise<boolean>): void {
         }, delay);
     }
 
+    // Waits a little, so a burst of changes goes up as one
+    UserScheduleStore.subscribe('schedules', () => queueSync(1500));
+    CustomBlockStore.subscribe('blocks', () => queueSync(1500));
+    OptionsStore.subscribe('enableScheduleSync', ({ newValue }) => {
+        if (newValue) queueSync(0);
+    });
     chrome.storage.onChanged.addListener((changes, area) => {
-        const keys = Object.keys(changes);
-        if (area === 'local' && (LOCAL_SCHEDULES_KEY in changes || LOCAL_BLOCKS_KEY in changes)) {
-            // Waits a little, so a burst of changes goes up as one
-            queueSync(1500);
-        } else if (area === 'sync' && keys.some(key => key.startsWith(SYNC_PREFIX))) {
-            queueSync(300);
-        } else if (area === 'sync' && changes.enableScheduleSync?.newValue === true) {
-            queueSync(0);
-        }
+        if (area === 'sync' && Object.keys(changes).some(key => key.startsWith(SYNC_PREFIX))) queueSync(300);
     });
 
     queueSync(0);

@@ -89,6 +89,7 @@ export default function Settings(): React.JSX.Element {
     const enableCourseStatusChips = options.enableCourseStatusChips;
     const isDeveloper = DevStore.useStore(store => store.isDeveloper);
     const scheduleSyncProblem = ScheduleSyncStore.useStore(store => store.problem);
+    const isScheduleSyncOn = options.enableScheduleSync;
 
     useThemeSync(options.theme);
 
@@ -138,6 +139,15 @@ export default function Settings(): React.JSX.Element {
                         Are you sure you want to erase all schedules, courses, and custom blocks you have? This action
                         is permanent and cannot be undone.
                     </p>
+                    {isScheduleSyncOn && (
+                        <>
+                            <br />
+                            <p>
+                                Since Sync Schedules is on, this also erases them on your other computers that sync
+                                schedules.
+                            </p>
+                        </>
+                    )}
                     <br />
                     <p className='text-sm text-content-muted'>
                         Note: This will not erase your settings and preferences.
@@ -157,7 +167,7 @@ export default function Settings(): React.JSX.Element {
                 </Button>
             ),
         });
-    }, [showDialog]);
+    }, [showDialog, isScheduleSyncOn]);
 
     const handleImportClick = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
