@@ -845,6 +845,32 @@ describe('syncSchedules', () => {
         expect(set.mock.calls.map(([values]) => Object.keys(values as object))).toEqual([['schedules', 'activeIndex']]);
     });
 
+    it("keeps a computer's empty schedule when the user named it", async () => {
+        const laptop = createDevice([schedule('a', 'Fall plan', [course(1)])]);
+        await laptop.sync();
+        const desktop = createDevice([schedule('fresh', 'Spring ideas')]);
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['Fall plan', 'Spring ideas']);
+        await laptop.sync();
+        expect(names(laptop)).toEqual(['Fall plan', 'Spring ideas']);
+    });
+
+    it('keeps a starting schedule that only has custom blocks', async () => {
+        const laptop = createDevice([schedule('a', 'Fall plan', [course(1)])]);
+        await laptop.sync();
+        const desktop = createDevice([schedule('fresh', 'Schedule 1')], [block('y', 'fresh')]);
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['Fall plan', 'Schedule 1']);
+    });
+
+    it('uploads an empty schedule the user named, even before anything else syncs', async () => {
+        const laptop = createDevice([schedule('a', 'Spring ideas')]);
+        await laptop.sync();
+        const desktop = createDevice([schedule('fresh', 'Schedule 1')]);
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['Spring ideas']);
+    });
+
     it('syncs names that are not plain ASCII', async () => {
         const laptop = createDevice([schedule('a', 'Plan d’été 🎓', [course(1, { courseName: 'Introducción ÁÉÍ' })])]);
         await laptop.sync();

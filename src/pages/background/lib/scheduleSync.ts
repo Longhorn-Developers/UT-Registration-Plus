@@ -274,12 +274,15 @@ export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'ret
     const remoteScheduleIds = Object.keys(remote)
         .map(key => SCHEDULE_DOC_KEY.exec(key)?.[1])
         .filter((id): id is string => id !== undefined);
-    // A new install waits for something to sync, so its empty "Schedule 1" doesn't show up on every other computer
-    const hasContent = schedules.some(s => s.courses.length > 0) || blocks.length > 0;
+    // The empty "Schedule 1" a new install starts with
+    const isPlaceholder = (schedule: SerializedSchedule) =>
+        schedule.name === 'Schedule 1' &&
+        schedule.courses.length === 0 &&
+        !blocks.some(b => b.scheduleId === schedule.id);
+    // A new install waits for something to sync, so its placeholder doesn't show up on every other computer
+    const hasContent = schedules.some(s => !isPlaceholder(s)) || blocks.length > 0;
     if (!state.initialized && !hasContent && remoteScheduleIds.length === 0) return 'done';
     const isJoining = !state.initialized && remoteScheduleIds.length > 0;
-    const isPlaceholder = (schedule: SerializedSchedule) =>
-        schedule.courses.length === 0 && !blocks.some(b => b.scheduleId === schedule.id);
 
     // Later than the version it changed from, even with this device's clock behind
     const changedAt = (name: string) => Math.max(time, (state.docs[name]?.m ?? 0) + 1);
