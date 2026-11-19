@@ -76,8 +76,10 @@ import customBlockHandler from './handler/customBlockHandler';
 import gitHubStatsHandler from './handler/gitHubStatsHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
 import userScheduleHandler from './handler/userScheduleHandler';
+import { startScheduleSync } from './lib/scheduleSync';
 
 onServiceWorkerAlive();
+startScheduleSync();
 
 chrome.tabs.onRemoved.addListener(async tabId => {
     const storage = await chrome.storage.session.get('calendarTabs');

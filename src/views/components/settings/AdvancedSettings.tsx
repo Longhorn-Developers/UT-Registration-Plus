@@ -1,5 +1,6 @@
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import MIMEType from '@shared/types/MIMEType';
+import type { ScheduleSyncProblem } from '@shared/types/ScheduleSync';
 import type { ThemeName } from '@shared/types/Theme';
 import { themeLabels, themes } from '@shared/types/Theme';
 import type { UserSchedule } from '@shared/types/UserSchedule';
@@ -21,6 +22,8 @@ interface AdvancedSettingsProps {
     loadAllCourses: boolean;
     increaseScheduleLimit: boolean;
     calendarNewTab: boolean;
+    scheduleSync: boolean;
+    scheduleSyncProblem: ScheduleSyncProblem;
     enableReducedMotion: boolean;
     enableDataRefreshing: boolean;
     enableCourseStatusChips: boolean;
@@ -65,6 +68,8 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     loadAllCourses,
     increaseScheduleLimit,
     calendarNewTab,
+    scheduleSync,
+    scheduleSyncProblem,
     enableReducedMotion,
     enableDataRefreshing,
     enableCourseStatusChips,
@@ -191,6 +196,32 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 <div className='flex items-center justify-between'>
                     <div className='max-w-xs'>
                         <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
+                            Sync Schedules
+                        </Text>
+                        <p className='text-sm text-content-muted'>
+                            Keeps your schedules and custom blocks the same on every computer where you're signed in to
+                            Chrome with sync turned on.
+                        </p>
+                        {scheduleSync && scheduleSyncProblem === 'storage-full' && (
+                            <p className='mt-1 text-sm text-theme-red'>
+                                Your schedules are too big to sync them all. Deleting schedules you don't need frees up
+                                space.
+                            </p>
+                        )}
+                    </div>
+                    <SwitchButton
+                        isChecked={scheduleSync}
+                        onChange={() => {
+                            void OptionsStore.set('enableScheduleSync', !scheduleSync);
+                        }}
+                    />
+                </div>
+
+                <Divider size='auto' orientation='horizontal' />
+
+                <div className='flex items-center justify-between'>
+                    <div className='max-w-xs'>
+                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                             Allow more than 10 schedules
                         </Text>
                         <p className='text-sm text-content-muted'>
@@ -268,7 +299,8 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                             Reset All Data
                         </Text>
                         <p className='text-sm text-content-muted'>
-                            Erases all schedules, courses, and custom blocks you have.
+                            Erases all schedules, courses, and custom blocks you have
+                            {scheduleSync ? ', here and on your other synced computers.' : '.'}
                         </p>
                     </div>
                     <Button variant='outline' color='theme-red' icon={TrashIcon} onClick={handleEraseAll}>
