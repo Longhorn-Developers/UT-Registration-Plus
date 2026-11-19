@@ -551,9 +551,8 @@ export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'ret
 }
 
 /**
- * Syncs the schedules when the background starts and after every change to them, here or on another device
- *
- * @param isEnabled - whether the user has syncing turned on
+ * Syncs the schedules when the background starts and after every change to them, here or on another device, while
+ * the user has syncing turned on
  */
 export function startScheduleSync(): void {
     let timer: ReturnType<typeof setTimeout> | undefined;

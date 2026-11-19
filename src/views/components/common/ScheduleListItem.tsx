@@ -3,6 +3,7 @@ import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import { background } from '@shared/messages';
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
@@ -122,6 +123,8 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
         setIsEditing(false);
     };
 
+    const isScheduleSyncOn = OptionsStore.useStore(store => store.enableScheduleSync);
+
     const handleDelete = () => {
         if (schedule.courses.length <= 0) {
             deleteSchedule(schedule.id);
@@ -136,6 +139,7 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                     <Text> is permanent and will remove all added courses from </Text>
                     <Text className='text-ut-burntorange'>{schedule.name}</Text>
                     <Text>.</Text>
+                    {isScheduleSyncOn && <Text> This also deletes it on your other synced computers.</Text>}
                 </>
             ),
             buttons: close => (

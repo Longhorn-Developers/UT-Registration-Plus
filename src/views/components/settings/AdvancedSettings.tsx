@@ -199,8 +199,8 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                             Sync Schedules
                         </Text>
                         <p className='text-sm text-content-muted'>
-                            Keeps your schedules and custom blocks the same on every computer where Chrome is signed in
-                            to your Google account.
+                            Keeps your schedules and custom blocks the same on every computer where you're signed in to
+                            Chrome with sync turned on.
                         </p>
                         {scheduleSync && scheduleSyncProblem === 'storage-full' && (
                             <p className='mt-1 text-sm text-theme-red'>
@@ -299,7 +299,8 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                             Reset All Data
                         </Text>
                         <p className='text-sm text-content-muted'>
-                            Erases all schedules, courses, and custom blocks you have.
+                            Erases all schedules, courses, and custom blocks you have
+                            {scheduleSync ? ', here and on your other synced computers.' : '.'}
                         </p>
                     </div>
                     <Button variant='outline' color='theme-red' icon={TrashIcon} onClick={handleEraseAll}>

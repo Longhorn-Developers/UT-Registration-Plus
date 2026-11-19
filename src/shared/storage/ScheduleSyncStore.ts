@@ -8,6 +8,9 @@ interface IScheduleSyncStore {
     state: ScheduleSyncState | null;
 }
 
+/**
+ * A store that is used for keeping track of the schedule sync on this computer
+ */
 export const ScheduleSyncStore = createLocalStore<IScheduleSyncStore>('ScheduleSyncStore', {
     problem: null,
     state: null,

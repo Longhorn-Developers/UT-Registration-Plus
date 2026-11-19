@@ -9,10 +9,11 @@ import { SYNC_PREFIX, type SyncStorage, syncSchedules } from './scheduleSync';
 type SerializedSchedule = Serialized<UserSchedule>;
 type SerializedCourse = Serialized<Course>;
 
-// chrome.storage.sync's limits, counted the way Chrome counts them
+// chrome.storage.sync's limits, counted the way Chrome counts them: the key and the value's JSON, in UTF-8 bytes
 const QUOTA_BYTES_PER_ITEM = 8192;
 const QUOTA_BYTES = 102400;
-const itemBytes = (key: string, value: unknown) => key.length + JSON.stringify(value).length;
+const utf8Bytes = (text: string) => new TextEncoder().encode(text).length;
+const itemBytes = (key: string, value: unknown) => utf8Bytes(key) + utf8Bytes(JSON.stringify(value));
 const PROBLEM_KEY = 'ScheduleSyncStore:problem';
 
 /** A storage area like chrome.storage's, optionally with the sync storage's limits */
@@ -842,6 +843,16 @@ describe('syncSchedules', () => {
         expect(names(desktop)).toEqual(['B', 'A2']);
         expect(desktop.activeIndex).toBe(1);
         expect(set.mock.calls.map(([values]) => Object.keys(values as object))).toEqual([['schedules', 'activeIndex']]);
+    });
+
+    it('syncs names that are not plain ASCII', async () => {
+        const laptop = createDevice([schedule('a', 'Plan d’été 🎓', [course(1, { courseName: 'Introducción ÁÉÍ' })])]);
+        await laptop.sync();
+        const desktop = createDevice([]);
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['Plan d’été 🎓']);
+        expect(firstCourse(desktop.schedules[0] as SerializedSchedule).courseName).toBe('Introducción ÁÉÍ');
+        expect(Object.keys(cloud.data).every(key => /^[ -~]+$/.test(key))).toBe(true);
     });
 
     it('notices a change made in place to what the store handed out', async () => {
