@@ -2,46 +2,11 @@ import Text from '@views/components/common/Text/Text';
 import clsx from 'clsx';
 import type { JSX } from 'react';
 import ArrowUpRightIcon from '~icons/ph/arrow-up-right';
+import { USEFUL_LINKS } from './usefulLinks';
 
 type Props = {
     className?: string;
 };
-
-interface LinkItem {
-    text: string;
-    url: string;
-}
-
-const links: LinkItem[] = [
-    // {
-    //     text: "Spring '25 Course Schedule",
-    //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20252/',
-    // },
-    {
-        text: 'Course Schedule Archives',
-        url: 'https://registrar.utexas.edu/schedules/archive',
-    },
-    // {
-    //     text: "Summer '24 Course Schedule",
-    //     url: 'https://utdirect.utexas.edu/apps/registrar/course_schedule/20246/',
-    // },
-    {
-        text: "'24-'25 Academic Calendar",
-        url: 'https://registrar.utexas.edu/calendars/24-25',
-    },
-    {
-        text: 'Registration Info Sheet',
-        url: 'https://utdirect.utexas.edu/registrar/ris.WBX',
-    },
-    {
-        text: 'Register for Courses',
-        url: 'https://utdirect.utexas.edu/registration/chooseSemester.WBX',
-    },
-    {
-        text: 'Degree Audit',
-        url: 'https://utdirect.utexas.edu/apps/degree/audits/',
-    },
-];
 
 /**
  * The "Important Links" section of the calendar website
@@ -53,7 +18,7 @@ export default function ImportantLinks({ className }: Props): JSX.Element {
             <Text className='text-content-muted' variant='h3'>
                 Useful Links
             </Text>
-            {links.map(link => (
+            {USEFUL_LINKS.map(link => (
                 <a
                     key={link.text}
                     href={link.url}
