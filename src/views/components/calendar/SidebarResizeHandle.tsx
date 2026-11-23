@@ -77,7 +77,12 @@ export default function SidebarResizeHandle({
             // Jump straight to where the line was, rather than easing there
             sidebar.style.transition = 'none';
             sidebar.style.maxWidth = `${ended.width}px`;
-            requestAnimationFrame(() => sidebar.style.removeProperty('transition'));
+            // Reading the width makes the browser apply the new width now, while transitions are off. Without it the
+            // width and the transition would be applied together on the next frame (after any requestAnimationFrame
+            // callback has turned transitions back on), and the sidebar would ease across, laying out the calendar on
+            // every frame
+            void sidebar.offsetWidth;
+            sidebar.style.removeProperty('transition');
         }
         onDragEnd(isCancelled ? null : ended);
     };
