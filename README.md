@@ -89,7 +89,7 @@ nvm use
 Then install `pnpm` by following the official install instructions at [pnpm.io/installation](https://pnpm.io/installation), or with npm after `nvm use`:
 
 ```bash
-npm install --global pnpm
+npm install --global pnpm@10.33.0
 pnpm install
 ```
 
@@ -130,7 +130,10 @@ pnpm lint:firefox         # validate the build with Mozilla's web-ext linter
 pnpm zip:firefox          # Create a Firefox ZIP
 ```
 
-For AMO source submission and reproducible reviewer builds, see [the Firefox reviewer build instructions](README.firefox-review.md).
+For AMO submission, use `node scripts/build-firefox-review.mjs` as described in
+[the Firefox reviewer build instructions](README.firefox-review.md). It runs the
+same Firefox build and lint commands with fixed build metadata, then packages
+the add-on for a matching source submission.
 
 <details>
 <summary>Beta Builds</summary>
