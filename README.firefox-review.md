@@ -1,108 +1,140 @@
 # Firefox source submission and reviewer build
 
-This document describes the dedicated AMO review build. It does not establish that
-the extension is ready to publish. Finish the Firefox review, including data
-collection declarations and consent handling, before making a submission.
+This guide explains how to rebuild UT Registration Plus and prepare matching
+add-on and source packages for Mozilla Add-ons (AMO), following Mozilla's
+[source code submission requirements](https://extensionworkshop.com/documentation/publish/source-code-submission/).
 
-## Environment and tools
+## Getting Started
 
-- macOS or Linux, with a POSIX shell. Windows users should use WSL2 with Ubuntu.
-- Node.js **24.14.1**, as pinned in `.nvmrc`.
-- pnpm **10.33.0**, as pinned in `package.json`.
-- Internet access to install public dependencies from the committed lockfile.
-- Git, tar, and zip are needed only by maintainers to create the source archive.
-  Reviewers building an extracted source archive do not need Git.
-- Allow approximately 10 GB RAM and 35 GB free disk space. Final verification must
-  record the actual OS and CPU architecture used; cross-platform reproducibility
-  has not yet been established.
+Verified on **macOS 26.6.2, Apple Silicon (arm64)** with:
 
-The preparation workflow has been exercised on macOS 26.6.2 (arm64). Linux and
-Windows/WSL builds have not yet been verified. Two builds in separate extracted
-source directories produced identical extension files and ZIP entry contents
-after removing source maps. This is a preparation check, not verification of a
-final release commit. The current web-ext run reports zero errors and 11 warnings;
-review those warnings again against the finalized extension before submission.
+- **Node.js 24.14.1**, pinned in `.nvmrc`.
+- **pnpm 10.33.0**, pinned in `package.json`.
+- Internet access to install public dependencies.
 
-Install Node with [nvm's installation instructions](https://github.com/nvm-sh/nvm#installing-and-updating),
-then run these commands from the extracted source directory:
+Install [nvm](https://github.com/nvm-sh/nvm#installing-and-updating), as described
+in [README.md](README.md#getting-started). From the extracted source directory, run:
 
-```sh
-nvm install 24.14.1
-nvm use 24.14.1
+```bash
+nvm install
+nvm use
 npm install --global pnpm@10.33.0
 node --version
 pnpm --version
 ```
 
-Alternatively, install Node 24.14.1 from the
-[official Node.js release downloads](https://nodejs.org/download/release/v24.14.1/).
-The build script checks both tool versions. No global Vite, TypeScript, web-ext,
-Nix, Sentry CLI, credentials, or private dependencies are required.
+You can also install these versions using the [Node.js downloads](https://nodejs.org/download/release/v24.14.1/)
+and [pnpm installation guide](https://pnpm.io/installation).
+Other build tools are installed locally by the build script. No credentials or
+private dependencies are needed, though maintainers also need Git, tar, and zip to
+create the source archive.
 
-## Rebuild the submitted add-on
+## Firefox Builds
 
-Use a fresh extraction of the source ZIP. Do not add `.env` files or modify the
-sources or `firefox-review-build.json`.
+From a fresh extraction of the source ZIP, run:
 
-```sh
+```bash
 node scripts/build-firefox-review.mjs
 ```
 
-The script performs all technical steps:
+The script checks tool versions, installs the locked dependencies and CRXJS patch,
+runs `pnpm build:firefox` and `pnpm lint:firefox`, and packages the result:
 
-1. Check the pinned Node and pnpm versions.
-2. Install dependencies with `pnpm install --frozen-lockfile`, including the CRXJS
-   patch under `patches/`.
-3. Type-check and build the Firefox extension.
-4. Remove generated `.map` debug files, which contain unstable internal Vite
-   asset identifiers. Original readable sources remain in the source ZIP.
-5. Validate the generated extension with the locked web-ext linter.
-6. Package the extension using the locked web-ext build command.
-
-Outputs:
-
-- `dist/firefox/`: generated extension files for comparison and temporary loading.
+- `dist/firefox/`: extension files for inspection and comparison.
 - `package/firefox-review/addon.zip`: unsigned add-on package for submission.
 
-The script sets the Firefox target and recorded Git metadata explicitly, and
-does not inherit shell build flags or Sentry credentials. It uses the regular
-non-beta build, without the release script's Sentry sourcemap injection/upload.
-This does **not** disable the extension's runtime Sentry reporting.
+It removes `.map` debugging files, which can differ when built in different
+folders. Readable source remains in the source ZIP.
 
-`firefox-review-build.json` records the source commit and branch because the
-extension embeds them and the source archive intentionally contains no `.git`
-directory. It also records the packaging host, which is not proof of a successful
-build on that host. Console timestamps and build durations are diagnostic output.
+Leave the source unchanged and do not add `.env` files.
+`firefox-review-build.json` records the original code version and branch so the
+rebuilt extension uses the same version information. The script uses fixed build
+settings and creates a non-beta build without uploading debugging files to Sentry.
 
-## Prepare the final source package (maintainers)
+## Source Contents and Tools
 
-After the PR and these submission tools are finalized and committed, use a clean
-checkout on a named branch:
+The source archive includes:
 
-```sh
+- `src/` and `public/`: application code, assets, and bundled data.
+- `package.json` and `pnpm-lock.yaml`: dependencies and exact versions.
+- `patches/`: the CRXJS patch applied during installation.
+- `vite.config.ts`, `tsconfig*.json`, and `unocss.config.ts`: build configuration.
+- `scripts/`, `.nvmrc`, this README, and `firefox-review-build.json`: build scripts,
+  tool versions, instructions, and source metadata.
+
+All build tools run locally and are open source:
+[TypeScript](https://github.com/microsoft/typescript-go),
+[Vite](https://github.com/vitejs/vite),
+[CRXJS](https://github.com/crxjs/chrome-extension-tools),
+[UnoCSS](https://github.com/unocss/unocss),
+[Sass](https://github.com/sass/dart-sass), and
+[web-ext](https://github.com/mozilla/web-ext).
+The SQLite WebAssembly runtime comes from [sql.js](https://github.com/sql-js/sql.js).
+
+## Loading the Extension Manually
+
+Requires Firefox 140 or later.
+
+1. Open `about:debugging#/runtime/this-firefox`.
+2. Click **Load Temporary Add-on**.
+3. Select `dist/firefox/manifest.json`.
+4. Open the toolbar popup, then **Calendar** or the Settings gear. Try creating a
+   schedule or a custom block.
+
+Catalog features require access to UT Austin's course schedule and a UT EID
+login. No test credentials are included. Maintainers should provide authorized
+review access privately through AMO reviewer notes.
+
+Temporary add-ons are removed when Firefox restarts. Click **Reload** on the
+same page after rebuilding.
+
+## Prepare Submission Packages
+
+From a clean checkout on a named branch, with all submission changes committed:
+
+```bash
 node scripts/package-firefox-source.mjs
 ```
 
-This archives the committed source, lockfile, patches, configuration, and assets,
-and adds the recorded build metadata. It excludes untracked and ignored files,
-such as dependencies, local secrets, generated build output, and Git history.
-The script refuses a dirty checkout and enforces the 200 MB source ZIP limit.
+This creates `package/firefox-review/source-<commit>.zip`, including the recorded
+code version and branch, and enforces Mozilla's 200 MB source-upload limit.
+Git history, dependencies, and generated output are excluded.
 
-Extract `package/firefox-review/source-<commit>.zip` into a new directory and run
-its build script. Submit the resulting `addon.zip` alongside that source ZIP.
-Do not pair it with a CI artifact or `zip:to-publish:firefox` build, which may use
-different metadata or postprocessing.
+1. Extract the same source ZIP into folders named `first` and `second`. Run the
+   reviewer build script in each folder.
+2. From their parent directory, compare the output:
 
-Before uploading, repeat the build from a second fresh source extraction and
-compare the generated files, for example:
+    ```bash
+    diff -qr first/dist/firefox second/dist/firefox
+    ```
 
-```sh
-diff -qr first/dist/firefox second/dist/firefox
-```
+3. Confirm the extracted files match. ZIP timestamps may differ.
+4. Upload either resulting `addon.zip` as the extension and `source-<commit>.zip`
+   as its source package. Use the packages created above so the add-on matches
+   the submitted source.
 
-The command must report no differences. Compare extracted add-on contents, not
-ZIP bytes, since archive timestamps may differ. Record the tested OS version,
-architecture, commit, tool versions, and result in the AMO reviewer notes.
-If source changes, regenerate both packages and repeat verification.
+In AMO's **Notes for Reviewers**, include the source commit and branch, actual
+OS and architecture, Node/pnpm versions, build command, comparison result,
+and web-ext findings. Point reviewers to this README. After any source change,
+regenerate and verify both packages.
 
-See Mozilla's [source code submission requirements](https://extensionworkshop.com/documentation/publish/source-code-submission/).
+See Mozilla's [submission workflow](https://extensionworkshop.com/documentation/publish/submitting-an-add-on/)
+for the upload screens.
+
+## Verification and Remaining Review
+
+On November 23, 2026, two fresh extractions of commit
+`1e46ecd09dd75460bb16e05a2410927ef6d74eb6` (`firefox-support`) were built in the
+environment above. All 102 extension files and extracted add-on ZIP contents matched.
+
+web-ext 10.8.0 reported **0 errors, 0 notices, and 11 warnings**: one about the
+Android minimum version and data-collection manifest key, and ten about dynamic
+HTML assignments/calls in generated bundles. These still need review. No AMO
+upload or manual Firefox runtime test was performed. These results apply to
+that commit, before the current README edits.
+
+Before submission, resolve the data-collection mismatch: Sentry error and
+performance reporting is enabled in `src/shared/sentry.ts` and
+`src/views/contexts/SentryContext.tsx`, but the Firefox manifest declares no data
+collection. Make the declaration and consent behavior match what the extension
+actually sends. Skipping debugging-file uploads does not turn off this reporting.
