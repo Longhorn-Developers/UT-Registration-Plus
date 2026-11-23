@@ -1,0 +1,113 @@
+import Spinner from '@views/components/common/Spinner';
+import Text from '@views/components/common/Text/Text';
+import type { ComponentType, JSX, SVGProps } from 'react';
+import { useState } from 'react';
+import ChartBarIcon from '~icons/ph/chart-bar';
+import CloudXIcon from '~icons/ph/cloud-x';
+import MoonIcon from '~icons/ph/moon';
+import SelectionPlusIcon from '~icons/ph/selection-plus';
+
+/**
+ * This is the version of the 'What's New' features popup.
+ *
+ * It is used to check if the popup has already been shown to the user or not
+ *
+ * It should be incremented every time the "What's New" popup is updated.
+ */
+export const WHATSNEW_POPUP_VERSION = 4;
+export const ACTIVE_WHATSNEW_POPUP_VERSION_KEY = 'activeWhatsNewPopupVersion';
+
+// Bundled with the extension (public/videos) so it plays offline and needs no CDN upload
+const WHATSNEW_VIDEO_URL = chrome.runtime.getURL('videos/whatsnew-v2.5.mp4');
+
+type Feature = {
+    id: string;
+    icon: ComponentType<SVGProps<SVGSVGElement>>;
+    title: string | JSX.Element;
+    description: string;
+};
+
+const NEW_FEATURES = [
+    {
+        id: 'custom-time-blocks',
+        icon: SelectionPlusIcon,
+        title: 'Custom Time Blocks',
+        description: 'Block off time for work, practice, or anything else, and see when courses conflict with it.',
+    },
+    {
+        id: 'dark-mode',
+        icon: MoonIcon,
+        title: 'Dark Mode',
+        description: 'Give the calendar and settings a darker look. Switch themes in settings.',
+    },
+    {
+        id: 'grade-distributions',
+        icon: ChartBarIcon,
+        title: 'Updated Grade Distributions',
+        description: 'Now includes Spring and Summer 2026 grade distribution data.',
+    },
+] as const satisfies readonly Feature[];
+
+/**
+ * WhatsNewPopupContent component.
+ *
+ * This component displays the content of the WhatsNew dialog.
+ * It shows the new features that have been added to the extension.
+ *
+ * @returns A JSX of WhatsNewPopupContent component.
+ */
+export function WhatsNewPopupContent(): JSX.Element {
+    const [videoError, setVideoError] = useState(false);
+    const [videoLoaded, setVideoLoaded] = useState(false);
+
+    return (
+        <div className='w-full flex flex-row justify-between'>
+            <div className='w-full flex flex-col-reverse items-center justify-between gap-spacing-7 md:flex-row'>
+                <div className='grid grid-cols-1 w-fit items-center gap-spacing-6 sm:grid-cols-2 md:w-lg md:flex md:flex-col md:flex-nowrap'>
+                    {NEW_FEATURES.map(({ id, icon: Icon, title, description }) => (
+                        <div key={id} className='w-full flex items-center justify-between gap-spacing-5'>
+                            <Icon width='40' height='40' className='text-ut-burntorange dark:text-content' />
+                            <div className='w-full flex flex-col gap-spacing-1'>
+                                <Text variant='h4' as='h4' className='text-ut-burntorange dark:text-content font-bold!'>
+                                    {title}
+                                </Text>
+                                <Text variant='p' as='p' className='text-content-muted'>
+                                    {description}
+                                </Text>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div className='relative h-full max-w-[464px] w-full flex items-center justify-center'>
+                    {videoError ? (
+                        <div className='h-full w-full flex items-center justify-center border border-ut-offwhite/50 rounded'>
+                            <div className='flex flex-col items-center justify-center p-spacing-2'>
+                                <CloudXIcon width={52} height={52} className='text-content-muted' />
+                                <Text variant='h4' className='text-center text-content-muted'>
+                                    Failed to load video. Please try again later.
+                                </Text>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            {!videoLoaded && (
+                                <div className='absolute inset-0 z-0 flex items-center justify-center border border-ut-offwhite/50 rounded bg-white/80'>
+                                    <Spinner className='h-10 w-10 text-ut-burntorange' />
+                                </div>
+                            )}
+                            <video
+                                className='relative z-10 h-fit w-full flex items-center justify-center border border-ut-offwhite/50 rounded object-cover aspect-video'
+                                autoPlay
+                                loop
+                                muted
+                                onLoadedData={() => setVideoLoaded(true)}
+                            >
+                                <source src={WHATSNEW_VIDEO_URL} type='video/mp4' onError={() => setVideoError(true)} />
+                            </video>
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
