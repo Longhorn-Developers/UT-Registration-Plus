@@ -62,9 +62,12 @@ export default function PopupMain(): JSX.Element {
     }, [activeSchedule.id]);
 
     const handleOpenOptions = async () => {
-        const url = chrome.runtime.getURL('/options.html');
-        await background.openNewTab({ url });
-        window.close();
+        try {
+            await background.switchToSettingsTab();
+            window.close();
+        } catch (error) {
+            console.error('Failed to open the settings page', error);
+        }
     };
 
     const handleCalendarOpenOnClick = async () => {

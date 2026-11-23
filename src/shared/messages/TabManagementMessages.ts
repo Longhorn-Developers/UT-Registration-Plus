@@ -12,6 +12,13 @@ export default interface TabManagementMessages {
     openNewTab: (data: { url: string }) => browser.Tabs.Tab;
 
     /**
+     * Switches to the settings page if it's open in a tab, or opens it in a new tab next to the current one
+     *
+     * @returns The settings page's tab
+     */
+    switchToSettingsTab: () => browser.Tabs.Tab;
+
+    /**
      * Gets the ID of the current tab (the tab that sent the message)
      *
      * @returns The ID of the current tab
