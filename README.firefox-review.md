@@ -133,8 +133,7 @@ HTML assignments/calls in generated bundles. These still need review. No AMO
 upload or manual Firefox runtime test was performed. These results apply to
 that commit, before the current README edits.
 
-Before submission, resolve the data-collection mismatch: Sentry error and
-performance reporting is enabled in `src/shared/sentry.ts` and
-`src/views/contexts/SentryContext.tsx`, but the Firefox manifest declares no data
-collection. Make the declaration and consent behavior match what the extension
-actually sends. Skipping debugging-file uploads does not turn off this reporting.
+Error and performance reporting can be managed in Settings, below Reduced Motion.
+Reporting defaults to on in Chrome. In Firefox, it stays off until the required
+data permissions are granted. Manual feedback requests separate permission to
+share your email and message.

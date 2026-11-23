@@ -23,6 +23,9 @@ export interface IOptionsStore {
     /** whether animations and transitions should be reduced for accessibility */
     enableReducedMotion: boolean;
 
+    /** whether automatic error and performance reports may be sent to Sentry */
+    enableDiagnosticReporting: boolean;
+
     /** whether the calendar sidebar should be shown when the calendar is opened */
     showCalendarSidebar: boolean;
 
@@ -48,6 +51,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>(
         enableDataRefreshing: true,
         alwaysOpenCalendarInNewTab: false,
         enableReducedMotion: false,
+        enableDiagnosticReporting: true,
         showCalendarSidebar: true,
         calendarSidebarWidth: 325,
         allowMoreSchedules: false,

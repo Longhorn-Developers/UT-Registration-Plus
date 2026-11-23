@@ -5,6 +5,7 @@ import type BrowserActionMessages from './BrowserActionMessages';
 import type { CalendarBackgroundMessages, CalendarTabMessages } from './CalendarMessages';
 import type CESMessage from './CESMessage';
 import type { CustomBlockMessages } from './CustomBlockMessages';
+import type DataCollectionMessages from './DataCollectionMessages';
 import type GitHubStatsMessages from './GitHubStatsMessages';
 import type GradeDistributionMessages from './GradeDistributionMessages';
 import type TabInfoMessages from './TabInfoMessages';
@@ -24,6 +25,7 @@ setTraceContextProvider(() => {
  * This is a type with all the message definitions that can be sent TO the background script
  */
 export type BACKGROUND_MESSAGES = BrowserActionMessages &
+    DataCollectionMessages &
     CustomBlockMessages &
     TabManagementMessages &
     UserScheduleMessages &

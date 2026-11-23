@@ -74,6 +74,7 @@ import browserActionHandler from './handler/browserActionHandler';
 import CESHandler from './handler/CESHandler';
 import calendarBackgroundHandler from './handler/calendarBackgroundHandler';
 import customBlockHandler from './handler/customBlockHandler';
+import dataCollectionHandler from './handler/dataCollectionHandler';
 import gitHubStatsHandler from './handler/gitHubStatsHandler';
 import gradeDistributionHandler from './handler/gradeDistributionHandler';
 import tabManagementHandler from './handler/tabManagementHandler';
@@ -129,6 +130,7 @@ const messageListener = new MessageListener<BACKGROUND_MESSAGES>({
     ...CESHandler,
     ...calendarBackgroundHandler,
     ...customBlockHandler,
+    ...dataCollectionHandler,
     ...gitHubStatsHandler,
     ...gradeDistributionHandler,
 });

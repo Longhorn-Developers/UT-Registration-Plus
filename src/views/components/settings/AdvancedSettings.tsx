@@ -8,8 +8,10 @@ import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
 import SwitchButton from '@views/components/common/SwitchButton';
 import Text from '@views/components/common/Text/Text';
+import { useDiagnosticReporting } from '@views/hooks/useDiagnosticReporting';
 import clsx from 'clsx';
 import type React from 'react';
+import { useId } from 'react';
 import TrashIcon from '~icons/ph/trash';
 
 import FileUpload from '../common/FileUpload';
@@ -53,6 +55,38 @@ function ThemePicker({ theme }: { theme: ThemeName }) {
                     {themeLabels[option]}
                 </Button>
             ))}
+        </div>
+    );
+}
+
+function DiagnosticReportingSetting() {
+    const { enabled, pending, error, onChange } = useDiagnosticReporting();
+    const descriptionId = useId();
+
+    return (
+        <div className='flex items-center justify-between'>
+            <div className='max-w-xs'>
+                <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
+                    Error and Performance Reporting
+                </Text>
+                <p id={descriptionId} className='text-sm text-content-muted'>
+                    Send error reports, performance data, and related page details to Sentry, which helps improve the
+                    extension.
+                </p>
+                {error && (
+                    <p role='alert' className='text-sm text-theme-red'>
+                        {error}
+                    </p>
+                )}
+            </div>
+            <SwitchButton
+                isChecked={enabled}
+                onChange={checked => void onChange(checked)}
+                controlled
+                disabled={pending}
+                aria-label='Error and Performance Reporting'
+                aria-describedby={descriptionId}
+            />
         </div>
     );
 }
@@ -224,6 +258,10 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                         }}
                     />
                 </div>
+
+                <Divider size='auto' orientation='horizontal' />
+
+                <DiagnosticReportingSetting />
 
                 <Divider size='auto' orientation='horizontal' />
 
