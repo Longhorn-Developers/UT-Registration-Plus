@@ -8,7 +8,6 @@ type ToggleSwitchProps = {
     controlled?: boolean;
     disabled?: boolean;
     'aria-label'?: string;
-    'aria-describedby'?: string;
 };
 
 /**

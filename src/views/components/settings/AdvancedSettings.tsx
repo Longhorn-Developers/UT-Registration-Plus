@@ -1,3 +1,4 @@
+import { Description, Field } from '@headlessui/react';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import MIMEType from '@shared/types/MIMEType';
 import type { ThemeName } from '@shared/types/Theme';
@@ -11,7 +12,6 @@ import Text from '@views/components/common/Text/Text';
 import { useDiagnosticReporting } from '@views/hooks/useDiagnosticReporting';
 import clsx from 'clsx';
 import type React from 'react';
-import { useId } from 'react';
 import TrashIcon from '~icons/ph/trash';
 
 import FileUpload from '../common/FileUpload';
@@ -61,18 +61,17 @@ function ThemePicker({ theme }: { theme: ThemeName }) {
 
 function DiagnosticReportingSetting() {
     const { enabled, pending, error, onChange } = useDiagnosticReporting();
-    const descriptionId = useId();
 
     return (
-        <div className='flex items-center justify-between'>
+        <Field className='flex items-center justify-between'>
             <div className='max-w-xs'>
                 <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
                     Error and Performance Reporting
                 </Text>
-                <p id={descriptionId} className='text-sm text-content-muted'>
+                <Description as='p' className='text-sm text-content-muted'>
                     Send error reports, performance data, and related page details to Sentry, which helps improve the
                     extension.
-                </p>
+                </Description>
                 {error && (
                     <p role='alert' className='text-sm text-theme-red'>
                         {error}
@@ -85,9 +84,8 @@ function DiagnosticReportingSetting() {
                 controlled
                 disabled={pending}
                 aria-label='Error and Performance Reporting'
-                aria-describedby={descriptionId}
             />
-        </div>
+        </Field>
     );
 }
 
