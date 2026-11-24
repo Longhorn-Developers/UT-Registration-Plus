@@ -145,7 +145,8 @@ export default function SidebarResizeHandle({
             <div
                 ref={guide}
                 aria-hidden
-                className='pointer-events-none fixed inset-y-0 left-0 z-50 w-0.5 bg-ut-burntorange/50 will-change-transform'
+                // The shared reduced-motion rule sets a nonzero duration, so disable transitions on the guide explicitly.
+                className='pointer-events-none fixed inset-y-0 left-0 z-50 w-0.5 bg-ut-burntorange/50 transition-none will-change-transform'
                 style={{ visibility: 'hidden' }}
             />
         </div>
