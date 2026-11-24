@@ -78,6 +78,8 @@ describe('Sentry reporting transport', () => {
         item[1] = {
             event_id: 'feedback',
             timestamp: 123,
+            release: '2.5.0',
+            environment: 'production',
             request: { url: 'https://example.com/private-page' },
             breadcrumbs: [{ message: 'automatic diagnostic' }],
             contexts: { feedback: { message: 'Please fix this', contact_email: 'test@example.com', url: 'private' } },
@@ -94,6 +96,8 @@ describe('Sentry reporting transport', () => {
                     type: 'feedback',
                     event_id: 'feedback',
                     timestamp: 123,
+                    release: '2.5.0',
+                    environment: 'production',
                     contexts: { feedback: { message: 'Please fix this', contact_email: 'test@example.com' } },
                 },
             ],

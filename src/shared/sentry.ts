@@ -38,6 +38,8 @@ export const makeReportingTransport: typeof makeFetchTransport = options => {
                         type: 'feedback',
                         event_id: event.event_id,
                         timestamp: event.timestamp ?? Date.now() / 1000,
+                        release: event.release,
+                        environment: event.environment,
                         contexts: {
                             feedback: {
                                 message: event.contexts?.feedback?.message,
