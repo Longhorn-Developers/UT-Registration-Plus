@@ -3,14 +3,15 @@ import deleteSchedule from '@pages/background/lib/deleteSchedule';
 import duplicateSchedule from '@pages/background/lib/duplicateSchedule';
 import renameSchedule from '@pages/background/lib/renameSchedule';
 import { background } from '@shared/messages';
-import { OptionsStore } from '@shared/storage/OptionsStore';
+import { CustomBlockStore } from '@shared/storage/CustomBlockStore';
 import type { UserSchedule } from '@shared/types/UserSchedule';
+import { selectCustomBlocks } from '@shared/util/customBlocks';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import { useIsActiveSchedule } from '@views/hooks/useSchedules';
 import { LONGHORN_DEVELOPERS_ADMINS, LONGHORN_DEVELOPERS_HARDCODED } from '@views/lib/getGitHubStats';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'src/views/contexts/ThemeContext';
 import CircleIcon from '~icons/ph/circle';
 import CopySimpleIcon from '~icons/ph/copy-simple';
@@ -123,10 +124,15 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
         setIsEditing(false);
     };
 
-    const isScheduleSyncOn = OptionsStore.useStore(store => store.enableScheduleSync);
+    const [allBlocks] = CustomBlockStore.use('blocks');
+    // Only the blocks of this schedule alone, which deleting it removes too
+    const hasOwnBlocks = useMemo(
+        () => selectCustomBlocks(allBlocks, schedule.id).some(block => block.scheduleId === schedule.id),
+        [allBlocks, schedule.id]
+    );
 
     const handleDelete = () => {
-        if (schedule.courses.length <= 0) {
+        if (schedule.courses.length <= 0 && !hasOwnBlocks) {
             deleteSchedule(schedule.id);
             return;
         }
@@ -136,10 +142,10 @@ export default function ScheduleListItem({ schedule, onClick }: ScheduleListItem
                 <>
                     <Text>Deleting </Text>
                     <Text className='text-ut-burntorange'>{schedule.name}</Text>
-                    <Text> is permanent and will remove all added courses from </Text>
+                    <Text> is permanent and will remove everything added to </Text>
                     <Text className='text-ut-burntorange'>{schedule.name}</Text>
                     <Text>.</Text>
-                    {isScheduleSyncOn && <Text> This also deletes it on your other synced computers.</Text>}
+                    <Text> If Sync Schedules is on, this also deletes it on your other synced computers.</Text>
                 </>
             ),
             buttons: close => (
