@@ -1024,7 +1024,12 @@ describe('syncSchedules', () => {
         const desktop = createDevice([]);
         await desktop.sync();
 
+        // One the desktop never downloads, so the reset has a blocks version to mark
+        laptop.local.data['CustomBlockStore:blocks'] = [...laptop.blocks, block('y', 'a')];
+        await laptop.sync();
+
         await desktop.clearSynced();
+        expect(cloud.data[`${SYNC_PREFIX}gone:blocks`]).toBeDefined();
         desktop.change(() => [schedule('fresh', 'Schedule 1')]);
         desktop.local.data['CustomBlockStore:blocks'] = [];
         await desktop.sync();
@@ -1043,7 +1048,13 @@ describe('syncSchedules', () => {
         await laptop.sync();
         const desktop = createDevice([]);
         await desktop.sync();
+
+        // One the desktop never downloads, so the reset has a blocks version to mark
+        laptop.local.data['CustomBlockStore:blocks'] = [...laptop.blocks, block('y', 'a')];
+        await laptop.sync();
+
         await desktop.clearSynced();
+        expect(cloud.data[`${SYNC_PREFIX}gone:blocks`]).toBeDefined();
         desktop.change(() => [schedule('fresh', 'Schedule 1')]);
         desktop.local.data['CustomBlockStore:blocks'] = [];
         await desktop.sync();
@@ -1093,6 +1104,31 @@ describe('syncSchedules', () => {
         await desktop.sync();
         expect(names(laptop)).toEqual(['Plan']);
         expect(names(desktop)).toEqual(['Plan']);
+    });
+
+    it('keeps a block added after a reset by a computer whose clock was ahead', async () => {
+        const laptop = createDevice([schedule('a', 'Plan', [course(1)])], [block('x', 'a')]);
+        await laptop.sync();
+        // A month ahead, so the deletion marker it writes is dated a month from now
+        const desktop = createDevice([], [], 30 * 24 * 60 * 60 * 1000);
+        await desktop.sync();
+
+        laptop.local.data['CustomBlockStore:blocks'] = [...laptop.blocks, block('y', 'a')];
+        await laptop.sync();
+
+        await desktop.clearSynced();
+        desktop.change(() => [schedule('fresh', 'Schedule 1')]);
+        desktop.local.data['CustomBlockStore:blocks'] = [];
+        await desktop.sync();
+        await laptop.sync();
+        expect(laptop.blocks).toEqual([]);
+
+        // The block the user makes now outlives a marker dated a month ahead
+        laptop.local.data['CustomBlockStore:blocks'] = [block('z', null)];
+        await laptop.sync();
+        expect(laptop.blocks.map(b => b.id)).toEqual(['z']);
+        await desktop.sync();
+        expect(desktop.blocks.map(b => b.id)).toEqual(['z']);
     });
 
     it.each([

@@ -440,9 +440,15 @@ export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'ret
         const knownLineage = known ? lineage(known.h, ...known.a) : [];
         if (!header) {
             const m = known && !isChanged ? known.m : changedAt(name);
-            // Another computer erased the blocks, so they come back only by being added here since
-            if (deletedAt !== undefined && (m <= deletedAt || blocks.length === 0)) nextBlocks = [];
-            else await upload(name, blocks, content, m, knownLineage, basesOf(known));
+            if (deletedAt !== undefined && (m <= deletedAt || blocks.length === 0)) {
+                // Another computer erased the blocks. Keeping it as the version this computer has means a block
+                // added here later wins by its own version, not by whichever clock is further ahead.
+                nextBlocks = [];
+                const { h } = await encodeDoc(name, nextBlocks, deletedAt, []);
+                nextState.docs[name] = { ...blocksContent(nextBlocks), h, m: deletedAt, a: [] };
+            } else {
+                await upload(name, blocks, content, m, knownLineage, basesOf(known));
+            }
         } else if (known && header.h === known.h) {
             if (isChanged) await upload(name, blocks, content, changedAt(name), knownLineage, basesOf(known));
             else nextState.docs[name] = known;
