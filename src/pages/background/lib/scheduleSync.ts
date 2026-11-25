@@ -672,7 +672,11 @@ export function startScheduleSync(): void {
     };
 
     const run = async () => {
-        if (!(await OptionsStore.get('enableScheduleSync'))) return;
+        if (!(await OptionsStore.get('enableScheduleSync'))) {
+            // Otherwise a retry left over from before it was turned off still wakes the background worker once
+            await chrome.alarms.clear(RETRY_ALARM);
+            return;
+        }
         const result = await syncSchedules(storage);
         if (result === 'failed') {
             // An alarm, not a timer: Chrome can stop the idle background worker long before a minute is up
