@@ -905,6 +905,25 @@ describe('syncSchedules', () => {
         expect(courseIds(desktop, 'Renamed')).toEqual([1, 3]);
     });
 
+    it('deletes a schedule on the other computer when the sync storage has no room for another item', async () => {
+        // Room for exactly what two schedules take: a header and a part each, the custom blocks, and the order
+        cloud = createArea({ quotaBytes: QUOTA_BYTES, maxItems: 7 });
+        const laptop = createDevice([schedule('a', 'Old', [course(1)]), schedule('b', 'Plan', [course(2)])]);
+        await laptop.sync();
+        const desktop = createDevice([]);
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['Old', 'Plan']);
+
+        // The deletion marker is one more item, so the deleted schedule has to go first to make room for it
+        laptop.change(schedules => schedules.filter(s => s.id !== 'a'));
+        await laptop.sync();
+        expect(cloud.data[`${SYNC_PREFIX}doc:s.a`]).toBeUndefined();
+        expect(cloud.data[`${SYNC_PREFIX}gone:s.a`]).toBeDefined();
+
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['Plan']);
+    });
+
     it.each([
         ['Resource::kQuotaBytes quota exceeded', 'storage-full'],
         ['Resource::kQuotaBytesPerItem quota exceeded', 'storage-full'],

@@ -492,7 +492,17 @@ export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'ret
     let isUploaded = true;
     let uploaded = docUploads;
     try {
-        if (Object.keys(deletions).length > 0) await sync.set(deletions);
+        if (Object.keys(deletions).length > 0) {
+            try {
+                await sync.set(deletions);
+            } catch (error) {
+                if (!isQuotaError(error)) throw error;
+                // No room for the markers, so the deleted documents go first to make some. Otherwise the deletion
+                // never reaches the other computers, which keep the schedule.
+                if (deletionRemovals.length > 0) await sync.remove(deletionRemovals);
+                await sync.set(deletions);
+            }
+        }
         if (deletionRemovals.length > 0) await sync.remove(deletionRemovals);
         const all = Object.assign({}, uploads, ...docUploads.map(doc => doc.items));
         try {
