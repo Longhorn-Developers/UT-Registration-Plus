@@ -1,5 +1,5 @@
 import { graphNodes } from './graphNodes';
-import type { Graph, MapNode, NodeCoordinates, NodeId } from './types';
+import type { Graph, MapNode, NodeCoordinates, NodeId, ProcessInPersonMeetings } from './types';
 import { isValidNode, NEIGHBOR_DISTANCE_THRESHOLD } from './types';
 
 /**
@@ -96,6 +96,22 @@ export const getNeighbors = (nodeId: NodeId, graph: Graph): NodeId[] => {
  * @param endId - The ID of the ending node.
  * @returns An object containing the x and y coordinates of the midpoint, or null if either node is invalid.
  */
+/**
+ * Extracts the set of building codes where the student has enrolled courses.
+ * Used to drive the highlighted-buildings feature on the campus map.
+ *
+ * @param processedCourses - Flattened list of in-person meeting entries.
+ * @returns An immutable Set of building abbreviations (e.g. "ETC", "JES").
+ */
+export const extractEnrolledBuildings = (processedCourses: ProcessInPersonMeetings[]): ReadonlySet<string> => {
+    const buildings = new Set<string>();
+    for (const meeting of processedCourses) {
+        const building = meeting.location?.building;
+        if (building) buildings.add(building);
+    }
+    return buildings;
+};
+
 export const getMidpoint = (startId: string, endId: string) => {
     const startNode = graphNodes[startId];
     const endNode = graphNodes[endId];
