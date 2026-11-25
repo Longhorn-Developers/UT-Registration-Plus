@@ -47,10 +47,10 @@ export default async function deleteSchedule(scheduleId: string): Promise<string
  * @returns A promise that resolves when all schedules are deleted
  */
 export async function deleteAllSchedules(): Promise<void> {
-    // Only with syncing on, so erasing here never erases another computer the user isn't syncing with. First, so a
-    // synced schedule this computer never downloaded doesn't arrive on the next sync. Imported here, so the pages that
-    // delete schedules don't carry the sync itself.
+    // Only with syncing on, so this never erases a computer the user isn't syncing with, and before the schedules
+    // go, so one this computer never downloaded doesn't arrive on the next sync
     if (await OptionsStore.get('enableScheduleSync')) {
+        // Imported here, so the pages that delete schedules don't carry the sync itself
         const { clearSyncedSchedules } = await import('./scheduleSync');
         await clearSyncedSchedules();
     }

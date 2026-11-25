@@ -594,8 +594,11 @@ export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'ret
 
 /**
  * Marks the synced schedules this computer never downloaded as deleted, for Reset All Data. The schedules and custom
- * blocks it does have are erased by the sync that follows, which sees them go; the ones it never downloaded would
- * instead arrive on that sync, as if they were new.
+ * blocks it does have are erased by the sync that runs after, which sees them go from the stores; the ones it never
+ * downloaded would arrive on that sync instead.
+ *
+ * @param storage - The stores and storage to use, so tests can give each device its own
+ * @returns A promise that resolves once the sync storage has been marked
  */
 export async function clearSyncedSchedules(
     storage: Pick<SyncStorage, 'sync' | 'syncState' | 'now'> = {
@@ -608,7 +611,7 @@ export async function clearSyncedSchedules(
     try {
         const [remote, savedState] = await Promise.all([sync.get(null), storage.syncState.get('state')]);
         const order = remote[SYNC_ORDER_KEY] as SyncOrder | undefined;
-        // A newer version of the sync wrote these, and they aren't this one's to delete
+        // A newer version of the sync wrote these, so leave them alone
         if (order !== undefined && order.v > SYNC_VERSION) return;
         const known = savedState?.v === SYNC_VERSION ? savedState.docs : {};
         const time = now();
@@ -623,7 +626,7 @@ export async function clearSyncedSchedules(
             const id = SCHEDULE_DOC_KEY.exec(key)?.[1];
             if (id === undefined) continue;
             const header = remote[key] as DocHeader;
-            // The sync erases the versions this computer has, by seeing the schedules go
+            // The sync erases the versions this computer has, since its schedules are about to go
             if (known[scheduleDoc(id)]?.h !== header.h) mark(scheduleDoc(id), header);
         }
         const blocksHeader = remote[docKey(BLOCKS_DOC)] as DocHeader | undefined;
