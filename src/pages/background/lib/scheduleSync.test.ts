@@ -105,6 +105,10 @@ function createDevice(schedules: SerializedSchedule[], blocks: CustomBlock[] = [
         get blocks() {
             return local.data['CustomBlockStore:blocks'] as CustomBlock[];
         },
+        /** Opens another schedule, like the calendar does */
+        open: (index: number) => {
+            local.data.activeIndex = index;
+        },
         /** Changes the schedules, like the extension's stores do */
         change: (update: (schedules: SerializedSchedule[]) => SerializedSchedule[]) => {
             local.data.schedules = update(structuredClone(local.data.schedules as SerializedSchedule[]));
@@ -922,6 +926,30 @@ describe('syncSchedules', () => {
 
         await desktop.sync();
         expect(names(desktop)).toEqual(['Plan']);
+    });
+
+    it("keeps the schedule the user opens while the other computer's new order is arriving", async () => {
+        const laptop = createDevice([schedule('a', 'A', [course(1)]), schedule('b', 'B', [course(2)])]);
+        await laptop.sync();
+        const desktop = createDevice([]);
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['A', 'B']);
+        expect(desktop.activeIndex).toBe(0);
+
+        laptop.change(([a, b]) => [b as SerializedSchedule, a as SerializedSchedule]);
+        await laptop.sync();
+
+        // The user opens B while the sync is reading the synced schedules
+        const get = cloud.get;
+        vi.spyOn(cloud, 'get').mockImplementationOnce(async keys => {
+            desktop.open(1);
+            return get(keys);
+        });
+
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['B', 'A']);
+        // B, which the user just opened, is the first one now
+        expect(desktop.activeIndex).toBe(0);
     });
 
     it.each([

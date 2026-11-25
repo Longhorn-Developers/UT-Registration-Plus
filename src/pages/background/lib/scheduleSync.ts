@@ -249,7 +249,6 @@ export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'ret
     const { sync, now } = storage;
     // Copies, since the stores hand out their in-memory values, which a change elsewhere can edit in place
     const schedules: SerializedSchedule[] = structuredClone((await storage.schedules.get('schedules')) ?? []);
-    const activeIndex = (await storage.schedules.get('activeIndex')) ?? 0;
     const blocks: CustomBlock[] = structuredClone((await storage.blocks.get('blocks')) ?? []);
     const savedState = await storage.syncState.get('state');
     const state = savedState?.v === SYNC_VERSION ? savedState : emptyState();
@@ -546,6 +545,8 @@ export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'ret
     }
 
     if (JSON.stringify(nextSchedules) !== JSON.stringify(schedules)) {
+        // Read now, not before the cloud request, or switching schedules while that ran would be undone here
+        const activeIndex = (await storage.schedules.get('activeIndex')) ?? 0;
         const activeId = schedules[activeIndex]?.id;
         const foundIndex = nextSchedules.findIndex(s => s.id === activeId);
         const nextActiveIndex = foundIndex === -1 ? Math.min(activeIndex, nextSchedules.length - 1) : foundIndex;
