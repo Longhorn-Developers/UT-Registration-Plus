@@ -1,3 +1,4 @@
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 
 import createSchedule from './createSchedule';
@@ -46,6 +47,13 @@ export default async function deleteSchedule(scheduleId: string): Promise<string
  * @returns A promise that resolves when all schedules are deleted
  */
 export async function deleteAllSchedules(): Promise<void> {
+    // Only with syncing on, so erasing here never erases another computer the user isn't syncing with. First, so a
+    // synced schedule this computer never downloaded doesn't arrive on the next sync. Imported here, so the pages that
+    // delete schedules don't carry the sync itself.
+    if (await OptionsStore.get('enableScheduleSync')) {
+        const { clearSyncedSchedules } = await import('./scheduleSync');
+        await clearSyncedSchedules();
+    }
     await deleteAllCustomBlocks();
     await UserScheduleStore.set('schedules', []);
     await UserScheduleStore.set('activeIndex', 0);

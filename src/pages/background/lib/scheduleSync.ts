@@ -432,12 +432,15 @@ export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'ret
         const name = BLOCKS_DOC;
         const known = state.docs[name];
         const header = remoteHeader(name);
+        const deletedAt = remoteDeletedAt(name);
         const content = blocksContent(blocks);
         const isChanged = known?.fp !== content.fp;
         const knownLineage = known ? lineage(known.h, ...known.a) : [];
         if (!header) {
             const m = known && !isChanged ? known.m : changedAt(name);
-            await upload(name, blocks, content, m, knownLineage, basesOf(known));
+            // Another computer erased the blocks, so they come back only by being added here since
+            if (deletedAt !== undefined && (m <= deletedAt || blocks.length === 0)) nextBlocks = [];
+            else await upload(name, blocks, content, m, knownLineage, basesOf(known));
         } else if (known && header.h === known.h) {
             if (isChanged) await upload(name, blocks, content, changedAt(name), knownLineage, basesOf(known));
             else nextState.docs[name] = known;
@@ -564,6 +567,58 @@ export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'ret
     // Last, so a sync cut off before this merges again instead of taking this device's schedules as its own changes
     await storage.syncState.set({ state: nextState, problem });
     return isUploaded || problem ? 'done' : 'failed';
+}
+
+/**
+ * Marks the synced schedules this computer never downloaded as deleted, for Reset All Data. The schedules and custom
+ * blocks it does have are erased by the sync that follows, which sees them go; the ones it never downloaded would
+ * instead arrive on that sync, as if they were new.
+ */
+export async function clearSyncedSchedules(
+    storage: Pick<SyncStorage, 'sync' | 'syncState' | 'now'> = {
+        sync: chrome.storage.sync,
+        syncState: ScheduleSyncStore,
+        now: Date.now,
+    }
+): Promise<void> {
+    const { sync, now } = storage;
+    try {
+        const [remote, savedState] = await Promise.all([sync.get(null), storage.syncState.get('state')]);
+        const order = remote[SYNC_ORDER_KEY] as SyncOrder | undefined;
+        // A newer version of the sync wrote these, and they aren't this one's to delete
+        if (order !== undefined && order.v > SYNC_VERSION) return;
+        const known = savedState?.v === SYNC_VERSION ? savedState.docs : {};
+        const time = now();
+        const markers: Record<string, number> = {};
+        const removals: string[] = [];
+        const mark = (name: string, header: DocHeader) => {
+            // Later than the version being deleted, even with this computer's clock behind
+            markers[goneKey(name)] = Math.max(time, header.m + 1);
+            removals.push(docKey(name), ...partsFrom(name, remote, 0));
+        };
+        for (const key of Object.keys(remote)) {
+            const id = SCHEDULE_DOC_KEY.exec(key)?.[1];
+            if (id === undefined) continue;
+            const header = remote[key] as DocHeader;
+            // The sync erases the versions this computer has, by seeing the schedules go
+            if (known[scheduleDoc(id)]?.h !== header.h) mark(scheduleDoc(id), header);
+        }
+        const blocksHeader = remote[docKey(BLOCKS_DOC)] as DocHeader | undefined;
+        if (blocksHeader !== undefined && known[BLOCKS_DOC]?.h !== blocksHeader.h) mark(BLOCKS_DOC, blocksHeader);
+        if (removals.length === 0) return;
+        try {
+            await sync.set(markers);
+        } catch (error) {
+            if (!isQuotaError(error)) throw error;
+            // No room for the markers, so the schedules they delete go first to make some
+            await sync.remove(removals);
+            await sync.set(markers);
+        }
+        await sync.remove(removals);
+    } catch (error) {
+        // The sync still erases everything this computer downloaded, so the reset is not held up by this
+        console.error('Failed to clear the schedules this computer never downloaded', error);
+    }
 }
 
 /**

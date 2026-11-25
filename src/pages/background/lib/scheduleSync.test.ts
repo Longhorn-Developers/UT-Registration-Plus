@@ -4,7 +4,7 @@ import type { CustomBlock } from '@shared/types/CustomBlock';
 import type { UserSchedule } from '@shared/types/UserSchedule';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { SYNC_PREFIX, type SyncStorage, syncSchedules } from './scheduleSync';
+import { clearSyncedSchedules, SYNC_PREFIX, type SyncStorage, syncSchedules } from './scheduleSync';
 
 type SerializedSchedule = Serialized<UserSchedule>;
 type SerializedCourse = Serialized<Course>;
@@ -105,6 +105,8 @@ function createDevice(schedules: SerializedSchedule[], blocks: CustomBlock[] = [
         get blocks() {
             return local.data['CustomBlockStore:blocks'] as CustomBlock[];
         },
+        /** The cloud half of Reset All Data */
+        clearSynced: () => clearSyncedSchedules(storage),
         /** Opens another schedule, like the calendar does */
         open: (index: number) => {
             local.data.activeIndex = index;
@@ -950,6 +952,111 @@ describe('syncSchedules', () => {
         expect(names(desktop)).toEqual(['B', 'A']);
         // B, which the user just opened, is the first one now
         expect(desktop.activeIndex).toBe(0);
+    });
+
+    it('clears the synced schedules on a reset, including one this computer never downloaded', async () => {
+        const laptop = createDevice([schedule('a', 'Fall plan', [course(1)])], [block('x', 'a')]);
+        await laptop.sync();
+        const desktop = createDevice([]);
+        await desktop.sync();
+
+        // The laptop adds one the desktop hasn't downloaded yet
+        laptop.change(schedules => [...schedules, schedule('b', 'Backup', [course(2)])]);
+        await laptop.sync();
+
+        // Reset All Data on the desktop: the schedules it never downloaded first, then its own schedules and blocks
+        await desktop.clearSynced();
+        expect(cloud.data[`${SYNC_PREFIX}doc:s.b`]).toBeUndefined();
+        expect(cloud.data[`${SYNC_PREFIX}gone:s.b`]).toBeDefined();
+        desktop.change(() => [schedule('fresh', 'Schedule 1')]);
+        desktop.local.data['CustomBlockStore:blocks'] = [];
+
+        // Neither the schedule it had nor the one it never downloaded comes back
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['Schedule 1']);
+        expect(desktop.blocks).toEqual([]);
+
+        // And the laptop deletes them too, instead of uploading them again
+        await laptop.sync();
+        expect(names(laptop)).toEqual(['Schedule 1']);
+        expect(laptop.blocks).toEqual([]);
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['Schedule 1']);
+        expect(desktop.blocks).toEqual([]);
+    });
+
+    it("doesn't bring back a schedule or a block the other computer changed before the reset", async () => {
+        const laptop = createDevice([schedule('a', 'Fall plan', [course(1)])], [block('x', 'a')]);
+        await laptop.sync();
+        const desktop = createDevice([]);
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['Fall plan']);
+
+        // The laptop renames the schedule and adds a block, and the desktop hasn't synced since
+        laptop.changeFirst(s => ({ ...s, name: 'Renamed' }));
+        laptop.local.data['CustomBlockStore:blocks'] = [...laptop.blocks, block('y', 'a')];
+        await laptop.sync();
+
+        // Reset All Data on the desktop, which never downloaded either change
+        await desktop.clearSynced();
+        desktop.change(() => [schedule('fresh', 'Schedule 1')]);
+        desktop.local.data['CustomBlockStore:blocks'] = [];
+
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['Schedule 1']);
+        expect(desktop.blocks).toEqual([]);
+
+        await laptop.sync();
+        expect(names(laptop)).toEqual(['Schedule 1']);
+        expect(laptop.blocks).toEqual([]);
+
+        // And they stay gone on both
+        await desktop.sync();
+        await laptop.sync();
+        expect(names(desktop)).toEqual(['Schedule 1']);
+        expect(desktop.blocks).toEqual([]);
+        expect(laptop.blocks).toEqual([]);
+    });
+
+    it('adds a block again after a reset erased them', async () => {
+        const laptop = createDevice([schedule('a', 'Plan', [course(1)])], [block('x', 'a')]);
+        await laptop.sync();
+        const desktop = createDevice([]);
+        await desktop.sync();
+
+        await desktop.clearSynced();
+        desktop.change(() => [schedule('fresh', 'Schedule 1')]);
+        desktop.local.data['CustomBlockStore:blocks'] = [];
+        await desktop.sync();
+        await laptop.sync();
+        expect(laptop.blocks).toEqual([]);
+
+        // A block added after the reset syncs like any other
+        laptop.local.data['CustomBlockStore:blocks'] = [block('z', null)];
+        await laptop.sync();
+        await desktop.sync();
+        expect(desktop.blocks.map(b => b.id)).toEqual(['z']);
+    });
+
+    it('stops writing after a reset erased the blocks', async () => {
+        const laptop = createDevice([schedule('a', 'Plan', [course(1)])], [block('x', 'a')]);
+        await laptop.sync();
+        const desktop = createDevice([]);
+        await desktop.sync();
+        await desktop.clearSynced();
+        desktop.change(() => [schedule('fresh', 'Schedule 1')]);
+        desktop.local.data['CustomBlockStore:blocks'] = [];
+        await desktop.sync();
+        await laptop.sync();
+        await desktop.sync();
+
+        // Neither computer keeps writing the blocks back and forth, which would run into the write-rate limits
+        const writes = cloud.writes;
+        await laptop.sync();
+        await desktop.sync();
+        await laptop.sync();
+        await desktop.sync();
+        expect(cloud.writes).toBe(writes);
     });
 
     it.each([
