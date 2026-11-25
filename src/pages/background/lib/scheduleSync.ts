@@ -40,6 +40,8 @@ const SYNC_VERSION = 1;
 // A sync item holds 8192 bytes, including its key
 const PART_LENGTH = 8000;
 const TOMBSTONE_MS = 1000 * 60 * 60 * 24 * 90;
+// The alarm for the retry after a sync failed, which outlives the background worker going idle
+const RETRY_ALARM = `${SYNC_PREFIX}retry`;
 
 const BLOCKS_DOC = 'blocks';
 const scheduleDoc = (id: string) => `s.${id}`;
@@ -582,8 +584,13 @@ export function startScheduleSync(): void {
     const run = async () => {
         if (!(await OptionsStore.get('enableScheduleSync'))) return;
         const result = await syncSchedules(storage);
+        if (result === 'failed') {
+            // An alarm, not a timer: Chrome can stop the idle background worker long before a minute is up
+            await chrome.alarms.create(RETRY_ALARM, { delayInMinutes: 1 });
+            return;
+        }
+        await chrome.alarms.clear(RETRY_ALARM);
         if (result === 'retry') queueSync(500);
-        if (result === 'failed') queueSync(60_000);
     };
 
     function queueSync(delay: number) {
@@ -601,6 +608,9 @@ export function startScheduleSync(): void {
     });
     chrome.storage.onChanged.addListener((changes, area) => {
         if (area === 'sync' && Object.keys(changes).some(key => key.startsWith(SYNC_PREFIX))) queueSync(300);
+    });
+    chrome.alarms.onAlarm.addListener(alarm => {
+        if (alarm.name === RETRY_ALARM) queueSync(0);
     });
 
     queueSync(0);

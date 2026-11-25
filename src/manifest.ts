@@ -43,6 +43,7 @@ const manifest = defineManifest(async env => {
             'unlimitedStorage',
             'background',
             'scripting',
+            'alarms',
             ...(isDev ? (['declarativeNetRequest', 'declarativeNetRequestWithHostAccess'] as const) : []),
         ],
         host_permissions: isDev ? [...HOST_PERMISSIONS, '<all_urls>'] : HOST_PERMISSIONS,
