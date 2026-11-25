@@ -104,6 +104,29 @@ export async function replaceSchedule(oldSchedule: UserSchedule, newSchedule: Us
 }
 
 /**
+ * Applies a course order to the latest saved version of a schedule.
+ * @param scheduleId - The ID of the schedule being reordered.
+ * @param courseIds - The course IDs in the order requested by the user.
+ */
+export async function reorderScheduleCourses(scheduleId: string, courseIds: readonly number[]): Promise<void> {
+    // Read the unprefixed store key directly in case a cross-tab storage event is still pending.
+    const { schedules } = await chrome.storage.local.get<{ schedules?: Serializable<UserSchedule>[] }>('schedules');
+    if (!schedules) return;
+
+    const scheduleIndex = schedules.findIndex(schedule => schedule.id === scheduleId);
+    const schedule = schedules[scheduleIndex];
+    if (!schedule) return;
+
+    const positions = new Map(courseIds.map((id, index) => [id, index]));
+    const courses = schedule.courses.toSorted(
+        (a, b) => (positions.get(a.uniqueId) ?? courseIds.length) - (positions.get(b.uniqueId) ?? courseIds.length)
+    );
+    if (courses.every((course, index) => course === schedule.courses[index])) return;
+
+    await UserScheduleStore.set('schedules', schedules.with(scheduleIndex, { ...schedule, courses }));
+}
+
+/**
  * Switches the active schedule to the one with the specified id.
  * @param id - The id of the schedule to switch to.
  * @returns A promise that resolves when the active schedule has been switched.

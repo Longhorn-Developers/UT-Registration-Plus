@@ -1,7 +1,7 @@
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import { SortableList } from '@views/components/common/SortableList';
 import Text from '@views/components/common/Text/Text';
-import useSchedules, { replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
+import useSchedules, { reorderScheduleCourses, switchSchedule } from '@views/hooks/useSchedules';
 import type { JSX } from 'react';
 import CaretDownFillIcon from '~icons/ph/caret-down-fill';
 import CaretUpFillIcon from '~icons/ph/caret-up-fill';
@@ -60,8 +60,10 @@ export default function SidebarScheduleList(): JSX.Element {
                                     <SortableList
                                         draggables={schedule.courses.map(course => ({ id: course.uniqueId, course }))}
                                         onChange={reordered => {
-                                            schedule.courses = reordered.map(({ course }) => course);
-                                            replaceSchedule(schedule, schedule);
+                                            void reorderScheduleCourses(
+                                                schedule.id,
+                                                reordered.map(({ id }) => id)
+                                            );
                                         }}
                                         renderItem={({ id, course }) => (
                                             <PopupCourseBlock key={id} course={course} colors={course.colors} />
