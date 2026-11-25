@@ -311,8 +311,10 @@ export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'ret
         docUploads.push({ name, items, removals: docRemovals, entry: { ...content, h, m, a: ancestors, bases } });
     };
 
+    const deletedNames: string[] = [];
     const removeRemote = (name: string, deletedAt: number) => {
         deletions[goneKey(name)] = deletedAt;
+        deletedNames.push(name);
         if (remoteHeader(name)) deletionRemovals.push(docKey(name), ...partsFrom(name, remote, 0));
     };
 
@@ -495,19 +497,26 @@ export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'ret
     let problem: ScheduleSyncProblem = null;
     let isUploaded = true;
     let uploaded = docUploads;
+    let areDeletionsMarked = true;
+    let areDeletionsRemoved = false;
     try {
         if (Object.keys(deletions).length > 0) {
+            areDeletionsMarked = false;
             try {
                 await sync.set(deletions);
             } catch (error) {
-                if (!isQuotaError(error)) throw error;
-                // No room for the markers, so the deleted documents go first to make some. Otherwise the deletion
-                // never reaches the other computers, which keep the schedule.
-                if (deletionRemovals.length > 0) await sync.remove(deletionRemovals);
+                // Retrying the same write would fail the same way with nothing to free
+                if (!isQuotaError(error) || deletionRemovals.length === 0) throw error;
+                // No room for the markers, so the deleted documents go first to make some, or the deletion never
+                // reaches the other computers and they keep the schedule
+                await sync.remove(deletionRemovals);
+                areDeletionsRemoved = true;
                 await sync.set(deletions);
             }
+            areDeletionsMarked = true;
         }
-        if (deletionRemovals.length > 0) await sync.remove(deletionRemovals);
+        // Only once the markers are up, so a document is never left without one for the other computers to upload again
+        if (deletionRemovals.length > 0 && !areDeletionsRemoved) await sync.remove(deletionRemovals);
         const all = Object.assign({}, uploads, ...docUploads.map(doc => doc.items));
         try {
             if (Object.keys(all).length > 0) await sync.set(all);
@@ -536,6 +545,14 @@ export async function syncSchedules(storage: SyncStorage): Promise<'done' | 'ret
         else console.error('Failed to sync the schedules', error);
     }
     for (const doc of uploaded) nextState.docs[doc.name] = doc.entry;
+    // A deletion whose marker never went up is made again on the next run, so it isn't forgotten here while
+    // the document is gone and another computer could upload the schedule back
+    if (!areDeletionsMarked) {
+        for (const name of deletedNames) {
+            const known = state.docs[name];
+            if (known) nextState.docs[name] = known;
+        }
+    }
     // Still joining until everything has arrived, or its empty schedule would go up on the next run
     nextState.initialized = !(isJoining && isArriving);
     nextState.orderFp = hash(nextSchedules.map(s => s.id).join(','));
@@ -611,12 +628,21 @@ export async function clearSyncedSchedules(
         } catch (error) {
             if (!isQuotaError(error)) throw error;
             // No room for the markers, so the schedules they delete go first to make some
+            const removed = Object.fromEntries(removals.map(key => [key, remote[key]]));
             await sync.remove(removals);
-            await sync.set(markers);
+            try {
+                await sync.set(markers);
+            } catch (retryError) {
+                // Put them back rather than leave them with nothing to say they were deleted, which would have the
+                // other computers upload them again
+                await sync.set(removed);
+                throw retryError;
+            }
+            return;
         }
         await sync.remove(removals);
     } catch (error) {
-        // The sync still erases everything this computer downloaded, so the reset is not held up by this
+        // The sync still erases everything this computer downloaded, so don't hold the reset up for this
         console.error('Failed to clear the schedules this computer never downloaded', error);
     }
 }

@@ -1059,6 +1059,42 @@ describe('syncSchedules', () => {
         expect(cloud.writes).toBe(writes);
     });
 
+    it("doesn't bring a deleted schedule back when its marker can't be written", async () => {
+        const laptop = createDevice([schedule('a', 'Plan', [course(1)]), schedule('b', 'Old', [course(2)])]);
+        await laptop.sync();
+        const desktop = createDevice([]);
+        await desktop.sync();
+
+        // The marker doesn't fit, and the retry that frees room for it runs into the write-rate limit
+        const set = cloud.set;
+        let marks = 0;
+        let failMarkers = true;
+        vi.spyOn(cloud, 'set').mockImplementation(async items => {
+            if (failMarkers && Object.keys(items).some(key => key.startsWith(`${SYNC_PREFIX}gone:`))) {
+                marks += 1;
+                throw new Error(
+                    marks === 1
+                        ? 'Resource::kMaxItems quota exceeded'
+                        : 'This request exceeds the MAX_WRITE_OPERATIONS_PER_MINUTE quota.'
+                );
+            }
+            return set(items);
+        });
+        laptop.change(schedules => schedules.filter(s => s.id !== 'b'));
+        expect(await laptop.sync()).toBe('failed');
+
+        // The other computer uploads it again in the meantime, since nothing says it was deleted
+        await desktop.sync();
+        expect(names(desktop)).toEqual(['Plan', 'Old']);
+
+        // The next run makes the deletion again instead of having forgotten it
+        failMarkers = false;
+        await laptop.sync();
+        await desktop.sync();
+        expect(names(laptop)).toEqual(['Plan']);
+        expect(names(desktop)).toEqual(['Plan']);
+    });
+
     it.each([
         ['Resource::kQuotaBytes quota exceeded', 'storage-full'],
         ['Resource::kQuotaBytesPerItem quota exceeded', 'storage-full'],
