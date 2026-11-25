@@ -109,10 +109,11 @@ export async function replaceSchedule(oldSchedule: UserSchedule, newSchedule: Us
  * @returns A promise that resolves when the active schedule has been switched.
  */
 export async function switchSchedule(id: string): Promise<void> {
-    console.log('Switching schedule...');
-    const schedules = await UserScheduleStore.get('schedules');
-    const activeIndex = schedules.findIndex(s => s.id === id);
-    await UserScheduleStore.set('activeIndex', activeIndex);
+    const { schedules, activeIndex } = await UserScheduleStore.all();
+    const nextIndex = schedules.findIndex(schedule => schedule.id === id);
+    if (nextIndex === -1 || nextIndex === activeIndex) return;
+
+    await UserScheduleStore.set('activeIndex', nextIndex);
 }
 
 /**

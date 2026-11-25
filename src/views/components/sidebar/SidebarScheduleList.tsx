@@ -1,7 +1,7 @@
 import PopupCourseBlock from '@views/components/common/PopupCourseBlock';
 import { SortableList } from '@views/components/common/SortableList';
 import Text from '@views/components/common/Text/Text';
-import useSchedules, { replaceSchedule } from '@views/hooks/useSchedules';
+import useSchedules, { replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import type { JSX } from 'react';
 import CaretDownFillIcon from '~icons/ph/caret-down-fill';
 import CaretUpFillIcon from '~icons/ph/caret-up-fill';
@@ -19,15 +19,23 @@ export default function SidebarScheduleList(): JSX.Element {
         <>
             {schedules.map(schedule => {
                 const isActive = schedule.id === activeSchedule.id;
+                const coursesId = `registration-schedule-courses-${schedule.id}`;
 
                 return (
                     <div key={schedule.id} className='flex flex-col border border-divider/50 rounded bg-surface-raised'>
-                        <div className='flex items-center px-3.5 py-2.5'>
-                            <div className='min-w-0 flex-1'>
-                                <Text as='div' variant='h3' className='truncate text-ut-burntorange normal-case!'>
+                        <button
+                            type='button'
+                            className='flex w-full cursor-pointer items-center rounded px-3.5 py-2.5 text-left focusable'
+                            aria-label={`Select schedule ${schedule.name}`}
+                            aria-expanded={isActive}
+                            aria-controls={coursesId}
+                            onClick={() => void switchSchedule(schedule.id)}
+                        >
+                            <span className='min-w-0 flex-1'>
+                                <Text variant='h3' className='block truncate text-ut-burntorange normal-case!'>
                                     {schedule.name}
                                 </Text>
-                                <Text variant='h4' as='p' className='mt-0.5 inline-flex gap-3 text-content-muted'>
+                                <Text variant='h4' className='mt-0.5 inline-flex gap-3 text-content-muted'>
                                     <span>
                                         {schedule.hours}&nbsp;
                                         <span className='ml-0.5 uppercase'>
@@ -41,14 +49,14 @@ export default function SidebarScheduleList(): JSX.Element {
                                         </span>
                                     </span>
                                 </Text>
-                            </div>
-                            <Text className='text-ut-burntorange text-2xl! font-normal!'>
+                            </span>
+                            <Text aria-hidden='true' className='text-ut-burntorange text-2xl! font-normal!'>
                                 {isActive ? <CaretUpFillIcon /> : <CaretDownFillIcon />}
                             </Text>
-                        </div>
-                        {isActive && (
-                            <div className='px-3.5 pb-3.5'>
-                                {schedule.courses.length > 0 ? (
+                        </button>
+                        <div id={coursesId} className='px-3.5 pb-3.5' hidden={!isActive}>
+                            {isActive &&
+                                (schedule.courses.length > 0 ? (
                                     <SortableList
                                         draggables={schedule.courses.map(course => ({ id: course.uniqueId, course }))}
                                         onChange={reordered => {
@@ -63,9 +71,8 @@ export default function SidebarScheduleList(): JSX.Element {
                                     <Text variant='small' as='p' className='text-center text-content'>
                                         (No courses added)
                                     </Text>
-                                )}
-                            </div>
-                        )}
+                                ))}
+                        </div>
                     </div>
                 );
             })}
