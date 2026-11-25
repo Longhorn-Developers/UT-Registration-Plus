@@ -299,8 +299,8 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                             Reset All Data
                         </Text>
                         <p className='text-sm text-content-muted'>
-                            Erases all schedules, courses, and custom blocks you have
-                            {scheduleSync ? ', here and on your other synced computers.' : '.'}
+                            Erases all schedules, courses, and custom blocks you have, here and, if Sync Schedules is
+                            on, on your other synced computers.
                         </p>
                     </div>
                     <Button variant='outline' color='theme-red' icon={TrashIcon} onClick={handleEraseAll}>
