@@ -1,3 +1,4 @@
+import { Switch } from '@headlessui/react';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import MIMEType from '@shared/types/MIMEType';
 import type { ScheduleSyncProblem } from '@shared/types/ScheduleSync';
@@ -193,11 +194,18 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
                 <Divider size='auto' orientation='horizontal' />
 
-                <div className='flex items-center justify-between'>
+                <Switch.Group as='div' className='flex items-center justify-between'>
                     <div className='max-w-xs'>
-                        <Text variant='h4' className='text-ut-burntorange dark:text-content font-semibold'>
+                        {/* A Switch.Label, so screen readers announce what the switch controls. It has to come from
+                            here: Headless UI's Switch overwrites an aria-labelledby passed to it as a prop. */}
+                        <Switch.Label
+                            passive
+                            as={Text}
+                            variant='h4'
+                            className='text-ut-burntorange dark:text-content font-semibold'
+                        >
                             Sync Schedules
-                        </Text>
+                        </Switch.Label>
                         <p className='text-sm text-content-muted'>
                             Keeps your schedules and custom blocks the same on every computer where you're signed in to
                             Chrome with sync turned on.
@@ -215,7 +223,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                             void OptionsStore.set('enableScheduleSync', !scheduleSync);
                         }}
                     />
-                </div>
+                </Switch.Group>
 
                 <Divider size='auto' orientation='horizontal' />
 
