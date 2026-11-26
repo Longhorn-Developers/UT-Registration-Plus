@@ -1,24 +1,20 @@
 import splashText from '@assets/insideJokes';
 import createSchedule from '@pages/background/lib/createSchedule';
-import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
-import Divider from '@views/components/common/Divider';
 import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
-import CalendarDotsFillIcon from '~icons/ph/calendar-dots-fill';
 import FlagIcon from '~icons/ph/flag';
-import GearSixIcon from '~icons/ph/gear-six';
 import PlusIcon from '~icons/ph/plus';
 
 import { Button } from './common/Button';
 import CourseStatus from './common/CourseStatus';
-import { SmallLogo } from './common/LogoIcon';
 import PopupCourseBlock from './common/PopupCourseBlock';
+import PopupHeader from './common/PopupHeader';
 import ScheduleDropdown from './common/ScheduleDropdown';
 import ScheduleListItem from './common/ScheduleListItem';
 import { SortableList } from './common/SortableList';
@@ -60,51 +56,19 @@ export default function PopupMain(): JSX.Element {
         // Generate a new splash text every time the active schedule changes
     }, [activeSchedule.id]);
 
-    const handleOpenOptions = () => {
-        background.switchToSettingsTab().catch(error => console.error('Failed to open the settings page', error));
-    };
-
-    const handleCalendarOpenOnClick = async () => {
-        await background.switchToCalendarTab({});
-        window.close();
-    };
-
     return (
         <div className='h-screen max-h-full flex flex-col bg-surface-raised'>
-            <div className='px-spacing-6 py-spacing-5'>
-                <div className='flex items-center justify-between bg-surface-raised'>
-                    <SmallLogo />
-                    <div className='flex items-center gap-1.5'>
-                        <Button
-                            variant='filled'
-                            size='small'
-                            color='ut-burntorange'
-                            onClick={handleCalendarOpenOnClick}
-                            icon={CalendarDotsFillIcon}
-                        >
-                            Calendar
-                        </Button>
-                        <Button
-                            variant='minimal'
-                            size='small'
-                            color='ut-black'
-                            icon={FlagIcon}
-                            title='Send feedback'
-                            className='!text-content-muted'
-                            onClick={showReportIssueDialog}
-                        />
-                        <Button
-                            variant='minimal'
-                            size='small'
-                            color='ut-black'
-                            className='!text-content-muted'
-                            onClick={handleOpenOptions}
-                            icon={GearSixIcon}
-                        />
-                    </div>
-                </div>
-            </div>
-            <Divider className='bg-divider/50' orientation='horizontal' size='100%' />
+            <PopupHeader onCalendarOpen={() => window.close()}>
+                <Button
+                    variant='minimal'
+                    size='small'
+                    color='ut-black'
+                    icon={FlagIcon}
+                    title='Send feedback'
+                    className='!text-content-muted'
+                    onClick={showReportIssueDialog}
+                />
+            </PopupHeader>
             <div className='px-5 pb-2.5 pt-3.75'>
                 <ScheduleDropdown>
                     <SortableList
@@ -155,7 +119,12 @@ export default function PopupMain(): JSX.Element {
                             replaceSchedule(getActiveSchedule(), activeSchedule);
                         }}
                         renderItem={({ id, course }) => (
-                            <PopupCourseBlock key={id} course={course} colors={course.colors} />
+                            <PopupCourseBlock
+                                key={id}
+                                course={course}
+                                colors={course.colors}
+                                onCalendarOpen={() => window.close()}
+                            />
                         )}
                     />
                 )}
