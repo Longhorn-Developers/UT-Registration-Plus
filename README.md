@@ -102,16 +102,18 @@ Once set up, the extension can be built to the `dist/` directory using the follo
 ### Development Builds
 
 - Run the development server:
-    ```bash
-    pnpm dev
-    ```
+
+  ```bash
+  pnpm dev
+  ```
 
 ### Production Builds
 
 - To generate production builds:
-    ```bash
-    pnpm build
-    ```
+
+  ```bash
+  pnpm build
+  ```
 
 <details>
 <summary>Beta Builds</summary>
@@ -155,13 +157,13 @@ Follow this structure for commit messages:
 Where:
 
 - **type**: One of the following:
-    - `feat`: A new feature
-    - `fix`: A bug fix
-    - `docs`: Documentation updates
-    - `style`: Code formatting changes (whitespace, semicolons, etc.)
-    - `refactor`: Code restructuring (without adding features or fixing bugs)
-    - `test`: Adding or modifying tests
-    - `chore`: Maintenance tasks or build process changes
+  - `feat`: A new feature
+  - `fix`: A bug fix
+  - `docs`: Documentation updates
+  - `style`: Code formatting changes (whitespace, semicolons, etc.)
+  - `refactor`: Code restructuring (without adding features or fixing bugs)
+  - `test`: Adding or modifying tests
+  - `chore`: Maintenance tasks or build process changes
 
 Example:
 

@@ -18,3 +18,5 @@ updates:
     ignore:
       - dependency-name: '@crxjs/vite-plugin'
       - dependency-name: '@unocss/vite'
+      # Bumped by hand together with flake.lock: nix/treefmt.nix checks that nixpkgs ships the same Biome version
+      - dependency-name: '@biomejs/biome'
