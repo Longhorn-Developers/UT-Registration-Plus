@@ -34,6 +34,7 @@ type SelectedBuildings = {
 
 type CampusMapProps = {
     processedCourses: ProcessInPersonMeetings[];
+    highlightedBuildings?: ReadonlySet<string>;
 };
 
 /**
@@ -57,7 +58,7 @@ type CampusMapProps = {
  * - Dev controls for toggling element visibility.
  * - Zoom and pan controls.
  */
-export default function CampusMap({ processedCourses }: CampusMapProps): React.JSX.Element {
+export default function CampusMap({ processedCourses, highlightedBuildings }: CampusMapProps): React.JSX.Element {
     // Core state
     const [selected, setSelected] = useState<SelectedBuildings>({
         start: null,
@@ -197,8 +198,15 @@ export default function CampusMap({ processedCourses }: CampusMapProps): React.J
             result.add(path.end);
         });
 
+        // Always show enrolled course buildings regardless of zoom / clustering
+        if (highlightedBuildings) {
+            for (const building of highlightedBuildings) {
+                result.add(building);
+            }
+        }
+
         return result;
-    }, [selected.start, selected.end, relevantPaths]);
+    }, [selected.start, selected.end, relevantPaths, highlightedBuildings]);
 
     // Memoized set of buildings to show based on zoom level and grid clustering
     const visibleBuildings = useMemo(() => {
@@ -625,11 +633,13 @@ export default function CampusMap({ processedCourses }: CampusMapProps): React.J
                                                 ? '#579D42'
                                                 : id === selected.end
                                                   ? '#D10000'
-                                                  : node.type === 'building'
-                                                    ? '#BF5700'
-                                                    : node.type === 'intersection'
-                                                      ? '#9CADB7'
-                                                      : '#D6D2C400'
+                                                  : node.type === 'building' && (highlightedBuildings?.has(id) ?? false)
+                                                    ? '#F8971F'
+                                                    : node.type === 'building'
+                                                      ? '#BF5700'
+                                                      : node.type === 'intersection'
+                                                        ? '#9CADB7'
+                                                        : '#D6D2C400'
                                         }
                                         stroke={node.type !== 'walkway' ? 'white' : 'green'}
                                         strokeWidth={zoomLevel < ZOOM_LEVELS.MEDIUM ? '1.5' : '2'}

@@ -8,7 +8,7 @@ import Text from '@views/components/common/Text/Text';
 import useChangelog from '@views/hooks/useChangelog';
 import { useActiveSchedule } from '@views/hooks/useSchedules';
 import type { JSX } from 'react';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import IconoirGitFork from '~icons/iconoir/git-fork';
 
@@ -18,6 +18,7 @@ import ImportantLinks from '../calendar/ImportantLinks';
 import TeamLinks from '../calendar/TeamLinks';
 import CampusMap from './CampusMap';
 import { type DAY, DAYS, type ProcessInPersonMeetings } from './types';
+import { extractEnrolledBuildings } from './utils';
 
 const manifest = chrome.runtime.getManifest();
 const LDIconURL = new URL('/src/assets/LD-icon.png', import.meta.url).href;
@@ -147,6 +148,8 @@ export default function UTRPMap(): JSX.Element {
         );
     });
 
+    const highlightedBuildings = useMemo(() => extractEnrolledBuildings(processedCourses), [processedCourses]);
+
     const generateWeekSchedule = useCallback((): Record<DAY, string[]> => {
         const weekSchedule: Record<string, string[]> = {};
 
@@ -233,7 +236,7 @@ export default function UTRPMap(): JSX.Element {
                     <CalendarFooter />
                 </div>
                 <div className='flex p-12'>
-                    <CampusMap processedCourses={processedCourses} />
+                    <CampusMap processedCourses={processedCourses} highlightedBuildings={highlightedBuildings} />
                 </div>
 
                 {/* Show week schedule */}
