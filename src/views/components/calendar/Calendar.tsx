@@ -9,9 +9,17 @@ import CalendarGrid from '@views/components/calendar/CalendarGrid';
 import CalendarHeader from '@views/components/calendar/CalendarHeader/CalendarHeader';
 import { CalendarSchedules } from '@views/components/calendar/CalendarSchedules';
 import ResourceLinks from '@views/components/calendar/ResourceLinks';
+import CourseFinderPanel from '@views/components/common/CourseFinder/CourseFinderPanel';
 import Divider from '@views/components/common/Divider';
 import CourseCatalogInjectedPopup from '@views/components/injected/CourseCatalogInjectedPopup/CourseCatalogInjectedPopup';
 import { CalendarContext } from '@views/contexts/CalendarContext';
+import {
+    useCalendarSidebar,
+    useCourseFinderControls,
+    useCourseFinderPreview,
+    useCourseFinderState,
+    useSetCourseFinderPreview,
+} from '@views/contexts/CourseFinderContext';
 import useCourseFromUrl from '@views/hooks/useCourseFromUrl';
 import { useFlattenedCourseSchedule } from '@views/hooks/useFlattenedCourseSchedule';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
@@ -23,6 +31,7 @@ import type { ReactNode } from 'react';
 import { memo, useEffect, useRef, useState } from 'react';
 import { useThemeSync } from 'src/views/hooks/useThemeSync';
 import OutwardArrowIcon from '~icons/material-symbols/arrow-outward';
+import MagnifyingGlassIcon from '~icons/ph/magnifying-glass';
 import SidebarIcon from '~icons/ph/sidebar';
 import { Button } from '../common/Button';
 import { LargeLogo } from '../common/LogoIcon';
@@ -34,11 +43,34 @@ import SidebarResizeHandle, { type SidebarDrag } from './SidebarResizeHandle';
 /** How long the sidebar's width has to stay the same before it's saved, in ms */
 const SIDEBAR_SAVE_DELAY_MS = 300;
 
+/**
+ * The Course Finder in the sidebar. It reads the Course Finder's state itself, so the rest of the sidebar doesn't
+ * re-render with every keystroke and page of results.
+ */
+function SidebarCourseFinder() {
+    const controls = useCourseFinderControls();
+    const state = useCourseFinderState();
+    const setPreview = useSetCourseFinderPreview();
+    if (!controls || !state) return null;
+
+    return (
+        <CourseFinderPanel
+            finder={state.finder}
+            form={state.form}
+            onClose={controls.close}
+            inputRef={controls.searchInputRef}
+            onPreviewChange={setPreview ?? undefined}
+        />
+    );
+}
+
 const CalendarSidebar = memo(function CalendarSidebar() {
-    const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
-    const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
+    const { isSidebarShown: showSidebar, toggleSidebar } = useCalendarSidebar();
     const showReportIssueDialog = useReportIssueDialog();
+    const courseFinder = useCourseFinderControls();
+    const isCourseFinderOpen = courseFinder?.isOpen ?? false;
     const sidebarRef = useRef<HTMLDivElement>(null);
+    const findCourseButtonRef = useRef<HTMLButtonElement>(null);
 
     const storedWidth = OptionsStore.useStore(store => store.calendarSidebarWidth);
     // While the edge is being dragged, what the drag has done so far
@@ -120,24 +152,50 @@ const CalendarSidebar = memo(function CalendarSidebar() {
                 />
             </div>
 
+            {/* Looks like the search it opens, styled like the Input component. Outside the scrolling part of the
+                sidebar, so it's always in reach. Hidden rather than removed while the Course Finder is open, so focus
+                can go back to it afterwards. */}
+            {courseFinder && (
+                <div className={clsx('px-spacing-7 mt-spacing-5 mb-spacing-4', { hidden: isCourseFinderOpen })}>
+                    <button
+                        ref={findCourseButtonRef}
+                        type='button'
+                        className='h-9 w-full flex items-center gap-spacing-4 border border-divider/50 border-rounded bg-transparent px-spacing-3 text-content-muted btn-transition hover:border-content/30 active:scale-98 focusable'
+                        onClick={() => courseFinder.open(findCourseButtonRef.current)}
+                    >
+                        <MagnifyingGlassIcon className='h-5 w-5 text-content/50' />
+                        <Text variant='p'>Find a course…</Text>
+                    </button>
+                </div>
+            )}
+
+            {/* Keyed, so each view starts scrolled to the top (and fades in). The scroll padding keeps what's focused out from under the sticky titles. */}
             <div
+                key={isCourseFinderOpen ? 'course-finder' : 'schedules'}
                 style={{
                     scrollbarGutter: 'stable',
                 }}
-                className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto pb-spacing-6 pl-spacing-7 pr-2.75'
+                className='relative h-full w-full flex flex-grow flex-col gap-y-spacing-6 overflow-x-clip overflow-y-auto scroll-pt-10 pb-spacing-6 pl-spacing-7 pr-2.75 motion-safe:(animate-fade-in animate-duration-200)'
             >
-                <CalendarSchedules />
-                <Divider orientation='horizontal' size='100%' />
-                <ResourceLinks />
-                <Divider orientation='horizontal' size='100%' />
-                <button
-                    type='button'
-                    onClick={showReportIssueDialog}
-                    className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange dark:text-content underline-offset-2 hover:underline'
-                >
-                    <Text variant='p'>Send us Feedback!</Text>
-                    <OutwardArrowIcon className='h-4 w-4' />
-                </button>
+                {/* The Course Finder takes the schedules' place in the sidebar while it's open */}
+                {isCourseFinderOpen ? (
+                    <SidebarCourseFinder />
+                ) : (
+                    <>
+                        <CalendarSchedules />
+                        <Divider orientation='horizontal' size='100%' />
+                        <ResourceLinks />
+                        <Divider orientation='horizontal' size='100%' />
+                        <button
+                            type='button'
+                            onClick={showReportIssueDialog}
+                            className='bg-transparent mt-auto flex items-center gap-spacing-2 text-ut-burntorange dark:text-content underline-offset-2 hover:underline'
+                        >
+                            <Text variant='p'>Send us Feedback!</Text>
+                            <OutwardArrowIcon className='h-4 w-4' />
+                        </button>
+                    </>
+                )}
             </div>
 
             <CalendarFooter />
@@ -149,7 +207,8 @@ const CalendarSidebar = memo(function CalendarSidebar() {
                 onDrag={setDrag}
                 onDragEnd={ended => {
                     if (ended?.collapsed) {
-                        void OptionsStore.set('showCalendarSidebar', false);
+                        // Closes the Course Finder too, which otherwise keeps the sidebar shown
+                        toggleSidebar();
                         return;
                     }
                     setDrag(null);
@@ -165,14 +224,20 @@ const CalendarSidebar = memo(function CalendarSidebar() {
  * Calendar page component
  */
 export default function Calendar(): ReactNode {
-    const { courseCells, blocks, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule();
+    // The section hovered over in the Course Finder, drawn over the schedule. The calendar's hours stay stretched to fit
+    // the sections previewed while the Course Finder is open.
+    const preview = useCourseFinderPreview();
+    const isCourseFinderOpen = useCourseFinderControls()?.isOpen ?? false;
+    const { courseCells, blocks, previewCells, activeSchedule, startMinutes, endMinutes } = useFlattenedCourseSchedule(
+        preview?.course ?? null,
+        isCourseFinderOpen
+    );
     const initialCourse = useCourseFromUrl();
     const [course, setCourse] = useState<Course | null>(initialCourse);
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(initialCourse !== null);
     const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
     const [isValidFileType, setIsValidFileType] = useState<boolean>(false);
-    const showSidebar = OptionsStore.useStore(store => store.showCalendarSidebar);
-    const toggleSidebar = () => void OptionsStore.set('showCalendarSidebar', !showSidebar);
+    const { isSidebarShown: showSidebar, toggleSidebar } = useCalendarSidebar();
 
     const activeScheduleRef = useRef(activeSchedule);
     activeScheduleRef.current = activeSchedule;
@@ -375,6 +440,8 @@ export default function Calendar(): ReactNode {
                                     />
                                 )}
                                 courseCells={courseCells}
+                                previewCells={previewCells}
+                                highlight={preview}
                                 setCourse={openCourse}
                                 startMinutes={startMinutes}
                                 endMinutes={endMinutes}

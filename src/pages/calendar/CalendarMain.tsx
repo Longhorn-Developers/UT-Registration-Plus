@@ -8,6 +8,7 @@ import DialogProvider from '@views/components/common/DialogProvider/DialogProvid
 import ExtensionRoot from '@views/components/common/ExtensionRoot/ExtensionRoot';
 import { MigrationDialog } from '@views/components/common/MigrationDialog';
 import { WhatsNewDialog } from '@views/components/common/WhatsNewPopup';
+import { CourseFinderProvider } from '@views/contexts/CourseFinderContext';
 import { Suspense, useEffect } from 'react';
 import { suspendUntilStoresReady } from 'src/lib/chrome-extension-toolkit/storage/createStore';
 
@@ -69,5 +70,9 @@ export default function CalendarMain() {
 function CalendarBootstrap() {
     suspendUntilStoresReady([UserScheduleStore, OptionsStore]);
 
-    return <Calendar />;
+    return (
+        <CourseFinderProvider>
+            <Calendar />
+        </CourseFinderProvider>
+    );
 }
