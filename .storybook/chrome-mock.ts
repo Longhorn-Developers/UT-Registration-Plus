@@ -1,6 +1,7 @@
 /// <reference types="chrome" />
 import { version } from '../package.json';
 import deepEqual from 'fast-deep-equal/es6';
+import { handleBackgroundMessage } from '../src/stories/testing/backgroundMock';
 
 type ListenerFunction = (
     changes: { [key: string]: chrome.storage.StorageChange },
@@ -92,5 +93,7 @@ globalThis.chrome = {
             addListener<T extends Function>(_callback: T) {},
             removeListener<T extends Function>(_callback: T) {},
         },
+        // `background.*` messages from @shared/messages end up here; see src/stories/testing/backgroundMock.ts
+        sendMessage: handleBackgroundMessage,
     },
 } as typeof chrome;
