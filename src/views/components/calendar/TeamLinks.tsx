@@ -1,3 +1,4 @@
+import { background } from '@shared/messages';
 import { CRX_PAGES } from '@shared/types/CRXPages';
 import Text from '@views/components/common/Text/Text';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
@@ -48,6 +49,10 @@ export default function TeamLinks({ className }: Props): React.JSX.Element {
         if (link.url === CRX_PAGES.REPORT) {
             event.preventDefault();
             showReportIssueDialog();
+        } else if (link.url === CRX_PAGES.OPTIONS && !(event.ctrlKey || event.metaKey || event.shiftKey)) {
+            // Ctrl/Cmd/Shift-click still opens a new tab
+            event.preventDefault();
+            background.switchToSettingsTab().catch(error => console.error('Failed to open the settings page', error));
         }
     };
 

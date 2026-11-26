@@ -1,6 +1,5 @@
 import { background } from '@shared/messages';
 import { OptionsStore } from '@shared/storage/OptionsStore';
-import { CRX_PAGES } from '@shared/types/CRXPages';
 import { useAllSchedules } from '@views/hooks/useSchedules';
 import { useCallback } from 'react';
 
@@ -46,8 +45,9 @@ export function useEnforceScheduleLimit(): () => boolean {
                             onClick={() => {
                                 close();
                                 // open options/settings page so user can enable bypass if they are advising staff
-                                const url = chrome.runtime.getURL(CRX_PAGES.OPTIONS);
-                                background.openNewTab({ url });
+                                background
+                                    .switchToSettingsTab()
+                                    .catch(error => console.error('Failed to open the settings page', error));
                             }}
                         >
                             Open Settings

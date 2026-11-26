@@ -28,7 +28,9 @@ export default function PopupHeader({ onCalendarOpen, children }: PopupHeaderPro
         onCalendarOpen?.();
     };
 
-    const handleOpenOptions = () => background.openNewTab({ url: chrome.runtime.getURL('/options.html') });
+    const handleOpenOptions = () => {
+        background.switchToSettingsTab().catch(error => console.error('Failed to open the settings page', error));
+    };
 
     return (
         <>
