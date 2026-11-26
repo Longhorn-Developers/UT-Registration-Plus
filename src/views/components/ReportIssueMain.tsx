@@ -1,6 +1,7 @@
 import 'uno.css';
 
 import { captureFeedback } from '@sentry/react';
+import { FEEDBACK_DATA_TYPES, requestDataCollectionPermissions } from '@shared/diagnosticReporting';
 import type { JSX } from 'react';
 import { useState } from 'react';
 import XIcon from '~icons/ph/x';
@@ -22,6 +23,8 @@ export default function ReportIssueMain({ onClose }: Props): JSX.Element {
     const [email, setEmail] = useState('');
     const [feedback, setFeedback] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState('');
 
     const handleClose = () => {
         if (onClose) {
@@ -38,17 +41,29 @@ export default function ReportIssueMain({ onClose }: Props): JSX.Element {
         if (!email || !feedback) {
             throw new Error('Email and feedback are required');
         }
-        captureFeedback(
-            {
-                message: feedback,
-                email,
-            },
-            {
-                includeReplay: false,
+        setIsSubmitting(true);
+        setError('');
+        try {
+            if (!(await requestDataCollectionPermissions(FEEDBACK_DATA_TYPES))) {
+                setError('Your feedback was not sent because permission to share your email was not granted.');
+                return;
             }
-        );
+            captureFeedback(
+                {
+                    message: feedback,
+                    email,
+                },
+                {
+                    includeReplay: false,
+                }
+            );
 
-        setIsSubmitted(true);
+            setIsSubmitted(true);
+        } catch {
+            setError('Could not send feedback. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (isSubmitted) {
@@ -90,7 +105,7 @@ export default function ReportIssueMain({ onClose }: Props): JSX.Element {
                 />
             </div>
             <Text variant='p' as='p' className='text-content-muted mt-1.5'>
-                Help us make UT Registration Plus even better!
+                Your email and feedback will be sent to Sentry to help improve UT Registration Plus.
             </Text>
 
             <form onSubmit={submitFeedback} className='flex flex-col gap-3 mt-5'>
@@ -124,11 +139,17 @@ export default function ReportIssueMain({ onClose }: Props): JSX.Element {
                     />
                 </div>
 
+                {error && (
+                    <p role='alert' className='text-sm text-theme-red'>
+                        {error}
+                    </p>
+                )}
+
                 <div className='mt-2 flex items-center justify-end gap-4'>
                     <Button variant='minimal' color='ut-burntorange' onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button variant='filled' color='ut-burntorange' type='submit'>
+                    <Button variant='filled' color='ut-burntorange' type='submit' disabled={isSubmitting}>
                         Send Feedback
                     </Button>
                 </div>

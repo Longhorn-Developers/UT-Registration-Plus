@@ -7,7 +7,6 @@ import {
     getCurrentScope,
     getDefaultIntegrations,
     init,
-    makeFetchTransport,
     Scope,
 } from '@sentry/react';
 import { useSentryToolbar } from '@sentry/toolbar';
@@ -52,7 +51,6 @@ export default function SentryProvider({ children, transactionName }: SentryProv
             const client = new BrowserClient({
                 ...SENTRY_OPTIONS,
                 integrations: getDefaultIntegrations({}).filter(i => !SHARED_ENV_FILTERED.has(i.name)),
-                transport: makeFetchTransport,
                 stackParser: defaultStackParser,
             });
             const scope = new Scope();

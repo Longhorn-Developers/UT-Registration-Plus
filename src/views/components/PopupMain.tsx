@@ -8,6 +8,7 @@ import Text from '@views/components/common/Text/Text';
 import { useEnforceScheduleLimit } from '@views/hooks/useEnforceScheduleLimit';
 import useReportIssueDialog from '@views/hooks/useReportIssueDialog';
 import useSchedules, { getActiveSchedule, replaceSchedule, switchSchedule } from '@views/hooks/useSchedules';
+import clsx from 'clsx';
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 import CalendarDotsFillIcon from '~icons/ph/calendar-dots-fill';
@@ -60,8 +61,13 @@ export default function PopupMain(): JSX.Element {
         // Generate a new splash text every time the active schedule changes
     }, [activeSchedule.id]);
 
-    const handleOpenOptions = () => {
-        background.switchToSettingsTab().catch(error => console.error('Failed to open the settings page', error));
+    const handleOpenOptions = async () => {
+        try {
+            await background.switchToSettingsTab();
+            window.close();
+        } catch (error) {
+            console.error('Failed to open the settings page', error);
+        }
     };
 
     const handleCalendarOpenOnClick = async () => {
@@ -142,7 +148,12 @@ export default function PopupMain(): JSX.Element {
             )}
             <div
                 style={{ scrollbarGutter: 'stable' }}
-                className='flex-1 self-stretch overflow-y-scroll pl-spacing-6 pr-[6px]'
+                className={clsx(
+                    'flex-1 self-stretch overflow-y-scroll pl-spacing-6',
+                    // Chrome's 14px scrollbar (ExtensionRoot.module.scss) plus 6px matches the left padding.
+                    // Firefox ignores that scrollbar style and macOS overlay scrollbars take no space, so it gets the full padding.
+                    __BROWSER__ === 'firefox' ? 'pr-spacing-6' : 'pr-[6px]'
+                )}
             >
                 {activeSchedule?.courses?.length > 0 && (
                     <SortableList

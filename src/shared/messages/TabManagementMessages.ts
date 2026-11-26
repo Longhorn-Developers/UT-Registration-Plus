@@ -1,3 +1,5 @@
+import type browser from 'webextension-polyfill';
+
 /**
  * Messages for managing the user's open tabs list
  */
@@ -7,14 +9,14 @@ export default interface TabManagementMessages {
      *
      * @param data - The URL to open
      */
-    openNewTab: (data: { url: string }) => chrome.tabs.Tab;
+    openNewTab: (data: { url: string }) => browser.Tabs.Tab;
 
     /**
      * Switches to the settings page if it's open in a tab, or opens it in a new tab next to the current one
      *
      * @returns The settings page's tab
      */
-    switchToSettingsTab: () => chrome.tabs.Tab;
+    switchToSettingsTab: () => browser.Tabs.Tab;
 
     /**
      * Gets the ID of the current tab (the tab that sent the message)

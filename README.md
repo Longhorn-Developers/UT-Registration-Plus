@@ -89,7 +89,7 @@ nvm use
 Then install `pnpm` by following the official install instructions at [pnpm.io/installation](https://pnpm.io/installation), or with npm after `nvm use`:
 
 ```bash
-npm install --global pnpm
+npm install --global pnpm@10.33.0
 pnpm install
 ```
 
@@ -97,13 +97,18 @@ _Note: Installing the wrong Node.js version can lead to setup and build errors._
 
 </details>
 
-Once set up, the extension can be built to the `dist/` directory using the following methods:
+Once set up, the extension can be built to the `dist/chrome/` directory (or `dist/firefox/` for the Firefox target) using the following methods:
 
 ### Development Builds
 
-- Run the development server:
+- Run the Chrome development server:
     ```bash
     pnpm dev
+    ```
+
+- Run the Firefox development server:
+    ```bash
+    pnpm dev:firefox
     ```
 
 ### Production Builds
@@ -112,6 +117,23 @@ Once set up, the extension can be built to the `dist/` directory using the follo
     ```bash
     pnpm build
     ```
+
+### Firefox Builds
+
+The same codebase builds a Firefox add-on for Firefox 140 or later. Set `BROWSER_TARGET=firefox`, or use the shortcuts:
+
+```bash
+pnpm dev:firefox          # development server for Firefox
+pnpm build:firefox        # production build to dist/firefox/
+pnpm build:watch:firefox  # development build with file watching
+pnpm lint:firefox         # validate the build with Mozilla's web-ext linter
+pnpm zip:firefox          # Create a Firefox ZIP
+```
+
+For AMO submission, use `node scripts/build-firefox-review.mjs` as described in
+[the Firefox reviewer build instructions](README.firefox-review.md). It runs the
+same Firefox build and lint commands with fixed build metadata, then packages
+the add-on for a matching source submission.
 
 <details>
 <summary>Beta Builds</summary>
@@ -127,7 +149,15 @@ To load the extension manually in Chrome:
 1. Open `chrome://extensions`.
 2. Enable 'Developer Mode'.
 3. Click 'Load unpacked'.
-4. Navigate to the `dist/` directory and select it.
+4. Navigate to the `dist/chrome/` directory and select it.
+
+To load the extension manually in Firefox:
+
+1. Open `about:debugging#/runtime/this-firefox`.
+2. Click 'Load Temporary Add-on…'.
+3. Select `dist/firefox/manifest.json`.
+
+Temporary add-ons are removed when Firefox restarts. Click 'Reload' on the same page after rebuilding.
 
 ## Bug Reporting
 

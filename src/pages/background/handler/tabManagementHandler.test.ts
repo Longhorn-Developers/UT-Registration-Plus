@@ -2,6 +2,20 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import tabManagementHandler, { findExtensionPageTab } from './tabManagementHandler';
 
+vi.mock('webextension-polyfill', () => ({
+    default: {
+        get runtime() {
+            return chrome.runtime;
+        },
+        get tabs() {
+            return chrome.tabs;
+        },
+        get windows() {
+            return chrome.windows;
+        },
+    },
+}));
+
 const EXTENSION = 'chrome-extension://abcdefghijklmnop';
 const SETTINGS_URL = `${EXTENSION}/options.html`;
 
@@ -35,7 +49,7 @@ beforeEach(() => {
             getURL: (path: string) => `${EXTENSION}${path}`,
             getContexts: vi.fn(() => Promise.resolve(contexts)),
         },
-        tabs: { update: tabsUpdate, create: tabsCreate },
+        tabs: { update: tabsUpdate, create: tabsCreate, query: vi.fn(() => Promise.resolve([])) },
         // The popup's window
         windows: { update: windowsUpdate, getLastFocused: () => Promise.resolve({ id: 2 }) },
     });
@@ -46,6 +60,22 @@ afterEach(() => {
 });
 
 describe('findExtensionPageTab', () => {
+    it('finds the settings tab without the Chrome-only contexts API', async () => {
+        vi.stubGlobal('chrome', {
+            ...chrome,
+            runtime: { ...chrome.runtime, getContexts: undefined },
+        });
+        vi.mocked(chrome.tabs.query).mockImplementation(() =>
+            Promise.resolve([
+                { ...tab(4, 1), url: `${SETTINGS_URL}#credits` },
+                { ...tab(7, 2), url: SETTINGS_URL },
+                { ...tab(8, 2), url: `${SETTINGS_URL}.bak` },
+            ])
+        );
+
+        expect(await findExtensionPageTab(SETTINGS_URL, 2)).toEqual({ tabId: 7, windowId: 2 });
+    });
+
     it('finds the page with a query or hash on its URL, and not other pages', async () => {
         contexts = [
             { tabId: 3, windowId: 1, documentUrl: `${EXTENSION}/calendar.html` },

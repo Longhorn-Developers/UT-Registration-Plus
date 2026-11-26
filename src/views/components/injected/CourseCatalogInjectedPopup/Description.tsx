@@ -1,3 +1,4 @@
+import { OptionsStore } from '@shared/storage/OptionsStore';
 import type { Course } from '@shared/types/Course';
 import Text from '@views/components/common/Text/Text';
 import { CourseCatalogScraper } from '@views/lib/CourseCatalogScraper';
@@ -36,6 +37,7 @@ const fetchDescription = async (course: Course): Promise<string[]> => {
  * @returns The rendered description component.
  */
 export default function Description({ course }: DescriptionProps): React.JSX.Element {
+    const reducedMotion = OptionsStore.useStore(store => store.enableReducedMotion);
     const [description, setDescription] = React.useState<string[]>([]);
     const [status, setStatus] = React.useState<LoadStatusType>(LoadStatus.LOADING);
 
@@ -59,8 +61,16 @@ export default function Description({ course }: DescriptionProps): React.JSX.Ele
                 </Text>
             )}
             {status === LoadStatus.LOADING &&
-                // biome-ignore lint/correctness/useJsxKeyInIterable: TODO:
-                Array.from({ length: 5 }).map(() => <Skeleton style={{ marginBottom: 10 }} height={35} />)}
+                [1, 2, 3, 4, 5].map(id => (
+                    <Skeleton
+                        key={id}
+                        style={{ marginBottom: 10 }}
+                        height={35}
+                        baseColor='var(--color-surface)'
+                        highlightColor='var(--color-surface-hover)'
+                        enableAnimation={!reducedMotion}
+                    />
+                ))}
             {status === LoadStatus.DONE && (
                 <ul className='ml-6 mt-1.5 list-disc list-outside space-y-1.5'>
                     {description.map(line => {

@@ -32,7 +32,16 @@ export default function CalendarBottomBar({ courseCells, setCourse }: CalendarBo
     }
 
     return (
-        <div className='sticky bottom-0 z-50 bg-surface w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4'>
+        <div
+            className={clsx(
+                'sticky bottom-0 z-50 bg-surface w-full flex items-center justify-between pl-spacing-7 pr-spacing-3 pt-spacing-4',
+                {
+                    // Chrome keeps an empty 14px strip under this bar for the calendar's horizontal scrollbar
+                    // (::-webkit-scrollbar in ExtensionRoot.module.scss). Firefox doesn't, so it gets the same space as padding.
+                    'pb-[14px]': __BROWSER__ === 'firefox',
+                }
+            )}
+        >
             {hasAsyncCourses && (
                 <div className='flex flex-grow items-center gap-1 text-nowrap'>
                     <Text variant='p' className='text-content uppercase'>
