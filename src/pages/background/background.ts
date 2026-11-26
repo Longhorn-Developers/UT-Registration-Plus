@@ -2,12 +2,17 @@ import { MessageListener, setTraceContextProvider, setTraceHandler } from '@chro
 import { captureException, continueTrace, getTraceData, init, startSpan } from '@sentry/react';
 import type { BACKGROUND_MESSAGES } from '@shared/messages';
 import { SENTRY_OPTIONS } from '@shared/sentry';
+import { ScheduleHistoryStore } from '@shared/storage/ScheduleHistoryStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import { UNINSTALL_REVIEW_URL } from '@shared/urls';
 import { UTRP_LOGIN_URL } from '@shared/util/appUrls';
 import updateBadgeText from '@shared/util/updateBadgeText';
 
 init(SENTRY_OPTIONS);
+
+// Sets up the undo history before a page can, since a page setting it up (writing its empty defaults) just as the
+// first change of the browser session is recorded would wipe that change
+void ScheduleHistoryStore.initialize();
 
 // In dev, inject Referer header on Sentry toolbar iframe requests so Sentry
 // returns the correct frame-ancestors CSP (Chrome strips Referer from
