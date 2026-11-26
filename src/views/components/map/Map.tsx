@@ -1,5 +1,6 @@
 import type { Course, StatusType } from '@shared/types/Course';
 import type { CourseMeeting } from '@shared/types/CourseMeeting';
+import { CRX_PAGES } from '@shared/types/CRXPages';
 import { Button } from '@views/components/common/Button';
 import Divider from '@views/components/common/Divider';
 import { LargeLogo } from '@views/components/common/LogoIcon';
@@ -203,7 +204,9 @@ export default function UTRPMap(): JSX.Element {
     return (
         <div>
             <header className='flex items-center gap-5 overflow-x-auto overflow-y-hidden border-b border-ut-offwhite px-7 py-4 md:overflow-x-hidden'>
-                <LargeLogo />
+                <a href={CRX_PAGES.CALENDAR} aria-label='Go to calendar'>
+                    <LargeLogo />
+                </a>
                 <Divider className='mx-2 self-center md:mx-4' size='2.5rem' orientation='vertical' />
                 <Text variant='h1' className='flex-1 text-ut-burntorange'>
                     UTRP Map
