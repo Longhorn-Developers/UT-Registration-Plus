@@ -2,6 +2,11 @@ import { graphNodes } from './graphNodes';
 import type { Graph, MapNode, NodeCoordinates, NodeId } from './types';
 import { isValidNode, NEIGHBOR_DISTANCE_THRESHOLD } from './types';
 
+export const resolveCourseBuilding = (building?: string): NodeId | null => {
+    const id = building?.trim().toUpperCase();
+    return id && graphNodes[id]?.type === 'building' ? id : null;
+};
+
 /**
  * Calculates the Euclidean distance between two points.
  *
