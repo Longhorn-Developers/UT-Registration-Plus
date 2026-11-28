@@ -1,3 +1,4 @@
+import { CustomBlockStore } from '@shared/storage/CustomBlockStore';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import renderRoot from '@shared/util/renderRoot';
@@ -20,7 +21,7 @@ renderRoot(
 );
 
 function PopupBootstrap() {
-    suspendUntilStoresReady([UserScheduleStore, OptionsStore]);
+    suspendUntilStoresReady([UserScheduleStore, OptionsStore, CustomBlockStore]);
 
     // The toolbar popup intentionally keeps its original light colors on every site, so it doesn't sync the theme
     return <PopupMain />;

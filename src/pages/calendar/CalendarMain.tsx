@@ -1,6 +1,7 @@
 import { MessageListener } from '@chrome-extension-toolkit';
 import { background } from '@shared/messages';
 import type TabInfoMessages from '@shared/messages/TabInfoMessages';
+import { CustomBlockStore } from '@shared/storage/CustomBlockStore';
 import { OptionsStore } from '@shared/storage/OptionsStore';
 import { UserScheduleStore } from '@shared/storage/UserScheduleStore';
 import Calendar from '@views/components/calendar/Calendar';
@@ -67,7 +68,7 @@ export default function CalendarMain() {
 }
 
 function CalendarBootstrap() {
-    suspendUntilStoresReady([UserScheduleStore, OptionsStore]);
+    suspendUntilStoresReady([UserScheduleStore, OptionsStore, CustomBlockStore]);
 
     return <Calendar />;
 }

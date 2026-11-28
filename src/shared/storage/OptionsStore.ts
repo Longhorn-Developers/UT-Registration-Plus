@@ -32,6 +32,9 @@ export interface IOptionsStore {
     /** whether users are allowed to bypass the 10 schedule limit */
     allowMoreSchedules: boolean;
 
+    /** whether the schedules sync to every Chrome signed in to the same Google account */
+    enableScheduleSync: boolean;
+
     /** BETA: whether experimental theme support (dark mode, alternate themes) is enabled */
     enableThemesBeta: boolean;
 
@@ -51,6 +54,7 @@ export const OptionsStore = createSyncStore<IOptionsStore>(
         showCalendarSidebar: true,
         calendarSidebarWidth: 325,
         allowMoreSchedules: false,
+        enableScheduleSync: true,
         enableThemesBeta: false,
         theme: 'light',
     },
