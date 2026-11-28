@@ -214,3 +214,84 @@ export function parseSemesterCode(code: string): Semester | undefined {
 
     return { year: Number(year), season, code };
 }
+
+const CODE_BY_SEASON = {
+    Spring: '2',
+    Summer: '6',
+    Fall: '9',
+} as const satisfies Record<Semester['season'], string>;
+
+/** Month (0-indexed) from which next year's Spring becomes the registration term (October) */
+const SPRING_REGISTRATION_START_MONTH = 9;
+/** Month (0-indexed) from which this year's Fall becomes the registration term (March) */
+const FALL_REGISTRATION_START_MONTH = 2;
+
+function makeSemester(year: number, season: Semester['season']): Semester {
+    return { year, season, code: `${year}${CODE_BY_SEASON[season]}` };
+}
+
+/**
+ * Gets the semester that students are registering for (or about to) on the given date.
+ *
+ * @param date - The date to get the registration semester for
+ * @returns Next year's Spring from October, this year's Fall from March, otherwise this year's Spring
+ *
+ * @example
+ * ```ts
+ * getRegistrationSemester(new Date(2026, 10, 27)) // { year: 2027, season: 'Spring', code: '20272' }
+ * getRegistrationSemester(new Date(2027, 2, 1))   // { year: 2027, season: 'Fall', code: '20279' }
+ * ```
+ */
+export function getRegistrationSemester(date: Date): Semester {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    if (month >= SPRING_REGISTRATION_START_MONTH) return makeSemester(year + 1, 'Spring');
+    if (month >= FALL_REGISTRATION_START_MONTH) return makeSemester(year, 'Fall');
+    return makeSemester(year, 'Spring');
+}
+
+/**
+ * Gets the semester directly before the given one.
+ *
+ * @param semester - The semester to step back from
+ * @returns The previous semester
+ *
+ * @example
+ * ```ts
+ * getPreviousSemester({ year: 2027, season: 'Spring' }) // { year: 2026, season: 'Fall', code: '20269' }
+ * getPreviousSemester({ year: 2026, season: 'Fall' })   // { year: 2026, season: 'Summer', code: '20266' }
+ * ```
+ */
+export function getPreviousSemester({ year, season }: Semester): Semester {
+    switch (season) {
+        case 'Spring':
+            return makeSemester(year - 1, 'Fall');
+        case 'Summer':
+            return makeSemester(year, 'Spring');
+        case 'Fall':
+            return makeSemester(year, 'Summer');
+    }
+}
+
+/**
+ * Gets the registration semester for the given date followed by the semesters before it, newest first.
+ *
+ * @param date - The date to get the semesters for
+ * @param count - How many semesters to return (defaults to 4)
+ * @returns The most recent semesters, starting with the registration semester
+ *
+ * @example
+ * ```ts
+ * getRecentSemesters(new Date(2026, 10, 27)).map(s => s.code) // ['20272', '20269', '20266', '20262']
+ * ```
+ */
+export function getRecentSemesters(date: Date, count = 4): Semester[] {
+    const semesters: Semester[] = [];
+    let semester = getRegistrationSemester(date);
+    for (let i = 0; i < count; i++) {
+        semesters.push(semester);
+        semester = getPreviousSemester(semester);
+    }
+    return semesters;
+}
